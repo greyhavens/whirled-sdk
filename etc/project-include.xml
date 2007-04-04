@@ -8,8 +8,21 @@
   <property name="flex.use-network" value="false"/>
   <property name="app.source-suffix" value="as"/>
 
+  <!-- determines whether the top-level aslib has been built -->
+  <target name="checktop">
+    <condition property="aslib.built">
+      <available file="${build.root}/dist/whirled.swc"/>
+    </condition>
+  </target>
+
+  <!-- builds the top-level aslib if necessary -->
+  <target name="buildtop" depends="checktop" unless="aslib.built">
+    <echo>Building the Whirled shared Flash library...</echo>
+    <ant dir="${build.root}" target="aslib"/>
+  </target>
+
   <!-- builds our SWF file -->
-  <target name="compile" depends="prepare-flex">
+  <target name="compile" depends="prepare-flex,buildtop">
     <java jar="${flex.path}/lib/mxmlc.jar" fork="true" failonerror="true">
       <arg value="-load-config"/>
       <arg value="${etc.dir}/whirled-config.xml"/>
