@@ -1,0 +1,30 @@
+<project name="project-include">
+
+  <!-- figure out the absolute path to this build file -->
+  <dirname property="etc.dir" file="${ant.file.project-include}"/>
+  <import file="${etc.dir}/flex-include.xml"/>
+
+  <!-- overridable properties -->
+  <property name="flex.use-network" value="false"/>
+  <property name="app.source-suffix" value="as"/>
+
+  <!-- builds our SWF file -->
+  <target name="compile" depends="prepare-flex">
+    <java jar="${flex.path}/lib/mxmlc.jar" fork="true" failonerror="true">
+      <arg value="-load-config"/>
+      <arg value="${etc.dir}/whirled-config.xml"/>
+      <arg value="-use-network=${flex.use-network}"/>
+      <arg value="-compiler.source-path=."/>
+      <arg value="-file-specs"/>
+      <arg value="${app.name}.${app.source-suffix}"/>
+    </java>
+  </target>
+
+  <!-- cleans out the compiled SWF -->
+  <target name="clean">
+    <delete>
+       <fileset file="${app.name}.swf"/>
+    </delete>
+  </target>
+
+</project>
