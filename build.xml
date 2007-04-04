@@ -67,7 +67,13 @@
     <java jar="${flex.path}/lib/compc.jar" fork="true" failonerror="true">
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
+      <arg value="-external-library-path"/>
+      <arg value="${flex.path}/frameworks/libs"/>
       <arg value="-compiler.optimize"/>
+      <arg value="-compiler.source-path=projects/narya/src/as/"/>
+      <arg value="-compiler.source-path=projects/nenya/src/as/"/>
+      <arg value="-compiler.source-path=projects/vilya/src/as/"/>
+      <arg value="-compiler.source-path=${asrc.dir}/"/>
       <arg value="-include-sources=projects/narya/src/as/"/>
       <arg value="-include-sources=projects/nenya/src/as/com/threerings/flash/"/>
       <arg value="-include-sources=projects/vilya/src/as/com/threerings/parlor/"/>
