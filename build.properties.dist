@@ -1,0 +1,10 @@
+#
+# $Id$
+#
+# Build configuration
+
+# Set this to the path of your Flex SDK, which you can download from here:
+#
+# https://www.adobe.com/cfusion/tdrc/index.cfm?product=flex
+
+flex.path = path_to_fled_sdk

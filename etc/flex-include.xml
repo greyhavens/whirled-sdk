@@ -1,0 +1,31 @@
+<project name="flex-include" default="compile" basedir=".">
+
+  <!-- figure out the absolute path to this build file -->
+  <dirname property="etc.dir" file="${ant.file.flex-include}"/>
+  <property name="build.root" value="${etc.dir}/.."/>
+  <property file="${build.root}/build.properties"/>
+
+  <!-- ensures the Flex SDK path is set and baked into the right config files -->
+  <target name="prepare-flex">
+    <!-- make sure the build.properties file exists -->
+    <fail>
+      <condition>
+        <or>
+          <not><available file="${build.root}/build.properties"/></not>
+          <not><isset property="flex.path"/></not>
+        </or>
+      </condition>
+      Please copy the build.properties.dist file to build.properties in the
+      top-level project directory and edit the build properties file to point
+      to your Flex SDK installation.
+    </fail>
+
+    <!-- generate the whirled-config.xml file using the flex.path -->
+    <copy tofile="${etc.dir}/whirled-config.xml" file="${etc.dir}/whirled-config.xml.in" 
+          overwrite="true">
+      <filterset>
+        <filter token="flex_path" value="${flex.path}"/>
+      </filterset>
+    </copy>
+  </target>
+</project>
