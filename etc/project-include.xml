@@ -7,6 +7,7 @@
   <!-- overridable properties -->
   <property name="flex.use-network" value="false"/>
   <property name="app.source-suffix" value="as"/>
+  <property name="app.source-dir" value="."/>
 
   <!-- determines whether the top-level aslib has been built -->
   <target name="checktop">
@@ -29,7 +30,7 @@
       <arg value="-use-network=${flex.use-network}"/>
       <arg value="-compiler.source-path=."/>
       <arg value="-file-specs"/>
-      <arg value="${app.name}.${app.source-suffix}"/>
+      <arg value="${app.source-dir}/${app.name}.${app.source-suffix}"/>
     </java>
   </target>
 
