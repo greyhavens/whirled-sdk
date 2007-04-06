@@ -58,7 +58,7 @@
   <!-- determines whether or not our whirled.swc Flash library is up to date -->
   <target name="checkaslib">
     <uptodate property="aslib_is_up_to_date" targetfile="${deploy.dir}/whirled.swc">
-      <srcfiles dir="projects/vilya/src/as/com/threerings/ezgame" includes="**/*.as"/>
+      <srcfiles dir="libraries/vilya/src/as/com/threerings/ezgame" includes="**/*.as"/>
       <srcfiles dir="${asrc.dir}/com/whirled" includes="**/*.as"/>
     </uptodate>
   </target>
@@ -71,14 +71,14 @@
       <arg value="-external-library-path"/>
       <arg value="${flex.path}/frameworks/libs"/>
       <arg value="-compiler.optimize"/>
-      <arg value="-compiler.source-path=projects/narya/src/as/"/>
-      <arg value="-compiler.source-path=projects/nenya/src/as/"/>
-      <arg value="-compiler.source-path=projects/vilya/src/as/"/>
+      <arg value="-compiler.source-path=libraries/narya/src/as/"/>
+      <arg value="-compiler.source-path=libraries/nenya/src/as/"/>
+      <arg value="-compiler.source-path=libraries/vilya/src/as/"/>
       <arg value="-compiler.source-path=${asrc.dir}/"/>
-      <arg value="-include-sources=projects/narya/src/as/"/>
-      <arg value="-include-sources=projects/nenya/src/as/com/threerings/flash/"/>
-      <arg value="-include-sources=projects/vilya/src/as/com/threerings/parlor/"/>
-      <arg value="-include-sources=projects/vilya/src/as/com/threerings/ezgame/"/>
+      <arg value="-include-sources=libraries/narya/src/as/"/>
+      <arg value="-include-sources=libraries/nenya/src/as/com/threerings/flash/"/>
+      <arg value="-include-sources=libraries/vilya/src/as/com/threerings/parlor/"/>
+      <arg value="-include-sources=libraries/vilya/src/as/com/threerings/ezgame/"/>
       <arg value="-include-sources=${asrc.dir}/com/whirled/"/>
       <arg value="-output"/>
       <arg value="${deploy.dir}/whirled.swc"/>
@@ -91,7 +91,7 @@
     <!-- we can't do just ezgame/*.as without doing ezgame/**/*.as, so we do this hackery -->
     <mkdir dir="${deploy.dir}/tmp/ezgame"/>
     <copy todir="${deploy.dir}/tmp/ezgame">
-      <fileset dir="projects/vilya/src/as/com/threerings/ezgame" includes="*.as"/>
+      <fileset dir="libraries/vilya/src/as/com/threerings/ezgame" includes="*.as"/>
     </copy>
     <java classpath="${flex.path}/lib/asdoc.jar" classname="flex2.tools.ASDoc" fork="true">
       <jvmarg value="-Xmx1024m"/>
@@ -125,7 +125,7 @@
     </copy>
     <copy todir="${sdk.build}">
       <fileset dir="." includes="src/as/com/whirled/**" excludes="**/WorldGameControl.as"/>
-      <fileset dir="projects/vilya" includes="src/as/com/threerings/ezgame/*.as"/>
+      <fileset dir="libraries/vilya" includes="src/as/com/threerings/ezgame/*.as"/>
     </copy>
     <zip destfile="${deploy.dir}/sdk/whirled_sdk.zip" basedir="${deploy.dir}/sdk"
          includes="whirled/**"/>
