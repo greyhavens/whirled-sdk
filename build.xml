@@ -12,6 +12,7 @@
   <property name="savedoc.dir"   value="docs"/>
 
   <!-- define our subprojects and include the standard build system -->
+  <property name="projects.dir"  value="libraries"/>
   <property name="projects" value="samskivert,narya,nenya,vilya,toybox"/>
   <import file="build/etc/build-support.xml"/>
 
