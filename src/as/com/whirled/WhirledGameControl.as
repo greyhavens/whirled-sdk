@@ -49,10 +49,12 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
-     * Return the headshot image for the given occupant in the form of a Loader object.
+     * Return the headshot image for the given occupant in the form of a Sprite object.
      *
-     * The loaders are cached in the client backend so the user should not worry too much
+     * The sprite are cached in the client backend so the user should not worry too much
      * about multiple requests for the same occupant.
+     *
+     * @param callback signature: function (sprite :Sprite) :void
      */
     public function getHeadShot (occupant :int, callback :Function) :void
     {
