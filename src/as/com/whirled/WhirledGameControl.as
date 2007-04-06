@@ -47,5 +47,16 @@ public class WhirledGameControl extends EZGameControl
     {
         callEZCode("setChatEnabled_v1", enabled);
     }
+
+    /**
+     * Return the headshot image for the given occupant in the form of a Loader object.
+     *
+     * The loaders are cached in the client backend so the user should not worry too much
+     * about multiple requests for the same occupant.
+     */
+    public function getHeadShot (occupant :int, callback :Function) :void
+    {
+        callEZCode("getHeadShot_v1", occupant, callback);
+    }
 }
 }
