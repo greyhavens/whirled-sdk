@@ -54,7 +54,7 @@ public class WhirledGameControl extends EZGameControl
      * The sprite are cached in the client backend so the user should not worry too much
      * about multiple requests for the same occupant.
      *
-     * @param callback signature: function (sprite :Sprite) :void
+     * @param callback signature: function (sprite :Sprite, success :Boolean) :void
      */
     public function getHeadShot (occupant :int, callback :Function) :void
     {
