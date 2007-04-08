@@ -43,7 +43,7 @@ import flash.events.TimerEvent;
 [Event(name="gotControl", type="com.whirled.ControlEvent")]
 
 /**
- * Dispatched when this instance has control and a tick interval is
+ * Dispatched once per tick, only when this instance has control and only if tick interval is
  * registered.
  * 
  * @eventType flash.events.TimerEvent.TIMER
@@ -51,8 +51,8 @@ import flash.events.TimerEvent;
 [Event(name="timer", type="flash.events.TimerEvent")]
 
 /**
- * Handles services that are available to all entities in a room.
- * This includes dispatching trigger events and maintaining memory.
+ * Handles services that are available to all entities in a room.  This includes dispatching
+ * trigger events and maintaining memory.
  */
 public class EntityControl extends WhirledControl
 {
@@ -122,8 +122,8 @@ public class EntityControl extends WhirledControl
      * be activated. If this method is not called, ticking will not be done. Calling this method
      * with a 0ms interval will deactivate ticking.
      *
-     * Note: Setting the tickInterval implicitely requests control, as
-     * only the instance that is in control may tick.
+     * Note: Setting the tickInterval implicitely requests control, as only the instance that is in
+     * control may tick.
      */
     public function setTickInterval (interval :Number) :void
     {
