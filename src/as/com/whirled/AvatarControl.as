@@ -78,6 +78,17 @@ public class AvatarControl extends ActorControl
         _states = moreStates;
     }
 
+    /**
+     * Set this avatar's preferred height off the ground, in pixels.
+     * If unset, it defaults to 0, meaning that it walks on the ground.
+     *
+     * Calling this does not adjust the current location.
+     */
+    public function setPreferredY (pixels :int) :void
+    {
+        callHostCode("setPreferredY_v1", pixels);
+    }
+
     // documentation in ActorControl
     override public function setState (state :String) :void
     {
