@@ -40,6 +40,9 @@ public class ActorControl extends EntityControl
 
     /**
      * Returns our current location in the scene.
+     * Note that if y is nonzero, you are *flying*. If applicable, your avatar should animate
+     * appropriately. isMoving() may return true or false when flying, depending on whether
+     * you're floating or actually moving between locations.
      *
      * @return an array containing [ x, y, z ]. x, y, and z are Numbers between 0 and 1 or null if
      * our location is unknown.
