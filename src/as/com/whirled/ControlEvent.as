@@ -95,6 +95,11 @@ public class ControlEvent extends Event
         _value = value;
     }
 
+    override public function toString () :String
+    {
+        return "ControlEvent [type=" + type + ", name=" + _name + ", value=" + _value + "]";
+    }
+
     // documentation inherited from Event
     override public function clone () :Event
     {
