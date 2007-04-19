@@ -15,18 +15,24 @@ public class ControlEvent extends Event
      * actor is moving.
      * name: unused
      * value: unused
+     *
+     * @eventType appearanceChanged
      */
     public static const APPEARANCE_CHANGED :String = "appearanceChanged";
 
     /** An event type dispatched when a message is received.
      * name: message name
      * value: message value
+     *
+     * @eventType messageReceived
      */
     public static const MESSAGE_RECEIVED :String = "messageRecieved";
 
     /** An event type dispatched when an action is triggered.
      * name: action name 
      * value: action value
+     *
+     * @eventType actionTriggered
      */
     public static const ACTION_TRIGGERED :String = "actionTriggered";
 
@@ -35,12 +41,16 @@ public class ControlEvent extends Event
      * be in the specified state.
      * name: state name
      * value: unused
+     *
+     * @eventType stateChanged
      */
     public static const STATE_CHANGED :String = "stateChanged";
 
     /** An event type dispatched when this avatar speaks.
      * name: unused
      * value: unused
+     *
+     * @eventType avatarSpoke
      */
     public static const AVATAR_SPOKE :String = "avatarSpoke";
 
@@ -48,12 +58,16 @@ public class ControlEvent extends Event
      * has gained "control" over the other client-side instances.
      * name: unused
      * value: unused
+     *
+     * @eventType gotControl
      */
     public static const GOT_CONTROL :String = "gotControl";
 
     /** An event type dispatched when the memory has changed.
      * name: memory name
      * value: memory value
+     *
+     * @eventType memoryChanged
      */
     public static const MEMORY_CHANGED :String = "memoryChanged";
 
