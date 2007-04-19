@@ -165,9 +165,9 @@ public class EntityControl extends WhirledControl
      * If unset, the default hotspot will be based off of the SWF dimensions,
      * with x = width / 2, y = height.
      */
-    public function setHotSpot (x :Number, y :Number) :void
+    public function setHotSpot (x :Number, y :Number, height :Number = NaN) :void
     {
-        callHostCode("setHotSpot_v1", x, y);
+        callHostCode("setHotSpot_v1", x, y, height);
     } 
 
     /**
