@@ -71,14 +71,13 @@ public class ActorControl extends EntityControl
     }
 
     /**
-     * Set this actor's walking speed, in pixels per millisecond.
+     * Set this actor's movement speed, in pixels per second.
      *
-     * The default value if unset is .5 pixels per millisecond, which means that it will take a
-     * full second to walk 500 pixels.
+     * The default value if unset is 500 pixels per second.
      */
-    public function setWalkSpeed (speed :Number) :void
+    public function setMoveSpeed (pixelsPerSecond :Number) :void
     {
-        callHostCode("setWalkSpeed_v1", speed);
+        callHostCode("setMoveSpeed_v1", pixelsPerSecond);
     }
 
     /**
