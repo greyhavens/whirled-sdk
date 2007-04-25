@@ -19,20 +19,8 @@
   <!-- include bits to do the necessary Flex SDK path jockeying -->
   <import file="etc/flex-include.xml"/>
 
-  <!-- declare the libraries needed by the Whirled runtime -->
-  <filelist dir="." id="dist.libs">
-    <file name="lib/ant.jar"/>
-    <file name="lib/commons-beanutils.jar"/>
-    <file name="lib/commons-collections.jar"/>
-    <file name="lib/commons-digester.jar"/>
-    <file name="lib/commons-io.jar"/>
-    <file name="lib/commons-lang.jar"/>
-    <file name="lib/commons-logging.jar"/>
-    <file name="lib/getdown.jar"/>
-    <file name="lib/junit-3.7.jar"/>
-    <file name="lib/servlet-2.3.jar"/>
-    <file name="lib/velocity-1.5-dev.jar"/>
-  </filelist>
+  <!-- include our library dependencies -->
+  <import file="etc/libs-incl.xml"/>
 
   <!-- declare our classpath -->
   <path id="classpath">

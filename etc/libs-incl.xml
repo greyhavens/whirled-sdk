@@ -1,0 +1,16 @@
+<!-- declares the libraries needed by the Whirled runtime -->
+<project name="whirled-libs" basedir=".">
+  <filelist dir="." id="dist.libs">
+    <file name="lib/ant.jar"/>
+    <file name="lib/commons-beanutils.jar"/>
+    <file name="lib/commons-collections.jar"/>
+    <file name="lib/commons-digester.jar"/>
+    <file name="lib/commons-io.jar"/>
+    <file name="lib/commons-lang.jar"/>
+    <file name="lib/commons-logging.jar"/>
+    <file name="lib/getdown.jar"/>
+    <file name="lib/junit-3.7.jar"/>
+    <file name="lib/servlet-2.3.jar"/>
+    <file name="lib/velocity-1.5-dev.jar"/>
+  </filelist>
+</project>
