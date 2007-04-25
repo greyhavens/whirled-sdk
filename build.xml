@@ -88,7 +88,7 @@
       <jvmarg value="-Dos.name=Windows"/>
       <arg value="+flexlib=${flex.path}/frameworks"/>
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
-      <arg line="-library-path ${deploy.dir}/ooo.swc"/>
+      <arg line="-library-path ${deploy.dir}/whirled.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/ezgame"/>
       <arg line="-doc-sources src/as/com/whirled"/>
@@ -115,8 +115,8 @@
       <fileset dir="." includes="src/as/com/whirled/**" excludes="**/WorldGameControl.as"/>
       <fileset dir="${projects.dir}/vilya" includes="src/as/com/threerings/ezgame/*.as"/>
     </copy>
-    <zip destfile="${deploy.dir}/sdk/whirled_sdk.zip" basedir="${deploy.dir}/sdk"
-         includes="whirled/**"/>
+    <zip destfile="${deploy.dir}/whirled_sdk.zip"
+         basedir="${deploy.dir}/sdk" includes="whirled/**"/>
   </target>
 
   <!-- build the java class files -->
