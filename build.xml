@@ -109,12 +109,12 @@
     <delete dir="${deploy.dir}/tmp/ezgame"/>
   </target>
 
-  <!-- TEMP: builds the SDK; this will soon move into the whirled repository -->
-  <target name="temp_sdk">
+  <!-- builds the SDK -->
+  <target name="sdk" depends="aslib,dist">
     <property name="sdk.build" value="${deploy.dir}/sdk/whirled"/>
     <mkdir dir="${sdk.build}"/>
     <copy todir="${sdk.build}">
-      <fileset dir="data/temp_sdk" includes="**"/>
+      <fileset dir="data/sdk" includes="**"/>
     </copy>
     <mkdir dir="${sdk.build}/lib"/>
     <copy todir="${sdk.build}/lib">
@@ -180,7 +180,7 @@
   </target>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
-  <target name="distall" depends="prepare,distprojects,dist,temp_sdk">
+  <target name="distall" depends="prepare,distprojects,dist,sdk">
   </target>
 
   <!-- cleans out the compiled code -->
