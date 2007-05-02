@@ -39,7 +39,7 @@ public class ActorControl extends EntityControl
     }
 
     /**
-     * Returns our current location in the scene.
+     * Returns our current logical location in the scene.
      * Note that if y is nonzero, you are *flying*. If applicable, your avatar should animate
      * appropriately. isMoving() may return true or false when flying, depending on whether
      * you're floating or actually moving between locations.
@@ -47,9 +47,34 @@ public class ActorControl extends EntityControl
      * @return an array containing [ x, y, z ]. x, y, and z are Numbers between 0 and 1 or null if
      * our location is unknown.
      */
-    public function getLocation () :Array
+    public function getLogicalLocation () :Array
     {
         return _location;
+    }
+
+    /**
+     * Returns our current location in the scene, in pixel coordinates.
+     */
+    public function getPixelLocation () :Array
+    {
+        if (_location == null) {
+            return null;
+        }
+        var bounds :Array = getRoomBounds();
+        for (var ii :int = 0; ii < _location.length; ii++) {
+            bounds[ii] *= _location[ii];
+        }
+        return bounds;
+    }
+
+    /**
+     * Get the room's bounds in pixels.
+     *
+     * @return an array containing [ width, height, depth ].
+     */
+    public function getRoomBounds () :Array
+    {
+        return callHostCode("getRoomBounds_v1") as Array;
     }
 
     /**
@@ -86,11 +111,24 @@ public class ActorControl extends EntityControl
      * destination and stops moving.
      *
      * x, y, and z are Numbers between 0 and 1 indicating a percentage of the room's width, height
-     * and depth respectively.  orient is a number between 0 (facing straight ahead) and 359.
+     * and depth respectively.  orient is a number between 0 (facing straight ahead) and 359,
+     * going counter-clockwise.
      */
-    public function setLocation (x :Number, y :Number, z: Number, orient :Number) :void
+    public function setLogicalLocation (x :Number, y :Number, z: Number, orient :Number) :void
     {
         callHostCode("setLocation_v1", x, y, z, orient);
+    }
+
+    /**
+     * Requests that our location be updated.
+     *
+     * x, y, and z are pixel values. orient is a number between 0 (facing straight ahead) and 359,
+     * going counter-clockwise.
+     */
+    public function setPixelLocation (x :Number, y :Number, z :Number, orient :Number) :void
+    {
+        var bounds :Array = getRoomBounds();
+        setLogicalLocation(x / bounds[0], y / bounds[1], z / bounds[2], orient);
     }
 
     /**
