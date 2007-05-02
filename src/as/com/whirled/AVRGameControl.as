@@ -7,8 +7,6 @@ package com.whirled {
 
 import flash.display.DisplayObject;
 
-import com.threerings.util.Name;
-
 // NOTE: This API is going to change, a lot, before everything's said and
 // done. Time hasn't been had to give it the love it needs.
 
