@@ -17,6 +17,14 @@ import flash.events.TextEvent;
  */
 public class FurniControl extends EntityControl
 {
+    /** An action triggered when someone arrives at the location at which
+     * this furniture is placed, if this piece of furniture is a doorway. */
+    public static const BODY_ENTERED :String = "bodyEntered";
+
+    /** An action triggered when someone leaves via this piece of doorway
+     * furniture. */
+    public static const BODY_LEFT :String = "bodyLeft";
+
     /**
      * Create a furni interface. The display object is your piece
      * of furni.
