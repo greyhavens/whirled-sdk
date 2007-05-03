@@ -1,16 +1,8 @@
 <!-- declares the libraries needed by the Whirled runtime -->
 <project name="whirled-dependencies" basedir=".">
   <fileset dir="${libs.dir}" id="whirled.libs">
-    <include name="ant.jar"/>
-    <include name="commons-beanutils.jar"/>
-    <include name="commons-collections.jar"/>
-    <include name="commons-digester.jar"/>
-    <include name="commons-io.jar"/>
-    <include name="commons-lang.jar"/>
-    <include name="commons-logging.jar"/>
-    <include name="getdown.jar"/>
-    <include name="junit-3.7.jar"/>
-    <include name="servlet-2.3.jar"/>
-    <include name="velocity-1.5-dev.jar"/>
+    <include name="narya-base.jar"/>
+    <include name="narya-distrib.jar"/>
+    <include name="toybox.jar"/>
   </fileset>
 </project>
