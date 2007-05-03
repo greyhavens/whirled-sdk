@@ -16,8 +16,6 @@ import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.RoundRectangle2D;
 
-import java.net.URL;
-
 import javax.swing.ImageIcon;
 
 import com.samskivert.swing.Label;
@@ -50,8 +48,6 @@ import com.threerings.parlor.turn.data.TurnGameObject;
 
 import com.whirled.data.WhirledOccupantInfo;
 import com.whirled.util.WhirledContext;
-
-import static com.whirled.Log.log;
 
 /**
  * Displays a player's name and face icon, along with an hourglass and colored background when it's
@@ -372,13 +368,10 @@ public class PlayerView
     {
         _occinfo = (OccupantInfo)_gameObj.getOccupantInfo(_username);
         if (_occinfo != null && _occinfo instanceof WhirledOccupantInfo) {
-            if (_faceIcon == null) { // TODO: support changing your avatar mid-game?
-                String path = ((WhirledOccupantInfo)_occinfo).getHeadshotURL();
-                try {
-                    _faceIcon = new ImageIcon(new URL(path));
-                } catch (Exception e) {
-                    log.warning("Failed to load headshot [url=" + path + ", error=" + e + "].");
-                }
+            if (_faceIcon == null) {
+                _faceIcon = new HeadshotIcon((WhirledOccupantInfo)_occinfo);
+            } else {
+                _faceIcon.setInfo((WhirledOccupantInfo)_occinfo);
             }
         } else {
             _faceIcon = null;
@@ -458,7 +451,7 @@ public class PlayerView
     protected int[] _charPrint;
 
     /** The player's character face icon. */
-    protected ImageIcon _faceIcon;
+    protected HeadshotIcon _faceIcon;
 
     /** The timer view. */
     protected HourglassView _timerView;
