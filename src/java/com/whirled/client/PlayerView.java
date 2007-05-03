@@ -16,6 +16,10 @@ import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.RoundRectangle2D;
 
+import java.net.URL;
+
+import javax.swing.ImageIcon;
+
 import com.samskivert.swing.Label;
 import com.samskivert.swing.util.SwingUtil;
 
@@ -44,7 +48,10 @@ import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.game.data.GameObject;
 import com.threerings.parlor.turn.data.TurnGameObject;
 
+import com.whirled.data.WhirledOccupantInfo;
 import com.whirled.util.WhirledContext;
+
+import static com.whirled.Log.log;
 
 /**
  * Displays a player's name and face icon, along with an hourglass and colored background when it's
@@ -206,9 +213,9 @@ public class PlayerView
         }
 
         // draw the face icon
-//         if (_faceIcon != null) {
-//             _faceIcon.paintIcon(null, gfx, (getLeftWidth() - _faceIcon.getIconWidth())/2, 20);
-//         }
+        if (_faceIcon != null) {
+            _faceIcon.paintIcon(_host, gfx, (getLeftWidth() - _faceIcon.getIconWidth())/2, 20);
+        }
 
         // paint any extra
         paintExtraAntiAlias(gfx);
@@ -364,16 +371,17 @@ public class PlayerView
     protected void updateOccupantInfo ()
     {
         _occinfo = (OccupantInfo)_gameObj.getOccupantInfo(_username);
-        if (_occinfo != null) {
-            // TODO: display avatar headshot
-//             if (_faceIcon == null) {
-//                 _faceIcon = new YoFaceIcon(_ctx, _occinfo, _action, Color.black, true);
-//             } else {
-//                 _faceIcon.update(_occinfo, _action);
-//             }
-//             _nameLabel.setTextColor(YoFaceLabel.getNameColor(_ctx, _occinfo.role));
+        if (_occinfo != null && _occinfo instanceof WhirledOccupantInfo) {
+            if (_faceIcon == null) { // TODO: support changing your avatar mid-game?
+                String path = ((WhirledOccupantInfo)_occinfo).getHeadshotURL();
+                try {
+                    _faceIcon = new ImageIcon(new URL(path));
+                } catch (Exception e) {
+                    log.warning("Failed to load headshot [url=" + path + ", error=" + e + "].");
+                }
+            }
         } else {
-//             _faceIcon = null;
+            _faceIcon = null;
         }
         invalidate();
     }
@@ -449,8 +457,8 @@ public class PlayerView
     /** The player's character sprite fingerprint. */
     protected int[] _charPrint;
 
-//     /** The player's character face icon. */
-//     protected YoFaceIcon _faceIcon;
+    /** The player's character face icon. */
+    protected ImageIcon _faceIcon;
 
     /** The timer view. */
     protected HourglassView _timerView;
