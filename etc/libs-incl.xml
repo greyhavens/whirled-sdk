@@ -3,6 +3,9 @@
   <fileset dir="${libs.dir}" id="whirled.libs">
     <include name="narya-base.jar"/>
     <include name="narya-distrib.jar"/>
+    <include name="nenya-media.jar"/>
+    <include name="samskivert.jar"/>
     <include name="toybox.jar"/>
+    <include name="vilya-parlor.jar"/>
   </fileset>
 </project>
