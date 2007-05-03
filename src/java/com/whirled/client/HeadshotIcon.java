@@ -21,11 +21,15 @@ import static com.whirled.Log.log;
  */
 public class HeadshotIcon implements Icon
 {
-    /** The size of the icon. The headshot will be scaled and centered to fit. */
-    public static final Dimension SIZE = new Dimension(58, 58);
-
-    public HeadshotIcon (WhirledOccupantInfo info)
+    public HeadshotIcon (WhirledOccupantInfo info, Dimension size)
     {
+        this(info, size.width, size.height);
+    }
+
+    public HeadshotIcon (WhirledOccupantInfo info, int width, int height)
+    {
+        _width = width;
+        _height = height;
         setInfo(info);
     }
 
@@ -54,26 +58,27 @@ public class HeadshotIcon implements Icon
             return;
         }
 
-        float scale = (width > height) ? SIZE.width/(float)width : SIZE.height/(float)height;
+        float scale = (width > height) ? _width/(float)width : _height/(float)height;
         scale = Math.min(1f, scale);
         int swidth = (int)Math.round(scale * width);
         int sheight = (int)Math.round(scale * height);
-        int sx = (SIZE.width - swidth)/2, sy = (SIZE.height - sheight)/2;
+        int sx = (_width - swidth)/2, sy = (_height - sheight)/2;
         g.drawImage(_image, x + sx, y + sy, swidth, sheight, null, host);
     }
     
     // from interface Icon
     public int getIconWidth ()
     {
-        return SIZE.width;
+        return _width;
     }
 
     // from interface Icon
     public int getIconHeight ()
     {
-        return SIZE.height;
+        return _height;
     }
 
+    protected int _width, _height;
     protected URL _current;
     protected Image _image;
 }

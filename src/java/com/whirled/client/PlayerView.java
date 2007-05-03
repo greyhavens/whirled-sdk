@@ -104,6 +104,14 @@ public class PlayerView
     }
 
     /**
+     * Returns the size to use for the face icon.
+     */
+    public Dimension getFaceIconSize ()
+    {
+        return new Dimension(58, 58); // default to compatibility with YoFaceIcon
+    }
+
+    /**
      * Return true if the component should continue rendering the name
      * and any exras even after the player has left the game room.
      */
@@ -368,7 +376,7 @@ public class PlayerView
         _occinfo = (OccupantInfo)_gameObj.getOccupantInfo(_username);
         if (_occinfo != null && _occinfo instanceof WhirledOccupantInfo) {
             if (_faceIcon == null) {
-                _faceIcon = new HeadshotIcon((WhirledOccupantInfo)_occinfo);
+                _faceIcon = new HeadshotIcon((WhirledOccupantInfo)_occinfo, getFaceIconSize());
             } else {
                 _faceIcon.setInfo((WhirledOccupantInfo)_occinfo);
             }
