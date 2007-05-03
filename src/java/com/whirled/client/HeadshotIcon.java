@@ -42,7 +42,6 @@ public class HeadshotIcon implements Icon
             _image = Toolkit.getDefaultToolkit().createImage(_current = url);
         } catch (Exception e) {
             log.warning("Invalid headshot URL [info=" + info + "].");
-            return;
         }
     }
 
