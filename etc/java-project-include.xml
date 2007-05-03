@@ -1,0 +1,106 @@
+<project name="java-project-include">
+
+  <!-- figure out the absolute path to this build file -->
+  <dirname property="etc.dir" file="${ant.file.java-project-include}"/>
+
+  <!-- configuration that might be overridden by the build file -->
+  <property name="app.source-dir" value="src/java"/>
+
+  <!-- things you probably don't want to change -->
+  <property name="deploy.dir" value="dist"/>
+  <property name="dist.jar"   value="${app.name}.jar"/>
+
+  <!-- declare our classpath -->
+  <path id="classpath">
+    <fileset dir="${etc.dir}/../dist" includes="whirled-code.jar"/>
+    <fileset dir="${etc.dir}/../dist/lib" includes="*.jar"/>
+    <pathelement location="${deploy.dir}/classes"/>
+  </path>
+
+  <!-- generates additional methods for distributed object classes -->
+  <target name="gendobj" depends="prepare">
+    <taskdef name="dobj" classname="com.threerings.presents.tools.GenDObjectTask"
+             classpathref="classpath"/>
+    <!-- make sure the dobject class files are all compiled -->
+    <javac srcdir="${app.source-dir}" destdir="${deploy.dir}/classes" debug="on"
+           optimize="${build.optimize}" deprecation="on" includeAntRuntime="false">
+      <classpath refid="classpath"/>
+      <include name="**/*Object.java"/>
+      <compilerarg value="-Xlint"/>
+      <compilerarg value="-Xlint:-serial"/>
+    </javac>
+    <!-- now generate the associated files -->
+    <dobj classpathref="classpath">
+      <fileset dir="${app.source-dir}" includes="**/*Object.java"/>
+    </dobj>
+  </target>
+
+  <!-- prepares the application directories -->
+  <target name="prepare">
+    <mkdir dir="${deploy.dir}"/>
+    <mkdir dir="${deploy.dir}/classes"/>
+    <copy todir="${deploy.dir}/classes">
+      <fileset dir="${app.source-dir}" includes="**/*.properties"/>
+    </copy>
+    <mkdir dir="${deploy.dir}/classes/rsrc"/>
+    <copy todir="${deploy.dir}/classes/rsrc" failonerror="false">
+      <fileset dir="rsrc" includes="**/*"/>
+    </copy>
+  </target>
+
+  <!-- cleans out the installed application -->
+  <target name="clean">
+    <delete dir="${deploy.dir}"/>
+  </target>
+
+  <!-- build the java class files -->
+  <target name="compile" depends="prepare">
+    <javac srcdir="${app.source-dir}" destdir="${deploy.dir}/classes"
+           debug="on" optimize="${build.optimize}" deprecation="on"
+           includeAntRuntime="false">
+      <classpath refid="classpath"/>
+      <compilerarg value="-Xlint"/>
+      <compilerarg value="-Xlint:-serial"/>
+    </javac>
+  </target>
+
+  <!-- a target for rebuilding everything -->
+  <target name="all" depends="clean,prepare,compile,dist"/>
+
+  <!-- builds our distribution files (war and jar) -->
+  <target name="dist" depends="prepare,compile">
+    <jar file="${deploy.dir}/${dist.jar}" basedir="${deploy.dir}/classes"/>
+  </target>
+
+  <!-- a target for running a game client -->
+  <target name="client">
+    <fail unless="username">
+      Please specify a username: ant -Dusername=who client
+    </fail>
+    <java classname="com.threerings.toybox.client.ToyBoxApp" fork="true">
+      <classpath>
+        <pathelement location="${deploy.dir}/classes"/>
+        <pathelement location="../client/gg-client.jar"/>
+      </classpath>
+      <sysproperty key="no_log_redir" value="true"/>
+      <arg value="localhost"/>
+      <arg value="47624"/>
+      <arg value="${username}"/>
+      <arg value="secret"/>
+    </java>
+  </target>
+
+  <!-- a target for running the game server -->
+  <target name="server" depends="compile">
+    <propertyfile file="${deploy.dir}/classes/toybox.properties">
+      <entry key="resource_dir" value="dist"/>
+      <entry key="resource_url" value="file://dist"/>
+    </propertyfile>
+    <java classname="com.threerings.toybox.server.ToyBoxServer" fork="true">
+      <jvmarg value="-Dgame_conf=${app.name}.xml"/>
+      <classpath refid="classpath"/>
+    </java>
+    <delete file="${deploy.dir}/classes/toybox.properties"/>
+  </target>
+
+</project>
