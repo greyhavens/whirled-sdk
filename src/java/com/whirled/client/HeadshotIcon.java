@@ -22,7 +22,7 @@ import static com.whirled.Log.log;
 public class HeadshotIcon implements Icon
 {
     /** The size of the icon. The headshot will be scaled and centered to fit. */
-    public static final Dimension SIZE = new Dimension(64, 64);
+    public static final Dimension SIZE = new Dimension(58, 58);
 
     public HeadshotIcon (WhirledOccupantInfo info)
     {
@@ -54,11 +54,12 @@ public class HeadshotIcon implements Icon
             return;
         }
 
-        float scale = (width > height) ? width/(float)SIZE.width : height/(float)SIZE.height;
-        int swidth = (int)Math.round(SIZE.width * scale * width);
-        int sheight = (int)Math.round(SIZE.height * scale * height);
+        float scale = (width > height) ? SIZE.width/(float)width : SIZE.height/(float)height;
+        scale = Math.min(1f, scale);
+        int swidth = (int)Math.round(scale * width);
+        int sheight = (int)Math.round(scale * height);
         int sx = (SIZE.width - swidth)/2, sy = (SIZE.height - sheight)/2;
-        g.drawImage(_image, sx, sy, swidth, sheight, null, host);
+        g.drawImage(_image, x + sx, y + sy, swidth, sheight, null, host);
     }
     
     // from interface Icon

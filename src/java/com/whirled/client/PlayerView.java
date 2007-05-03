@@ -113,9 +113,8 @@ public class PlayerView
     }
 
     /**
-     * How wide the left half of the view is, which includes the player's
-     * face icon and name.  The remainer of getWidth() is for the right
-     * half of the view.
+     * How wide the left half of the view is, which includes the player's face icon and name.  The
+     * remainer of getWidth() is for the right half of the view.
      */
     public int getLeftWidth ()
     {
