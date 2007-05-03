@@ -1,6 +1,7 @@
 <!-- declares the libraries needed by the Whirled runtime -->
 <project name="whirled-dependencies" basedir=".">
   <fileset dir="${libs.dir}" id="whirled.libs">
+    <include name="ant.jar"/>
     <include name="narya-base.jar"/>
     <include name="narya-distrib.jar"/>
     <include name="nenya-media.jar"/>
