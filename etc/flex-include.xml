@@ -25,7 +25,6 @@
           overwrite="true">
       <filterset>
         <filter token="flex_path" value="${flex.path}"/>
-        <filter token="lib_path" value="../lib"/>
       </filterset>
     </copy>
   </target>
