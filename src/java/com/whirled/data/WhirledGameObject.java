@@ -3,8 +3,6 @@
 
 package com.whirled.data;
 
-import com.whirled.client.WhirledGameService;
-
 /**
  * Games that wish to make use of Whirled game services should implement this interface.
  */
@@ -18,5 +16,5 @@ public interface WhirledGameObject
     /**
      * Configures the {@link WhirledGameService} for this game.
      */
-    public void setWhirledGameService (WhirledGameService whirledGameService);
+    public void setWhirledGameService (WhirledGameMarshaller whirledGameService);
 }

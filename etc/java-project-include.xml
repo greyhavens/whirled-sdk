@@ -15,6 +15,7 @@
   <path id="classpath">
     <fileset dir="${etc.dir}/../dist" includes="whirled-code.jar"/>
     <fileset dir="${etc.dir}/../dist/lib" includes="*.jar"/>
+    <fileset dir="lib" includes="*.jar"/>
     <pathelement location="${classes.dir}"/>
   </path>
 
