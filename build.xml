@@ -2,14 +2,13 @@
 <project name="whirled" default="compile" basedir=".">
 
   <!-- define some basic project parameters -->
-  <property name="app.name"     value="whirled"/>
-
-  <!-- things you probably don't want to change -->
-  <property name="src.dir"       value="src/java"/>
-  <property name="asrc.dir"      value="src/as"/>
-  <property name="deploy.dir"    value="dist"/>
-  <property name="javadoc.dir"   value="${deploy.dir}/docs"/>
-  <property name="savedoc.dir"   value="docs"/>
+  <property name="app.name"    value="whirled"/>
+  <property name="src.dir"     value="src/java"/>
+  <property name="asrc.dir"    value="src/as"/>
+  <property name="deploy.dir"  value="dist"/>
+  <property name="classes.dir" value="${deploy.dir}/classes"/>
+  <property name="javadoc.dir" value="${deploy.dir}/docs"/>
+  <property name="savedoc.dir" value="docs"/>
 
   <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"  value="libraries"/>
@@ -37,7 +36,7 @@
 
   <!-- declare our classpath -->
   <path id="classpath">
-    <pathelement location="${deploy.dir}/classes"/>
+    <pathelement location="${classes.dir}"/>
     <fileset dir="${deploy.dir}/lib" includes="*.jar"/>
   </path>
 
@@ -46,10 +45,10 @@
     <mkdir dir="${deploy.dir}"/>
     <mkdir dir="${deploy.dir}/lib"/>
     <mkdir dir="${deploy.dir}/tmp"/>
-    <mkdir dir="${deploy.dir}/classes"/>
-    <mkdir dir="${deploy.dir}/classes/rsrc"/>
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${classes.dir}/rsrc"/>
     <mkdir dir="${javadoc.dir}"/>
-    <copy todir="${deploy.dir}/classes/rsrc">
+    <copy todir="${classes.dir}/rsrc">
       <fileset dir="rsrc">
        <include name="**/*"/>
       </fileset>
@@ -133,9 +132,26 @@
          basedir="${deploy.dir}/sdk" includes="whirled/**"/>
   </target>
 
+  <!-- generates marshaller and dispatcher classes for all invocation service declarations -->
+  <target name="genservice" depends="prepare">
+    <taskdef name="service" classpathref="classpath"
+             classname="com.threerings.presents.tools.GenServiceTask"/>
+    <!-- make sure the service class files are all compiled -->
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" deprecation="on">
+      <classpath refid="classpath"/>
+      <include name="**/*Service.java"/>
+    </javac>
+    <!-- now generate the associated files -->
+    <service header="lib/SOURCE_HEADER" asroot="${asrc.dir}" classpathref="classpath">
+      <fileset dir="${src.dir}">
+        <include name="**/*Service.java"/>
+      </fileset>
+    </service>
+  </target>
+
   <!-- build the java class files -->
   <target name="compile" depends="prepare">
-    <javac srcdir="${src.dir}" destdir="${deploy.dir}/classes"
+    <javac srcdir="${src.dir}" destdir="${classes.dir}"
            debug="on" optimize="off" deprecation="on">
       <classpath refid="classpath"/>
       <compilerarg value="-Xlint:unchecked"/>
@@ -170,7 +186,7 @@
   <!-- builds the distribution jar files -->
   <target name="dist" depends="prepare,compile">
     <!-- stick all our code in one jar file -->
-    <jar file="${deploy.dir}/${app.name}-code.jar" basedir="${deploy.dir}/classes">
+    <jar file="${deploy.dir}/${app.name}-code.jar" basedir="${classes.dir}">
       <include name="com/**"/>
       <include name="*.properties"/>
       <include name="rsrc/**/*.properties"/>
@@ -178,7 +194,7 @@
     </jar>
     <!-- and all of our configuration and media in another -->
     <jar file="${deploy.dir}/${app.name}-media.jar"
-         basedir="${deploy.dir}/classes" includes="rsrc/**"/>
+         basedir="${classes.dir}" includes="rsrc/**"/>
   </target>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
@@ -187,7 +203,7 @@
 
   <!-- cleans out the compiled code -->
   <target name="clean">
-    <delete dir="${deploy.dir}/classes"/>
+    <delete dir="${classes.dir}"/>
     <delete><fileset dir="${asrc.dir}" includes="*.cache"/></delete>
     <delete><fileset dir="${deploy.dir}" includes="*.jar"/></delete>
     <delete><fileset dir="${deploy.dir}" includes="*.swc"/></delete>
