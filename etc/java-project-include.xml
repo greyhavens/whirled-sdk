@@ -91,16 +91,10 @@
     <fail unless="username">
       Please specify a username: ant -Dusername=who client
     </fail>
-    <java classname="com.threerings.toybox.client.ToyBoxApp" fork="true">
-      <classpath>
-        <pathelement location="${classes.dir}"/>
-        <pathelement location="../client/gg-client.jar"/>
-      </classpath>
-      <sysproperty key="no_log_redir" value="true"/>
-      <arg value="localhost"/>
-      <arg value="47624"/>
+    <java classname="com.whirled.client.WhirledApp" fork="true">
+      <classpath refid="classpath"/>
+      <arg value="${app.name}"/>
       <arg value="${username}"/>
-      <arg value="secret"/>
     </java>
   </target>
 

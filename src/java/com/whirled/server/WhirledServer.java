@@ -75,14 +75,14 @@ public class WhirledServer extends CrowdServer
         log.info("Whirled server shutting down.");
     }
 
-    @Override
-    protected PlaceRegistry createPlaceRegistry (InvocationManager invmgr, RootDObjectManager omgr)
-    {
-        return new PlaceRegistry(invmgr, omgr) {
-            public ClassLoader getClassLoader (PlaceConfig config) {
-                ClassLoader loader = hostedMan.getClassLoader(config);
-                return (loader == null) ? super.getClassLoader(config) : loader;
-            }
-        };
-    }
+//     @Override
+//     protected PlaceRegistry createPlaceRegistry (InvocationManager invmgr, RootDObjectManager omgr)
+//     {
+//         return new PlaceRegistry(invmgr, omgr) {
+//             public ClassLoader getClassLoader (PlaceConfig config) {
+//                 ClassLoader loader = hostedMan.getClassLoader(config);
+//                 return (loader == null) ? super.getClassLoader(config) : loader;
+//             }
+//         };
+//     }
 }
