@@ -59,6 +59,7 @@
     <copy todir="${classes.dir}/rsrc" failonerror="false">
       <fileset dir="rsrc" includes="**/*"/>
     </copy>
+    <antcall target="project-prepare"/>
   </target>
 
   <!-- cleans out the installed application -->
