@@ -20,6 +20,17 @@ public class PetControl extends ActorControl
         super(disp);
     }
 
+    /**
+     * Send a chat message to the entire room. The chat message will be treated as if it
+     * were typed in at the chat message box - it will be filtered, and any action commands
+     * (e.g. /emote) will be handled appropriately.
+     */
+    public function sendChatMessage (msg :String) :void
+    {
+        callHostCode("sendChatMessage_v1", msg);
+    }
+
+
     // from WhirledControl
     override protected function populateProperties (o :Object) :void
     {
@@ -32,5 +43,6 @@ public class PetControl extends ActorControl
     {
         return false;
     }
+   
 }
 }
