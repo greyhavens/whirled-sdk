@@ -106,15 +106,9 @@
 
   <!-- a target for running the game server -->
   <target name="server" depends="compile">
-    <propertyfile file="${classes.dir}/toybox.properties">
-      <entry key="resource_dir" value="dist"/>
-      <entry key="resource_url" value="file://dist"/>
-    </propertyfile>
-    <java classname="com.threerings.toybox.server.ToyBoxServer" fork="true">
-      <jvmarg value="-Dgame_conf=${app.name}.xml"/>
+    <java classname="com.whirled.server.WhirledServer" fork="true">
       <classpath refid="classpath"/>
     </java>
-    <delete file="${classes.dir}/toybox.properties"/>
   </target>
 
 </project>
