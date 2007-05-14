@@ -30,7 +30,6 @@ public class PetControl extends ActorControl
         callHostCode("sendChatMessage_v1", msg);
     }
 
-
     // from WhirledControl
     override protected function populateProperties (o :Object) :void
     {
@@ -43,6 +42,5 @@ public class PetControl extends ActorControl
     {
         return false;
     }
-   
 }
 }
