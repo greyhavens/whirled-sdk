@@ -127,7 +127,7 @@ public class WhirledClient
 
         _ctx.getParlorDirector().startSolitaire(config, new InvocationService.ConfirmListener() {
             public void requestProcessed () {
-                log.info("Started test game...");
+                // nothing needed
             }
             public void requestFailed (String cause) {
                 log.warning("Failed to start test game: " + cause);
