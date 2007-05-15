@@ -86,22 +86,12 @@
     <jar file="${deploy.dir}/${dist.jar}" basedir="${classes.dir}"/>
   </target>
 
-  <!-- a target for running a game client -->
-  <target name="client">
-    <fail unless="username">
-      Please specify a username: ant -Dusername=who client
-    </fail>
+  <!-- a target for running a single game client and server in the same VM -->
+  <target name="test">
     <java classname="com.whirled.client.WhirledApp" fork="true">
       <classpath refid="classpath"/>
       <arg value="${app.name}"/>
-      <arg value="${username}"/>
-    </java>
-  </target>
-
-  <!-- a target for running the game server -->
-  <target name="server" depends="compile">
-    <java classname="com.whirled.server.WhirledServer" fork="true">
-      <classpath refid="classpath"/>
+      <arg value="tester"/>
     </java>
   </target>
 
