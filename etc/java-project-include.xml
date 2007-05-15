@@ -87,7 +87,7 @@
   </target>
 
   <!-- a target for running a single game client and server in the same VM -->
-  <target name="test">
+  <target name="test" depends="compile">
     <java classname="com.whirled.client.WhirledApp" fork="true">
       <classpath refid="classpath"/>
       <arg value="${app.name}"/>
