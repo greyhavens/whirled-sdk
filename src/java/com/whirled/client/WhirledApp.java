@@ -14,8 +14,7 @@ import com.threerings.media.FrameManager;
 import com.threerings.media.ManagedJFrame;
 import com.threerings.util.Name;
 
-import com.threerings.presents.client.Client;
-import com.threerings.presents.net.UsernamePasswordCreds;
+import com.whirled.server.LocalServer;
 
 /**
  * The main entry point for the Whirled standalone test client.
@@ -27,17 +26,8 @@ public class WhirledApp
     {
         // create a frame and our frame manager
         _frame = new ManagedJFrame(username);
-        _frame.setDefaultCloseOperation(ManagedJFrame.DO_NOTHING_ON_CLOSE);
+        _frame.setDefaultCloseOperation(ManagedJFrame.EXIT_ON_CLOSE);
         _framemgr = FrameManager.newInstance(_frame);
-
-        _frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing (WindowEvent evt) {
-                if (_client.getContext().getClient().isLoggedOn()) {
-                    _client.getContext().getClient().logoff(true); // if we're logged on, log off
-                }
-                System.exit(0); // and get the heck out
-            }
-        });
 
         // TODO: remember the position of the frame based on username
         _frame.setSize(800, 600);
@@ -53,13 +43,8 @@ public class WhirledApp
         // show the frame
         _frame.setVisible(true);
 
-        // configure the client with server and port
-        Client client = _client.getContext().getClient();
-        client.setServer("localhost", Client.DEFAULT_SERVER_PORTS);
-
-        // configure the client with our credentials and logon
-        client.setCredentials(new UsernamePasswordCreds(new Name(username), "secret"));
-        client.logon();
+        // log on to our local server
+        _server.startStandaloneClient(_client, new Name(username));
 
         // start up the frame manager
         _framemgr.start();
@@ -70,6 +55,10 @@ public class WhirledApp
     {
         com.samskivert.util.Log.setLogProvider(new LoggingLogProvider());
         OneLineLogFormatter.configureDefaultHandler();
+
+        // start up our local server
+        _server = new LocalServer();
+        _server.init();
 
         String gameId = (args.length > 0) ? args[0] : "unknown";
         String username = (args.length > 1) ? args[1] : "unknown";
@@ -82,4 +71,6 @@ public class WhirledApp
     protected WhirledClient _client;
     protected ManagedJFrame _frame;
     protected FrameManager _framemgr;
+
+    protected static LocalServer _server;
 }
