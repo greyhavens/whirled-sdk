@@ -73,7 +73,7 @@ public class ControlEvent extends Event
 
     
     /** An event type dispatched to pets, when they overhear chatter in the room.
-     * name: speaker name (normalized)
+     * name: speaker name
      * value: chat message
      *
      * @eventType gotChat
