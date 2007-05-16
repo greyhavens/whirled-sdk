@@ -68,23 +68,27 @@ public class AssignIdTask extends Task
             maxValue = Math.max(maxValue, value);
         }
 
+        boolean modified = false;
         for (FileSet fs : _filesets) {
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());
             File fromDir = fs.getDir(getProject());
             for (String file : ds.getIncludedFiles()) {
                 if (!props.containsKey(file)) {
                     props.setProperty(file, String.valueOf(++maxValue));
+                    modified = true;
                 }
             }
         }
 
-        FileOutputStream fout = null;
-        try {
-            props.store(fout = new FileOutputStream(_propfile), "");
-        } catch (IOException ioe) {
-            throw new BuildException("Failed saving " + _propfile + ".", ioe);
-        } finally {
-            StreamUtil.close(fout);
+        if (modified) {
+            FileOutputStream fout = null;
+            try {
+                props.store(fout = new FileOutputStream(_propfile), "");
+            } catch (IOException ioe) {
+                throw new BuildException("Failed saving " + _propfile + ".", ioe);
+            } finally {
+                StreamUtil.close(fout);
+            }
         }
     }
 
