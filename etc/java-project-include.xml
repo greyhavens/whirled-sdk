@@ -90,6 +90,7 @@
   <target name="test" depends="compile">
     <java classname="com.whirled.client.WhirledApp" fork="true">
       <classpath refid="classpath"/>
+      <sysproperty key="java.library.path" value="${etc.dir}/../lib/native"/>
       <arg value="${app.name}"/>
       <arg value="tester"/>
     </java>
