@@ -71,6 +71,16 @@ public class ControlEvent extends Event
      */
     public static const MEMORY_CHANGED :String = "memoryChanged";
 
+    
+    /** An event type dispatched to pets, when they overhear chatter in the room.
+     * name: speaker name (normalized)
+     * value: chat message
+     *
+     * @eventType gotChat
+     */
+    public static const RECEIVED_CHAT :String = "receivedChat";
+
+    
     /**
      * Retrieve the event target, which will be the WhirledControl instance that
      * dispatched this event.
