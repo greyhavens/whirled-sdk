@@ -30,7 +30,7 @@ public class WhirledApp
         _framemgr = FrameManager.newInstance(_frame);
 
         // TODO: remember the position of the frame based on username
-        _frame.setSize(800, 600);
+        _frame.setSize(1024, 600);
         SwingUtil.centerWindow(_frame);
 
         // create and initialize our client instance
