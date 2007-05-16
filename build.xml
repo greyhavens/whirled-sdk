@@ -32,6 +32,7 @@
     <file name="lib/junit-3.7.jar"/>
     <file name="lib/servlet-2.3.jar"/>
     <file name="lib/velocity-1.5-dev.jar"/>
+    <file name="lib/lwjgl.jar"/>
   </filelist>
 
   <!-- declare our classpath -->
