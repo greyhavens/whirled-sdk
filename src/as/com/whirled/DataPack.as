@@ -83,7 +83,7 @@ public class DataPack extends EventDispatcher
     }
 
     /**
-     * Convenience function to access some data as a String.
+     * Convenience function to access some data as a Boolean.
      */
     public function getBoolean (name :String) :Boolean
     {
@@ -91,7 +91,7 @@ public class DataPack extends EventDispatcher
     }
 
     /**
-     * Convenience function to access some data as a String.
+     * Convenience function to access some data as an Array.
      */
     public function getArray (name :String) :Array
     {
@@ -99,7 +99,7 @@ public class DataPack extends EventDispatcher
     }
 
     /**
-     * Convenience function to access some data as a String.
+     * Convenience function to access some data as a Point.
      */
     public function getPoint (name :String) :Point
     {
