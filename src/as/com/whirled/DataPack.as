@@ -18,7 +18,6 @@ import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
 import com.threerings.util.EmbeddedSwfLoader;
-import com.threerings.util.StringUtil;
 
 import deng.fzip.FZip;
 import deng.fzip.FZipFile;
@@ -28,9 +27,6 @@ import deng.fzip.FZipEvent;
 /**
  * Handles downloading and extracting goodies from a DataPack.
  */
-//
-// TODO: Much of this class is untested and is currently "beta" quality.
-// 
 public class DataPack extends EventDispatcher
 {
     /**
@@ -112,10 +108,7 @@ public class DataPack extends EventDispatcher
     public function getData (name :String) :*
     {
         if (!_complete) {
-            throw new Error("DataPack is not yet completely loaded.");
-
-        } else if (_data == null) {
-            throw new Error("DataPack contains no data!");
+            throw new Error("DataPack is not loaded.");
         }
 
         var datum :XML = _data..data.(@name == name)[0];
@@ -129,7 +122,7 @@ public class DataPack extends EventDispatcher
         }
 
         var value :String = String(val[0]);
-        trace("Raw value for '" + name + "' is '" + value + "'");
+        trace("Raw value for data '" + name + "' is '" + value + "'");
         if (value == null) {
             return undefined;
         }
@@ -146,7 +139,7 @@ public class DataPack extends EventDispatcher
             return new Point(parseFloat(bits[0]), parseFloat(bits[1]));
 
         case "Array":
-            return value.split(",").map(StringUtil.trim);
+            return value.split(",").map(decodeArrayElements);
 
         case "Number":
             return parseFloat(value);
@@ -244,21 +237,39 @@ public class DataPack extends EventDispatcher
 
     protected function getFileInternal (name :String, asString :Boolean) :*
     {
-        if (name == null || (0 == name.lastIndexOf("_", 0))) {
+        if (name == null) {
             throw new Error("Invalid file name: " + name);
         }
+        if (!_complete) {
+            throw new Error("DataPack is not loaded.");
+        }
 
-        var file :FZipFile = _zip.getFileByName(name);
+        var datum :XML = _data..file.(@name == name)[0];
+        if (datum == null) {
+            return undefined;
+        }
+
+        var val :XMLList = datum.@value;
+        if (val.length == 0 || val[0] === undefined) {
+            return undefined;
+        }
+
+        var value :String = String(val[0]);
+        trace("Raw value for file '" + name + "' is '" + value + "'");
+        if (value == null) {
+            return undefined;
+        }
+
+        var file :FZipFile = _zip.getFileByName(value);
         return (file == null) ? null : (asString ? file.getContentAsString() : file.content);
     }
 
     /**
      * Handle some sort of problem loading the datapack.
      */
-    protected function handleLoadError (event :Event) :void
+    protected function handleLoadError (event :ErrorEvent) :void
     {
-        trace("Error loading datapack: " + event);
-        // TODO: mark us as booched, dispatch an event ourselves
+        dispatchError("Error loading datapack: " + event.text);
     }
 
     /**
@@ -266,8 +277,7 @@ public class DataPack extends EventDispatcher
      */
     protected function handleParseError (event :FZipErrorEvent) :void
     {
-        trace("Error parsing datapack: " + event);
-        // TODO: mark us as booched, dispatch an event ourselves
+        dispatchError("Error parsing datapack: " + event.text);
     }
 
     /**
@@ -278,32 +288,41 @@ public class DataPack extends EventDispatcher
         try {
             extractDataFile();
             _complete = true;
+
         } catch (error :Error) {
-            // will be handled below
-            trace("Oh noes, could not parse the datafile");
+            dispatchError("Could not parse datapack: " + error.message);
         }
 
-        dispatchEvent(_complete ? new Event(Event.COMPLETE)
-                                : new ErrorEvent(ErrorEvent.ERROR, false, false,
-                                    "Could not parse datapack!"));
+        // just to be safe, we dispatch this outside the try/catch
+        if (_complete) {
+            dispatchEvent(new Event(Event.COMPLETE));
+        }
     }
 
     protected function extractDataFile () :void
         // throws Error
     {
         // find the data file
-        var dataFile :FZipFile = _zip.getFileByName("_data");
+        var dataFile :FZipFile = _zip.getFileByName("_data.xml");
         if (dataFile == null) {
-            trace("There appears to be no data file in the DataPack.");
-            return;
+            throw new Error("No _data.xml contained in DataPack.");
         }
 
-        try {
-            _data = XML(dataFile.getContentAsString());
+        // this also can throw an Error if the XML doesn't parse
+        _data = XML(dataFile.getContentAsString());
+    }
 
-        } catch (error :Error) {
-            trace("Whoa bobby, we couldn't treat the data content as XML..");
-        }
+    protected function dispatchError (message :String) :void
+    {
+        dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, message));
+    }
+
+    protected function decodeArrayElements (str :String) :String
+    {
+        // TODO: my brain is failing me right now
+        str = str.replace(new RegExp("%2C", "g"), ",");
+        str = str.replace(new RegExp("%%", "g"), "%");
+        return str;
     }
 
     protected var _zip :FZip;
