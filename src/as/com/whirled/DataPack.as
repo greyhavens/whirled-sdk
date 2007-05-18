@@ -59,7 +59,7 @@ public class DataPack extends EventDispatcher
      */
     public function isComplete () :Boolean
     {
-        return _complete;
+        return (_data != null);
     }
 
     /**
@@ -107,7 +107,7 @@ public class DataPack extends EventDispatcher
      */
     public function getData (name :String) :*
     {
-        if (!_complete) {
+        if (_data == null) {
             throw new Error("DataPack is not loaded.");
         }
 
@@ -129,20 +129,20 @@ public class DataPack extends EventDispatcher
         var bits :Array;
         switch (String(datum.attribute("type"))) {
         case "String":
-            return value;
+            return unescape(value);
+
+        case "Number":
+            return parseFloat(value);
 
         case "Boolean":
             return "true" == value.toLowerCase();
 
+        case "Array":
+            return value.split(",").map(unescape);
+
         case "Point":
             bits = value.split(",");
             return new Point(parseFloat(bits[0]), parseFloat(bits[1]));
-
-        case "Array":
-            return value.split(",").map(decodeArrayElements);
-
-        case "Number":
-            return parseFloat(value);
 
         default:
             trace("Unknown resource type: " + datum.attribute("type"));
@@ -240,7 +240,7 @@ public class DataPack extends EventDispatcher
         if (name == null) {
             throw new Error("Invalid file name: " + name);
         }
-        if (!_complete) {
+        if (_data == null) {
             throw new Error("DataPack is not loaded.");
         }
 
@@ -285,31 +285,25 @@ public class DataPack extends EventDispatcher
      */
     protected function handleLoadingComplete (event :Event) :void
     {
-        try {
-            extractDataFile();
-            _complete = true;
-
-        } catch (error :Error) {
-            dispatchError("Could not parse datapack: " + error.message);
-        }
-
-        // just to be safe, we dispatch this outside the try/catch
-        if (_complete) {
-            dispatchEvent(new Event(Event.COMPLETE));
-        }
-    }
-
-    protected function extractDataFile () :void
-        // throws Error
-    {
         // find the data file
         var dataFile :FZipFile = _zip.getFileByName("_data.xml");
         if (dataFile == null) {
-            throw new Error("No _data.xml contained in DataPack.");
+            dispatchError("No _data.xml contained in DataPack.");
+            return;
         }
 
-        // this also can throw an Error if the XML doesn't parse
-        _data = XML(dataFile.getContentAsString());
+        // now try parsing the data
+        try {
+            // this also can throw an Error if the XML doesn't parse
+            _data = XML(dataFile.getContentAsString());
+
+        } catch (error :Error) {
+            dispatchError("Could not parse datapack: " + error.message);
+            return;
+        }
+
+        // yay, we're completely loaded!
+        dispatchEvent(new Event(Event.COMPLETE));
     }
 
     protected function dispatchError (message :String) :void
@@ -317,17 +311,7 @@ public class DataPack extends EventDispatcher
         dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, message));
     }
 
-    protected function decodeArrayElements (str :String) :String
-    {
-        // TODO: my brain is failing me right now
-        str = str.replace(new RegExp("%2C", "g"), ",");
-        str = str.replace(new RegExp("%%", "g"), "%");
-        return str;
-    }
-
     protected var _zip :FZip;
-
-    protected var _complete :Boolean;
 
     protected var _data :XML;
 }
