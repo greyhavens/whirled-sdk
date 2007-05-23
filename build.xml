@@ -60,7 +60,7 @@
   <target name="checkaslib">
     <uptodate property="aslib_is_up_to_date" targetfile="${deploy.dir}/whirled.swc">
       <srcfiles dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="**/*.as"/>
-      <srcfiles dir="${asrc.dir}/com/whirled" includes="**/*.as"/>
+      <srcfiles dir="${asrc.dir}" includes="**/*.as"/>
     </uptodate>
   </target>
 
@@ -81,7 +81,7 @@
       <arg value="-include-sources=${projects.dir}/nenya/src/as/com/threerings/flash/"/>
       <arg value="-include-sources=${projects.dir}/vilya/src/as/com/threerings/parlor/"/>
       <arg value="-include-sources=${projects.dir}/vilya/src/as/com/threerings/ezgame/"/>
-      <arg value="-include-sources=${asrc.dir}/com/whirled/"/>
+      <arg value="-include-sources=${asrc.dir}/"/>
       <arg value="-output"/>
       <arg value="${deploy.dir}/whirled.swc"/>
     </java>
