@@ -60,4 +60,14 @@
     </delete>
   </target>
 
+  <!-- a target for running the game server -->
+  <target name="server">
+    <java classname="com.whirled.server.WhirledServer" fork="true">
+      <classpath>
+        <fileset dir="${etc.dir}/../dist" includes="whirled-code.jar"/>
+        <fileset dir="${etc.dir}/../dist/lib" includes="*.jar"/>
+      </classpath>
+    </java>
+  </target>
+
 </project>
