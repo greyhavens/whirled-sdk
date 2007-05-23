@@ -187,7 +187,8 @@ package deng.fzip
 				_content.uncompress();
 			}
 			_content.position = 0;
-			var str:String = _content.readMultiByte(_content.bytesAvailable, charset);
+			//var str:String = _content.readMultiByte(_content.bytesAvailable, charset);
+			var str:String = _content.readUTFBytes(_content.bytesAvailable);
 			if(stripBOM && str.charCodeAt(0) == 0xfeff) { str = str.substr(1); }
 			_content.position = 0;
 			if(isCompressed) {
@@ -305,7 +306,8 @@ package deng.fzip
 		protected function parseHeadExt(data:IDataInput):void {
 			// Filenames in ZIPs usually are IBM850 encoded,
 			// at least it seems to be like that on Windows
-			_filename = data.readMultiByte(_sizeFilename, "ibm850");
+			//_filename = data.readMultiByte(_sizeFilename, "ibm850");
+			_filename = data.readUTFBytes(_sizeFilename);
 			var bytesLeft:uint = _sizeExtra;
 			while(bytesLeft > 4) {
 				var headerId:uint = data.readUnsignedShort();
