@@ -15,6 +15,8 @@ import flash.geom.Point;
 
 import flash.net.URLRequest;
 
+import flash.media.Sound;
+
 import flash.utils.ByteArray;
 
 import com.threerings.util.EmbeddedSwfLoader;
@@ -40,6 +42,7 @@ public class DataPack extends EventDispatcher
         _zip.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
         _zip.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handleLoadError);
         _zip.addEventListener(FZipErrorEvent.PARSE_ERROR, handleParseError);
+//        _zip.addEventListener(FZipEvent.FILE_LOADED, handleFileLoaded);
         _zip.addEventListener(Event.COMPLETE, handleLoadingComplete);
 
         _zip.load(req);
@@ -167,6 +170,30 @@ public class DataPack extends EventDispatcher
     }
 
     /**
+     * Get sounds. TODO. This is not quite ready for primetime.
+     */
+    public function getSounds (names :Array, callback :Function) :void
+    {
+        var fn :Function = function (obj :Object) :void {
+            var newObj :Object = {};
+
+            for (var s :String in obj) {
+                var o :Object = obj[s];
+                try {
+                    o = o["getSound"]();
+                } catch (err :Error) {
+                    trace("Error getSound: " + err);
+                }
+                newObj[s] = (o as Sound);
+            }
+
+            callback(newObj);
+        };
+
+        getDisplayObjects(names, fn);
+    }
+
+    /**
      * Get some display objects in the datapack.
      *
      * @param names an Array of the names of the display objects to load.
@@ -280,11 +307,21 @@ public class DataPack extends EventDispatcher
         dispatchError("Error parsing datapack: " + event.text);
     }
 
+//    protected function handleFileLoaded (event :FZipEvent) :void
+//    {
+//        trace("Got file: " + event.file.filename);
+//    }
+
     /**
      * Handle the successful completion of datapack loading.
      */
     protected function handleLoadingComplete (event :Event) :void
     {
+//        var nn :int = _zip.getFileCount();
+//        for (var ii :int = 0; ii < nn; ii++) {
+//            trace("Found file: " + _zip.getFileAt(ii).filename);
+//        }
+//
         // find the data file
         var dataFile :FZipFile = _zip.getFileByName("_data.xml");
         if (dataFile == null) {
