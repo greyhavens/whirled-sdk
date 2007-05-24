@@ -16,6 +16,7 @@ import com.threerings.crowd.server.CrowdServer;
 import com.threerings.crowd.server.PlaceRegistry;
 
 import com.threerings.parlor.server.ParlorManager;
+import com.threerings.ezgame.server.DictionaryManager;
 
 import static com.whirled.Log.log;
 
@@ -25,7 +26,10 @@ import static com.whirled.Log.log;
 public class WhirledServer extends CrowdServer
 {
     /** Handles creating and cleaning up after games. */
-    public static ParlorManager parmgr = new ParlorManager();
+    public static ParlorManager parMan = new ParlorManager();
+
+    /** Serves up SWF files to avoid annoying file-system-loaded SWF "seurity" problems. */
+    public static WhirledHttpServer httpServer;
 
     public static void main (String[] args)
     {
@@ -49,26 +53,25 @@ public class WhirledServer extends CrowdServer
         // do the base server initialization
         super.init();
 
-//         // configure the client manager to use the appropriate client class
-//         clmgr.setClientFactory(new ClientFactory() {
-//             public PresentsClient createClient (AuthRequest areq) {
-//                 return new WhirledClient();
-//             }
-//             public ClientResolver createClientResolver (Name username) {
-//                 return new WhirledClientResolver();
-//             }
-//         });
-
         // initialize our managers
-        parmgr.init(invmgr, plreg);
+        parMan.init(invmgr, plreg);
+        DictionaryManager.init("data/dictionary");
 
-        log.info("Whirled test server initialized.");
+        // create and start up our HTTP server
+        httpServer = new WhirledHttpServer();
+        httpServer.init();
     }
 
     @Override // from PresentsServer
     public void shutdown ()
     {
         super.shutdown();
-        log.info("Whirled server shutting down.");
+
+        // shut down our http server
+        try {
+            httpServer.stop(true);
+        } catch (InterruptedException ie) {
+            log.log(Level.WARNING, "Failed to stop http server.", ie);
+        }
     }
 }

@@ -212,7 +212,7 @@
    <!-- configure our standard framerate -->
    <default-frame-rate>30</default-frame-rate>
    <!-- Enables SWFs to access the network. -->
-   <use-network>false</use-network>
+   <use-network>true</use-network>
    <!-- Metadata added to SWFs via the SWF Metadata tag. -->
    <metadata>
       <title>Whirled</title>

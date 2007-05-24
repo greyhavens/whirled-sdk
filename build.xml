@@ -30,9 +30,10 @@
     <file name="lib/getdown.jar"/>
     <file name="lib/javassist.jar"/>
     <file name="lib/junit-3.7.jar"/>
+    <file name="lib/lwjgl.jar"/>
+    <file name="lib/org.mortbay.jetty.jar"/>
     <file name="lib/servlet-2.3.jar"/>
     <file name="lib/velocity-1.5-dev.jar"/>
-    <file name="lib/lwjgl.jar"/>
   </filelist>
 
   <!-- declare our classpath -->
@@ -41,11 +42,15 @@
     <fileset dir="${deploy.dir}/lib" includes="*.jar"/>
   </path>
 
-  <!-- prepares the application directories -->
+  <!-- prepares the build directories -->
   <target name="prepare" depends="copydistlibs">
     <mkdir dir="${deploy.dir}"/>
-    <mkdir dir="${deploy.dir}/lib"/>
     <mkdir dir="${deploy.dir}/tmp"/>
+    <mkdir dir="${deploy.dir}/lib"/>
+  </target>
+
+  <!-- prepares the java bits -->
+  <target name="prepare-java" depends="prepare">
     <mkdir dir="${classes.dir}"/>
     <mkdir dir="${classes.dir}/rsrc"/>
     <mkdir dir="${javadoc.dir}"/>
@@ -65,7 +70,7 @@
   </target>
 
   <!-- builds our whirled.swc Flash library -->
-  <target name="aslib" unless="aslib_is_up_to_date" depends="prepare-flex,checkaslib">
+  <target name="aslib" unless="aslib_is_up_to_date" depends="prepare,prepare-flex,checkaslib">
     <!-- build the version for clients to build against -->
     <java jar="${flex.path}/lib/compc.jar" fork="true" failonerror="true">
       <arg value="-load-config"/>
@@ -86,6 +91,25 @@
       <arg value="${deploy.dir}/whirled.swc"/>
     </java>
   </target>
+
+  <!-- builds our Flash game test client without checking dependencies -->
+  <target name="asquick">
+    <exec executable="${flex.path}/bin/mxmlc" failonerror="true">
+      <arg value="-load-config"/>
+      <arg value="etc/whirled-config.xml"/>
+      <arg value="-compiler.optimize"/>
+      <arg value="-compiler.source-path=${asrc.dir}/"/>
+      <arg value="-compiler.source-path=rsrc/{locale}/i18n"/>
+      <arg value="-incremental=true"/>
+      <arg value="-output"/>
+      <arg value="${deploy.dir}/game-client.swf"/>
+      <arg value="-file-specs"/>
+      <arg value="${asrc.dir}/game.mxml"/>
+    </exec>
+  </target>
+
+  <!-- builds our Flash game test client -->
+  <target name="asclient" depends="aslib,asquick"/>
 
   <!-- builds the ActionScript documention -->
   <target name="asdoc">
@@ -112,7 +136,7 @@
   </target>
 
   <!-- builds the SDK -->
-  <target name="sdk" depends="aslib,dist">
+  <target name="sdk" depends="aslib,asclient,dist">
     <property name="sdk.build" value="${deploy.dir}/sdk/whirled"/>
     <mkdir dir="${sdk.build}"/>
     <copy todir="${sdk.build}">
@@ -134,7 +158,7 @@
   </target>
 
   <!-- generates marshaller and dispatcher classes for all invocation service declarations -->
-  <target name="genservice" depends="prepare">
+  <target name="genservice" depends="prepare-java">
     <taskdef name="service" classpathref="classpath"
              classname="com.threerings.presents.tools.GenServiceTask"/>
     <!-- make sure the service class files are all compiled -->
@@ -151,7 +175,7 @@
   </target>
 
   <!-- build the java class files -->
-  <target name="compile" depends="prepare">
+  <target name="compile" depends="prepare-java">
     <javac srcdir="${src.dir}" destdir="${classes.dir}"
            debug="on" optimize="off" deprecation="on">
       <classpath refid="classpath"/>
@@ -160,7 +184,7 @@
   </target>
 
   <!-- builds the javadoc documentation -->
-  <target name="javadoc" depends="prepare">
+  <target name="javadoc" depends="prepare-java">
     <property name="copy.holder"  value="Three Rings Design, Inc."/>
     <javadoc windowtitle="${app.name} API" doctitle="${app.name} API"
              bottom="Copyright &#169; 2006-2007 ${copy.holder}. All Rights Reserved."
@@ -185,7 +209,7 @@
   <target name="all" depends="clean,prepare,compile,javadoc,dist"/>
 
   <!-- builds the distribution jar files -->
-  <target name="dist" depends="prepare,compile">
+  <target name="dist" depends="compile">
     <!-- stick all our code in one jar file -->
     <jar file="${deploy.dir}/${app.name}-code.jar" basedir="${classes.dir}">
       <include name="com/**"/>
