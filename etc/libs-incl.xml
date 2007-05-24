@@ -9,5 +9,6 @@
     <include name="samskivert.jar"/>
     <include name="toybox.jar"/>
     <include name="vilya-parlor.jar"/>
+    <include name="org.mortbay.jetty.jar"/>
   </fileset>
 </project>
