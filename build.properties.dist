@@ -8,3 +8,11 @@
 # https://www.adobe.com/cfusion/tdrc/index.cfm?product=flex
 
 flex.path = path_to_fled_sdk
+
+# Set this to path to a standalone Flash player executable (preferably the
+# debug version), which you can download from here:
+#
+# http://www.adobe.com/support/flashplayer/downloads.html
+
+player.path = /some/path/flashplayer-debug
+# player.path = c:\some\path\flashplayer-debug.exe
