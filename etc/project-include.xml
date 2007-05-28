@@ -82,6 +82,7 @@
       <sysproperty key="whirled.root" value="${build.root}"/>
       <classpath>
         <fileset dir="${build.root}/dist" includes="whirled-code.jar"/>
+        <fileset dir="${build.root}/dist" includes="whirled-data.jar"/>
         <fileset dir="${build.root}/dist/lib" includes="*.jar"/>
       </classpath>
     </java>
