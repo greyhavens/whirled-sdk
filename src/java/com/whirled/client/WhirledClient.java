@@ -117,8 +117,7 @@ public class WhirledClient
         EZGameConfig config;
         try {
             WhirledGameParser parser = new WhirledGameParser();
-            config = new EZGameConfig(
-                -1, parser.parseGame(new FileReader(gameId + ".xml")));
+            config = new EZGameConfig(-1, parser.parseGame(new FileReader(gameId + ".xml")));
         } catch (Exception e) {
             log.warning("Failed to start test game: " + e);
             System.exit(0);

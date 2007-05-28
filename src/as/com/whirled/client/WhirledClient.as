@@ -36,11 +36,7 @@ public class WhirledClient extends Client
     public function WhirledClient (stage :Stage)
     {
         super(new UsernamePasswordCreds(new Name("tester"), ""), stage);
-
         _ctx = createContext();
-//         LoggingTargets.configureLogging(_ctx);
-
-        // configure our server and port info and logon
         setServer("localhost", DEFAULT_SERVER_PORTS);
         logon();
     }
@@ -65,22 +61,19 @@ public class WhirledClient extends Client
     {
         super.gotClientObject(clobj);
 
-        // set up our logging targets
-//         LoggingTargets.configureLogging(_ctx);
-
         // start up our game
         var gamedef :WhirledGameDefinition = new WhirledGameDefinition();
-        gamedef.ident = "DictionaryAttack";
+        gamedef.ident = "game";
         gamedef.manager = "com.threerings.ezgame.server.EZGameManager";
         var match :TableMatchConfig = new TableMatchConfig();
         match.minSeats = match.startSeats = match.maxSeats = 1;
         gamedef.match = match;
         var config :EZGameConfig = new EZGameConfig(-1, gamedef);
         var listener :ConfirmAdapter = new ConfirmAdapter(
-            function () :void {}, // nothing needed
             function (cause :String) :void {
                 log.warning("Failed to start test game: " + cause);
-            });
+            },
+            function () :void { /* success: nothing needed */ });
         _ctx.getParlorDirector().startSolitaire(config, listener);
     }
 

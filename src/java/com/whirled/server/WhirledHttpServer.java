@@ -29,9 +29,9 @@ public class WhirledHttpServer extends HttpServer
     {
         // wire up serving of static content
         HttpContext context = getContext("/");
-        context.setResourceBase(new File("").getAbsolutePath());
+        File docroot = new File(System.getProperty("whirled.root") + File.separator + "dist");
+        context.setResourceBase(docroot.getAbsolutePath());
         context.addHandler(new ResourceHandler());
-        log.info("Resource base " + new File("").getAbsolutePath());
 
         // tone down the default verbose logging; unfortunately it creates a new logger and logs
         // verbosely to it before we get a chance to shut it the fuck up, but it's mostly minimal

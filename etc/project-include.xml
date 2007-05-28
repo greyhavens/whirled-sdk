@@ -60,12 +60,29 @@
     </delete>
   </target>
 
+  <!-- a target for building and running the game client -->
+  <target name="test" depends="compile">
+    <!-- make sure the build.properties file exists -->
+    <fail>
+      <condition><not><isset property="player.path"/></not></condition>
+      Please copy the build.properties.dist file to build.properties in the
+      ${build.root} directory and edit the build properties file to point to
+      your standalone Flash player.
+    </fail>
+
+    <copy file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
+    <exec executable="${player.path}">
+      <arg value="http://localhost:8080/game-client.swf"/>
+    </exec>
+  </target>
+
   <!-- a target for running the game server -->
   <target name="server">
     <java classname="com.whirled.server.WhirledServer" fork="true">
+      <sysproperty key="whirled.root" value="${build.root}"/>
       <classpath>
-        <fileset dir="${etc.dir}/../dist" includes="whirled-code.jar"/>
-        <fileset dir="${etc.dir}/../dist/lib" includes="*.jar"/>
+        <fileset dir="${build.root}/dist" includes="whirled-code.jar"/>
+        <fileset dir="${build.root}/dist/lib" includes="*.jar"/>
       </classpath>
     </java>
   </target>
