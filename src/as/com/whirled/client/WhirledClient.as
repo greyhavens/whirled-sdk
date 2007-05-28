@@ -10,7 +10,6 @@ import mx.resources.ResourceBundle;
 import com.threerings.util.Name;
 
 import com.threerings.presents.client.Client;
-import com.threerings.presents.client.ConfirmAdapter;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.TimeBaseMarshaller;
 import com.threerings.presents.net.Credentials;
@@ -22,8 +21,8 @@ import com.threerings.crowd.data.LocationMarshaller;
 
 import com.threerings.parlor.data.ParlorMarshaller;
 import com.threerings.ezgame.data.EZGameConfig;
-import com.threerings.ezgame.data.TableMatchConfig;
 
+import com.whirled.data.TestMarshaller;
 import com.whirled.data.WhirledGameDefinition;
 
 /**
@@ -35,7 +34,11 @@ public class WhirledClient extends Client
 
     public function WhirledClient (stage :Stage)
     {
-        super(new UsernamePasswordCreds(new Name("tester"), ""), stage);
+        var username :String = stage.loaderInfo.parameters["username"] as String;
+        if (username == null) {
+            username = "tester";
+        }
+        super(new UsernamePasswordCreds(new Name(username), ""), stage);
         _ctx = createContext();
         setServer("localhost", DEFAULT_SERVER_PORTS);
         logon();
@@ -50,6 +53,9 @@ public class WhirledClient extends Client
 
         var c :Class;
         c = ParlorMarshaller;
+        c = TestMarshaller;
+        c = EZGameConfig;
+        c = WhirledGameDefinition;
 
         [ResourceBundle("global")]
         [ResourceBundle("chat")]
@@ -61,20 +67,8 @@ public class WhirledClient extends Client
     {
         super.gotClientObject(clobj);
 
-        // start up our game
-        var gamedef :WhirledGameDefinition = new WhirledGameDefinition();
-        gamedef.ident = "game";
-        gamedef.manager = "com.threerings.ezgame.server.EZGameManager";
-        var match :TableMatchConfig = new TableMatchConfig();
-        match.minSeats = match.startSeats = match.maxSeats = 1;
-        gamedef.match = match;
-        var config :EZGameConfig = new EZGameConfig(-1, gamedef);
-        var listener :ConfirmAdapter = new ConfirmAdapter(
-            function (cause :String) :void {
-                log.warning("Failed to start test game: " + cause);
-            },
-            function () :void { /* success: nothing needed */ });
-        _ctx.getParlorDirector().startSolitaire(config, listener);
+        // let the server know we're ready to play
+        (_ctx.getClient().requireService(TestService) as TestService).clientReady(_ctx.getClient());
     }
 
     /**

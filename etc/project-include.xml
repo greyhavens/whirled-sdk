@@ -61,6 +61,7 @@
   </target>
 
   <!-- a target for building and running the game client -->
+  <property name="players" value="1"/>
   <target name="test" depends="compile">
     <!-- make sure the build.properties file exists -->
     <fail>
@@ -71,15 +72,12 @@
     </fail>
 
     <copy file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
-    <exec executable="${player.path}">
-      <arg value="http://localhost:8080/game-client.swf"/>
-    </exec>
-  </target>
 
-  <!-- a target for running the game server -->
-  <target name="server">
+    <!-- start the server which will start up the clients -->
     <java classname="com.whirled.server.WhirledServer" fork="true">
       <sysproperty key="whirled.root" value="${build.root}"/>
+      <sysproperty key="players" value="${players}"/>
+      <sysproperty key="flash.player" value="${player.path}"/>
       <classpath>
         <fileset dir="${build.root}/dist" includes="whirled-code.jar"/>
         <fileset dir="${build.root}/dist" includes="whirled-data.jar"/>

@@ -3,20 +3,33 @@
 
 package com.whirled.server;
 
+import java.io.FileReader;
+import java.util.HashSet;
 import java.util.logging.Level;
 
+import com.samskivert.util.CollectionUtil;
 import com.samskivert.util.LoggingLogProvider;
 import com.samskivert.util.OneLineLogFormatter;
+import com.threerings.util.Name;
 
+import com.threerings.presents.data.ClientObject;
+import com.threerings.presents.data.InvocationCodes;
 import com.threerings.presents.dobj.RootDObjectManager;
 import com.threerings.presents.server.InvocationManager;
 
+import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.server.CrowdServer;
-import com.threerings.crowd.server.PlaceRegistry;
 
 import com.threerings.parlor.server.ParlorManager;
+
+import com.threerings.ezgame.data.EZGameConfig;
+import com.threerings.ezgame.data.GameDefinition;
+import com.threerings.ezgame.data.TableMatchConfig;
 import com.threerings.ezgame.server.DictionaryManager;
+
+import com.whirled.data.WhirledGameDefinition;
+import com.whirled.xml.WhirledGameParser;
 
 import static com.whirled.Log.log;
 
@@ -24,6 +37,7 @@ import static com.whirled.Log.log;
  * Handles setting up the Whirled standalone test server.
  */
 public class WhirledServer extends CrowdServer
+    implements TestProvider
 {
     /** Handles creating and cleaning up after games. */
     public static ParlorManager parMan = new ParlorManager();
@@ -60,6 +74,12 @@ public class WhirledServer extends CrowdServer
         // create and start up our HTTP server
         httpServer = new WhirledHttpServer();
         httpServer.init();
+
+        // register ourselves as handling the test service
+        invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
+
+        // prepare the game and start the clients
+        prepareGame();
     }
 
     @Override // from PresentsServer
@@ -74,4 +94,71 @@ public class WhirledServer extends CrowdServer
             log.log(Level.WARNING, "Failed to stop http server.", ie);
         }
     }
+
+    // from interface TestProvider
+    public void clientReady (ClientObject caller)
+    {
+        _ready.add(((BodyObject)caller).username);
+        HashSet<Name> ready = CollectionUtil.addAll(new HashSet<Name>(), _config.players);
+        ready.retainAll(_ready);
+        if (ready.size() == _config.players.length) {
+            try {
+                plreg.createPlace(_config);
+                _ready.clear();
+            } catch (Exception e) {
+                log.log(Level.WARNING, "Failed to start game " + _config + ".", e);
+            }
+        }
+    }
+
+    protected void prepareGame ()
+    {
+        // parse the game configuration
+        GameDefinition gamedef;
+        try {
+            gamedef = new WhirledGameParser().parseGame(new FileReader("config.xml"));
+        } catch (Exception e) {
+            log.warning("Failed to locate 'config.xml' file. [error=" + e + "].");
+            gamedef = new WhirledGameDefinition();
+        }
+
+        // add our standard test initializations
+        gamedef.ident = "game";
+        gamedef.manager = "com.threerings.ezgame.server.EZGameManager";
+
+        // figure out how many players will be involved in the test game
+        int pcount = 1;
+        try {
+            pcount = Integer.getInteger("players", pcount);
+        } catch (Exception e) {
+            log.warning("Failed to parse 'players' system property " +
+                        "[value=" + System.getProperty("players") + ", error=" + e + "].");
+        }
+        TableMatchConfig match = new TableMatchConfig();
+        match.minSeats = match.maxSeats = match.startSeats = pcount;
+        gamedef.match = match;
+
+        // set up our game configuration and start up the game clients
+        _config = new EZGameConfig(-1, gamedef);
+        _config.players = new Name[pcount];
+        for (int ii = 0; ii < pcount; ii++) {
+            _config.players[ii] = new Name("tester_" + (ii+1));
+
+            // start up a Flash client for this player
+            String player = System.getProperty("flash.player");
+            String url = "http://localhost:8080/game-client.swf?username=" + _config.players[ii];
+            try {
+                Runtime.getRuntime().exec(new String[] { player, url });
+            } catch (Exception e) {
+                log.log(Level.WARNING, "Failed to start client " +
+                        "[player=" + player + ", url=" + url + "].", e);
+            }
+        }
+    }
+
+    /** The configuration for the game we'll start when everyone is ready. */
+    protected EZGameConfig _config;
+
+    /** Contains a mapping of all clients that are ready to play. */
+    protected HashSet<Name> _ready = new HashSet<Name>();
 }
