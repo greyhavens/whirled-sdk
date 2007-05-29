@@ -25,6 +25,7 @@ import com.threerings.parlor.server.ParlorManager;
 
 import com.threerings.ezgame.data.EZGameConfig;
 import com.threerings.ezgame.data.GameDefinition;
+import com.threerings.ezgame.data.Parameter;
 import com.threerings.ezgame.data.TableMatchConfig;
 import com.threerings.ezgame.server.DictionaryManager;
 
@@ -120,6 +121,7 @@ public class WhirledServer extends CrowdServer
         } catch (Exception e) {
             log.warning("Failed to locate 'config.xml' file. [error=" + e + "].");
             gamedef = new WhirledGameDefinition();
+            gamedef.params = new Parameter[0];
         }
 
         // add our standard test initializations
