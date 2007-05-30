@@ -167,7 +167,14 @@ public class WhirledServer extends CrowdServer
     {
         public StreamEater (InputStream s)
         {
+            super("Stream eater");
             _stream = s;
+
+            try {
+                setPriority(MIN_PRIORITY);
+            } catch (Exception e) {
+                // no matter...
+            }
             start();
         }
 
