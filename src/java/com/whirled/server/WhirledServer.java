@@ -4,6 +4,9 @@
 package com.whirled.server;
 
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.IOException;
+
 import java.util.HashSet;
 import java.util.logging.Level;
 
@@ -150,13 +153,36 @@ public class WhirledServer extends CrowdServer
             String player = System.getProperty("flash.player");
             String url = "http://localhost:8080/game-client.swf?username=" + _config.players[ii];
             try {
-                Runtime.getRuntime().exec(new String[] { player, url });
+                Process proc = Runtime.getRuntime().exec(new String[] { player, url });
+                new StreamEater(proc.getErrorStream());
             } catch (Exception e) {
                 log.log(Level.WARNING, "Failed to start client " +
                         "[player=" + player + ", url=" + url + "].", e);
             }
         }
     }
+
+    /** Wee helper class to eat the streams of a launched process. */
+    protected static class StreamEater extends Thread
+    {
+        public StreamEater (InputStream s)
+        {
+            _stream = s;
+            start();
+        }
+
+        public void run ()
+        {
+            // discard everything
+            try {
+                while (_stream.read() != -1) {}
+            } catch (IOException ioe) {
+                // ignored
+            }
+        }
+
+        protected InputStream _stream;
+    } // END: static class StreamEater
 
     /** The configuration for the game we'll start when everyone is ready. */
     protected EZGameConfig _config;
