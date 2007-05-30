@@ -168,6 +168,7 @@ public class WhirledServer extends CrowdServer
         public StreamEater (InputStream s)
         {
             super("Stream eater");
+            setDaemon(true);
             _stream = s;
 
             try {
