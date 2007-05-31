@@ -15,8 +15,10 @@
           <not><isset property="flex.path"/></not>
         </or>
       </condition>
+      Missing build.properties:
+
       Please copy the build.properties.dist file to build.properties in the
-      ${build.root} directory and edit the build properties file to point to
+      ${build.root} directory and edit the build.properties file to point to
       your Flex SDK installation.
     </fail>
 

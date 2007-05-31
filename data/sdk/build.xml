@@ -6,6 +6,9 @@
     <fileset dir="dist" includes="**/*.jar"/>
   </path>
 
+  <!-- include the standard build script -->
+  <import file="etc/flex-include.xml"/>
+
   <!-- explains things -->
   <target name="help">
     <echo>Please indicate which type of project you'd like to create:</echo>
@@ -17,16 +20,16 @@
 
   <!-- used to make our projects -->
   <taskdef name="newproject" classpathref="classpath" classname="com.whirled.tools.NewProjectTask"/>
-  <target name="newgame">
+  <target name="newgame" depends="prepare-flex">
     <newproject type="Game" templates="templates"/>
   </target>
-  <target name="newavatar">
+  <target name="newavatar" depends="prepare-flex">
     <newproject type="Avatar" templates="templates"/>
   </target>
-  <target name="newpet">
+  <target name="newpet" depends="prepare-flex">
     <newproject type="Pet" templates="templates"/>
   </target>
-  <target name="newfurni">
+  <target name="newfurni" depends="prepare-flex">
     <newproject type="Furni" templates="templates"/>
   </target>
 
