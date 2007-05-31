@@ -161,7 +161,9 @@
     <!-- copy some example games -->
     <mkdir dir="${sdk.build}/examples/games"/>
     <copy todir="${sdk.build}/examples/games">
+      <fileset dir="projects/games" includes="reversi/**"/>
       <fileset dir="projects/games" includes="dictattack/**"/>
+      <fileset dir="projects/games" includes="tangleword/**"/>
     </copy>
     <!-- finally zip it all up -->
     <zip destfile="${deploy.dir}/whirled_sdk.zip"
