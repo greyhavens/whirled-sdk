@@ -10,6 +10,15 @@
   <property name="app.source-dir" value="."/>
   <property name="app.package-dir" value="."/>
 
+  <!-- explains things -->
+  <target name="help">
+    <echo>The following targets are available:</echo>
+    <echo>  ant compile - builds your project</echo>
+    <echo>  ant test - builds game projects and runs them in a test environment</echo>
+    <echo>  ant -Dplayers=4 test - runs multiple test clients for multiplayer testing</echo>
+    <echo>  ant clean - cleans out build resluts</echo>
+  </target>
+
   <!-- determines whether the top-level aslib has been built -->
   <target name="checktop">
     <condition property="aslib.built">

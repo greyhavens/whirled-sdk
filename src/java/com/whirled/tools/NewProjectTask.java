@@ -48,18 +48,6 @@ public class NewProjectTask extends Task
         // first we need to ask the user for some information
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
-        File sdkdir;
-        while (true) {
-            sdkdir = new File(readInput(input, "Where is your Flex SDK installed?"));
-            File mxmlcjar = new File(sdkdir, "lib" + File.separator + "mxmlc.jar");
-            if (mxmlcjar.exists()) {
-                break;
-            } else {
-                System.err.println(mxmlcjar + " could not be found. " +
-                                   "Be sure you provided the correct path.");
-            }
-        }
-
         String project;
         do {
             System.out.println("Please enter the name of your " + _type + " project.");
@@ -71,16 +59,13 @@ public class NewProjectTask extends Task
         } while (!readConfirm(input));
 
         // create a directory for the project
-        File pdir = new File(project);
+        File pdir = new File(project.toLowerCase());
         makeDir(pdir);
 
         // customize the template files and copy them into the right place
         HashMap<String, String> subs = new HashMap<String, String>();
-        subs.put("flexpath", sdkdir.getAbsolutePath());
         subs.put("project", project);
 
-        copyFile(input, new File(_templates, "whirled-config.xml"),
-                 new File(pdir, "whirled-config.xml"), subs);
         copyFile(input, new File(_templates, "build.xml"), new File(pdir, "build.xml"), subs);
         copyFile(input, new File(_templates, _type + ".as"), new File(pdir, project + ".as"), subs);
 
@@ -89,6 +74,12 @@ public class NewProjectTask extends Task
         System.out.println("Go into that directory and try building it like so:");
         System.out.println("  cd " + pdir);
         System.out.println("  ant compile");
+        System.out.println("");
+        System.out.println("You can build and test it with the following command:");
+        System.out.println("  ant test");
+        System.out.println("");
+        System.out.println("You can always get help by running:");
+        System.out.println("  ant help");
         System.out.println("");
         System.out.println("Have fun making your new " + _type + ".");
     }

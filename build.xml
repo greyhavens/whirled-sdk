@@ -142,17 +142,28 @@
     <copy todir="${sdk.build}">
       <fileset dir="data/sdk" includes="**"/>
     </copy>
-    <mkdir dir="${sdk.build}/lib"/>
-    <copy todir="${sdk.build}/lib">
+    <mkdir dir="${sdk.build}/dist"/>
+    <copy todir="${sdk.build}/dist">
      <fileset dir="${deploy.dir}">
        <include name="whirled.swc"/>
-       <include name="whirled-code.jar"/>
+       <include name="whirled-*.jar"/>
+       <include name="game-client.swf"/>
+       <include name="lib/**"/>
      </fileset>
     </copy>
+    <mkdir dir="${sdk.build}/lib"/>
     <copy todir="${sdk.build}">
       <fileset dir="." includes="src/as/com/whirled/**" excludes="**/WorldGameControl.as"/>
       <fileset dir="${projects.dir}/vilya" includes="src/as/com/threerings/ezgame/*.as"/>
+      <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
+      <fileset dir="." includes="build.properties.dist"/>
     </copy>
+    <!-- copy some example games -->
+    <mkdir dir="${sdk.build}/examples/games"/>
+    <copy todir="${sdk.build}/examples/games">
+      <fileset dir="projects/games" includes="dictattack/**"/>
+    </copy>
+    <!-- finally zip it all up -->
     <zip destfile="${deploy.dir}/whirled_sdk.zip"
          basedir="${deploy.dir}/sdk" includes="whirled/**"/>
   </target>

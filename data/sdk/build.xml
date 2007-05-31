@@ -3,7 +3,7 @@
 
   <!-- declare our classpath -->
   <path id="classpath">
-    <fileset dir="lib" includes="**/*.jar"/>
+    <fileset dir="dist" includes="**/*.jar"/>
   </path>
 
   <!-- explains things -->
