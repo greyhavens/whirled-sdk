@@ -156,7 +156,6 @@
       <fileset dir="." includes="src/as/com/whirled/**" excludes="**/WorldGameControl.as"/>
       <fileset dir="${projects.dir}/vilya" includes="src/as/com/threerings/ezgame/*.as"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
-      <fileset dir="." includes="build.properties.dist"/>
     </copy>
     <!-- copy some example games -->
     <mkdir dir="${sdk.build}/examples/games"/>
