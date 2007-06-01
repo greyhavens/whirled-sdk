@@ -146,8 +146,8 @@ public class ConfigBuildPropsTask extends Task
     protected static final String SELECT_PLAYER_TITLE = "Specify Standalone Flash Player Path";
     protected static final String SELECT_PLAYER_MSG =
         "We need to know the location of your Standalone Flash Player.\n\n" +
-        "On Windows this is usually named: sa_flashplayer_9_debug.exe\n" +
-        "On Linux is is usually named: flashplayer\n\n" +
+        "On Windows it is usually named: sa_flashplayer_9_debug.exe\n" +
+        "On Linux it is usually named: flashplayer\n\n" +
         "Please click 'OK' and then a file dialog will appear in which\n" +
         "you can select the appropriate executable.";
 }
