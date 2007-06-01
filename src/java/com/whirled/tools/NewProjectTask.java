@@ -67,6 +67,7 @@ public class NewProjectTask extends Task
         subs.put("project", project);
 
         copyFile(input, new File(_templates, "build.xml"), new File(pdir, "build.xml"), subs);
+        copyFile(input, new File(_templates, "build.bat"), new File(pdir, "build.bat"), subs);
         copyFile(input, new File(_templates, _type + ".as"), new File(pdir, project + ".as"), subs);
 
         System.out.println("Done! Your new project has been created in '" + pdir + "'.");

@@ -21,6 +21,7 @@
   <!-- declares the libraries needed by the Whirled runtime -->
   <filelist dir="." id="dist.libs">
     <file name="lib/ant.jar"/>
+    <file name="lib/ant-launcher.jar"/>
     <file name="lib/commons-beanutils.jar"/>
     <file name="lib/commons-collections.jar"/>
     <file name="lib/commons-digester.jar"/>
