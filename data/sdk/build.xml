@@ -32,5 +32,8 @@
   <target name="newfurni" depends="prepare-flex">
     <newproject type="Furni" templates="templates"/>
   </target>
+  <target name="newproject" depends="prepare-flex">
+    <newproject templates="templates"/>
+  </target>
 
 </project>

@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,6 +50,17 @@ public class NewProjectTask extends Task
         // first we need to ask the user for some information
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
+        // if our type was not set, ask the user what type to create
+        if (_type == null) {
+            System.out.println("What type of project would you like to create?");
+            for (Map.Entry<String,String> entry : _choiceMap.entrySet()) {
+                System.out.println(entry.getKey() + " - " + entry.getValue());
+            }
+            do {
+                _type = _choiceMap.get(readInput(input, "Enter the number [1-4]?"));
+            } while (_type == null);
+        }
+
         String project;
         do {
             System.out.println("Please enter the name of your " + _type + " project.");
@@ -71,18 +84,6 @@ public class NewProjectTask extends Task
         copyFile(input, new File(_templates, _type + ".as"), new File(pdir, project + ".as"), subs);
 
         System.out.println("Done! Your new project has been created in '" + pdir + "'.");
-        System.out.println("");
-        System.out.println("Go into that directory and try building it like so:");
-        System.out.println("  cd " + pdir);
-        System.out.println("  ant compile");
-        System.out.println("");
-        System.out.println("You can build and test it with the following command:");
-        System.out.println("  ant test");
-        System.out.println("");
-        System.out.println("You can always get help by running:");
-        System.out.println("  ant help");
-        System.out.println("");
-        System.out.println("Have fun making your new " + _type + ".");
     }
 
     protected String readInput (BufferedReader input, String prompt)
@@ -176,5 +177,12 @@ public class NewProjectTask extends Task
     protected boolean _overwriteAll;
     protected Pattern _subre = Pattern.compile("@([A-Za-z0-9]+)@");
 
+    protected static TreeMap<String,String> _choiceMap = new TreeMap<String,String>();
+    static {
+        _choiceMap.put("1", "Avatar");
+        _choiceMap.put("2", "Game");
+        _choiceMap.put("3", "Pet");
+        _choiceMap.put("4", "Furni");
+    }
     protected static final String LINE_SEP = System.getProperty("line.separator");
 }
