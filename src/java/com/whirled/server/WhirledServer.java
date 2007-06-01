@@ -18,10 +18,15 @@ import com.threerings.util.Name;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationCodes;
 import com.threerings.presents.dobj.RootDObjectManager;
+import com.threerings.presents.net.AuthRequest;
+import com.threerings.presents.server.ClientFactory;
+import com.threerings.presents.server.ClientResolver;
 import com.threerings.presents.server.InvocationManager;
+import com.threerings.presents.server.PresentsClient;
 
 import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.PlaceConfig;
+import com.threerings.crowd.server.CrowdClientResolver;
 import com.threerings.crowd.server.CrowdServer;
 
 import com.threerings.parlor.server.ParlorManager;
@@ -43,6 +48,9 @@ import static com.whirled.Log.log;
 public class WhirledServer extends CrowdServer
     implements TestProvider
 {
+    /** The singleton server instance. */
+    public static WhirledServer server;
+
     /** Handles creating and cleaning up after games. */
     public static ParlorManager parMan = new ParlorManager();
 
@@ -55,7 +63,7 @@ public class WhirledServer extends CrowdServer
         com.samskivert.util.Log.setLogProvider(new LoggingLogProvider());
         OneLineLogFormatter.configureDefaultHandler();
 
-        WhirledServer server = new WhirledServer();
+        server = new WhirledServer();
         try {
             server.init();
             server.run();
@@ -70,6 +78,16 @@ public class WhirledServer extends CrowdServer
     {
         // do the base server initialization
         super.init();
+
+        // configure the client manager to use the appropriate client class
+        clmgr.setClientFactory(new ClientFactory() {
+            public PresentsClient createClient (AuthRequest areq) {
+                return new WhirledClient();
+            }
+            public ClientResolver createClientResolver (Name username) {
+                return new CrowdClientResolver();
+            }
+        });
 
         // initialize our managers
         parMan.init(invmgr, plreg);
