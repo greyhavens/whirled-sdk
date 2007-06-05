@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
@@ -20,8 +21,18 @@ import java.util.zip.ZipInputStream;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.digester.Digester;
+import org.apache.commons.digester.ObjectCreateRule;
+import org.apache.commons.digester.Rule;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
 import com.samskivert.util.ResultListener;
 import com.samskivert.util.StringUtil;
+
+import com.samskivert.xml.SetPropertyFieldsRule;
 
 public class DataPack
 {
@@ -32,30 +43,7 @@ public class DataPack
                 try {
                     URL u = new URL(url);
                     HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-
-                    ZipInputStream zis = new ZipInputStream(conn.getInputStream());
-                    ZipEntry entry;
-                    while (!_closed && null != (entry = zis.getNextEntry())) {
-                        String name = entry.getName();
-                        System.err.println("Found entry '" + name + "' at " + entry.getSize() + 
-                            "bytes");
-                        byte[] data = new byte[(int) entry.getSize()];
-
-                        int offset = 0;
-                        int read = 0;
-                        while (!_closed && read != -1 && offset != data.length) {
-                            read = zis.read(data, offset, data.length - offset);
-                            offset += read;
-                        }
-
-                        if ("_data.xml".equals(name)) {
-                            // TODO: parse the XML
-                            _data = new String(data, "utf-8");
-
-                        } else {
-                            _files.put(name, data);
-                        }
-                    }
+                    init(conn.getInputStream());
 
                 } catch (MalformedURLException mue) {
                     listener.requestFailed(mue);
@@ -66,7 +54,13 @@ public class DataPack
                     return;
                 }
 
-                listener.requestCompleted(DataPack.this);
+                // finally, ensure we ever got _data.xml
+                if (_metadata != null) {
+                    listener.requestCompleted(DataPack.this);
+
+                } else {
+                    listener.requestFailed(new Exception("No _data.xml contained in DataPack."));
+                }
             }
         };
 
@@ -86,8 +80,7 @@ public class DataPack
      */
     public boolean isComplete ()
     {
-        // TODO: Verify
-        return !_closed && (_data != null);
+        return !_closed && (_metadata != null);
     }
 
     /**
@@ -137,10 +130,13 @@ public class DataPack
     {
         validateAccess(name);
 
-        // TODO: locate the right entry in the XML, find the value, etc.
+        DataEntry entry = _metadata.datas.get(name);
+        if (entry == null) {
+            return null;
+        }
 
-        String type = "TODO";
-        String value = null;
+        String type = entry.type;
+        String value = entry.value;
         if (value == null) {
             return null;
         }
@@ -153,7 +149,7 @@ public class DataPack
                 return new Double(value);
 
             } catch (NumberFormatException nfe) {
-                // TODO: what? I freak out?
+                return Double.valueOf(Double.NaN);
             }
 
         } else if ("Boolean".equals(type)) {
@@ -173,7 +169,7 @@ public class DataPack
                 return new Point2D.Double(Double.parseDouble(bits[0]), Double.parseDouble(bits[1]));
 
             } catch (NumberFormatException nfe) {
-                // TODO: what? I freak out?
+                return new Point2D.Double();
             }
         }
 
@@ -219,9 +215,13 @@ public class DataPack
     {
         validateAccess(name);
 
-        // TODO: locate the entry in XML, etc.
+        FileEntry entry = _metadata.files.get(name);
+        if (entry == null) {
+            return null;
+        }
 
-        String value = null;
+        String type = entry.type;
+        String value = entry.value;
         if (value == null) {
             return null;
         }
@@ -244,14 +244,123 @@ public class DataPack
         if (name == null) {
             throw new IllegalArgumentException("Invalid file name: " + name);
         }
-        if (_data == null) {
+        if (_metadata == null) {
             throw new IllegalStateException("DataPack is not loaded.");
         }
     }
 
+    /**
+     * Parse and initialize the DataPack.
+     */
+    protected void init (InputStream ins)
+        throws IOException
+    {
+        MetaData metadata = null;
+
+        ZipInputStream zis = new ZipInputStream(ins);
+        ZipEntry entry;
+        while (!_closed && null != (entry = zis.getNextEntry())) {
+            String name = entry.getName();
+            byte[] data = new byte[(int) entry.getSize()];
+
+            int offset = 0;
+            int read = 0;
+            while (!_closed && read != -1 && offset != data.length) {
+                read = zis.read(data, offset, data.length - offset);
+                offset += read;
+            }
+
+            if ("_data.xml".equals(name)) {
+                metadata = parseMetaData(data);
+
+            } else {
+                _files.put(name, data);
+            }
+        }
+
+        // only after we've had success parsing everything do we accept the metadata
+        _metadata = metadata;
+    }
+
+    protected MetaData parseMetaData (byte[] data)
+        throws IOException
+    {
+        Digester digester = new Digester();
+        digester.addObjectCreate("datapack", MetaData.class);
+        digester.addRule("datapack/data", new SetPropertyFieldsRule() {
+            public void begin (String namespace, String name, Attributes attrs)
+                throws Exception
+            {
+                digester.push(new DataEntry());
+                super.begin(namespace, name, attrs);
+            }
+
+            public void end (String namespace, String name)
+                throws Exception
+            {
+                DataEntry entry = (DataEntry) digester.pop();
+                MetaData metadata = (MetaData) digester.peek();
+                metadata.datas.put(entry.name, entry);
+            }
+        });
+        digester.addRule("datapack/file", new SetPropertyFieldsRule() {
+            public void begin (String namespace, String name, Attributes attrs)
+                throws Exception
+            {
+                digester.push(new FileEntry());
+                super.begin(namespace, name, attrs);
+            }
+
+            public void end (String namespace, String name)
+                throws Exception
+            {
+                FileEntry entry = (FileEntry) digester.pop();
+                MetaData metadata = (MetaData) digester.peek();
+                metadata.files.put(entry.name, entry);
+            }
+        });
+
+        try {
+            return (MetaData) digester.parse(new ByteArrayInputStream(data));
+        } catch (SAXException saxe) {
+            throw (IOException) new IOException().initCause(saxe);
+        }
+    }
+    
+    /** MetaData entry describing data. */
+    protected static class DataEntry
+    {
+        public String name;
+        public String type;
+        public String value;
+    }
+
+    /** MetaData entry describing a file. */
+    protected static class FileEntry
+    {
+        public String name;
+        public String type;
+        public String value;
+    }
+
+    /** MetaData holder class. */
+    protected static class MetaData
+    {
+        public MetaData () { }
+
+        /** Data entries. */
+        public HashMap<String, DataEntry> datas = new HashMap<String, DataEntry>();
+
+        /** File entries. */
+        public HashMap<String, FileEntry> files = new HashMap<String, FileEntry>();
+    }
+
+    /** The parsed metadata. */
+    protected MetaData _metadata;
+
+    /** Indicates when we've been closed early. */
     protected boolean _closed;
 
-    protected String _data;
-
+    /** File entries that present in the datapack. */
     protected HashMap<String,byte[]> _files = new HashMap<String,byte[]>();
 }
