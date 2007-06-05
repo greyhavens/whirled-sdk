@@ -5,6 +5,8 @@ package com.whirled {
 
 import flash.display.DisplayObject;
 
+import flash.errors.IllegalOperationError;
+
 import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -110,9 +112,7 @@ public class DataPack extends EventDispatcher
      */
     public function getData (name :String) :*
     {
-        if (_data == null) {
-            throw new Error("DataPack is not loaded.");
-        }
+        validateAccess(name);
 
         var datum :XML = _data..data.(@name == name)[0];
         if (datum == null) {
@@ -264,12 +264,7 @@ public class DataPack extends EventDispatcher
 
     protected function getFileInternal (name :String, asString :Boolean) :*
     {
-        if (name == null) {
-            throw new Error("Invalid file name: " + name);
-        }
-        if (_data == null) {
-            throw new Error("DataPack is not loaded.");
-        }
+        validateAccess(name);
 
         var datum :XML = _data..file.(@name == name)[0];
         if (datum == null) {
@@ -289,6 +284,16 @@ public class DataPack extends EventDispatcher
 
         var file :FZipFile = _zip.getFileByName(value);
         return (file == null) ? null : (asString ? file.getContentAsString() : file.content);
+    }
+
+    protected function validateAccess (name :String) :void
+    {
+        if (name == null) {
+            throw new ArgumentError("Invalid name: " + name);
+        }
+        if (_data == null) {
+            throw new IllegalOperationError("DataPack is not loaded.");
+        }
     }
 
     /**
