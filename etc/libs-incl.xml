@@ -10,5 +10,6 @@
     <include name="toybox.jar"/>
     <include name="vilya-parlor.jar"/>
     <include name="org.mortbay.jetty.jar"/>
+    <include name="commons-digester.jar"/>
   </fileset>
 </project>
