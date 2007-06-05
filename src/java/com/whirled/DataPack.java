@@ -16,18 +16,14 @@ import java.net.URL;
 import java.util.HashMap;
 
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.ObjectCreateRule;
-import org.apache.commons.digester.Rule;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import com.samskivert.util.ResultListener;
 import com.samskivert.util.StringUtil;
