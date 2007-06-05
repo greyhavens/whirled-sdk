@@ -64,7 +64,7 @@ public class DataPack extends EventDispatcher
      */
     public function isComplete () :Boolean
     {
-        return (_data != null);
+        return (_metadata != null);
     }
 
     /**
@@ -114,7 +114,7 @@ public class DataPack extends EventDispatcher
     {
         validateAccess(name);
 
-        var datum :XML = _data..data.(@name == name)[0];
+        var datum :XML = _metadata..data.(@name == name)[0];
         if (datum == null) {
             return undefined;
         }
@@ -266,7 +266,7 @@ public class DataPack extends EventDispatcher
     {
         validateAccess(name);
 
-        var datum :XML = _data..file.(@name == name)[0];
+        var datum :XML = _metadata..file.(@name == name)[0];
         if (datum == null) {
             return undefined;
         }
@@ -291,7 +291,7 @@ public class DataPack extends EventDispatcher
         if (name == null) {
             throw new ArgumentError("Invalid name: " + name);
         }
-        if (_data == null) {
+        if (_metadata == null) {
             throw new IllegalOperationError("DataPack is not loaded.");
         }
     }
@@ -322,12 +322,7 @@ public class DataPack extends EventDispatcher
      */
     protected function handleLoadingComplete (event :Event) :void
     {
-//        var nn :int = _zip.getFileCount();
-//        for (var ii :int = 0; ii < nn; ii++) {
-//            trace("Found file: " + _zip.getFileAt(ii).filename);
-//        }
-//
-        // find the data file
+        // find the metadata file
         var dataFile :FZipFile = _zip.getFileByName("_data.xml");
         if (dataFile == null) {
             dispatchError("No _data.xml contained in DataPack.");
@@ -337,7 +332,7 @@ public class DataPack extends EventDispatcher
         // now try parsing the data
         try {
             // this also can throw an Error if the XML doesn't parse
-            _data = XML(dataFile.getContentAsString());
+            _metadata = XML(dataFile.getContentAsString());
 
         } catch (error :Error) {
             dispatchError("Could not parse datapack: " + error.message);
@@ -355,6 +350,6 @@ public class DataPack extends EventDispatcher
 
     protected var _zip :FZip;
 
-    protected var _data :XML;
+    protected var _metadata :XML;
 }
 }
