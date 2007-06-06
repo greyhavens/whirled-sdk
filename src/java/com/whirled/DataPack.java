@@ -124,7 +124,7 @@ public class DataPack
      */
     public Object getData (String name)
     {
-        validateAccess(name);
+        name = validateAccess(name);
 
         DataEntry entry = _metadata.datas.get(name);
         if (entry == null) {
@@ -209,7 +209,7 @@ public class DataPack
 
     protected Object getFile (String name, boolean asString)
     {
-        validateAccess(name);
+        name = validateAccess(name);
 
         FileEntry entry = _metadata.files.get(name);
         if (entry == null) {
@@ -235,14 +235,16 @@ public class DataPack
         return data;
     }
 
-    protected void validateAccess (String name)
+    protected String validateAccess (String name)
     {
-        if (name == null) {
-            throw new IllegalArgumentException("Invalid file name: " + name);
-        }
         if (_metadata == null) {
             throw new IllegalStateException("DataPack is not loaded.");
         }
+        if (name == null) {
+            throw new IllegalArgumentException("Invalid file name: " + name);
+        }
+
+        return StringUtil.encode(name);
     }
 
     /**
@@ -276,6 +278,8 @@ public class DataPack
 
         // only after we've had success parsing everything do we accept the metadata
         _metadata = metadata;
+
+        System.err.println("Parsed metadata: " + _metadata.toXML());
     }
 
     protected MetaData parseMetaData (byte[] data)
@@ -326,17 +330,69 @@ public class DataPack
     /** MetaData entry describing data. */
     protected static class DataEntry
     {
+        /** The name of the data, uuencoded. */
         public String name;
+
+        /** A human description, uuencoded. */
+        public String info = "";
+
+        /** The type of the data. */
         public String type;
+
+        /** The value, uuencoded, or null if none. */
         public String value;
+
+        /**
+         * Convert this entry to XML.
+         */
+        public String toXML ()
+        {
+            StringBuilder buf = new StringBuilder("<data");
+            buf.append(" name=\"").append(name).append("\"");
+            buf.append(" type=\"").append(type).append("\"");
+            if (value != null) {
+                buf.append(" value=\"").append(value).append("\"");
+            }
+            if (!"".equals(info)) {
+                buf.append(" info=\"").append(info).append("\"");
+            }
+            buf.append("/>");
+            return buf.toString();
+        }
     }
 
     /** MetaData entry describing a file. */
     protected static class FileEntry
     {
+        /** The "handle" name of the file, uuencoded. */
         public String name;
+
+        /** A human description, uuencoded. */
+        public String info = "";
+
+        /** The type of file data. */
         public String type;
+
+        /** The filename, uuencoded, or null if absent. */
         public String value;
+
+        /**
+         * Convert this entry to XML.
+         */
+        public String toXML ()
+        {
+            StringBuilder buf = new StringBuilder("<file");
+            buf.append(" name=\"").append(name).append("\"");
+            buf.append(" type=\"").append(type).append("\"");
+            if (value != null) {
+                buf.append(" value=\"").append(value).append("\"");
+            }
+            if (!"".equals(info)) {
+                buf.append(" info=\"").append(info).append("\"");
+            }
+            buf.append("/>");
+            return buf.toString();
+        }
     }
 
     /** MetaData holder class. */
@@ -349,6 +405,23 @@ public class DataPack
 
         /** File entries. */
         public HashMap<String, FileEntry> files = new HashMap<String, FileEntry>();
+
+        /**
+         * Convert this metadata to XML.
+         */
+        public String toXML ()
+        {
+            StringBuilder buf = new StringBuilder("<datapack>\n");
+            for (DataEntry entry : datas.values()) {
+                buf.append('\t').append(entry.toXML()).append('\n');
+            }
+            for (FileEntry entry : files.values()) {
+                buf.append('\t').append(entry.toXML()).append('\n');
+            }
+            buf.append("</datapack>");
+            buf.append('\n'); // output a nice trailing newline
+            return buf.toString();
+        }
     }
 
     /** The parsed metadata. */

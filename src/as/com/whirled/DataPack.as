@@ -112,7 +112,7 @@ public class DataPack extends EventDispatcher
      */
     public function getData (name :String) :*
     {
-        validateAccess(name);
+        name = validateAccess(name);
 
         var datum :XML = _metadata..data.(@name == name)[0];
         if (datum == null) {
@@ -264,7 +264,7 @@ public class DataPack extends EventDispatcher
 
     protected function getFileInternal (name :String, asString :Boolean) :*
     {
-        validateAccess(name);
+        name = validateAccess(name);
 
         var datum :XML = _metadata..file.(@name == name)[0];
         if (datum == null) {
@@ -286,14 +286,18 @@ public class DataPack extends EventDispatcher
         return (file == null) ? null : (asString ? file.getContentAsString() : file.content);
     }
 
-    protected function validateAccess (name :String) :void
+    protected function validateAccess (name :String) :String
     {
-        if (name == null) {
-            throw new ArgumentError("Invalid name: " + name);
-        }
         if (_metadata == null) {
             throw new IllegalOperationError("DataPack is not loaded.");
         }
+        if (name == null) {
+            throw new ArgumentError("Invalid name: " + name);
+        }
+
+        // TODO: we may need to verify that the urlencoding is happening the same
+        // way that it is in Java
+        return escape(name);
     }
 
     /**
