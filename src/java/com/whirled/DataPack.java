@@ -32,7 +32,7 @@ import com.samskivert.xml.SetPropertyFieldsRule;
 
 public class DataPack
 {
-    public DataPack (final String url, final ResultListener<DataPack> listener)
+    public DataPack (final String url, final ResultListener<? extends DataPack> listener)
     {
         Thread tt = new Thread() {
             public void run () {
@@ -61,6 +61,10 @@ public class DataPack
         };
 
         tt.start();
+    }
+
+    protected DataPack ()
+    {
     }
 
     /**
@@ -278,8 +282,6 @@ public class DataPack
 
         // only after we've had success parsing everything do we accept the metadata
         _metadata = metadata;
-
-        System.err.println("Parsed metadata: " + _metadata.toXML());
     }
 
     protected MetaData parseMetaData (byte[] data)
