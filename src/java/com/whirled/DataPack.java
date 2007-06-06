@@ -32,7 +32,7 @@ import com.samskivert.xml.SetPropertyFieldsRule;
 
 public class DataPack
 {
-    public DataPack (final String url, final ResultListener<? extends DataPack> listener)
+    public DataPack (final String url, final ResultListener<DataPack> listener)
     {
         Thread tt = new Thread() {
             public void run () {
