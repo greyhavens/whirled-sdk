@@ -39,7 +39,7 @@ public class DataPack
                 try {
                     URL u = new URL(url);
                     HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-                    init(conn.getInputStream());
+                    DataPack.this.init(conn.getInputStream());
 
                 } catch (MalformedURLException mue) {
                     listener.requestFailed(mue);
