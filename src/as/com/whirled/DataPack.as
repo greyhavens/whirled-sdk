@@ -14,6 +14,7 @@ import flash.events.IOErrorEvent;
 import flash.events.SecurityErrorEvent;
 
 import flash.geom.Point;
+import flash.geom.Rectangle;
 
 import flash.net.URLRequest;
 
@@ -108,6 +109,14 @@ public class DataPack extends EventDispatcher
     }
 
     /**
+     * Convenience function to access some data as a Rectangle.
+     */
+    public function getRectangle (name :String) :Rectangle
+    {
+        return getData(name) as Rectangle;
+    }
+
+    /**
      * Get some data.
      */
     public function getData (name :String) :*
@@ -146,6 +155,11 @@ public class DataPack extends EventDispatcher
         case "Point":
             bits = value.split(",");
             return new Point(parseFloat(bits[0]), parseFloat(bits[1]));
+
+        case "Rectangle":
+            bits = value.split(",");
+            return new Rectangle(parseFloat(bits[0]), parseFloat(bits[1]),
+                parseFloat(bits[2]), parseFloat(bits[3]));
 
         default:
             trace("Unknown resource type: " + datum.attribute("type"));

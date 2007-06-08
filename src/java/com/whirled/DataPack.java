@@ -1,6 +1,7 @@
 package com.whirled;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import java.awt.image.BufferedImage;
 
@@ -124,6 +125,14 @@ public class DataPack
     }
 
     /**
+     * Convenience method to access some data as a Rectangle.
+     */
+    public Rectangle2D.Double getRectangle (String name)
+    {
+        return (Rectangle2D.Double) getData(name);
+    }
+
+    /**
      * Get some data.
      */
     public Object getData (String name)
@@ -170,6 +179,17 @@ public class DataPack
 
             } catch (NumberFormatException nfe) {
                 return new Point2D.Double();
+            }
+
+        } else if ("Rectangle".equals(type)) {
+            String[] bits = value.split(",");
+            try {
+                return new Rectangle2D.Double(
+                    Double.parseDouble(bits[0]), Double.parseDouble(bits[1]),
+                    Double.parseDouble(bits[2]), Double.parseDouble(bits[3]));
+
+            } catch (NumberFormatException nfe) {
+                return new Rectangle2D.Double();
             }
         }
 
@@ -289,6 +309,7 @@ public class DataPack
     {
         Digester digester = new Digester();
         digester.addObjectCreate("datapack", MetaData.class);
+        digester.addRule("datapack", .class, new SetPropertyFieldsRule());
         digester.addRule("datapack/data", new SetPropertyFieldsRule() {
             public void begin (String namespace, String name, Attributes attrs)
                 throws Exception
@@ -328,9 +349,8 @@ public class DataPack
             throw (IOException) new IOException().initCause(saxe);
         }
     }
-    
-    /** MetaData entry describing data. */
-    protected static class DataEntry
+
+    protected static class AbstractEntry
     {
         /** The name of the data, uuencoded. */
         public String name;
@@ -344,12 +364,11 @@ public class DataPack
         /** The value, uuencoded, or null if none. */
         public String value;
 
-        /**
-         * Convert this entry to XML.
-         */
-        public String toXML ()
+        /** Is this value optional? */
+        public boolean optional;
+
+        protected void attrsToXML (StringBuilder buf)
         {
-            StringBuilder buf = new StringBuilder("<data");
             buf.append(" name=\"").append(name).append("\"");
             buf.append(" type=\"").append(type).append("\"");
             if (value != null) {
@@ -358,25 +377,37 @@ public class DataPack
             if (!"".equals(info)) {
                 buf.append(" info=\"").append(info).append("\"");
             }
+            if (optional) {
+                buf.append(" optional=\"true\"");
+            }
+        }
+    }
+    
+    /** MetaData entry describing data. */
+    protected static class DataEntry extends AbstractEntry
+    {
+        public DataEntry ()
+        {
+        }
+
+        /**
+         * Convert this entry to XML.
+         */
+        public String toXML ()
+        {
+            StringBuilder buf = new StringBuilder("<data");
+            attrsToXML(buf);
             buf.append("/>");
             return buf.toString();
         }
     }
 
     /** MetaData entry describing a file. */
-    protected static class FileEntry
+    protected static class FileEntry extends AbstractEntry
     {
-        /** The "handle" name of the file, uuencoded. */
-        public String name;
-
-        /** A human description, uuencoded. */
-        public String info = "";
-
-        /** The type of file data. */
-        public String type;
-
-        /** The filename, uuencoded, or null if absent. */
-        public String value;
+        public FileEntry ()
+        {
+        }
 
         /**
          * Convert this entry to XML.
@@ -384,14 +415,7 @@ public class DataPack
         public String toXML ()
         {
             StringBuilder buf = new StringBuilder("<file");
-            buf.append(" name=\"").append(name).append("\"");
-            buf.append(" type=\"").append(type).append("\"");
-            if (value != null) {
-                buf.append(" value=\"").append(value).append("\"");
-            }
-            if (!"".equals(info)) {
-                buf.append(" info=\"").append(info).append("\"");
-            }
+            attrsToXML(buf);
             buf.append("/>");
             return buf.toString();
         }
@@ -400,6 +424,9 @@ public class DataPack
     /** MetaData holder class. */
     protected static class MetaData
     {
+        /** The namespace of this DataPack. */
+        public String namespace;
+
         public MetaData () { }
 
         /** Data entries. */
@@ -413,16 +440,28 @@ public class DataPack
          */
         public String toXML ()
         {
-            StringBuilder buf = new StringBuilder("<datapack>\n");
+            StringBuilder buf = new StringBuilder("<datapack");
+            attrsToXML(buf);
+            buf.append(">\n");
+            childrenToXML(buf);
+            buf.append("</datapack>");
+            buf.append('\n'); // output a nice trailing newline
+            return buf.toString();
+        }
+
+        protected void attrsToXML (StringBuilder buf)
+        {
+            buf.append(" namespace=\"").append(namespace).append("\"");
+        }
+
+        protected void childrenToXML (StringBuilder buf)
+        {
             for (DataEntry entry : datas.values()) {
                 buf.append('\t').append(entry.toXML()).append('\n');
             }
             for (FileEntry entry : files.values()) {
                 buf.append('\t').append(entry.toXML()).append('\n');
             }
-            buf.append("</datapack>");
-            buf.append('\n'); // output a nice trailing newline
-            return buf.toString();
         }
     }
 
