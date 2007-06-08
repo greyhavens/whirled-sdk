@@ -309,7 +309,7 @@ public class DataPack
     {
         Digester digester = new Digester();
         digester.addObjectCreate("datapack", MetaData.class);
-        digester.addRule("datapack", .class, new SetPropertyFieldsRule());
+        digester.addRule("datapack", new SetPropertyFieldsRule());
         digester.addRule("datapack/data", new SetPropertyFieldsRule() {
             public void begin (String namespace, String name, Attributes attrs)
                 throws Exception
