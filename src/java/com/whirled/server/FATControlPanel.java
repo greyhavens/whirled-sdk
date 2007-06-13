@@ -58,6 +58,7 @@ public class FATControlPanel extends JFrame
         panel.pack();
         SwingUtil.centerWindow(panel);
         panel.setVisible(true);
+        panel.checkPlayerPath();
     }
 
     protected FATControlPanel ()
@@ -102,6 +103,14 @@ public class FATControlPanel extends JFrame
             selectGameSWF(new File(swfpath));
         }
         _gconfig.setText(_prefs.getValue("fat.config", ""));
+    }
+
+    protected void checkPlayerPath ()
+    {
+        // make sure our projector path is configured
+        if (StringUtil.isBlank(_prefs.getValue("fat.playerpath", ""))) {
+            _configA.actionPerformed(null);
+        }
     }
 
     protected void selectGameSWF (File path)
@@ -174,7 +183,7 @@ public class FATControlPanel extends JFrame
             return _players.getValue();
         }
         protected String getFlashPlayerPath () {
-            return "/export/msoy/bin/Linux/flashplayer-debug";
+            return _prefs.getValue("fat.playerpath", "flashplayer");
         }
         protected void reportError (String message, Exception e) {
             log.log(Level.WARNING, message, e);
@@ -196,7 +205,11 @@ public class FATControlPanel extends JFrame
 
     protected Action _configA = new AbstractAction("Config") {
         public void actionPerformed (ActionEvent e) {
-            // TODO
+            JFileChooser chooser = new JFileChooser(_prefs.getValue("fat.playerpath", ""));
+            chooser.setDialogTitle("Where is your Flash Projector?");
+            if (chooser.showOpenDialog(FATControlPanel.this) == JFileChooser.APPROVE_OPTION) {
+                _prefs.setValue("fat.playerpath", chooser.getSelectedFile().getAbsolutePath());
+            }
         }
     };
 

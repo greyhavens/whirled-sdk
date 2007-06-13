@@ -36,4 +36,8 @@
     <newproject templates="templates"/>
   </target>
 
+  <!-- runs the FAT server with GUI -->
+  <target name="fatserver">
+    <java classname="com.whirled.server.FATControlPanel" fork="true" classpathref="classpath"/>
+  </target>
 </project>
