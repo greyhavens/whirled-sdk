@@ -22,15 +22,14 @@ import static com.whirled.Log.log;
 public class WhirledHttpServer extends HttpServer
 {
     /**
-     * Creates and prepares our HTTP server for operation but does not yet
-     * start listening on the HTTP port.
+     * Creates and prepares our HTTP server for operation but does not yet start listening on the
+     * HTTP port.
      */
-    public WhirledHttpServer ()
+    public WhirledHttpServer (String docroot)
     {
         // wire up serving of static content
         HttpContext context = getContext("/");
-        File docroot = new File(System.getProperty("whirled.root") + File.separator + "dist");
-        context.setResourceBase(docroot.getAbsolutePath());
+        context.setResourceBase(new File(docroot).getAbsolutePath());
         context.addHandler(new ResourceHandler());
 
         // tone down the default verbose logging; unfortunately it creates a new logger and logs

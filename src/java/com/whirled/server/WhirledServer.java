@@ -3,9 +3,11 @@
 
 package com.whirled.server;
 
+import java.io.File;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -94,7 +96,7 @@ public class WhirledServer extends CrowdServer
         DictionaryManager.init("data/dictionary");
 
         // create and start up our HTTP server
-        httpServer = new WhirledHttpServer();
+        httpServer = new WhirledHttpServer(getDocRoot());
         httpServer.init();
 
         // register ourselves as handling the test service
@@ -113,7 +115,7 @@ public class WhirledServer extends CrowdServer
         try {
             httpServer.stop(true);
         } catch (InterruptedException ie) {
-            log.log(Level.WARNING, "Failed to stop http server.", ie);
+            reportError("Failed to stop http server.", ie);
         }
     }
 
@@ -128,7 +130,7 @@ public class WhirledServer extends CrowdServer
                 plreg.createPlace(_config);
                 _ready.clear();
             } catch (Exception e) {
-                log.log(Level.WARNING, "Failed to start game " + _config + ".", e);
+                reportError("Failed to start game " + _config + ".", e);
             }
         }
     }
@@ -138,7 +140,7 @@ public class WhirledServer extends CrowdServer
         // parse the game configuration
         GameDefinition gamedef;
         try {
-            gamedef = new WhirledGameParser().parseGame(new FileReader("config.xml"));
+            gamedef = new WhirledGameParser().parseGame(getGameConfig());
         } catch (Exception e) {
             log.warning("Failed to locate 'config.xml' file. [error=" + e + "].");
             gamedef = new WhirledGameDefinition();
@@ -150,13 +152,7 @@ public class WhirledServer extends CrowdServer
         gamedef.manager = "com.threerings.ezgame.server.EZGameManager";
 
         // figure out how many players will be involved in the test game
-        int pcount = 1;
-        try {
-            pcount = Integer.getInteger("players", pcount);
-        } catch (Exception e) {
-            log.warning("Failed to parse 'players' system property " +
-                        "[value=" + System.getProperty("players") + ", error=" + e + "].");
-        }
+        int pcount = getPlayerCount();
         TableMatchConfig match = new TableMatchConfig();
         match.minSeats = match.maxSeats = match.startSeats = pcount;
         gamedef.match = match;
@@ -168,16 +164,47 @@ public class WhirledServer extends CrowdServer
             _config.players[ii] = new Name("tester_" + (ii+1));
 
             // start up a Flash client for this player
-            String player = System.getProperty("flash.player");
+            String player = getFlashPlayerPath();
             String url = "http://localhost:8080/game-client.swf?username=" + _config.players[ii];
             try {
                 Process proc = Runtime.getRuntime().exec(new String[] { player, url });
                 new StreamEater(proc.getErrorStream());
             } catch (Exception e) {
-                log.log(Level.WARNING, "Failed to start client " +
-                        "[player=" + player + ", url=" + url + "].", e);
+                reportError("Failed to start client [player=" + player + ", url=" + url + "].", e);
             }
         }
+    }
+
+    protected void reportError (String message, Exception e)
+    {
+        log.log(Level.WARNING, message, e);
+    }
+
+    protected String getDocRoot ()
+    {
+        return System.getProperty("whirled.root") + File.separator + "dist";
+    }
+
+    protected Reader getGameConfig ()
+        throws IOException
+    {
+        return new FileReader("config.xml");
+    }
+
+    protected int getPlayerCount ()
+    {
+        try {
+            return Integer.getInteger("players", 1);
+        } catch (Exception e) {
+            log.warning("Failed to parse 'players' system property " +
+                        "[value=" + System.getProperty("players") + ", error=" + e + "].");
+            return 1;
+        }
+    }
+
+    protected String getFlashPlayerPath ()
+    {
+        return System.getProperty("flash.player");
     }
 
     /** Wee helper class to eat the streams of a launched process. */

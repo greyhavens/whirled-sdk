@@ -209,13 +209,16 @@
     </javadoc>
   </target>
 
-  <!-- builds the javadocs and stuffs them in a directory where they -->
-  <!-- won't be blown away when we do "clean" next time -->
-  <target name="savedoc" depends="javadoc">
-    <delete dir="${savedoc.dir}/api"/>
-    <copy todir="${savedoc.dir}/api">
-      <fileset dir="${javadoc.dir}" includes="**/*"/>
-    </copy>
+  <!-- builds and tests the FAT test server -->
+  <target name="testfat" depends="compile">
+    <!-- start the server which will start up the clients -->
+    <java classname="com.whirled.server.FATControlPanel" fork="true">
+      <classpath>
+        <pathelement location="${classes.dir}"/>
+        <fileset dir="${deploy.dir}/lib" includes="*.jar"/>
+        <fileset dir="${deploy.dir}" includes="whirled-data.jar"/>
+      </classpath>
+    </java>
   </target>
 
   <!-- a target for rebuilding everything -->
