@@ -103,6 +103,14 @@ public class EntityControl extends WhirledControl
     }
 
     /**
+     * Returns true if the local client has editing privileges in the current room.
+     */
+    public function canEditRoom () :Boolean
+    {
+        return callHostCode("canEditRoom_v1") as Boolean;
+    }
+
+    /**
      * Triggers an action on this scene object. The action will be properly distributed to the
      * object running in every client in the scene, resulting in a ACTION_TRIGGERED event.
      *
