@@ -39,45 +39,6 @@ public class ActorControl extends EntityControl
     }
 
     /**
-     * Returns our current logical location in the scene.
-     * Note that if y is nonzero, you are *flying*. If applicable, your avatar should animate
-     * appropriately. isMoving() may return true or false when flying, depending on whether
-     * you're floating or actually moving between locations.
-     *
-     * @return an array containing [ x, y, z ]. x, y, and z are Numbers between 0 and 1 or null if
-     * our location is unknown.
-     */
-    public function getLogicalLocation () :Array
-    {
-        return _location;
-    }
-
-    /**
-     * Returns our current location in the scene, in pixel coordinates.
-     */
-    public function getPixelLocation () :Array
-    {
-        if (_location == null) {
-            return null;
-        }
-        var bounds :Array = getRoomBounds();
-        for (var ii :int = 0; ii < _location.length; ii++) {
-            bounds[ii] *= _location[ii];
-        }
-        return bounds;
-    }
-
-    /**
-     * Get the room's bounds in pixels.
-     *
-     * @return an array containing [ width, height, depth ].
-     */
-    public function getRoomBounds () :Array
-    {
-        return callHostCode("getRoomBounds_v1") as Array;
-    }
-
-    /**
      * Returns the current orientation of this mobile.
      *
      * @return a value between 0 (facing straight ahead) and 360.
@@ -175,7 +136,6 @@ public class ActorControl extends EntityControl
     {
         super.gotInitProperties(o);
 
-        _location = (o["location"] as Array);
         _orient = (o["orient"] as Number);
         _isMoving = (o["isMoving"] as Boolean);
     }
@@ -198,9 +158,6 @@ public class ActorControl extends EntityControl
     {
         dispatch(ControlEvent.STATE_CHANGED, newState);
     }
-
-    /** Contains our current location in the scene [x, y, z], or null. */
-    protected var _location :Array;
 
     /** Our current orientation, or 0. */
     protected var _orient :Number = 0;

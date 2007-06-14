@@ -64,6 +64,45 @@ public class EntityControl extends WhirledControl
     }
 
     /**
+     * Returns our current logical location in the scene.  Note that if y is nonzero, you are
+     * *flying*. If applicable, an avatar should animate appropriately. {@link
+     * ActorControl#isMoving} may return true or false when flying, depending on whether you're
+     * floating or actually moving between locations.
+     *
+     * @return an array containing [ x, y, z ]. x, y, and z are Numbers between 0 and 1 or null if
+     * our location is unknown.
+     */
+    public function getLogicalLocation () :Array
+    {
+        return _location;
+    }
+
+    /**
+     * Returns our current location in the scene, in pixel coordinates.
+     */
+    public function getPixelLocation () :Array
+    {
+        if (_location == null) {
+            return null;
+        }
+        var bounds :Array = getRoomBounds();
+        for (var ii :int = 0; ii < _location.length; ii++) {
+            bounds[ii] *= _location[ii];
+        }
+        return bounds;
+    }
+
+    /**
+     * Get the room's bounds in pixels.
+     *
+     * @return an array containing [ width, height, depth ].
+     */
+    public function getRoomBounds () :Array
+    {
+        return callHostCode("getRoomBounds_v1") as Array;
+    }
+
+    /**
      * Triggers an action on this scene object. The action will be properly distributed to the
      * object running in every client in the scene, resulting in a ACTION_TRIGGERED event.
      *
@@ -180,6 +219,14 @@ public class EntityControl extends WhirledControl
         o["messageReceived_v1"] = messageReceived_v1;
     }
 
+    // from WhirledControl
+    override protected function gotInitProperties (o :Object) :void
+    {
+        super.gotInitProperties(o);
+
+        _location = (o["location"] as Array);
+    }
+
     /**
      * Called when an action or message is triggered on this scene object.
      */
@@ -255,6 +302,9 @@ public class EntityControl extends WhirledControl
         _hasControl = false;
         stopTicker();
     }
+
+    /** Contains our current location in the scene [x, y, z], or null. */
+    protected var _location :Array;
 
     /** Our desired tick interval (in milliseconds). */
     protected var _tickInterval :Number = 0;
