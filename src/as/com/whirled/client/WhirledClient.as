@@ -56,6 +56,7 @@ public class WhirledClient extends Client
         c = TestMarshaller;
         c = EZGameConfig;
         c = WhirledGameDefinition;
+        c = TestGameController;
 
         [ResourceBundle("global")]
         [ResourceBundle("chat")]

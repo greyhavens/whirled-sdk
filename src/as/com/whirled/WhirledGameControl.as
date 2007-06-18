@@ -32,8 +32,7 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
-     * Award flow to this occupant. See getAvailableFlow(). NOTE: awards must be completed before
-     * the game is ended.
+     * Award flow to this occupant. See {@link #getAvailableFlow}.
      */
     public function awardFlow (amount :int) :void
     {
