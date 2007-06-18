@@ -6,6 +6,7 @@
 package com.whirled {
 
 import flash.display.DisplayObject;
+import flash.geom.Rectangle;
 
 import com.threerings.ezgame.EZGameControl;
 
@@ -49,6 +50,15 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
+     * Relocates the chat overlay to the specified region. By default the overlay covers the entire
+     * width of the display and the bottom 150 pixels or so.
+     */
+    public function setChatBounds (bounds :Rectangle) :void
+    {
+        callEZCode("setChatBounds_v1", bounds);
+    }
+
+    /**
      * Return the headshot image for the given occupant in the form of a Sprite object.
      *
      * The sprite are cached in the client backend so the user should not worry too much
@@ -59,6 +69,20 @@ public class WhirledGameControl extends EZGameControl
     public function getHeadShot (occupant :int, callback :Function) :void
     {
         callEZCode("getHeadShot_v1", occupant, callback);
+    }
+
+    /**
+     * Returns the bounds of the "stage" on which the game will be drawn. This is mainly useful for
+     * the width and height so that the game can know how much area it has to cover, however the x
+     * and y coordinates will also indicate the offset from the upper left of the stage of the view
+     * rectangle that contains the game.
+     *
+     * TODO: the chat channel panel can be opened and closed during a game, so we need to dispatch
+     * an event to let the game know in case it wants to do something special to handle that.
+     */
+    public function getStageBounds () :Rectangle
+    {
+        return Rectangle(callEZCode("getStageBounds_v1"));
     }
 }
 }
