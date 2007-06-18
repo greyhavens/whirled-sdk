@@ -14,6 +14,16 @@ import com.threerings.ezgame.client.EZGameController;
  */
 public class TestGameController extends EZGameController
 {
+    public function getAvailableFlow () :int
+    {
+        return 100; // TOBEDOOBIEDOO
+    }
+
+    public function awardFlow (amount :int) :void
+    {
+        // nada
+    }
+
     // from PlaceController
     override protected function createPlaceView (ctx :CrowdContext) :PlaceView
     {

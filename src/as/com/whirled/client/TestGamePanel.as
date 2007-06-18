@@ -22,6 +22,16 @@ public class TestGamePanel extends EZGamePanel
         trace("It is alive!");
     }
 
+    public function setChatEnabled (enabled :Boolean) :void
+    {
+        // TOBEDOOBIEDOO
+    }
+
+    public function setChatBounds (bounds :Rectangle) :void
+    {
+        // TOBEDOOBIEDOO
+    }
+
     public function getStageBounds () :Rectangle
     {
         // in test mode games have the entire width and height of the stage

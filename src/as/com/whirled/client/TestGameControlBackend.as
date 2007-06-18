@@ -33,31 +33,16 @@ public class TestGameControlBackend extends GameControlBackend
     {
         super.populateProperties(o);
 
-//         var ctrl :MsoyGameController = (_ctrl as MsoyGameController);
-//         o["getAvailableFlow_v1"] = ctrl.getAvailableFlow_v1;
-//         o["awardFlow_v1"] = ctrl.awardFlow_v1;
-//         o["setChatEnabled_v1"] = ctrl.setChatEnabled_v1;
-//         o["setChatBounds_v1"] = ctrl.setChatBounds_v1;
-//         o["getHeadShot_v1"] = getHeadShot_v1;
-        o["getStageBounds_v1"] = getStageBounds_v1;
+        var ctrl :TestGameController = (_ctrl as TestGameController);
+        o["getAvailableFlow_v1"] = ctrl.getAvailableFlow;
+        o["awardFlow_v1"] = ctrl.awardFlow;
+        o["setChatEnabled_v1"] = _panel.setChatEnabled;
+        o["setChatBounds_v1"] = _panel.setChatBounds;
+//         o["getHeadShot_v1"] = getHeadShot; // TODO: fake up a sprite
+        o["getStageBounds_v1"] = getStageBounds;
     }
 
-//     protected function getHeadShot_v1 (occupant :int, callback :Function) :void
-//     {
-//         validateConnected();
-//         var info :GameMemberInfo = _ezObj.occupantInfo.get(occupant) as GameMemberInfo;
-//         if (info != null) {
-//             var headshot :Headshot = _headshots[occupant];
-//             if (headshot == null) {
-//                 _headshots[occupant] = headshot = new Headshot(info.headShot.getMediaPath());
-//             }
-//             headshot.newRequest(callback);
-//             return;
-//         }
-//         throw new Error("Failed to find occupant: " + occupant);
-//     }
-
-    protected function getStageBounds_v1 () :Rectangle
+    protected function getStageBounds () :Rectangle
     {
         return _panel.getStageBounds();
     }
