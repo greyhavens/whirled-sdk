@@ -146,57 +146,7 @@ public class DataPack
             return null;
         }
 
-        String type = entry.type;
-        String value = entry.value;
-        if (value == null) {
-            return null;
-        }
-        
-        if ("String".equals(type)) {
-            return StringUtil.decode(value);
-
-        } else if ("Number".equals(type)) {
-            try {
-                return new Double(value);
-
-            } catch (NumberFormatException nfe) {
-                return Double.valueOf(Double.NaN);
-            }
-
-        } else if ("Boolean".equals(type)) {
-            return Boolean.valueOf("true".equals(value.toLowerCase()));
-
-        } else if ("Array".equals(type)) {
-            // StringUtil.parseStringArray doesn't do things the way we'd like...
-            String[] array = value.split(",");
-            for (int ii = 0; ii < array.length; ii++) {
-                array[ii] = StringUtil.decode(array[ii]);
-            }
-            return array;
-
-        } else if ("Point".equals(type)) {
-            String[] bits = value.split(",");
-            try {
-                return new Point2D.Double(Double.parseDouble(bits[0]), Double.parseDouble(bits[1]));
-
-            } catch (NumberFormatException nfe) {
-                return new Point2D.Double();
-            }
-
-        } else if ("Rectangle".equals(type)) {
-            String[] bits = value.split(",");
-            try {
-                return new Rectangle2D.Double(
-                    Double.parseDouble(bits[0]), Double.parseDouble(bits[1]),
-                    Double.parseDouble(bits[2]), Double.parseDouble(bits[3]));
-
-            } catch (NumberFormatException nfe) {
-                return new Rectangle2D.Double();
-            }
-        }
-
-        System.err.println("Unknown resource type: " + type);
-        return value;
+        return entry.type.parseValue(entry.value);
     }
 
     /**
@@ -242,7 +192,6 @@ public class DataPack
             return null;
         }
 
-        String type = entry.type;
         String value = entry.value;
         if (value == null) {
             return null;
@@ -313,6 +262,16 @@ public class DataPack
         digester.addObjectCreate("datapack", MetaData.class);
         digester.addRule("datapack", new SetPropertyFieldsRule());
         digester.addRule("datapack/data", new SetPropertyFieldsRule() {
+            { // initializer
+                addFieldParser("type", new FieldParser() {
+                    public Object parse (String property)
+                        throws Exception
+                    {
+                        return DataType.parseType(property);
+                    }
+                });
+            }
+
             public void begin (String namespace, String name, Attributes attrs)
                 throws Exception
             {
@@ -329,6 +288,16 @@ public class DataPack
             }
         });
         digester.addRule("datapack/file", new SetPropertyFieldsRule() {
+            { // initializer
+                addFieldParser("type", new FieldParser() {
+                    public Object parse (String property)
+                        throws Exception
+                    {
+                        return FileType.parseType(property);
+                    }
+                });
+            }
+
             public void begin (String namespace, String name, Attributes attrs)
                 throws Exception
             {
@@ -352,7 +321,190 @@ public class DataPack
         }
     }
 
-    protected static class AbstractEntry
+    public enum DataType
+    {
+        /** If we're parsing a DataPack created with newer code, there may be data types
+         * we don't understand. They'll be assigned this type. */
+        UNKNOWN_TYPE(null),
+
+        /** A String. */
+        STRING("String"),
+
+        /** A floating point number. */
+        NUMBER("Number"),
+
+        /** A boolean value. */
+        BOOLEAN("Boolean"),
+
+        /** An untyped array. */
+        ARRAY("Array"),
+
+        /** Two floating point values representing x and y. */
+        POINT("Point"),
+
+        /** Four floating point values representing x, y, width, and height. */
+        RECTANGLE("Rectangle"),
+
+        ; // End of enums
+
+        /**
+         * Constructor.
+         */
+        private DataType (String strName)
+        {
+            _strName = strName;
+        }
+
+        public String toString ()
+        {
+            return _strName;
+        }
+
+        /**
+         * Parse the String value into an object.
+         *
+         * This could have been done with a value-specific method implementation, but
+         * it's actually easier to just do a switch statement...
+         */
+        public Object parseValue (String value)
+        {
+            if (value == null) {
+                return null;
+            }
+
+            switch (this) {
+            case STRING:
+                return StringUtil.decode(value);
+
+            case NUMBER:
+            {
+                try {
+                    return new Double(value);
+
+                } catch (NumberFormatException nfe) {
+                    return Double.valueOf(Double.NaN);
+                }
+            }
+
+            case BOOLEAN:
+                return Boolean.valueOf("true".equals(value.toLowerCase()));
+
+            case ARRAY:
+            {
+                // StringUtil.parseStringArray doesn't do things the way we'd like...
+                String[] array = value.split(",");
+                for (int ii = 0; ii < array.length; ii++) {
+                    array[ii] = StringUtil.decode(array[ii]);
+                }
+                return array;
+            }
+
+            case POINT:
+            {
+                String[] bits = value.split(",");
+                try {
+                    return new Point2D.Double(
+                        Double.parseDouble(bits[0]), Double.parseDouble(bits[1]));
+
+                } catch (NumberFormatException nfe) {
+                    return new Point2D.Double();
+                }
+            }
+
+            case RECTANGLE:
+            {
+                String[] bits = value.split(",");
+                try {
+                    return new Rectangle2D.Double(
+                        Double.parseDouble(bits[0]), Double.parseDouble(bits[1]),
+                        Double.parseDouble(bits[2]), Double.parseDouble(bits[3]));
+
+                } catch (NumberFormatException nfe) {
+                    return new Rectangle2D.Double();
+                }
+            }
+
+            case UNKNOWN_TYPE:
+                return value;
+
+            default:
+                throw new RuntimeException("Unimplemented parseValue for " + this);
+            }
+        }
+
+        public static DataType parseType (String typeStr)
+        {
+            // this doesn't need to be super fast
+            for (DataType dt : values()) {
+                if (typeStr.equals(dt.toString())) {
+                    return dt;
+                }
+            }
+
+            System.err.println("Unknown data type: " + typeStr);
+            return UNKNOWN_TYPE;
+        }
+
+        /** The String name of this type. */
+        protected String _strName;
+
+    } // END: enum DataType
+
+    public enum FileType
+    {
+        /** If we're parsing a DataPack created with newer code, there may be file types
+         * we don't understand. They'll be assigned this type. */
+        UNKNOWN_TYPE(null),
+
+        /** An image type: png, gif, or jpg only. */
+        IMAGE("Image"),
+
+        /** Image + SWF. */
+        DISPLAY_OBJECT("DisplayObject"),
+
+        /** An au file. */
+        JAVA_SOUND("JavaSound"),
+
+        /** An mp3 wrapped in a SWF. */
+        FLASH_SOUND("FlashSound"),
+
+        /** Whatever. Bare binary data. */
+        BLOB("Blob"),
+
+        ; // End of enums
+
+        /**
+         * Constructor.
+         */
+        private FileType (String strName)
+        {
+            _strName = strName;
+        }
+
+        public String toString ()
+        {
+            return _strName;
+        }
+
+        public static FileType parseType (String typeStr)
+        {
+            // this doesn't need to be super fast
+            for (FileType ft : values()) {
+                if (typeStr.equals(ft.toString())) {
+                    return ft;
+                }
+            }
+
+            System.err.println("Unknown file type: " + typeStr);
+            return UNKNOWN_TYPE;
+        }
+
+        /** The String name of this type. */
+        protected String _strName;
+
+    } // END: enum FileType
+
+    protected static abstract class AbstractEntry
     {
         /** The name of the data, uuencoded. */
         public String name;
@@ -360,19 +512,18 @@ public class DataPack
         /** A human description, uuencoded. */
         public String info = "";
 
-        /** The type of the data. */
-        public String type;
-
         /** The value, uuencoded, or null if none. */
         public String value;
 
         /** Is this value optional? */
         public boolean optional;
 
+        protected abstract String getTypeAsString ();
+
         protected void attrsToXML (StringBuilder buf)
         {
             buf.append(" name=\"").append(name).append("\"");
-            buf.append(" type=\"").append(type).append("\"");
+            buf.append(" type=\"").append(getTypeAsString()).append("\"");
             if (value != null) {
                 buf.append(" value=\"").append(value).append("\"");
             }
@@ -383,11 +534,14 @@ public class DataPack
                 buf.append(" optional=\"true\"");
             }
         }
-    }
+    } // END: class AbstractEntry
     
     /** MetaData entry describing data. */
     protected static class DataEntry extends AbstractEntry
     {
+        /** The type of the data. */
+        public DataType type;
+
         public DataEntry ()
         {
         }
@@ -402,11 +556,19 @@ public class DataPack
             buf.append("/>");
             return buf.toString();
         }
-    }
+
+        protected String getTypeAsString ()
+        {
+            return type.toString();
+        }
+    } // END: class DataEntry
 
     /** MetaData entry describing a file. */
     protected static class FileEntry extends AbstractEntry
     {
+        /** The type of the file. */
+        public FileType type;
+
         public FileEntry ()
         {
         }
@@ -421,7 +583,12 @@ public class DataPack
             buf.append("/>");
             return buf.toString();
         }
-    }
+
+        protected String getTypeAsString ()
+        {
+            return type.toString();
+        }
+    } // END: class FileEntry
 
     /** MetaData holder class. */
     protected static class MetaData
@@ -465,7 +632,7 @@ public class DataPack
                 buf.append('\t').append(entry.toXML()).append('\n');
             }
         }
-    }
+    } // END: class MetaData
 
     /** The parsed metadata. */
     protected MetaData _metadata;
