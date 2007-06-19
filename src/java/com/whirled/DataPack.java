@@ -87,6 +87,16 @@ public class DataPack
     }
 
     /**
+     * Get the namespace of this data pack.
+     */
+    // TODO: sort out what this means
+    public String getNamespace ()
+    {
+        validateComplete();
+        return StringUtil.decode(_metadata.namespace);
+    }
+
+    /**
      * Convenience method to access some data as a String.
      */
     public String getString (String name)
@@ -212,14 +222,19 @@ public class DataPack
 
     protected String validateAccess (String name)
     {
-        if (_metadata == null) {
-            throw new IllegalStateException("DataPack is not loaded.");
-        }
+        validateComplete();
         if (name == null) {
             throw new IllegalArgumentException("Invalid file name: " + name);
         }
 
         return StringUtil.encode(name);
+    }
+
+    protected void validateComplete ()
+    {
+        if (!isComplete()) {
+            throw new IllegalStateException("DataPack is not loaded.");
+        }
     }
 
     /**
@@ -620,7 +635,9 @@ public class DataPack
 
         protected void attrsToXML (StringBuilder buf)
         {
-            buf.append(" namespace=\"").append(namespace).append("\"");
+            if (namespace != null) {
+                buf.append(" namespace=\"").append(namespace).append("\"");
+            }
         }
 
         protected void childrenToXML (StringBuilder buf)

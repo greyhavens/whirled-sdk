@@ -68,6 +68,12 @@ public class DataPack extends EventDispatcher
         return (_metadata != null);
     }
 
+    public function getNamespace () :String
+    {
+        validateComplete();
+        return unescape(String(_metadata.attribute("namespace")));
+    }
+
     /**
      * Convenience function to access some data as a String.
      */
@@ -302,9 +308,6 @@ public class DataPack extends EventDispatcher
 
     protected function validateAccess (name :String) :String
     {
-        if (_metadata == null) {
-            throw new IllegalOperationError("DataPack is not loaded.");
-        }
         if (name == null) {
             throw new ArgumentError("Invalid name: " + name);
         }
@@ -312,6 +315,13 @@ public class DataPack extends EventDispatcher
         // TODO: we may need to verify that the urlencoding is happening the same
         // way that it is in Java
         return escape(name);
+    }
+
+    protected function validateComplete () :void
+    {
+        if (!isComplete()) {
+            throw new IllegalOperationError("DataPack is not loaded.");
+        }
     }
 
     /**
