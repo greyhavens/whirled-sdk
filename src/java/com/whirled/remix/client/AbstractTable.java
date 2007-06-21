@@ -5,7 +5,7 @@ package com.whirled.remix.client;
 
 import java.awt.Component;
 
-import javax.swing.DefaultCellEditor;
+import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -15,7 +15,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-import com.samskivert.swing.HGroupLayout;
+import com.samskivert.swing.GroupLayout;
 import com.samskivert.util.StringUtil;
 
 import com.whirled.remix.data.EditableDataPack;
@@ -34,13 +34,13 @@ public abstract class AbstractTable extends JTable
         default:
             return _decodingRenderer;
 
-        case RemixingDataModel.TYPE_COL:
+        case AbstractModel.TYPE_COL:
             return getDefaultRenderer(String.class);
 
-        case RemixingDataModel.ACTIONS_COL:
+        case AbstractModel.ACTIONS_COL:
             return _actionRenderer;
 
-        case RemixingDataModel.OPTIONAL_COL:
+        case AbstractModel.OPTIONAL_COL:
             return getDefaultRenderer(Boolean.class);
         }
     }
@@ -49,6 +49,9 @@ public abstract class AbstractTable extends JTable
     public TableCellEditor getCellEditor (int row, int column)
     {
         switch (convertColumnIndexToModel(column)) {
+        case AbstractModel.ACTIONS_COL:
+            return _actionRenderer;
+
         default:
             return super.getCellEditor(row, column);
         }
@@ -69,22 +72,36 @@ public abstract class AbstractTable extends JTable
     }
 
     // TODO... will this work?
-    protected static class ActionCellRenderer extends JPanel
-        implements TableCellRenderer
+    protected static class ActionCellRenderer extends AbstractCellEditor
+        implements TableCellRenderer, TableCellEditor
     {
         public ActionCellRenderer ()
         {
-            super(new HGroupLayout());
-            add(new JButton("Revert"));
+            _comp = GroupLayout.makeButtonBox(GroupLayout.CENTER);
+            _comp.add(new JButton("Revert"));
         }
 
-        @Override
+        // from CellEditor
+        public Object getCellEditorValue ()
+        {
+            return null;
+        }
+
+        // from TableCellEditor
+        public Component getTableCellEditorComponent (
+            JTable table, Object value, boolean isSelected, int row, int col)
+        {
+            return _comp;
+        }
+
+        // from TableCellRenderer
         public Component getTableCellRendererComponent (
             JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col)
         {
-            // TODO: dim buttons, etc.
-            return this;
+            return _comp;
         }
+
+        protected JPanel _comp;
     }
 
     protected DecodingCellRenderer _decodingRenderer = new DecodingCellRenderer();

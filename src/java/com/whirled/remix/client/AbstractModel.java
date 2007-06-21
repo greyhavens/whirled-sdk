@@ -109,8 +109,14 @@ public abstract class AbstractModel extends AbstractTableModel
     @Override
     public boolean isCellEditable (int rowIndex, int columnIndex)
     {
-        // standardly, the only editable field is the value
-        return (columnIndex == VALUE_COL);
+        switch (columnIndex) {
+        case VALUE_COL: // standardly, the only editable field is the value
+        case ACTIONS_COL: // this is editable so we can push the buttons...
+            return true;
+
+        default:
+            return false;
+        }
     }
 
     @Override

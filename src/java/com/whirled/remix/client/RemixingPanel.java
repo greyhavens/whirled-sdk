@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
@@ -24,7 +25,14 @@ public class RemixingPanel extends JPanel
         add(new JLabel("Data"), VGroupLayout.FIXED);
         _dataTable = createDataTable(pack);
         add(new JScrollPane(_dataTable));
+        addDataControls();
 
+        add(new JSeparator(), VGroupLayout.FIXED);
+
+        add(new JLabel("Files"), VGroupLayout.FIXED);
+        _fileTable = createFileTable(pack);
+        add(new JScrollPane(_fileTable));
+        addFileControls();
 
         JPanel buttonPan = GroupLayout.makeButtonBox(GroupLayout.CENTER);
         JButton ok = new JButton("OK");
@@ -41,6 +49,33 @@ public class RemixingPanel extends JPanel
         return new RemixingDataTable(pack);
     }
 
+    /**
+     * Create the table model to use for the file elements.
+     */
+    protected JTable createFileTable (EditableDataPack pack)
+    {
+        return new RemixingFileTable(pack);
+    }
+
+    /**
+     * Add any controls related to the data fields.
+     */
+    protected void addDataControls ()
+    {
+        // nada
+    }
+
+    /**
+     * Add any controls related to the file fields.
+     */
+    protected void addFileControls ()
+    {
+        // nada
+    }
+
     /** The table editing the data fields. */
     protected JTable _dataTable;
+
+    /** The table editing the file fields. */
+    protected JTable _fileTable;
 }
