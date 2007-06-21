@@ -35,7 +35,7 @@ public class RemixingDataTable extends AbstractTable
 
         case RemixingDataModel.VALUE_COL: {
                 EditableDataPack.DataType type = (EditableDataPack.DataType)
-                    getModel().getValueAt(convertRowIndexToModel(row), RemixingDataModel.TYPE_COL);
+                    getModel().getValueAt(row, RemixingDataModel.TYPE_COL);
                 switch (type) {
                 default:
                     return _decodingRenderer;
