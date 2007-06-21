@@ -5,6 +5,9 @@ package com.whirled.remix.client;
 
 import java.awt.Component;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -78,19 +81,36 @@ public abstract class AbstractTable extends JTable
         public ActionCellRenderer ()
         {
             _comp = GroupLayout.makeButtonBox(GroupLayout.CENTER);
-            _comp.add(new JButton("Revert"));
+            _comp.add(_revert = new JButton(new AbstractAction("Revert") {
+                public void actionPerformed (ActionEvent event) {
+                    _returnValue = AbstractModel.ACTION_REVERT;
+                    stopCellEditing();
+                }
+            }));
+            _comp.add(_delete = new JButton(new AbstractAction("Delete") {
+                public void actionPerformed (ActionEvent event) {
+                    _returnValue = AbstractModel.ACTION_DELETE;
+                    stopCellEditing();
+                }
+            }));
         }
 
         // from CellEditor
         public Object getCellEditorValue ()
         {
-            return null;
+            Integer value = _returnValue;
+            _returnValue = 0;
+            return value;
         }
 
         // from TableCellEditor
         public Component getTableCellEditorComponent (
             JTable table, Object value, boolean isSelected, int row, int col)
         {
+            int flags = ((Integer) value).intValue();
+            _revert.setEnabled((flags & AbstractModel.ACTION_REVERT) != 0);
+            _delete.setVisible((flags & AbstractModel.ACTION_SHOW_DELETE) != 0);
+            _delete.setEnabled((flags & AbstractModel.ACTION_DELETE) != 0);
             return _comp;
         }
 
@@ -98,10 +118,17 @@ public abstract class AbstractTable extends JTable
         public Component getTableCellRendererComponent (
             JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col)
         {
-            return _comp;
+            return getTableCellEditorComponent(table, value, isSelected, row, col);
         }
 
+        /** The value to return when this editor is done "editing". */
+        protected int _returnValue = 0;
+
         protected JPanel _comp;
+
+        protected JButton _revert;
+
+        protected JButton _delete;
     }
 
     protected DecodingCellRenderer _decodingRenderer = new DecodingCellRenderer();

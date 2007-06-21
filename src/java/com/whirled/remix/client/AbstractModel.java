@@ -4,6 +4,7 @@
 package com.whirled.remix.client;
 
 import java.util.List;
+import java.util.HashMap;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -20,6 +21,11 @@ public abstract class AbstractModel extends AbstractTableModel
     public static final int OPTIONAL_COL = 4;
     public static final int ACTIONS_COL = 5; // actions will have buttons to revert
     public static final int COLUMN_COUNT = 6;
+
+    /** Flags set in the action field. */
+    public static final int ACTION_REVERT = 1 << 0;
+    public static final int ACTION_SHOW_DELETE = 1 << 1;
+    public static final int ACTION_DELETE = 1 << 2;
 
     public AbstractModel (EditableDataPack pack)
     {
@@ -60,7 +66,11 @@ public abstract class AbstractModel extends AbstractTableModel
             return entry.optional;
 
         case ACTIONS_COL:
-            return 0; // TODO: some bitmask or other attrs describing the actions that can be taken
+            int flags = 0;
+            if (_revertValues.containsKey(rowIndex)) {
+                flags |= ACTION_REVERT;
+            }
+            return Integer.valueOf(flags);
 
         default:
             return null;
@@ -103,6 +113,9 @@ public abstract class AbstractModel extends AbstractTableModel
 
         case OPTIONAL_COL:
             return Boolean.class;
+
+        case ACTIONS_COL:
+            return Integer.class;
         }
     }
 
@@ -122,13 +135,29 @@ public abstract class AbstractModel extends AbstractTableModel
     @Override
     public void setValueAt (Object newValue, int rowIndex, int columnIndex)
     {
+        Integer rowKey = Integer.valueOf(rowIndex);
+
         EditableDataPack.AbstractEntry entry = getEntry(rowIndex);
         switch (columnIndex) {
         case VALUE_COL:
             // I'm going to assume that the cell editor returns a properly formatted value.
             // Always a String, never a Stringsmaid.
+            if (!_revertValues.containsKey(rowKey)) {
+                _revertValues.put(rowKey, entry.value);
+                fireTableCellUpdated(rowIndex, ACTIONS_COL);
+            }
             entry.value = (String) newValue;
             break;
+
+        case ACTIONS_COL:
+            // the new value will be an action indicating what has happened
+            int action = ((Integer) newValue).intValue();
+            switch (action) {
+            case ACTION_REVERT:
+                entry.value = _revertValues.remove(rowIndex);
+                fireTableCellUpdated(rowIndex, VALUE_COL);
+                break;
+            }
         }
     }
 
@@ -147,4 +176,7 @@ public abstract class AbstractModel extends AbstractTableModel
 
     /** A List of the names to be used in the rows. */
     protected List<String> _fields;
+
+    /** A mapping of row to the original value, only if the value was changed. */
+    protected HashMap<Integer,String> _revertValues = new HashMap<Integer,String>();
 }
