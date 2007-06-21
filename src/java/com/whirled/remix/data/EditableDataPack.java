@@ -1,7 +1,7 @@
 //
 // $Id$
 
-package com.threerings.msoy.item.remix.data;
+package com.whirled.remix.data;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -12,7 +12,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -44,6 +47,49 @@ public class EditableDataPack extends DataPack
                 listener.requestFailed(cause);
             }
         });
+    }
+
+    /**
+     * Get a list of all the data fields.
+     */
+    public List<String> getDataFields ()
+    {
+        validateComplete();
+
+        ArrayList<String> keys = new ArrayList<String>(_metadata.datas.keySet());
+        for (int ii = 0, nn = keys.size(); ii < nn; ii++) {
+            keys.set(ii, StringUtil.decode(keys.get(ii)));
+        }
+        return keys;
+    }
+
+    /**
+     * Get a list of all the file fields.
+     */
+    public List<String> getFileFields ()
+    {
+        validateComplete();
+
+        ArrayList<String> keys = new ArrayList<String>(_metadata.files.keySet());
+        for (int ii = 0, nn = keys.size(); ii < nn; ii++) {
+            keys.set(ii, StringUtil.decode(keys.get(ii)));
+        }
+        return keys;
+    }
+
+    /**
+     * Get the DataEntry for the specified name, for direct editing. Don't fuck up!
+     */
+    public DataEntry getDataEntry (String name)
+    {
+        name = validateAccess(name);
+        return _metadata.datas.get(name);
+    }
+
+    public FileEntry getFileEntry (String name)
+    {
+        name = validateAccess(name);
+        return _metadata.files.get(name);
     }
 
     /**
@@ -112,7 +158,7 @@ public class EditableDataPack extends DataPack
     /**
      * Add a data parameter.
      */
-    protected void addData (String name, DataType type, String value, boolean optional)
+    public void addData (String name, DataType type, String value, boolean optional)
     {
         if (!optional && value == null) {
             throw new IllegalArgumentException("Cannot set non-optional value to null.");
