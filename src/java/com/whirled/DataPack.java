@@ -519,7 +519,7 @@ public class DataPack
 
     } // END: enum FileType
 
-    protected static abstract class AbstractEntry
+    public static abstract class AbstractEntry
     {
         /** The name of the data, uuencoded. */
         public String name;
@@ -533,12 +533,12 @@ public class DataPack
         /** Is this value optional? */
         public boolean optional;
 
-        protected abstract String getTypeAsString ();
+        public abstract Object getType ();
 
         protected void attrsToXML (StringBuilder buf)
         {
             buf.append(" name=\"").append(name).append("\"");
-            buf.append(" type=\"").append(getTypeAsString()).append("\"");
+            buf.append(" type=\"").append(getType()).append("\"");
             if (value != null) {
                 buf.append(" value=\"").append(value).append("\"");
             }
@@ -552,13 +552,18 @@ public class DataPack
     } // END: class AbstractEntry
     
     /** MetaData entry describing data. */
-    protected static class DataEntry extends AbstractEntry
+    public static class DataEntry extends AbstractEntry
     {
         /** The type of the data. */
         public DataType type;
 
         public DataEntry ()
         {
+        }
+
+        public Object getType ()
+        {
+            return type;
         }
 
         /**
@@ -571,21 +576,21 @@ public class DataPack
             buf.append("/>");
             return buf.toString();
         }
-
-        protected String getTypeAsString ()
-        {
-            return type.toString();
-        }
     } // END: class DataEntry
 
     /** MetaData entry describing a file. */
-    protected static class FileEntry extends AbstractEntry
+    public static class FileEntry extends AbstractEntry
     {
         /** The type of the file. */
         public FileType type;
 
         public FileEntry ()
         {
+        }
+
+        public Object getType ()
+        {
+            return type;
         }
 
         /**
@@ -597,11 +602,6 @@ public class DataPack
             attrsToXML(buf);
             buf.append("/>");
             return buf.toString();
-        }
-
-        protected String getTypeAsString ()
-        {
-            return type.toString();
         }
     } // END: class FileEntry
 
