@@ -7,16 +7,16 @@ import javax.swing.table.TableModel;
 
 import com.whirled.remix.data.EditableDataPack;
 
-public class RemixingFileTable extends AbstractTable
+public class CreatingFileTable extends RemixingFileTable
 {
-    public RemixingFileTable (EditableDataPack pack)
+    public CreatingFileTable (EditableDataPack pack)
     {
         super(pack);
     }
 
-    // from AbstractTable
+    @Override // from AbstractTable
     protected AbstractModel createModel (EditableDataPack pack)
     {
-        return new RemixingFileModel(pack);
+        return new CreatingFileModel(pack);
     }
 }

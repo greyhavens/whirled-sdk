@@ -31,10 +31,17 @@ import com.whirled.DataPack;
  */
 public class EditableDataPack extends DataPack
 {
+    /**
+     * Create a brand-new datapack.
+     */
     public EditableDataPack ()
     {
+        _metadata = new MetaData();
     }
 
+    /**
+     * Load the DataPack at the specified url for remixing.
+     */
     public EditableDataPack (String url, final ResultListener<EditableDataPack> listener)
     {
         super(url, new ResultListener<com.whirled.DataPack>() {

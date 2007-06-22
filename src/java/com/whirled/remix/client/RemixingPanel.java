@@ -20,7 +20,9 @@ public class RemixingPanel extends JPanel
 {
     public RemixingPanel (EditableDataPack pack)
     {
-        super(new VGroupLayout(VGroupLayout.STRETCH));
+        super(new VGroupLayout(
+            VGroupLayout.STRETCH, VGroupLayout.STRETCH, 5, //VGroupLayout.DEFAULT_GAP,
+            VGroupLayout.CENTER));
 
         add(new JLabel("Data"), VGroupLayout.FIXED);
         _dataTable = createDataTable(pack);

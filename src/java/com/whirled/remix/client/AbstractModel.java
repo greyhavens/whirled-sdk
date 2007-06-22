@@ -18,7 +18,7 @@ public abstract class AbstractModel extends AbstractTableModel
     public static final int INFO_COL = 1;
     public static final int TYPE_COL = 2;
     public static final int VALUE_COL = 3;
-    public static final int OPTIONAL_COL = 4;
+    public static final int REQUIRED_COL = 4;
     public static final int ACTIONS_COL = 5; // actions will have buttons to revert
     public static final int COLUMN_COUNT = 6;
 
@@ -31,6 +31,21 @@ public abstract class AbstractModel extends AbstractTableModel
     {
         _pack = pack;
         _fields = initFields(pack);
+    }
+
+    /**
+     * Return the desired preferred column width for the specified column.
+     */
+    public int getPreferredColumnWidth (int column)
+    {
+        switch (column) {
+        case INFO_COL:
+        case VALUE_COL:
+            return 250;
+
+        default:
+            return 100;
+        }
     }
 
     // from TableModel
@@ -62,8 +77,8 @@ public abstract class AbstractModel extends AbstractTableModel
         case VALUE_COL:
             return entry.value;
 
-        case OPTIONAL_COL:
-            return entry.optional;
+        case REQUIRED_COL:
+            return !entry.optional;
 
         case ACTIONS_COL:
             int flags = 0;
@@ -93,8 +108,8 @@ public abstract class AbstractModel extends AbstractTableModel
         case VALUE_COL:
             return "Value";
 
-        case OPTIONAL_COL:
-            return "optional?";
+        case REQUIRED_COL:
+            return "Required";
 
         case ACTIONS_COL:
             return "Actions";
@@ -111,7 +126,7 @@ public abstract class AbstractModel extends AbstractTableModel
         default:
             return String.class;
 
-        case OPTIONAL_COL:
+        case REQUIRED_COL:
             return Boolean.class;
 
         case ACTIONS_COL:
@@ -125,6 +140,7 @@ public abstract class AbstractModel extends AbstractTableModel
         switch (columnIndex) {
         case VALUE_COL: // standardly, the only editable field is the value
         case ACTIONS_COL: // this is editable so we can push the buttons...
+        case INFO_COL:
             return true;
 
         default:
@@ -139,6 +155,7 @@ public abstract class AbstractModel extends AbstractTableModel
 
         EditableDataPack.AbstractEntry entry = getEntry(rowIndex);
         switch (columnIndex) {
+
         case VALUE_COL:
             // I'm going to assume that the cell editor returns a properly formatted value.
             // Always a String, never a Stringsmaid.
@@ -158,6 +175,17 @@ public abstract class AbstractModel extends AbstractTableModel
                 fireTableCellUpdated(rowIndex, VALUE_COL);
                 break;
             }
+            break;
+
+        case INFO_COL:
+            // implemented here for ease, but only specific subclasses allow setting this field
+            entry.info = (String) newValue;
+            break;
+
+        case REQUIRED_COL:
+            // implemented here for ease, but only specific subclasses allow setting this field
+            entry.optional = !((Boolean) newValue).booleanValue();
+            break;
         }
     }
 

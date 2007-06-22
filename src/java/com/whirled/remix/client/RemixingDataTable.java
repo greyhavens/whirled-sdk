@@ -63,7 +63,7 @@ public class RemixingDataTable extends AbstractTable
     }
 
     // from AbstractTable
-    protected TableModel createModel (EditableDataPack pack)
+    protected AbstractModel createModel (EditableDataPack pack)
     {
         return new RemixingDataModel(pack);
     }

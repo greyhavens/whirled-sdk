@@ -14,6 +14,14 @@ public class RemixingApp
 {
     public static void main (String[] args)
     {
+        if (args.length == 0) {
+            JFrame frame = new JFrame("Creating");
+            frame.setContentPane(new CreatingPanel());
+            frame.pack();
+            frame.setVisible(true);
+            return;
+        }
+
         new EditableDataPack(args[0], new ResultListener<EditableDataPack>() {
             public void requestCompleted (EditableDataPack pack) {
                 JFrame frame = new JFrame("Remixing");
