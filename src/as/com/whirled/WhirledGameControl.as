@@ -15,9 +15,16 @@ import com.threerings.ezgame.EZGameControl;
  */
 public class WhirledGameControl extends EZGameControl
 {
-    public function WhirledGameControl (disp :DisplayObject)
+    /**
+     * Creates a control and connects to the Whirled game system.
+     *
+     * @param disp the display object that is the game's UI.
+     * @param autoReady if true, the game will automatically be started when initialization is
+     * complete, if false, the game will not start until all clients call {@link #playerReady}.
+     */
+    public function WhirledGameControl (disp :DisplayObject, autoReady :Boolean = true)
     {
-        super(disp);
+        super(disp, autoReady);
     }
 
     /**
