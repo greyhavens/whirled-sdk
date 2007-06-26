@@ -19,12 +19,12 @@ import com.samskivert.util.StringUtil;
 
 import com.whirled.remix.data.EditableDataPack;
 
-public class AddDataDialog extends AbstractAddDialog
+public class AddFileDialog extends AbstractAddDialog
 {
-    public AddDataDialog (JComponent host, EditableDataPack pack, Action popupAction)
+    public AddFileDialog (JComponent host, EditableDataPack pack, Action popupAction)
     {
         super(host, pack, popupAction);
-        setTitle("Add new data field");
+        setTitle("Add new file field");
     }
 
     @Override
@@ -32,8 +32,8 @@ public class AddDataDialog extends AbstractAddDialog
     {
         super.createContent(panel);
 
-        for (EditableDataPack.DataType type : EditableDataPack.DataType.values()) {
-            if (type != EditableDataPack.DataType.UNKNOWN_TYPE) {
+        for (EditableDataPack.FileType type : EditableDataPack.FileType.values()) {
+            if (type != EditableDataPack.FileType.UNKNOWN_TYPE) {
                 _type.addItem(type);
             }
         }
@@ -42,15 +42,17 @@ public class AddDataDialog extends AbstractAddDialog
     // from AbstractAddDialog
     protected void createRow ()
     {
-        _pack.addData(_name.getText().trim(), (EditableDataPack.DataType) _type.getSelectedItem(),
-            null, _desc.getText().trim(), true);
+        // TODO
+        String name = _name.getText().trim();
+        _pack.addFile(name, null, name, (EditableDataPack.FileType) _type.getSelectedItem(),
+            _desc.getText().trim(), true);
     }
 
     // from AbstractAddDialog
     protected boolean areFieldsValid ()
     {
         String name = _name.getText().trim();
-        boolean nameOK = !StringUtil.isBlank(name) && (null == _pack.getDataEntry(name));
+        boolean nameOK = !StringUtil.isBlank(name) && (null == _pack.getFileEntry(name));
         boolean descOK = !StringUtil.isBlank(_desc.getText());
         boolean typeOK = (_type.getSelectedItem() != null);
 

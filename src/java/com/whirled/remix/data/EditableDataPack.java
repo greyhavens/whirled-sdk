@@ -119,6 +119,22 @@ public class EditableDataPack extends DataPack
         return _metadata.files.get(name);
     }
 
+    public void removeDataEntry (String name)
+    {
+        name = validateAccess(name);
+        if (null != _metadata.datas.remove(name)) {
+            fireChanged();
+        }
+    }
+
+    public void removeFileEntry (String name)
+    {
+        name = validateAccess(name);
+        if (null != _metadata.files.remove(name)) {
+            fireChanged();
+        }
+    }
+
     /**
      * Add a new file to this DataPack.
      */

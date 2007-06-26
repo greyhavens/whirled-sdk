@@ -140,8 +140,7 @@ public abstract class AbstractTable extends JTable
             _returnValue = 0;
             int flags = ((Integer) value).intValue();
             _revert.setEnabled((flags & AbstractModel.ACTION_REVERT) != 0);
-            _delete.setVisible((flags & AbstractModel.ACTION_SHOW_DELETE) != 0);
-            _delete.setEnabled((flags & AbstractModel.ACTION_DELETE) != 0);
+            _delete.setVisible((flags & AbstractModel.ACTION_DELETE) != 0);
             _comp.invalidate();
             return _comp;
         }

@@ -14,6 +14,7 @@ public class CreatingFileModel extends RemixingFileModel
     public CreatingFileModel (EditableDataPack pack)
     {
         super(pack);
+        _deleteRows = true;
     }
 
     @Override
@@ -27,5 +28,11 @@ public class CreatingFileModel extends RemixingFileModel
         default:
             return super.isCellEditable(rowIndex, columnIndex);
         }
+    }
+
+    @Override
+    protected void deleteRow (int rowIndex, String entryName)
+    {
+        _pack.removeFileEntry(entryName);
     }
 }

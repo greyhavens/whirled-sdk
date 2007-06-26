@@ -27,8 +27,7 @@ public abstract class AbstractModel extends AbstractTableModel
 
     /** Flags set in the action field. */
     public static final int ACTION_REVERT = 1 << 0;
-    public static final int ACTION_SHOW_DELETE = 1 << 1;
-    public static final int ACTION_DELETE = 1 << 2;
+    public static final int ACTION_DELETE = 1 << 1;
 
     public AbstractModel (EditableDataPack pack)
     {
@@ -98,6 +97,9 @@ public abstract class AbstractModel extends AbstractTableModel
             int flags = 0;
             if (_revertValues.containsKey(entry.name)) {
                 flags |= ACTION_REVERT;
+            }
+            if (_deleteRows) {
+                flags |= ACTION_DELETE;
             }
             return Integer.valueOf(flags);
 
@@ -185,6 +187,10 @@ public abstract class AbstractModel extends AbstractTableModel
                 entry.value = _revertValues.remove(entry.name);
                 fireTableCellUpdated(rowIndex, VALUE_COL);
                 break;
+
+            case ACTION_DELETE:
+                deleteRow(rowIndex, entry.name);
+                break;
             }
             break;
 
@@ -209,6 +215,17 @@ public abstract class AbstractModel extends AbstractTableModel
      * Get the entry for the specified row.
      */
     protected abstract EditableDataPack.AbstractEntry getEntry (int rowIndex);
+
+    /**
+     * Delete the specified row.
+     */
+    protected void deleteRow (int rowIndex, String entryName)
+    {
+        throw new RuntimeException("Should be overridden in classes that set _deleteRows=true");
+    }
+
+    /** Do we allow the deletion of rows? */
+    protected boolean _deleteRows;
 
     /** The pack we're editing. */
     protected EditableDataPack _pack;

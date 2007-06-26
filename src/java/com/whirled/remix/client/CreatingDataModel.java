@@ -14,6 +14,7 @@ public class CreatingDataModel extends RemixingDataModel
     public CreatingDataModel (EditableDataPack pack)
     {
         super(pack);
+        _deleteRows = true;
     }
 
     @Override
@@ -27,5 +28,11 @@ public class CreatingDataModel extends RemixingDataModel
         default:
             return super.isCellEditable(rowIndex, columnIndex);
         }
+    }
+
+    @Override
+    protected void deleteRow (int rowIndex, String entryName)
+    {
+        _pack.removeDataEntry(entryName);
     }
 }

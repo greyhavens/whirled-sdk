@@ -54,17 +54,10 @@ public class CreatingPanel extends RemixingPanel
         JPanel pan = GroupLayout.makeButtonBox(GroupLayout.CENTER);
         pan.add(new JButton(new AbstractAction("Add new file field") {
             public void actionPerformed (ActionEvent event) {
-//                addPopup(new AddFileDialog(_pack));
+                setEnabled(false);
+                new AddFileDialog(CreatingPanel.this, _pack, this);
             }
         }));
         add(pan, GroupLayout.FIXED);
     }
-
-//    protected void addPopup (JComponent component)
-//    {
-//        JInternalDialog dialog = new JInternalDialog(this);
-//        dialog.add(component);
-//        dialog.pack();
-//        dialog.showDialog();
-//    }
 }
