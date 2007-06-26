@@ -24,6 +24,8 @@ public class RemixingPanel extends JPanel
             VGroupLayout.STRETCH, VGroupLayout.STRETCH, 5, //VGroupLayout.DEFAULT_GAP,
             VGroupLayout.CENTER));
 
+        _pack = pack;
+
         add(new JLabel("Data"), VGroupLayout.FIXED);
         _dataTable = createDataTable(pack);
         add(new JScrollPane(_dataTable));
@@ -74,6 +76,9 @@ public class RemixingPanel extends JPanel
     {
         // nada
     }
+
+    /** The DataPack we're editing. */
+    protected EditableDataPack _pack;
 
     /** The table editing the data fields. */
     protected JTable _dataTable;

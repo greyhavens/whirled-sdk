@@ -21,6 +21,10 @@ import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import com.samskivert.util.ObserverList;
 import com.samskivert.util.ResultListener;
 import com.samskivert.util.StringUtil;
 
@@ -54,6 +58,22 @@ public class EditableDataPack extends DataPack
                 listener.requestFailed(cause);
             }
         });
+    }
+
+    /**
+     * Add the specified change listener.
+     */
+    public void addChangeListener (ChangeListener listener)
+    {
+        _listeners.add(listener);
+    }
+
+    /**
+     * Remove the specified change listener.
+     */
+    public void removeChangeListener (ChangeListener listener)
+    {
+        _listeners.remove(listener);
     }
 
     /**
@@ -102,29 +122,31 @@ public class EditableDataPack extends DataPack
     /**
      * Add a new file to this DataPack.
      */
-    public void addFile (String filename, String name, FileType type, boolean optional)
+    public void addFile (String filename, String name, FileType type, String desc, boolean optional)
         throws IOException
     {
         File file = new File(filename);
         FileInputStream fis = new FileInputStream(file);
         byte[] data = new byte[fis.available()]; // the whole file should be available
         fis.read(data);
-        addFile(file.getName(), data, name, type, optional);
+        addFile(file.getName(), data, name, type, desc, optional);
     }
 
     public void addString (String name, String value, boolean optional)
     {
-        addData(name, DataType.STRING, StringUtil.encode(value), optional);
+        addData(name, DataType.STRING, StringUtil.encode(value), null, optional);
     }
 
     public void addNumber (String name, Double value, boolean optional)
     {
-        addData(name, DataType.NUMBER, (value == null) ? null : String.valueOf(value), optional);
+        addData(name, DataType.NUMBER, (value == null) ? null : String.valueOf(value), null,
+            optional);
     }
 
     public void addBoolean (String name, Boolean value, boolean optional)
     {
-        addData(name, DataType.BOOLEAN, (value == null) ? null : String.valueOf(value), optional);
+        addData(name, DataType.BOOLEAN, (value == null) ? null : String.valueOf(value), null,
+            optional);
     }
 
     public void addArray (String name, String[] array, boolean optional)
@@ -140,7 +162,7 @@ public class EditableDataPack extends DataPack
             }
             encoded = builder.toString();
         }
-        addData(name, DataType.ARRAY, encoded, optional);
+        addData(name, DataType.ARRAY, encoded, null, optional);
     }
 
     public void addPoint (String name, Point2D.Double point, boolean optional)
@@ -149,7 +171,7 @@ public class EditableDataPack extends DataPack
         if (point != null) {
             encoded = String.valueOf(point.getX()) + "," + String.valueOf(point.getY());
         }
-        addData(name, DataType.POINT, encoded, optional);
+        addData(name, DataType.POINT, encoded, null, optional);
     }
 
     public void addRectangle (String name, Rectangle2D.Double rec, boolean optional)
@@ -159,13 +181,13 @@ public class EditableDataPack extends DataPack
             encoded = String.valueOf(rec.getX()) + "," + String.valueOf(rec.getY()) + "," +
                 String.valueOf(rec.getWidth()) + "," + String.valueOf(rec.getHeight());
         }
-        addData(name, DataType.RECTANGLE, encoded, optional);
+        addData(name, DataType.RECTANGLE, encoded, null, optional);
     }
 
     /**
      * Add a data parameter.
      */
-    public void addData (String name, DataType type, String value, boolean optional)
+    public void addData (String name, DataType type, String value, String desc, boolean optional)
     {
         if (!optional && value == null) {
             throw new IllegalArgumentException("Cannot set non-optional value to null.");
@@ -175,15 +197,18 @@ public class EditableDataPack extends DataPack
         entry.name = StringUtil.encode(name);
         entry.type = type;
         entry.value = value;
+        entry.info = StringUtil.encode(desc);
         entry.optional = optional;
 
         _metadata.datas.put(name, entry);
+        fireChanged();
     }
 
     /**
      * Add a new file to this DataPack.
      */
-    public void addFile (String filename, byte[] data, String name, FileType type, boolean optional)
+    public void addFile (
+        String filename, byte[] data, String name, FileType type, String desc, boolean optional)
     {
         _files.put(filename, data);
 
@@ -191,9 +216,11 @@ public class EditableDataPack extends DataPack
         entry.name = StringUtil.encode(name);
         entry.type = type;
         entry.value = filename;
+        entry.info = StringUtil.encode(desc);
         entry.optional = optional;
 
         _metadata.files.put(name, entry);
+        fireChanged();
     }
 
     /**
@@ -248,6 +275,25 @@ public class EditableDataPack extends DataPack
 
         zos.finish();
     }
+
+    /**
+     * Fire a ChangeEvent to all our listeners.
+     */
+    protected void fireChanged ()
+    {
+        final ChangeEvent event = new ChangeEvent(this);
+
+        _listeners.apply(new ObserverList.ObserverOp<ChangeListener>() {
+            public boolean apply (ChangeListener listener) {
+                listener.stateChanged(event);
+                return true;
+            }
+        });
+    }
+
+    /** Hold change listeners. */
+    protected ObserverList<ChangeListener> _listeners =
+        new ObserverList<ChangeListener>(ObserverList.FAST_UNSAFE_NOTIFY);
 
     // for yon testing
     public static void main (String[] args)

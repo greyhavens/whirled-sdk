@@ -340,39 +340,45 @@ public class DataPack
     {
         /** If we're parsing a DataPack created with newer code, there may be data types
          * we don't understand. They'll be assigned this type. */
-        UNKNOWN_TYPE(null),
+        UNKNOWN_TYPE(null, null),
 
         /** A String. */
-        STRING("String"),
+        STRING("String", "Any string"),
 
         /** A floating point number. */
-        NUMBER("Number"),
+        NUMBER("Number", "Floating point number"),
 
         /** A boolean value. */
-        BOOLEAN("Boolean"),
+        BOOLEAN("Boolean", "A value of true or false"),
 
         /** An untyped array. */
-        ARRAY("Array"),
+        ARRAY("Array", "An array of strings"),
 
         /** Two floating point values representing x and y. */
-        POINT("Point"),
+        POINT("Point", "A 2-dimensional floating point coordinate"),
 
         /** Four floating point values representing x, y, width, and height. */
-        RECTANGLE("Rectangle"),
+        RECTANGLE("Rectangle", "A 2-dimension floating point coordinate, plus width and height"),
 
         ; // End of enums
 
         /**
          * Constructor.
          */
-        private DataType (String strName)
+        private DataType (String strName, String desc)
         {
             _strName = strName;
+            _desc = desc;
         }
 
         public String toString ()
         {
             return _strName;
+        }
+
+        public String getDescription ()
+        {
+            return _desc;
         }
 
         /**
@@ -462,6 +468,9 @@ public class DataPack
 
         /** The String name of this type. */
         protected String _strName;
+
+        /** A human-readable description of the data type. */
+        protected String _desc;
 
     } // END: enum DataType
 
