@@ -40,11 +40,17 @@ public class TestGameControlBackend extends GameControlBackend
         o["setChatBounds_v1"] = _panel.setChatBounds;
 //         o["getHeadShot_v1"] = getHeadShot; // TODO: fake up a sprite
         o["getStageBounds_v1"] = getStageBounds;
+        o["backToWhirled_v1"] = backToWhirled;
     }
 
     protected function getStageBounds () :Rectangle
     {
         return _panel.getStageBounds();
+    }
+
+    protected function backToWhirled () :void
+    {
+        _ctx.getClient().logoff(false);
     }
 
     protected var _panel :TestGamePanel;
