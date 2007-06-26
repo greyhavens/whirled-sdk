@@ -90,5 +90,13 @@ public class WhirledGameControl extends EZGameControl
     {
         return Rectangle(callEZCode("getStageBounds_v1"));
     }
+
+    /**
+     * Instructs the game client to return to Whirled.
+     */
+    public function backToWhirled () :void
+    {
+        callEZCode("backToWhirled_v1");
+    }
 }
 }
