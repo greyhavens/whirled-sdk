@@ -165,6 +165,7 @@
     <mkdir dir="${sdk.build}/examples/games"/>
     <copy todir="${sdk.build}/examples/games">
       <fileset dir="projects/games" includes="reversi/**"/>
+      <fileset dir="projects/games" includes="fat_reversi/**"/>
       <fileset dir="projects/games" includes="dictattack/**"/>
       <fileset dir="projects/games" includes="tangleword/**"/>
     </copy>
