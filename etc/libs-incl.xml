@@ -11,6 +11,7 @@
     <include name="nenya-media.jar"/>
     <include name="nenya-rsrc.jar"/>
     <include name="samskivert.jar"/>
+    <include name="servlet-*.jar"/>
     <include name="toybox.jar"/>
     <include name="vilya-parlor.jar"/>
   </fileset>
