@@ -118,10 +118,11 @@
   <!-- builds the ActionScript documention -->
   <target name="asdoc">
     <mkdir dir="${deploy.dir}/asdoc"/>
-    <!-- we can't do just ezgame/*.as without doing ezgame/**/*.as, so we do this hackery -->
-    <mkdir dir="${deploy.dir}/tmp/ezgame"/>
-    <copy todir="${deploy.dir}/tmp/ezgame">
+    <!-- we need to generate docs just for the public facing stuff, so we do this hackery -->
+    <mkdir dir="${deploy.dir}/tmp/pubas"/>
+    <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="*.as"/>
+      <fileset dir="src/as/com/whirled" includes="*.as"/>
     </copy>
     <java classpath="${flex.path}/lib/asdoc.jar" classname="flex2.tools.ASDoc" fork="true">
       <jvmarg value="-Xmx1024m"/>
@@ -132,11 +133,10 @@
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
       <arg line="-library-path ${deploy.dir}/whirled.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
-      <arg line="-doc-sources ${deploy.dir}/tmp/ezgame"/>
-      <arg line="-doc-sources src/as/com/whirled"/>
+      <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
       <arg line="-output ${deploy.dir}/asdoc"/>
     </java>
-    <delete dir="${deploy.dir}/tmp/ezgame"/>
+    <delete dir="${deploy.dir}/tmp/pubas"/>
   </target>
 
   <!-- builds the SDK -->
