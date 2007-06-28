@@ -97,7 +97,7 @@ public class WhirledServer extends CrowdServer
 
         // create and start up our HTTP server
         httpServer = new WhirledHttpServer(getDocRoot());
-        httpServer.init();
+        httpServer.start();
 
         // register ourselves as handling the test service
         invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
@@ -113,9 +113,9 @@ public class WhirledServer extends CrowdServer
 
         // shut down our http server
         try {
-            httpServer.stop(true);
-        } catch (InterruptedException ie) {
-            reportError("Failed to stop http server.", ie);
+            httpServer.stop();
+        } catch (Exception e) {
+            reportError("Failed to stop http server.", e);
         }
     }
 

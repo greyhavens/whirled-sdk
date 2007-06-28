@@ -30,10 +30,11 @@
     <file name="lib/commons-logging.jar"/>
     <file name="lib/getdown.jar"/>
     <file name="lib/javassist.jar"/>
+    <file name="lib/jetty-6.1.4.jar"/>
+    <file name="lib/jetty-util-6.1.4.jar"/>
     <file name="lib/junit-3.7.jar"/>
     <file name="lib/lwjgl.jar"/>
-    <file name="lib/org.mortbay.jetty.jar"/>
-    <file name="lib/servlet-2.3.jar"/>
+    <file name="lib/servlet-api-2.5-6.1.4.jar"/>
     <file name="lib/velocity-1.5-dev.jar"/>
   </filelist>
 

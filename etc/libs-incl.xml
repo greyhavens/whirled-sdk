@@ -2,15 +2,15 @@
 <project name="whirled-dependencies" basedir=".">
   <fileset dir="${libs.dir}" id="whirled.libs">
     <include name="ant.jar"/>
+    <include name="commons-digester.jar"/>
+    <include name="commons-io.jar"/>
+    <include name="jetty-6.1.4.jar"/>
     <include name="narya-base.jar"/>
     <include name="narya-distrib.jar"/>
-    <include name="nenya-rsrc.jar"/>
     <include name="nenya-media.jar"/>
+    <include name="nenya-rsrc.jar"/>
     <include name="samskivert.jar"/>
     <include name="toybox.jar"/>
     <include name="vilya-parlor.jar"/>
-    <include name="org.mortbay.jetty.jar"/>
-    <include name="commons-digester.jar"/>
-    <include name="commons-io.jar"/>
   </fileset>
 </project>
