@@ -20,7 +20,9 @@ public class WhirledGameControl extends EZGameControl
      *
      * @param disp the display object that is the game's UI.
      * @param autoReady if true, the game will automatically be started when initialization is
-     * complete, if false, the game will not start until all clients call {@link #playerReady}.
+     * complete, if false, the game will not start until all clients call playerReady().
+     *
+     * @see com.threerings.ezgame.EZGameControl#playerReady()
      */
     public function WhirledGameControl (disp :DisplayObject, autoReady :Boolean = true)
     {
@@ -39,7 +41,9 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
-     * Award flow to this occupant. See {@link #getAvailableFlow}.
+     * Award flow to this occupant.
+     *
+     * @see #getAvailableFlow()
      */
     public function awardFlow (amount :int) :void
     {

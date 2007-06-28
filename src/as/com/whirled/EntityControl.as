@@ -13,8 +13,7 @@ import flash.events.EventDispatcher;
 import flash.events.TimerEvent;
 
 /**
- * Dispatched when the instance in control sends a trigger action to
- * all instances.
+ * Dispatched when the instance in control sends a trigger action to all instances.
  * 
  * @eventType com.whirled.ControlEvent.ACTION_TRIGGERED
  */
@@ -28,8 +27,7 @@ import flash.events.TimerEvent;
 [Event(name="messageReceived", type="com.whirled.ControlEvent")]
 
 /**
- * Dispatched when the instance in control updates the memory of this
- * digital item.
+ * Dispatched when the instance in control updates the memory of this digital item.
  *
  * @eventType com.whirled.ControlEvent.MEMORY_CHANGED
  */
@@ -65,12 +63,14 @@ public class EntityControl extends WhirledControl
 
     /**
      * Returns our current logical location in the scene.  Note that if y is nonzero, you are
-     * *flying*. If applicable, an avatar should animate appropriately. {@link
-     * ActorControl#isMoving} may return true or false when flying, depending on whether you're
-     * floating or actually moving between locations.
+     * *flying*. If applicable, an avatar should animate appropriately. ActorControl.isMoving() may
+     * return true or false when flying, depending on whether you're floating or actually moving
+     * between locations.
      *
      * @return an array containing [ x, y, z ]. x, y, and z are Numbers between 0 and 1 or null if
      * our location is unknown.
+     *
+     * @see ActorControl#isMoving()
      */
     public function getLogicalLocation () :Array
     {
@@ -209,8 +209,8 @@ public class EntityControl extends WhirledControl
      * Set the layout "hotspot" for your item, specified as pixels relative to (0, 0) the top-left
      * coordinate.
      *
-     * If unset, the default hotspot will be based off of the SWF dimensions,
-     * with x = width / 2, y = height.
+     * If unset, the default hotspot will be based off of the SWF dimensions, with x = width / 2,
+     * y = height.
      */
     public function setHotSpot (x :Number, y :Number, height :Number = NaN) :void
     {

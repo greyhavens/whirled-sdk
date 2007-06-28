@@ -8,14 +8,12 @@ package com.whirled {
 import flash.display.DisplayObject;
 
 /**
- * Dispatched as notification that the actor's appearance has changed.
- * getOrientation() and isMoving() should be re-queried to paint
- * the correct visual for the actor in its current state.
+ * Dispatched as notification that the actor's appearance has changed. getOrientation() and
+ * isMoving() should be re-queried to paint the correct visual for the actor in its current state.
  *
  * @eventType com.whirled.ControlEvent.APPEARANCE_CHANGED
  */
 [Event(name="appearanceChanged", type="com.whirled.ControlEvent")]
-
 
 /**
  * Dispatched as notification that the actor's state has changed.
@@ -57,9 +55,8 @@ public class ActorControl extends EntityControl
     }
 
     /**
-     * Set this actor's movement speed, in pixels per second.
-     *
-     * The default value if unset is 500 pixels per second.
+     * Set this actor's movement speed, in pixels per second. The default value if unset is 500
+     * pixels per second.
      */
     public function setMoveSpeed (pixelsPerSecond :Number) :void
     {
@@ -67,13 +64,15 @@ public class ActorControl extends EntityControl
     }
 
     /**
-     * Requests that our location be updated. This will result in a call to {@link
-     * #appearanceChanged} when the mobile starts moving and another when the mobile arrives at its
-     * destination and stops moving.
+     * Requests that our location be updated. This will result in dispatch of the
+     * APPEARANCE_CHANGED event when the mobile starts moving and another when the mobile arrives
+     * at its destination and stops moving.
      *
      * x, y, and z are Numbers between 0 and 1 indicating a percentage of the room's width, height
-     * and depth respectively.  orient is a number between 0 (facing straight ahead) and 359,
-     * going counter-clockwise.
+     * and depth respectively.  orient is a number between 0 (facing straight ahead) and 359, going
+     * counter-clockwise.
+     *
+     * @see ControlEvent#APPEARANCE_CHANGED
      */
     public function setLogicalLocation (x :Number, y :Number, z: Number, orient :Number) :void
     {
@@ -81,10 +80,8 @@ public class ActorControl extends EntityControl
     }
 
     /**
-     * Requests that our location be updated.
-     *
-     * x, y, and z are pixel values. orient is a number between 0 (facing straight ahead) and 359,
-     * going counter-clockwise.
+     * Requests that our location be updated. x, y, and z are pixel values. orient is a number
+     * between 0 (facing straight ahead) and 359, going counter-clockwise.
      */
     public function setPixelLocation (x :Number, y :Number, z :Number, orient :Number) :void
     {
@@ -93,8 +90,10 @@ public class ActorControl extends EntityControl
     }
 
     /**
-     * Requests that our orientation be updated. This will result in a call to the {@link
-     * #appearanceChanged} callback.
+     * Requests that our orientation be updated. This will result in a dispatch of the
+     * APPEARANCE_CHANGED event.
+     *
+     * @see ControlEvent#APPEARANCE_CHANGED
      */
     public function setOrientation (orient :Number) :void
     {
@@ -102,11 +101,11 @@ public class ActorControl extends EntityControl
     }
 
     /**
-     * Set the state of this actor. An actor can only be in one state at a time,
-     * but it is persistent across rooms.
+     * Set the state of this actor. An actor can only be in one state at a time, but it is
+     * persistent across rooms.
      *
-     * @param state A String identifier, may be null, indicating the state.
-     * The maximum length is 64 characters.
+     * @param state A String identifier, may be null, indicating the state.  The maximum length is
+     * 64 characters.
      */
     public function setState (state :String) :void
     {
@@ -114,8 +113,8 @@ public class ActorControl extends EntityControl
     }
 
     /**
-     * Get the current state. If no state has been set or the control
-     * is not connected to whirled, null will be returned.
+     * Get the current state. If no state has been set or the control is not connected to whirled,
+     * null will be returned.
      */
     public function getState () :String
     {
