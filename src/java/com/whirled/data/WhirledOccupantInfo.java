@@ -12,4 +12,9 @@ public interface WhirledOccupantInfo
      * Returns a URL that can be loaded to obtain an avatar headshot for this occupant.
      */
     public String getHeadshotURL ();
+
+    /**
+     * Returns the flow per minute available to this user.
+     */
+    public int getAdjustedFlowPerMinute (int flowPerMinute);
 }
