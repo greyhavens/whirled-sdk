@@ -19,20 +19,11 @@ import com.samskivert.util.StringUtil;
 
 import com.whirled.remix.data.EditableDataPack;
 
-public class CreatingDataTable extends RemixingFileTable
+public class CreatingDataTable extends RemixingDataTable
 {
     public CreatingDataTable (EditableDataPack pack)
     {
         super(pack);
-    }
-
-    @Override
-    public TableCellEditor getCellEditor (int row, int column)
-    {
-        switch (convertColumnIndexToModel(column)) {
-        default:
-            return super.getCellEditor(row, column);
-        }
     }
 
     @Override // from AbstractTable

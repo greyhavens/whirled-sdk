@@ -336,7 +336,22 @@ public class DataPack
         }
     }
 
+    /**
+     * Implemented by DataType nad FileType to simplify a few things.
+     */
+    public static interface AbstractType
+    {
+        // from Object
+        public String toString ();
+
+        /**
+         * Get a human-readable description of this type.
+         */
+        public String getDescription ();
+    }
+
     public enum DataType
+        implements AbstractType
     {
         /** If we're parsing a DataPack created with newer code, there may be data types
          * we don't understand. They'll be assigned this type. */
@@ -376,6 +391,7 @@ public class DataPack
             return _strName;
         }
 
+        // from AbstractType
         public String getDescription ()
         {
             return _desc;
@@ -475,39 +491,47 @@ public class DataPack
     } // END: enum DataType
 
     public enum FileType
+        implements AbstractType
     {
         /** If we're parsing a DataPack created with newer code, there may be file types
          * we don't understand. They'll be assigned this type. */
-        UNKNOWN_TYPE(null),
+        UNKNOWN_TYPE(null, null),
 
         /** An image type: png, gif, or jpg only. */
-        IMAGE("Image"),
+        IMAGE("Image", "gif, jpg, or png only"),
 
         /** Image + SWF. */
-        DISPLAY_OBJECT("DisplayObject"),
+        DISPLAY_OBJECT("DisplayObject", "gif, jpg, png, or swf"),
 
         /** An au file. */
-        JAVA_SOUND("JavaSound"),
+        JAVA_SOUND("JavaSound", "An .au sound file"),
 
         /** An mp3 wrapped in a SWF. */
-        FLASH_SOUND("FlashSound"),
+        FLASH_SOUND("FlashSound", "An .mp3 sound file"),
 
         /** Whatever. Bare binary data. */
-        BLOB("Blob"),
+        BLOB("Blob", "Any binary data"),
 
         ; // End of enums
 
         /**
          * Constructor.
          */
-        private FileType (String strName)
+        private FileType (String strName, String desc)
         {
             _strName = strName;
+            _desc = desc;
         }
 
         public String toString ()
         {
             return _strName;
+        }
+
+        // from AbstractType
+        public String getDescription ()
+        {
+            return _desc;
         }
 
         public static FileType parseType (String typeStr)
@@ -525,6 +549,9 @@ public class DataPack
 
         /** The String name of this type. */
         protected String _strName;
+
+        /** The description of this type. */
+        protected String _desc;
 
     } // END: enum FileType
 

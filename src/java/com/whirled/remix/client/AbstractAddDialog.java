@@ -117,6 +117,9 @@ public abstract class AbstractAddDialog extends JInternalDialog
         _type.setEditable(false);
         _type.addActionListener(new ActionListener() {
             public void actionPerformed (ActionEvent event) {
+                EditableDataPack.AbstractType type =
+                    (EditableDataPack.AbstractType) _type.getSelectedItem();
+                _typeLabel.setText((type != null) ? type.getDescription() : "");
                 validateData();
             }
         });

@@ -54,7 +54,7 @@ public class AddFileDialog extends AbstractAddDialog
         String name = _name.getText().trim();
         boolean nameOK = !StringUtil.isBlank(name) && (null == _pack.getFileEntry(name));
         boolean descOK = !StringUtil.isBlank(_desc.getText());
-        boolean typeOK = (_type.getSelectedItem() != null);
+        boolean typeOK = null != _type.getSelectedItem();
 
         _name.setForeground(nameOK ? Color.BLACK : Color.RED);
 
