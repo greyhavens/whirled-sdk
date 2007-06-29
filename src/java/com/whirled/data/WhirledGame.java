@@ -6,7 +6,7 @@ package com.whirled.data;
 /**
  * Games that wish to make use of Whirled game services should implement this interface.
  */
-public interface WhirledGameObject
+public interface WhirledGame
 {
     /**
      * Informs this game object of its flow per minute award cap.
