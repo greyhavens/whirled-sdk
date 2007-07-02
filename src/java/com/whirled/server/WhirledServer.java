@@ -38,6 +38,7 @@ import com.threerings.ezgame.data.GameDefinition;
 import com.threerings.ezgame.data.Parameter;
 import com.threerings.ezgame.data.TableMatchConfig;
 import com.threerings.ezgame.server.DictionaryManager;
+import com.threerings.ezgame.server.GameCookieManager;
 
 import com.whirled.data.WhirledGameDefinition;
 import com.whirled.xml.WhirledGameParser;
@@ -94,6 +95,16 @@ public class WhirledServer extends CrowdServer
         // initialize our managers
         parMan.init(invmgr, plreg);
         DictionaryManager.init("data/dictionary");
+        GameCookieManager.init(new GameCookieManager.UserIdentifier() {
+            public int getUserId (ClientObject clobj) {
+                String username = ((BodyObject)clobj).username.toString();
+                try {
+                    return Integer.parseInt(username.substring(username.lastIndexOf("_")+1));
+                } catch (Exception e) {
+                    return 0;
+                }
+            }
+        });
 
         // create and start up our HTTP server
         httpServer = new WhirledHttpServer(getDocRoot());
