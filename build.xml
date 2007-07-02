@@ -261,6 +261,9 @@
     <delete dir="${deploy.dir}"/>
   </target>
 
+  <!-- cleans out the application and all subprojects -->
+  <target name="cleanall" depends="cleanprojects,clean"/>
+
   <!-- fully cleans out the application and all subprojects -->
   <target name="distcleanall" depends="distcleanprojects,distclean"/>
 
