@@ -226,9 +226,6 @@
     </java>
   </target>
 
-  <!-- a target for rebuilding everything -->
-  <target name="all" depends="clean,prepare,compile,javadoc,dist"/>
-
   <!-- builds the distribution jar files -->
   <target name="dist" depends="compile">
     <!-- stick all our code in one jar file -->
@@ -243,6 +240,9 @@
     <!-- and our server-only data in yet another -->
     <jar file="${deploy.dir}/${app.name}-data.jar" basedir="." includes="data/dictionary/**"/>
   </target>
+
+  <!-- a target for rebuilding the top-level project (but not subprojects) -->
+  <target name="all" depends="prepare,compile,javadoc,dist"/>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
   <target name="distall" depends="prepare,distprojects,dist,sdk">
