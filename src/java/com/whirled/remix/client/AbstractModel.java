@@ -23,14 +23,16 @@ public abstract class AbstractModel extends AbstractTableModel
     public static final int INFO_COL = 1;
     public static final int TYPE_COL = 2;
     public static final int VALUE_COL = 3;
-    public static final int REQUIRED_COL = 4;
-    public static final int ACTIONS_COL = 5; // actions will have buttons to revert
-    public static final int COLUMN_COUNT = 6;
+    public static final int DEFAULT_COL = 4;
+    public static final int REQUIRED_COL = 5;
+    public static final int ACTIONS_COL = 6; // actions will have buttons to revert
+    public static final int COLUMN_COUNT = 7;
 
     /** Flags set in the action field. */
-    public static final int ACTION_VIEW = 1 << 0;
+    public static final int ACTION_SHOW_REVERT = 1 << 0;
     public static final int ACTION_REVERT = 1 << 1;
     public static final int ACTION_DELETE = 1 << 2;
+    public static final int ACTION_VIEW = 1 << 3;
 
     public AbstractModel (EditableDataPack pack)
     {
@@ -98,11 +100,14 @@ public abstract class AbstractModel extends AbstractTableModel
 
         case ACTIONS_COL:
             int flags = 0;
-            if (entry instanceof EditableDataPack.FileEntry && !StringUtil.isBlank(entry.value)) {
-                flags |= ACTION_VIEW;
+            if (!_blockRevert) {
+                flags |= ACTION_SHOW_REVERT;
             }
             if (_revertValues.containsKey(entry.name)) {
                 flags |= ACTION_REVERT;
+            }
+            if (entry instanceof EditableDataPack.FileEntry && !StringUtil.isBlank(entry.value)) {
+                flags |= ACTION_VIEW;
             }
             if (_deleteRows) {
                 flags |= ACTION_DELETE;
@@ -132,6 +137,9 @@ public abstract class AbstractModel extends AbstractTableModel
 
         case REQUIRED_COL:
             return "Required";
+
+        case DEFAULT_COL:
+            return "Default";
 
         case ACTIONS_COL:
             return "Actions";
@@ -236,6 +244,9 @@ public abstract class AbstractModel extends AbstractTableModel
 
     /** Do we allow the deletion of rows? */
     protected boolean _deleteRows;
+
+    /** Do we block reverting? */
+    protected boolean _blockRevert;
 
     /** The pack we're editing. */
     protected EditableDataPack _pack;

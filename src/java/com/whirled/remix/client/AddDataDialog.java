@@ -40,10 +40,15 @@ public class AddDataDialog extends AbstractAddDialog
     }
 
     // from AbstractAddDialog
-    protected void createRow ()
+    protected String getTypeHelp ()
     {
-        _pack.addData(_name.getText().trim(), (EditableDataPack.DataType) _type.getSelectedItem(),
-            null, _desc.getText().trim(), true);
+        return "The type of the data.";
+    }
+
+    // from AbstractAddDialog
+    protected void createRow (String name, Object type, String desc)
+    {
+        _pack.addDataEntry(name, (EditableDataPack.DataType) type, desc);
     }
 
     // from AbstractAddDialog
@@ -54,7 +59,8 @@ public class AddDataDialog extends AbstractAddDialog
         boolean descOK = !StringUtil.isBlank(_desc.getText());
         boolean typeOK = null != _type.getSelectedItem();
 
-        _name.setForeground(nameOK ? Color.BLACK : Color.RED);
+        _nameLabel.setForeground(nameOK ? Color.BLACK : Color.RED);
+        _descLabel.setForeground(descOK ? Color.BLACK : Color.RED);
 
         return nameOK && typeOK && descOK;
     }

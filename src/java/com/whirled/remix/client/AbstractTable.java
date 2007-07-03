@@ -166,9 +166,10 @@ public abstract class AbstractTable extends JTable
         protected void setup (Object value)
         {
             int flags = ((Integer) value).intValue();
-            _view.setVisible((flags & AbstractModel.ACTION_VIEW) != 0);
+            _revert.setVisible((flags & AbstractModel.ACTION_SHOW_REVERT) != 0);
             _revert.setEnabled((flags & AbstractModel.ACTION_REVERT) != 0);
             _delete.setVisible((flags & AbstractModel.ACTION_DELETE) != 0);
+            _view.setVisible((flags & AbstractModel.ACTION_VIEW) != 0);
         }
 
         /** The value to return when this editor is done "editing". */

@@ -15,6 +15,7 @@ public class CreatingDataModel extends RemixingDataModel
     {
         super(pack);
         _deleteRows = true;
+        _blockRevert = true;
     }
 
     @Override
@@ -23,10 +24,26 @@ public class CreatingDataModel extends RemixingDataModel
         switch (columnIndex) {
         case AbstractModel.INFO_COL:
         case AbstractModel.REQUIRED_COL:
+        case AbstractModel.DEFAULT_COL:
             return true;
 
         default:
             return super.isCellEditable(rowIndex, columnIndex);
+        }
+    }
+
+    @Override
+    public void setValueAt (Object newValue, int rowIndex, int columnIndex)
+    {
+        switch (columnIndex) {
+        case DEFAULT_COL:
+            EditableDataPack.DataEntry entry = (EditableDataPack.DataEntry) getEntry(rowIndex);
+            entry.defaultValue = (String) newValue;
+            break;
+
+        default:
+            super.setValueAt(newValue, rowIndex, columnIndex);
+            break;
         }
     }
 

@@ -5,6 +5,7 @@ package com.whirled.remix.client;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Font;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import com.samskivert.swing.GroupLayout;
@@ -43,7 +45,7 @@ public abstract class AbstractAddDialog extends JInternalDialog
         JPanel butbox = GroupLayout.makeButtonBox(GroupLayout.CENTER);
         butbox.add(new JButton(_okAction = new AbstractAction("Ok") {
             public void actionPerformed (ActionEvent event) {
-                createRow();
+                createRow(_name.getText().trim(), _type.getSelectedItem(), _desc.getText().trim());
                 dispose();
             }
         }));
@@ -80,28 +82,47 @@ public abstract class AbstractAddDialog extends JInternalDialog
     protected void createContent (JPanel panel)
     {
         // configure layout constraints..
-        JPanel grid = new JPanel(new GridBagLayout());
         GridBagConstraints c1 = new GridBagConstraints();
         c1.gridx = 0;
         c1.anchor = GridBagConstraints.NORTHWEST;
+
         GridBagConstraints c2 = new GridBagConstraints();
         c2.gridx = 1;
         c2.gridwidth = GridBagConstraints.REMAINDER;
         c2.anchor = GridBagConstraints.NORTHWEST;
+
+        GridBagConstraints cHelp = new GridBagConstraints();
+        cHelp.gridx = 0;
+        cHelp.gridwidth = GridBagConstraints.REMAINDER;
+        cHelp.anchor = GridBagConstraints.NORTHWEST;
+        cHelp.fill = GridBagConstraints.BOTH;
+
+        GridBagConstraints cSpacer = new GridBagConstraints();
+        cSpacer.gridx = 0;
+        cSpacer.gridwidth = GridBagConstraints.REMAINDER;
+        cSpacer.anchor = GridBagConstraints.NORTHWEST;
+
+        JPanel grid = new JPanel(new GridBagLayout());
         panel.add(grid);
 
         // add the widgets
-        grid.add(new JLabel("name:"), c1);
-        grid.add(_name = new JTextField(12), c2);
-
-        grid.add(new JLabel("type:"), c1);
+        grid.add(new JLabel("Type:"), c1);
         grid.add(_type = new JComboBox(), c2);
 
         grid.add(new Spacer(1, 1), c1);
         grid.add(_typeLabel = new JLabel(), c2);
+        grid.add(createHelpText(getTypeHelp()), cHelp);
+        grid.add(new Spacer(20, 20), cSpacer);
 
-        grid.add(new JLabel("description:"), c1);
+        grid.add(_nameLabel = new JLabel("Name:"), c1);
+        grid.add(_name = new JTextField(12), c2);
+        grid.add(createHelpText("The name used to access this data."), cHelp);
+        grid.add(new Spacer(20, 20), cSpacer);
+
+        grid.add(_descLabel = new JLabel("Description:"), c1);
         grid.add(_desc = new JTextField(20), c2);
+        grid.add(createHelpText("A short human-readable description of the field, to aid remixers."),
+            cHelp);
 
         // configure the behavior of the widgets
         DocumentAdapter docValidate = new DocumentAdapter() {
@@ -124,10 +145,29 @@ public abstract class AbstractAddDialog extends JInternalDialog
         });
     }
 
+    protected JTextArea createHelpText (String text)
+    {
+        JTextArea t = new JTextArea();
+        t.setEditable(false);
+        t.setLineWrap(true);
+        t.setWrapStyleWord(true);
+        t.setText(text);
+
+        Font f = t.getFont();
+        t.setFont(f.deriveFont((float) 12));
+
+        return t;
+    }
+
     protected void validateData ()
     {
         _okAction.setEnabled(areFieldsValid());
     }
+
+    /**
+     * Get the help text for the 'type' selector.
+     */
+    protected abstract String getTypeHelp ();
 
     /**
      * Are all the configured fields valid?
@@ -137,7 +177,7 @@ public abstract class AbstractAddDialog extends JInternalDialog
     /**
      * Actually create the new rom of data, after OK is pressed.
      */
-    protected abstract void createRow ();
+    protected abstract void createRow (String name, Object type, String desc);
 
     protected EditableDataPack _pack;
 
@@ -149,4 +189,6 @@ public abstract class AbstractAddDialog extends JInternalDialog
     protected JComboBox _type;
     protected JTextField _desc;
     protected JLabel _typeLabel;
+    protected JLabel _nameLabel;
+    protected JLabel _descLabel;
 }

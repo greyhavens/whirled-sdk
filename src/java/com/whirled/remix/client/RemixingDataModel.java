@@ -16,6 +16,19 @@ public class RemixingDataModel extends AbstractModel
         super(pack);
     }
 
+    @Override
+    public Object getValueAt (int rowIndex, int columnIndex)
+    {
+        switch (columnIndex) {
+        case DEFAULT_COL:
+            EditableDataPack.DataEntry entry = (EditableDataPack.DataEntry) getEntry(rowIndex);
+            return entry.defaultValue;
+
+        default:
+            return super.getValueAt(rowIndex, columnIndex);
+        }
+    }
+
     // from AbstractModel
     protected List<String> initFields (EditableDataPack pack)
     {

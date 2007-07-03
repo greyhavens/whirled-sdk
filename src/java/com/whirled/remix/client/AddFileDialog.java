@@ -40,12 +40,15 @@ public class AddFileDialog extends AbstractAddDialog
     }
 
     // from AbstractAddDialog
-    protected void createRow ()
+    protected String getTypeHelp ()
     {
-        // TODO
-        String name = _name.getText().trim();
-        _pack.addFile(name, null, name, (EditableDataPack.FileType) _type.getSelectedItem(),
-            _desc.getText().trim(), true);
+        return "The type of file that may be selected.";
+    }
+
+    // from AbstractAddDialog
+    protected void createRow (String name, Object type, String desc)
+    {
+        _pack.addFileEntry(name, (EditableDataPack.FileType) type, desc);
     }
 
     // from AbstractAddDialog
@@ -56,7 +59,8 @@ public class AddFileDialog extends AbstractAddDialog
         boolean descOK = !StringUtil.isBlank(_desc.getText());
         boolean typeOK = null != _type.getSelectedItem();
 
-        _name.setForeground(nameOK ? Color.BLACK : Color.RED);
+        _nameLabel.setForeground(nameOK ? Color.BLACK : Color.RED);
+        _descLabel.setForeground(descOK ? Color.BLACK : Color.RED);
 
         return nameOK && typeOK && descOK;
     }

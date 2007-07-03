@@ -15,6 +15,7 @@ public class CreatingFileModel extends RemixingFileModel
     {
         super(pack, table);
         _deleteRows = true;
+        _blockRevert = true;
     }
 
     @Override

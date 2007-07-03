@@ -42,6 +42,7 @@ public class RemixingDataTable extends AbstractTable
             return super.getCellRenderer(row, column);
 
         case RemixingDataModel.VALUE_COL:
+        case RemixingDataModel.DEFAULT_COL:
             EditableDataPack.DataType type = (EditableDataPack.DataType)
                 getModel().getValueAt(row, RemixingDataModel.TYPE_COL);
             switch (type) {
@@ -68,6 +69,7 @@ public class RemixingDataTable extends AbstractTable
             return super.getCellEditor(row, column);
 
         case RemixingDataModel.VALUE_COL:
+        case RemixingDataModel.DEFAULT_COL:
             EditableDataPack.DataType type = (EditableDataPack.DataType)
                 getModel().getValueAt(row, RemixingDataModel.TYPE_COL);
             switch (type) {
@@ -142,11 +144,10 @@ public class RemixingDataTable extends AbstractTable
                 _box.setBorder(_noFocusBorder);
             }
 
-            String val = (String) value;
-            _box.setText(val);
+            Boolean boolVal = Boolean.valueOf((String) value);
+            _box.setText(String.valueOf(boolVal));
             _box.setBorderPainted(true);
-            return super.getTableCellEditorComponent(
-                table, Boolean.valueOf(val), isSelected, row, column);
+            return super.getTableCellEditorComponent(table, boolVal, isSelected, row, column);
         }
 
         @Override

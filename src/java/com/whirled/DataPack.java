@@ -511,7 +511,7 @@ public class DataPack
         FLASH_SOUND("FlashSound", "An .mp3 sound file", new String[] { "mp3" }),
 
         /** Whatever. Bare binary data. */
-        BLOB("Blob", "Any binary data", null),
+        BLOB("Blob", "Any file", null),
 
         ; // End of enums
 
@@ -606,6 +606,9 @@ public class DataPack
         /** The type of the data. */
         public DataType type;
 
+        /** A default value. */
+        public String defaultValue;
+
         public DataEntry ()
         {
         }
@@ -625,6 +628,16 @@ public class DataPack
             buf.append("/>");
             return buf.toString();
         }
+
+        @Override
+        protected void attrsToXML (StringBuilder buf)
+        {
+            super.attrsToXML(buf);
+            if (defaultValue != null) {
+                buf.append(" default=\"").append(defaultValue).append("\"");
+            }
+        }
+
     } // END: class DataEntry
 
     /** MetaData entry describing a file. */

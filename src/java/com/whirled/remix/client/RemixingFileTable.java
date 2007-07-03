@@ -16,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.filechooser.FileFilter;
 
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import com.samskivert.swing.JInternalDialog;
@@ -27,6 +28,9 @@ public class RemixingFileTable extends AbstractTable
     public RemixingFileTable (EditableDataPack pack)
     {
         super(pack);
+
+        TableColumnModel colModel = getColumnModel();
+        colModel.removeColumn(colModel.getColumn(RemixingDataModel.DEFAULT_COL));
     }
 
     @Override
