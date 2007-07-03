@@ -96,8 +96,8 @@ public class WhirledServer extends CrowdServer
         parMan.init(invmgr, plreg);
         DictionaryManager.init("data/dictionary");
         GameCookieManager.init(new GameCookieManager.UserIdentifier() {
-            public int getUserId (ClientObject clobj) {
-                String username = ((BodyObject)clobj).username.toString();
+            public int getUserId (BodyObject bobj) {
+                String username = bobj.username.toString();
                 try {
                     return Integer.parseInt(username.substring(username.lastIndexOf("_")+1));
                 } catch (Exception e) {
