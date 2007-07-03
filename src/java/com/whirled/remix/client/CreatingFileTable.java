@@ -17,6 +17,6 @@ public class CreatingFileTable extends RemixingFileTable
     @Override // from AbstractTable
     protected AbstractModel createModel (EditableDataPack pack)
     {
-        return new CreatingFileModel(pack);
+        return new CreatingFileModel(pack, this);
     }
 }

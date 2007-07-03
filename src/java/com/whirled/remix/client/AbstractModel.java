@@ -11,6 +11,8 @@ import javax.swing.event.ChangeListener;
 
 import javax.swing.table.AbstractTableModel;
 
+import com.samskivert.util.StringUtil;
+
 import com.whirled.remix.data.EditableDataPack;
 
 /**
@@ -26,8 +28,9 @@ public abstract class AbstractModel extends AbstractTableModel
     public static final int COLUMN_COUNT = 6;
 
     /** Flags set in the action field. */
-    public static final int ACTION_REVERT = 1 << 0;
-    public static final int ACTION_DELETE = 1 << 1;
+    public static final int ACTION_VIEW = 1 << 0;
+    public static final int ACTION_REVERT = 1 << 1;
+    public static final int ACTION_DELETE = 1 << 2;
 
     public AbstractModel (EditableDataPack pack)
     {
@@ -95,6 +98,9 @@ public abstract class AbstractModel extends AbstractTableModel
 
         case ACTIONS_COL:
             int flags = 0;
+            if (entry instanceof EditableDataPack.FileEntry && !StringUtil.isBlank(entry.value)) {
+                flags |= ACTION_VIEW;
+            }
             if (_revertValues.containsKey(entry.name)) {
                 flags |= ACTION_REVERT;
             }
@@ -156,7 +162,6 @@ public abstract class AbstractModel extends AbstractTableModel
         switch (columnIndex) {
         case VALUE_COL: // standardly, the only editable field is the value
         case ACTIONS_COL: // this is editable so we can push the buttons...
-        case INFO_COL:
             return true;
 
         default:
@@ -172,8 +177,13 @@ public abstract class AbstractModel extends AbstractTableModel
         case VALUE_COL:
             // I'm going to assume that the cell editor returns a properly formatted value.
             // Always a String, never a Stringsmaid.
-            if (!_revertValues.containsKey(entry.name)) {
+            String prevValue = _revertValues.get(entry.name);
+            if (prevValue == null) {
                 _revertValues.put(entry.name, entry.value);
+                fireTableCellUpdated(rowIndex, ACTIONS_COL);
+
+            } else if (prevValue.equals(newValue)) {
+                _revertValues.remove(entry.name);
                 fireTableCellUpdated(rowIndex, ACTIONS_COL);
             }
             entry.value = (String) newValue;

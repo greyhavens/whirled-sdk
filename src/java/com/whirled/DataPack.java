@@ -495,32 +495,34 @@ public class DataPack
     {
         /** If we're parsing a DataPack created with newer code, there may be file types
          * we don't understand. They'll be assigned this type. */
-        UNKNOWN_TYPE(null, null),
+        UNKNOWN_TYPE(null, null, null),
 
         /** An image type: png, gif, or jpg only. */
-        IMAGE("Image", "gif, jpg, or png only"),
+        IMAGE("Image", "gif, jpg, or png only", new String[] {"gif", "jpg", "jpeg", "png" }),
 
         /** Image + SWF. */
-        DISPLAY_OBJECT("DisplayObject", "gif, jpg, png, or swf"),
+        DISPLAY_OBJECT("DisplayObject", "gif, jpg, png, or swf",
+            new String[] { "gif", "jpg", "jpeg", "png", "swf" }),
 
         /** An au file. */
-        JAVA_SOUND("JavaSound", "An .au sound file"),
+        JAVA_SOUND("JavaSound", "An .au sound file", new String[] { "au" }),
 
         /** An mp3 wrapped in a SWF. */
-        FLASH_SOUND("FlashSound", "An .mp3 sound file"),
+        FLASH_SOUND("FlashSound", "An .mp3 sound file", new String[] { "mp3" }),
 
         /** Whatever. Bare binary data. */
-        BLOB("Blob", "Any binary data"),
+        BLOB("Blob", "Any binary data", null),
 
         ; // End of enums
 
         /**
          * Constructor.
          */
-        private FileType (String strName, String desc)
+        private FileType (String strName, String desc, String[] extensions)
         {
             _strName = strName;
             _desc = desc;
+            _extensions = extensions;
         }
 
         public String toString ()
@@ -532,6 +534,14 @@ public class DataPack
         public String getDescription ()
         {
             return _desc;
+        }
+
+        /**
+         * Return the filename extensions acceptable for this type, or null for any.
+         */
+        public String[] getExtensions ()
+        {
+            return _extensions;
         }
 
         public static FileType parseType (String typeStr)
@@ -552,6 +562,9 @@ public class DataPack
 
         /** The description of this type. */
         protected String _desc;
+
+        /** The valid file extensions for this type. */
+        protected String[] _extensions;
 
     } // END: enum FileType
 

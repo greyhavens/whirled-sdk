@@ -3,6 +3,7 @@
 
 package com.whirled.remix.client;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 
@@ -113,18 +114,27 @@ public abstract class AbstractTable extends JTable
         public ActionCellRenderer ()
         {
             _comp = GroupLayout.makeButtonBox(GroupLayout.CENTER);
+            _comp.add(_view = new JButton(new AbstractAction("View") {
+                public void actionPerformed (ActionEvent event) {
+                    _returnValue = AbstractModel.ACTION_VIEW;
+                    stopCellEditing();
+                }
+            }));
+            _view.setBackground(Color.GREEN);
             _comp.add(_revert = new JButton(new AbstractAction("Revert") {
                 public void actionPerformed (ActionEvent event) {
                     _returnValue = AbstractModel.ACTION_REVERT;
                     stopCellEditing();
                 }
             }));
+            _revert.setBackground(Color.YELLOW);
             _comp.add(_delete = new JButton(new AbstractAction("Delete") {
                 public void actionPerformed (ActionEvent event) {
                     _returnValue = AbstractModel.ACTION_DELETE;
                     stopCellEditing();
                 }
             }));
+            _delete.setBackground(Color.RED);
         }
 
         // from CellEditor
@@ -138,10 +148,7 @@ public abstract class AbstractTable extends JTable
             JTable table, Object value, boolean isSelected, int row, int col)
         {
             _returnValue = 0;
-            int flags = ((Integer) value).intValue();
-            _revert.setEnabled((flags & AbstractModel.ACTION_REVERT) != 0);
-            _delete.setVisible((flags & AbstractModel.ACTION_DELETE) != 0);
-            _comp.invalidate();
+            setup(value);
             return _comp;
         }
 
@@ -149,13 +156,27 @@ public abstract class AbstractTable extends JTable
         public Component getTableCellRendererComponent (
             JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col)
         {
-            return getTableCellEditorComponent(table, value, isSelected, row, col);
+            setup(value);
+            return _comp;
+        }
+
+        /**
+         * Set up the action buttons according to the 
+         */
+        protected void setup (Object value)
+        {
+            int flags = ((Integer) value).intValue();
+            _view.setVisible((flags & AbstractModel.ACTION_VIEW) != 0);
+            _revert.setEnabled((flags & AbstractModel.ACTION_REVERT) != 0);
+            _delete.setVisible((flags & AbstractModel.ACTION_DELETE) != 0);
         }
 
         /** The value to return when this editor is done "editing". */
         protected int _returnValue = 0;
 
         protected JPanel _comp;
+
+        protected JButton _view;
 
         protected JButton _revert;
 

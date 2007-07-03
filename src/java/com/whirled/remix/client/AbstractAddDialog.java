@@ -63,7 +63,6 @@ public abstract class AbstractAddDialog extends JInternalDialog
         panel.add(butbox);
         add(new JScrollPane(panel));
 
-        setLayer(JLayeredPane.MODAL_LAYER);
         pack();
         showDialog();
     }

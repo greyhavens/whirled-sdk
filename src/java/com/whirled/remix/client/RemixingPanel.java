@@ -3,12 +3,18 @@
 
 package com.whirled.remix.client;
 
+import java.awt.event.ActionEvent;
+
+import java.io.IOException;
+
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+
 import javax.swing.table.TableModel;
 
 import com.samskivert.swing.GroupLayout;
@@ -39,8 +45,18 @@ public class RemixingPanel extends JPanel
         addFileControls();
 
         JPanel buttonPan = GroupLayout.makeButtonBox(GroupLayout.CENTER);
-        JButton ok = new JButton("OK");
+        JButton ok = new JButton(new AbstractAction("Close and Save") {
+            public void actionPerformed (ActionEvent event) {
+                close(true);
+            }
+        });
         buttonPan.add(ok);
+        JButton cancel = new JButton(new AbstractAction("Cancel") {
+            public void actionPerformed (ActionEvent event) {
+                close(false);
+            }
+        });
+        buttonPan.add(cancel);
 
         add(buttonPan, VGroupLayout.FIXED);
     }
@@ -59,6 +75,24 @@ public class RemixingPanel extends JPanel
     protected JTable createFileTable (EditableDataPack pack)
     {
         return new RemixingFileTable(pack);
+    }
+
+    /**
+     * Close this panel, optionally saving.
+     */
+    protected void close (boolean save)
+    {
+        if (save) {
+            // TODO
+            try {
+                _pack.writeTo("/tmp/datapack.dpk");
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+
+        // exit
+        System.exit(0);
     }
 
     /**

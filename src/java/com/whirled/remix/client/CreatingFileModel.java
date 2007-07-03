@@ -11,9 +11,9 @@ import com.whirled.remix.data.EditableDataPack;
  */
 public class CreatingFileModel extends RemixingFileModel
 {
-    public CreatingFileModel (EditableDataPack pack)
+    public CreatingFileModel (EditableDataPack pack, CreatingFileTable table)
     {
-        super(pack);
+        super(pack, table);
         _deleteRows = true;
     }
 
