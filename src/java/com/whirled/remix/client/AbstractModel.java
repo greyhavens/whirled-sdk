@@ -11,6 +11,7 @@ import javax.swing.event.ChangeListener;
 
 import javax.swing.table.AbstractTableModel;
 
+import com.samskivert.util.ObjectUtil;
 import com.samskivert.util.StringUtil;
 
 import com.whirled.remix.data.EditableDataPack;
@@ -106,7 +107,8 @@ public abstract class AbstractModel extends AbstractTableModel
             if (_revertValues.containsKey(entry.name)) {
                 flags |= ACTION_REVERT;
             }
-            if (entry instanceof EditableDataPack.FileEntry && !StringUtil.isBlank(entry.value)) {
+            if (entry instanceof EditableDataPack.FileEntry &&
+                    !StringUtil.isBlank((String) entry.value)) {
                 flags |= ACTION_VIEW;
             }
             if (_deleteRows) {
@@ -156,6 +158,10 @@ public abstract class AbstractModel extends AbstractTableModel
         default:
             return String.class;
 
+        case VALUE_COL:
+        case DEFAULT_COL:
+            return Object.class;
+
         case REQUIRED_COL:
             return Boolean.class;
 
@@ -183,18 +189,18 @@ public abstract class AbstractModel extends AbstractTableModel
         EditableDataPack.AbstractEntry entry = getEntry(rowIndex);
         switch (columnIndex) {
         case VALUE_COL:
-            // I'm going to assume that the cell editor returns a properly formatted value.
-            // Always a String, never a Stringsmaid.
-            String prevValue = _revertValues.get(entry.name);
-            if (prevValue == null) {
+            // (We use containsKey in case the value stored is null)
+            if (_revertValues.containsKey(entry.name)) {
+                Object prevValue = _revertValues.get(entry.name);
+                if (ObjectUtil.equals(prevValue, newValue)) {
+                    _revertValues.remove(entry.name);
+                    fireTableCellUpdated(rowIndex, ACTIONS_COL);
+                }
+            } else {
                 _revertValues.put(entry.name, entry.value);
                 fireTableCellUpdated(rowIndex, ACTIONS_COL);
-
-            } else if (prevValue.equals(newValue)) {
-                _revertValues.remove(entry.name);
-                fireTableCellUpdated(rowIndex, ACTIONS_COL);
             }
-            entry.value = (String) newValue;
+            entry.value = newValue;
             break;
 
         case ACTIONS_COL:
@@ -255,5 +261,5 @@ public abstract class AbstractModel extends AbstractTableModel
     protected List<String> _fields;
 
     /** A mapping of datum name to the original value, only if the value was changed. */
-    protected HashMap<String,String> _revertValues = new HashMap<String,String>();
+    protected HashMap<String,Object> _revertValues = new HashMap<String,Object>();
 }

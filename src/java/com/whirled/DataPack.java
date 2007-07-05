@@ -31,6 +31,7 @@ import com.samskivert.util.StringUtil;
 
 import com.samskivert.xml.SetPropertyFieldsRule;
 
+// TODO: double check encodings, as stringing numbers using the locale may inject commas
 public class DataPack
 {
     public DataPack (final String url, final ResultListener<DataPack> listener)
@@ -93,7 +94,7 @@ public class DataPack
     public String getNamespace ()
     {
         validateComplete();
-        return StringUtil.decode(_metadata.namespace);
+        return _metadata.namespace;
     }
 
     /**
@@ -150,13 +151,8 @@ public class DataPack
     public Object getData (String name)
     {
         name = validateAccess(name);
-
         DataEntry entry = _metadata.datas.get(name);
-        if (entry == null) {
-            return null;
-        }
-
-        return entry.type.parseValue(entry.value);
+        return (entry == null) ? null : entry.value;
     }
 
     /**
@@ -202,7 +198,7 @@ public class DataPack
             return null;
         }
 
-        String value = entry.value;
+        String value = (String) entry.value;
         if (value == null) {
             return null;
         }
@@ -227,7 +223,7 @@ public class DataPack
             throw new IllegalArgumentException("Invalid file name: " + name);
         }
 
-        return StringUtil.encode(name);
+        return name;
     }
 
     protected void validateComplete ()
@@ -273,9 +269,22 @@ public class DataPack
     protected MetaData parseMetaData (byte[] data)
         throws IOException
     {
+        // a field parser we can use for any String fields that need decoding.
+        final SetPropertyFieldsRule.FieldParser decodeParser =
+            new SetPropertyFieldsRule.FieldParser() {
+                public Object parse (String property)
+                    throws Exception
+                {
+                    return StringUtil.decode(property);
+                }
+            };
+
         Digester digester = new Digester();
         digester.addObjectCreate("datapack", MetaData.class);
-        digester.addRule("datapack", new SetPropertyFieldsRule());
+        SetPropertyFieldsRule mainParser = new SetPropertyFieldsRule();
+        mainParser.addFieldParser("namespace", decodeParser);
+        digester.addRule("datapack", mainParser);
+
         digester.addRule("datapack/data", new SetPropertyFieldsRule() {
             { // initializer
                 addFieldParser("type", new FieldParser() {
@@ -285,6 +294,22 @@ public class DataPack
                         return DataType.parseType(property);
                     }
                 });
+                addFieldParser("name", decodeParser);
+                addFieldParser("info", decodeParser);
+
+                // We need to have a non-modifying parser just to massage the String -> Object
+                // (Which doesn't really need massaging, but otherwise the ValueMarshaller bitches)
+                // We take care of actually parsing the value once we're sure we know the type,
+                // in the end() method, below.
+                FieldParser massager = new FieldParser() {
+                    public Object parse (String property)
+                        throws Exception
+                    {
+                        return property;
+                    }
+                };
+                addFieldParser("value", massager);
+                addFieldParser("defaultValue", massager);
             }
 
             public void begin (String namespace, String name, Attributes attrs)
@@ -299,6 +324,10 @@ public class DataPack
             {
                 DataEntry entry = (DataEntry) digester.pop();
                 MetaData metadata = (MetaData) digester.peek();
+                // parse the actual values now that we know the type
+                entry.value = entry.type.parseValue((String) entry.value);
+                entry.defaultValue = entry.type.parseValue((String) entry.defaultValue);
+                // and store it
                 metadata.datas.put(entry.name, entry);
             }
         });
@@ -311,6 +340,9 @@ public class DataPack
                         return FileType.parseType(property);
                     }
                 });
+                addFieldParser("name", decodeParser);
+                addFieldParser("info", decodeParser);
+                addFieldParser("value", decodeParser);
             }
 
             public void begin (String namespace, String name, Attributes attrs)
@@ -348,6 +380,11 @@ public class DataPack
          * Get a human-readable description of this type.
          */
         public String getDescription ();
+
+        /**
+         * Format the value for writing back out.
+         */
+        public String formatValue (Object value);
     }
 
     public enum DataType
@@ -397,6 +434,49 @@ public class DataPack
             return _desc;
         }
 
+        // from AbstractType
+        public String formatValue (Object value)
+        {
+            if (value == null) {
+                return null;
+            }
+
+            switch (this) {
+            case STRING:
+                return StringUtil.encode((String) value);
+
+            case NUMBER:
+                return StringUtil.encode(String.valueOf(value));
+
+            case BOOLEAN:
+                return String.valueOf(value);
+
+            case ARRAY:
+                String[] arr = (String[]) value;
+                StringBuilder buf = new StringBuilder();
+                for (int ii = 0; ii < arr.length; ii++) {
+                    if (ii > 0) {
+                        buf.append(',');
+                    }
+                    buf.append(StringUtil.encode(arr[ii]));
+                }
+                return buf.toString();
+
+            case POINT:
+                Point2D.Double pt = (Point2D.Double) value;
+                return String.valueOf(pt.getX()) + "," + String.valueOf(pt.getY());
+
+            case RECTANGLE:
+                Rectangle2D.Double rec = (Rectangle2D.Double) value;
+                return String.valueOf(rec.getX()) + "," + String.valueOf(rec.getY()) + "," +
+                    String.valueOf(rec.getWidth()) + "," + String.valueOf(rec.getHeight());
+
+            default:
+                throw new RuntimeException("Cannot write a datapack containing a type value we " +
+                    "do not understand! [type=" + this + "].");
+            }
+        }
+
         /**
          * Parse the String value into an object.
          *
@@ -416,7 +496,7 @@ public class DataPack
             case NUMBER:
             {
                 try {
-                    return new Double(value);
+                    return new Double(StringUtil.decode(value));
 
                 } catch (NumberFormatException nfe) {
                     return Double.valueOf(Double.NaN);
@@ -462,7 +542,7 @@ public class DataPack
             }
 
             case UNKNOWN_TYPE:
-                return value;
+                return StringUtil.decode(value);
 
             default:
                 throw new RuntimeException("Unimplemented parseValue for " + this);
@@ -536,6 +616,13 @@ public class DataPack
             return _desc;
         }
 
+        // from AbstractType
+        public String formatValue (Object value)
+        {
+            // we merely need to re-encode the filename
+            return StringUtil.encode((String) value);
+        }
+
         /**
          * Return the filename extensions acceptable for this type, or null for any.
          */
@@ -570,29 +657,33 @@ public class DataPack
 
     public static abstract class AbstractEntry
     {
-        /** The name of the data, uuencoded. */
+        /** The name of the data. */
         public String name;
 
-        /** A human description, uuencoded. */
+        /** A human-readable description. */
         public String info = "";
 
-        /** The value, uuencoded, or null if none. */
-        public String value;
+        /** The value, or null if none. */
+        public Object value;
 
         /** Is this value optional? */
         public boolean optional;
 
-        public abstract Object getType ();
+        public abstract AbstractType getType ();
 
+        /**
+         * Output the attributes as XML.
+         */
         protected void attrsToXML (StringBuilder buf)
         {
-            buf.append(" name=\"").append(name).append("\"");
-            buf.append(" type=\"").append(getType()).append("\"");
+            AbstractType type = getType();
+            buf.append(" name=\"").append(StringUtil.encode(name)).append("\"");
+            buf.append(" type=\"").append(type).append("\"");
             if (value != null) {
-                buf.append(" value=\"").append(value).append("\"");
+                buf.append(" value=\"").append(type.formatValue(value)).append("\"");
             }
-            if (!"".equals(info)) {
-                buf.append(" info=\"").append(info).append("\"");
+            if (!StringUtil.isBlank(info)) {
+                buf.append(" info=\"").append(StringUtil.encode(info)).append("\"");
             }
             if (optional) {
                 buf.append(" optional=\"true\"");
@@ -607,13 +698,15 @@ public class DataPack
         public DataType type;
 
         /** A default value. */
-        public String defaultValue;
+        // TODO: currently unused
+        public Object defaultValue;
 
         public DataEntry ()
         {
         }
 
-        public Object getType ()
+        // from AbstractEntry
+        public AbstractType getType ()
         {
             return type;
         }
@@ -634,7 +727,7 @@ public class DataPack
         {
             super.attrsToXML(buf);
             if (defaultValue != null) {
-                buf.append(" default=\"").append(defaultValue).append("\"");
+                buf.append(" defaultValue=\"").append(type.formatValue(defaultValue)).append("\"");
             }
         }
 
@@ -650,7 +743,8 @@ public class DataPack
         {
         }
 
-        public Object getType ()
+        // from AbstractEntry
+        public AbstractType getType ()
         {
             return type;
         }
@@ -670,8 +764,16 @@ public class DataPack
     /** MetaData holder class. */
     protected static class MetaData
     {
+        /** The version of the datapack when we write one out (in our subclass).
+         * This can be incremented should things change drastically,
+         * but the intention is that older code can read newer packs and mostly cope. */
+        public static final int CURRENT_VERSION = 1;
+
         /** The namespace of this DataPack. */
         public String namespace;
+
+        /** The version of the metadata that was read in. This value is not currently consulted. */
+        public int version;
 
         public MetaData () { }
 
@@ -687,6 +789,7 @@ public class DataPack
         public String toXML ()
         {
             StringBuilder buf = new StringBuilder("<datapack");
+            buf.append(" version=\"").append(CURRENT_VERSION).append("\"");
             attrsToXML(buf);
             buf.append(">\n");
             childrenToXML(buf);
@@ -698,7 +801,7 @@ public class DataPack
         protected void attrsToXML (StringBuilder buf)
         {
             if (namespace != null) {
-                buf.append(" namespace=\"").append(namespace).append("\"");
+                buf.append(" namespace=\"").append(StringUtil.encode(namespace)).append("\"");
             }
         }
 

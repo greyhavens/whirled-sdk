@@ -62,7 +62,7 @@ public abstract class AbstractTable extends JTable
     {
         switch (convertColumnIndexToModel(column)) {
         default:
-            return _decodingRenderer;
+            return super.getCellRenderer(row, column);
 
         case AbstractModel.TYPE_COL:
             return getDefaultRenderer(String.class);
@@ -97,15 +97,6 @@ public abstract class AbstractTable extends JTable
      * Create the table model to use.
      */
     protected abstract AbstractModel createModel (EditableDataPack pack);
-
-    protected static class DecodingCellRenderer extends DefaultTableCellRenderer
-    {
-        @Override
-        public void setValue (Object value)
-        {
-            super.setValue(StringUtil.decode((String) value));
-        }
-    }
 
     // TODO... will this work?
     protected static class ActionCellRenderer extends AbstractCellEditor
@@ -208,7 +199,7 @@ public abstract class AbstractTable extends JTable
                 // set to null if no actual description was entered
                 txt = null;
             }
-            return StringUtil.encode(txt);
+            return txt;
         }
 
         // from TableCellEditor
@@ -223,7 +214,7 @@ public abstract class AbstractTable extends JTable
             JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col)
         {
             // set up the value
-            String txt = StringUtil.decode((String) value);
+            String txt = (String) value;
             if (StringUtil.isBlank(txt)) {
                 // setting null to the TextArea makes it not update its value...
                 txt = "";
@@ -264,8 +255,6 @@ public abstract class AbstractTable extends JTable
 
         protected JTextArea _textArea;
     }
-
-    protected DecodingCellRenderer _decodingRenderer = new DecodingCellRenderer();
 
     protected ActionCellRenderer _actionRenderer = new ActionCellRenderer();
 

@@ -38,7 +38,7 @@ public class CreatingDataModel extends RemixingDataModel
         switch (columnIndex) {
         case DEFAULT_COL:
             EditableDataPack.DataEntry entry = (EditableDataPack.DataEntry) getEntry(rowIndex);
-            entry.defaultValue = (String) newValue;
+            entry.defaultValue = newValue;
             break;
 
         default:

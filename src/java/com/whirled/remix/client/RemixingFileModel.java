@@ -53,7 +53,7 @@ public class RemixingFileModel extends AbstractModel
 
             } else if (column == ACTIONS_COL && ((Integer) newValue).intValue() == ACTION_REVERT) {
                 EditableDataPack.AbstractEntry entry = getEntry(row);
-                String oldFilename = _revertValues.get(entry.name);
+                String oldFilename = (String) _revertValues.get(entry.name);
                 if (!StringUtil.isBlank(oldFilename)) {
                     _pack.replaceFile(entry.name, oldFilename);
                 }
