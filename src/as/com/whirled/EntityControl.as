@@ -104,6 +104,8 @@ public class EntityControl extends WhirledControl
 
     /**
      * Returns true if the local client has editing privileges in the current room.
+     * Note that this may change without notice. This value should be re-checked prior
+     * to persisting any sort of setting in the entity memory.
      */
     public function canEditRoom () :Boolean
     {
