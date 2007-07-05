@@ -54,6 +54,12 @@ public class RemixingDataTable extends AbstractTable
             default:
                 return super.getCellRenderer(row, column);
 
+            case NUMBER:
+                return _numberRenderer;
+
+            case ARRAY:
+                return _arrayRenderer;
+
             case BOOLEAN:
                 return _booleanEditor;
 
@@ -80,6 +86,12 @@ public class RemixingDataTable extends AbstractTable
             switch (type) {
             default:
                 return super.getCellEditor(row, column);
+
+            case NUMBER:
+                return _numberEditor;
+
+            case ARRAY:
+                return _arrayEditor;
 
             case BOOLEAN:
                 return _booleanEditor;
@@ -146,6 +158,84 @@ public class RemixingDataTable extends AbstractTable
 
         /** The original value. */
         protected Object _origValue;
+    }
+
+    protected static class NumberCellRenderer extends DefaultTableCellRenderer
+    {
+        @Override
+        public void setValue (Object value)
+        {
+            super.setValue(NumberCellEditor.format(value));
+        }
+    }
+
+    protected static class NumberCellEditor extends DataCellEditor
+    {
+        public static String format (Object value)
+        {
+            if (value == null) {
+                return null;
+            }
+
+            Double d = (Double) value;
+            return d.toString();
+        }
+
+        protected String formatValue (Object value)
+        {
+            return format(value);
+        }
+
+        protected Object parseValue (String value)
+            throws Exception
+        {
+            return Double.parseDouble(value);
+        }
+    }
+
+    protected static class ArrayCellRenderer extends DefaultTableCellRenderer
+    {
+        @Override
+        public void setValue (Object value)
+        {
+            super.setValue(ArrayCellEditor.format(value));
+        }
+    }
+
+    protected static class ArrayCellEditor extends DataCellEditor
+    {
+        public static String format (Object value)
+        {
+            if (value == null) {
+                return null;
+            }
+
+            String[] array = (String[]) value;
+            StringBuilder buf = new StringBuilder();
+            for (int ii = 0; ii < array.length; ii++) {
+                if (ii > 0) {
+                    buf.append(' ');
+                }
+                buf.append('[').append(array[ii]).append(']');
+            }
+            return buf.toString();
+        }
+
+        @Override
+        protected String formatValue (Object value)
+        {
+            return format(value);
+        }
+
+        @Override
+        protected Object parseValue (String value)
+            throws Exception
+        {
+            if (value.length() > 1) {
+                value = value.substring(1, value.length() - 1);
+            }
+            return value.split("\\]\\ \\[");
+        }
     }
 
     protected static class PointCellRenderer extends DefaultTableCellRenderer
@@ -277,6 +367,12 @@ public class RemixingDataTable extends AbstractTable
 
         protected Border _noFocusBorder = new EmptyBorder(1, 1, 1, 1);
     }
+
+    protected NumberCellRenderer _numberRenderer = new NumberCellRenderer();
+    protected NumberCellEditor _numberEditor = new NumberCellEditor();
+
+    protected ArrayCellRenderer _arrayRenderer = new ArrayCellRenderer();
+    protected ArrayCellEditor _arrayEditor = new ArrayCellEditor();
 
     protected PointCellRenderer _pointRenderer = new PointCellRenderer();
     protected PointCellEditor _pointEditor = new PointCellEditor();
