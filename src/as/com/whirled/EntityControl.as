@@ -141,7 +141,7 @@ public class EntityControl extends WhirledControl
      *
      * @return the value for the specified key from this item's memory or the supplied default.
      */
-    public function lookupMemory (key :String, defval :Object) :Object
+    public function lookupMemory (key :String, defval :Object = null) :Object
     {
         var value :Object = callHostCode("lookupMemory_v1", key);
         return (value == null) ? defval : value;
@@ -198,6 +198,9 @@ public class EntityControl extends WhirledControl
      * Requests that this item's memory be updated with the supplied key/value pair. The supplied
      * value must be a simple object (Integer, Number, String) or an Array of simple objects. The
      * contents of the Pet's memory (keys and values) must not exceed 4096 bytes when AMF3 encoded.
+     *
+     * Setting the memory for a key to null clears that key; subsequent lookups will return the
+     * default value.
      *
      * @return true if the memory was updated, false if the memory update could not be completed
      * due to size restrictions.
