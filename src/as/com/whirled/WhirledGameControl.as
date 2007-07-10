@@ -30,13 +30,13 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
-     * Grant a flow award to the player. The score is any number. Note that even if you want to
+     * Grant a flow award to the player. The score is any integer. Note that even if you want to
      * award 0 flow, you should call this for every player, every game. A score of 0 is just
      * as important as any other score.
      *
      * @return the amount of flow actually awarded.
      */
-    public function grantFlowAward (score :Number) :int
+    public function grantFlowAward (score :int) :int
     {
         return int(callEZCode("awardFlow_v2", score));
     }
