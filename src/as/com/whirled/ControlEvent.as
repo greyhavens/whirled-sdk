@@ -36,7 +36,6 @@ public class ControlEvent extends Event
      */
     public static const ACTION_TRIGGERED :String = "actionTriggered";
 
-
     /** An event type dispatched to actors to indicate that they should
      * be in the specified state.
      * name: state name
@@ -71,7 +70,6 @@ public class ControlEvent extends Event
      */
     public static const MEMORY_CHANGED :String = "memoryChanged";
 
-    
     /** An event type dispatched to pets, when they overhear chatter in the room.
      * name: speaker name
      * value: chat message
@@ -79,7 +77,6 @@ public class ControlEvent extends Event
      * @eventType gotChat
      */
     public static const RECEIVED_CHAT :String = "receivedChat";
-
     
     /**
      * Retrieve the event target, which will be the WhirledControl instance that

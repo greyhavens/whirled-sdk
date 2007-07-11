@@ -79,6 +79,19 @@ public class AvatarControl extends ActorControl
     }
 
     /**
+     * Is this avatar "sleeping"? An avatar is sleeping either when a user has intentially
+     * gone AFK (away from keyboard) or have let their client go idle, and zzz's appear
+     * over their head. You may react to isSleeping (if you want) to render a sleep state, or
+     * transition to an unregistered state that looks like sleeping.
+     *
+     * Whenever this value changes an APPEARANCE_CHANGED event will be generated.
+     */
+    public function isSleeping () :Boolean
+    {
+        return _isSleeping;
+    }
+
+    /**
      * Set this avatar's preferred height off the ground, in pixels.
      * If unset, it defaults to 0, meaning that it walks on the ground.
      *
@@ -119,6 +132,13 @@ public class AvatarControl extends ActorControl
         o["getStates_v1"] = getStates_v1;
     }
 
+    override protected function gotInitProperties (o :Object) :void
+    {
+        super.gotInitProperties(o);
+
+        _isSleeping = (o["isSleeping"] as Boolean);
+    }
+
     protected function avatarSpoke_v1 () :void
     {
         dispatch(ControlEvent.AVATAR_SPOKE);
@@ -138,6 +158,15 @@ public class AvatarControl extends ActorControl
     protected function getStates_v1 () :Array
     {
         return _states;
+    }
+
+    override protected function appearanceChanged_v2 (
+        location :Array, orient :Number, moving :Boolean, sleeping :Boolean) :void
+    {
+        // we need to catch sleeping here (ActorControl doesn't care)
+        _isSleeping = sleeping;
+        // but our superclass will catch the rest and dispatch the event
+        super.appearanceChanged_v2(location, orient, moving, sleeping);
     }
 
     /**
@@ -175,5 +204,8 @@ public class AvatarControl extends ActorControl
 
     /** An array of state names. */
     protected var _states :Array = [];
+
+    /** Is this avatar asleep? */
+    protected var _isSleeping :Boolean;
 }
 }

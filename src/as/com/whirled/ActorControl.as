@@ -121,12 +121,28 @@ public class ActorControl extends EntityControl
         return isConnected() ? (callHostCode("getState_v1") as String) : null;
     }
 
+//    /**
+//     * Set the "mouth spot" for this actor, specified as pixels relative to (0, 0) the top-left
+//     * coordinate. The mouth spot determines from whence chat escapes. If unset, the default
+//     * will be based off of the SWF dimensions with x = width/2, y = height/4.
+//     *
+//     * @param tailTerminationDistance the distance from the mouth point at which to terminate
+//     * the "tail" of the chat, specified in this actor's pixel coordinates.
+//     * If NaN, the default value of width/4 will be used. If 0, the tail will connect all the
+//     * way to the mouth. Something like Number.MAX_VALUE could be specified to always have
+//     * the minimum possible tail.
+//     */
+//    public function setMouthSpot (x :Number, y :Number, tailTerminationDistance :Number = NaN) :void
+//    {
+//        // TODO!
+//    }
+
     // from WhirledControl
     override protected function populateProperties (o :Object) :void
     {
         super.populateProperties(o);
 
-        o["appearanceChanged_v1"] = appearanceChanged_v1;
+        o["appearanceChanged_v2"] = appearanceChanged_v2;
         o["stateSet_v1"] = stateSet_v1;
     }
 
@@ -142,11 +158,13 @@ public class ActorControl extends EntityControl
     /**
      * Called when we start or stop moving or change orientation.
      */
-    protected function appearanceChanged_v1 (location :Array, orient :Number, moving :Boolean) :void
+    protected function appearanceChanged_v2 (
+        location :Array, orient :Number, moving :Boolean, sleeping :Boolean) :void
     {
         _location = location;
         _orient = orient;
         _isMoving = moving;
+        // "sleeping" is ignored in this class
         dispatch(ControlEvent.APPEARANCE_CHANGED);
     }
 
