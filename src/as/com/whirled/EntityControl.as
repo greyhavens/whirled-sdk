@@ -118,6 +118,9 @@ public class EntityControl extends WhirledControl
      *
      * Note: the name must be a String and may be up to 64 characters.
      * TODO: restriction on size of the argument. It will probably be 1k or something.
+     *
+     * Note: Only the instance "in control" can trigger actions. If you want any instance
+     * to be able to communicate, use sendMessage().
      */
     public function triggerAction (name :String, arg :Object = null) :void
     {
@@ -129,6 +132,8 @@ public class EntityControl extends WhirledControl
      *
      * Note: the name must be a String and may be up to 64 characters.
      * TODO: restriction on size of the argument. It will probably be 1k or something.
+     *
+     * Note: Any instance can send messages. Compare with triggerAction.
      */
     public function sendMessage (name :String, arg :Object = null) :void
     {
@@ -204,6 +209,8 @@ public class EntityControl extends WhirledControl
      *
      * @return true if the memory was updated, false if the memory update could not be completed
      * due to size restrictions.
+     *
+     * Note: any instance can update memories!
      */
     public function updateMemory (key :String, value :Object) :Boolean
     {

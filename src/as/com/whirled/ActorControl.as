@@ -106,6 +106,8 @@ public class ActorControl extends EntityControl
      *
      * @param state A String identifier, may be null, indicating the state.  The maximum length is
      * 64 characters.
+     *
+     * Note: only the instance "in control" may set states.
      */
     public function setState (state :String) :void
     {
