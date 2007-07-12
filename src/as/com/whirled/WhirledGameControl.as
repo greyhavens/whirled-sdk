@@ -89,9 +89,9 @@ public class WhirledGameControl extends EZGameControl
     /**
      * Instructs the game client to return to Whirled.
      */
-    public function backToWhirled () :void
+    public function backToWhirled (showLobby :Boolean = false) :void
     {
-        callEZCode("backToWhirled_v1");
+        callEZCode("backToWhirled_v1", showLobby);
     }
 }
 }
