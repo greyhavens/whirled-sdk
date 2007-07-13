@@ -123,21 +123,21 @@ public class ActorControl extends EntityControl
         return isConnected() ? (callHostCode("getState_v1") as String) : null;
     }
 
-//    /**
-//     * Set the "mouth spot" for this actor, specified as pixels relative to (0, 0) the top-left
-//     * coordinate. The mouth spot determines from whence chat escapes. If unset, the default
-//     * will be based off of the SWF dimensions with x = width/2, y = height/4.
-//     *
-//     * @param tailTerminationDistance the distance from the mouth point at which to terminate
-//     * the "tail" of the chat, specified in this actor's pixel coordinates.
-//     * If NaN, the default value of width/4 will be used. If 0, the tail will connect all the
-//     * way to the mouth. Something like Number.MAX_VALUE could be specified to always have
-//     * the minimum possible tail.
-//     */
-//    public function setMouthSpot (x :Number, y :Number, tailTerminationDistance :Number = NaN) :void
-//    {
-//        // TODO!
-//    }
+    /**
+     * Set the "mouth spot" for this actor, specified as pixels relative to (0, 0) the top-left
+     * coordinate. The mouth spot determines from whence chat escapes. If unset, the default
+     * will be based off of the SWF dimensions with x = width/2, y = height/4.
+     *
+     * @param tailTerminationDistance the distance from the mouth point at which to terminate
+     * the "tail" of the chat, specified in this actor's pixel coordinates.
+     * If NaN, the default value of width/4 will be used. If 0, the tail will connect all the
+     * way to the mouth. Something like Number.MAX_VALUE could be specified to always have
+     * the minimum possible tail.
+     */
+    public function setMouthSpot (x :Number, y :Number, tailTerminationDistance :Number = NaN) :void
+    {
+        callHostCode("setMouthSpot_v1", x, y, tailTerminationDistance);
+    }
 
     // from WhirledControl
     override protected function populateProperties (o :Object) :void
