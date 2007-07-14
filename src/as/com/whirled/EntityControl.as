@@ -227,7 +227,34 @@ public class EntityControl extends WhirledControl
     public function setHotSpot (x :Number, y :Number, height :Number = NaN) :void
     {
         callHostCode("setHotSpot_v1", x, y, height);
-    } 
+    }
+
+    /**
+     * Show a popup to the current user in the whirled. This may ONLY be called
+     * inside of a MOUSE_CLICK handler, to prevent malicious furniture from jamming up
+     * popups left and right.
+     *
+     * @param title The title displayed in the title bar for the popup.
+     * @param panel The display object to show in the popup. It should only paint inside
+     *              the rectangle defined by (0, 0, width, height).
+     * @param width The width of the panel.
+     * @param height The height of the panel.
+     *
+     * @return true if the popup was shown, false if it could not be shown for various reasons.
+     */
+    public function showPopup (
+        title :String, panel :DisplayObject, width :Number, height :Number) :Boolean
+    {
+        return callHostCode("showPopup_v1", title, panel, width, height) as Boolean;
+    }
+
+    /**
+     * Clear any showing popup. May be called at any time.
+     */
+    public function clearPopup () :void
+    {
+        callHostCode("clearPopup_v1");
+    }
 
     /**
      * Populate any properties that we provide back to whirled.
