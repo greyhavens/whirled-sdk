@@ -141,6 +141,18 @@ public class EntityControl extends WhirledControl
     }
 
     /**
+     * Return an associative hash of all the memories.
+     * This is not a cheap operation. Use lookupMemory if you know what
+     * you want.
+     */
+    public function getMemories () :Object
+    {
+        var mems :Object = callHostCode("getMemories_v1");
+        // return an empty object if the host somereason returns null
+        return (mems == null) ? {} : mems;
+    }
+
+    /**
      * Returns the value associated with the supplied key in this item's memory. If no value is
      * mapped in the item's memory, the supplied default value will be returned.
      *
