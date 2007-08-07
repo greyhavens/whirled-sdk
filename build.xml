@@ -63,17 +63,6 @@
     </copy>
   </target>
 
-  <!-- determines whether or not our whirled.swc Flash library is up to date -->
-  <target name="checkaslib">
-    <uptodate property="aslib_is_up_to_date" targetfile="${deploy.dir}/whirled.swc">
-      <srcfiles dir="${projects.dir}/narya/src/as" includes="**/*.as"/>
-      <srcfiles dir="${projects.dir}/nenya/src/as/com/threerings/flash" includes="**/*.as"/>
-      <srcfiles dir="${projects.dir}/vilya/src/as/com/threerings/parlor" includes="**/*.as"/>
-      <srcfiles dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="**/*.as"/>
-      <srcfiles dir="${asrc.dir}" includes="**/*.as"/>
-    </uptodate>
-  </target>
-
   <!-- builds our whirled.swc Flash library -->
   <target name="aslib" unless="aslib_is_up_to_date" depends="prepare,prepare-flex,checkaslib">
     <!-- build the version for clients to build against -->
