@@ -1,4 +1,4 @@
-//
+﻿//
 // $Id$
 //
 // Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
@@ -45,11 +45,10 @@ public class AvatarControl extends ActorControl
      *
      * Note: actions must be 64 characters or less.
      */
-    public function registerActions (actionName :String, ... moreActions) :void
+    public function registerActions (actions :Array) :void
     {
-        moreActions.unshift(actionName);
-        verifyActionsOrStates(moreActions, true);
-        _actions = moreActions;
+        verifyActionsOrStates(actions, true);
+        _actions = actions;
     }
 
     /**
@@ -71,11 +70,10 @@ public class AvatarControl extends ActorControl
      *
      * Note: states must be 64 characters or less.
      */
-    public function registerStates (normalState :String, ... moreStates) :void
+    public function registerStates (states :Array) :void
     {
-        moreStates.unshift(normalState);
-        verifyActionsOrStates(moreStates, false);
-        _states = moreStates;
+        verifyActionsOrStates(states, false);
+        _states = states;
     }
 
     /**
@@ -179,7 +177,7 @@ public class AvatarControl extends ActorControl
             // null is a valid state/action, but otherwise must be a String less than 64 chars
             if (vals[ii] != null) {
                 if (!(vals[ii] is String)) {
-                    throw new ArgumentError("All " + name + "s must be Strings.");
+                    throw new ArgumentError("All " + name + "s must be Strings (" + ii + ").");
                 }
                 if (String(vals[ii]).length > 64) {
                     throw new ArgumentError("All " + name + "s must be less than 64 characters.");
