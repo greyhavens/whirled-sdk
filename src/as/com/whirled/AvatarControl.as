@@ -10,8 +10,8 @@ import flash.display.DisplayObject;
 import flash.errors.IllegalOperationError;
 
 /**
- * Dispatched when the user controlling this avatar speaks. You may
- * trigger a speak animation off of this event.
+ * Dispatched when the user controlling this avatar speaks. You may trigger a speak animation off
+ * of this event.
  * 
  * @eventType com.whirled.ControlEvent.AVATAR_SPOKE
  */
@@ -37,11 +37,10 @@ public class AvatarControl extends ActorControl
     }
 
     /**
-     * Register the named actions that can be used to animate the avatar.
-     * Actions are "one-time" events that cause the avatar to do something
-     * in the whirled, like laugh, play a sound, or do a quick animation.
-     * Actions are different from states- states are persistent and do
-     * not go away if you walk, talk, or play actions.
+     * Register the named actions that can be used to animate the avatar.  Actions are "one-time"
+     * events that cause the avatar to do something in the whirled, like laugh, play a sound, or do
+     * a quick animation.  Actions are different from states- states are persistent and do not go
+     * away if you walk, talk, or play actions.
      *
      * Note: actions must be 64 characters or less.
      */
@@ -53,20 +52,20 @@ public class AvatarControl extends ActorControl
 
     /**
      * Register the named states that this actor may be in.
-     * States are persistent. An actor may only be in one state at a time.
-     * If the actor is in a state and then needs to walk, talk, or play
-     * an action, then it should still be in the state during and after
-     * those actions.
-     * When an actor is first instantiated, it is in the normal state.
-     * If no states are registered then there is an implicit unnamed normal
-     * state.
-     * States are different from actions- actions are not persistent and
-     * are instantly forgotten as soon as you play them. If an action is
-     * a laugh animation that plays for 5 seconds, someone who walks in the
-     * room 1 second after you laugh will see nothing.
      *
-     * The first registered state will be your "default" state. If you call
-     * getState() without registering states you will get null.
+     * States are persistent. An actor may only be in one state at a time.  If the actor is in a
+     * state and then needs to walk, talk, or play an action, then it should still be in the state
+     * during and after those actions.
+     *
+     * When an actor is first instantiated, it is in the normal state.  If no states are registered
+     * then there is an implicit unnamed normal state.
+     *
+     * States are different from actions- actions are not persistent and are instantly forgotten as
+     * soon as you play them. If an action is a laugh animation that plays for 5 seconds, someone
+     * who walks in the room 1 second after you laugh will see nothing.
+     *
+     * The first registered state will be your "default" state. If you call getState() without
+     * registering states you will get null.
      *
      * Note: states must be 64 characters or less.
      */
@@ -77,10 +76,10 @@ public class AvatarControl extends ActorControl
     }
 
     /**
-     * Is this avatar "sleeping"? An avatar is sleeping either when a user has intentially
-     * gone AFK (away from keyboard) or have let their client go idle, and zzz's appear
-     * over their head. You may react to isSleeping (if you want) to render a sleep state, or
-     * transition to an unregistered state that looks like sleeping.
+     * Is this avatar "sleeping"? An avatar is sleeping either when a user has intentially gone AFK
+     * (away from keyboard) or have let their client go idle, and zzz's appear over their head. You
+     * may react to isSleeping (if you want) to render a sleep state, or transition to an
+     * unregistered state that looks like sleeping.
      *
      * Whenever this value changes an APPEARANCE_CHANGED event will be generated.
      */
@@ -90,8 +89,8 @@ public class AvatarControl extends ActorControl
     }
 
     /**
-     * Set this avatar's preferred height off the ground, in pixels.
-     * If unset, it defaults to 0, meaning that it walks on the ground.
+     * Set this avatar's preferred height off the ground, in pixels.  If unset, it defaults to 0,
+     * meaning that it walks on the ground.
      *
      * Calling this does not adjust the current location.
      */
