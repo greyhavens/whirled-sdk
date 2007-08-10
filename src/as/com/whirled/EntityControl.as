@@ -14,8 +14,7 @@ import flash.events.EventDispatcher;
 import flash.events.TimerEvent;
 
 /**
- * Dispatched when the instance in control sends a trigger action to
- * all instances.
+ * Dispatched when the instance in control sends a trigger action to all instances.
  * 
  * @eventType com.whirled.ControlEvent.ACTION_TRIGGERED
  */
@@ -29,8 +28,7 @@ import flash.events.TimerEvent;
 [Event(name="messageReceived", type="com.whirled.ControlEvent")]
 
 /**
- * Dispatched when the instance in control updates the memory of this
- * digital item.
+ * Dispatched when the instance in control updates the memory of this digital item.
  *
  * @eventType com.whirled.ControlEvent.MEMORY_CHANGED
  */
@@ -104,9 +102,9 @@ public class EntityControl extends WhirledControl
     }
 
     /**
-     * Returns true if the local client has editing privileges in the current room.
-     * Note that this may change without notice. This value should be re-checked prior
-     * to persisting any sort of setting in the entity memory.
+     * Returns true if the local client has editing privileges in the current room.  Note that this
+     * may change without notice. This value should be re-checked prior to persisting any sort of
+     * setting in the entity memory.
      */
     public function canEditRoom () :Boolean
     {
@@ -120,8 +118,8 @@ public class EntityControl extends WhirledControl
      * Note: the name must be a String and may be up to 64 characters.
      * TODO: restriction on size of the argument. It will probably be 1k or something.
      *
-     * Note: Only the instance "in control" can trigger actions. If you want any instance
-     * to be able to communicate, use sendMessage().
+     * Note: Only the instance "in control" can trigger actions. If you want any instance to be
+     * able to communicate, use sendMessage().
      */
     public function triggerAction (name :String, arg :Object = null) :void
     {
@@ -142,9 +140,8 @@ public class EntityControl extends WhirledControl
     }
 
     /**
-     * Return an associative hash of all the memories.
-     * This is not a cheap operation. Use lookupMemory if you know what
-     * you want.
+     * Return an associative hash of all the memories. This is not a cheap operation. Use
+     * lookupMemory if you know what you want.
      */
     public function getMemories () :Object
     {
@@ -237,8 +234,8 @@ public class EntityControl extends WhirledControl
      * Set the layout "hotspot" for your item, specified as pixels relative to (0, 0) the top-left
      * coordinate.
      *
-     * If unset, the default hotspot will be based off of the SWF dimensions,
-     * with x = width / 2, y = height.
+     * If unset, the default hotspot will be based off of the SWF dimensions, with x = width / 2,
+     * y = height.
      */
     public function setHotSpot (x :Number, y :Number, height :Number = NaN) :void
     {
@@ -256,13 +253,12 @@ public class EntityControl extends WhirledControl
     }
 
     /**
-     * Show a popup to the current user in the whirled. This may ONLY be called
-     * inside of a MOUSE_CLICK handler, to prevent malicious furniture from jamming up
-     * popups left and right.
+     * Show a popup to the current user in the whirled. This may ONLY be called inside of a
+     * MOUSE_CLICK handler, to prevent malicious furniture from jamming up popups left and right.
      *
      * @param title The title displayed in the title bar for the popup.
-     * @param panel The display object to show in the popup. It should only paint inside
-     *              the rectangle defined by (0, 0, width, height).
+     * @param panel The display object to show in the popup. It should only paint inside the
+     *              rectangle defined by (0, 0, width, height).
      * @param width The width of the panel.
      * @param height The height of the panel.
      *
