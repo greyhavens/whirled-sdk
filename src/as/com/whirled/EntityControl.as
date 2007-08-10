@@ -166,10 +166,10 @@ public class EntityControl extends WhirledControl
     }
 
     /**
-     * Is this instance in control? Note: entity control is <em>not</em> automatically assigned. If
+     * Is this client in control? Note: entity control is <em>not</em> automatically assigned. If
      * an entity wishes to obtain control, it should first call <code>requestControl</code> and it
      * will then receive a <code>GOT_CONTROL</code> event if and when control has been assigned to
-     * this entity.
+     * this client.
      */
     public function hasControl () :Boolean
     {
@@ -177,8 +177,8 @@ public class EntityControl extends WhirledControl
     }
 
     /**
-     * Request to have this instance of the object control all the instances in the room. The other
-     * instances are the same item, running on other browsers.
+     * Request to have this client control all the instances of this entity. The other instances
+     * are the same code, but running in other browsers.
      */
     public function requestControl () :void
     {
