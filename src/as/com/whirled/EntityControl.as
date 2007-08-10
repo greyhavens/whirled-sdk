@@ -166,7 +166,10 @@ public class EntityControl extends WhirledControl
     }
 
     /**
-     * Is this instance in control?
+     * Is this instance in control? Note: entity control is <em>not</em> automatically assigned. If
+     * an entity wishes to obtain control, it should first call <code>requestControl</code> and it
+     * will then receive a <code>GOT_CONTROL</code> event if and when control has been assigned to
+     * this entity.
      */
     public function hasControl () :Boolean
     {
