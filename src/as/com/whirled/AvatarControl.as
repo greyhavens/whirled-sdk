@@ -6,8 +6,9 @@
 package com.whirled {
 
 import flash.display.DisplayObject;
-
 import flash.errors.IllegalOperationError;
+
+import com.threerings.util.Util;
 
 /**
  * Dispatched when the user controlling this avatar speaks. You may trigger a speak animation off
@@ -46,10 +47,7 @@ public class AvatarControl extends ActorControl
      */
     public function registerActions (... actions) :void
     {
-        // handle being passed an array
-        if (actions.length == 1 && actions[0] is Array) {
-            actions = (actions[0] as Array);
-        }
+        actions = Util.unfuckVarargs(actions);
         verifyActionsOrStates(actions, true);
         _actions = actions;
     }
@@ -75,10 +73,7 @@ public class AvatarControl extends ActorControl
      */
     public function registerStates (... states) :void
     {
-        // handle being passed an array
-        if (states.length == 1 && states[0] is Array) {
-            states = (states[0] as Array);
-        }
+        states = Util.unfuckVarargs(states);
         verifyActionsOrStates(states, false);
         _states = states;
     }
