@@ -111,7 +111,7 @@
     <!-- we need to generate docs just for the public facing stuff, so we do this hackery -->
     <mkdir dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
-      <fileset dir="${projects.dir}/narya/src/as/com/threerings/util" includes="Util.as"/>
+      <fileset dir="${projects.dir}/narya/src/as/com/threerings/util" includes="*.as"/>
       <fileset dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="*.as"/>
       <fileset dir="src/as/com/whirled" includes="*.as"/>
     </copy>
@@ -150,7 +150,7 @@
     <copy todir="${sdk.build}">
       <fileset dir="." includes="src/as/com/whirled/**" excludes="**/WorldGameControl.as"/>
       <fileset dir="${projects.dir}/vilya" includes="src/as/com/threerings/ezgame/*.as"/>
-      <fileset dir="${projects.dir}/narya" includes="src/as/com/threerings/util/Util.as"/>
+      <fileset dir="${projects.dir}/narya" includes="src/as/com/threerings/util/*.as"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
     </copy>
     <!-- copy some example games -->
