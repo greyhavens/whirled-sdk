@@ -191,9 +191,9 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="WhirledGameControl.html#awardFlow()">awardFlow</a>(amount:int):void</div>
+<a class="signatureLink" href="WhirledGameControl.html#backToWhirled()">backToWhirled</a>(showLobby:Boolean = false):void</div>
 <div class="summaryTableDescription">
-     Award flow to this occupant.</div>
+     Instructs the game client to return to Whirled.</div>
 </td><td class="summaryTableOwnerCol"><a href="WhirledGameControl.html">WhirledGameControl</a></td>
 </tr>
 <tr class="hideInheritedMethod">
@@ -231,6 +231,15 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
+<a class="signatureLink" href="../threerings/ezgame/EZGameControl.html#doBatch()">doBatch</a>(fn:Function):void</div>
+<div class="summaryTableDescription">
+     Execute the specified function as a batch of commands that will be sent to the server
+     together.</div>
+</td><td class="summaryTableOwnerCol"><a href="../threerings/ezgame/EZGameControl.html">EZGameControl</a></td>
+</tr>
+<tr class="hideInheritedMethod">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
 <a class="signatureLink" href="../threerings/ezgame/EZGameControl.html#endGame()">endGame</a>(winnerIds:Array):void</div>
 <div class="summaryTableDescription">
      End the game.</div>
@@ -255,19 +264,18 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="../threerings/ezgame/EZGameControl.html#get()">get</a>(propName:String, index:int = -1):Object</div>
+<a class="signatureLink" href="../threerings/ezgame/EZGameControl.html#filter()">filter</a>(text:String):String</div>
 <div class="summaryTableDescription">
-     Get a property from data.</div>
+     Run the specified text through the user's chat filter.</div>
 </td><td class="summaryTableOwnerCol"><a href="../threerings/ezgame/EZGameControl.html">EZGameControl</a></td>
 </tr>
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="WhirledGameControl.html#getAvailableFlow()">getAvailableFlow</a>():int</div>
+<a class="signatureLink" href="../threerings/ezgame/EZGameControl.html#get()">get</a>(propName:String, index:int = -1):Object</div>
 <div class="summaryTableDescription">
-     Get the amount of flow that's <i>currently</i> available to award to the occupant who has
-     instantiated this game control.</div>
-</td><td class="summaryTableOwnerCol"><a href="WhirledGameControl.html">WhirledGameControl</a></td>
+     Get a property from data.</div>
+</td><td class="summaryTableOwnerCol"><a href="../threerings/ezgame/EZGameControl.html">EZGameControl</a></td>
 </tr>
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
@@ -336,10 +344,26 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
+<a class="signatureLink" href="../threerings/ezgame/EZGameControl.html#getPropertyNames()">getPropertyNames</a>(prefix:String = ""):Array</div>
+<div class="summaryTableDescription">
+     Get the names of all currently-set properties that begin with the specified prefix.</div>
+</td><td class="summaryTableOwnerCol"><a href="../threerings/ezgame/EZGameControl.html">EZGameControl</a></td>
+</tr>
+<tr class="hideInheritedMethod">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
 <a class="signatureLink" href="../threerings/ezgame/EZGameControl.html#getRound()">getRound</a>():int</div>
 <div class="summaryTableDescription">
      Returns the current round number.</div>
 </td><td class="summaryTableOwnerCol"><a href="../threerings/ezgame/EZGameControl.html">EZGameControl</a></td>
+</tr>
+<tr class="hideInheritedMethod">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="WhirledGameControl.html#getStageBounds()">getStageBounds</a>():Rectangle</div>
+<div class="summaryTableDescription">
+     Returns the bounds of the "stage" on which the game will be drawn.</div>
+</td><td class="summaryTableOwnerCol"><a href="WhirledGameControl.html">WhirledGameControl</a></td>
 </tr>
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
@@ -356,6 +380,14 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summaryTableDescription">
      Get the user-specific game data for the specified user.</div>
 </td><td class="summaryTableOwnerCol"><a href="../threerings/ezgame/EZGameControl.html">EZGameControl</a></td>
+</tr>
+<tr class="hideInheritedMethod">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="WhirledGameControl.html#grantFlowAward()">grantFlowAward</a>(score:int):int</div>
+<div class="summaryTableDescription">
+     Grant a flow award to the player.</div>
+</td><td class="summaryTableOwnerCol"><a href="WhirledGameControl.html">WhirledGameControl</a></td>
 </tr>
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
@@ -404,6 +436,15 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
+<a class="signatureLink" href="../threerings/ezgame/EZGameControl.html#playerReady()">playerReady</a>():void</div>
+<div class="summaryTableDescription">
+     If the game was not configured to auto-start, all clients must call this function to let the
+     server know that they are ready, at which point the game will be started.</div>
+</td><td class="summaryTableOwnerCol"><a href="../threerings/ezgame/EZGameControl.html">EZGameControl</a></td>
+</tr>
+<tr class="hideInheritedMethod">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
 <a class="signatureLink" href="../threerings/ezgame/EZGameControl.html#registerListener()">registerListener</a>(obj:Object):void</div>
 <div class="summaryTableDescription">
      Register an object to receive whatever events it should receive, based on which event
@@ -440,6 +481,14 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summaryTableDescription">
      Set a property that will be distributed.</div>
 </td><td class="summaryTableOwnerCol"><a href="../threerings/ezgame/EZGameControl.html">EZGameControl</a></td>
+</tr>
+<tr class="hideInheritedMethod">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="WhirledGameControl.html#setChatBounds()">setChatBounds</a>(bounds:Rectangle):void</div>
+<div class="summaryTableDescription">
+     Relocates the chat overlay to the specified region.</div>
+</td><td class="summaryTableOwnerCol"><a href="WhirledGameControl.html">WhirledGameControl</a></td>
 </tr>
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
@@ -707,6 +756,14 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </div>
 </td><td class="summaryTableDescription summaryTableCol">
  Dispatched when the turn changes in a turn-based game.</td><td class="summaryTableOwnerCol"><a href="../threerings/ezgame/EZGameControl.html">EZGameControl</a></td>
+</tr>
+<tr class="hideInheritedEvent">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
+<div class="summarySignature">
+<a class="signatureLink" href="../threerings/ezgame/EZGameControl.html#event:UserChat">UserChat</a>
+</div>
+</td><td class="summaryTableDescription summaryTableCol">
+ Dispatched when a user chats.</td><td class="summaryTableOwnerCol"><a href="../threerings/ezgame/EZGameControl.html">EZGameControl</a></td>
 </tr>
 </table>
 </div>
