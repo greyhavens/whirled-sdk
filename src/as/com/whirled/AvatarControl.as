@@ -46,6 +46,10 @@ public class AvatarControl extends ActorControl
      */
     public function registerActions (... actions) :void
     {
+        // handle being passed an array
+        if (actions.length == 1 && actions[0] is Array) {
+            actions = (actions[0] as Array);
+        }
         verifyActionsOrStates(actions, true);
         _actions = actions;
     }
@@ -71,6 +75,10 @@ public class AvatarControl extends ActorControl
      */
     public function registerStates (... states) :void
     {
+        // handle being passed an array
+        if (states.length == 1 && states[0] is Array) {
+            states = (states[0] as Array);
+        }
         verifyActionsOrStates(states, false);
         _states = states;
     }
