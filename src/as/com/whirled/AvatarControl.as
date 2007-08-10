@@ -44,7 +44,7 @@ public class AvatarControl extends ActorControl
      *
      * Note: actions must be 64 characters or less.
      */
-    public function registerActions (actions :Array) :void
+    public function registerActions (... actions) :void
     {
         verifyActionsOrStates(actions, true);
         _actions = actions;
@@ -69,7 +69,7 @@ public class AvatarControl extends ActorControl
      *
      * Note: states must be 64 characters or less.
      */
-    public function registerStates (states :Array) :void
+    public function registerStates (... states) :void
     {
         verifyActionsOrStates(states, false);
         _states = states;
