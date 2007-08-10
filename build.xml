@@ -111,6 +111,7 @@
     <!-- we need to generate docs just for the public facing stuff, so we do this hackery -->
     <mkdir dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
+      <fileset dir="${projects.dir}/narya/src/as/com/threerings/util" includes="Util.as"/>
       <fileset dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="*.as"/>
       <fileset dir="src/as/com/whirled" includes="*.as"/>
     </copy>
@@ -149,6 +150,7 @@
     <copy todir="${sdk.build}">
       <fileset dir="." includes="src/as/com/whirled/**" excludes="**/WorldGameControl.as"/>
       <fileset dir="${projects.dir}/vilya" includes="src/as/com/threerings/ezgame/*.as"/>
+      <fileset dir="${projects.dir}/narya" includes="src/as/com/threerings/util/Util.as"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
     </copy>
     <!-- copy some example games -->
@@ -158,6 +160,18 @@
       <fileset dir="projects/games" includes="fat_reversi/**"/>
       <fileset dir="projects/games" includes="dictattack/**"/>
       <fileset dir="projects/games" includes="tangleword/**"/>
+    </copy>
+    <!-- copy some example pets and the urpet -->
+    <mkdir dir="${sdk.build}/examples/pets"/>
+    <copy todir="${sdk.build}/examples/pets">
+      <fileset dir="projects/pets" includes="urpet/**"/>
+      <fileset dir="projects/pets" includes="hal/**"/>
+    </copy>
+    <!-- copy some example avatars and the uravatar -->
+    <mkdir dir="${sdk.build}/examples/avatars"/>
+    <copy todir="${sdk.build}/examples/avatars">
+      <fileset dir="projects/avatars" includes="uravatar/**"/>
+      <fileset dir="projects/avatars" includes="fairy/**"/>
     </copy>
     <!-- finally zip it all up -->
     <zip destfile="${deploy.dir}/whirled_sdk.zip"
