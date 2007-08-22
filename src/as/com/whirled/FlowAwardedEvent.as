@@ -23,7 +23,7 @@ public class FlowAwardedEvent extends Event
     /**
      * Returns the amount of flow awarded to the player.
      */
-    public function get amount () :Object
+    public function get amount () :int
     {
         return _amount;
     }
