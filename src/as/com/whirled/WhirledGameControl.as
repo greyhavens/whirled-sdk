@@ -124,9 +124,6 @@ public class WhirledGameControl extends EZGameControl
      * Ends the game, reporting the scores earned by each player in the game, awarding flow
      * according to the specified strategy and updating player ratings.
      *
-     * <p> The playersAndScores array must be of the form:
-     * <code>[ playerId, score, playerId, score, ... ]</code>.
-     *
      * <p> Flow is awarded based on the supplied payout type, either CASCADING_PAYOUT,
      * WINNERS_TAKE_ALL or TO_EACH_THEIR_OWN. In the case of WINNERS_TAKE_CALL, the highest scoring
      * player or players will be considered the winner(s) and in the case of CASCADING_PAYOUT,
@@ -149,18 +146,18 @@ public class WhirledGameControl extends EZGameControl
      *
      * <p><code>score = Math.max(WORST_POSSIBLE_TIME - actualTime, 0)</code>
      */
-    public function endGameWithScores (playersAndScores :Array, payoutType :int) :void
+    public function endGameWithScores (playerIds :Array, scores :Array, payoutType :int) :void
     {
-        callEZCode("endGameWithScores_v1", playersAndScores, payoutType);
+        callEZCode("endGameWithScores_v1", playerIds, scores, payoutType);
     }
 
     /**
      * A convenience function for ending a single player game with the supplied score. This is
-     * equivalent to: <code>endGameWithScores([ getMyId(), score ], TO_EACH_THEIR_OWN)</code>.
+     * equivalent to: <code>endGameWithScores([ getMyId() ], [ score ], TO_EACH_THEIR_OWN)</code>.
      */
     public function endGameWithScore (score :int) :void
     {
-        endGameWithScores([ getMyId(), score ], TO_EACH_THEIR_OWN);
+        endGameWithScores([ getMyId() ], [ score ], TO_EACH_THEIR_OWN);
     }
 
     /**
