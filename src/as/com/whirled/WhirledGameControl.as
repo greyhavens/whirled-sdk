@@ -178,5 +178,20 @@ public class WhirledGameControl extends EZGameControl
     {
         callEZCode("backToWhirled_v1", showLobby);
     }
+
+    // from EZGameControl
+    override protected function populateProperties (o :Object) :void
+    {
+        super.populateProperties(o);
+        o["flowAwarded_v1"] = flowAwarded_v1;
+    }
+
+    /**
+     * Private method to post a FlowAwardedEvent.
+     */
+    private function flowAwarded_v1 (amount :int) :void
+    {
+        dispatch(new FlowAwardedEvent(amount));
+    }
 }
 }

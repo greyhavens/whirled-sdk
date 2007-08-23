@@ -31,16 +31,16 @@ public class FlowAwardedEvent extends Event
     /**
      * Creates a new event.
      */
-    public function FlowAwardedEvent (type :String, amount :int)
+    public function FlowAwardedEvent (amount :int)
     {
-        super(type);
+        super(FLOW_AWARDED);
         _amount = amount;
     }
 
     // from Event
     override public function clone () :Event
     {
-        return new FlowAwardedEvent(type, _amount);
+        return new FlowAwardedEvent(_amount);
     }
 
     // from Event
