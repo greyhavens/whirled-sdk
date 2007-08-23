@@ -12,11 +12,6 @@ package com.whirled.data {
 public interface WhirledGame
 {
     /**
-     * Configures the {@link WhirledGameService} for this game.
-     */
-    function setWhirledGameService (whirledGameService :WhirledGameMarshaller) :void;
-
-    /**
      * Returns the {@link WhirledGameService} used by this game.
      */
     function getWhirledGameService () :WhirledGameMarshaller;
