@@ -242,16 +242,6 @@ public class EntityControl extends WhirledControl
         callHostCode("setHotSpot_v1", x, y, height);
     }
 
-    public function addControl (control :Sprite) :void
-    {
-        callHostCode("addControl_v1", control);
-    }
-
-    public function removeControl (control :Sprite) :void
-    {
-        callHostCode("removeControl_v1", control);
-    }
-
     /**
      * Show a popup to the current user in the whirled. This may ONLY be called inside of a
      * MOUSE_CLICK handler, to prevent malicious furniture from jamming up popups left and right.
