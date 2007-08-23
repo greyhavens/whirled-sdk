@@ -14,7 +14,7 @@ public class FlowAwardedEvent extends Event
 {
     /**
      * An event type dispatched at the end of a game (before GAME_ENDED) to inform the game that
-     * the local player has earned flow.
+     * the player has earned flow.
      *
      * @eventType flowAwarded
      */
@@ -29,18 +29,28 @@ public class FlowAwardedEvent extends Event
     }
 
     /**
+     * Returns the % of scores lower than the player's reported score, or -1 if no score was
+     * reported.
+     */
+    public function get percentile () :int
+    {
+        return _percentile;
+    }
+
+    /**
      * Creates a new event.
      */
-    public function FlowAwardedEvent (amount :int)
+    public function FlowAwardedEvent (amount :int, percentile :int)
     {
         super(FLOW_AWARDED);
         _amount = amount;
+        _percentile = percentile;
     }
 
     // from Event
     override public function clone () :Event
     {
-        return new FlowAwardedEvent(_amount);
+        return new FlowAwardedEvent(_amount, _percentile);
     }
 
     // from Event
@@ -49,7 +59,10 @@ public class FlowAwardedEvent extends Event
         return "FlowAwardedEvent [type=" + type + ", amount=" + _amount + "]";
     }
 
-    /** The amount of flow awarded to the local player. */
+    /** The amount of flow awarded to the player. */
     protected var _amount :int;
+
+    /** The % of scores lower than the player's reported score, or -1 if no score was reported. */
+    protected var _percentile :int;
 }
 }

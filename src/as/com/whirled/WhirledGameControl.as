@@ -189,9 +189,9 @@ public class WhirledGameControl extends EZGameControl
     /**
      * Private method to post a FlowAwardedEvent.
      */
-    private function flowAwarded_v1 (amount :int) :void
+    private function flowAwarded_v1 (amount :int, percentile :int) :void
     {
-        dispatch(new FlowAwardedEvent(amount));
+        dispatch(new FlowAwardedEvent(amount, percentile));
     }
 }
 }

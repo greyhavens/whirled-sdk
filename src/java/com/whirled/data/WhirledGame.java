@@ -4,14 +4,13 @@
 package com.whirled.data;
 
 /**
- * Games that wish to make use of Whirled game services should implement this interface.
+ * Games that wish to make use of Whirled game services should have their {@link GameObject}
+ * derivation implement this interface.
  */
 public interface WhirledGame
 {
-    /**
-     * Informs this game object of its flow per minute award cap.
-     */
-    public void setFlowPerMinute (int flowPerMinute);
+    /** A message dispatched to each player's client object when flow is awarded. */
+    public static final String FLOW_AWARDED_MESSAGE = "FlowAwarded";
 
     /**
      * Configures the {@link WhirledGameService} for this game.

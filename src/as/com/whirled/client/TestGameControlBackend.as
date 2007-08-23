@@ -20,7 +20,7 @@ import com.threerings.ezgame.data.EZGameObject;
 /**
  * Extends the basic EZGame backend with flow and other whirled services.
  */
-public class TestGameControlBackend extends GameControlBackend
+public class TestGameControlBackend extends WhirledGameControlBackend
 {
     public function TestGameControlBackend (
         ctx :CrowdContext, ezObj :EZGameObject, ctrl :TestGameController, panel :TestGamePanel)
@@ -34,8 +34,6 @@ public class TestGameControlBackend extends GameControlBackend
         super.populateProperties(o);
 
         var ctrl :TestGameController = (_ctrl as TestGameController);
-        o["getAvailableFlow_v1"] = ctrl.getAvailableFlow;
-        o["awardFlow_v1"] = ctrl.awardFlow;
         o["setChatEnabled_v1"] = _panel.setChatEnabled;
         o["setChatBounds_v1"] = _panel.setChatBounds;
 //         o["getHeadShot_v1"] = getHeadShot; // TODO: fake up a sprite
