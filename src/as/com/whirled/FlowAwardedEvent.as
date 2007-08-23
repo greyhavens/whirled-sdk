@@ -56,7 +56,8 @@ public class FlowAwardedEvent extends Event
     // from Event
     override public function toString () :String
     {
-        return "FlowAwardedEvent [type=" + type + ", amount=" + _amount + "]";
+        return "FlowAwardedEvent [type=" + type + ", amount=" + _amount +
+            ", percentile=" + _percentile + "]";
     }
 
     /** The amount of flow awarded to the player. */
