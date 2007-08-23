@@ -22,6 +22,7 @@ import com.threerings.crowd.data.LocationMarshaller;
 import com.threerings.parlor.data.ParlorMarshaller;
 import com.threerings.ezgame.data.EZGameConfig;
 
+import com.whirled.data.TestGameObject;
 import com.whirled.data.TestMarshaller;
 import com.whirled.data.WhirledGameDefinition;
 
@@ -57,6 +58,7 @@ public class WhirledClient extends Client
         c = EZGameConfig;
         c = WhirledGameDefinition;
         c = TestGameController;
+        c = TestGameObject;
 
         [ResourceBundle("global")]
         [ResourceBundle("chat")]
