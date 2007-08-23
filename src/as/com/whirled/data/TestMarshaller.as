@@ -1,10 +1,13 @@
 //
 // $Id$
+//
+// Copyright (c) 2007 Three Rings Design, Inc. Please do not redistribute.
 
 package com.whirled.data {
 
 import flash.utils.ByteArray;
 import com.threerings.util.*; // for Float, Integer, etc.
+import com.threerings.io.TypedArray;
 
 import com.threerings.presents.client.Client;
 import com.threerings.presents.data.InvocationMarshaller;

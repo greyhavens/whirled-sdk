@@ -1,5 +1,7 @@
 //
 // $Id$
+//
+// Copyright (c) 2007 Three Rings Design, Inc. Please do not redistribute.
 
 package com.whirled.server;
 
@@ -38,10 +40,17 @@ public class WhirledGameDispatcher extends InvocationDispatcher
         throws InvocationException
     {
         switch (methodId) {
-        case WhirledGameMarshaller.AWARD_FLOW:
-            ((WhirledGameProvider)provider).awardFlow(
+        case WhirledGameMarshaller.END_GAME_WITH_SCORES:
+            ((WhirledGameProvider)provider).endGameWithScores(
                 source,
-                ((Integer)args[0]).intValue(), (InvocationService.InvocationListener)args[1]
+                (int[])args[0], (int[])args[1], ((Integer)args[2]).intValue(), (InvocationService.InvocationListener)args[3]
+            );
+            return;
+
+        case WhirledGameMarshaller.END_GAME_WITH_WINNERS:
+            ((WhirledGameProvider)provider).endGameWithWinners(
+                source,
+                (int[])args[0], (int[])args[1], ((Integer)args[2]).intValue(), (InvocationService.InvocationListener)args[3]
             );
             return;
 

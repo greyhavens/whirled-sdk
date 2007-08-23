@@ -12,9 +12,17 @@ import com.threerings.presents.client.InvocationService;
 public interface WhirledGameService extends InvocationService
 {
     /**
-     * Notes an award of the given amount of flow to the calling client. Awarded flow accumulates
-     * server-side and is paid out when the game ends or when this client leaves the game. If the
-     * amount exceeds the server-calculated cap, it is silently capped at that level.
+     * Ends the active game, declaring the specified players to be winners and losers and paying
+     * out flow using the specified payout type (defined in WhirledGameControl.as).
      */
-    public void awardFlow (Client client, int amount, InvocationListener listener);
+    public void endGameWithWinners (Client client, int[] winners, int[] losers, int payoutType,
+                                    InvocationListener listener);
+
+    /**
+     * Ends the active game, using the supplied scores to determine the base payouts and new
+     * ratings and paying out flow using the specified payout type (defined in
+     * WhirledGameControl.as).
+     */
+    public void endGameWithScores (Client client, int[] playerIds, int[] scores, int payoutType,
+                                   InvocationListener listener);
 }

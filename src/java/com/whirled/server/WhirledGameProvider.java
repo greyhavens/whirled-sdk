@@ -1,5 +1,7 @@
 //
 // $Id$
+//
+// Copyright (c) 2007 Three Rings Design, Inc. Please do not redistribute.
 
 package com.whirled.server;
 
@@ -16,8 +18,14 @@ import com.whirled.client.WhirledGameService;
 public interface WhirledGameProvider extends InvocationProvider
 {
     /**
-     * Handles a {@link WhirledGameService#awardFlow} request.
+     * Handles a {@link WhirledGameService#endGameWithScores} request.
      */
-    public void awardFlow (ClientObject caller, int arg1, InvocationService.InvocationListener arg2)
+    public void endGameWithScores (ClientObject caller, int[] arg1, int[] arg2, int arg3, InvocationService.InvocationListener arg4)
+        throws InvocationException;
+
+    /**
+     * Handles a {@link WhirledGameService#endGameWithWinners} request.
+     */
+    public void endGameWithWinners (ClientObject caller, int[] arg1, int[] arg2, int arg3, InvocationService.InvocationListener arg4)
         throws InvocationException;
 }

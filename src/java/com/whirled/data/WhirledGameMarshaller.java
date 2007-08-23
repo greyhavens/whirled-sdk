@@ -1,5 +1,7 @@
 //
 // $Id$
+//
+// Copyright (c) 2007 Three Rings Design, Inc. Please do not redistribute.
 
 package com.whirled.data;
 
@@ -19,16 +21,29 @@ import com.whirled.client.WhirledGameService;
 public class WhirledGameMarshaller extends InvocationMarshaller
     implements WhirledGameService
 {
-    /** The method id used to dispatch {@link #awardFlow} requests. */
-    public static final int AWARD_FLOW = 1;
+    /** The method id used to dispatch {@link #endGameWithScores} requests. */
+    public static final int END_GAME_WITH_SCORES = 1;
 
     // from interface WhirledGameService
-    public void awardFlow (Client arg1, int arg2, InvocationService.InvocationListener arg3)
+    public void endGameWithScores (Client arg1, int[] arg2, int[] arg3, int arg4, InvocationService.InvocationListener arg5)
     {
-        ListenerMarshaller listener3 = new ListenerMarshaller();
-        listener3.listener = arg3;
-        sendRequest(arg1, AWARD_FLOW, new Object[] {
-            Integer.valueOf(arg2), listener3
+        ListenerMarshaller listener5 = new ListenerMarshaller();
+        listener5.listener = arg5;
+        sendRequest(arg1, END_GAME_WITH_SCORES, new Object[] {
+            arg2, arg3, Integer.valueOf(arg4), listener5
+        });
+    }
+
+    /** The method id used to dispatch {@link #endGameWithWinners} requests. */
+    public static final int END_GAME_WITH_WINNERS = 2;
+
+    // from interface WhirledGameService
+    public void endGameWithWinners (Client arg1, int[] arg2, int[] arg3, int arg4, InvocationService.InvocationListener arg5)
+    {
+        ListenerMarshaller listener5 = new ListenerMarshaller();
+        listener5.listener = arg5;
+        sendRequest(arg1, END_GAME_WITH_WINNERS, new Object[] {
+            arg2, arg3, Integer.valueOf(arg4), listener5
         });
     }
 }

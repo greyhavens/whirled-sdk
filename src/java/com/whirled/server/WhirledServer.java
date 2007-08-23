@@ -161,7 +161,7 @@ public class WhirledServer extends CrowdServer
         // add our standard test initializations
         gamedef.ident = "game";
         gamedef.controller = "com.whirled.client.TestGameController";
-        gamedef.manager = "com.threerings.ezgame.server.EZGameManager";
+        gamedef.manager = "com.whirled.server.TestGameManager";
 
         // figure out how many players will be involved in the test game
         int pcount = getPlayerCount();
