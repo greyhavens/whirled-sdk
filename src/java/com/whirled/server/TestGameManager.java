@@ -48,7 +48,7 @@ public class TestGameManager extends EZGameManager
                 winners.add(playerIds[ii]);
             }
         }
-        _winnerIds = winners.toIntArray();
+        _winnerOids = winners.toIntArray();
         endGame();
     }
 
@@ -65,7 +65,7 @@ public class TestGameManager extends EZGameManager
         // TODO: award flow fakily?
 
         // TODO: validate winner ids and loser ids
-        _winnerIds = winnerIds;
+        _winnerOids = winnerIds;
         endGame();
     }
 
