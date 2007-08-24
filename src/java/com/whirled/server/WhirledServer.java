@@ -167,17 +167,21 @@ public class WhirledServer extends CrowdServer
         int pcount = getPlayerCount();
         TableMatchConfig match = new TableMatchConfig();
         match.minSeats = match.maxSeats = match.startSeats = pcount;
+        match.isPartyGame = Boolean.getBoolean("party");
         gamedef.match = match;
 
         // set up our game configuration and start up the game clients
         _config = new EZGameConfig(-1, gamedef);
-        _config.players = new Name[pcount];
+        _config.players = new Name[match.isPartyGame ? 0 : pcount];
         for (int ii = 0; ii < pcount; ii++) {
-            _config.players[ii] = new Name("tester_" + (ii+1));
+            Name name = new Name("tester_" + (ii+1));
+            if (!match.isPartyGame) {
+                _config.players[ii] = name;
+            }
 
             // start up a Flash client for this player
             String player = getFlashPlayerPath();
-            String url = "http://localhost:8080/game-client.swf?username=" + _config.players[ii];
+            String url = "http://localhost:8080/game-client.swf?username=" + name;
             try {
                 Process proc = Runtime.getRuntime().exec(new String[] { player, url });
                 new StreamEater(proc.getErrorStream());

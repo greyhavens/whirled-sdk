@@ -86,6 +86,7 @@
     <java classname="com.whirled.server.WhirledServer" fork="true">
       <sysproperty key="whirled.root" value="${build.root}"/>
       <sysproperty key="players" value="${players}"/>
+      <sysproperty key="party" value="${party}"/>
       <sysproperty key="flash.player" value="${player.path}"/>
       <classpath>
         <fileset dir="${build.root}/dist" includes="whirled-code.jar"/>
