@@ -30,7 +30,7 @@ public class TestGameManager extends EZGameManager
                                    int payoutType, WhirledGameService.InvocationListener listener)
         throws InvocationException
     {
-        if (!_gameObj.isInPlay()) {
+        if (!_ezObj.isInPlay()) {
             throw new InvocationException("e.already_ended");
         }
         validateStateModification(caller, false);
@@ -57,7 +57,7 @@ public class TestGameManager extends EZGameManager
                                     int payoutType, WhirledGameService.InvocationListener listener)
         throws InvocationException
     {
-        if (!_gameObj.isInPlay()) {
+        if (!_ezObj.isInPlay()) {
             throw new InvocationException("e.already_ended");
         }
         validateStateModification(caller, false);
