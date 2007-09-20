@@ -35,7 +35,7 @@ import flash.events.TimerEvent;
 [Event(name="memoryChanged", type="com.whirled.ControlEvent")]
 
 /**
- * Dispatched when this instance gains control.
+ * Dispatched when this instance gains control. See the <code>hasControl</code> method.
  *
  * @eventType com.whirled.ControlEvent.GOT_CONTROL
  */
@@ -163,10 +163,15 @@ public class EntityControl extends WhirledControl
     }
 
     /**
-     * Is this client in control? Note: entity control is <em>not</em> automatically assigned. If
-     * an entity wishes to obtain control, it should first call <code>requestControl</code> and it
-     * will then receive a <code>GOT_CONTROL</code> event if and when control has been assigned to
-     * this client.
+     * Is this client in control?
+     *
+     * <p>Control is a mutually exclusive lock across all instances of the entity (i.e. running in
+     * other browsers across the network). Only one client can hold the lock at any time.
+     *
+     * <p>Note: control is <em>not</em> automatically assigned. If an entity wishes to obtain
+     * control, it should first call <code>requestControl</code> and it will then receive a
+     * <code>GOT_CONTROL</code> event if and when control has been assigned to this client.
+     * There are no guarantees which of the requesting clients will receive it, or when. 
      */
     public function hasControl () :Boolean
     {
@@ -175,7 +180,7 @@ public class EntityControl extends WhirledControl
 
     /**
      * Request to have this client control all the instances of this entity. The other instances
-     * are the same code, but running in other browsers.
+     * are the same code, but running in other browsers. See the <code>hasControl</code> method.
      */
     public function requestControl () :void
     {
@@ -183,14 +188,18 @@ public class EntityControl extends WhirledControl
     }
 
     /**
-     * Configures the interval on which this item is "ticked" in milliseconds. The tick interval
-     * can be no smaller than 100ms to avoid bogging down the client. By calling this method with a
-     * non-zero value, the item indicates that it wants to be ticked and the ticking mechanism will
-     * be activated. If this method is not called, ticking will not be done. Calling this method
-     * with a 0ms interval will deactivate ticking.
+     * Configures the interval on which this item is "ticked" in milliseconds. If the client
+     * setting this interval is in control, it will get a <code>timer</code> event at the
+     * specified interval. Otherwise, the entity will request control from the server, and only
+     * set the timer once control was granted (if ever).
      *
-     * Note: Setting the tickInterval implicitely requests control, as only the instance that is in
-     * control may tick.
+     * <p>Ticking mechanism is turned off by default. Application needs to set the interval
+     * explicitly to start receiving tick events. The tick interval can be no smaller than 100ms
+     * to avoid bogging down the client.
+     * 
+     * @param interval Delay between ticks in milliseconds, either 0ms, or a value larger
+     * than 100ms. Value larger than zero activates the ticking mechanism,
+     * and a value of exactly zero deactivates it.
      */
     public function setTickInterval (interval :Number) :void
     {
