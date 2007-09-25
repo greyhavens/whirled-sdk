@@ -151,6 +151,7 @@
       <fileset dir="." includes="src/as/com/whirled/**" excludes="**/WorldGameControl.as"/>
       <fileset dir="${projects.dir}/vilya" includes="src/as/com/threerings/ezgame/*.as"/>
       <fileset dir="${projects.dir}/narya" includes="src/as/com/threerings/util/*.as"/>
+      <fileset dir="${projects.dir}/narya" includes="src/as/Log.as"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
     </copy>
     <!-- copy some example games -->
