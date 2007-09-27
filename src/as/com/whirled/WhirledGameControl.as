@@ -95,6 +95,32 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
+     * Returns the set of level packs available to this game as an array of LevelInfo objects. This
+     * will contain all free level packs that are registered for this game as well as the premium
+     * level packs owned by all players in the game.
+     */
+    public function getLevelPacks () :Array
+    {
+        return (callEZCode("getLevelPacks_v1") as Array);
+    }
+
+    /**
+     * Returns the set of all item packs available to this game as an array of ItemInfo objects.
+     */
+    public function getItemPacks () :Array
+    {
+        return (callEZCode("getItemPacks_v1") as Array);
+    }
+
+    /**
+     * Returns all item packs owned by the specified game occupant.
+     */
+    public function getPlayerItemPacks (occupant :int) :Array
+    {
+        return (callEZCode("getPlayerItemPacks_v1", occupant) as Array);
+    }
+
+    /**
      * Ends the game, declaring which players are the winners (if players tie, more than one player
      * can be declared a winner. In addition to ending the game, this method awards flow and
      * updates players ratings.
