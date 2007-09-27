@@ -6,6 +6,7 @@
 package com.whirled.data {
 
 import com.threerings.io.ObjectInputStream;
+import com.threerings.io.TypedArray;
 
 import com.threerings.ezgame.data.EZGameObject;
 
@@ -23,10 +24,34 @@ public class TestGameObject extends EZGameObject
     /** The whirled game services. */
     public var whirledGameService :WhirledGameMarshaller;
 
+    /** The set of level packs available to this game. */
+    public var levelPacks :TypedArray /*LevelInfo*/;
+
+    /** The set of item packs available to this game. */
+    public var itemPacks :TypedArray /*ItemInfo*/;
+
     // from interface WhirledGame
     public function getWhirledGameService () :WhirledGameMarshaller
     {
         return whirledGameService;
+    }
+
+    // from interface WhirledGame
+    public function getLevelPacks () :Array
+    {
+        return levelPacks;
+    }
+
+    // from interface WhirledGame
+    public function getItemPacks () :Array
+    {
+        return itemPacks;
+    }
+
+    // from interface WhirledGame
+    public function occupantOwnsItemPack (ident :String, occupant :int) :Boolean
+    {
+        return false; // TODO
     }
 
     override protected function readDefaultFields (ins :ObjectInputStream) :void
@@ -34,6 +59,8 @@ public class TestGameObject extends EZGameObject
         super.readDefaultFields(ins);
 
         whirledGameService = (ins.readObject() as WhirledGameMarshaller);
+        levelPacks = (ins.readObject() as TypedArray);
+        itemPacks = (ins.readObject() as TypedArray);
     }
 }
 }

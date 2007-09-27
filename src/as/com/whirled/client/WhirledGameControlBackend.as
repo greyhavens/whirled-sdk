@@ -16,6 +16,7 @@ import com.threerings.ezgame.client.EZGameController;
 import com.threerings.ezgame.client.GameControlBackend;
 import com.threerings.ezgame.data.EZGameObject;
 
+import com.whirled.data.ItemInfo;
 import com.whirled.data.WhirledGame;
 
 /**
@@ -51,6 +52,10 @@ public class WhirledGameControlBackend extends GameControlBackend
 
         o["endGameWithWinners_v1"] = endGameWithWinners_v1;
         o["endGameWithScores_v1"] = endGameWithScores_v1;
+
+        o["getLevelPacks_v1"] = getLevelPacks_v1;
+        o["getItemPacks_v1"] = getItemPacks_v1;
+        o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
     }
 
     protected function endGameWithWinners_v1 (
@@ -72,6 +77,23 @@ public class WhirledGameControlBackend extends GameControlBackend
         (_ezObj as WhirledGame).getWhirledGameService().endGameWithScores(
             _ctx.getClient(), toTypedIntArray(playerIds), toTypedIntArray(scores), payoutType,
             createLoggingConfirmListener("endGameWithWinners"));
+    }
+
+    protected function getLevelPacks_v1 () :Array
+    {
+        return new Array().concat((_ezObj as WhirledGame).getLevelPacks());
+    }
+
+    protected function getItemPacks_v1 () :Array
+    {
+        return new Array().concat((_ezObj as WhirledGame).getItemPacks());
+    }
+
+    protected function getPlayerItemPacks_v1 (occupant :int) :Array
+    {
+        return getItemPacks_v1().filter(function (pack :ItemInfo, idx :int, array :Array) :Boolean {
+            return (_ezObj as WhirledGame).occupantOwnsItemPack(pack.ident, occupant);
+        });
     }
 
     override protected function endGame_v2 (... winnerIds) :void
