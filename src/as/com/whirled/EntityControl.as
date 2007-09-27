@@ -260,13 +260,17 @@ public class EntityControl extends WhirledControl
      *              rectangle defined by (0, 0, width, height).
      * @param width The width of the panel.
      * @param height The height of the panel.
+     * @param backgroundColor The RGB value to fill the background of the panel with.
+     * @param backgroundAlpha The transparency to fill the background of the panel with.
      *
      * @return true if the popup was shown, false if it could not be shown for various reasons.
      */
     public function showPopup (
-        title :String, panel :DisplayObject, width :Number, height :Number) :Boolean
+        title :String, panel :DisplayObject, width :Number, height :Number,
+        backgroundColor :uint = 0xFFFFFF, backgroundAlpha :Number = 1.0) :Boolean
     {
-        return callHostCode("showPopup_v1", title, panel, width, height) as Boolean;
+        return callHostCode("showPopup_v1", title, panel, width, height, backgroundColor, 
+                            backgroundAlpha) as Boolean;
     }
 
     /**
