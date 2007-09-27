@@ -16,4 +16,14 @@ public interface WhirledGame
      * Configures the {@link WhirledGameService} for this game.
      */
     public void setWhirledGameService (WhirledGameMarshaller whirledGameService);
+
+    /**
+     * Configures this game with the level packs available to it.
+     */
+    public void setLevelPacks (LevelInfo[] packs);
+
+    /**
+     * Configures this game with the item packs available to it.
+     */
+    public void setItemPacks (ItemInfo[] packs);
 }
