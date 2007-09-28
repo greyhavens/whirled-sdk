@@ -17,6 +17,7 @@ import com.threerings.ezgame.client.GameControlBackend;
 import com.threerings.ezgame.data.EZGameObject;
 
 import com.whirled.data.ItemInfo;
+import com.whirled.data.LevelInfo;
 import com.whirled.data.WhirledGame;
 
 /**
@@ -31,6 +32,13 @@ public class WhirledGameControlBackend extends GameControlBackend
         ctx :CrowdContext, ezObj :EZGameObject, ctrl :EZGameController)
     {
         super(ctx, ezObj, ctrl);
+    }
+
+    public function forceClassInclusion () :void
+    {
+        var c :Class;
+        c = LevelInfo;
+        c = ItemInfo;
     }
 
     // from GameControlBackend
