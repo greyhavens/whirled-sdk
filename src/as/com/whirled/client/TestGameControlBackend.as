@@ -39,9 +39,6 @@ public class TestGameControlBackend extends WhirledGameControlBackend
 //         o["getHeadShot_v1"] = getHeadShot; // TODO: fake up a sprite
         o["getStageBounds_v1"] = getStageBounds;
         o["backToWhirled_v1"] = backToWhirled;
-        o["getLevelPacks_v1"] = getLevelPacks;
-        o["getItemPacks_v1"] = getItemPacks;
-        o["getPlayerItemPacks_v1"] = getPlayerItemPacks;
     }
 
     protected function getStageBounds () :Rectangle
@@ -52,21 +49,6 @@ public class TestGameControlBackend extends WhirledGameControlBackend
     protected function backToWhirled () :void
     {
         _ctx.getClient().logoff(false);
-    }
-
-    protected function getLevelPacks () :Array
-    {
-        return []; // TODO: how to test level packs
-    }
-
-    protected function getItemPacks () :Array
-    {
-        return []; // TODO: how to test item packs
-    }
-
-    protected function getPlayerItemPacks (occupant :int) :Array
-    {
-        return []; // TODO: how to test item packs
     }
 
     protected var _panel :TestGamePanel;
