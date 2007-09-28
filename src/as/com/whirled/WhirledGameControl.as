@@ -95,9 +95,18 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
-     * Returns the set of level packs available to this game as an array of LevelInfo objects. This
-     * will contain all free level packs that are registered for this game as well as the premium
-     * level packs owned by all players in the game.
+     * Returns the set of level packs available to this game as an array of objects with the
+     * following properties:
+     *
+     * <pre>
+     * ident - string identifier of level pack
+     * name - human readable name of level pack
+     * mediaURL - URL for level pack content
+     * premium - boolean indicating that content is premium or not
+     * </pre>
+     *
+     * This will contain all free level packs that are registered for this game as well as the
+     * premium level packs owned by all players in the game.
      */
     public function getLevelPacks () :Array
     {
@@ -105,7 +114,14 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
-     * Returns the set of all item packs available to this game as an array of ItemInfo objects.
+     * Returns the set of all item packs available to this game as an array of objects with the
+     * following properties:
+     *
+     * <pre>
+     * ident - string identifier of item pack
+     * name - human readable name of item pack
+     * mediaURL - URL for item pack content
+     * </pre>
      */
     public function getItemPacks () :Array
     {
