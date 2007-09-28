@@ -89,12 +89,12 @@ public class WhirledGameControlBackend extends GameControlBackend
 
     protected function getLevelPacks_v1 () :Array
     {
-        return new Array().concat((_ezObj as WhirledGame).getLevelPacks());
+        return (_ezObj as WhirledGame).getLevelPacks().slice(); // clones the array
     }
 
     protected function getItemPacks_v1 () :Array
     {
-        return new Array().concat((_ezObj as WhirledGame).getItemPacks());
+        return (_ezObj as WhirledGame).getItemPacks().slice(); // clones the array
     }
 
     protected function getPlayerItemPacks_v1 (occupant :int) :Array
