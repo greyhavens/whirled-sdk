@@ -108,7 +108,6 @@ public class WhirledContext
     // documentation inherited from superinterface CrowdContext
     public function setPlaceView (view :PlaceView) :void
     {
-        trace("Setting " + view);
         var disp :DisplayObject = DisplayObject(view);
         var app :Application = Application(Application.application);
         app.removeAllChildren();

@@ -19,7 +19,6 @@ public class TestGamePanel extends EZGamePanel
     public function TestGamePanel (ctx :CrowdContext, ctrl :TestGameController)
     {
         super(ctx, ctrl);
-        trace("It is alive!");
     }
 
     public function setChatEnabled (enabled :Boolean) :void
