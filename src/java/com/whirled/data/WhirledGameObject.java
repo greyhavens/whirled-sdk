@@ -22,8 +22,8 @@ public class WhirledGameObject extends GameObject
     /** The field name of the <code>gameData</code> field. */
     public static final String GAME_DATA = "gameData";
 
-    /** The field name of the <code>dataOwnership</code> field. */
-    public static final String DATA_OWNERSHIP = "dataOwnership";
+    /** The field name of the <code>ownershipData</code> field. */
+    public static final String OWNERSHIP_DATA = "ownershipData";
     // AUTO-GENERATED: FIELDS END
 
     /** The whirled game services. */
@@ -33,7 +33,7 @@ public class WhirledGameObject extends GameObject
     public GameData[] gameData;
 
     /** Contains info on which player owns which game data. */
-    public DSet<Ownership> dataOwnership;
+    public DSet<Ownership> ownershipData;
 
     // AUTO-GENERATED: METHODS START
     /**
@@ -87,36 +87,36 @@ public class WhirledGameObject extends GameObject
 
     /**
      * Requests that the specified entry be added to the
-     * <code>dataOwnership</code> set. The set will not change until the event is
+     * <code>ownershipData</code> set. The set will not change until the event is
      * actually propagated through the system.
      */
-    public void addToDataOwnership (Ownership elem)
+    public void addToOwnershipData (Ownership elem)
     {
-        requestEntryAdd(DATA_OWNERSHIP, dataOwnership, elem);
+        requestEntryAdd(OWNERSHIP_DATA, ownershipData, elem);
     }
 
     /**
      * Requests that the entry matching the supplied key be removed from
-     * the <code>dataOwnership</code> set. The set will not change until the
+     * the <code>ownershipData</code> set. The set will not change until the
      * event is actually propagated through the system.
      */
-    public void removeFromDataOwnership (Comparable key)
+    public void removeFromOwnershipData (Comparable key)
     {
-        requestEntryRemove(DATA_OWNERSHIP, dataOwnership, key);
+        requestEntryRemove(OWNERSHIP_DATA, ownershipData, key);
     }
 
     /**
      * Requests that the specified entry be updated in the
-     * <code>dataOwnership</code> set. The set will not change until the event is
+     * <code>ownershipData</code> set. The set will not change until the event is
      * actually propagated through the system.
      */
-    public void updateDataOwnership (Ownership elem)
+    public void updateOwnershipData (Ownership elem)
     {
-        requestEntryUpdate(DATA_OWNERSHIP, dataOwnership, elem);
+        requestEntryUpdate(OWNERSHIP_DATA, ownershipData, elem);
     }
 
     /**
-     * Requests that the <code>dataOwnership</code> field be set to the
+     * Requests that the <code>ownershipData</code> field be set to the
      * specified value. Generally one only adds, updates and removes
      * entries of a distributed set, but certain situations call for a
      * complete replacement of the set value. The local value will be
@@ -125,12 +125,12 @@ public class WhirledGameObject extends GameObject
      * change. Proxied copies of this object (on clients) will apply the
      * value change when they received the attribute changed notification.
      */
-    public void setDataOwnership (DSet<com.whirled.data.Ownership> value)
+    public void setOwnershipData (DSet<com.whirled.data.Ownership> value)
     {
-        requestAttributeChange(DATA_OWNERSHIP, value, this.dataOwnership);
+        requestAttributeChange(OWNERSHIP_DATA, value, this.ownershipData);
         @SuppressWarnings("unchecked") DSet<com.whirled.data.Ownership> clone =
             (value == null) ? null : value.typedClone();
-        this.dataOwnership = clone;
+        this.ownershipData = clone;
     }
     // AUTO-GENERATED: METHODS END
 }

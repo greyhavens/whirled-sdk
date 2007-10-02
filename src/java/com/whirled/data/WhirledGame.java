@@ -18,4 +18,19 @@ public interface WhirledGame
      * Configures this Whirled game with its service.
      */
     public void setWhirledGameService (WhirledGameMarshaller value);
+
+    /**
+     * Configures the game with the list of game data available to it.
+     */
+    public void setGameData (GameData[] value);
+
+    /**
+     * Adds ownership information for this game's data.
+     */
+    public void addToOwnershipData (Ownership elem);
+
+    /**
+     * Removes ownership information for this game's data.
+     */
+    public void removeFromOwnershipData (Comparable key);
 }
