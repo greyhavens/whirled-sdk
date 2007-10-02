@@ -137,6 +137,28 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
+     * Returns true if the specified occupant has the trophy with the specified identifier.
+     */
+    public function playerHoldsTrophy (ident :String, occupant :int) :Boolean
+    {
+        return (callEZCode("playerHoldsTrophy_v1", ident, occupant) as Boolean);
+    }
+
+    /**
+     * Awards the specified trophy to the specified player. If the supplied trophy identifier is
+     * not valid, this will not be known until the request is processed on the server, so the
+     * method will return succcessfully but no trophy will have been awarded. Thus, you should be
+     * careful not to misspell your trophy identifier in your code or in the associated trophy
+     * source item.
+     *
+     * @return true if the trophy was awarded, false if the player already has that trophy.
+     */
+    public function awardTrophy (ident :String, occupant :int) :Boolean
+    {
+        return (callEZCode("awardTrophy_v1", ident, occupant) as Boolean);
+    }
+
+    /**
      * Ends the game, declaring which players are the winners (if players tie, more than one player
      * can be declared a winner. In addition to ending the game, this method awards flow and
      * updates players ratings.

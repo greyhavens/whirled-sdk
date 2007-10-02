@@ -40,6 +40,13 @@ public class WhirledGameDispatcher extends InvocationDispatcher
         throws InvocationException
     {
         switch (methodId) {
+        case WhirledGameMarshaller.AWARD_TROPHY:
+            ((WhirledGameProvider)provider).awardTrophy(
+                source,
+                (String)args[0], ((Integer)args[1]).intValue(), (InvocationService.InvocationListener)args[2]
+            );
+            return;
+
         case WhirledGameMarshaller.END_GAME_WITH_SCORES:
             ((WhirledGameProvider)provider).endGameWithScores(
                 source,

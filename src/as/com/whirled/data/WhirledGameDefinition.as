@@ -10,6 +10,11 @@ import com.threerings.ezgame.data.GameDefinition;
  */
 public class WhirledGameDefinition extends GameDefinition
 {
+    public function WhirledGameDefinition ()
+    {
+        // nada
+    }
+
     // from GameDefinition
     override public function getMediaPath (gameId :int) :String
     {

@@ -7,14 +7,15 @@ package com.whirled.data;
 
 import com.threerings.io.SimpleStreamableObject;
 
-import com.threerings.presents.dobj.DSet;
-
 /**
- * Contains information on a level pack available to this game.
+ * Contains metadata for a game add-on (level pack, item pack, trophy).
  */
-public class LevelInfo extends SimpleStreamableObject
-    implements DSet.Entry
+public abstract class GameData extends SimpleStreamableObject
 {
+    public static final byte LEVEL_DATA = 1;
+    public static final byte ITEM_DATA = 2;
+    public static final byte TROPHY_DATA = 3;
+
     /** A unique identifier for this pack. */
     public String ident;
 
@@ -24,12 +25,8 @@ public class LevelInfo extends SimpleStreamableObject
     /** The URL from which this pack's media can be downloaded. */
     public String mediaURL;
 
-    /** Whether or not this pack is premium or free. */
-    public boolean premium;
-
-    // from interface DSet.Entry
-    public Comparable getKey ()
-    {
-        return ident;
-    }
+    /**
+     * Returns the type of this game data object.
+     */
+    public abstract byte getType ();
 }

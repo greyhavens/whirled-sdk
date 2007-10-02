@@ -16,8 +16,9 @@ import com.threerings.ezgame.client.EZGameController;
 import com.threerings.ezgame.client.GameControlBackend;
 import com.threerings.ezgame.data.EZGameObject;
 
-import com.whirled.data.ItemInfo;
-import com.whirled.data.LevelInfo;
+import com.whirled.data.GameData;
+import com.whirled.data.LevelData;
+import com.whirled.data.Ownership;
 import com.whirled.data.WhirledGame;
 
 /**
@@ -37,8 +38,8 @@ public class WhirledGameControlBackend extends GameControlBackend
     public function forceClassInclusion () :void
     {
         var c :Class;
-        c = LevelInfo;
-        c = ItemInfo;
+        c = GameData;
+        c = Ownership;
     }
 
     // from GameControlBackend
@@ -64,6 +65,8 @@ public class WhirledGameControlBackend extends GameControlBackend
         o["getLevelPacks_v1"] = getLevelPacks_v1;
         o["getItemPacks_v1"] = getItemPacks_v1;
         o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
+        o["playerHoldsTrophy_v1"] = playerHoldsTrophy_v1;
+        o["awardTrophy_v1"] = awardTrophy_v1;
     }
 
     protected function endGameWithWinners_v1 (
@@ -90,11 +93,14 @@ public class WhirledGameControlBackend extends GameControlBackend
     protected function getLevelPacks_v1 () :Array
     {
         var packs :Array = [];
-        for each (var pack :LevelInfo in (_ezObj as WhirledGame).getLevelPacks()) {
-            packs.unshift({ ident: pack.ident,
-                            name: pack.name,
-                            mediaURL: pack.mediaURL,
-                            premium: pack.premium });
+        for each (var data :GameData in (_ezObj as WhirledGame).getGameData()) {
+            if (data.getType() != GameData.LEVEL_DATA) {
+                continue;
+            }
+            packs.unshift({ ident: data.ident,
+                            name: data.name,
+                            mediaURL: data.mediaURL,
+                            premium: (data as LevelData).premium });
         }
         return packs;
     }
@@ -102,19 +108,46 @@ public class WhirledGameControlBackend extends GameControlBackend
     protected function getItemPacks_v1 () :Array
     {
         var packs :Array = [];
-        for each (var pack :ItemInfo in (_ezObj as WhirledGame).getItemPacks()) {
-            packs.unshift({ ident: pack.ident,
-                            name: pack.name,
-                            mediaURL: pack.mediaURL });
+        for each (var data :GameData in (_ezObj as WhirledGame).getGameData()) {
+            if (data.getType() != GameData.ITEM_DATA) {
+                continue;
+            }
+            packs.unshift({ ident: data.ident,
+                            name: data.name,
+                            mediaURL: data.mediaURL });
         }
         return packs;
     }
 
     protected function getPlayerItemPacks_v1 (occupant :int) :Array
     {
-        return getItemPacks_v1().filter(function (pack :ItemInfo, idx :int, array :Array) :Boolean {
-            return (_ezObj as WhirledGame).occupantOwnsItemPack(pack.ident, occupant);
+        return getItemPacks_v1().filter(function (data :GameData, idx :int, array :Array) :Boolean {
+            return playerOwnsData(data.getType(), data.ident, occupant);
         });
+    }
+
+    protected function playerHoldsTrophy_v1 (ident :String, occupant :int) :Boolean
+    {
+        return playerOwnsData(GameData.TROPHY_DATA, ident, occupant);
+    }
+
+    protected function awardTrophy_v1 (ident :String, occupant :int) :Boolean
+    {
+        if (playerOwnsData(GameData.TROPHY_DATA, ident, occupant)) {
+            return false;
+        }
+        (_ezObj as WhirledGame).getWhirledGameService().awardTrophy(
+            _ctx.getClient(), ident, occupant, createLoggingConfirmListener("awardTrophy"));
+        return true;
+    }
+
+    protected function playerOwnsData (type :int, ident :String, playerId :int) :Boolean
+    {
+        var key :Ownership = new Ownership();
+        key.type = type;
+        key.ident = ident;
+        key.playerId = playerId;
+        return (_ezObj as WhirledGame).getGameDataOwnership().containsKey(key);
     }
 
     override protected function endGame_v2 (... winnerIds) :void

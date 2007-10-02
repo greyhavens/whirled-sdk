@@ -9,14 +9,17 @@ import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
 import com.threerings.io.SimpleStreamableObject;
 
-import com.threerings.presents.dobj.DSet_Entry;
-
 /**
- * Contains information on an item pack available to this game.
+ * Contains metadata for a game add-on (level pack, item pack, trophy).
  */
-public class LevelInfo extends SimpleStreamableObject
-    implements DSet_Entry
+public /*abstract*/ class GameData extends SimpleStreamableObject
 {
+    public static const LEVEL_DATA :int = 1;
+
+    public static const ITEM_DATA :int = 2;
+
+    public static const TROPHY_DATA :int = 3;
+
     /** A unique identifier for this pack. */
     public var ident :String;
 
@@ -26,31 +29,35 @@ public class LevelInfo extends SimpleStreamableObject
     /** The URL from which this pack's media can be downloaded. */
     public var mediaURL :String;
 
-    /** Whether or not this pack is premium or free. */
-    public var premium :Boolean;
-
-    // from interface DSet_Entry
-    public function getKey () :Object
+    public function GameData ()
     {
-        return ident;
+        // nada
     }
 
-    // from SimpleStreamableObject
+    /**
+     * Returns the type of this game data object.
+     */
+    public /*abstract*/ function getType () :int
+    {
+        throw new Error("abstract getType() called");
+    }
+
+    // from interface Streamable
     override public function readObject (ins :ObjectInputStream) :void
     {
+        super.readObject(ins);
         ident = (ins.readField(String) as String);
         name = (ins.readField(String) as String);
         mediaURL = (ins.readField(String) as String);
-        premium = ins.readBoolean();
     }
 
-    // from SimpleStreamableObject
+    // from interface Streamable
     override public function writeObject (out :ObjectOutputStream) :void
     {
+        super.writeObject(out);
         out.writeField(ident);
         out.writeField(name);
         out.writeField(mediaURL);
-        out.writeBoolean(premium);
     }
 }
 }

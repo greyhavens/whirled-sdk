@@ -18,6 +18,12 @@ import com.whirled.client.WhirledGameService;
 public interface WhirledGameProvider extends InvocationProvider
 {
     /**
+     * Handles a {@link WhirledGameService#awardTrophy} request.
+     */
+    public void awardTrophy (ClientObject caller, String arg1, int arg2, InvocationService.InvocationListener arg3)
+        throws InvocationException;
+
+    /**
      * Handles a {@link WhirledGameService#endGameWithScores} request.
      */
     public void endGameWithScores (ClientObject caller, int[] arg1, int[] arg2, int arg3, InvocationService.InvocationListener arg4)
