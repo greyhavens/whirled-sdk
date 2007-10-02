@@ -97,6 +97,21 @@ public class WhirledGameControlBackend extends GameControlBackend
             if (data.getType() != GameData.LEVEL_DATA) {
                 continue;
             }
+            // if the level pack is premium, only add it if every occupant owns it
+            if ((data as LevelData).premium) {
+                var nonHolder :Boolean = false;
+                for each (var playerId :int in getPlayers_v1()) {
+                    if (!playerOwnsData(data.getType(), data.ident, playerId)) {
+                        nonHolder = true;
+                        break;
+                    }
+                }
+                // we'd do this with a labeled continue but that seems to be unreliable in
+                // actionscript, awesome!
+                if (nonHolder) {
+                    continue;
+                }
+            }
             packs.unshift({ ident: data.ident,
                             name: data.name,
                             mediaURL: data.mediaURL,
