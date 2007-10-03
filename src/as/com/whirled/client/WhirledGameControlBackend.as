@@ -19,7 +19,6 @@ import com.threerings.ezgame.data.EZGameObject;
 import com.whirled.data.GameData;
 import com.whirled.data.ItemData;
 import com.whirled.data.LevelData;
-import com.whirled.data.Ownership;
 import com.whirled.data.TrophyData;
 import com.whirled.data.WhirledGame;
 
@@ -44,7 +43,6 @@ public class WhirledGameControlBackend extends GameControlBackend
         c = LevelData;
         c = ItemData;
         c = TrophyData;
-        c = Ownership;
     }
 
     // from GameControlBackend
