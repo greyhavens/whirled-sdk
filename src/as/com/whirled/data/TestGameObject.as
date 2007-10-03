@@ -8,8 +8,6 @@ package com.whirled.data {
 import com.threerings.io.ObjectInputStream;
 import com.threerings.io.TypedArray;
 
-import com.threerings.presents.dobj.DSet;
-
 import com.threerings.ezgame.data.EZGameObject;
 
 /**
@@ -29,9 +27,6 @@ public class TestGameObject extends EZGameObject
     /** The set of game data available to this game. */
     public var gameData :TypedArray /*GameData*/;
 
-    /** Information on which players own which data. */
-    public var ownershipData :DSet /*Ownership*/;
-
     // from interface WhirledGame
     public function getWhirledGameService () :WhirledGameMarshaller
     {
@@ -44,19 +39,12 @@ public class TestGameObject extends EZGameObject
         return gameData;
     }
 
-    // from interface WhirledGame
-    public function getGameDataOwnership () :DSet
-    {
-        return ownershipData;
-    }
-
     override protected function readDefaultFields (ins :ObjectInputStream) :void
     {
         super.readDefaultFields(ins);
 
         whirledGameService = (ins.readObject() as WhirledGameMarshaller);
         gameData = (ins.readObject() as TypedArray);
-        ownershipData = (ins.readObject() as DSet);
     }
 }
 }

@@ -163,11 +163,7 @@ public class WhirledGameControlBackend extends GameControlBackend
 
     protected function playerOwnsData (type :int, ident :String, playerId :int) :Boolean
     {
-        var key :Ownership = new Ownership();
-        key.type = type;
-        key.ident = ident;
-        key.playerId = playerId;
-        return (_ezObj as WhirledGame).getGameDataOwnership().containsKey(key);
+        return false; // this information is provided by the containing system
     }
 
     override protected function endGame_v2 (... winnerIds) :void

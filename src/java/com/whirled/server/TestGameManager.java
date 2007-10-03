@@ -18,7 +18,6 @@ import com.threerings.ezgame.server.EZGameManager;
 
 import com.whirled.client.WhirledGameService;
 import com.whirled.data.GameData;
-import com.whirled.data.Ownership;
 import com.whirled.data.TestGameObject;
 import com.whirled.data.WhirledGameMarshaller;
 
@@ -33,12 +32,7 @@ public class TestGameManager extends EZGameManager
                              WhirledGameService.InvocationListener listener)
         throws InvocationException
     {
-        // for now just stick it in the game's runtime information
-        Ownership ownership = new Ownership();
-        ownership.type = GameData.TROPHY_DATA;
-        ownership.ident = ident;
-        ownership.playerId = occupant;
-        ((TestGameObject)_plobj).addToOwnershipData(ownership);
+        // TODO
     }
 
     // from interface WhirledGameProvider
@@ -101,7 +95,5 @@ public class TestGameManager extends EZGameManager
                                        new WhirledGameDispatcher(this)));
         // TODO: read in an XML file with the game's level and item pack info in it
         tobj.setGameData(new GameData[0]);
-        // TODO: and populate this with whatever defaults they have set therein
-        tobj.setOwnershipData(new DSet<Ownership>());
     }
 }

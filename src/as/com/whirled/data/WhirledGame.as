@@ -22,10 +22,5 @@ public interface WhirledGame
      * Returns the list of {@link GameData} records available to this game.
      */
     function getGameData () :Array;
-
-    /**
-     * Returns the set of {@link Ownership} records for this game.
-     */
-    function getGameDataOwnership () :DSet;
 }
 }
