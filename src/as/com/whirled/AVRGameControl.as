@@ -70,6 +70,31 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("sendMessage_v1", key, value, playerId);
     }
 
+    public function offerQuest (questId :String, initialStatus :String) :Boolean
+    {
+        return callHostCode("offerQuest_v1", questId, initialStatus);
+    }
+
+    public function updateQuest (questId :String, step :int, status :String) :Boolean
+    {
+        return callHostCode("updateQuest_v1", questId, step, status);
+    }
+
+    public function completeQuest (questId :String, payoutLevel :int) :Boolean
+    {
+        return callHostCode("completeQuest_v1", questId, payoutLevel);
+    }
+
+    public function cancelQuest (questId :String) :Boolean
+    {
+        return callHostCode("cancelQuest_v1", questId);
+    }
+
+    public function getActiveQuests () :Array
+    {
+        return callHostCode("getActiveQuests_v1");
+    }
+
     override protected function isAbstract () :Boolean
     {
         return false;
