@@ -43,9 +43,9 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("getProperty_v1", key);
     }
 
-    public function setProperty (key :String, value :Object) :Boolean
+    public function setProperty (key :String, value :Object, persistent :Boolean) :Boolean
     {
-        return callHostCode("setProperty_v1", key, value);
+        return callHostCode("setProperty_v1", key, value, persistent);
     }
 
     public function getPlayerProperty (key :String) :Object
@@ -53,9 +53,9 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("getPlayerProperty_v1", key);
     }
 
-    public function setPlayerProperty (key :String, value :Object) :Boolean
+    public function setPlayerProperty (key :String, value :Object, persistent :Boolean) :Boolean
     {
-        return callHostCode("setPlayerProperty_v1", key, value);
+        return callHostCode("setPlayerProperty_v1", key, value, persistent);
     }
 
     override protected function isAbstract () :Boolean
