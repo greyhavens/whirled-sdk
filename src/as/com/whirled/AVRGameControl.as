@@ -67,7 +67,7 @@ public class AVRGameControl extends WhirledControl
 
     public function sendMessage (key :String, value :Object, playerId :int = 0) :Boolean
     {
-        return callHost("sendMessage_v1", key, value, playerId);
+        return callHostCode("sendMessage_v1", key, value, playerId);
     }
 
     override protected function isAbstract () :Boolean
