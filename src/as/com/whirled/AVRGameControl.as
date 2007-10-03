@@ -22,6 +22,13 @@ import flash.display.DisplayObject;
 [Event(name="playerPropertyChanged", type="com.whirled.PlayerPropertyChangedEvent")]
 
 /**
+ * Dispatched when a message has been received.
+ * 
+ * @eventType com.whirled.MessageReceivedEvent.MESSAGE_RECEIVED
+ */
+[Event(name="msgReceived", type="com.whirled.MessageReceivedEvent")]
+
+/**
  * This file should be included by AVR games so that they can communicate
  * with the whirled.
  *
@@ -56,6 +63,11 @@ public class AVRGameControl extends WhirledControl
     public function setPlayerProperty (key :String, value :Object, persistent :Boolean) :Boolean
     {
         return callHostCode("setPlayerProperty_v1", key, value, persistent);
+    }
+
+    public function sendMessage (key :String, value :Object, playerId :int = 0) :Boolean
+    {
+        return callHost("sendMessage_v1", key, value, playerId);
     }
 
     override protected function isAbstract () :Boolean
