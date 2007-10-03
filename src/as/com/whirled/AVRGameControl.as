@@ -70,6 +70,7 @@ public class AVRGameControl extends WhirledControl
 
         o["stateChanged_v1"] = stateChanged_v1;
         o["playerStateChanged_v1"] = playerStateChanged_v1;
+        o["messageReceived_v1"] = messageReceived_v1;
     }
 
     /**
@@ -86,6 +87,14 @@ public class AVRGameControl extends WhirledControl
     protected function playerStateChanged_v1 (key :String, value :Object) :void
     {
         dispatchEvent(new PlayerPropertyChangedEvent(key, value));
+    }
+
+    /**
+     * Called when a user message has arrived.
+     */
+    protected function messageReceived_v1 (key :String, value :Object) :void
+    {
+        dispatchEvent(new MessageReceivedEvent(key, value));
     }
 }
 }
