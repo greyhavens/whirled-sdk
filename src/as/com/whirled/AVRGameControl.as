@@ -100,7 +100,6 @@ public class AVRGameControl extends WhirledControl
         return false;
     }
 
-    // from EZGameControl
     override protected function populateProperties (o :Object) :void
     {
         super.populateProperties(o);
