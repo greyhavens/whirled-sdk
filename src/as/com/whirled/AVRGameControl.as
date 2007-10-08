@@ -10,23 +10,23 @@ import flash.display.DisplayObject;
 /**
  * Dispatched when a game-global state property has changed.
  * 
- * @eventType com.whirled.PropertyChangedEvent.PROPERTY_CHANGED
+ * @eventType com.whirled.AVRGameControlEvent.PROPERTY_CHANGED
  */
-[Event(name="propertyChanged", type="com.whirled.PropertyChangedEvent")]
+[Event(name="propertyChanged", type="com.whirled.AVRGameControlEvent")]
 
 /**
  * Dispatched when a player-local state property has changed.
  * 
- * @eventType com.whirled.PlayerPropertyChangedEvent.PLAYER_PROPERTY_CHANGED
+ * @eventType com.whirled.AVRGameControlEvent.PLAYER_PROPERTY_CHANGED
  */
-[Event(name="playerPropertyChanged", type="com.whirled.PlayerPropertyChangedEvent")]
+[Event(name="playerPropertyChanged", type="com.whirled.AVRGameControlEvent")]
 
 /**
  * Dispatched when a message has been received.
  * 
- * @eventType com.whirled.MessageReceivedEvent.MESSAGE_RECEIVED
+ * @eventType com.whirled.AVRGameControlEvent.MESSAGE_RECEIVED
  */
-[Event(name="msgReceived", type="com.whirled.MessageReceivedEvent")]
+[Event(name="messageReceived", type="com.whirled.AVRGameControlEvent")]
 
 /**
  * This file should be included by AVR games so that they can communicate
@@ -110,11 +110,22 @@ public class AVRGameControl extends WhirledControl
     }
 
     /**
+     * Helper method to dispatch an AVRGameControlEvent, but only if there is an associated
+     * listener.
+     */
+    protected function avrgDispatch (ev :String, key :String = null, value :Object = null) :void
+    {
+        if (hasEventListener(ev)) {
+            dispatchEvent(new AVRGameControlEvent(ev, key, value));
+        }
+    }
+
+    /**
      * Called when a game-global state property has changed.
      */
     protected function stateChanged_v1 (key :String, value :Object) :void
     {
-        dispatchEvent(new PropertyChangedEvent(key, value));
+        avrgDispatch(AVRGameControlEvent.PROPERTY_CHANGED, key, value);
     }
 
     /**
@@ -122,7 +133,7 @@ public class AVRGameControl extends WhirledControl
      */
     protected function playerStateChanged_v1 (key :String, value :Object) :void
     {
-        dispatchEvent(new PlayerPropertyChangedEvent(key, value));
+        avrgDispatch(AVRGameControlEvent.PLAYER_PROPERTY_CHANGED, key, value);
     }
 
     /**
@@ -130,7 +141,7 @@ public class AVRGameControl extends WhirledControl
      */
     protected function messageReceived_v1 (key :String, value :Object) :void
     {
-        dispatchEvent(new MessageReceivedEvent(key, value));
+        avrgDispatch(AVRGameControlEvent.MESSAGE_RECEIVED, key, value);
     }
 }
 }
