@@ -149,7 +149,7 @@ public class WhirledGameControlBackend extends GameControlBackend
         return playerOwnsData(GameData.TROPHY_DATA, ident, occupant);
     }
 
-    protected function awardTrophy_v1 (ident :String, occupant :int) :Boolean
+    protected function awardTrophy_v1 (ident :String) :Boolean
     {
         if (playerOwnsData(GameData.TROPHY_DATA, ident, occupant)) {
             return false;
@@ -159,7 +159,7 @@ public class WhirledGameControlBackend extends GameControlBackend
         return true;
     }
 
-    protected function playerOwnsData (type :int, ident :String, playerId :int) :Boolean
+    protected function playerOwnsData (type :int, ident :String) :Boolean
     {
         return false; // this information is provided by the containing system
     }
