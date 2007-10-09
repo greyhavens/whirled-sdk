@@ -46,7 +46,7 @@ public class TestGameControlBackend extends WhirledGameControlBackend
         return _panel.getStageBounds();
     }
 
-    protected function backToWhirled () :void
+    protected function backToWhirled (showLobby :Boolean = false) :void
     {
         _ctx.getClient().logoff(false);
     }
