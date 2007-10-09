@@ -139,9 +139,9 @@ public class WhirledGameControl extends EZGameControl
     /**
      * Returns true if this client's player has the trophy with the specified identifier.
      */
-    public function playerHoldsTrophy (ident :String) :Boolean
+    public function holdsTrophy (ident :String) :Boolean
     {
-        return (callEZCode("playerHoldsTrophy_v1", ident) as Boolean);
+        return (callEZCode("holdsTrophy_v1", ident) as Boolean);
     }
 
     /**

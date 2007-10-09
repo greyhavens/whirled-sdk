@@ -68,7 +68,7 @@ public class WhirledGameControlBackend extends GameControlBackend
         o["getLevelPacks_v1"] = getLevelPacks_v1;
         o["getItemPacks_v1"] = getItemPacks_v1;
         o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
-        o["playerHoldsTrophy_v1"] = playerHoldsTrophy_v1;
+        o["holdsTrophy_v1"] = holdsTrophy_v1;
         o["awardTrophy_v1"] = awardTrophy_v1;
     }
 
@@ -133,7 +133,7 @@ public class WhirledGameControlBackend extends GameControlBackend
         });
     }
 
-    protected function playerHoldsTrophy_v1 (ident :String) :Boolean
+    protected function holdsTrophy_v1 (ident :String) :Boolean
     {
         return playerOwnsData(GameData.TROPHY_DATA, ident);
     }
