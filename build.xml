@@ -33,6 +33,7 @@
     <file name="lib/jetty.jar"/>
     <file name="lib/jetty-util.jar"/>
     <file name="lib/junit-3.7.jar"/>
+    <file name="lib/junit4.jar"/>
     <file name="lib/lwjgl.jar"/>
     <file name="lib/servlet-api.jar"/>
     <file name="lib/velocity-1.5-dev.jar"/>
