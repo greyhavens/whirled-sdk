@@ -129,11 +129,11 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
-     * Returns all item packs owned by the specified game occupant.
+     * Returns all item packs owned by this client's player.
      */
-    public function getPlayerItemPacks (occupant :int) :Array
+    public function getPlayerItemPacks () :Array
     {
-        return (callEZCode("getPlayerItemPacks_v1", occupant) as Array);
+        return (callEZCode("getPlayerItemPacks_v1") as Array);
     }
 
     /**

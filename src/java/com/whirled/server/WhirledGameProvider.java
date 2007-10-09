@@ -20,7 +20,7 @@ public interface WhirledGameProvider extends InvocationProvider
     /**
      * Handles a {@link WhirledGameService#awardTrophy} request.
      */
-    public void awardTrophy (ClientObject caller, String arg1, int arg2, InvocationService.InvocationListener arg3)
+    public void awardTrophy (ClientObject caller, String arg1, InvocationService.InvocationListener arg2)
         throws InvocationException;
 
     /**

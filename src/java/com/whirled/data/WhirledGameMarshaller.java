@@ -25,12 +25,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static final int AWARD_TROPHY = 1;
 
     // from interface WhirledGameService
-    public void awardTrophy (Client arg1, String arg2, int arg3, InvocationService.InvocationListener arg4)
+    public void awardTrophy (Client arg1, String arg2, InvocationService.InvocationListener arg3)
     {
-        ListenerMarshaller listener4 = new ListenerMarshaller();
-        listener4.listener = arg4;
+        ListenerMarshaller listener3 = new ListenerMarshaller();
+        listener3.listener = arg3;
         sendRequest(arg1, AWARD_TROPHY, new Object[] {
-            arg2, Integer.valueOf(arg3), listener4
+            arg2, listener3
         });
     }
 

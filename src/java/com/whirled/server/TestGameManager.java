@@ -28,7 +28,7 @@ public class TestGameManager extends EZGameManager
     implements WhirledGameProvider
 {
     // from interface WhirledGameProvider
-    public void awardTrophy (ClientObject caller, String ident, int occupant,
+    public void awardTrophy (ClientObject caller, String ident,
                              WhirledGameService.InvocationListener listener)
         throws InvocationException
     {

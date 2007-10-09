@@ -137,25 +137,25 @@ public class WhirledGameControlBackend extends GameControlBackend
         return packs;
     }
 
-    protected function getPlayerItemPacks_v1 (occupant :int) :Array
+    protected function getPlayerItemPacks_v1 () :Array
     {
         return getItemPacks_v1().filter(function (data :GameData, idx :int, array :Array) :Boolean {
-            return playerOwnsData(data.getType(), data.ident, occupant);
+            return playerOwnsData(data.getType(), data.ident);
         });
     }
 
-    protected function playerHoldsTrophy_v1 (ident :String, occupant :int) :Boolean
+    protected function playerHoldsTrophy_v1 (ident :String) :Boolean
     {
-        return playerOwnsData(GameData.TROPHY_DATA, ident, occupant);
+        return playerOwnsData(GameData.TROPHY_DATA, ident);
     }
 
     protected function awardTrophy_v1 (ident :String) :Boolean
     {
-        if (playerOwnsData(GameData.TROPHY_DATA, ident, occupant)) {
+        if (playerOwnsData(GameData.TROPHY_DATA, ident)) {
             return false;
         }
         (_ezObj as WhirledGame).getWhirledGameService().awardTrophy(
-            _ctx.getClient(), ident, occupant, createLoggingConfirmListener("awardTrophy"));
+            _ctx.getClient(), ident, createLoggingConfirmListener("awardTrophy"));
         return true;
     }
 

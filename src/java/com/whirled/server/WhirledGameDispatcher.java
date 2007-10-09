@@ -43,7 +43,7 @@ public class WhirledGameDispatcher extends InvocationDispatcher
         case WhirledGameMarshaller.AWARD_TROPHY:
             ((WhirledGameProvider)provider).awardTrophy(
                 source,
-                (String)args[0], ((Integer)args[1]).intValue(), (InvocationService.InvocationListener)args[2]
+                (String)args[0], (InvocationService.InvocationListener)args[1]
             );
             return;
 

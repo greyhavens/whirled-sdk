@@ -29,12 +29,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const AWARD_TROPHY :int = 1;
 
     // from interface WhirledGameService
-    public function awardTrophy (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void
+    public function awardTrophy (arg1 :Client, arg2 :String, arg3 :InvocationService_InvocationListener) :void
     {
-        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener4.listener = arg4;
+        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener3.listener = arg3;
         sendRequest(arg1, AWARD_TROPHY, [
-            arg2, Integer.valueOf(arg3), listener4
+            arg2, listener3
         ]);
     }
 

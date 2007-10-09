@@ -27,8 +27,7 @@ public interface WhirledGameService extends InvocationService
                                    InvocationListener listener);
 
     /**
-     * Awards the specified trophy to the specified player.
+     * Awards the specified trophy to the requesting player.
      */
-    public void awardTrophy (Client client, String ident, int occupant,
-                             InvocationListener listener);
+    public void awardTrophy (Client client, String ident, InvocationListener listener);
 }
