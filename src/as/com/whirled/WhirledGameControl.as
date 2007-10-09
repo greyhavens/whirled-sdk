@@ -106,7 +106,7 @@ public class WhirledGameControl extends EZGameControl
      * </pre>
      *
      * This will contain all free level packs that are registered for this game as well as the
-     * premium level packs owned by all players in the game.
+     * premium level packs owned by this client's player.
      */
     public function getLevelPacks () :Array
     {
