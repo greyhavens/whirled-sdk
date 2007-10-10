@@ -129,6 +129,10 @@
       <arg line="-output ${deploy.dir}/asdoc"/>
     </java>
     <delete dir="${deploy.dir}/tmp/pubas"/>
+    <!-- copy the docs into the SDK staging directory -->
+    <copy todir="data/sdk/docs">
+      <fileset dir="${deploy.dir}/asdoc" includes="**/*"/>
+    </copy>
   </target>
 
   <!-- builds the SDK -->
