@@ -9,6 +9,7 @@
   <property name="classes.dir" value="${deploy.dir}/classes"/>
   <property name="javadoc.dir" value="${deploy.dir}/docs"/>
   <property name="savedoc.dir" value="docs"/>
+  <property name="sdk.build"   value="${deploy.dir}/sdk/whirled"/>
 
   <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"  value="libraries"/>
@@ -108,7 +109,7 @@
 
   <!-- builds the ActionScript documention -->
   <target name="asdoc">
-    <mkdir dir="${deploy.dir}/asdoc"/>
+    <mkdir dir="${sdk.build}/docs"/>
     <!-- we need to generate docs just for the public facing stuff, so we do this hackery -->
     <mkdir dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
@@ -126,18 +127,13 @@
       <arg line="-library-path ${deploy.dir}/whirled.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
-      <arg line="-output ${deploy.dir}/asdoc"/>
+      <arg line="-output ${sdk.build}/docs"/>
     </java>
     <delete dir="${deploy.dir}/tmp/pubas"/>
-    <!-- copy the docs into the SDK staging directory -->
-    <copy todir="data/sdk/docs">
-      <fileset dir="${deploy.dir}/asdoc" includes="**/*"/>
-    </copy>
   </target>
 
   <!-- builds the SDK -->
-  <target name="sdk" depends="aslib,asclient,dist">
-    <property name="sdk.build" value="${deploy.dir}/sdk/whirled"/>
+  <target name="sdk" depends="aslib,asclient,dist,asdoc">
     <mkdir dir="${sdk.build}"/>
     <copy todir="${sdk.build}">
       <fileset dir="data/sdk" includes="**"/>
