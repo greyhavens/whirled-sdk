@@ -21,6 +21,8 @@ import com.whirled.data.GameData;
 import com.whirled.data.TestGameObject;
 import com.whirled.data.WhirledGameMarshaller;
 
+import static com.whirled.Log.log;
+
 /**
  * Handles test game services.
  */
@@ -32,6 +34,7 @@ public class TestGameManager extends EZGameManager
                              WhirledGameService.InvocationListener listener)
         throws InvocationException
     {
+        log.info("Requested to award " + ident + ".");
         // TODO
     }
 
