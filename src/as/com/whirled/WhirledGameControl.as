@@ -50,24 +50,6 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
-     * Enables or disables chat. When chat is disabled, it is not visible which is useful for games
-     * in which the chat overlay obstructs the view during play.
-     */
-    public function setChatEnabled (enabled :Boolean) :void
-    {
-        callEZCode("setChatEnabled_v1", enabled);
-    }
-
-    /**
-     * Relocates the chat overlay to the specified region. By default the overlay covers the entire
-     * width of the display and the bottom 150 pixels or so.
-     */
-    public function setChatBounds (bounds :Rectangle) :void
-    {
-        callEZCode("setChatBounds_v1", bounds);
-    }
-
-    /**
      * Return the headshot image for the given occupant in the form of a Sprite object.
      *
      * The sprite are cached in the client backend so the user should not worry too much

@@ -34,8 +34,6 @@ public class TestGameControlBackend extends WhirledGameControlBackend
         super.populateProperties(o);
 
         var ctrl :TestGameController = (_ctrl as TestGameController);
-        o["setChatEnabled_v1"] = _panel.setChatEnabled;
-        o["setChatBounds_v1"] = _panel.setChatBounds;
 //         o["getHeadShot_v1"] = getHeadShot; // TODO: fake up a sprite
         o["getStageBounds_v1"] = getStageBounds;
         o["backToWhirled_v1"] = backToWhirled;

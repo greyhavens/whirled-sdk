@@ -21,16 +21,6 @@ public class TestGamePanel extends EZGamePanel
         super(ctx, ctrl);
     }
 
-    public function setChatEnabled (enabled :Boolean) :void
-    {
-        // TOBEDOOBIEDOO
-    }
-
-    public function setChatBounds (bounds :Rectangle) :void
-    {
-        // TOBEDOOBIEDOO
-    }
-
     public function getStageBounds () :Rectangle
     {
         // in test mode games have the entire width and height of the stage
