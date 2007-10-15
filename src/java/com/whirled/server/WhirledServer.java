@@ -33,12 +33,14 @@ import com.threerings.crowd.server.CrowdServer;
 
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.server.ParlorManager;
+import com.threerings.parlor.server.ParlorSender;
 
 import com.threerings.ezgame.data.EZGameConfig;
 import com.threerings.ezgame.data.GameDefinition;
 import com.threerings.ezgame.data.Parameter;
 import com.threerings.ezgame.data.TableMatchConfig;
 import com.threerings.ezgame.server.DictionaryManager;
+import com.threerings.ezgame.server.EZGameManager;
 
 import com.whirled.data.WhirledGameDefinition;
 import com.whirled.xml.WhirledGameParser;
@@ -133,6 +135,13 @@ public class WhirledServer extends CrowdServer
     // from interface TestProvider
     public void clientReady (ClientObject caller)
     {
+        // if this is a party game, send the player straight in, it's already running
+        if (_ezmgr != null) {
+            ParlorSender.gameIsReady(caller, _ezmgr.getPlaceObject().getOid());
+            return;
+        }
+
+        // otherwise add them to the ready set and start the game when everyone is logged on
         _ready.add(((BodyObject)caller).username);
         HashSet<Name> ready = CollectionUtil.addAll(new HashSet<Name>(), _config.players);
         ready.retainAll(_ready);
@@ -187,6 +196,15 @@ public class WhirledServer extends CrowdServer
                 new StreamEater(proc.getErrorStream());
             } catch (Exception e) {
                 reportError("Failed to start client [player=" + player + ", url=" + url + "].", e);
+            }
+        }
+
+        // if this is a party game, start it up immediately
+        if (match.isPartyGame) {
+            try {
+                _ezmgr = (EZGameManager)plreg.createPlace(_config);
+            } catch (Exception e) {
+                reportError("Failed to start game " + _config + ".", e);
             }
         }
     }
@@ -255,6 +273,9 @@ public class WhirledServer extends CrowdServer
 
     /** The configuration for the game we'll start when everyone is ready. */
     protected EZGameConfig _config;
+
+    /** The manager for our test game. */
+    protected EZGameManager _ezmgr;
 
     /** Contains a mapping of all clients that are ready to play. */
     protected HashSet<Name> _ready = new HashSet<Name>();
