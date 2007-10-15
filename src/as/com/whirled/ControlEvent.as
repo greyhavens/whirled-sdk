@@ -77,7 +77,7 @@ public class ControlEvent extends Event
      * @eventType gotChat
      */
     public static const RECEIVED_CHAT :String = "receivedChat";
-    
+
     /**
      * Retrieve the event target, which will be the WhirledControl instance that
      * dispatched this event.

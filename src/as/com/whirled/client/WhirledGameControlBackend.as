@@ -83,7 +83,8 @@ public class WhirledGameControlBackend extends GameControlBackend
             createLoggingConfirmListener("endGameWithWinners"));
     }
 
-    protected function endGameWithScores_v1 (playerIds :Array, scores :Array, payoutType :int) :void
+    protected function endGameWithScores_v1 (playerIds :Array, scores :Array /* of int */,
+        payoutType :int) :void
     {
         validateConnected();
 

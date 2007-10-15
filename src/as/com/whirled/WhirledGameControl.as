@@ -185,14 +185,15 @@ public class WhirledGameControl extends EZGameControl
      * ranking will be used to adjust the players rating as well as to determine their individual
      * flow payout.
      *
-     * <p> Note that scores must be >= 0 and higher scores are considered better, so if your game
-     * naturally operates with scores where lower is better (elapsed time in a racing game, for
-     * example), then you must convert your score to a positive integer by, for example,
+     * <p> Note that scores must be integers >= 0 and higher scores are considered better, so if
+     * your game naturally operates with scores where lower is better (elapsed time in a racing
+     * game, for example), then you must convert your score to a positive integer by, for example,
      * subtracting your score from a hypothentical worse possible score. For example:
      *
      * <p><code>score = Math.max(WORST_POSSIBLE_TIME - actualTime, 0)</code>
      */
-    public function endGameWithScores (playerIds :Array, scores :Array, payoutType :int) :void
+    public function endGameWithScores (playerIds :Array, scores :Array /* of int */,
+        payoutType :int) :void
     {
         callEZCode("endGameWithScores_v1", playerIds, scores, payoutType);
     }
