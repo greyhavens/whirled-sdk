@@ -33,6 +33,14 @@ public class AVRGameControlEvent extends ControlEvent
      */
     public static const MESSAGE_RECEIVED :String = "messageReceived";
 
+    /** An event type dispatched when a quest was activated or deactivated for this player.
+     * key: id of accepted quest
+     * value: whether the quest was added (true) or removed (false) from our active quests
+     *
+     * @eventType questStateChanged
+     */
+    public static const QUEST_STATE_CHANGED :String = "questStateChanged";
+
     /**
      * Create a new AVRGameControlEvent.
      */

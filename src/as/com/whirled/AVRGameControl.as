@@ -107,6 +107,7 @@ public class AVRGameControl extends WhirledControl
         o["stateChanged_v1"] = stateChanged_v1;
         o["playerStateChanged_v1"] = playerStateChanged_v1;
         o["messageReceived_v1"] = messageReceived_v1;
+        o["questStateChanged_v1"] = questStateChanged_v1;
     }
 
     /**
@@ -142,6 +143,14 @@ public class AVRGameControl extends WhirledControl
     protected function messageReceived_v1 (key :String, value :Object) :void
     {
         avrgDispatch(AVRGameControlEvent.MESSAGE_RECEIVED, key, value);
+    }
+
+    /**
+     * Called when a quest has been added or removed from our list of active quests.
+     */
+    protected function questStateChanged_v1 (questId :String, state :Boolean) :void
+    {
+        avrgDispatch(AVRGameControlEvent.QUEST_STATE_CHANGED, questId, state);
     }
 }
 }
