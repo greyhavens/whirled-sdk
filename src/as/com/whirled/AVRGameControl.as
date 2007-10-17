@@ -70,9 +70,9 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("sendMessage_v1", key, value, playerId);
     }
 
-    public function offerQuest (questId :String, questIntro :String, initialStatus :String) :Boolean
+    public function offerQuest (questId :String, intro :String, initialStatus :String) :Boolean
     {
-        return callHostCode("offerQuest_v1", questId, questIntro, initialStatus);
+        return callHostCode("offerQuest_v1", questId, intro, initialStatus);
     }
 
     public function updateQuest (questId :String, step :int, status :String) :Boolean
@@ -80,9 +80,9 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("updateQuest_v1", questId, step, status);
     }
 
-    public function completeQuest (questId :String, payoutLevel :int) :Boolean
+    public function completeQuest (questId :String, outro :String, payout :int) :Boolean
     {
-        return callHostCode("completeQuest_v1", questId, payoutLevel);
+        return callHostCode("completeQuest_v1", questId, outro, payout);
     }
 
     public function cancelQuest (questId :String) :Boolean
