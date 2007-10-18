@@ -49,8 +49,10 @@ public class PlayerList extends VBox
 
         // set up the UI
         width = 280;
+        height = 250;
         _list = new List();
         _list.percentWidth = 100;
+        _list.percentHeight = 100;
         _list.itemRenderer = new ClassFactory(PlayerRenderer);
         _list.dataProvider = _players;
 
