@@ -51,6 +51,7 @@ public class PlayerList extends VBox
         height = 250;
         //percentHeight = 50; // doesn't work
         _list = new List();
+        _list.selectable = false; // don't let the user select, as we use selection to show turn
         _list.percentWidth = 100;
         _list.percentHeight = 100;
         _list.itemRenderer = new ClassFactory(PlayerRenderer);
@@ -64,6 +65,9 @@ public class PlayerList extends VBox
         _players.sort = sort;
     }
 
+    /**
+     * Start up this player list.
+     */
     public function startup (plobj :PlaceObject) :void
     {
         trace("==========PlayerList:startup");
@@ -101,8 +105,16 @@ public class PlayerList extends VBox
         }
 
         _players.refresh();
+
+        if (_gameObj is TurnGameObject) {
+            record = _byName.get((_gameObj as TurnGameObject).getTurnHolder());
+            _list.selectedItem = record;
+        }
     }
 
+    /**
+     * Shut down this player list.
+     */
     public function shutdown () :void
     {
         trace("==========PlayerList:shutdown");
@@ -117,7 +129,11 @@ public class PlayerList extends VBox
     // from AttributeChangeListener
     public function attributeChanged (event :AttributeChangedEvent) :void
     {
-        // TODO: turn changes
+        if ((_gameObj is TurnGameObject) &&
+                (event.getName() == (_gameObj as TurnGameObject).getTurnHolderFieldName())) {
+            var record :PlayerRecord = _byName.get(event.getValue()) as PlayerRecord;
+            _list.selectedItem = record;
+        }
     }
 
     // from ElementUpdateListener
@@ -285,13 +301,18 @@ class PlayerRecord
             cmp = compare(this.scoreData, that.scoreData);
 //            trace("scoreData: " + cmp);
             if (cmp == 0) {
-                // if equal, compare by name (lowest first)
-                cmp = compare(that.name, this.name);
-//                trace("name: " + cmp);
+                // if equal, put actual players ahead of watchers
+                cmp = compare(this.isPlayer, that.isPlayer);
+//                trace("isPlayer: " + cmp);
                 if (cmp == 0) {
-                    // if equal, compare by oid
-                    cmp = compare(this.oid, that.oid);
-//                    trace("oid: " + cmp);
+                    // if equal, compare by name (lowest first)
+                    cmp = compare(that.name, this.name);
+//                    trace("name: " + cmp);
+                    if (cmp == 0) {
+                        // if equal, compare by oid
+                        cmp = compare(this.oid, that.oid);
+//                        trace("oid: " + cmp);
+                    }
                 }
             }
         }
