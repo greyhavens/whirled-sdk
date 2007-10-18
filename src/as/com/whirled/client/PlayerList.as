@@ -76,8 +76,7 @@ public class PlayerList extends VBox
         // find all the current occupants and add them to the set
         for each (var occInfo :OccupantInfo in _gameObj.occupantInfo.toArray()) {
             record = new PlayerRecord();
-            record.name = occInfo.username.toString();
-            record.oid = occInfo.bodyOid;
+            record.setup(occInfo);
 
             _byName.put(occInfo.username, record);
             _byOid.put(occInfo.bodyOid, record);
@@ -91,7 +90,11 @@ public class PlayerList extends VBox
             if (newRecord) {
                 record = new PlayerRecord();
                 record.name = name.toString();
+            }
 
+            record.isPlayer = true;
+
+            if (newRecord) {
                 _byName.put(name, record);
                 _players.addItem(record);
             }
@@ -120,7 +123,7 @@ public class PlayerList extends VBox
     // from ElementUpdateListener
     public function elementUpdated (event :ElementUpdatedEvent) :void
     {
-        // TODO: changes to players array
+        // TODO: changes to players array...?
     }
 
     // from SetListener
@@ -132,14 +135,12 @@ public class PlayerList extends VBox
             var newRecord :Boolean = (record == null);
             if (newRecord) {
                 record = new PlayerRecord();
-                record.name = occInfo.username.toString();
-                _byName.put(occInfo.username, record);
             }
+            record.setup(occInfo);
 
-            record.oid = occInfo.bodyOid;
             _byOid.put(occInfo.bodyOid, record);
-
             if (newRecord) {
+                _byName.put(occInfo.username, record);
                 _players.addItem(record);
 
             } else {
@@ -151,13 +152,13 @@ public class PlayerList extends VBox
     // from SetListener
     public function entryUpdated (event :EntryUpdatedEvent) :void
     {
-//        if (event.getName() == PlaceObject.OCCUPANT_INFO) {
-//            // I guess we might be updating the name..
-//            var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo);
-//            var record :Object = _byOid.get(occInfo.bodyOid);
-//            record.name = occInfo.username.toString();
-//            _players.itemUpdated(record);
-//        }
+        if (event.getName() == PlaceObject.OCCUPANT_INFO) {
+            // I guess we might be updating the name or the headshot
+            var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo);
+            var record :Object = _byOid.get(occInfo.bodyOid);
+            record.setup(occInfo);
+            _players.itemUpdated(record);
+        }
     }
 
     // from SetListener
@@ -169,7 +170,7 @@ public class PlayerList extends VBox
 
             // if this is a player, strip the oid but leave it in the lists
             if (ArrayUtil.contains(_gameObj.players, occInfo.username)) {
-                record.oid = 0;
+                record.setup(null);
                 _players.itemUpdated(record);
 
             } else {
@@ -213,11 +214,16 @@ public class PlayerList extends VBox
 
 import mx.containers.HBox;
 
+import mx.controls.Image;
 import mx.controls.Label;
 
 import mx.core.ScrollPolicy;
 
 import com.threerings.util.Comparable;
+
+import com.threerings.crowd.data.OccupantInfo;
+
+import com.whirled.data.WhirledOccupantInfo;
 
 /**
  * A record for tracking player data.
@@ -231,6 +237,9 @@ class PlayerRecord
     /** The player's oid, or 0 if the player is not present. */
     public var oid :int;
 
+    /** The headshot url. */
+    public var headshotUrl :String;
+
     /** Is it an actual player in the game's players array? */
     public var isPlayer :Boolean;
 
@@ -239,6 +248,27 @@ class PlayerRecord
 
     /** Optional sort ordering for this record. */
     public var sortData :Object;
+
+    /**
+     * Called to configure this PlayerRecord.
+     */
+    public function setup (occInfo :OccupantInfo) :void
+    {
+        if (occInfo != null) {
+            name = occInfo.username.toString();
+            oid = occInfo.bodyOid;
+            if (occInfo is WhirledOccupantInfo) {
+                headshotUrl = (occInfo as WhirledOccupantInfo).getHeadshotURL();
+
+            } else {
+                headshotUrl = null;
+            }
+
+        } else {
+            oid = 0;
+            headshotUrl = null;
+        }
+    }
 
     // from Comparable
     public function compareTo (other :Object) :int
@@ -295,6 +325,9 @@ class PlayerRecord
     }
 }
 
+
+// TODO: fuck fuck fuck. It's probably the case that a renderer that gets scrolled off and
+// back on will have to re-load the headshot completely.
 class PlayerRenderer extends HBox
 {
     public function PlayerRenderer ()
@@ -318,8 +351,11 @@ class PlayerRenderer extends HBox
     {
         super.createChildren();
 
+        addChild(_headshot = new Image());
+        _headshot.width = 20; // 1/3 of headshot size
+        _headshot.height = 20; // 1/3 of headshot size
         addChild(_nameLabel = new Label());
-        _nameLabel.maxWidth = 100;
+        _nameLabel.maxWidth = 180;
 
         configureUI();
     }
@@ -333,11 +369,16 @@ class PlayerRenderer extends HBox
         if (record != null) {
             _nameLabel.text = record.name;
             _nameLabel.setStyle("color", (record.oid != 0) ? 0x000000 : 0x777777);
+            _headshot.source = record.headshotUrl;
 
         } else {
             _nameLabel.text = "";
+            _headshot.source = null;
         }
     }
+
+    /** Display's the user's icon. */
+    protected var _headshot :Image;
 
     /** The label used to display the player's name. */
     protected var _nameLabel :Label;
