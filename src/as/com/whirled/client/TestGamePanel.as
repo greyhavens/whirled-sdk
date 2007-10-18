@@ -7,7 +7,9 @@ package com.whirled.client {
 
 import flash.geom.Rectangle;
 
+import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.util.CrowdContext;
+
 import com.threerings.ezgame.client.EZGamePanel;
 import com.threerings.ezgame.client.GameControlBackend;
 
@@ -21,15 +23,29 @@ public class TestGamePanel extends EZGamePanel
         super(ctx, ctrl);
     }
 
+    override public function willEnterPlace (plobj :PlaceObject) :void
+    {
+        super.willEnterPlace(plobj);
+
+        _gameView.percentWidth = 80;
+
+        _playerList = new PlayerList();
+        _playerList.x = 700;
+        addChild(_playerList);
+    }
+
     public function getStageBounds () :Rectangle
     {
         // in test mode games have the entire width and height of the stage
-        return new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
+        return new Rectangle(0, 0, stage.stageWidth - 200, stage.stageHeight);
     }
 
     override protected function createBackend () :GameControlBackend
     {
         return new TestGameControlBackend(_ctx, _ezObj, _ctrl as TestGameController, this);
     }
+
+
+    protected var _playerList :PlayerList;
 }
 }
