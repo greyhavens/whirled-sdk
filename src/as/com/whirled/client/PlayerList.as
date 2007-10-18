@@ -25,7 +25,6 @@ import com.threerings.presents.dobj.EntryRemovedEvent;
 import com.threerings.presents.dobj.EntryUpdatedEvent;
 import com.threerings.presents.dobj.SetListener;
 
-import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 
@@ -41,7 +40,7 @@ import com.threerings.parlor.turn.data.TurnGameObject;
 // set scores by passing in an array corresponding to the players array
 // clear scores function to clear all scores
 public class PlayerList extends VBox
-    implements PlaceView, AttributeChangeListener, ElementUpdateListener, SetListener
+    implements AttributeChangeListener, ElementUpdateListener, SetListener
 {
     public function PlayerList ()
     {
@@ -50,6 +49,7 @@ public class PlayerList extends VBox
         // set up the UI
         width = 280;
         height = 250;
+        //percentHeight = 50; // doesn't work
         _list = new List();
         _list.percentWidth = 100;
         _list.percentHeight = 100;
@@ -64,9 +64,10 @@ public class PlayerList extends VBox
         _players.sort = sort;
     }
 
-    // from PlaceView
-    public function willEnterPlace (plobj :PlaceObject) :void
+    public function startup (plobj :PlaceObject) :void
     {
+        trace("==========PlayerList:startup");
+
         _gameObj = plobj as GameObject;
         _gameObj.addListener(this);
 
@@ -99,9 +100,9 @@ public class PlayerList extends VBox
         _players.refresh();
     }
 
-    // from PlaceView
-    public function didLeavePlace (plobj :PlaceObject) :void
+    public function shutdown () :void
     {
+        trace("==========PlayerList:shutdown");
         _gameObj.removeListener(this);
         _gameObj = null;
 
@@ -309,9 +310,7 @@ class PlayerRenderer extends HBox
         super.data = value;
 
         if (processedDescriptors) {
-            var record :PlayerRecord = value as PlayerRecord;
-            _nameLabel.text = record.name;
-            _nameLabel.setStyle("color", (record.oid != 0) ? 0x000000 : 0x777777);
+            configureUI();
         }
     }
 
@@ -322,8 +321,21 @@ class PlayerRenderer extends HBox
         addChild(_nameLabel = new Label());
         _nameLabel.maxWidth = 100;
 
-        if (data != null) {
-            data = data; // re-set
+        configureUI();
+    }
+
+    /**
+     * Update the UI elements with the data we're displaying.
+     */
+    protected function configureUI () :void
+    {
+        var record :PlayerRecord = this.data as PlayerRecord;
+        if (record != null) {
+            _nameLabel.text = record.name;
+            _nameLabel.setStyle("color", (record.oid != 0) ? 0x000000 : 0x777777);
+
+        } else {
+            _nameLabel.text = "";
         }
     }
 

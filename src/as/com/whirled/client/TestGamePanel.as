@@ -32,6 +32,16 @@ public class TestGamePanel extends EZGamePanel
         _playerList = new PlayerList();
         _playerList.x = 700;
         addChild(_playerList);
+        _playerList.startup(plobj);
+    }
+
+    override public function didLeavePlace (plobj :PlaceObject) :void
+    {
+        super.didLeavePlace(plobj);
+
+        _playerList.shutdown();
+        removeChild(_playerList);
+        _playerList = null;
     }
 
     public function getStageBounds () :Rectangle
