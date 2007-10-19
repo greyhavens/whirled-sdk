@@ -82,9 +82,11 @@ public class WhirledGameControlBackend extends GameControlBackend
         (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setLabel(label);
     }
 
-    protected function clearScores_v1 (sortValuesToo :Boolean = false) :void
+    protected function clearScores_v1 (clearValue :Object = null,
+        sortValuesToo :Boolean = false) :void
     {
-        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().clearScores(sortValuesToo);
+        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().clearScores(
+            clearValue, sortValuesToo);
     }
 
     protected function setPlayerScores_v1 (scores :Array, sortValues :Array = null) :void

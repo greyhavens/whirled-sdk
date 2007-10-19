@@ -88,12 +88,13 @@ public class WhirledGameControl extends EZGameControl
     /**
      * Clear all the scores displayed in the occupants list.
      *
+     * @param clearValue a value to set all the scores to, or null to not show anything.
      * @param sortValuesToo if true, also clear the sort values, returning the list
      * to the default sort order.
      */
-    public function clearScores (sortValuesToo :Boolean = false) :void
+    public function clearScores (clearValue :Object = null, sortValuesToo :Boolean = false) :void
     {
-        callEZCode("clearScores_v1", sortValuesToo);
+        callEZCode("clearScores_v1", clearValue, sortValuesToo);
     }
 
     /**
@@ -118,7 +119,7 @@ public class WhirledGameControl extends EZGameControl
      */
     public function setMappedScores (scores :Object) :void
     {
-        callEZCode("setMappeScores_v1", scores);
+        callEZCode("setMappedScores_v1", scores);
     }
 
     /**

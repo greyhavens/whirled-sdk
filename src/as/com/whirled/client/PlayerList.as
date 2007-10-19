@@ -153,11 +153,11 @@ public class PlayerList extends VBox
     /**
      * Clear out the score data for all records.
      */
-    public function clearScores (sortValuesToo :Boolean = false) :void
+    public function clearScores (clearValue :Object = null, sortValuesToo :Boolean = false) :void
     {
         for (var ii :int = _players.length - 1; ii >= 0; ii--) {
             var record :PlayerRecord = _players.getItemAt(ii) as PlayerRecord;
-            record.scoreData = null;
+            record.scoreData = clearValue;
             if (sortValuesToo) {
                 record.sortData = null;
             }
