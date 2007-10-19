@@ -141,7 +141,8 @@ public class EntityControl extends WhirledControl
 
     /**
      * Return an associative hash of all the memories. This is not a cheap operation. Use
-     * lookupMemory if you know what you want.
+     * lookupMemory if you know what you want. NOTE: Avatar memories are inconsistent at
+     * the moment and should not be used.
      */
     public function getMemories () :Object
     {
@@ -152,7 +153,8 @@ public class EntityControl extends WhirledControl
 
     /**
      * Returns the value associated with the supplied key in this item's memory. If no value is
-     * mapped in the item's memory, the supplied default value will be returned.
+     * mapped in the item's memory, the supplied default value will be returned. NOTE:
+     * Avatar memories are inconsistent at the moment and should not be used.
      *
      * @return the value for the specified key from this item's memory or the supplied default.
      */
@@ -228,6 +230,8 @@ public class EntityControl extends WhirledControl
      *
      * Setting the memory for a key to null clears that key; subsequent lookups will return the
      * default value.
+     *
+     * NOTE: Avatar memories are incoonsistent at the moment and should not be used.
      *
      * @return true if the memory was updated, false if the memory update could not be completed
      * due to size restrictions.
