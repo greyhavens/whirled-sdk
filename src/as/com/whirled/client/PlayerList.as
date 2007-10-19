@@ -38,10 +38,6 @@ import com.threerings.parlor.turn.data.TurnGameObject;
 /**
  * A standard flex players list for use in games.
  */
-// TODO
-// set scores by id
-// set scores by passing in an array corresponding to the players array
-// clear scores function to clear all scores
 public class PlayerList extends VBox
     implements AttributeChangeListener, ElementUpdateListener, SetListener
 {
@@ -107,6 +103,7 @@ public class PlayerList extends VBox
 
         _players.refresh();
 
+        // set the current turn-holder, if applicable
         if (_gameObj is TurnGameObject) {
             record = _byName.get((_gameObj as TurnGameObject).getTurnHolder());
             _list.selectedItem = record;
@@ -140,6 +137,7 @@ public class PlayerList extends VBox
         } else {
             if (_label == null) {
                 _label = new Label();
+                _label.setStyle("textAlign", "center");
                 _label.percentWidth = 100;
                 addChildAt(_label, 0);
             }
@@ -216,6 +214,7 @@ public class PlayerList extends VBox
     // from AttributeChangeListener
     public function attributeChanged (event :AttributeChangedEvent) :void
     {
+        // update the displayed turn holder
         if ((_gameObj is TurnGameObject) &&
                 (event.getName() == (_gameObj as TurnGameObject).getTurnHolderFieldName())) {
             var record :PlayerRecord = _byName.get(event.getValue()) as PlayerRecord;
@@ -234,6 +233,7 @@ public class PlayerList extends VBox
     {
         if (event.getName() == PlaceObject.OCCUPANT_INFO) {
             var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo);
+            // if the occupant is a player, they may already have a record
             var record :PlayerRecord = _byName.get(occInfo.username) as PlayerRecord;
             var newRecord :Boolean = (record == null);
             if (newRecord) {
@@ -481,7 +481,8 @@ class PlayerRenderer extends HBox
         if (record != null) {
             _headshot.source = record.headshotUrl;
             _nameLabel.text = record.name;
-            _nameLabel.setStyle("color", (record.oid != 0) ? 0x000000 : 0x777777);
+            _nameLabel.setStyle("color",
+                (record.oid != 0) ? PRESENT_NAME_COLOR : ABSENT_NAME_COLOR);
             _scoreLabel.text = (record.scoreData == null) ? "" : String(record.scoreData);
             _scoreLabel.setStyle("textAlign", (record.scoreData is Number) ? "right" : "left");
 
@@ -500,4 +501,10 @@ class PlayerRenderer extends HBox
 
     /** The label used to display score data, if applicable. */
     protected var _scoreLabel :Label;
+
+    /** The color of the name label when a player or occupant is present in the room. */
+    protected static const PRESENT_NAME_COLOR :uint = 0x000000;
+
+    /** The color of the name label when a player is absent. */
+    protected static const ABSENT_NAME_COLOR :uint =0x777777;
 }
