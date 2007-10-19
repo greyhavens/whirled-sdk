@@ -231,7 +231,7 @@ public class EntityControl extends WhirledControl
      * Setting the memory for a key to null clears that key; subsequent lookups will return the
      * default value.
      *
-     * NOTE: Avatar memories are incoonsistent at the moment and should not be used.
+     * NOTE: Avatar memories are inconsistent at the moment and should not be used.
      *
      * @return true if the memory was updated, false if the memory update could not be completed
      * due to size restrictions.
