@@ -73,8 +73,6 @@ public class PlayerList extends VBox
      */
     public function startup (plobj :PlaceObject) :void
     {
-        trace("==========PlayerList:startup");
-
         _gameObj = plobj as GameObject;
         _gameObj.addListener(this);
 
@@ -120,7 +118,6 @@ public class PlayerList extends VBox
      */
     public function shutdown () :void
     {
-        trace("==========PlayerList:shutdown");
         _gameObj.removeListener(this);
         _gameObj = null;
 
