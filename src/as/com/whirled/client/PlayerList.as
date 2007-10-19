@@ -3,6 +3,8 @@
 
 package com.whirled.client {
 
+import flash.errors.IllegalOperationError;
+
 import mx.core.ClassFactory;
 
 import mx.collections.ArrayCollection;
@@ -10,6 +12,7 @@ import mx.collections.Sort;
 
 import mx.containers.VBox;
 
+import mx.controls.Label;
 import mx.controls.List;
 
 import com.threerings.util.ArrayUtil;
@@ -126,6 +129,93 @@ public class PlayerList extends VBox
         _players.removeAll();
     }
 
+    /**
+     * Label the players list with a string.
+     */
+    public function setLabel (label :String) :void
+    {
+        if (label == null) {
+            if (_label != null) {
+                removeChild(_label);
+                _label = null;
+            }
+
+        } else {
+            if (_label == null) {
+                _label = new Label();
+                _label.percentWidth = 100;
+                addChildAt(_label, 0);
+            }
+            _label.text = label;
+        }
+    }
+
+    /**
+     * Clear out the score data for all records.
+     */
+    public function clearScores (sortValuesToo :Boolean = false) :void
+    {
+        for (var ii :int = _players.length - 1; ii >= 0; ii--) {
+            var record :PlayerRecord = _players.getItemAt(ii) as PlayerRecord;
+            record.scoreData = null;
+            if (sortValuesToo) {
+                record.sortData = null;
+            }
+        }
+        _players.refresh();
+    }
+
+    /**
+     * Set the scores for players from an array. You may specify either the scores or
+     * the sortValues or both.
+     */
+    public function setPlayerScores (scores :Array, sortValues :Array = null) :void
+    {
+        var names :Array = _gameObj.players;
+
+        if (scores != null && scores.length != names.length) {
+            throw new IllegalOperationError("The length of the scores array does not match " +
+                "the length of the players array.");
+        }
+        if (sortValues != null && sortValues.length != names.length) {
+            throw new IllegalOperationError("The length of the sortValues array does not match " +
+                "the length of the players array.");
+        }
+
+        for (var ii :int = 0; ii < names.length; ii++) {
+            var record :PlayerRecord = _byName.get(names[ii]) as PlayerRecord;
+            if (scores != null) {
+                record.scoreData = scores[ii];
+            }
+            if (sortValues != null) {
+                record.sortData = sortValues[ii];
+            }
+        }
+        _players.refresh();
+    }
+
+    /**
+     * Set the scores for any occupants. The keys are the occupantId (oid), the value is
+     * used for the score, or if an array, the first value is the score the 2nd is the sortData.
+     */
+    public function setMappedScores (scores :Object) :void
+    {
+        for (var playerId :String in scores) {
+            var record :PlayerRecord = _byOid.get(int(playerId));
+            if (record != null) {
+                var data :Object = scores[playerId];
+                if (data is Array) {
+                    var arr :Array = data as Array;
+                    record.scoreData = arr[0];
+                    record.sortData = arr[1];
+                } else {
+                    record.scoreData = data;
+                }
+            }
+        }
+        _players.refresh();
+    }
+
     // from AttributeChangeListener
     public function attributeChanged (event :AttributeChangedEvent) :void
     {
@@ -199,8 +289,6 @@ public class PlayerList extends VBox
 
     /**
      * The sort function that will be used to display occupant records.
-     *
-     * @return -1 if rec1 should be first, 0 if they are equal (?), 1 if rec2 should be first.
      */
     protected function sortFunction (o1 :Object, o2 :Object, fields :Array = null) :int
     {
@@ -210,8 +298,8 @@ public class PlayerList extends VBox
     /** The game object. */
     protected var _gameObj :GameObject;
 
-//    /** The occupantId of the occupant that's instatiated this widget. */
-//    protected var _ourId :int;
+    /** An optional label for the list of players. */
+    protected var _label :Label;
 
     /** The List widget that displays the players. */
     protected var _list :List;
@@ -373,10 +461,16 @@ class PlayerRenderer extends HBox
         super.createChildren();
 
         addChild(_headshot = new Image());
-        _headshot.width = 20; // 1/3 of headshot size
         _headshot.height = 20; // 1/3 of headshot size
+        _headshot.maintainAspectRatio = true;
+        //_headshot.width = 20; // 1/3 of headshot size
+
         addChild(_nameLabel = new Label());
+        _nameLabel.minWidth = 180;
         _nameLabel.maxWidth = 180;
+
+        addChild(_scoreLabel = new Label());
+        _scoreLabel.maxWidth = 100;
 
         configureUI();
     }
@@ -388,13 +482,16 @@ class PlayerRenderer extends HBox
     {
         var record :PlayerRecord = this.data as PlayerRecord;
         if (record != null) {
+            _headshot.source = record.headshotUrl;
             _nameLabel.text = record.name;
             _nameLabel.setStyle("color", (record.oid != 0) ? 0x000000 : 0x777777);
-            _headshot.source = record.headshotUrl;
+            _scoreLabel.text = (record.scoreData == null) ? "" : String(record.scoreData);
+            _scoreLabel.setStyle("textAlign", (record.scoreData is Number) ? "right" : "left");
 
         } else {
             _nameLabel.text = "";
             _headshot.source = null;
+            _scoreLabel.text = "";
         }
     }
 
@@ -403,4 +500,7 @@ class PlayerRenderer extends HBox
 
     /** The label used to display the player's name. */
     protected var _nameLabel :Label;
+
+    /** The label used to display score data, if applicable. */
+    protected var _scoreLabel :Label;
 }

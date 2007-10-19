@@ -70,6 +70,32 @@ public class WhirledGameControlBackend extends GameControlBackend
         o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
         o["holdsTrophy_v1"] = holdsTrophy_v1;
         o["awardTrophy_v1"] = awardTrophy_v1;
+
+        o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
+        o["clearScores_v1"] = clearScores_v1;
+        o["setPlayerScores_v1"] = setPlayerScores_v1;
+        o["setMappedScores_v1"] = setMappedScores_v1;
+    }
+
+    protected function setOccupantsLabel_v1 (label :String) :void
+    {
+        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setLabel(label);
+    }
+
+    protected function clearScores_v1 (sortValuesToo :Boolean = false) :void
+    {
+        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().clearScores(sortValuesToo);
+    }
+
+    protected function setPlayerScores_v1 (scores :Array, sortValues :Array = null) :void
+    {
+        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setPlayerScores(
+            scores, sortValues);
+    }
+
+    protected function setMappedScores_v1 (scores :Object) :void
+    {
+        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setMappedScores(scores);
     }
 
     protected function endGameWithWinners_v1 (
