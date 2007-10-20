@@ -6,6 +6,7 @@ package com.whirled.client {
 import flash.errors.IllegalOperationError;
 
 import mx.core.ClassFactory;
+import mx.core.ScrollPolicy;
 
 import mx.collections.ArrayCollection;
 import mx.collections.Sort;
@@ -50,6 +51,7 @@ public class PlayerList extends VBox
         height = 250;
         //percentHeight = 50; // doesn't work
         _list = new List();
+        //_list.verticalScrollPolicy = ScrollPolicy.ON;
         _list.selectable = false; // don't let the user select, as we use selection to show turn
         _list.percentWidth = 100;
         _list.percentHeight = 100;
@@ -442,6 +444,7 @@ class PlayerRenderer extends HBox
 
         verticalScrollPolicy = ScrollPolicy.OFF;
         horizontalScrollPolicy = ScrollPolicy.OFF;
+        // the horizontalGap should be 8...
     }
 
     override public function set data (value :Object) :void
@@ -457,17 +460,18 @@ class PlayerRenderer extends HBox
     {
         super.createChildren();
 
+        // 280 total width (??) - scrollbar thickness (16) - two gaps (8 each) = 228
+        // 20 for headshot + 128 for name + 80 for score = 228
         addChild(_headshot = new Image());
         _headshot.height = 20; // 1/3 of headshot size
+        _headshot.width = 20;
         _headshot.maintainAspectRatio = true;
-        //_headshot.width = 20; // 1/3 of headshot size
 
         addChild(_nameLabel = new Label());
-        _nameLabel.minWidth = 180;
-        _nameLabel.maxWidth = 180;
+        _nameLabel.width = 128;
 
         addChild(_scoreLabel = new Label());
-        _scoreLabel.maxWidth = 100;
+        _scoreLabel.width = 80;
 
         configureUI();
     }
