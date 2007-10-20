@@ -5,7 +5,7 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
     scriptTimeLimit="5" layout="absolute" styleName="plain"
     verticalScrollPolicy="off" horizontalScrollPolicy="off"
-    width="1014" height="506" applicationComplete="new WhirledClient(stage);">
+    width="1014" height="500" applicationComplete="new WhirledClient(stage);">
 <mx:Script>
     <![CDATA[
         import com.whirled.client.WhirledClient;

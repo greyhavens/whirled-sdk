@@ -11,6 +11,7 @@ import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.util.CrowdContext;
 
 import com.threerings.ezgame.client.EZGamePanel;
+import com.threerings.ezgame.client.GameContainer;
 import com.threerings.ezgame.client.GameControlBackend;
 
 /**
@@ -32,9 +33,6 @@ public class TestGamePanel extends EZGamePanel
     {
         super.willEnterPlace(plobj);
 
-        // actually, only use 700 pixels horizontally (superclass says 100% width)
-        _gameView.width = 700;
-
         _playerList.startup(plobj);
     }
 
@@ -47,8 +45,7 @@ public class TestGamePanel extends EZGamePanel
 
     public function getStageBounds () :Rectangle
     {
-        // in test mode games have the entire width and height of the stage
-        return new Rectangle(0, 0, stage.stageWidth - 200, stage.stageHeight);
+        return new Rectangle(0, 0, _gameView.width, _gameView.height);
     }
 
     // from WhirledGamePanel
@@ -60,6 +57,14 @@ public class TestGamePanel extends EZGamePanel
     override protected function createBackend () :GameControlBackend
     {
         return new TestGameControlBackend(_ctx, _ezObj, _ctrl as TestGameController, this);
+    }
+
+    override protected function configureGameView (view :GameContainer) :void
+    {
+        // we don't call super because super sets percentWidth and percentHeight which fucks things
+        // right on up; force games to 700x500 as that's what we want for whirled
+        view.width = 700;
+        view.height = 500;
     }
 
     protected var _playerList :PlayerList;
