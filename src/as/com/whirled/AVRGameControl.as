@@ -95,6 +95,11 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("getActiveQuests_v1");
     }
 
+    public function deactivateGame () :Boolean
+    {
+        return callHostCode("deactivateGame_v1");
+    }
+
     override protected function isAbstract () :Boolean
     {
         return false;
