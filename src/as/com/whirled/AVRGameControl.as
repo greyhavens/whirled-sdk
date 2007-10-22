@@ -6,6 +6,7 @@
 package com.whirled {
 
 import flash.display.DisplayObject;
+import flash.geom.Rectangle;
 
 /**
  * Dispatched when a game-global state property has changed.
@@ -43,6 +44,17 @@ public class AVRGameControl extends WhirledControl
     public function AVRGameControl (disp :DisplayObject)
     {
         super(disp);
+    }
+
+    /**
+     * Returns the bounds of the "stage" on which the AVRG will be drawn. This is mainly useful for
+     * the width and height so that the game can know how much area it has to cover. Note that the
+     * width of each actual room is potentially different, and that there is usually a column of
+     * unoccupied white space next to the room view. This area is included in the stage.
+     */
+    public function getStageBounds () :Rectangle
+    {
+        return Rectangle(callHostCode("getStageBounds_v1"));
     }
 
     public function getProperty (key :String) :Object
