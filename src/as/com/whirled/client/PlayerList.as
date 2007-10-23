@@ -461,17 +461,17 @@ class PlayerRenderer extends HBox
         super.createChildren();
 
         // 280 total width (??) - scrollbar thickness (16) - two gaps (8 each) = 228
-        // 20 for headshot + 128 for name + 80 for score = 228
+        // 20 for headshot + 118 for name + 90 for score = 228
         addChild(_headshot = new Image());
         _headshot.height = 20; // 1/3 of headshot size
         _headshot.width = 20;
         _headshot.maintainAspectRatio = true;
 
         addChild(_nameLabel = new Label());
-        _nameLabel.width = 128;
+        _nameLabel.width = 118;
 
         addChild(_scoreLabel = new Label());
-        _scoreLabel.width = 80;
+        _scoreLabel.width = 90;
 
         configureUI();
     }
