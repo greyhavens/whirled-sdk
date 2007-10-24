@@ -71,6 +71,8 @@ public class WhirledGameControl extends EZGameControl
      * TODO: the chat channel panel can be opened and closed during a game, so we need to dispatch
      * an event to let the game know in case it wants to do something special to handle that.
      */
+    // TODO: can we call this something else? Stage has a very specific meaning in flash
+    // and there are other ways to get the flash.display.Stage bounds.
     public function getStageBounds () :Rectangle
     {
         return Rectangle(callEZCode("getStageBounds_v1"));
