@@ -31,16 +31,20 @@ public class TestGamePanel extends EZGamePanel
 
     override public function willEnterPlace (plobj :PlaceObject) :void
     {
-        super.willEnterPlace(plobj);
-
+        // Important: we need to start the playerList prior to calling super, so that it
+        // is added as a listener to the gameObject prior to the backend being created
+        // and added as a listener. That way, when the ezgame hears about an occupantAdded
+        // event, the playerList already knows about that player!
         _playerList.startup(plobj);
+
+        super.willEnterPlace(plobj);
     }
 
     override public function didLeavePlace (plobj :PlaceObject) :void
     {
-        super.didLeavePlace(plobj);
-
         _playerList.shutdown();
+
+        super.didLeavePlace(plobj);
     }
 
     public function getStageBounds () :Rectangle
