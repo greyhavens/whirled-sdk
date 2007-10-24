@@ -35,13 +35,7 @@ public class TestGameControlBackend extends WhirledGameControlBackend
 
         var ctrl :TestGameController = (_ctrl as TestGameController);
 //         o["getHeadShot_v1"] = getHeadShot; // TODO: fake up a sprite
-        o["getStageBounds_v1"] = getStageBounds;
         o["backToWhirled_v1"] = backToWhirled;
-    }
-
-    protected function getStageBounds () :Rectangle
-    {
-        return _panel.getStageBounds();
     }
 
     protected function backToWhirled (showLobby :Boolean = false) :void

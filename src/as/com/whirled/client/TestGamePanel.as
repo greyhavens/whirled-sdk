@@ -47,11 +47,6 @@ public class TestGamePanel extends EZGamePanel
         super.didLeavePlace(plobj);
     }
 
-    public function getStageBounds () :Rectangle
-    {
-        return new Rectangle(0, 0, _gameView.width, _gameView.height);
-    }
-
     // from WhirledGamePanel
     public function getPlayerList () :PlayerList
     {

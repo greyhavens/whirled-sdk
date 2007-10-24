@@ -5,6 +5,9 @@
 
 package com.whirled.client {
 
+import flash.geom.Point;
+import flash.geom.Rectangle;
+
 import com.threerings.util.Name;
 
 import com.threerings.presents.dobj.MessageEvent;
@@ -75,6 +78,9 @@ public class WhirledGameControlBackend extends GameControlBackend
         o["clearScores_v1"] = clearScores_v1;
         o["setPlayerScores_v1"] = setPlayerScores_v1;
         o["setMappedScores_v1"] = setMappedScores_v1;
+
+        // backwards compatability
+        o["getStageBounds_v1"] = getStageBounds_v1;
     }
 
     protected function setOccupantsLabel_v1 (label :String) :void
@@ -198,6 +204,17 @@ public class WhirledGameControlBackend extends GameControlBackend
             }
         }
         endGameWithWinners_v1(winnerIds, loserIds, 0) // WhirledGameControl.CASCADING_PAYOUT
+    }
+
+    /**
+     * Backwards compatability. Added June 18, 2007, removed Oct 24, 2007. There
+     * probably aren't many/any games that used this "in the wild", so we may be able to remove
+     * this at some point.
+     */
+    protected function getStageBounds_v1 () :Rectangle
+    {
+        var size :Point = getSize_v1();
+        return new Rectangle(0, 0, size.x, size.y);
     }
 }
 }
