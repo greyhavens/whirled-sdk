@@ -8,6 +8,7 @@ import flash.display.DisplayObjectContainer;
 import flash.display.Stage;
 
 import mx.core.Application;
+import mx.core.UIComponent;
 
 import com.threerings.util.MessageBundle;
 import com.threerings.util.MessageManager;
@@ -108,10 +109,17 @@ public class WhirledContext
     // documentation inherited from superinterface CrowdContext
     public function setPlaceView (view :PlaceView) :void
     {
-        var disp :DisplayObject = DisplayObject(view);
+        var uiComp :UIComponent = UIComponent(view);
         var app :Application = Application(Application.application);
+        // The app starts up at 1014x500, but we want it to be able to grow larger if we
+        // resize the window. Set the old width/height to the minimums to prevent shrinkage!
+        app.minWidth = app.width;
+        app.minHeight = app.height;
+        app.percentWidth = 100;
+        app.percentHeight = 100;
+
         app.removeAllChildren();
-        app.addChild(disp);
+        app.addChild(uiComp);
     }
 
     // documentation inherited from superinterface CrowdContext
