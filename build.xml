@@ -78,6 +78,7 @@
       <arg value="-compiler.source-path=${projects.dir}/nenya/src/as/"/>
       <arg value="-compiler.source-path=${projects.dir}/vilya/src/as/"/>
       <arg value="-compiler.source-path=${asrc.dir}/"/>
+      <arg value="-compiler.source-path=rsrc/{locale}/i18n"/>
       <arg value="-include-sources=${projects.dir}/narya/src/as/"/>
       <arg value="-include-sources=${projects.dir}/nenya/src/as/com/threerings/flash/"/>
       <arg value="-include-sources=${projects.dir}/vilya/src/as/com/threerings/parlor/"/>
