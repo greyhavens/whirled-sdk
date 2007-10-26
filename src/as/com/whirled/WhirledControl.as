@@ -67,7 +67,7 @@ public class WhirledControl extends EventDispatcher
      * Helper method to dispatch a ControlEvent, but only if there
      * is an associated listener.
      */
-    protected function dispatch (ctrlEvent :String, key :String = null, value :Object = null) :void
+    internal function dispatch (ctrlEvent :String, key :String = null, value :Object = null) :void
     {
         if (hasEventListener(ctrlEvent)) {
             dispatchEvent(new ControlEvent(ctrlEvent, key, value));
@@ -94,6 +94,16 @@ public class WhirledControl extends EventDispatcher
         }
 
         return undefined;
+    }
+
+    /**
+     * A "friend" version of callHostCode for WhirledSubControls.
+     */
+    internal function callHostCodeFriend (name :String, ... args) :*
+    {
+        // var args
+        args.unshift(name);
+        return callHostCode.apply(this, args);
     }
 
     /**
