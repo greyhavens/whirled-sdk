@@ -41,6 +41,49 @@ public class AVRGameControlEvent extends ControlEvent
      */
     public static const QUEST_STATE_CHANGED :String = "questStateChanged";
 
+    /** An event type dispatched either when somebody in our room joined our current game,
+     * or somebody playing the game entered our current room.
+     * key: N/A
+     * value: the oid of the player body
+     *
+     * @eventType playerEntered
+     */
+    public static const PLAYER_ENTERED :String = "playerEntered";
+
+    /** An event type dispatched either when somebody in our room left our current game,
+     * or somebody playing the game left our current room.
+     * key: N/A
+     * value: the oid of the player body
+     *
+     * @eventType playerLeft
+     */
+    public static const PLAYER_LEFT :String = "playerLeft";
+
+    /** An event type dispatched either when a player of our game who's also in our
+     * current room took up a new location in the scene.
+     * key: N/A
+     * value: the oid of the player body
+     *
+     * @eventType playerLeft
+     */
+    public static const PLAYER_MOVED :String = "playerMoved";
+
+    /** An event type dispatched either when we've entered a new room.
+     * key: N/A
+     * value: N/A
+     *
+     * @eventType playerEntered
+     */
+    public static const ENTERED_ROOM :String = "enteredRoom";
+
+    /** An event type dispatched either when we leave our current room.
+     * key: N/A
+     * value: N/A
+     *
+     * @eventType playerLeft
+     */
+    public static const LEFT_ROOM :String = "leftRoom";
+
     /**
      * Create a new AVRGameControlEvent.
      */
