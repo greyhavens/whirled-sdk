@@ -38,7 +38,6 @@ import flash.geom.Rectangle;
  */
 [Event(name="enteredRoom", type="com.whirled.AVRGameControlEvent")]
 
-
 /**
  * Dispatched when we've left our current room.
  * 
@@ -104,6 +103,11 @@ public class AVRGameControl extends WhirledControl
     public function deactivateGame () :Boolean
     {
         return callHostCode("deactivateGame_v1");
+    }
+
+    public function getPlayerIds () :Array
+    {
+        return callHostCode("getPlayerIds_v1") as Array;
     }
 
     override protected function isAbstract () :Boolean
