@@ -123,6 +123,7 @@ public class AVRGameControl extends WhirledControl
         o["playerEntered_v1"] = playerEntered_v1;
         o["leftRoom_v1"] = leftRoom_v1;
         o["enteredRoom_v1"] = enteredRoom_v1;
+        o["panelResized_v1"] = panelResized_v1;
 
         _state = new StateControl(this);
         _state.populateSubProperties(o);
@@ -154,6 +155,11 @@ public class AVRGameControl extends WhirledControl
     protected function enteredRoom_v1 () :void
     {
         dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.ENTERED_ROOM));
+    }
+
+    protected function panelResized_v1 () :void
+    {
+        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.SIZE_CHANGED));
     }
 
     protected var _quests :QuestControl;

@@ -68,7 +68,7 @@ public class AVRGameControlEvent extends ControlEvent
      */
     public static const PLAYER_MOVED :String = "playerMoved";
 
-    /** An event type dispatched either when we've entered a new room.
+    /** An event type dispatched when we've entered a new room.
      * key: N/A
      * value: N/A
      *
@@ -76,13 +76,21 @@ public class AVRGameControlEvent extends ControlEvent
      */
     public static const ENTERED_ROOM :String = "enteredRoom";
 
-    /** An event type dispatched either when we leave our current room.
+    /** An event type dispatched when we leave our current room.
      * key: N/A
      * value: N/A
      *
      * @eventType playerLeft
      */
     public static const LEFT_ROOM :String = "leftRoom";
+
+    /** An event type dispatched when the control has been resized.
+     * key: N/A
+     * value: N/A
+     *
+     * @eventType sizeChanged
+     */
+    public static const SIZE_CHANGED :String = "sizeChanged";
 
     /**
      * Create a new AVRGameControlEvent.
