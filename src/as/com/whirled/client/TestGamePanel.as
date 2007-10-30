@@ -95,6 +95,7 @@ public class TestGamePanel extends EZGamePanel
         _gameView.width = unscaledWidth - GAP - SIDEBAR_WIDTH;
         _gameView.height = unscaledHeight;
         _playerList.x = unscaledWidth - SIDEBAR_WIDTH;
+        _playerList.width = SIDEBAR_WIDTH - GAP;
 
         _chatBox.x = unscaledWidth - SIDEBAR_WIDTH;
         _chatBox.y = _playerList.y + _playerList.height + GAP;
