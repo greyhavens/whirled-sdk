@@ -7,8 +7,13 @@ package com.whirled.client {
 
 import flash.geom.Rectangle;
 
+import mx.containers.VBox;
+
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.util.CrowdContext;
+
+import com.threerings.flex.ChatControl;
+import com.threerings.flex.ChatDisplayBox;
 
 import com.threerings.ezgame.client.EZGamePanel;
 import com.threerings.ezgame.client.GameContainer;
@@ -31,9 +36,16 @@ public class TestGamePanel extends EZGamePanel
         _playerList = new PlayerList();
         addChild(_playerList);
 
-        // TODO: create an extremely simple ChatDisplay and chat entry widget, and place them
-        // below the playerlist, so that folks can test game chat.
-        // (A game can be created that responds to chat, and games may also generate chat.)
+        var chat :ChatDisplayBox = new ChatDisplayBox(ctx);
+        chat.percentWidth = 100;
+        chat.percentHeight = 100;
+
+        var control :ChatControl = new ChatControl(ctx);
+
+        _chatBox = new VBox();
+        _chatBox.addChild(chat);
+        _chatBox.addChild(control);
+        addChild(_chatBox);
     }
 
     override public function willEnterPlace (plobj :PlaceObject) :void
@@ -84,9 +96,16 @@ public class TestGamePanel extends EZGamePanel
         _gameView.height = unscaledHeight;
         _playerList.x = unscaledWidth - SIDEBAR_WIDTH;
 
+        _chatBox.x = unscaledWidth - SIDEBAR_WIDTH;
+        _chatBox.y = _playerList.y + _playerList.height + GAP;
+        _chatBox.width = SIDEBAR_WIDTH - GAP;
+        _chatBox.height = unscaledHeight - (GAP * 2) - _playerList.height;
+
         super.updateDisplayList(unscaledWidth, unscaledHeight);
     }
 
     protected var _playerList :PlayerList;
+
+    protected var _chatBox :VBox;
 }
 }
