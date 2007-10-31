@@ -34,8 +34,17 @@ public class TestGameManager extends EZGameManager
                              WhirledGameService.InvocationListener listener)
         throws InvocationException
     {
-        log.info("Requested to award " + ident + ".");
-        // TODO
+        // TODO: add the awarded trophy to something the client can see so that holdsTrophy() can
+        // return the correct value
+        systemMessage(null, "Trophy awarded: " + ident);
+    }
+
+    // from interface WhirledGameProvider
+    public void awardPrize (ClientObject caller, String ident,
+                            WhirledGameService.InvocationListener listener)
+        throws InvocationException
+    {
+        systemMessage(null, "Prize awarded: " + ident);
     }
 
     // from interface WhirledGameProvider

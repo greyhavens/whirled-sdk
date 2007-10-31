@@ -40,6 +40,13 @@ public class WhirledGameDispatcher extends InvocationDispatcher
         throws InvocationException
     {
         switch (methodId) {
+        case WhirledGameMarshaller.AWARD_PRIZE:
+            ((WhirledGameProvider)provider).awardPrize(
+                source,
+                (String)args[0], (InvocationService.InvocationListener)args[1]
+            );
+            return;
+
         case WhirledGameMarshaller.AWARD_TROPHY:
             ((WhirledGameProvider)provider).awardTrophy(
                 source,

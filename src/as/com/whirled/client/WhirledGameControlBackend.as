@@ -73,6 +73,7 @@ public class WhirledGameControlBackend extends GameControlBackend
         o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
         o["holdsTrophy_v1"] = holdsTrophy_v1;
         o["awardTrophy_v1"] = awardTrophy_v1;
+        o["awardPrize_v1"] = awardPrize_v1;
 
         o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
         o["clearScores_v1"] = clearScores_v1;
@@ -181,6 +182,12 @@ public class WhirledGameControlBackend extends GameControlBackend
         (_ezObj as WhirledGame).getWhirledGameService().awardTrophy(
             _ctx.getClient(), ident, createLoggingConfirmListener("awardTrophy"));
         return true;
+    }
+
+    protected function awardPrize_v1 (ident :String) :void
+    {
+        (_ezObj as WhirledGame).getWhirledGameService().awardPrize(
+            _ctx.getClient(), ident, createLoggingConfirmListener("awardPrize"));
     }
 
     protected function playerOwnsData (type :int, ident :String) :Boolean

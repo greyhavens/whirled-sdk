@@ -21,8 +21,21 @@ import com.whirled.client.WhirledGameService;
 public class WhirledGameMarshaller extends InvocationMarshaller
     implements WhirledGameService
 {
+    /** The method id used to dispatch {@link #awardPrize} requests. */
+    public static final int AWARD_PRIZE = 1;
+
+    // from interface WhirledGameService
+    public void awardPrize (Client arg1, String arg2, InvocationService.InvocationListener arg3)
+    {
+        ListenerMarshaller listener3 = new ListenerMarshaller();
+        listener3.listener = arg3;
+        sendRequest(arg1, AWARD_PRIZE, new Object[] {
+            arg2, listener3
+        });
+    }
+
     /** The method id used to dispatch {@link #awardTrophy} requests. */
-    public static final int AWARD_TROPHY = 1;
+    public static final int AWARD_TROPHY = 2;
 
     // from interface WhirledGameService
     public void awardTrophy (Client arg1, String arg2, InvocationService.InvocationListener arg3)
@@ -35,7 +48,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #endGameWithScores} requests. */
-    public static final int END_GAME_WITH_SCORES = 2;
+    public static final int END_GAME_WITH_SCORES = 3;
 
     // from interface WhirledGameService
     public void endGameWithScores (Client arg1, int[] arg2, int[] arg3, int arg4, InvocationService.InvocationListener arg5)
@@ -48,7 +61,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #endGameWithWinners} requests. */
-    public static final int END_GAME_WITH_WINNERS = 3;
+    public static final int END_GAME_WITH_WINNERS = 4;
 
     // from interface WhirledGameService
     public void endGameWithWinners (Client arg1, int[] arg2, int[] arg3, int arg4, InvocationService.InvocationListener arg5)

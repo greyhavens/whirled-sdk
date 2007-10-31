@@ -18,6 +18,9 @@ import com.whirled.client.WhirledGameService;
 public interface WhirledGameService extends InvocationService
 {
     // from Java interface WhirledGameService
+    function awardPrize (arg1 :Client, arg2 :String, arg3 :InvocationService_InvocationListener) :void;
+
+    // from Java interface WhirledGameService
     function awardTrophy (arg1 :Client, arg2 :String, arg3 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
