@@ -5,7 +5,7 @@
 
 @echo off
 
-set CP=build\lib\java\ant-launcher.jar;build\lib\java\ant.jar
+set CP=lib\ant-launcher.jar;lib\ant.jar
 set CLASS=org.apache.tools.ant.launch.Launcher
 java -classpath %CP% %CLASS% distcleanall
 java -classpath %CP% %CLASS% distall
