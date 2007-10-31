@@ -167,12 +167,14 @@
     <copy todir="${sdk.build}/examples/pets">
       <fileset dir="projects/pets" includes="urpet/**"/>
       <fileset dir="projects/pets" includes="hal/**"/>
+      <fileset dir="projects/pets" includes="FATexample/**"/>
     </copy>
     <!-- copy some example avatars and the uravatar -->
     <mkdir dir="${sdk.build}/examples/avatars"/>
     <copy todir="${sdk.build}/examples/avatars">
       <fileset dir="projects/avatars" includes="uravatar/**"/>
       <fileset dir="projects/avatars" includes="fairy/**"/>
+      <fileset dir="projects/avatars" includes="FATexample/**"/>
     </copy>
     <!-- finally zip it all up -->
     <zip destfile="${deploy.dir}/whirled_sdk.zip"
