@@ -186,8 +186,10 @@ public class WhirledGameControlBackend extends GameControlBackend
 
     protected function awardPrize_v1 (ident :String) :void
     {
-        (_ezObj as WhirledGame).getWhirledGameService().awardPrize(
-            _ctx.getClient(), ident, createLoggingConfirmListener("awardPrize"));
+        if (!playerOwnsData(GameData.PRIZE_MARKER, ident)) {
+            (_ezObj as WhirledGame).getWhirledGameService().awardPrize(
+                _ctx.getClient(), ident, createLoggingConfirmListener("awardPrize"));
+        }
     }
 
     protected function playerOwnsData (type :int, ident :String) :Boolean

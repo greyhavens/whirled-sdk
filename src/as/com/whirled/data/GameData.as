@@ -22,6 +22,8 @@ public /*abstract*/ class GameData extends SimpleStreamableObject
 
     public static const TROPHY_DATA :int = 3;
 
+    public static const PRIZE_MARKER :int = 4;
+
     /** A unique identifier for this pack. */
     public var ident :String;
 
