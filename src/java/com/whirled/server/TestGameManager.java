@@ -19,6 +19,7 @@ import com.threerings.ezgame.server.EZGameManager;
 import com.whirled.client.WhirledGameService;
 import com.whirled.data.GameData;
 import com.whirled.data.TestGameObject;
+import com.whirled.data.WhirledGame;
 import com.whirled.data.WhirledGameMarshaller;
 
 import static com.whirled.Log.log;
@@ -57,7 +58,8 @@ public class TestGameManager extends EZGameManager
         }
         validateStateModification(caller, false);
 
-        // TODO: award flow fakily?
+        // TODO: award based on relative scores?
+        awardFakeFlow(playerIds);
 
         // TODO: validate player ids?
         int highScore = 0;
@@ -84,7 +86,7 @@ public class TestGameManager extends EZGameManager
         }
         validateStateModification(caller, false);
 
-        // TODO: award flow fakily?
+        awardFakeFlow(winnerIds);
 
         // TODO: validate winner ids and loser ids
         _winnerOids = winnerIds;
@@ -107,5 +109,19 @@ public class TestGameManager extends EZGameManager
                                        new WhirledGameDispatcher(this)));
         // TODO: read in an XML file with the game's level and item pack info in it
         tobj.setGameData(new GameData[0]);
+    }
+
+    /**
+     * Award some fake flow, so that game creators can test the FlowAwardedEvent.
+     */
+    protected void awardFakeFlow (int[] playerOids)
+    {
+        for (int playerOid : playerOids) {
+            ClientObject cliObj = (ClientObject) CrowdServer.omgr.getObject(playerOid);
+            if (cliObj != null) {
+                cliObj.postMessage(
+                    WhirledGame.FLOW_AWARDED_MESSAGE, 10 /*flow*/, 49 /*percentile*/);
+            }
+        }
     }
 }
