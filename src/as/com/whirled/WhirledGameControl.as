@@ -180,12 +180,12 @@ public class WhirledGameControl extends EZGameControl
      * <p> Note: a game is only allowed to award a prize once per game session. This is to guard
      * against bugs that might try to award many hundreds of the same prize to a user while playing
      * a game. If you *really* want to award multiple instances of a prize, you will need to make
-     * different prize items with unique identifiers which all reference the same target item.
+     * different prize items with unique identifiers which all reference the same target item. </p>
      *
      * <p> Note also: because a game *can* award the same prize more than once if the player earns
      * the prize in separate game sessions, a game that wishes to only award a prize once should
      * couple the award of the prize with the award of a trophy and then structure their code like
-     * so:
+     * so: </p>
      *
      * <pre>
      * if (_ctrl.awardTrophy("special_award_trophy")) {
@@ -193,10 +193,10 @@ public class WhirledGameControl extends EZGameControl
      * }
      * </pre>
      *
-     * The first time the player accomplishes the necessary goal, they will be awarded the trophy
-     * and the prize. Subsequently, awardTrophy() will return false indicating that the player
-     * already has the trophy in question and the prize will not be awarded. Alternatively the game
-     * could store whether or not the player has earned the prize in a user cookie.
+     * <p> The first time the player accomplishes the necessary goal, they will be awarded the
+     * trophy and the prize. Subsequently, awardTrophy() will return false indicating that the
+     * player already has the trophy in question and the prize will not be awarded. Alternatively
+     * the game could store whether or not the player has earned the prize in a user cookie. </p>
      */
     public function awardPrize (ident :String) :void
     {
@@ -213,14 +213,14 @@ public class WhirledGameControl extends EZGameControl
      * individual flow payouts combined into a pool and that pool will be evenly divided among the
      * winners and added to their respective individual flow payouts. In the case of
      * CASCADING_PAYOUT, the losers will only have 50% of their individual flow payouts given to
-     * the winners.
+     * the winners. </p>
      *
      * <p> If flow is awarded, a FLOW_AWARDED event will be dispatched <em>before</em> the
-     * GAME_ENDED event is dispatched informing the client that the game has ended.
+     * GAME_ENDED event is dispatched informing the client that the game has ended. </p>
      *
      * <p> Players' ratings will also be updated using the Elo algorigthm wherein each player is
      * rated against the average ratings of the players that the defeated or were defeated by.  In
-     * a two player game this degenerates into the standard Elo algorithm.
+     * a two player game this degenerates into the standard Elo algorithm. </p>
      *
      * @see http://en.wikipedia.org/wiki/ELO_rating_system
      */
@@ -236,24 +236,28 @@ public class WhirledGameControl extends EZGameControl
      * <p> Flow is awarded based on the supplied payout type, either CASCADING_PAYOUT,
      * WINNERS_TAKE_ALL or TO_EACH_THEIR_OWN. In the case of WINNERS_TAKE_CALL, the highest scoring
      * player or players will be considered the winner(s) and in the case of CASCADING_PAYOUT,
-     * players will be ranked according to their scores, higher scores being considered better.
+     * players will be ranked according to their scores, higher scores being considered better. </p>
      *
      * <p> If flow is awarded, a FLOW_AWARDED event will be dispatched <em>before</em> the
-     * GAME_ENDED event is dispatched informing the client that the game has ended.
+     * GAME_ENDED event is dispatched informing the client that the game has ended. </p>
      *
      * <p> Both rating and a player's flow payout will be adjusted based on their score. Whirled
      * will track every score reported by your game for its entire existence and will convert newly
      * reported scores to a percentile value between 0 and 99 (inclusive) indicating the percentage
      * of scores in the entire score history that are below the reported score. That percentile
      * ranking will be used to adjust the players rating as well as to determine their individual
-     * flow payout.
+     * flow payout. </p>
      *
      * <p> Note that scores must be integers >= 0 and higher scores are considered better, so if
      * your game naturally operates with scores where lower is better (elapsed time in a racing
      * game, for example), then you must convert your score to a positive integer by, for example,
-     * subtracting your score from a hypothentical worse possible score. For example:
+     * subtracting your score from a hypothentical worse possible score. For example: </p>
      *
-     * <p><code>score = Math.max(WORST_POSSIBLE_TIME - actualTime, 0)</code>
+     * <p><code>score = Math.max(WORST_POSSIBLE_TIME - actualTime, 1)</code>
+     *
+     * <p> Note that if a single player game is ended with a score of zero, it will be assumed that
+     * the player in question abandoned the game and no flow will be paid out, nor will their
+     * rating be updated. </p>
      */
     public function endGameWithScores (playerIds :Array, scores :Array /* of int */,
         payoutType :int) :void
@@ -264,6 +268,10 @@ public class WhirledGameControl extends EZGameControl
     /**
      * A convenience function for ending a single player game with the supplied score. This is
      * equivalent to: <code>endGameWithScores([ getMyId() ], [ score ], TO_EACH_THEIR_OWN)</code>.
+     *
+     * <p> Note that if a single player game is ended with a score of zero, it will be assumed that
+     * the player in question abandoned the game and no flow will be paid out, nor will their
+     * rating be updated. </p>
      */
     public function endGameWithScore (score :int) :void
     {
