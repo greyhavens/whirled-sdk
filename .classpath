@@ -22,5 +22,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/nenya"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/samskivert"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/vilya"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/toybox"/>
 	<classpathentry kind="output" path="dist/classes"/>
 </classpath>
