@@ -255,9 +255,9 @@ public class WhirledGameControl extends EZGameControl
      *
      * <p><code>score = Math.max(WORST_POSSIBLE_TIME - actualTime, 1)</code>
      *
-     * <p> Note that if a single player game is ended with a score of zero, it will be assumed that
-     * the player in question abandoned the game and no flow will be paid out, nor will their
-     * rating be updated. </p>
+     * <p> Note that if a game is ended with all players scores equal of zero, it will be assumed
+     * that the players in question abandoned the game and no flow will be paid out, nor will their
+     * ratings be updated. </p>
      */
     public function endGameWithScores (playerIds :Array, scores :Array /* of int */,
         payoutType :int) :void
