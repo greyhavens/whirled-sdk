@@ -7,8 +7,6 @@ import java.awt.Component;
 
 import java.io.File;
 
-import java.util.EventObject;
-
 import javax.swing.AbstractCellEditor;
 import javax.swing.JFileChooser;
 import javax.swing.JTable;
@@ -17,10 +15,6 @@ import javax.swing.filechooser.FileFilter;
 
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-
-import com.samskivert.swing.JInternalDialog;
-
 import com.whirled.remix.data.EditableDataPack;
 
 public class RemixingFileTable extends AbstractTable

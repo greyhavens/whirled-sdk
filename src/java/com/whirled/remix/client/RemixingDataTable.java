@@ -8,12 +8,8 @@ import java.awt.Component;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-import java.util.EventObject;
-
 import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -24,12 +20,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
-
-import com.samskivert.swing.HGroupLayout;
-
-import com.samskivert.util.StringUtil;
-
 import com.whirled.remix.data.EditableDataPack;
 
 public class RemixingDataTable extends AbstractTable

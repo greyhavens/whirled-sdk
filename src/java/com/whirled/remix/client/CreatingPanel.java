@@ -12,8 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 
 import com.samskivert.swing.GroupLayout;
-import com.samskivert.swing.JInternalDialog;
-
 import com.whirled.remix.data.EditableDataPack;
 
 public class CreatingPanel extends RemixingPanel
