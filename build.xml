@@ -29,6 +29,7 @@
     <file name="lib/commons-io.jar"/>
     <file name="lib/commons-lang.jar"/>
     <file name="lib/commons-logging.jar"/>
+    <file name="lib/google-collect.jar"/>
     <file name="lib/getdown.jar"/>
     <file name="lib/javassist.jar"/>
     <file name="lib/jetty.jar"/>
