@@ -24,8 +24,8 @@
     <taskdef name="dobj" classname="com.threerings.presents.tools.GenDObjectTask"
              classpathref="classpath"/>
     <!-- make sure the dobject class files are all compiled -->
-    <javac srcdir="${app.source-dir}" destdir="${classes.dir}" debug="on"
-           optimize="${build.optimize}" deprecation="on" includeAntRuntime="false">
+    <javac srcdir="${app.source-dir}" destdir="${classes.dir}" debug="on" deprecation="on"
+           optimize="${build.optimize}" includeAntRuntime="false" target="1.5">
       <classpath refid="classpath"/>
       <include name="**/*Object.java"/>
       <compilerarg value="-Xlint"/>
@@ -69,9 +69,8 @@
 
   <!-- build the java class files -->
   <target name="compile" depends="prepare">
-    <javac srcdir="${app.source-dir}" destdir="${classes.dir}"
-           debug="on" optimize="${build.optimize}" deprecation="on"
-           includeAntRuntime="false">
+    <javac srcdir="${app.source-dir}" destdir="${classes.dir}" debug="on" deprecation="on"
+           optimize="${build.optimize}" includeAntRuntime="false" target="1.5">
       <classpath refid="classpath"/>
       <compilerarg value="-Xlint"/>
       <compilerarg value="-Xlint:-serial"/>
