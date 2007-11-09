@@ -11,6 +11,15 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 
 /**
+ * Dispatched when the SWF using this control has been unloaded.
+ * You should clean-up any resources that would otherwise stick around, like stopping any
+ * Timers.
+ *
+ * @eventType flash.events.Event.UNLOAD
+ */
+[Event(name="unload", type="flash.events.Event")]
+
+/**
  * Base class for services that connect back to whirled.
  */
 public class WhirledControl extends EventDispatcher
@@ -111,7 +120,8 @@ public class WhirledControl extends EventDispatcher
      */
     protected function handleUnload (evt :Event) :void
     {
-        // nada
+        // redispatch the unload event to listeners on this object
+        dispatch(evt);
     }
 
     /**
