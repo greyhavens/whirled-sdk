@@ -121,7 +121,7 @@ public class WhirledControl extends EventDispatcher
     protected function handleUnload (evt :Event) :void
     {
         // redispatch the unload event to listeners on this object
-        dispatch(evt);
+        dispatchEvent(evt);
     }
 
     /**
