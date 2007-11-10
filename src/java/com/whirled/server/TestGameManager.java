@@ -5,123 +5,22 @@
 
 package com.whirled.server;
 
-import com.samskivert.util.ArrayIntSet;
-
 import com.threerings.presents.data.ClientObject;
-import com.threerings.presents.dobj.DSet;
 import com.threerings.presents.server.InvocationException;
 
 import com.threerings.crowd.data.PlaceObject;
-import com.threerings.crowd.server.CrowdServer;
-
 import com.threerings.ezgame.server.EZGameManager;
 
-import com.whirled.client.WhirledGameService;
-import com.whirled.data.GameData;
 import com.whirled.data.TestGameObject;
-import com.whirled.data.WhirledGame;
-import com.whirled.data.WhirledGameMarshaller;
-
-import static com.whirled.Log.log;
 
 /**
  * Handles test game services.
  */
 public class TestGameManager extends EZGameManager
-    implements WhirledGameProvider
 {
-    // from interface WhirledGameProvider
-    public void awardTrophy (ClientObject caller, String ident,
-                             WhirledGameService.InvocationListener listener)
-        throws InvocationException
-    {
-        // TODO: add the awarded trophy to something the client can see so that holdsTrophy() can
-        // return the correct value
-        systemMessage(null, "Trophy awarded: " + ident);
-    }
-
-    // from interface WhirledGameProvider
-    public void awardPrize (ClientObject caller, String ident,
-                            WhirledGameService.InvocationListener listener)
-        throws InvocationException
-    {
-        systemMessage(null, "Prize awarded: " + ident);
-    }
-
-    // from interface WhirledGameProvider
-    public void endGameWithScores (ClientObject caller, int[] playerIds, int[] scores,
-                                   int payoutType, WhirledGameService.InvocationListener listener)
-        throws InvocationException
-    {
-        if (!_ezObj.isInPlay()) {
-            throw new InvocationException("e.already_ended");
-        }
-        validateStateModification(caller, false);
-
-        // TODO: award based on relative scores?
-        awardFakeFlow(playerIds);
-
-        // TODO: validate player ids?
-        int highScore = 0;
-        ArrayIntSet winners = new ArrayIntSet();
-        for (int ii = 0; ii < playerIds.length; ii++) {
-            if (scores[ii] > highScore) {
-                winners.clear();
-                winners.add(playerIds[ii]);
-            } else if (scores[ii] == highScore) {
-                winners.add(playerIds[ii]);
-            }
-        }
-        _winnerOids = winners.toIntArray();
-        endGame();
-    }
-
-    // from interface WhirledGameProvider
-    public void endGameWithWinners (ClientObject caller, int[] winnerIds, int[] loserIds,
-                                    int payoutType, WhirledGameService.InvocationListener listener)
-        throws InvocationException
-    {
-        if (!_ezObj.isInPlay()) {
-            throw new InvocationException("e.already_ended");
-        }
-        validateStateModification(caller, false);
-
-        awardFakeFlow(winnerIds);
-
-        // TODO: validate winner ids and loser ids
-        _winnerOids = winnerIds;
-        endGame();
-    }
-
     @Override // from PlaceManager
     protected PlaceObject createPlaceObject ()
     {
         return new TestGameObject();
-    }
-
-    @Override
-    protected void didStartup ()
-    {
-        super.didStartup();
-
-        TestGameObject tobj = (TestGameObject)_plobj;
-        tobj.setWhirledGameService((WhirledGameMarshaller)CrowdServer.invmgr.registerDispatcher(
-                                       new WhirledGameDispatcher(this)));
-        // TODO: read in an XML file with the game's level and item pack info in it
-        tobj.setGameData(new GameData[0]);
-    }
-
-    /**
-     * Award some fake flow, so that game creators can test the FlowAwardedEvent.
-     */
-    protected void awardFakeFlow (int[] playerOids)
-    {
-        for (int playerOid : playerOids) {
-            ClientObject cliObj = (ClientObject) CrowdServer.omgr.getObject(playerOid);
-            if (cliObj != null) {
-                cliObj.postMessage(
-                    WhirledGame.FLOW_AWARDED_MESSAGE, 10 /*flow*/, 49 /*percentile*/);
-            }
-        }
     }
 }

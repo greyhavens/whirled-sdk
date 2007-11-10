@@ -12,11 +12,17 @@ import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.net.BootstrapData;
 
 import com.threerings.presents.server.ClientResolutionListener;
+import com.threerings.presents.server.InvocationException;
 import com.threerings.presents.server.LocalDObjectMgr;
 import com.threerings.presents.server.PresentsDObjectMgr;
 
 import com.threerings.crowd.server.CrowdServer;
+import com.threerings.crowd.server.PlaceManager;
+
+import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.server.ParlorManager;
+
+import com.threerings.ezgame.server.EZGameManager;
 
 import com.whirled.client.WhirledClient;
 
@@ -28,7 +34,18 @@ import static com.whirled.Log.log;
 public class LocalServer extends CrowdServer
 {
     /** The parlor manager in operation on this server. */
-    public static ParlorManager parmgr = new ParlorManager();
+    public static ParlorManager parmgr = new ParlorManager() {
+        @Override protected void createGameManager (GameConfig config)
+            throws InstantiationException, InvocationException
+        {
+            PlaceManager plmgr = _plreg.createPlace(config);
+            if (plmgr instanceof EZGameManager) {
+                plmgr.addDelegate(new WhirledGameManagerDelegate((EZGameManager)plmgr));
+            } else {
+                log.warning("Game does not use EZGameManager [config=" + config + "].");
+            }
+        }
+    };
 
     /**
      * Initializes all of the server services and prepares for operation.
