@@ -3,7 +3,10 @@
 
 package com.whirled.server;
 
+import java.util.List;
 import java.util.logging.Level;
+
+import com.google.common.collect.Lists;
 
 import com.threerings.util.Name;
 
@@ -18,6 +21,7 @@ import com.threerings.presents.server.PresentsDObjectMgr;
 
 import com.threerings.crowd.server.CrowdServer;
 import com.threerings.crowd.server.PlaceManager;
+import com.threerings.crowd.server.PlaceManagerDelegate;
 
 import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.server.ParlorManager;
@@ -38,12 +42,9 @@ public class LocalServer extends CrowdServer
         @Override protected void createGameManager (GameConfig config)
             throws InstantiationException, InvocationException
         {
-            PlaceManager plmgr = _plreg.createPlace(config);
-            if (plmgr instanceof EZGameManager) {
-                plmgr.addDelegate(new WhirledGameManagerDelegate((EZGameManager)plmgr));
-            } else {
-                log.warning("Game does not use EZGameManager [config=" + config + "].");
-            }
+            List<PlaceManagerDelegate> delegates = Lists.newArrayList();
+            delegates.add(new WhirledGameManagerDelegate());
+            _plreg.createPlace(config, delegates);
         }
     };
 

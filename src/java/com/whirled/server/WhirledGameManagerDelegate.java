@@ -13,6 +13,7 @@ import com.threerings.presents.server.InvocationException;
 
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.server.CrowdServer;
+import com.threerings.crowd.server.PlaceManager;
 
 import com.threerings.parlor.game.server.GameManagerDelegate;
 
@@ -31,10 +32,11 @@ import static com.whirled.Log.log;
 public class WhirledGameManagerDelegate extends GameManagerDelegate
     implements WhirledGameProvider
 {
-    public WhirledGameManagerDelegate (EZGameManager gmgr)
+    @Override // from PlaceManagerDelegate
+    public void setPlaceManager (PlaceManager plmgr)
     {
-        super(gmgr);
-        _gmgr = gmgr;
+        super.setPlaceManager(plmgr);
+        _gmgr = (EZGameManager)plmgr;
     }
 
     // from interface WhirledGameProvider
