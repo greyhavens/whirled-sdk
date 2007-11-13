@@ -7,6 +7,8 @@ package com.whirled {
 
 import flash.display.DisplayObject;
 
+import com.threerings.util.Log;
+
 import com.threerings.ezgame.EZGameControl;
 
 /**

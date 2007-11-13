@@ -7,6 +7,7 @@ import flash.display.Stage;
 
 import mx.resources.ResourceBundle;
 
+import com.threerings.util.Log;
 import com.threerings.util.Name;
 
 import com.threerings.presents.client.Client;
