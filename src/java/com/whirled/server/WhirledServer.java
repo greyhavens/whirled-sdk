@@ -32,7 +32,6 @@ import com.threerings.crowd.server.CrowdClientResolver;
 import com.threerings.crowd.server.CrowdServer;
 
 import com.threerings.parlor.game.server.GameManager;
-import com.threerings.parlor.server.ParlorManager;
 import com.threerings.parlor.server.ParlorSender;
 
 import com.threerings.ezgame.data.EZGameConfig;
@@ -57,7 +56,7 @@ public class WhirledServer extends CrowdServer
     public static WhirledServer server;
 
     /** Handles creating and cleaning up after games. */
-    public static ParlorManager parMan = new ParlorManager();
+    public static WhirledParlorManager parMan = new WhirledParlorManager();
 
     /** Serves up SWF files to avoid annoying file-system-loaded SWF "seurity" problems. */
     public static WhirledHttpServer httpServer;
