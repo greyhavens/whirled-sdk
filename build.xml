@@ -96,6 +96,7 @@
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
       <arg value="-compiler.optimize"/>
+      <arg value="-library-path+=${deploy.dir}"/>
       <arg value="-compiler.source-path=${asrc.dir}/"/>
       <arg value="-compiler.source-path=rsrc/{locale}/i18n"/>
       <arg value="-incremental=true"/>
