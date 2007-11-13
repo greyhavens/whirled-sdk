@@ -285,16 +285,20 @@
   </target>
 
   <!-- cleans out the compiled code -->
-  <target name="clean">
+  <target name="clean" depends="asclean">
     <delete dir="${classes.dir}"/>
-    <delete><fileset dir="${asrc.dir}" includes="*.cache"/></delete>
     <delete><fileset dir="${deploy.dir}" includes="*.jar"/></delete>
     <delete><fileset dir="${deploy.dir}" includes="*.swc"/></delete>
   </target>
 
   <!-- fully cleans out the application -->
-  <target name="distclean" depends="clean">
+  <target name="distclean" depends="asclean">
     <delete dir="${deploy.dir}"/>
+  </target>
+
+  <!-- cleans the actionscript cache files -->
+  <target name="asclean">
+    <delete><fileset dir="${asrc.dir}" includes="*.cache"/></delete>
   </target>
 
   <!-- fully cleans out the application and all subprojects -->
