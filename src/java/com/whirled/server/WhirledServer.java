@@ -10,7 +10,10 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Level;
+
+import com.google.common.collect.Lists;
 
 import com.samskivert.util.CollectionUtil;
 import com.samskivert.util.LoggingLogProvider;
@@ -30,8 +33,10 @@ import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.server.CrowdClientResolver;
 import com.threerings.crowd.server.CrowdServer;
+import com.threerings.crowd.server.PlaceManagerDelegate;
 
 import com.threerings.parlor.game.server.GameManager;
+import com.threerings.parlor.server.ParlorManager;
 import com.threerings.parlor.server.ParlorSender;
 
 import com.threerings.ezgame.data.EZGameConfig;
@@ -56,7 +61,7 @@ public class WhirledServer extends CrowdServer
     public static WhirledServer server;
 
     /** Handles creating and cleaning up after games. */
-    public static WhirledParlorManager parMan = new WhirledParlorManager();
+    public static ParlorManager parMan = new ParlorManager();
 
     /** Serves up SWF files to avoid annoying file-system-loaded SWF "seurity" problems. */
     public static WhirledHttpServer httpServer;
@@ -145,12 +150,8 @@ public class WhirledServer extends CrowdServer
         HashSet<Name> ready = CollectionUtil.addAll(new HashSet<Name>(), _config.players);
         ready.retainAll(_ready);
         if (ready.size() == _config.players.length) {
-            try {
-                plreg.createPlace(_config);
-                _ready.clear();
-            } catch (Exception e) {
-                reportError("Failed to start game " + _config + ".", e);
-            }
+            createGameManager(_config);
+            _ready.clear();
         }
     }
 
@@ -200,11 +201,20 @@ public class WhirledServer extends CrowdServer
 
         // if this is a party game, start it up immediately
         if (match.isPartyGame) {
-            try {
-                _ezmgr = (EZGameManager)plreg.createPlace(_config);
-            } catch (Exception e) {
-                reportError("Failed to start game " + _config + ".", e);
-            }
+            _ezmgr = createGameManager(_config);
+        }
+    }
+
+    protected EZGameManager createGameManager (EZGameConfig config)
+    {
+        try {
+            List<PlaceManagerDelegate> delegates = Lists.newArrayList();
+            delegates.add(new WhirledGameManagerDelegate());
+            return (EZGameManager)plreg.createPlace(config, delegates);
+
+        } catch (Exception e) {
+            reportError("Failed to start game " + config + ".", e);
+            return null;
         }
     }
 

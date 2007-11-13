@@ -6,6 +6,8 @@ package com.whirled.server;
 import java.util.List;
 import java.util.logging.Level;
 
+import com.google.common.collect.Lists;
+
 import com.threerings.util.Name;
 
 import com.threerings.presents.client.Client;
@@ -18,6 +20,11 @@ import com.threerings.presents.server.LocalDObjectMgr;
 import com.threerings.presents.server.PresentsDObjectMgr;
 
 import com.threerings.crowd.server.CrowdServer;
+import com.threerings.crowd.server.PlaceManager;
+import com.threerings.crowd.server.PlaceManagerDelegate;
+
+import com.threerings.parlor.game.data.GameConfig;
+import com.threerings.parlor.server.ParlorManager;
 
 import com.threerings.ezgame.server.EZGameManager;
 
@@ -31,7 +38,15 @@ import static com.whirled.Log.log;
 public class LocalServer extends CrowdServer
 {
     /** The parlor manager in operation on this server. */
-    public static WhirledParlorManager parmgr = new WhirledParlorManager();
+    public static ParlorManager parmgr = new ParlorManager() {
+        @Override protected void createGameManager (GameConfig config)
+            throws InstantiationException, InvocationException
+        {
+            List<PlaceManagerDelegate> delegates = Lists.newArrayList();
+            delegates.add(new WhirledGameManagerDelegate());
+            _plreg.createPlace(config, delegates);
+        }
+    };
 
     /**
      * Initializes all of the server services and prepares for operation.
