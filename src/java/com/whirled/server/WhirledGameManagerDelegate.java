@@ -5,6 +5,8 @@
 
 package com.whirled.server;
 
+import java.util.ArrayList;
+
 import com.samskivert.util.ArrayIntSet;
 
 import com.threerings.presents.data.ClientObject;
@@ -17,12 +19,17 @@ import com.threerings.crowd.server.PlaceManager;
 
 import com.threerings.parlor.game.server.GameManagerDelegate;
 
+import com.threerings.ezgame.data.EZGameConfig;
+import com.threerings.ezgame.data.GameDefinition;
+import com.threerings.ezgame.data.Parameter;
 import com.threerings.ezgame.server.EZGameManager;
 
 import com.whirled.client.WhirledGameService;
 import com.whirled.data.GameData;
 import com.whirled.data.WhirledGame;
+import com.whirled.data.WhirledGameDefinition;
 import com.whirled.data.WhirledGameMarshaller;
+import com.whirled.xml.ContentPackParameter;
 
 import static com.whirled.Log.log;
 
@@ -95,12 +102,22 @@ public class WhirledGameManagerDelegate extends GameManagerDelegate
     public void didStartup (PlaceObject plobj)
     {
         super.didStartup(plobj);
-
+        
         WhirledGame game = (WhirledGame)plobj;
         game.setWhirledGameService((WhirledGameMarshaller)CrowdServer.invmgr.registerDispatcher(
                                        new WhirledGameDispatcher(this)));
-        // TODO: read in an XML file with the game's level and item pack info in it
-        game.setGameData(new GameData[0]);
+
+        EZGameConfig config = (EZGameConfig)_gmgr.getGameConfig();
+        WhirledGameDefinition gamedef = (WhirledGameDefinition) config.getGameDefinition();
+        
+        ArrayList<GameData> data = new ArrayList<GameData>();
+        for (Parameter pack : gamedef.packs) {
+            if (pack instanceof ContentPackParameter) {
+                data.add(((ContentPackParameter)pack).toGameData());
+            }
+        }   
+        
+        game.setGameData(data.toArray(new GameData[0]));
     }
 
     /**
