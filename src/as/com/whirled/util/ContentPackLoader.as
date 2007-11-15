@@ -12,6 +12,7 @@ import flash.events.IOErrorEvent;
 
 import flash.net.URLRequest;
 
+import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
 
 /**
@@ -25,13 +26,13 @@ public class ContentPackLoader
      * or {@link WhirledGameControl.getLevelPacks}.
      *
      * The loader will start loading content packs immediately. Every time a content pack finished
-     * processing, the <i>loaded</i> callback will be called, and it will receive either the Loader
-     * instance for the loaded content pack, or null if the pack failed to load. Finally,
+     * processing, the <i>loaded</i> callback will be called, and it will receive either a
+     * ContentPack instance for the loaded SWF, or null if the pack failed to load. Finally,
      * after all packs have been processed, the <i>done</i> callback will be called.
      *
      *  @param definitions Array of content pack definitions.
-     *  @param loaded Function of type: function (loader :Loader) :void {}, called once for each
-     *    loaded content pack; the <i>loader</i> variable may be null if the pack failed to load.
+     *  @param loaded Function of type: function (pack :ContentPack) :void {}, called once for each
+     *    loaded content pack; the <i>pack</i> variable may be null if the pack failed to load.
      *  @param done Function of type: function () :void {}, called after all packs were processed.
      */
     public function ContentPackLoader (definitions :Array, loaded :Function, done :Function)
@@ -47,7 +48,9 @@ public class ContentPackLoader
                 info.addEventListener(IOErrorEvent.IO_ERROR, loaderProcessed);
 
                 var request :URLRequest = new URLRequest(def.mediaURL);
-                loader.load(request, new LoaderContext());
+                var context :LoaderContext = new LoaderContext();
+                context.applicationDomain = ApplicationDomain.currentDomain;
+                loader.load(request, context);
 
                 return info;
             });
@@ -60,7 +63,7 @@ public class ContentPackLoader
         info.removeEventListener(Event.COMPLETE, loaderProcessed);
         info.removeEventListener(IOErrorEvent.IO_ERROR, loaderProcessed);
 
-        _loadedCallback((event is IOErrorEvent) ? null : info.loader);
+        _loadedCallback((event is IOErrorEvent) ? null : new ContentPack(info.loader));
         
         _processedLoaderCount++;
         if (_processedLoaderCount == _infos.length) {
