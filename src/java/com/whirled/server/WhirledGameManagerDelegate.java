@@ -111,12 +111,13 @@ public class WhirledGameManagerDelegate extends GameManagerDelegate
         WhirledGameDefinition gamedef = (WhirledGameDefinition) config.getGameDefinition();
         
         ArrayList<GameData> data = new ArrayList<GameData>();
-        for (Parameter pack : gamedef.packs) {
-            if (pack instanceof ContentPackParameter) {
-                data.add(((ContentPackParameter)pack).toGameData());
-            }
-        }   
-        
+        if (gamedef.packs != null) {
+            for (Parameter pack : gamedef.packs) {
+                if (pack instanceof ContentPackParameter) {
+                    data.add(((ContentPackParameter)pack).toGameData());
+                }
+            }   
+        }
         game.setGameData(data.toArray(new GameData[0]));
     }
 
