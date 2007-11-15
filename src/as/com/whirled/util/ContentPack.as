@@ -10,24 +10,10 @@ import flash.errors.IllegalOperationError;
 /**
  * Wrapper class that wraps a content pack's Loader instance with some useful accessors.
  *
- * <p><b>Note:</b> in order to access any of the data stored in the content pack, the SWF file
- * will need to explicitly grant access to its data. This is commonly done by calling
- * the function: <pre>flash.system.Security.allowDomain()</pre>
- *
- * <p>For example, you can include the following class in your SWF file, attached to some symbol:
- * <pre>
- * package {
- * import flash.system.Security;
- * 
- * public class GrantAccess extends MovieClip {
- *   public function GrantAccess () {
- *     Security.allowDomain("*");
- *     super();
- *   }
- *   private static var singleton :GrantAccess = new GrantAccess();
- * }
- * }
- * </pre>
+ * <p><b>Note:</b> in order to access the data while running on the test server, you'll need to
+ * add pack information to your config.xml - for each content pack's mediaURL entry, use
+ * "http://127.0.0.1:8080/" as the server, followed by the path to your content pack.
+ * See the Wiki for more info.
  */
 public class ContentPack
 {
