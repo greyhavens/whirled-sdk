@@ -9,6 +9,8 @@ import org.apache.commons.digester.ObjectCreateRule;
 
 import com.threerings.ezgame.xml.GameParser;
 
+import com.whirled.data.ItemPackParameter;
+import com.whirled.data.LevelPackParameter;
 import com.whirled.data.WhirledGameDefinition;
 
 

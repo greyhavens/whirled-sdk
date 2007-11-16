@@ -1,7 +1,7 @@
 //
 // $Id$
 
-package com.whirled.xml;
+package com.whirled.data;
 
 import com.threerings.ezgame.data.Parameter;
 

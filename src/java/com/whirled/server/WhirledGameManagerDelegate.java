@@ -25,11 +25,11 @@ import com.threerings.ezgame.data.Parameter;
 import com.threerings.ezgame.server.EZGameManager;
 
 import com.whirled.client.WhirledGameService;
+import com.whirled.data.ContentPackParameter;
 import com.whirled.data.GameData;
 import com.whirled.data.WhirledGame;
 import com.whirled.data.WhirledGameDefinition;
 import com.whirled.data.WhirledGameMarshaller;
-import com.whirled.xml.ContentPackParameter;
 
 import static com.whirled.Log.log;
 

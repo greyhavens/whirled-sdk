@@ -1,7 +1,7 @@
 //
 // $Id$
 
-package com.whirled.xml;
+package com.whirled.data;
 
 import com.whirled.data.GameData;
 import com.whirled.data.LevelData;
@@ -12,7 +12,7 @@ import com.whirled.data.LevelData;
 public class LevelPackParameter extends ContentPackParameter
 {
     /** Is the level pack premium? */
-    public boolean premium = false;
+    public boolean premium;
     
     public GameData toGameData ()
     {

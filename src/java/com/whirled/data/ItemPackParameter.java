@@ -1,13 +1,13 @@
 //
 // $Id$
 
-package com.whirled.xml;
+package com.whirled.data;
 
 import com.whirled.data.GameData;
 import com.whirled.data.ItemData;
 
 /**
- * A file parameter for representing downloadable content packs on the test server.
+ * A file parameter for representing downloadable item packs on the test server.
  */
 public class ItemPackParameter extends ContentPackParameter
 {
