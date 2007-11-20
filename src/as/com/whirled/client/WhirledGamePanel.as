@@ -3,10 +3,14 @@
 
 package com.whirled.client {
 
+import com.threerings.util.Name;
+
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.util.CrowdContext;
 
 import com.threerings.flex.CommandButton;
+
+import com.threerings.crowd.data.OccupantInfo;
 
 import com.threerings.parlor.game.data.GameConfig;
 
@@ -83,7 +87,7 @@ public class WhirledGamePanel extends EZGamePanel
         // has been in a round before, and we're NOT a party game
         var canRematch :Boolean = _showRematch && !_ezObj.isInPlay() && (_ezObj.roundId != 0) &&
             ((_ctrl.getPlaceConfig() as EZGameConfig).getMatchType() != GameConfig.PARTY) &&
-            (_ezObj.getPlayerCount() == _ezObj.getActivePlayerCount());
+            playersAllHere();
         _rematch.visible = canRematch;
         _rematch.includeInLayout = canRematch;
 
@@ -101,6 +105,29 @@ public class WhirledGamePanel extends EZGamePanel
     {
         _rematch.enabled = false;
         (_ctrl as WhirledGameController).playerIsReady();
+    }
+
+    /**
+     * Return true if every player in the players array is present.
+     */
+    protected function playersAllHere () :Boolean
+    {
+        var occs :Array = _ezObj.occupantInfo.toArray();
+        for each (var name :Name in _ezObj.players) {
+            if (name != null) {
+                var found :Boolean = false;
+                for each (var occInfo :OccupantInfo in occs) {
+                    if (name.equals(occInfo.username)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
