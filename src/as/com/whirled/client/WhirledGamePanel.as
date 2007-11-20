@@ -69,7 +69,9 @@ public class WhirledGamePanel extends EZGamePanel
         _showRematch = rematch;
         checkRematchVisibility();
         _backToLobby.visible = backToLobby;
+        _backToLobby.includeInLayout = backToLobby;
         _backToWhirled.visible = backToWhirled;
+        _backToWhirled.includeInLayout = backToWhirled;
     }
 
     /**
@@ -79,9 +81,11 @@ public class WhirledGamePanel extends EZGamePanel
     {
         // only show the rematch button if it's been configured to be on, the game is over,
         // has been in a round before, and we're NOT a party game
-        _rematch.visible = _showRematch && !_ezObj.isInPlay() && (_ezObj.roundId != 0) &&
+        var canRematch :Boolean = _showRematch && !_ezObj.isInPlay() && (_ezObj.roundId != 0) &&
             ((_ctrl.getPlaceConfig() as EZGameConfig).getMatchType() != GameConfig.PARTY) &&
             (_ezObj.getPlayerCount() == _ezObj.getActivePlayerCount());
+        _rematch.visible = canRematch;
+        _rematch.includeInLayout = canRematch;
 
         if (_ezObj.isInPlay()) {
             // reset state
