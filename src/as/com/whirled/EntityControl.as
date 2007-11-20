@@ -28,6 +28,13 @@ import flash.events.TimerEvent;
 [Event(name="messageReceived", type="com.whirled.ControlEvent")]
 
 /**
+ * Dispatched when any instance sends a message to all instances of all entities.
+ * 
+ * @eventType com.whirled.ControlEvent.SIGNAL_RECEIVED
+ */
+[Event(name="signalReceived", type="com.whirled.ControlEvent")]
+
+/**
  * Dispatched when the instance in control updates the memory of this digital item.
  *
  * @eventType com.whirled.ControlEvent.MEMORY_CHANGED
@@ -137,6 +144,19 @@ public class EntityControl extends WhirledControl
     public function sendMessage (name :String, arg :Object = null) :void
     {
         callHostCode("sendMessage_v1", name, arg, false);
+    }
+
+    /**
+     * Send a message to all instances of all entities in this instance's current room,
+     * resulting in a SIGNAL_RECEIVED event. All instances of the entity can initiate a
+     * signal, so the user must take care to check for control when appropriate.
+     *
+     * Note: the name must be a String and may be up to 64 characters.
+     * TODO: restriction on size of the argument. It will probably be 1k or something.
+     */
+    public function sendSignal (name :String, arg :Object = null) :void
+    {
+        callHostCode("sendSignal_v1", name, arg);
     }
 
     /**
@@ -293,6 +313,7 @@ public class EntityControl extends WhirledControl
         o["memoryChanged_v1"] = memoryChanged_v1;
         o["gotControl_v1"] = gotControl_v1;
         o["messageReceived_v1"] = messageReceived_v1;
+        o["signalReceived_v1"] = signalReceived_v1;
     }
 
     // from WhirledControl
@@ -310,6 +331,14 @@ public class EntityControl extends WhirledControl
     {
         dispatch(isAction ? ControlEvent.ACTION_TRIGGERED
                           : ControlEvent.MESSAGE_RECEIVED, name, arg);
+    }
+
+    /**
+     * Called when an action or message is triggered on this scene object.
+     */
+    protected function signalReceived_v1 (name :String, arg :Object) :void
+    {
+        dispatch(ControlEvent.SIGNAL_RECEIVED, name, arg);
     }
 
     /**

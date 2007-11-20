@@ -28,6 +28,14 @@ public class ControlEvent extends Event
      */
     public static const MESSAGE_RECEIVED :String = "messageRecieved";
 
+    /** An event type dispatched when a signal is received.
+     * name: signal name
+     * value: signal value
+     *
+     * @eventType signalReceived
+     */
+    public static const SIGNAL_RECEIVED :String = "signalRecieved";
+
     /** An event type dispatched when an action is triggered.
      * name: action name 
      * value: action value
