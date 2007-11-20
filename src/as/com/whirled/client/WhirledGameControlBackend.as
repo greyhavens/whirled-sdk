@@ -34,7 +34,7 @@ public class WhirledGameControlBackend extends GameControlBackend
     public static const FLOW_AWARDED_MESSAGE :String = "FlowAwarded";
 
     public function WhirledGameControlBackend (
-        ctx :CrowdContext, ezObj :EZGameObject, ctrl :EZGameController)
+        ctx :CrowdContext, ezObj :EZGameObject, ctrl :WhirledGameController)
     {
         super(ctx, ezObj, ctrl);
     }
@@ -67,6 +67,7 @@ public class WhirledGameControlBackend extends GameControlBackend
 
         o["endGameWithWinners_v1"] = endGameWithWinners_v1;
         o["endGameWithScores_v1"] = endGameWithScores_v1;
+        o["backToWhirled_v1"] = backToWhirled_v1;
 
         o["getLevelPacks_v1"] = getLevelPacks_v1;
         o["getItemPacks_v1"] = getItemPacks_v1;
@@ -75,6 +76,7 @@ public class WhirledGameControlBackend extends GameControlBackend
         o["awardTrophy_v1"] = awardTrophy_v1;
         o["awardPrize_v1"] = awardPrize_v1;
 
+        o["setShowButtons_v1"] = setShowButtons_v1;
         o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
         o["clearScores_v1"] = clearScores_v1;
         o["setPlayerScores_v1"] = setPlayerScores_v1;
@@ -82,6 +84,11 @@ public class WhirledGameControlBackend extends GameControlBackend
 
         // backwards compatability
         o["getStageBounds_v1"] = getStageBounds_v1;
+    }
+
+    protected function setShowButtons_v1 (rematch :Boolean, back :Boolean) :void
+    {
+        (_ctrl.getPlaceView() as WhirledGamePanel).setShowButtons(rematch, back, back);
     }
 
     protected function setOccupantsLabel_v1 (label :String) :void
@@ -127,6 +134,11 @@ public class WhirledGameControlBackend extends GameControlBackend
         (_ezObj as WhirledGame).getWhirledGameService().endGameWithScores(
             _ctx.getClient(), toTypedIntArray(playerIds), toTypedIntArray(scores), payoutType,
             createLoggingConfirmListener("endGameWithWinners"));
+    }
+
+    protected function backToWhirled_v1 (showLobby :Boolean = false) :void
+    {
+        (_ctrl as WhirledGameController).backToWhirled(showLobby);
     }
 
     protected function getLevelPacks_v1 () :Array

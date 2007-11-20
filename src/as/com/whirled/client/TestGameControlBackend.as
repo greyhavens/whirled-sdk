@@ -33,14 +33,7 @@ public class TestGameControlBackend extends WhirledGameControlBackend
     {
         super.populateProperties(o);
 
-        var ctrl :TestGameController = (_ctrl as TestGameController);
 //         o["getHeadShot_v1"] = getHeadShot; // TODO: fake up a sprite
-        o["backToWhirled_v1"] = backToWhirled;
-    }
-
-    protected function backToWhirled (showLobby :Boolean = false) :void
-    {
-        _ctx.getClient().logoff(false);
     }
 
     protected var _panel :TestGamePanel;

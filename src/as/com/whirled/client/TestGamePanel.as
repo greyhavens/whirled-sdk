@@ -7,6 +7,7 @@ package com.whirled.client {
 
 import flash.geom.Rectangle;
 
+import mx.containers.HBox;
 import mx.containers.VBox;
 
 import com.threerings.crowd.data.PlaceObject;
@@ -15,15 +16,13 @@ import com.threerings.crowd.util.CrowdContext;
 import com.threerings.flex.ChatControl;
 import com.threerings.flex.ChatDisplayBox;
 
-import com.threerings.ezgame.client.EZGamePanel;
 import com.threerings.ezgame.client.GameContainer;
 import com.threerings.ezgame.client.GameControlBackend;
 
 /**
  * Handles the main game view for test games.
  */
-public class TestGamePanel extends EZGamePanel
-    implements WhirledGamePanel
+public class TestGamePanel extends WhirledGamePanel
 {
     public function TestGamePanel (ctx :CrowdContext, ctrl :TestGameController)
     {
@@ -33,7 +32,11 @@ public class TestGamePanel extends EZGamePanel
         percentWidth = 100;
         percentHeight = 100;
 
-        _playerList = new PlayerList();
+        _ctrlBar = new HBox();
+        _ctrlBar.setStyle("backgroundColor", 0x000000);
+        _ctrlBar.setStyle("horizontalAlign", "center");
+        addChild(_ctrlBar);
+
         addChild(_playerList);
 
         var chat :ChatDisplayBox = new ChatDisplayBox(ctx);
@@ -41,7 +44,6 @@ public class TestGamePanel extends EZGamePanel
         chat.percentHeight = 100;
 
         var control :ChatControl = new ChatControl(ctx);
-
         _chatBox = new VBox();
         _chatBox.addChild(chat);
         _chatBox.addChild(control);
@@ -50,26 +52,25 @@ public class TestGamePanel extends EZGamePanel
 
     override public function willEnterPlace (plobj :PlaceObject) :void
     {
-        // Important: we need to start the playerList prior to calling super, so that it
-        // is added as a listener to the gameObject prior to the backend being created
-        // and added as a listener. That way, when the ezgame hears about an occupantAdded
-        // event, the playerList already knows about that player!
-        _playerList.startup(plobj);
-
         super.willEnterPlace(plobj);
+
+        _ctrlBar.addChild(_backToLobby);
+        _ctrlBar.addChild(_backToWhirled);
+        _ctrlBar.addChild(_rematch);
     }
 
     override public function didLeavePlace (plobj :PlaceObject) :void
     {
-        _playerList.shutdown();
+        _ctrlBar.removeChild(_backToLobby);
+        _ctrlBar.removeChild(_backToWhirled);
+        _ctrlBar.removeChild(_rematch);
 
         super.didLeavePlace(plobj);
     }
 
-    // from WhirledGamePanel
-    public function getPlayerList () :PlayerList
+    override protected function getButtonLabels () :Array
     {
-        return _playerList;
+        return [ "Back to whirled", "Back to lobby", "Request a rematch" ];
     }
 
     override protected function createBackend () :GameControlBackend
@@ -89,24 +90,30 @@ public class TestGamePanel extends EZGamePanel
     override protected function updateDisplayList (
         unscaledWidth :Number, unscaledHeight :Number) :void
     {
-        const GAP :Number = 14;
-        const SIDEBAR_WIDTH :Number = 300;
+        const GAP :int = 14;
+        const SIDEBAR_WIDTH :int = 300;
+        const CTRLBAR_HEIGHT :int = 24;
+
+        _ctrlBar.x = 0;
+        _ctrlBar.y = unscaledHeight - CTRLBAR_HEIGHT;
+        _ctrlBar.width = unscaledWidth - GAP - SIDEBAR_WIDTH;
+        _ctrlBar.height = CTRLBAR_HEIGHT;
 
         _gameView.width = unscaledWidth - GAP - SIDEBAR_WIDTH;
-        _gameView.height = unscaledHeight;
+        _gameView.height = unscaledHeight - CTRLBAR_HEIGHT;
         _playerList.x = unscaledWidth - SIDEBAR_WIDTH;
         _playerList.width = SIDEBAR_WIDTH - GAP;
 
         _chatBox.x = unscaledWidth - SIDEBAR_WIDTH;
         _chatBox.y = _playerList.y + _playerList.height + GAP;
         _chatBox.width = SIDEBAR_WIDTH - GAP;
-        _chatBox.height = unscaledHeight - (GAP * 2) - _playerList.height;
+        _chatBox.height = unscaledHeight - _chatBox.y;
 
         super.updateDisplayList(unscaledWidth, unscaledHeight);
     }
 
-    protected var _playerList :PlayerList;
-
     protected var _chatBox :VBox;
+
+    protected var _ctrlBar :HBox;
 }
 }

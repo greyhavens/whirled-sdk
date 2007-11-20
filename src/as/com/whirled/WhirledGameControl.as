@@ -64,6 +64,18 @@ public class WhirledGameControl extends EZGameControl
     }
 
     /**
+     * Set whether control bar buttons are shown.
+     * @param rematch sets whether the rematch button should be displayed automatically when
+     *        the game is over.
+     * @param backButtons sets whether the 'back to whirled' and 'back to lobby' buttons are
+     *        showing.
+     */
+    public function setShowButtons (rematch :Boolean = true, backButtons :Boolean = true) :void
+    {
+        callEZCode("setShowButtons_v1", rematch, backButtons);
+    }
+
+    /**
      * Set a label to be shown above the occupants list in the game.
      * Set to null to remove the label.
      */
