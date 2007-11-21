@@ -123,6 +123,7 @@
       <fileset dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="*.as"/>
       <fileset dir="contrib/src/as/com/whirled" includes="**/*.as"/>
       <fileset dir="src/as/com/whirled" includes="*.as"/>
+      <fileset dir="src/as/com/whirled/util" includes="*.as"/>
     </copy>
     <java classpath="${flex.path}/lib/asdoc.jar" classname="flex2.tools.ASDoc" fork="true">
       <jvmarg value="-Xmx1024m"/>
