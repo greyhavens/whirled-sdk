@@ -34,8 +34,11 @@ public class ContentPackLoader
      *  @param loaded Function of type: function (pack :ContentPack) :void {}, called once for each
      *    loaded content pack; the <i>pack</i> variable may be null if the pack failed to load.
      *  @param done Function of type: function () :void {}, called after all packs were processed.
+     *  @param useSubDomain Optional boolean flag; if true, it will create a separate child
+     *    application domain for the content pack, allowing class redefinition.
      */
-    public function ContentPackLoader (definitions :Array, loaded :Function, done :Function)
+    public function ContentPackLoader (
+        definitions :Array, loaded :Function, done :Function, useSubDomain :Boolean = false)
     {
         _loadedCallback = loaded;
         _doneCallback = done;
@@ -49,7 +52,9 @@ public class ContentPackLoader
 
                 var request :URLRequest = new URLRequest(def.mediaURL);
                 var context :LoaderContext = new LoaderContext();
-                context.applicationDomain = ApplicationDomain.currentDomain;
+                context.applicationDomain = useSubDomain ? 
+                  new ApplicationDomain(ApplicationDomain.currentDomain) : 
+                  ApplicationDomain.currentDomain;
                 loader.load(request, context);
 
                 return info;
