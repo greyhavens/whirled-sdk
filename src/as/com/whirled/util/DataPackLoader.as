@@ -9,26 +9,30 @@ import flash.events.ErrorEvent;
 import com.whirled.DataPack;
 
 /**
- * Loader utility for loading item and level packs as data packs.
+ * Utility for loading item and level packs as data packs. A data pack is a zipped data bundle,
+ * containing arbitrary files, and a <code>_data.xml</code> file describing the contents
+ * of the bundle.
+ *
+ *  @see com.whirled.DataPack
  */
 public class DataPackLoader
 {
     /**
-     * This constructor takes a list of pack definitions, and two callback functions.
-     * Pack definitions should be as a list of objects, in the format produced by
-     * {@link WhirledGameControl.getItemPacks} or {@link WhirledGameControl.getLevelPacks}.
+     * This constructor takes a list of pack definitions, and two optional callback functions.
+     * Pack definitions should be a list of objects, in the format produced by
+     * WhirledGameControl.getItemPacks() or WhirledGameControl.getLevelPacks().
      *
-     * The loader will extract the URLs of each content pack, and start loading them as data packs.
-     * Every time a data pack is finished processing, if the <i>loaded</i> callback is specified,
-     * it will be called, passing it the newly loaded pack. Finally, after all packs have been
-     * processed, if the <i>done</i> callback is specified, it will be called with an array of all
-     * DataPack instances. 
+     * <p>The loader will extract the URLs of each content pack, and start loading them as data
+     * packs. Every time a data pack is finished processing, if the <i>loaded</i> callback is
+     * specified, it will be called, passing it the newly loaded pack. Finally, after all packs
+     * have been processed, if the <i>done</i> callback is specified, it will be called with an
+     * array of all DataPack instances. 
      *
      *  @param definitions Array of content pack definitions.
-     *  @param loaded Optional function of type: <pre>function (pack :DataPack) :void {}</pre>,
-     *    called once for each loaded data pack.
-     *  @param done Optional function of type: <pre>function (packs :Array) :void {}</pre>,
-     *    called after all packs were processed, with a list of all DataPack objects.
+     *  @param loaded Optional callback that will be called once for each loaded data pack. It
+     *    should have the following signature: <code>function (pack :DataPack) :void {}</code>
+     *  @param done Optional callback that will be called after all data packs were processed. It
+     *    should have the following signature: <code>function (packs :Array) :void {}</code>
      */
     public function DataPackLoader (
         definitions :Array, loaded :Function = null, done :Function = null)
