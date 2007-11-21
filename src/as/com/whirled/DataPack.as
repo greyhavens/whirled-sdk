@@ -190,6 +190,14 @@ public class DataPack extends EventDispatcher
     }
 
     /**
+     * Get a File, as an XML object.
+     */
+    public function getFileAsXML (name :String) :XML
+    {
+        return XML(getFileAsString(name));
+    }
+    
+    /**
      * Get sounds. TODO. This is not quite ready for primetime.
      */
     public function getSounds (names :Array, callback :Function) :void
