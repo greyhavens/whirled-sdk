@@ -121,7 +121,7 @@
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="${projects.dir}/narya/src/as/com/threerings/util" includes="*.as"/>
       <fileset dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="*.as"/>
-      <fileset dir="contrib/src/as/com/whirled/contrib" includes="*.as"/>
+      <fileset dir="contrib/src/as/com/whirled" includes="**/*.as"/>
       <fileset dir="src/as/com/whirled" includes="*.as"/>
     </copy>
     <java classpath="${flex.path}/lib/asdoc.jar" classname="flex2.tools.ASDoc" fork="true">
