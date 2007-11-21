@@ -17,8 +17,6 @@ import com.threerings.util.Log;
  */
 public class ClassLoader 
 {
-    public static var log :Log = Log.getLog(ClassLoader);
-
     public function ClassLoader (... loaders) :void
     {
         for each (var loader :Object in loaders) {
@@ -53,5 +51,7 @@ public class ClassLoader
 
     protected var _loaders :Array = [];
     protected var _embeddeds :Array = [];
+
+    private static var log :Log = Log.getLog(ClassLoader);
 }
 }

@@ -29,8 +29,6 @@ public class Jukebox
     public static const DEFAULT_VOLUME :int = 30;
     public static const MAX_VOLUME :int = 100;
 
-    public static var log :Log = Log.getLog(Jukebox);
-
     /**
      * init must be called before the Jukebox can handle crossfading and loading music correctly.
      * The frameDispatcher must be a display object that will remain on the display list, as this
@@ -205,5 +203,7 @@ public class Jukebox
     protected static var _frameDispatcher :IEventDispatcher;
 
     protected static var _sounds :HashMap = new HashMap();
+
+    private static var log :Log = Log.getLog(Jukebox);
 }
 }
