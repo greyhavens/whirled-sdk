@@ -166,8 +166,7 @@
     <!-- copy contributed files -->
     <mkdir dir="${sdk.build}/contrib"/>
     <copy todir="${sdk.build}/contrib">
-      <fileset dir="${contrib.dir}" includes="README.txt"/>
-      <fileset dir="${contrib.dir}" includes="src/as/com/whirled/contrib/*.as"/>
+      <fileset dir="${contrib.dir}" includes="README.txt,src/as/com/whirled/contrib/*.as"/>
     </copy>
     <!-- copy some example games -->
     <mkdir dir="${sdk.build}/examples/games"/>
