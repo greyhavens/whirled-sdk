@@ -16,6 +16,9 @@
   <property name="projects" value="samskivert,narya,nenya,vilya,toybox"/>
   <import file="build/etc/build-support.xml"/>
 
+  <!-- archive of contributed libraries -->
+  <property name="contrib.dir" value="contrib"/>
+
   <!-- include bits to do the necessary Flex SDK path jockeying -->
   <import file="etc/flex-include.xml"/>
 
@@ -118,6 +121,7 @@
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="${projects.dir}/narya/src/as/com/threerings/util" includes="*.as"/>
       <fileset dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="*.as"/>
+      <fileset dir="contrib/src/as/com/whirled" includes="*.as"/>
       <fileset dir="src/as/com/whirled" includes="*.as"/>
     </copy>
     <java classpath="${flex.path}/lib/asdoc.jar" classname="flex2.tools.ASDoc" fork="true">
@@ -157,6 +161,11 @@
       <fileset dir="${projects.dir}/narya" includes="src/as/com/threerings/util/*.as"/>
       <fileset dir="${projects.dir}/narya" includes="src/as/Log.as"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
+    </copy>
+    <!-- copy contributed files -->
+    <mkdir dir="${sdk.build}/contrib"/>
+    <copy todir="${sdk.build}/contrib">
+      <fileset dir="${contrib.dir}" includes="src/as/com/whirled/contrib/**"/>
     </copy>
     <!-- copy some example games -->
     <mkdir dir="${sdk.build}/examples/games"/>

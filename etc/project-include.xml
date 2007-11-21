@@ -8,6 +8,7 @@
   <property name="flex.use-network" value="false"/>
   <property name="app.source-suffix" value="as"/>
   <property name="app.source-dir" value="."/>
+  <property name="app.source-extras" value=""/>
   <property name="app.package-dir" value="."/>
   <property name="app.library-dir" value="."/>
 
@@ -42,6 +43,7 @@
       <arg value="-library-path+=${app.library-dir}"/>
       <arg value="-use-network=${flex.use-network}"/>
       <arg value="-compiler.source-path=${app.source-dir}"/>
+      <arg value="-compiler.source-path=${app.source-extras}"/>
       <arg value="-file-specs"/>
       <arg value="${app.source-dir}/${app.package-dir}/${app.name}.${app.source-suffix}"/>
       <arg value="-output"/>
@@ -60,6 +62,7 @@
       <arg value="-compiler.debug"/>
       <arg value="-compiler.verbose-stacktraces=true"/>
       <arg value="-compiler.source-path=${app.source-dir}"/>
+      <arg value="-compiler.source-path=${app.source-extras}"/>
       <arg value="-file-specs"/>
       <arg value="${app.source-dir}/${app.package-dir}/${app.name}.${app.source-suffix}"/>
       <arg value="-output"/>
