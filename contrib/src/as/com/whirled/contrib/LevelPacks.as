@@ -1,6 +1,6 @@
 // $Id$
 
-package com.threerings.underwhirleddrift.util {
+package com.whirled.contrib {
 
 import com.threerings.util.HashMap;
 

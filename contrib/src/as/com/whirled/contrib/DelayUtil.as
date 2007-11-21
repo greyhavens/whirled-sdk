@@ -76,19 +76,19 @@ class SecondDelayer extends Delayer
     public function SecondDelayer (count :int, callback :Function)
     {
         super(count, callback);
-        _startTime = getTimer();
+        _endTime = getTimer() + (_count * 1000);
     }
 
     override public function tick () :Boolean
     {
-        if (getTimer() - _startTime >= _count * 1000) {
+        if (getTimer() > _endTime) {
             _callback();
             return true;
         }
         return false;
     }
 
-    protected var _startTime :int;
+    protected var _endTime :int;
 }
 
 class FrameDelayer extends Delayer

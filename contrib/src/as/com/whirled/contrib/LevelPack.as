@@ -1,6 +1,6 @@
 // $Id$
 
-package com.threerings.underwhirleddrift.util {
+package com.whirled.contrib {
 
 /** 
  * Represents the data from WhirledGameControl.getLevelPacks() in a type-safe manner.
