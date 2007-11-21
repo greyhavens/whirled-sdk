@@ -134,6 +134,7 @@
       <arg line="-library-path ${deploy.dir}/whirled.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
+      <arg line="-package com.whirled.contrib 'Contains an archive of useful tools for game development, contributed by various authors and users of the Whirled SDK.  See README.txt in the SDK for further info.'"/>
       <arg line="-output ${sdk.build}/docs"/>
     </java>
     <delete dir="${deploy.dir}/tmp/pubas"/>
