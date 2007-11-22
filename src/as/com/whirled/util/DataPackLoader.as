@@ -24,7 +24,7 @@ public class DataPackLoader
      *
      * <p>The loader will extract the URLs of each content pack, and start loading them as data
      * packs. Every time a data pack is finished processing, if the <i>loaded</i> callback is
-     * specified, it will be called, passing it the newly loaded pack. Finally, after all packs
+     * specified, it will be called, passing it the newly processed pack. Finally, after all packs
      * have been processed, if the <i>done</i> callback is specified, it will be called with an
      * array of all DataPack instances. 
      *
@@ -63,7 +63,7 @@ public class DataPackLoader
             });
     }
     
-    /** Remove loader subscriptions, increment count, maybe inform the user. */
+    /** Processes an individual pack, and calls the appropriate callback functions. */
     protected function packProcessed (event :Event) :void
     {
         var pack :DataPack = event.target as DataPack;
@@ -71,10 +71,8 @@ public class DataPackLoader
         pack.removeEventListener(Event.COMPLETE, packProcessed);
         pack.removeEventListener(ErrorEvent.ERROR, packProcessed);
 
-        trace("GOT: " + event);
-        
         if (_loadedCallback != null) {
-            _loadedCallback((event is ErrorEvent) ? null : pack);
+            _loadedCallback(pack);
         }
         
         _processedCount++;
