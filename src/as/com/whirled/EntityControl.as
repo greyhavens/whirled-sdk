@@ -13,6 +13,9 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.TimerEvent;
 
+import flash.media.Camera;
+import flash.media.Microphone;
+
 /**
  * Dispatched when the instance in control sends a trigger action to all instances.
  * 
@@ -244,6 +247,18 @@ public class EntityControl extends WhirledControl
     }
 
     /**
+     * Get the non-unique display name of the user viewing a particular instanceId.
+     *
+     * @param instanceId an instanceId or 0 to get this instance's viewer's display name.
+     *
+     * @return a String or null if the viewer is unknown.
+     */
+    public function getViewerName (instanceId :int = 0) :String
+    {
+        return callHostCode("getViewerName_v1", instanceId) as String;
+    }
+
+    /**
      * Requests that this item's memory be updated with the supplied key/value pair. The supplied
      * value must be a simple object (Integer, Number, String) or an Array of simple objects. The
      * contents of the Pet's memory (keys and values) must not exceed 4096 bytes when AMF3 encoded.
@@ -303,6 +318,28 @@ public class EntityControl extends WhirledControl
     public function clearPopup () :void
     {
         callHostCode("clearPopup_v1");
+    }
+
+    /**
+     * Access the local user's camera.
+     * Calling Camera.getCamera() does not work inside whirled due to security restrictions.
+     * For convenience, this method works even when you're not connected.
+     */
+    public function getCamera () :Camera
+    {
+        return isConnected() ? callHostCode("getCamera_v1") as Camera
+                             : Camera.getCamera();
+    }
+
+    /**
+     * Access the local user's camera.
+     * Calling Camera.getCamera() does not work inside whirled due to security restrictions.
+     * For convenience, this method works even when you're not connected.
+     */
+    public function getMicrophone () :Microphone
+    {
+        return isConnected() ? callHostCode("getMicrophone_v1") as Microphone
+                             : Microphone.getMicrophone()
     }
 
     /**
