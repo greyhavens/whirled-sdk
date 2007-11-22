@@ -333,7 +333,7 @@ public class EntityControl extends WhirledControl
 
     /**
      * Access the local user's camera.
-     * Calling Camera.getCamera() does not work inside whirled due to security restrictions.
+     * Calling Microphone.getMicrophone() does not work inside whirled due to security restrictions.
      * For convenience, this method works even when you're not connected.
      */
     public function getMicrophone () :Microphone
