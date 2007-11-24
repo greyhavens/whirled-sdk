@@ -24,7 +24,6 @@ public class EntityStateListener extends EventDispatcher
     {
         _key = key;
         _control = control;
-        _control.requestControl();
         _control.addEventListener(ControlEvent.SIGNAL_RECEIVED, handleSignal);
 
         // we would like to know what the current state is, and we can ask for it to be
@@ -45,7 +44,7 @@ public class EntityStateListener extends EventDispatcher
         // TODO: this is really not satisfactory, there is NO way to know if control
         // has been assigned yet, so this test could be false for all the instances
         // in the room
-        if (_needInitialRequest && _control.hasControl()) {
+        if (_needInitialRequest) {
             _needInitialRequest = false;
             _control.sendSignal("_q_" + _key);
         }
