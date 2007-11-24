@@ -373,7 +373,7 @@ public class PlayerView
      */
     protected void updateOccupantInfo ()
     {
-        _occinfo = (OccupantInfo)_gameObj.getOccupantInfo(_username);
+        _occinfo = _gameObj.getOccupantInfo(_username);
         if (_occinfo != null && _occinfo instanceof WhirledOccupantInfo) {
             if (_faceIcon == null) {
                 _faceIcon = new HeadshotIcon((WhirledOccupantInfo)_occinfo, getFaceIconSize());

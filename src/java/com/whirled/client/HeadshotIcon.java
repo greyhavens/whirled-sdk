@@ -60,8 +60,8 @@ public class HeadshotIcon implements Icon
 
         float scale = (width > height) ? _width/(float)width : _height/(float)height;
         scale = Math.min(1f, scale);
-        int swidth = (int)Math.round(scale * width);
-        int sheight = (int)Math.round(scale * height);
+        int swidth = Math.round(scale * width);
+        int sheight = Math.round(scale * height);
         int sx = (_width - swidth)/2, sy = (_height - sheight)/2;
         g.drawImage(_image, x + sx, y + sy, swidth, sheight, null, host);
     }

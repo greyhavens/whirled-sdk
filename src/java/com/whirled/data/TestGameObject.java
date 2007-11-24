@@ -62,7 +62,7 @@ public class TestGameObject extends EZGameObject
         GameData[] ovalue = this.gameData;
         requestAttributeChange(
             GAME_DATA, value, ovalue);
-        this.gameData = (value == null) ? null : (GameData[])value.clone();
+        this.gameData = (value == null) ? null : value.clone();
     }
 
     /**
