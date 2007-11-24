@@ -2,6 +2,8 @@ package com.whirled.contrib {
 
 import flash.events.EventDispatcher;
 
+import flash.utils.setTimeout;
+
 import com.whirled.ControlEvent;
 import com.whirled.EntityControl;
 
@@ -29,7 +31,16 @@ public class EntityStatePublisher extends EventDispatcher
         _control.addEventListener(ControlEvent.SIGNAL_RECEIVED, handleSignal);
 
         _state = _control.lookupMemory(_key, defVal);
-        broadcastIfInControl();
+
+        // if our room was just loaded there's a good chance other furni is still due to
+        // added, and some of them may be state listeners -- so wait a bit before we do
+        // our initial broadcast
+        _needInitialBroadcast = true;
+        setTimeout(function () :void {
+            if (_needInitialBroadcast) {
+                broadcastIfInControl();
+            }
+        }, 500);
     }
 
     public function get state () :Object
@@ -63,6 +74,7 @@ public class EntityStatePublisher extends EventDispatcher
 
     protected function broadcastIfInControl () :void
     {
+        _needInitialBroadcast = false;
         if (_control.hasControl()) {
             _control.sendSignal("_s_" + _key, _state);
         }
@@ -72,5 +84,7 @@ public class EntityStatePublisher extends EventDispatcher
 
     protected var _key :String;
     protected var _state :Object;
+
+    protected var _needInitialBroadcast :Boolean;
 }
 }
