@@ -4,8 +4,6 @@ import flash.events.EventDispatcher;
 
 import flash.utils.setTimeout;
 
-import com.threerings.util.NameValueEvent;
-import com.threerings.util.ValueEvent;
 import com.threerings.util.Log;
 
 import com.whirled.ControlEvent;
