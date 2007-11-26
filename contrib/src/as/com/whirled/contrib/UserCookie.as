@@ -15,18 +15,65 @@ import com.threerings.util.Log;
 import com.whirled.WhirledGameControl;
 
 /**
- * A class to manage complicated user cookies on a WhirledGameControl.  Using this class, user 
+ * <p>A class to manage complicated user cookies on a WhirledGameControl.  Using this class, user 
  * cookies can contain a list of various different data types, which are read from the server and
  * saved back to the server automatically.  The data structure is compressed into a ByteArray to 
  * save space (user cookies are only allowed to go up to 4k).  Data is saved to the server as it is
  * updated on this object, but no faster than once per every 2 seconds so that this class doesn't 
  * add too much to the game's networking activity, as games are limited to 100 messages per every 
- * 10 seconds.
+ * 10 seconds.</p>
  * 
- * This class enables versioning, up to a point.  It currently supports adding parameters to the 
+ * <p>This class enables versioning, up to a point.  It currently supports adding parameters to the 
  * cookie definition, but does not support removing them or changing their data type.  The only
  * overhead added by this class to the cookie itself is a single int that holds the version number
- * of the cookie.
+ * of the cookie.</p>
+ *
+ * <p>example usage:  This could be used for a game that has 5 levels.  At first the developer only
+ * needed to know which was the last level the player played on, so it was stored in the cookie.  
+ * Later he wanted to know how many times each level had been played by the player, so he added it
+ * to the cookie definition in a new version.</p>
+ *
+ * <pre>
+ * protected var LAST_LEVEL_PLAYED :String = "lastLevelPlayed";
+ * protected var TIMES_LEVELS_PLAYED :String = "timesLevelsPlayed";
+ *
+ * protected function getCookie () :void 
+ * {
+ *     var timesPlayed :Array = [];
+ *     for (level = 0; level < 5; level++) {
+ *         // parameter names are not used if the parameter is nested in an array.  Arrays can also 
+ *         // hold array parameters as children, which enables array nesting.     
+ *         timesPlayed.push(UserCookie.getIntParameter("", 0));
+ *     }
+ *     
+ *     var cookieDef :Array = [
+ *         // start at version 1
+ *         UserCookie.getVersionParameter(),
+ *         UserCookie.getIntParameter(LAST_LEVEL_PLAYED, 0),
+ *     
+ *         // version 2 added the number of times each level was played
+ *         UserCookie.getVersionParameter(),
+ *         UserCookie.getArrayParameter(TIMES_LEVELS_PLAYED, timesPlayed)
+ *     ];
+ *     
+ *     UserCookie.getCookie(wgc, function (cookie :UserCookie) :void {
+ *         // notify those that need to know that the UserCookie is valid and available.
+ *         _cookie = cookie;
+ *     }, cookieDef);
+ * }
+ *
+ * protected function setLastLevelPlayed (level :int) :void
+ * {
+ *     _cookie.set(LAST_LEVEL_PLAYED, level);
+ * }
+ * 
+ * protected function playedLevel (level :int) :void
+ * {
+ *     // increment the array value for this level.
+ *     var previousValue :int = _cookie.get(TIMES_LEVELS_PLAYED, level);     
+ *     _cookie.set(TIMES_LEVELS_PLAYED, previousValue + 1, level);
+ * }
+ * </pre>
  */
 public class UserCookie
 {
