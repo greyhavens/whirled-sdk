@@ -22,10 +22,7 @@ package deng.fzip
 {
 	import flash.display.Loader;
 	import flash.system.LoaderContext;
-	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
-	import flash.utils.Endian;
-	import flash.utils.IDataInput;
+	import flash.utils.*;
 
 	/**
 	 * Represents a file contained in a ZIP archive loaded by FZip.
@@ -50,8 +47,9 @@ package deng.fzip
 		private var _sizeFilename:uint = 0;
 		private var _sizeExtra:uint = 0;
 		private var _filename:String = "";
+		private var _filenameEncoding:String;
 		private var _extraFields:Dictionary;
-		private var _content:ByteArray;
+		private var _content:*;
 
 		private var isCompressed:Boolean = false;
 		private var parseState:Namespace = fileHead;
@@ -108,11 +106,29 @@ package deng.fzip
 		 */		
 		public static const COMPRESSION_IMPLODED_PKWARE:int = 10;
 
+		/**
+		 * @private
+		 */		
+		private static var HAS_INFLATE:Boolean = testInflate();
+		/**
+		 * @private
+		 */		
+		private static function testInflate():Boolean {
+			var ret:Boolean = false;
+			try {
+				var ba:ByteArray = new ByteArray();
+				ba.uncompress("deflate");
+				ret = true;
+			}
+			catch(e:Error) {}
+			return ret;
+		}
 		
 		/**
 		 * Constructor
 		 */		
-		public function FZipFile() {
+		public function FZipFile(filenameEncoding:String = "utf-8") {
+			_filenameEncoding = filenameEncoding;
 			_extraFields = new Dictionary();
 		}
 		
@@ -175,21 +191,20 @@ package deng.fzip
 		 * 
 		 * @return The file as string.
 		 */
-		public function getContentAsString(recompress:Boolean = true, charset:String = "utf-8-strip-bom"):String {
-			// If the content is UTF-8 encoded and contains a BOM,
-			// readMultiByte treats the BOM as normal character
-			// so we need to strip it out.
-			// (Flash Player bug?)
-			var stripBOM:Boolean = (charset == "utf-8-strip-bom");
-			if(stripBOM) { charset = "utf-8"; }
+		public function getContentAsString(recompress:Boolean = true, charset:String = "utf-8"):String {
 			if(isCompressed) {
 				_content.position = 0;
 				_content.uncompress();
 			}
 			_content.position = 0;
-			//var str:String = _content.readMultiByte(_content.bytesAvailable, charset);
-			var str:String = _content.readUTFBytes(_content.bytesAvailable);
-			if(stripBOM && str.charCodeAt(0) == 0xfeff) { str = str.substr(1); }
+			var str:String;
+			// Is readMultiByte completely trustworthy with utf-8?
+			// For now, readUTFBytes will take over.
+			if(charset == "utf-8") {
+				str = _content.readUTFBytes(_content.bytesAvailable);
+			} else {
+				str = _content.readMultiByte(_content.bytesAvailable, charset);
+			}
 			_content.position = 0;
 			if(isCompressed) {
 				if(recompress) {
@@ -275,13 +290,16 @@ package deng.fzip
 			_versionNumber = Math.floor((vSrc & 0xff) / 10) + "." + ((vSrc & 0xff) % 10);
 			var flag:uint = data.readUnsignedShort();
 			_compressionMethod = data.readUnsignedShort();
-			_encrypted = (flag & 0x01) != 0;
-			_hasDataDescriptor = (flag & 0x08) != 0;
-			_hasCompressedPatchedData = (flag & 0x20) != 0;
-			if(_compressionMethod == COMPRESSION_IMPLODED) {
-				_implodeDictSize = (flag & 0x02) != 0 ? 8192 : 4096;
-				_implodeShannonFanoTrees = (flag & 0x04) != 0 ? 3 : 2;
-			} else if(_compressionMethod == COMPRESSION_DEFLATED) {
+			_encrypted = (flag & 0x01) !== 0;
+			_hasDataDescriptor = (flag & 0x08) !== 0;
+			_hasCompressedPatchedData = (flag & 0x20) !== 0;
+			if ((flag & 800) !== 0) {
+				_filenameEncoding = "utf-8";
+			}
+			if(_compressionMethod === COMPRESSION_IMPLODED) {
+				_implodeDictSize = (flag & 0x02) !== 0 ? 8192 : 4096;
+				_implodeShannonFanoTrees = (flag & 0x04) !== 0 ? 3 : 2;
+			} else if(_compressionMethod === COMPRESSION_DEFLATED) {
 				_deflateSpeedOption = (flag & 0x06) >> 1;
 			}
 			var msdosTime:uint = data.readUnsignedShort();
@@ -304,10 +322,11 @@ package deng.fzip
 		 * @private
 		 */		
 		protected function parseHeadExt(data:IDataInput):void {
-			// Filenames in ZIPs usually are IBM850 encoded,
-			// at least it seems to be like that on Windows
-			//_filename = data.readMultiByte(_sizeFilename, "ibm850");
-			_filename = data.readUTFBytes(_sizeFilename);
+			if (_filenameEncoding == "utf-8") {
+				_filename = data.readUTFBytes(_sizeFilename);// Fixes a bug in some players
+			} else {
+				_filename = data.readMultiByte(_sizeFilename, _filenameEncoding);
+			}
 			var bytesLeft:uint = _sizeExtra;
 			while(bytesLeft > 4) {
 				var headerId:uint = data.readUnsignedShort();
@@ -315,7 +334,7 @@ package deng.fzip
 				if(dataSize > bytesLeft) {
 					throw new Error("Parse error in file " + _filename + ": Extra field data size too big.");
 				}
-				if(headerId == 0xdada && dataSize == 4) {
+				if(headerId === 0xdada && dataSize === 4) {
 					_adler32 = data.readUnsignedInt();
 					_hasAdler32 = true;
 				} else if(dataSize > 0) {
@@ -336,8 +355,15 @@ package deng.fzip
 		protected function parseContent(data:IDataInput):void {
 			_content = new ByteArray();
 			_content.endian = Endian.BIG_ENDIAN;
-			if(_compressionMethod == COMPRESSION_DEFLATED) {
-				if(_hasAdler32) {
+			if(_compressionMethod === COMPRESSION_DEFLATED && !_encrypted) {
+				if(HAS_INFLATE) {
+					// Adobe Air supports inflate decompression.
+					// If we got here, this is an Air application
+					// and we can decompress without using the Adler32 hack.
+					data.readBytes(_content, 0, _sizeCompressed);
+					_content.uncompress(CompressionAlgorithm.DEFLATE);
+					_content.position = 0;
+				} else if(_hasAdler32) {
 					// Add header
 					// CMF (compression method and info)
 					_content.writeByte(0x78);

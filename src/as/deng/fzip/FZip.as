@@ -115,6 +115,7 @@ package deng.fzip
 		private var filesDict:Dictionary;
 
 		private var urlStream:URLStream;
+		private var charEncoding:String;
 		private var parseState:Namespace;
 		private var currentFile:FZipFile;
 
@@ -125,17 +126,31 @@ package deng.fzip
 		
 		/**
 		 * Constructor
+		 * 
+		 * @param filenameEncoding The character encoding used for filenames
+		 * contained in the zip. If unspecified, unicode ("utf-8") is used.
+		 * Older zips commonly use encoding "IBM437" (aka "cp437"),
+		 * while other European countries use "ibm850".
+		 * @see http://livedocs.adobe.com/labs/as3preview/langref/charset-codes.html
 		 */		
-		public function FZip() {
+		public function FZip(filenameEncoding:String = "utf-8") {
 			super();
+			charEncoding = filenameEncoding;
 			parseState = idle;
+		}
+
+		/**
+		 * Indicates whether a file is currently being processed or not.
+		 */		
+		public function get active():Boolean {
+			return (parseState !== idle);
 		}
 
 		/**
 		 * Begins downloading the ZIP archive specified by the request
 		 * parameter.
 		 * 
-		 * @param req A URLRequest object specifying the URL of a ZIP archive
+		 * @param request A URLRequest object specifying the URL of a ZIP archive
 		 * to download. 
 		 * If the value of this parameter or the URLRequest.url property 
 		 * of the URLRequest object passed are null, Flash Player throws 
@@ -220,7 +235,7 @@ package deng.fzip
 				switch(sig) {
 					case 0x04034b50:
 						parseState = localfile;
-						currentFile = new FZipFile();
+						currentFile = new FZipFile(charEncoding);
 						break;
 					case 0x02014b50:
 					case 0x06054b50:
@@ -244,9 +259,9 @@ package deng.fzip
 				if (currentFile.filename) {
 					filesDict[currentFile.filename] = currentFile;
 				}
+				parseState = signature;
 				dispatchEvent(new FZipEvent(FZipEvent.FILE_LOADED, currentFile));
 				currentFile = null;
-				parseState = signature;
 				return true;
 			}
 			return false;
@@ -264,7 +279,11 @@ package deng.fzip
 				}
 			} catch(e:Error) {
 				close();
-				dispatchEvent(new FZipErrorEvent(FZipErrorEvent.PARSE_ERROR, e.message));
+				if(hasEventListener(FZipErrorEvent.PARSE_ERROR)) {
+					dispatchEvent(new FZipErrorEvent(FZipErrorEvent.PARSE_ERROR, e.message));
+				} else {
+					throw(e);
+				}
 			}
 		}
 		
