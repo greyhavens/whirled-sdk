@@ -45,6 +45,13 @@ import flash.media.Microphone;
 [Event(name="memoryChanged", type="com.whirled.ControlEvent")]
 
 /**
+ * Dispatched when the instance in control updates a room property.
+ *
+ * @eventType com.whirled.ControlEvent.ROOM_PROPERTY_CHANGED
+ */
+[Event(name="roomPropertyChanged", type="com.whirled.ControlEvent")]
+
+/**
  * Dispatched when this instance gains control. See the <code>hasControl</code> method.
  *
  * @eventType com.whirled.ControlEvent.GOT_CONTROL
@@ -188,6 +195,30 @@ public class EntityControl extends WhirledControl
     }
 
     /**
+     * Return an associative hash of all the room properties. This is not a cheap operation.
+     * Use getRoomProperty if you know what you want.
+     */
+    public function getRoomProperties () :Object
+    {
+        var mems :Object = callHostCode("getRoomProperties_v1");
+        // return an empty object if the host somereason returns null
+        return (mems == null) ? {} : mems;
+    }
+
+    /**
+     * Returns the value associated with the supplied key in thie room's shared property space.
+     * If no value is mapped in the room, the supplied default value will be returned.
+     *
+     * @return the value for the specified key from this room's property space or the
+     * supplied default.
+     */
+    public function getRoomProperty (key :String, defval :Object = null) :Object
+    {
+        var value :Object = callHostCode("getRoomProperty_v1", key);
+        return (value == null) ? defval : value;
+    }
+
+    /**
      * Is this client in control?
      *
      * <p>Control is a mutually exclusive lock across all instances of the entity (i.e. running in
@@ -196,7 +227,7 @@ public class EntityControl extends WhirledControl
      * <p>Note: control is <em>not</em> automatically assigned. If an entity wishes to obtain
      * control, it should first call <code>requestControl</code> and it will then receive a
      * <code>GOT_CONTROL</code> event if and when control has been assigned to this client.
-     * There are no guarantees which of the requesting clients will receive it, or when. 
+     * There are no guarantees which of the requesting clients will receive it, or when.
      */
     public function hasControl () :Boolean
     {
@@ -279,6 +310,27 @@ public class EntityControl extends WhirledControl
     }
 
     /**
+     * Requests that the room's shared property space be updated with the supplied key/value
+     * pair. The supplied value must be a simple object (Integer, Number, String) or an Array
+     * of simple objects. The key must be no more than 64 bytes long and the value no more
+     * than 256 when encoded. There can be no more than 16 entries in a room's property space
+     * so be frugal.
+     *
+     * Please note that these properties are not persisted through server reboots. They are
+     * meant for state coordination, not long-term storage. Use item memory for persistence.
+     *
+     * Setting the value for a key to null clears that property; subsequent lookups will return
+     * the default value.
+     *
+     * @return true if the memory was updated, false if the memory update could not be completed
+     * due to size restrictions.
+     */
+    public function setRoomProperty (key :String, value :Object) :Boolean
+    {
+        return callHostCode("setRoomProperty_v1", key, value);
+    }
+
+    /**
      * Set the layout "hotspot" for your item, specified as pixels relative to (0, 0) the top-left
      * coordinate.
      *
@@ -348,6 +400,7 @@ public class EntityControl extends WhirledControl
     override protected function populateProperties (o :Object) :void
     {
         o["memoryChanged_v1"] = memoryChanged_v1;
+        o["roomPropertyChanged_v1"] = roomPropertyChanged_v1;
         o["gotControl_v1"] = gotControl_v1;
         o["messageReceived_v1"] = messageReceived_v1;
         o["signalReceived_v1"] = signalReceived_v1;
@@ -384,6 +437,14 @@ public class EntityControl extends WhirledControl
     protected function memoryChanged_v1 (key :String, value :Object) :void
     {
         dispatch(ControlEvent.MEMORY_CHANGED, key, value);
+    }
+
+    /**
+     * Called when one of this item's memory entries has changed.
+     */
+    protected function roomPropertyChanged_v1 (key :String, value :Object) :void
+    {
+        dispatch(ControlEvent.ROOM_PROPERTY_CHANGED, key, value);
     }
 
     /**

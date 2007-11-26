@@ -78,6 +78,14 @@ public class ControlEvent extends Event
      */
     public static const MEMORY_CHANGED :String = "memoryChanged";
 
+    /** An event type dispatched when a room property has changed.
+     * name: property key
+     * value: property value
+     *
+     * @eventType roomPropertyChanged
+     */
+    public static const ROOM_PROPERTY_CHANGED :String = "roomPropertyChanged";
+
     /** An event type dispatched to pets, when they overhear chatter in the room.
      * name: speaker name
      * value: chat message
