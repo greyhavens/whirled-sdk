@@ -36,16 +36,16 @@ import com.whirled.WhirledGameControl;
  * <pre>
  * protected var LAST_LEVEL_PLAYED :String = "lastLevelPlayed";
  * protected var TIMES_LEVELS_PLAYED :String = "timesLevelsPlayed";
- *
- * protected function getCookie () :void 
+ * 
+ * public function getCookie () :void 
  * {
  *     var timesPlayed :Array = [];
  *     for (level = 0; level < 5; level++) {
  *         // parameter names are not used if the parameter is nested in an array.  Arrays can also 
- *         // hold array parameters as children, which enables array nesting.     
+ *         // hold array parameters as children.
  *         timesPlayed.push(UserCookie.getIntParameter("", 0));
  *     }
- *     
+ * 
  *     var cookieDef :Array = [
  *         // start at version 1
  *         UserCookie.getVersionParameter(),
@@ -61,17 +61,21 @@ import com.whirled.WhirledGameControl;
  *         _cookie = cookie;
  *     }, cookieDef);
  * }
- *
- * protected function setLastLevelPlayed (level :int) :void
+ * 
+ * public function setLastLevelPlayed (level :int) :void
  * {
- *     _cookie.set(LAST_LEVEL_PLAYED, level);
+ *     if (_cookie != null) {
+ *         _cookie.set(LAST_LEVEL_PLAYED, level);
+ *     }
  * }
  * 
- * protected function playedLevel (level :int) :void
+ * public function playedLevel (level :int) :void
  * {
- *     // increment the array value for this level.
- *     var previousValue :int = _cookie.get(TIMES_LEVELS_PLAYED, level);     
- *     _cookie.set(TIMES_LEVELS_PLAYED, previousValue + 1, level);
+ *     if (_cookie != null) {
+ *         // increment the array value for this level.
+ *         var previousValue :int = _cookie.get(TIMES_LEVELS_PLAYED, level);     
+ *         _cookie.set(TIMES_LEVELS_PLAYED, previousValue + 1, level);
+ *     }
  * }
  * </pre>
  */
@@ -342,7 +346,7 @@ class CookieParameter
     {
         _name = name;        
         _type = type;
-        _default = defaultValue;
+        _value = defaultValue;
     }
 
     public function get name () :String
@@ -357,7 +361,7 @@ class CookieParameter
 
     public function get value () :*
     {
-        return _valueSet ? _value : _default;
+        return _value;
     }
 
     public function set value (value :*) :void
@@ -368,7 +372,6 @@ class CookieParameter
         }
 
         _value = value;
-        _valueSet = true;
     }
 
     public function read (bytes :ByteArray) :void
@@ -380,7 +383,6 @@ class CookieParameter
         } else {
             throw new ArgumentError("read asked to decode unsupported type [" + _type + "]");
         }
-        _valueSet = true;
     }
 
     public function write (bytes :ByteArray) :void
@@ -397,8 +399,6 @@ class CookieParameter
     protected var _name :String;
     protected var _type :Class;
     protected var _value :*;
-    protected var _default :*;
-    protected var _valueSet :Boolean = false;
 }
 
 class VersionParameter extends CookieParameter
