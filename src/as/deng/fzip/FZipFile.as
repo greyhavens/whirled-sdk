@@ -109,20 +109,20 @@ package deng.fzip
 		/**
 		 * @private
 		 */		
-		private static var HAS_INFLATE:Boolean = testInflate();
-		/**
-		 * @private
-		 */		
-		private static function testInflate():Boolean {
-			var ret:Boolean = false;
-			try {
-				var ba:ByteArray = new ByteArray();
-				ba.uncompress("deflate");
-				ret = true;
-			}
-			catch(e:Error) {}
-			return ret;
-		}
+		private static var HAS_INFLATE:Boolean = false; //testInflate();
+//		/**
+//		 * @private
+//		 */		
+//		private static function testInflate():Boolean {
+//			var ret:Boolean = false;
+//			try {
+//				var ba:ByteArray = new ByteArray();
+//				ba.uncompress("deflate");
+//				ret = true;
+//			}
+//			catch(e:Error) {}
+//			return ret;
+//		}
 		
 		/**
 		 * Constructor
@@ -357,12 +357,12 @@ package deng.fzip
 			_content.endian = Endian.BIG_ENDIAN;
 			if(_compressionMethod === COMPRESSION_DEFLATED && !_encrypted) {
 				if(HAS_INFLATE) {
-					// Adobe Air supports inflate decompression.
-					// If we got here, this is an Air application
-					// and we can decompress without using the Adler32 hack.
-					data.readBytes(_content, 0, _sizeCompressed);
-					_content.uncompress(CompressionAlgorithm.DEFLATE);
-					_content.position = 0;
+//					// Adobe Air supports inflate decompression.
+//					// If we got here, this is an Air application
+//					// and we can decompress without using the Adler32 hack.
+//					data.readBytes(_content, 0, _sizeCompressed);
+//					_content.uncompress(CompressionAlgorithm.DEFLATE);
+//					_content.position = 0;
 				} else if(_hasAdler32) {
 					// Add header
 					// CMF (compression method and info)
