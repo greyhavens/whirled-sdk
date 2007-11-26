@@ -37,7 +37,7 @@
   <target name="compile" depends="prepare-flex,buildtop">
     <!-- default to repeating an existing compiler arg because mxmlc freaks out -->
     <!-- if we pass it a blank argument, yay! -->
-    <property name="app.source-extras.arg" value="-compiler.debug"/>
+    <property name="app.source-extras.arg" value="-compiler.as3"/> <!-- dummy value -->
     <condition property="app.source-extras.arg" value="-compiler.source-path=${app.source-extras}">
       <isset property="app.source-extras"/>
     </condition>
