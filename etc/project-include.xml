@@ -35,12 +35,12 @@
 
   <!-- builds our SWF file -->
   <target name="compile" depends="prepare-flex,buildtop">
-    <!-- default to repeating an existing compiler arg because mxmlc freaks out -->
-    <!-- if we pass it a blank argument, yay! -->
-    <property name="app.source-extras.arg" value="-compiler.as3"/> <!-- dummy value -->
+    <!-- if the user specifies arg.source-extras, build a whole new argument       -->
+    <!-- out of it. otherwise just use a dummy value (can't easily skip it, alas). -->
     <condition property="app.source-extras.arg" value="-compiler.source-path=${app.source-extras}">
       <isset property="app.source-extras"/>
     </condition>
+    <property name="app.source-extras.arg" value="-compiler.as3"/> <!-- dummy value -->
     <java jar="${flex.path}/lib/mxmlc.jar" fork="true" failonerror="true">
       <arg value="-load-config"/>
       <arg value="${etc.dir}/whirled-config.xml"/>
