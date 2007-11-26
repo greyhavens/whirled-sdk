@@ -1,90 +1,79 @@
 package com.whirled.contrib {
 
-import flash.events.EventDispatcher;
-
-import flash.utils.setTimeout;
-
 import com.whirled.ControlEvent;
 import com.whirled.EntityControl;
 
 import com.threerings.util.Log;
 
 /**
- * This class should be instantiated by any entity (a lightswitch, for example) that wishes
- * to publish state to a room so that other entities (a lamp, for example) using the
- * {@link EntityStateListener} class, may synchronize with and respond to it.
+ * It is common for an item in a room to persist a memory that it wants to always be
+ * shared in its environment. While this is not a difficult operation, it can clutter
+ * up an otherwise tiny script. This class tries to offload the cryptic incantations
+ * as much as possible.
  *
- * The state is persistently maintained using entity memory and stored under the given key.
- * It is broadcast using a signal when this object is first instantiated, when the state
- * changes as a result of calls to publishState(), or when another entity enters the scene
- * and requests a re-broadcast.
+ * Typical use is this:
+ *
+ *   _publisher = new EntityStatePublisher(_control, KEY, false, stateUpdated);
+ *
+ * where _control is any EntityControl, KEY is the unique identifier used for storing
+ * the memory persistently and sharing in the room properties, and stateUpdated is an
+ * optional method that's called when the room state changes: this method should take
+ * a String argument (the key) and an Object (the value).
+ *
+ * To modify the stored state, use
+ *
+ *   _publisher.setState(newState);
+ *
+ * and the current state is always available as
+ *
+ *  _published.state
+ *
+ * NOTE: This class only propagates changes made through setState(). It does not
+ * listen to item memory changes.
  */
-public class EntityStatePublisher extends EventDispatcher
+public class EntityStatePublisher
 {
     public function EntityStatePublisher (control :EntityControl, key :String,
-                                          defVal :Object = null)
+                                          defVal :Object = null, updated :Function = null)
     {
         _key = key;
         _control = control;
-        _control.requestControl();
-        _control.addEventListener(ControlEvent.MEMORY_CHANGED, handleMemoryChange);
-        _control.addEventListener(ControlEvent.SIGNAL_RECEIVED, handleSignal);
+        if (updated != null) {
+            _control.addEventListener(
+                ControlEvent.ROOM_PROPERTY_CHANGED, function (evt :ControlEvent) :void {
+                    updated(_key, evt.value);
+                });
+        }
 
-        _state = _control.lookupMemory(_key, defVal);
-
-        // if our room was just loaded there's a good chance other furni is still due to
-        // added, and some of them may be state listeners -- so wait a bit before we do
-        // our initial broadcast
-        _needInitialBroadcast = true;
-        setTimeout(function () :void {
-            if (_needInitialBroadcast) {
-                broadcastIfInControl();
-            }
-        }, 500);
+        setState(_control.lookupMemory(key, defVal));
     }
 
     public function get state () :Object
     {
-        return _state;
+        return _control.lookupMemory(_key);
     }
 
-    public function publishState (state :Object) :void
+    /**
+     * Publish a new value to this item's persistent storage and also broadcast it to
+     * the room at large as a room property. This method returns true if all went well
+     * and false if something failed due to e.g. size requirements on the entry.
+     */
+    public function setState (state :Object) :Boolean
     {
-        if (state != _state) {
-            _control.updateMemory(_key, state);
+        if (!_control.setRoomProperty(_key, state)) {
+            Log.getLog(this).warning(
+                "Setting room property failed [key=" + _key + ", value=" + state + "]");
+            return false;
         }
-    }
-
-    protected function handleMemoryChange (event :ControlEvent) :void
-    {
-        if (event.name != _key) {
-            return;
+        if (!_control.updateMemory(_key, state)) {
+            Log.getLog(this).warning(
+                "Setting item memory failed [key=" + _key + ", value=" + state + "]");
+            return false;
         }
-        _state = event.value;
-        dispatchEvent(new EntityStateEvent(EntityStateEvent.STATE_CHANGED, _key, _state));
-        broadcastIfInControl();
+        return true;
     }
-
-    protected function handleSignal (event :ControlEvent) :void
-    {
-        if (event.name == "_q_" + _key) {
-            broadcastIfInControl();
-        }
-    }
-
-    protected function broadcastIfInControl () :void
-    {
-        _needInitialBroadcast = false;
-        if (_control.hasControl()) {
-            _control.sendSignal("_s_" + _key, _state);
-        }
-    }
-
-    protected var _control :EntityControl;
 
     protected var _key :String;
-    protected var _state :Object;
-
-    protected var _needInitialBroadcast :Boolean;
+    protected var _control :EntityControl;
 }
 }
