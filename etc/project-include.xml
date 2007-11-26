@@ -8,7 +8,6 @@
   <property name="flex.use-network" value="false"/>
   <property name="app.source-suffix" value="as"/>
   <property name="app.source-dir" value="."/>
-  <property name="app.source-extras" value=""/>
   <property name="app.package-dir" value="."/>
   <property name="app.library-dir" value="."/>
 
@@ -36,6 +35,12 @@
 
   <!-- builds our SWF file -->
   <target name="compile" depends="prepare-flex,buildtop">
+    <!-- default to repeating an existing compiler arg because mxmlc freaks out -->
+    <!-- if we pass it a blank argument, yay! -->
+    <property name="app.source-extras.arg" value="-compiler.debug"/>
+    <condition property="app.source-extras.arg" value="-compiler.source-path=${app.source-extras}">
+      <isset property="app.source-extras"/>
+    </condition>
     <java jar="${flex.path}/lib/mxmlc.jar" fork="true" failonerror="true">
       <arg value="-load-config"/>
       <arg value="${etc.dir}/whirled-config.xml"/>
@@ -43,7 +48,7 @@
       <arg value="-library-path+=${app.library-dir}"/>
       <arg value="-use-network=${flex.use-network}"/>
       <arg value="-compiler.source-path=${app.source-dir}"/>
-      <arg value="-compiler.source-path=${app.source-extras}"/>
+      <arg value="${app.source-extras.arg}"/>
       <arg value="-file-specs"/>
       <arg value="${app.source-dir}/${app.package-dir}/${app.name}.${app.source-suffix}"/>
       <arg value="-output"/>
