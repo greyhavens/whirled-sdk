@@ -2,6 +2,8 @@
 
 package com.whirled.contrib {
 
+import flash.errors.IllegalOperationError;
+
 import flash.events.TimerEvent;
 
 import flash.utils.ByteArray;
@@ -37,7 +39,9 @@ public class UserCookie
      *                      cookie has been retrieved and validated.
      * @param cookieDef An array of cookie parameters that define the format of the user cookie.  
      *                  See the various get*Parameter() functions for more detail.
-     * @param occId The player's id to fetch the cookie for.  Defaults to the current player.
+     * @param occId The player's id to fetch the cookie for.  Defaults to the current player.  If
+     *              a different player is specified, this UserCookie will be read-only - attempting
+     *              to set a value will generate an IllegalOperationError.
      */
     public static function getCookie (wgc :WhirledGameControl, validCallback :Function, 
         cookieDef :Array, occId :int = -1) :void
@@ -45,6 +49,7 @@ public class UserCookie
         var cookie :UserCookie = new UserCookie();
         cookie._control = wgc;
         cookie._cookieDef = cookieDef;
+        cookie._readOnly = occId != -1 && occId != wgc.getMyId();
         wgc.getUserCookie(occId == -1 ? wgc.getMyId() : occId, function (obj :Object) :void {
             if (obj is ByteArray) {
                 cookie.read(obj as ByteArray);
@@ -115,6 +120,10 @@ public class UserCookie
      */
     public function set (... args) :void
     {
+        if (_readOnly) {
+            throw new IllegalOperationError("Attempted to set a value on a read-only UserCookie");
+        }
+
         var name :String = args.shift() as String;
         if (name == null) {
             throw new ArgumentError("name argument missing");
@@ -274,6 +283,7 @@ public class UserCookie
     protected var _parameters :HashMap = new HashMap();
     protected var _dirty :Boolean = false;
     protected var _timer :Timer;
+    protected var _readOnly :Boolean = false;
 }
 }
 
