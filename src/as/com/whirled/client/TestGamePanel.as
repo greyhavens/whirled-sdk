@@ -36,7 +36,8 @@ public class TestGamePanel extends WhirledGamePanel
 
         _ctrlBar = new HBox();
         _ctrlBar.setStyle("backgroundColor", 0x000000);
-        _ctrlBar.setStyle("horizontalAlign", "center");
+        _ctrlBar.setStyle("horizontalAlign", "right");
+        _ctrlBar.setStyle("paddingRight", 10);
         addChild(_ctrlBar);
 
         addChild(_playerList);
