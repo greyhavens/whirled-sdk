@@ -173,8 +173,8 @@ public class WhirledServer extends CrowdServer
         gamedef.manager = "com.whirled.server.TestGameManager";
 
         // figure out how many players will be involved in the test game
-        int pcount = getIntProperty("players");
-        int remoteCount = getIntProperty("remotePlayers");
+        int pcount = getIntProperty("players", 1);
+        int remoteCount = getIntProperty("remotePlayers", 0);
         int playerCount = pcount + remoteCount;
         TableMatchConfig match = new TableMatchConfig();
         match.minSeats = match.maxSeats = match.startSeats = pcount;
@@ -238,14 +238,14 @@ public class WhirledServer extends CrowdServer
         return new FileReader("config.xml");
     }
 
-    protected int getIntProperty (String property)
+    protected int getIntProperty (String property, int defaultValue)
     {
         try {
-            return Integer.getInteger(property, 1);
+            return Integer.getInteger(property, defaultValue);
         } catch (Exception e) {
             log.warning("Failed to parse '" + property + "' system property " +
                         "[value=" + System.getProperty(property) + ", error=" + e + "].");
-            return 1;
+            return defaultValue;
         }
     }
 
