@@ -173,7 +173,9 @@ public class WhirledServer extends CrowdServer
         gamedef.manager = "com.whirled.server.TestGameManager";
 
         // figure out how many players will be involved in the test game
-        int pcount = getPlayerCount();
+        int pcount = getIntProperty("players");
+        int remoteCount = getIntProperty("remotePlayers");
+        int playerCount = pcount + remoteCount;
         TableMatchConfig match = new TableMatchConfig();
         match.minSeats = match.maxSeats = match.startSeats = pcount;
         match.isPartyGame = Boolean.getBoolean("party");
@@ -181,21 +183,23 @@ public class WhirledServer extends CrowdServer
 
         // set up our game configuration and start up the game clients
         _config = new EZGameConfig(-1, gamedef);
-        _config.players = new Name[match.isPartyGame ? 0 : pcount];
-        for (int ii = 0; ii < pcount; ii++) {
+        _config.players = new Name[match.isPartyGame ? 0 : playerCount];
+        for (int ii = 0; ii < playerCount; ii++) {
             Name name = new Name("tester_" + (ii+1));
             if (!match.isPartyGame) {
                 _config.players[ii] = name;
             }
 
-            // start up a Flash client for this player
-            String player = getFlashPlayerPath();
-            String url = "http://localhost:8080/game-client.swf?username=" + name;
-            try {
-                Process proc = Runtime.getRuntime().exec(new String[] { player, url });
-                new StreamEater(proc.getErrorStream());
-            } catch (Exception e) {
-                reportError("Failed to start client [player=" + player + ", url=" + url + "].", e);
+            // start up a Flash client for this player if it's not a remotePlayer
+            if (ii < pcount) {
+                String player = getFlashPlayerPath();
+                String url = "http://localhost:8080/game-client.swf?username=" + name;
+                try {
+                    Process proc = Runtime.getRuntime().exec(new String[] { player, url });
+                    new StreamEater(proc.getErrorStream());
+                } catch (Exception e) {
+                    reportError("Failed to start client [player=" + player + ", url=" + url + "].", e);
+                }
             }
         }
 
@@ -234,13 +238,13 @@ public class WhirledServer extends CrowdServer
         return new FileReader("config.xml");
     }
 
-    protected int getPlayerCount ()
+    protected int getIntProperty (String property)
     {
         try {
-            return Integer.getInteger("players", 1);
+            return Integer.getInteger(property, 1);
         } catch (Exception e) {
-            log.warning("Failed to parse 'players' system property " +
-                        "[value=" + System.getProperty("players") + ", error=" + e + "].");
+            log.warning("Failed to parse '" + property + "' system property " +
+                        "[value=" + System.getProperty(property) + ", error=" + e + "].");
             return 1;
         }
     }
