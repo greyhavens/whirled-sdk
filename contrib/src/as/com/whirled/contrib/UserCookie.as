@@ -169,19 +169,13 @@ public class UserCookie
      * argument should be the value to set.  Any further arguments are the array indices to use.  
      * There can be multiple array indices, if a value in a nested array is being set.
      */
-    public function set (... args) :void
+    public function set (name :String, value :*, ... indices) :void
     {
         if (_readOnly) {
             throw new IllegalOperationError("Attempted to set a value on a read-only UserCookie");
         }
 
-        var name :String = args.shift() as String;
-        if (name == null) {
-            throw new ArgumentError("name argument missing");
-        }
-
-        var value :* = args.shift();
-        if (args.length == 0) {
+        if (indices.length == 0) {
             (_parameters.get(name) as CookieParameter).value = value;
         } else {
             var parameter :ArrayParameter = _parameters.get(name) as ArrayParameter;
@@ -189,7 +183,7 @@ public class UserCookie
                 throw new ArgumentError("Array value setting, but no array found [" + 
                     name + "]");
             }
-            setInArray(parameter, value, args);
+            setInArray(parameter, value, indices);
         }
 
         _dirty = true;
@@ -202,14 +196,9 @@ public class UserCookie
      * arguments are the array indices to use.  There can be multiple array indices, if a value
      * in a nested array is being retrieved.
      */
-    public function get (... args) :*
+    public function get (name :String, ... indices) :*
     {
-        var name :String = args.shift() as String;
-        if (name == null) {
-            throw new ArgumentError("name argument missing");
-        }
-
-        if (args.length == 0) {
+        if (indices.length == 0) {
             return (_parameters.get(name) as CookieParameter).value;
         } else {
             var parameter :ArrayParameter = _parameters.get(name) as ArrayParameter;
@@ -217,7 +206,7 @@ public class UserCookie
                 throw new ArgumentError("Array value requested, but no array found [" +
                     name + "]");
             }
-            return getFromArray(parameter, args);
+            return getFromArray(parameter, indices);
         }
     }
 
@@ -237,12 +226,13 @@ public class UserCookie
             
             if (param is VersionParameter) {
                 version--;
-                if (version == 0) {
+                if (version < 0) {
                     break;
                 }
             } else {
                 param.read(bytes);
                 _parameters.put(param.name, param);
+
             }
         }
     }
@@ -340,6 +330,8 @@ public class UserCookie
 
 import flash.utils.ByteArray;
 
+import com.threerings.util.Log;
+
 class CookieParameter
 {
     public function CookieParameter (name :String, type :Class, defaultValue :*)
@@ -364,14 +356,14 @@ class CookieParameter
         return _value;
     }
 
-    public function set value (value :*) :void
+    public function set value (v :*) :void
     {
-        if (!(value is _type)) {
+        if (!(v is _type) && v != null) {
             throw new ArgumentError("Setting CookieParameter value with wrong type [" + _type +
-                ", " + value + "]");
+                ", " + v + "]");
         }
 
-        _value = value;
+        _value = v;
     }
 
     public function read (bytes :ByteArray) :void
@@ -388,9 +380,9 @@ class CookieParameter
     public function write (bytes :ByteArray) :void
     {
         if (_type === int) {
-            _value = bytes.writeInt(_value as int);
+            bytes.writeInt(_value as int);
         } else if (_type === String) {
-            _value = bytes.writeObject(_value as String);
+            bytes.writeObject(_value as String);
         } else {
             throw new ArgumentError("write asked to encode unsupported type [" + _type + "]");
         }
