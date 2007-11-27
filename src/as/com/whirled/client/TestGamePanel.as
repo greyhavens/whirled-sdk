@@ -16,6 +16,8 @@ import com.threerings.crowd.util.CrowdContext;
 import com.threerings.flex.ChatControl;
 import com.threerings.flex.ChatDisplayBox;
 
+import com.threerings.parlor.game.data.GameObject;
+
 import com.threerings.ezgame.client.GameContainer;
 import com.threerings.ezgame.client.GameControlBackend;
 
@@ -54,9 +56,9 @@ public class TestGamePanel extends WhirledGamePanel
     {
         super.willEnterPlace(plobj);
 
+        _ctrlBar.addChild(_rematch);
         _ctrlBar.addChild(_backToLobby);
         _ctrlBar.addChild(_backToWhirled);
-        _ctrlBar.addChild(_rematch);
     }
 
     override public function didLeavePlace (plobj :PlaceObject) :void
@@ -68,9 +70,12 @@ public class TestGamePanel extends WhirledGamePanel
         super.didLeavePlace(plobj);
     }
 
-    override protected function getButtonLabels () :Array
+    override protected function getButtonLabels (plobj :PlaceObject) :Array
     {
-        return [ "Back to whirled", "Back to lobby", "Request a rematch" ];
+        var gameObj :GameObject = plobj as GameObject;
+        trace("Well fuck me: players.length is " + gameObj.players.length);
+        return [ "Back to whirled", "Back to lobby",
+            ((gameObj.players.length == 1) ? "Play again" : "Request a rematch") ];
     }
 
     override protected function createBackend () :GameControlBackend

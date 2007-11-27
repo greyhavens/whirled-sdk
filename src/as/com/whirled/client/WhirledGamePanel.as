@@ -23,14 +23,10 @@ public class WhirledGamePanel extends EZGamePanel
     {
         super(ctx, ctrl);
 
-        var labels :Array = getButtonLabels();
         _backToLobby = new CommandButton();
-        _backToLobby.label = labels[0];
         _backToWhirled = new CommandButton();
-        _backToWhirled.label = labels[1];
         _rematch = new CommandButton();
         _rematch.toggle = true;
-        _rematch.label = labels[2];
         _rematch.setCallback(handleRematchClicked);
     }
 
@@ -43,6 +39,11 @@ public class WhirledGamePanel extends EZGamePanel
         _playerList.startup(plobj);
 
         super.willEnterPlace(plobj);
+
+        var labels :Array = getButtonLabels(plobj);
+        _backToLobby.label = labels[0];
+        _backToWhirled.label = labels[1];
+        _rematch.label = labels[2];
 
         _backToWhirled.setCallback((_ctrl as WhirledGameController).backToWhirled, false);
         _backToLobby.setCallback((_ctrl as WhirledGameController).backToWhirled, true);
@@ -133,7 +134,7 @@ public class WhirledGamePanel extends EZGamePanel
     /**
      * Get the labels for back to lobby, back to whirled, rematch
      */
-    protected function getButtonLabels () :Array /* of String */
+    protected function getButtonLabels (plobj :PlaceObject) :Array /* of String */
     {
         throw new Error("abstract");
     }
