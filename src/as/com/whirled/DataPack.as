@@ -227,13 +227,38 @@ public class DataPack extends EventDispatcher
      * @param names an Array of the names of the display objects to load.
      * @param callback a Function that will be called when all the display objects
      *                 are loaded (or were unable to load).
-     *                 Signature: function (results :Object) :void
+     *                 Signature: <code>function (results :Object) :void</code>
      *                 results will contain a mapping from name -> DisplayObject, or null if none.
      * @param useSubDomain if true, classes in a loaded SWF will be added to an
      *                     ApplicationDomain that is a child of the current ApplicationDomain.
      */
     public function getDisplayObjects (
         names :Array, callback :Function, useSubDomain :Boolean = false) :void
+    {
+        doGetObjects(names, callback, useSubDomain, false);
+    }
+
+    /**
+     * Get SWF loaders for each SWF in the datapack.
+     *
+     * @param names an Array of the names of the display objects to load.
+     * @param callback a Function that will be called when all the display objects
+     *                 are loaded (or were unable to load).
+     *                 Signature: <code>function (results :Object) :void</code>.
+     *                 results will contain a mapping from name -> EmbeddedSwfLoader, or null.
+     * @param useSubDomain if true, classes in a loaded SWF will be added to an
+     *                     ApplicationDomain that is a child of the current ApplicationDomain.
+     */
+    public function getSwfLoaders (
+        names :Array, callback :Function, useSubDomain :Boolean = false) :void
+    {
+        doGetObjects(names, callback, useSubDomain, true);
+    }
+
+
+    // internal name array loader
+    protected function doGetObjects (
+        names :Array, callback :Function, useSubDomain :Boolean, returnRawLoaders :Boolean) :void
     {
         // our eventual return value
         var dispObjects :Object = {};
@@ -250,9 +275,9 @@ public class DataPack extends EventDispatcher
 
         var loaded :int = 0;
         var toLoad :int = 0;
-        var loadHandler :Function = function (name :String, disp :DisplayObject) :void {
+        var loadHandler :Function = function (name :String, result :Object) :void {
             // store the result of the load
-            dispObjects[name] = disp;
+            dispObjects[name] = result;
 
             // see if it's time to call the callback
             if (++loaded == toLoad) {
@@ -265,7 +290,7 @@ public class DataPack extends EventDispatcher
             var bytes :ByteArray = dispObjects[fileName] as ByteArray;
             if (bytes != null) {
                 toLoad++;
-                doLoadDisplayObject(fileName, bytes, loadHandler, useSubDomain);
+                doLoadObject(fileName, bytes, loadHandler, useSubDomain, returnRawLoaders);
             }
         }
 
@@ -275,13 +300,18 @@ public class DataPack extends EventDispatcher
         }
     }
 
-    protected function doLoadDisplayObject (
-        name :String, bytes :ByteArray, loadHandler :Function, useSubDomain :Boolean) :void
+    protected function doLoadObject (
+        name :String, bytes :ByteArray, loadHandler :Function,
+        useSubDomain :Boolean, returnRawLoaders :Boolean) :void
     {
         var esl :EmbeddedSwfLoader = new EmbeddedSwfLoader(useSubDomain);
 
         var eslHandler :Function = function (event :Event) :void {
-            loadHandler(name, (event.type == Event.COMPLETE) ? esl.getContent() : null);
+            if (event.type == Event.COMPLETE) {
+                loadHandler(name, returnRawLoaders ? esl : esl.getContent());
+            } else {
+                loadHandler(name, null);
+            }
         }
 
         esl.addEventListener(Event.COMPLETE, eslHandler);
