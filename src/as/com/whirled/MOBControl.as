@@ -10,61 +10,36 @@ import flash.display.DisplayObject;
 /**
  * Defines actions, accessors and callbacks available to all MOBs.
  */
-public class MOBControl extends ActorControl
+public class MobControl extends WhirledSubControl
 {
-    /**
-     * Creates a controller for a MOB. The display object is the MOB's visualization.
-     */
-    public function MOBControl (disp :DisplayObject)
+    public function MobControl (ctrl :AVRGameControl, id :String)
     {
-        super(disp);
+        super(ctrl);
+        _id = id;
     }
 
     /**
-     * Get the QuestControl, which contains methods for enumerating, offering, advancing,
-     * cancelling and completing quests.
+     * Called when we start or stop moving or change orientation.
      */
-    public function get quests () :QuestControl
+    public function appearanceChanged (
+        location :Array, orient :Number, moving :Boolean, sleeping :Boolean) :void
     {
-        return _quests;
+        _location = location;
+        _orient = orient;
+        _isMoving = moving;
+        // "sleeping" is ignored in this class
+        dispatchEvent(new ControlEvent(ControlEvent.APPEARANCE_CHANGED));
     }
 
-    /**
-     * Get the StateControl, which contains methods for getting and setting properties
-     * on AVRG's, both game-global and player-centric.
-     */
-    public function get state () :StateControl
-    {
-        return _state;
-    }
+    protected var _id :String;
 
-    public function isGameActivated () :Boolean
-    {
-        return callHostCode("isGameActivated_v1") as Boolean;
-    }
+    /** Our current orientation, or 0. */
+    protected var _orient :Number = 0;
 
-    public function activateGame () :Boolean
-    {
-        return callHostCode("activateGame_v1") as Boolean;
-    }
+    /** Indicates whether or not we're currently moving. */
+    protected var _isMoving :Boolean;
 
-    override protected function isAbstract () :Boolean
-    {
-        return false;
-    }
-
-    override protected function populateProperties (o :Object) :void
-    {
-        super.populateProperties(o);
-
-        _state = new StateControl(this);
-        _state.populateSubProperties(o);
-
-        _quests = new QuestControl(this);
-        _quests.populateSubProperties(o);
-    }
-
-    protected var _state :StateControl;
-    protected var _quests :QuestControl;
+    /** Contains our current location in the scene [x, y, z], or null. */
+    protected var _location :Array;
 }
 }

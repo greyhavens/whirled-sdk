@@ -6,7 +6,12 @@
 package com.whirled {
 
 import flash.display.DisplayObject;
+
 import flash.geom.Rectangle;
+
+import flash.utils.Dictionary;
+
+import com.threerings.util.Log;
 
 /**
  * Dispatched either when somebody in our room entered our current game,
@@ -62,6 +67,8 @@ public class AVRGameControl extends WhirledControl
         super(disp);
     }
 
+    public var mobSpriteSource :Function;
+
     /**
      * Returns the bounds of the "stage" on which the AVRG will be drawn. This is the entire
      * area the AVRG can cover and includes potential empty space to the right of the room
@@ -110,6 +117,11 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("getPlayerIds_v1") as Array;
     }
 
+    public function spawnMob (id :String) :Boolean
+    {
+        return callHostCode("spawnMob_v1", id);
+    }
+
     override protected function isAbstract () :Boolean
     {
         return false;
@@ -125,11 +137,46 @@ public class AVRGameControl extends WhirledControl
         o["enteredRoom_v1"] = enteredRoom_v1;
         o["panelResized_v1"] = panelResized_v1;
 
+        o["requestMobSprite_v1"] = requestMobSprite_v1;
+        o["mobRemoved_v1"] = mobRemoved_v1;
+        o["mobAppearanceChanged_v1"] = mobAppearanceChanged_v1;
+
         _state = new StateControl(this);
         _state.populateSubProperties(o);
 
         _quests = new QuestControl(this);
         _quests.populateSubProperties(o);
+    }
+
+    protected function requestMobSprite_v1 (id :String) :DisplayObject
+    {
+        var info :MobEntry = _mobs[id];
+        if (info) {
+            Log.getLog(this).warning("Sprite requested for previously known mob [id=" + id + "]");
+            return info.sprite;
+        }
+        var ctrl :MobControl = new MobControl(this, id);
+        var sprite :DisplayObject = mobSpriteSource(id, ctrl) as DisplayObject;
+        Log.getLog(this).debug("Requested sprite [id=" + id + ", sprite=" + sprite + "]");
+        if (sprite) {
+            _mobs[id] = new MobEntry(ctrl, sprite);
+        }
+        return sprite;
+    }
+
+    protected function mobRemoved_v1 (id :String) :void
+    {
+        Log.getLog(this).debug("Nuking control [id=" + id + "]");
+        delete _mobs[id];
+    }
+
+    protected function mobAppearanceChanged_v1 (
+        id :String, locArray :Array, orient :Number, moving :Boolean, idle :Boolean) :void
+    {
+        var entry :MobEntry = _mobs[id];
+        if (entry) {
+            entry.control.appearanceChanged(locArray, orient, moving, idle);
+        }
     }
 
     protected function playerLeft_v1 (oid :int) :void
@@ -164,5 +211,23 @@ public class AVRGameControl extends WhirledControl
 
     protected var _quests :QuestControl;
     protected var _state :StateControl;
+
+    protected var _mobs :Dictionary = new Dictionary();
 }
+}
+
+import flash.display.DisplayObject;
+
+import com.whirled.MobControl;
+
+class MobEntry
+{
+    public var control :MobControl;
+    public var sprite :DisplayObject;
+
+    public function MobEntry (control :MobControl, sprite :DisplayObject)
+    {
+        this.control = control;
+        this.sprite = sprite;
+    }
 }
