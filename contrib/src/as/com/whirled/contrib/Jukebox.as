@@ -56,6 +56,11 @@ public class Jukebox
             var trackUrl :String = LevelPacks.getMediaURL(trackName);
             if (trackUrl == null) {
                 log.warning("level pack for track not found! [" + trackName + "]");
+                if (crossfade) {
+                    fadeOut();
+                } else {
+                    stop();
+                }
                 return;
             }
             _sounds.put(trackName, song = new Sound(new URLRequest(trackUrl)));
