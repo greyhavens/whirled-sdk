@@ -44,9 +44,13 @@ public class Jukebox
      * @param trackName the name of the level pack that contains the MP3 for this track.
      * @param crossfade If true, this track will fade in, and any previous track will fade out.  If
      *                  false, this track will begin playing immediately.
+     * @param callback  A zero-arg function that will be called each time a loop of the current
+     *                  song finishes and a new song is about to get played.
      */
-    public static function start (trackName :String, crossfade :Boolean = true) :void
+    public static function start (trackName :String, crossfade :Boolean = true, 
+        callback :Function = null) :void
     {
+        _loopCallback = callback;
         var song :Sound = _sounds.get(trackName) as Sound;
         if (song == null) {
             var trackUrl :String = LevelPacks.getMediaURL(trackName);
@@ -108,7 +112,8 @@ public class Jukebox
                 return;
             }
 
-            EventHandlers.unregisterEventListener(_currentChannel, Event.SOUND_COMPLETE, loop);
+            EventHandlers.unregisterEventListener(
+                _currentChannel, Event.SOUND_COMPLETE, soundComplete);
             var fadeOutter :Function;
             fadeOutter = function (startTime :int, channel :SoundChannel, 
                     startVolume :Number) :Function {
@@ -136,7 +141,8 @@ public class Jukebox
     {
         if (_currentChannel != null) {
             _currentChannel.stop();
-            EventHandlers.unregisterEventListener(_currentChannel, Event.SOUND_COMPLETE, loop);
+            EventHandlers.unregisterEventListener(
+                _currentChannel, Event.SOUND_COMPLETE, soundComplete);
             _currentChannel = null;
         }
     }
@@ -165,14 +171,24 @@ public class Jukebox
         return volume;
     }
 
-    protected static function loop (... ignored) :void
+    protected static function loop () :void
     {
         if (_currentChannel != null) {
-            EventHandlers.unregisterEventListener(_currentChannel, Event.SOUND_COMPLETE, loop);
+            EventHandlers.unregisterEventListener(
+                _currentChannel, Event.SOUND_COMPLETE, soundComplete);
         }
         _currentChannel = _currentSong.play(0, 0, new SoundTransform(_volume / 100));
         if (_currentChannel != null) {
-            EventHandlers.registerEventListener(_currentChannel, Event.SOUND_COMPLETE, loop);
+            EventHandlers.registerEventListener(
+                _currentChannel, Event.SOUND_COMPLETE, soundComplete);
+        }
+    }
+
+    protected static function soundComplete (event :Event) :void 
+    {
+        loop();
+        if (_loopCallback != null) {
+            _loopCallback();
         }
     }
 
@@ -203,6 +219,8 @@ public class Jukebox
     protected static var _frameDispatcher :IEventDispatcher;
 
     protected static var _sounds :HashMap = new HashMap();
+
+    protected static var _loopCallback :Function = null;
 
     private static var log :Log = Log.getLog(Jukebox);
 }
