@@ -15,6 +15,7 @@ import com.threerings.crowd.util.CrowdContext;
 
 import com.threerings.flex.ChatControl;
 import com.threerings.flex.ChatDisplayBox;
+import com.threerings.flex.CommandLinkButton;
 
 import com.threerings.parlor.game.data.GameObject;
 
@@ -29,6 +30,9 @@ public class TestGamePanel extends WhirledGamePanel
     public function TestGamePanel (ctx :CrowdContext, ctrl :TestGameController)
     {
         super(ctx, ctrl);
+
+        styleLinkButton(_backToLobby);
+        styleLinkButton(_backToWhirled);
 
         // have us take up the entire size of our parent
         percentWidth = 100;
@@ -115,6 +119,18 @@ public class TestGamePanel extends WhirledGamePanel
         _chatBox.height = unscaledHeight - _chatBox.y;
 
         super.updateDisplayList(unscaledWidth, unscaledHeight);
+    }
+
+    /**
+     * Style the link buttons so they don't look like ass.
+     */
+    protected function styleLinkButton (btn :CommandLinkButton) :void
+    {
+        btn.setStyle("overSkin", null);
+        btn.setStyle("downSkin", null);
+        btn.setStyle("color", 0xAAB5B9);
+        btn.setStyle("textRollOverColor", 0xAAB5B9);
+        btn.setStyle("textSelectedColor", 0xAAB5B9);
     }
 
     protected var _chatBox :VBox;

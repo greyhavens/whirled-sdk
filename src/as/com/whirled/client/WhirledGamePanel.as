@@ -9,6 +9,7 @@ import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.util.CrowdContext;
 
 import com.threerings.flex.CommandButton;
+import com.threerings.flex.CommandLinkButton;
 
 import com.threerings.crowd.data.OccupantInfo;
 
@@ -23,8 +24,8 @@ public class WhirledGamePanel extends EZGamePanel
     {
         super(ctx, ctrl);
 
-        _backToLobby = new CommandButton();
-        _backToWhirled = new CommandButton();
+        _backToLobby = new CommandLinkButton();
+        _backToWhirled = new CommandLinkButton();
         _rematch = new CommandButton();
         _rematch.toggle = true;
         _rematch.setCallback(handleRematchClicked);
@@ -144,8 +145,8 @@ public class WhirledGamePanel extends EZGamePanel
 
     /** Some buttons. */
     protected var _rematch :CommandButton;
-    protected var _backToLobby :CommandButton;
-    protected var _backToWhirled :CommandButton;
+    protected var _backToLobby :CommandLinkButton;
+    protected var _backToWhirled :CommandLinkButton;
 
     /** Would we want to show the rematch button, if the game was over? */
     protected var _showRematch :Boolean = true;
