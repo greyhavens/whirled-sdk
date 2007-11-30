@@ -40,7 +40,7 @@ public class EntityStatePublisher
         _control = control;
         if (updated != null) {
             _control.addEventListener(
-                ControlEvent.ROOM_PROPERTY_CHANGED, function (evt :ControlEvent) :void {
+                ControlEvent.MEMORY_CHANGED, function (evt :ControlEvent) :void {
                     updated(_key, evt.value);
                 });
         }
