@@ -191,6 +191,10 @@ public class Jukebox
 
     protected static function soundComplete (event :Event) :void 
     {
+        if (_currentChannel != null) {
+            EventHandlers.unregisterEventListener(
+                _currentChannel, Event.SOUND_COMPLETE, soundComplete);
+        }
         loop();
         if (_loopCallback != null) {
             _loopCallback();
