@@ -67,8 +67,6 @@ public class AVRGameControl extends WhirledControl
         super(disp);
     }
 
-    public var mobSpriteSource :Function;
-
     /**
      * Returns the bounds of the "stage" on which the AVRG will be drawn. This is the entire
      * area the AVRG can cover and includes potential empty space to the right of the room
@@ -107,6 +105,40 @@ public class AVRGameControl extends WhirledControl
         return _state;
     }
 
+    /**
+     * Configures the AVRG with a function to call to determine which pixels are alive
+     * for mouse purposes and which are not. By default, all non-transparent pixels will
+     * capture the mouse. The prototype for this method is identical to what the Flash
+     * API establishes in DisplayObject:
+     *    testHitPoint(x :Number, y :Number, shapeFlag :Boolean) :Boolean
+     *
+     * {@see DisplayObject#testHitPoint}
+     */
+    public function setHitPointTester (tester :Function) :void
+    {
+        _hitPointTester = tester;
+    }
+
+    /**
+     * Returns the AVRG's currently configured hit point tester.
+     *
+     * {@see #setHitPointTester}
+     */
+    public function get hitPointTester () :Function
+    {
+        return _hitPointTester;
+    }
+
+    public function setMobSpriteExporter (exporter :Function) :void
+    {
+        _mobSpriteExporter = exporter;
+    }
+
+    public function get mobSpriteExporter () :Function
+    {
+        return _mobSpriteExporter;
+    }
+
     public function deactivateGame () :Boolean
     {
         return callHostCode("deactivateGame_v1");
@@ -136,6 +168,7 @@ public class AVRGameControl extends WhirledControl
         o["leftRoom_v1"] = leftRoom_v1;
         o["enteredRoom_v1"] = enteredRoom_v1;
         o["panelResized_v1"] = panelResized_v1;
+        o["hitTestPoint_v1"] = hitTestPoint_v1;
 
         o["requestMobSprite_v1"] = requestMobSprite_v1;
         o["mobRemoved_v1"] = mobRemoved_v1;
@@ -152,11 +185,17 @@ public class AVRGameControl extends WhirledControl
     {
         var info :MobEntry = _mobs[id];
         if (info) {
-            Log.getLog(this).warning("Sprite requested for previously known mob [id=" + id + "]");
+            Log.getLog(this).warning(
+                "Sprite requested for previously known mob [id=" + id + "]");
             return info.sprite;
         }
+        if (_mobSpriteExporter == null) {
+            Log.getLog(this).warning(
+                "Sprite requested but control has no exporter [id=" + id + "]");
+            return null;
+        }
         var ctrl :MobControl = new MobControl(this, id);
-        var sprite :DisplayObject = mobSpriteSource(id, ctrl) as DisplayObject;
+        var sprite :DisplayObject = _mobSpriteExporter(id, ctrl) as DisplayObject;
         Log.getLog(this).debug("Requested sprite [id=" + id + ", sprite=" + sprite + "]");
         if (sprite) {
             _mobs[id] = new MobEntry(ctrl, sprite);
@@ -177,6 +216,11 @@ public class AVRGameControl extends WhirledControl
         if (entry) {
             entry.control.appearanceChanged(locArray, orient, moving, idle);
         }
+    }
+
+    protected function hitTestPoint_v1 (x :Number, y :Number, shapeFlag :Boolean) :Boolean
+    {
+        return _hitPointTester != null && _hitPointTester(x, y, shapeFlag);
     }
 
     protected function playerLeft_v1 (oid :int) :void
@@ -211,6 +255,9 @@ public class AVRGameControl extends WhirledControl
 
     protected var _quests :QuestControl;
     protected var _state :StateControl;
+
+    protected var _mobSpriteExporter :Function;
+    protected var _hitPointTester :Function;
 
     protected var _mobs :Dictionary = new Dictionary();
 }
