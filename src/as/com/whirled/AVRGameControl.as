@@ -65,6 +65,9 @@ public class AVRGameControl extends WhirledControl
     public function AVRGameControl (disp :DisplayObject)
     {
         super(disp);
+
+        // set up the default hitPointTester
+        _hitPointTester = disp.root.hitTestPoint;
     }
 
     /**
