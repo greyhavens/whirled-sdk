@@ -58,16 +58,16 @@ public class EntityStatePublisher
      * the room at large as a room property. This method returns true if all went well
      * and false if something failed due to e.g. size requirements on the entry.
      */
-    public function setState (state :Object) :Boolean
+    public function setState (newState :Object) :Boolean
     {
-        if (!_control.setRoomProperty(_key, state)) {
+        if (!_control.setRoomProperty(_key, newState)) {
             Log.getLog(this).warning(
-                "Setting room property failed [key=" + _key + ", value=" + state + "]");
+                "Setting room property failed [key=" + _key + ", value=" + newState + "]");
             return false;
         }
-        if (!_control.updateMemory(_key, state)) {
+        if (newState != this.state && !_control.updateMemory(_key, newState)) {
             Log.getLog(this).warning(
-                "Setting item memory failed [key=" + _key + ", value=" + state + "]");
+                "Setting item memory failed [key=" + _key + ", value=" + newState + "]");
             return false;
         }
         return true;
