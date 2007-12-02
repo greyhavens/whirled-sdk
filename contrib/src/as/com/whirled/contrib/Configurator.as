@@ -56,11 +56,13 @@ public class Configurator
         _key = key;
         _configured = configured;
 
+        // and wait for a click
         sprite.addEventListener(MouseEvent.CLICK, handleClick);
     }
 
     protected function handleClick (evt :MouseEvent) :void
     {
+        // the base of the GUI is a Sprite
         var popup :Sprite = new Sprite();
 
         var y :int = PADDING;
@@ -70,6 +72,7 @@ public class Configurator
         format.size = 14;
         format.color = 0xFFFFFF;
 
+        // it has a descriptive text field
         var text :TextField = new TextField();
         text.x = PADDING;
         text.y = y;
@@ -83,6 +86,7 @@ public class Configurator
 
         y += text.height + PADDING;
 
+        // an input field
         var input :TextField = new TextField();
         input.x = 2 * PADDING;
         input.y = y;
@@ -92,6 +96,7 @@ public class Configurator
         input.maxChars = 16; // arbitrary
         input.type = TextFieldType.INPUT;
 
+        // and a decoratively rounded widget
         var inputBox :Shape = new Shape();
         inputBox.x = input.x - 2;
         inputBox.y = input.y - 2;
@@ -100,15 +105,19 @@ public class Configurator
             drawRoundRect(0, 0, input.width + 4, input.height + 4, 10);
             endFill();
         }
+        // be sure to add the background widget
         popup.addChild(inputBox);
+        // before the text field, so we see the glyphs
         popup.addChild(input);
 
         y += input.height + PADDING;
 
+        // finally an OK button
         var ok :SimpleButton = new SimpleTextButton("OK");
         ok.x = WIDTH - PADDING - ok.width;
         ok.y = y;
         ok.addEventListener(MouseEvent.CLICK, function (evt :MouseEvent) :void {
+            // TODO: only show the button active if something has been typed
             if (input.text && _control.updateMemory(_key, input.text)) {
                 _configured(input.text);
                 evt.currentTarget.removeEventListener(MouseEvent.CLICK, handleClick);
@@ -119,12 +128,14 @@ public class Configurator
 
         y += ok.height + PADDING;
 
+        // finally underlay it all with a nice background
         with (popup.graphics) {
             beginFill(0x003366);
             drawRoundRect(0, 0, WIDTH, y, PADDING);
             endFill();
         }
 
+        // and pop it up!
         _control.showPopup("", popup, popup.width, popup.height, 0x6699CC);
     }
 
