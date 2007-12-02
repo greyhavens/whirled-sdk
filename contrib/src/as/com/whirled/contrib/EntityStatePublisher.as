@@ -27,30 +27,15 @@ import com.threerings.util.Log;
  * and the current state is always available as
  *
  *  _published.state
- *
- * NOTE: This class only propagates changes made through setState(). It does not
- * listen to item memory changes.
  */
-public class EntityStatePublisher
+public class EntityStatePublisher extends EntityStateListener
 {
     public function EntityStatePublisher (control :EntityControl, key :String,
                                           defVal :Object = null, updated :Function = null)
     {
-        _key = key;
-        _control = control;
-        if (updated != null) {
-            _control.addEventListener(
-                ControlEvent.MEMORY_CHANGED, function (evt :ControlEvent) :void {
-                    updated(_key, evt.value);
-                });
-        }
+        super(control, key, updated);
 
         setState(_control.lookupMemory(key, defVal));
-    }
-
-    public function get state () :Object
-    {
-        return _control.lookupMemory(_key);
     }
 
     /**
@@ -60,20 +45,21 @@ public class EntityStatePublisher
      */
     public function setState (newState :Object) :Boolean
     {
-        if (!_control.setRoomProperty(_key, newState)) {
-            Log.getLog(this).warning(
-                "Setting room property failed [key=" + _key + ", value=" + newState + "]");
-            return false;
+        if (newState != _control.getRoomProperty(_key)) {
+            if (!_control.setRoomProperty(_key, newState)) {
+                Log.getLog(this).warning(
+                    "Setting room property failed [key=" + _key + ", value=" + newState + "]");
+                return false;
+            }
         }
-        if (newState != this.state && !_control.updateMemory(_key, newState)) {
-            Log.getLog(this).warning(
-                "Setting item memory failed [key=" + _key + ", value=" + newState + "]");
-            return false;
+        if (newState != _control.lookupMemory(_key)) {
+            if (!_control.updateMemory(_key, newState)) {
+                Log.getLog(this).warning(
+                    "Setting item memory failed [key=" + _key + ", value=" + newState + "]");
+                return false;
+            }
         }
         return true;
     }
-
-    protected var _key :String;
-    protected var _control :EntityControl;
 }
 }
