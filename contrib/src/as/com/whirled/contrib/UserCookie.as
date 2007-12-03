@@ -218,6 +218,7 @@ public class UserCookie
             log.warning("Invalid version number found [" + version + "]");
         }
 
+        var versionBreak :Boolean = false;
         for each (var param :CookieParameter in _cookieDef) {
             if (param == null) {
                 log.warning("Null cookie param, ignoring and moving on");
@@ -227,12 +228,13 @@ public class UserCookie
             if (param is VersionParameter) {
                 version--;
                 if (version < 0) {
-                    break;
+                    versionBreak = true;
                 }
             } else {
-                param.read(bytes);
+                if (!versionBreak) {
+                    param.read(bytes);
+                }
                 _parameters.put(param.name, param);
-
             }
         }
     }
