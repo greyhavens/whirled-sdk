@@ -12,7 +12,7 @@ public class ControlEvent extends Event
     /** An event type dispatched when an Actor has had its appearance
      * changed. Your code should react to this event and possibly redraw
      * the actor, taking into account the orientation and whether the
-     * actor is moving.
+     * actor is moving or sleeping.
      * name: unused
      * value: unused
      *
@@ -100,6 +100,8 @@ public class ControlEvent extends Event
      */
     override public function get target () :Object
     {
+        // We do nothing, so this could safely be removed, but it's here to
+        // show that you can get the *Control you're using from each event.
         return super.target;
     }
 

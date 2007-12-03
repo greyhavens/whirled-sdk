@@ -43,6 +43,9 @@ public class AvatarControl extends ActorControl
      * a quick animation.  Actions are different from states- states are persistent and do not go
      * away if you walk, talk, or play actions.
      *
+     * These registered actions will show up in a menu from which the wearer of this avatar can
+     * select an action. Note, however, that you can fire unregistered actions as well.
+     *
      * Note: actions must be 64 characters or less.
      */
     public function registerActions (... actions) :void
@@ -53,7 +56,7 @@ public class AvatarControl extends ActorControl
     }
 
     /**
-     * Register the named states that this actor may be in.
+     * Register named states that can be selected by the wearer of this avatar.
      *
      * States are persistent. An actor may only be in one state at a time.  If the actor is in a
      * state and then needs to walk, talk, or play an action, then it should still be in the state

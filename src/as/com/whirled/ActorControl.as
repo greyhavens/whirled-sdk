@@ -39,7 +39,7 @@ public class ActorControl extends EntityControl
     /**
      * Returns the current orientation of this mobile.
      *
-     * @return a value between 0 (facing straight ahead) and 360.
+     * @return a value between 0 (facing straight ahead) moving counter-clockwise to 359.
      */
     public function getOrientation () :Number
     {
@@ -93,6 +93,8 @@ public class ActorControl extends EntityControl
      * Requests that our orientation be updated. This will result in a dispatch of the
      * APPEARANCE_CHANGED event.
      *
+     * @param orient an orientation between 0 (facing straight ahead) and going to 359, counter-clockwise.
+     *
      * @see ControlEvent#APPEARANCE_CHANGED
      */
     public function setOrientation (orient :Number) :void
@@ -104,7 +106,7 @@ public class ActorControl extends EntityControl
      * Set the state of this actor. An actor can only be in one state at a time, but it is
      * persistent across rooms.
      *
-     * @param state A String identifier, may be null, indicating the state.  The maximum length is
+     * @param state A String identifier, which may be null, indicating the state.  The maximum length is
      * 64 characters.
      *
      * Note: only the instance "in control" may set states.
