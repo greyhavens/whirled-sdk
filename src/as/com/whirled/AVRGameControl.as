@@ -81,7 +81,9 @@ public class AVRGameControl extends WhirledControl
     }
 
     /**
-     * Get the room's bounds in pixel coordinates.
+     * Get the room's bounds in pixel coordinates. This is essentially the width and height
+     * of the room's decor. It is an absolute coordinate system, i.e. (x, y) for one client
+     * here is the same (x, y) as for another.
      *
      * @return a Rectangle anchored in (0, 0)
      */
@@ -91,7 +93,14 @@ public class AVRGameControl extends WhirledControl
     }
 
     /**
-     * Get the view's bounds in pixel coordinates.
+     * Get the view's bounds in pixel coordinates. The view is the portion of the room the
+     * current player sees, measured in the same dimensions as the room bounds but with a
+     * possibly smaller width and adjusted by a scrolling offset. The view is always a
+     * subset of the room.
+     *
+     * The main motivation behind this method is to translate an (x, y) position in one
+     * client's browser into a shared coordinate space and back again, so that multiple
+     * players can do things on-screen that coordinate correctly.
      *
      * @return a Rectangle anchored in (scrollOffset, 0)
      */
