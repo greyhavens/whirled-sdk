@@ -73,7 +73,7 @@ public class AVRGameControl extends WhirledControl
     /**
      * Returns the bounds of the "stage" on which the AVRG will be drawn. This is the entire
      * area the AVRG can cover and includes potential empty space to the right of the room
-     * view. See <code>getRoomBounds</code>. TODO: Implement RESIZE event.
+     * view. See <code>getRoomBounds</code>.
      */
     public function getStageBounds () :Rectangle
     {
@@ -81,13 +81,13 @@ public class AVRGameControl extends WhirledControl
     }
 
     /**
-     * Returns the bounds of our current room, or null in the unlikely case that we are
-     * not in a room. Note that these bounds are likely to change every time the player
-     * enters a different scene. TODO: Bring back movement events.
+     * Get the room's bounds in pixels.
+     *
+     * @return an array containing [ width, height, depth ].
      */
-    public function getRoomBounds () :Rectangle
+    public function getRoomBounds () :Array
     {
-        return Rectangle(callHostCode("getRoomBounds_v1"));
+        return callHostCode("getRoomBounds_v1") as Array;
     }
 
     /**
