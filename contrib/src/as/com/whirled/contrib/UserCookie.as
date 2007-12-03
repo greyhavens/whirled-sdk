@@ -90,17 +90,21 @@ public class UserCookie
      *                      cookie has been retrieved and validated.
      * @param cookieDef An array of cookie parameters that define the format of the user cookie.  
      *                  See the various get*Parameter() functions for more detail.
+     * @param enableDebugLogging Enable logging of some debug messages, including the values read
+     *                           out of the user cookie in the initial read.  Logging is done via
+     *                           com.threerings.util.Log.
      * @param occId The player's id to fetch the cookie for.  Defaults to the current player.  If
      *              a different player is specified, this UserCookie will be read-only - attempting
      *              to set a value will generate an IllegalOperationError.
      */
     public static function getCookie (wgc :WhirledGameControl, validCallback :Function, 
-        cookieDef :Array, occId :int = -1) :void
+        cookieDef :Array, enableDebugLogging :Boolean = false, occId :int = -1) :void
     {
         var cookie :UserCookie = new UserCookie();
         cookie._control = wgc;
         cookie._cookieDef = cookieDef;
         cookie._readOnly = occId != -1 && occId != wgc.getMyId();
+        cookie._logDebug = enableDebugLogging;
         wgc.getUserCookie(occId == -1 ? wgc.getMyId() : occId, function (obj :Object) :void {
             if (obj is ByteArray) {
                 cookie.read(obj as ByteArray);
@@ -216,7 +220,9 @@ public class UserCookie
         var version :int = bytes.readInt();
         if (version <= 0) {
             log.warning("Invalid version number found [" + version + "]");
+            return;
         }
+        debugLog("player's cookie at version [" + version + "]");
 
         var versionBreak :Boolean = false;
         for each (var param :CookieParameter in _cookieDef) {
@@ -233,6 +239,16 @@ public class UserCookie
             } else {
                 if (!versionBreak) {
                     param.read(bytes);
+                    if (param is ArrayParameter) {
+                        debugLog("read param [name=" + param.name + ", children=" + 
+                            arrayChildrenAsString(param as ArrayParameter) + "]");
+                    } else {
+                        debugLog("read param [name=" + param.name + ", value=" + 
+                            param.value + "]");
+                    }
+                } else {
+                    debugLog("param in new version [name=" + param.name + ", value=" + 
+                        param.value + "]");
                 }
                 _parameters.put(param.name, param);
             }
@@ -317,6 +333,31 @@ public class UserCookie
         }
     }
 
+    protected function debugLog (logLine :String) :void
+    {
+        if (_logDebug) {
+            log.debug(logLine);
+        }
+    }
+
+    protected function arrayChildrenAsString (param :ArrayParameter) :String
+    {
+        var values :String = "[";
+        for each (var parameter :CookieParameter in param.children) {
+            if (parameter is ArrayParameter) {
+                values += arrayChildrenAsString(parameter as ArrayParameter);
+            } else {
+                values += "" + parameter.value;
+            }
+
+            if (parameter != param.children[param.children.length - 1]) {
+                values += ", ";
+            }
+        }
+        values += "]";
+        return values;
+    }
+
     private static const log :Log = Log.getLog(UserCookie);
 
     protected static const SEND_TIME :int = 2 * 1000;
@@ -327,6 +368,7 @@ public class UserCookie
     protected var _dirty :Boolean = false;
     protected var _timer :Timer;
     protected var _readOnly :Boolean = false;
+    protected var _logDebug :Boolean = false;
 }
 }
 
