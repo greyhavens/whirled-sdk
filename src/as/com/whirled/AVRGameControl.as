@@ -81,13 +81,23 @@ public class AVRGameControl extends WhirledControl
     }
 
     /**
-     * Get the room's bounds in pixels.
+     * Get the room's bounds in pixel coordinates.
      *
-     * @return an array containing [ width, height, depth ].
+     * @return a Rectangle anchored in (0, 0)
      */
-    public function getRoomBounds () :Array
+    public function getRoomBounds () :Rectangle
     {
-        return callHostCode("getRoomBounds_v1") as Array;
+        return callHostCode("getRoomBounds_v1") as Rectangle;
+    }
+
+    /**
+     * Get the view's bounds in pixel coordinates.
+     *
+     * @return a Rectangle anchored in (scrollOffset, 0)
+     */
+    public function getViewBounds () :Rectangle
+    {
+        return callHostCode("getViewBounds_v1") as Rectangle;
     }
 
     /**
