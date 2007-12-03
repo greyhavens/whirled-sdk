@@ -245,19 +245,19 @@ public class AVRGameControl extends WhirledControl
         return _hitPointTester != null && _hitPointTester(x, y, shapeFlag);
     }
 
-    protected function playerLeft_v1 (oid :int) :void
+    protected function playerLeft_v1 (id :int) :void
     {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_LEFT, null, oid));
+        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_LEFT, null, id));
     }
 
-    protected function playerEntered_v1 (oid :int) :void
+    protected function playerEntered_v1 (id :int) :void
     {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_ENTERED, null, oid));
+        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_ENTERED, null, id));
     }
 
-    protected function playerMoved_v1 (oid :int) :void
+    protected function playerMoved_v1 (id :int) :void
     {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_MOVED, null, oid));
+        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_MOVED, null, id));
     }
 
     protected function leftRoom_v1 (oldScene :int) :void
