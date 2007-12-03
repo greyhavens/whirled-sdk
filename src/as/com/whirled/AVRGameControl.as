@@ -166,6 +166,11 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("deactivateGame_v1");
     }
 
+    public function isPlayerHere (id :int) :Boolean
+    {
+        return callHostCode("isPlayerHere_v1", id);
+    }
+
     public function getPlayerIds () :Array
     {
         return callHostCode("getPlayerIds_v1") as Array;
