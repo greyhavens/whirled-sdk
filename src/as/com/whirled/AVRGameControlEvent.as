@@ -70,7 +70,7 @@ public class AVRGameControlEvent extends ControlEvent
 
     /** An event type dispatched when we've entered a new room.
      * key: N/A
-     * value: N/A
+     * value: the id of the scene we entered
      *
      * @eventType playerEntered
      */
@@ -78,7 +78,7 @@ public class AVRGameControlEvent extends ControlEvent
 
     /** An event type dispatched when we leave our current room.
      * key: N/A
-     * value: N/A
+     * value: the id of the scene we're leaving
      *
      * @eventType playerLeft
      */
