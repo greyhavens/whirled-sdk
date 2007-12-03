@@ -78,7 +78,7 @@ public class TestGamePanel extends WhirledGamePanel
     override protected function getButtonLabels (plobj :PlaceObject) :Array
     {
         var gameObj :GameObject = plobj as GameObject;
-        return [ "Back to whirled", "Back to lobby",
+        return [ "Leave game", "Game lobby",
             ((gameObj.players.length == 1) ? "Play again" : "Request a rematch") ];
     }
 

@@ -42,8 +42,8 @@ public class WhirledGamePanel extends EZGamePanel
         super.willEnterPlace(plobj);
 
         var labels :Array = getButtonLabels(plobj);
-        _backToLobby.label = labels[0];
-        _backToWhirled.label = labels[1];
+        _backToWhirled.label = labels[0];
+        _backToLobby.label = labels[1];
         _rematch.label = labels[2];
 
         _backToWhirled.setCallback((_ctrl as WhirledGameController).backToWhirled, false);
@@ -133,7 +133,7 @@ public class WhirledGamePanel extends EZGamePanel
     }
 
     /**
-     * Get the labels for back to lobby, back to whirled, rematch
+     * Get the labels for leave game, game lobby, rematch.
      */
     protected function getButtonLabels (plobj :PlaceObject) :Array /* of String */
     {
