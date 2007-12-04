@@ -180,17 +180,17 @@ public class UserCookie
         }
 
         if (indices.length == 0) {
-            (_parameters.get(name) as CookieParameter).value = value;
             debugLog("setting value [name=" + name + ", value=" + value + "]");
+            (_parameters.get(name) as CookieParameter).value = value;
         } else {
+            debugLog("setting array value [name=" + name + ", value=" + value + ", indices=[" + 
+                indices + "]]");
             var parameter :ArrayParameter = _parameters.get(name) as ArrayParameter;
             if (parameter == null) {
                 throw new ArgumentError("Array value setting, but no array found [" + 
                     name + "]");
             }
             setInArray(parameter, value, indices);
-            debugLog("setting array value [name=" + name + ", value=" + value + ", indices=[" + 
-                indices + "]]");
         }
 
         _dirty = true;
