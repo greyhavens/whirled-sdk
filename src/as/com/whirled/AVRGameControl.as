@@ -7,6 +7,7 @@ package com.whirled {
 
 import flash.display.DisplayObject;
 
+import flash.geom.Point;
 import flash.geom.Rectangle;
 
 import flash.utils.Dictionary;
@@ -92,21 +93,14 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("getRoomBounds_v1") as Rectangle;
     }
 
-    /**
-     * Get the view's bounds in pixel coordinates. The view is the portion of the room the
-     * current player sees, measured in the same dimensions as the room bounds but with a
-     * possibly smaller width and adjusted by a scrolling offset. The view is always a
-     * subset of the room.
-     *
-     * The main motivation behind this method is to translate an (x, y) position in one
-     * client's browser into a shared coordinate space and back again, so that multiple
-     * players can do things on-screen that coordinate correctly.
-     *
-     * @return a Rectangle anchored in (scrollOffset, 0)
-     */
-    public function getViewBounds () :Rectangle
+    public function stageToRoom (p :Point) :Point
     {
-        return callHostCode("getViewBounds_v1") as Rectangle;
+        return callHostCode("stageToRoom_v1", p) as Point;
+    }
+
+    public function roomToStage (p :Point) :Point
+    {
+        return callHostCode("roomToStage_v1", p) as Point;
     }
 
     /**
