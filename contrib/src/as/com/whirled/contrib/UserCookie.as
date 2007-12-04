@@ -181,6 +181,7 @@ public class UserCookie
 
         if (indices.length == 0) {
             (_parameters.get(name) as CookieParameter).value = value;
+            debugLog("setting value [name=" + name + ", value=" + value + "]");
         } else {
             var parameter :ArrayParameter = _parameters.get(name) as ArrayParameter;
             if (parameter == null) {
@@ -188,6 +189,8 @@ public class UserCookie
                     name + "]");
             }
             setInArray(parameter, value, indices);
+            debugLog("setting array value [name=" + name + ", value=" + value + ", indices=[" + 
+                indices + "]]");
         }
 
         _dirty = true;
@@ -294,6 +297,7 @@ public class UserCookie
         }
 
         bytes.compress();
+        debugLog("Writing cookie [size=" + bytes.length + " bytes]");
         return bytes;
     }
 
