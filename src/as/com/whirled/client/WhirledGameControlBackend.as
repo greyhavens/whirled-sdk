@@ -10,6 +10,7 @@ import flash.geom.Rectangle;
 
 import com.threerings.util.Name;
 
+import com.threerings.presents.client.ConfirmAdapter;
 import com.threerings.presents.dobj.MessageEvent;
 
 import com.threerings.crowd.data.OccupantInfo;
@@ -192,7 +193,10 @@ public class WhirledGameControlBackend extends GameControlBackend
             return false;
         }
         (_ezObj as WhirledGame).getWhirledGameService().awardTrophy(
-            _ctx.getClient(), ident, createLoggingConfirmListener("awardTrophy"));
+            _ctx.getClient(), ident, new ConfirmAdapter(function (cause :String) :void {
+                // TODO: change GameCodes.GAME_MSGS to "game" and use that
+                _ctx.getChatDirector().displayFeedback("game", cause);
+            }));
         return true;
     }
 
