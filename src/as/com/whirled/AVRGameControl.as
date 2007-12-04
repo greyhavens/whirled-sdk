@@ -264,9 +264,9 @@ public class AVRGameControl extends WhirledControl
         dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_MOVED, null, id));
     }
 
-    protected function leftRoom_v1 (oldScene :int) :void
+    protected function leftRoom_v1 () :void
     {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.LEFT_ROOM, null, oldScene));
+        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.LEFT_ROOM);
     }
 
     protected function enteredRoom_v1 (newScene :int) :void

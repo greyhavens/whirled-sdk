@@ -78,7 +78,7 @@ public class AVRGameControlEvent extends ControlEvent
 
     /** An event type dispatched when we leave our current room.
      * key: N/A
-     * value: the id of the scene we're leaving
+     * value: N/A
      *
      * @eventType playerLeft
      */
