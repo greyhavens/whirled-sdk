@@ -250,8 +250,13 @@ public class UserCookie
                             param.value + "]");
                     }
                 } else {
-                    debugLog("param in new version [name=" + param.name + ", value=" + 
-                        param.value + "]");
+                    if (param is ArrayParameter) {
+                        debugLog("param in new version [name=" + param.name + ", children=" +
+                            arrayChildrenAsString(param as ArrayParameter) + "]");
+                    } else {
+                        debugLog("param in new version [name=" + param.name + ", value=" + 
+                            param.value + "]");
+                    }
                 }
                 _parameters.put(param.name, param);
             }
