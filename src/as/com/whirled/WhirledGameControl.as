@@ -65,6 +65,9 @@ public class WhirledGameControl extends EZGameControl
 
     /**
      * Set whether control bar buttons are shown.
+     *
+     * <b>Note:</b> this function changes local display only; other clients will not be affected.
+     *
      * @param rematch sets whether the rematch button should be displayed automatically when
      *        the game is over.
      * @param backButtons sets whether the 'back to whirled' and 'back to lobby' buttons are
@@ -78,6 +81,8 @@ public class WhirledGameControl extends EZGameControl
     /**
      * Set a label to be shown above the occupants list in the game.
      * Set to null to remove the label.
+     *
+     * <b>Note:</b> this function changes local display only; other clients will not be affected.
      */
     public function setOccupantsLabel (label :String) :void
     {
@@ -86,6 +91,8 @@ public class WhirledGameControl extends EZGameControl
 
     /**
      * Clear all the scores displayed in the occupants list.
+     *
+     * <b>Note:</b> this function changes local display only; other clients will not be affected.  
      *
      * @param clearValue a value to set all the scores to, or null to not show anything.
      * @param sortValuesToo if true, also clear the sort values, returning the list
@@ -98,6 +105,8 @@ public class WhirledGameControl extends EZGameControl
 
     /**
      * Set scores for seated players.
+     *
+     * <b>Note:</b> this function changes local display only; other clients will not be affected.
      *
      * @param scores an array of 'score' values that must correspond to the seated players.
      * The scores may be numeric or String and will be displayed after the player names.
@@ -112,6 +121,8 @@ public class WhirledGameControl extends EZGameControl
     /**
      * Set score or sortValue values for occupants. You may want to call clearScores prior
      * to using this method to ensure that occupants that you don't specify are cleared out.
+     *
+     * <b>Note:</b> this function changes local display only; other clients will not be affected.
      *
      * @param scores an Object mapping occupantId to a score value (which may be a String or
      * numeric), or to a two-dimensional array containing the score value and the sortValue.
