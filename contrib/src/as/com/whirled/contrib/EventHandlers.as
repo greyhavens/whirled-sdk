@@ -2,6 +2,7 @@
 
 package com.whirled.contrib {
 
+import flash.events.Event;
 import flash.events.IEventDispatcher;
 
 /** 
@@ -38,10 +39,19 @@ public class EventHandlers
     }
 
     /**
+     * Registers the freeAllHandlers() method to be called upon Event.UNLOAD on the supplied
+     * event dispatcher.
+     */
+    public static function registerUnload (dispatcher :IEventDispatcher) :void
+    {
+        registerEventListener(dispatcher, Event.UNLOAD, freeAllHandlers);
+    }
+
+    /**
      * Free all handlers that have been added via this registerEventListener() and have not been
      * freed already via unregisterEventListener()
      */
-    public static function freeAllHandlers () :void
+    public static function freeAllHandlers (...ignored) :void
     {
         for each (var handler :Object in _eventHandlers) {
             handler.dispatcher.removeEventListener(handler.event, handler.func);
