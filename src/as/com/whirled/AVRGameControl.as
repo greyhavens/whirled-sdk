@@ -185,6 +185,11 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("spawnMob_v1", id);
     }
 
+    public function despawnMob (id :String) :Boolean
+    {
+        return callHostCode("despawnMob_v1", id);
+    }
+
     override protected function isAbstract () :Boolean
     {
         return false;
