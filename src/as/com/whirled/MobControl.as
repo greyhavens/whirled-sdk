@@ -31,7 +31,26 @@ public class MobControl extends WhirledSubControl
         dispatchEvent(new ControlEvent(ControlEvent.APPEARANCE_CHANGED));
     }
 
+    public function setDecoration (decoration :DisplayObject) :Boolean
+    {
+        if (_decoration == null) {
+            _decoration = decoration;
+            return _ctrl.callHostCodeFriend("setMobDecoration_v1", _id, _decoration, true);
+        }
+        return false;
+    }
+
+    public function removeDecoration () :Boolean
+    {
+        if (_decoration != null) {
+            return _ctrl.callHostCodeFriend("removeMobDecoration_v1", _id, _decoration, false);
+        }
+        return false;
+    }
+
     protected var _id :String;
+
+    protected var _decoration :DisplayObject;
 
     /** Our current orientation, or 0. */
     protected var _orient :Number = 0;
