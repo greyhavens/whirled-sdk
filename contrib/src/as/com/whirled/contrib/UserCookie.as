@@ -182,7 +182,6 @@ public class UserCookie
 
         var parameter :CookieParameter = _parameters.get(name) as CookieParameter;
         if (parameter == null) {
-            log.warning("parameter not found [" + name + "]");
             throw new ArgumentError("Parameter not found! [" + name + "]");
         }
         if (indices.length == 0) {
@@ -193,8 +192,6 @@ public class UserCookie
                 indices + "]]");
             var arrParam :ArrayParameter = parameter as ArrayParameter;
             if (arrParam == null) {
-                log.warning("Array value setting, but no array round [" + 
-                    name + "]");
                 throw new ArgumentError("Array value setting, but no array found [" + 
                     name + "]");
             }
@@ -215,7 +212,6 @@ public class UserCookie
     {
         var parameter :CookieParameter = _parameters.get(name) as CookieParameter;
         if (parameter == null) {
-            log.warning("parameter not found [" + name + "]");
             throw new ArgumentError("Parameter not found! [" + name + "]");
         }
         if (indices.length == 0) {
@@ -223,8 +219,6 @@ public class UserCookie
         } else {
             var arrParam :ArrayParameter = parameter as ArrayParameter;
             if (arrParam == null) {
-                log.warning("array value requested, but no array found [" + 
-                    name + "]");
                 throw new ArgumentError("Array value requested, but no array found [" +
                     name + "]");
             }
@@ -239,8 +233,7 @@ public class UserCookie
             bytes.uncompress();
             version = bytes.readInt();
             if (version <= 0) {
-                log.warning("Invalid version number found [" + version + "]");
-                return;
+                throw new ArgumentError("Invalid version number found [" + version + "]");
             }
             debugLog("player's cookie at version [" + version + "]");
         }
@@ -301,7 +294,6 @@ public class UserCookie
             }
         }
         if (version <= 0) {
-            log.warning("Version must be greater than 0 [" + version + "]");
             throw new ArgumentError("Version must be greater than 0 [" + version + "]");
         }
         bytes.writeInt(version);
@@ -329,7 +321,6 @@ public class UserCookie
     {
         var index :int = indices.shift() as int;
         if (isNaN(index) || index < 0 || index > array.children.length - 1) {
-            log.warning("Array index is not valid [" + index + "]");
             throw new ArgumentError("Array index is not valid [" + index + "]");
         }
 
@@ -338,7 +329,6 @@ public class UserCookie
             parameter.value = value;
         } else {
             if (!(parameter is ArrayParameter)) {
-                log.warning("Nested array requested, but array not found");
                 throw new ArgumentError("Nested array requested, but array not found");
             }
             setInArray(parameter as ArrayParameter, value, indices);
@@ -349,7 +339,6 @@ public class UserCookie
     {
         var index :int = indices.shift() as int;
         if (isNaN(index) || index < 0 || index > array.children.length - 1) {
-            log.warning("Array index is not valid [" + index + "]");
             throw new ArgumentError("Array index is not valid [" + index + "]");
         }
 
@@ -358,7 +347,6 @@ public class UserCookie
             return parameter.value;
         } else {
             if (!(parameter is ArrayParameter)) {
-                log.warning("Nested array requested, but array not found");
                 throw new ArgumentError("Nested array requested, but array not found");
             }
             return getFromArray(parameter as ArrayParameter, indices);
@@ -435,8 +423,6 @@ class CookieParameter
     public function set value (v :*) :void
     {
         if (!(v is _type) && v != null) {
-            log.warning("Setting CookieParameter value with wrong type [" + _type + 
-                ", " + v + "]");
             throw new ArgumentError("Setting CookieParameter value with wrong type [" + _type +
                 ", " + v + "]");
         }
@@ -451,7 +437,6 @@ class CookieParameter
         } else if (_type === String) {
             _value = bytes.readObject() as String;
         } else {
-            log.warning("read asked to decode unsupported type [" + _type + "]");
             throw new ArgumentError("read asked to decode unsupported type [" + _type + "]");
         }
     }
@@ -463,7 +448,6 @@ class CookieParameter
         } else if (_type === String) {
             bytes.writeObject(_value as String);
         } else {
-            log.warning("write asked to encode unsupported type [" + _type + "]");
             throw new ArgumentError("write asked to encode unsupported type [" + _type + "]");
         }
     }
@@ -484,7 +468,6 @@ class VersionParameter extends CookieParameter
 
     override public function set value (v :*) :void
     {
-        log.warning("Cannot set value on a VersionParmeter");
         throw new ArgumentError("Cannot set value on a VersionParameter");
     }
 
@@ -509,11 +492,9 @@ class ArrayParameter extends CookieParameter
 
         for each (var child :CookieParameter in children) {
             if (child == null) {
-                log.warning("ArrayParameter children must all be CookieParameters");
                 throw new ArgumentError("ArrayParameter children must all be CookieParameters");
             }
             if (child is VersionParameter) {
-                log.warning("ArrayPareter cannot contain a VersionParameter");
                 throw new ArgumentError("ArrayParameter cannot contain a VersionParameter");
             }
         }
@@ -527,7 +508,6 @@ class ArrayParameter extends CookieParameter
 
     override public function set value (v :*) :void
     {
-        log.warning("ArrayParameter does not support directly settings its value");
         throw new ArgumentError("ArrayParameter does not support directly setting its value");
     }
 
