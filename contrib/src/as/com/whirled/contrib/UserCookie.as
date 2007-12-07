@@ -106,11 +106,12 @@ public class UserCookie
         cookie._readOnly = occId != -1 && occId != wgc.getMyId();
         cookie._logDebug = enableDebugLogging;
         wgc.getUserCookie(occId == -1 ? wgc.getMyId() : occId, function (obj :Object) :void {
-//            if (obj is ByteArray) {
-//                cookie.read(obj as ByteArray);
-//            } else {
+            if (obj is ByteArray) {
+                cookie.read(obj as ByteArray);
+            } else {
                 log.warning("Unknown cookie object type or cookie not found, using defaults");
-//            }
+                cookie.read(null);
+            }
             validCallback(cookie);
         });
     }
@@ -233,15 +234,18 @@ public class UserCookie
 
     protected function read (bytes :ByteArray) :void
     {
-        bytes.uncompress();
-        var version :int = bytes.readInt();
-        if (version <= 0) {
-            log.warning("Invalid version number found [" + version + "]");
-            return;
+        var version :int = 0;
+        if (bytes != null) {
+            bytes.uncompress();
+            version = bytes.readInt();
+            if (version <= 0) {
+                log.warning("Invalid version number found [" + version + "]");
+                return;
+            }
+            debugLog("player's cookie at version [" + version + "]");
         }
-        debugLog("player's cookie at version [" + version + "]");
 
-        var versionBreak :Boolean = false;
+        var versionBreak :Boolean = bytes == null;
         for each (var param :CookieParameter in _cookieDef) {
             if (param == null) {
                 log.warning("Null cookie param, ignoring and moving on");
