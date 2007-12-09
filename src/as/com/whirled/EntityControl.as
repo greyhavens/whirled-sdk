@@ -377,10 +377,10 @@ public class EntityControl extends WhirledControl
      * Calling Camera.getCamera() does not work inside whirled due to security restrictions.
      * For convenience, this method works even when you're not connected.
      */
-    public function getCamera () :Camera
+    public function getCamera (index :String = null) :Camera
     {
-        return isConnected() ? callHostCode("getCamera_v1") as Camera
-                             : Camera.getCamera();
+        return isConnected() ? callHostCode("getCamera_v1", index) as Camera
+                             : Camera.getCamera(index);
     }
 
     /**
@@ -388,10 +388,10 @@ public class EntityControl extends WhirledControl
      * Calling Microphone.getMicrophone() does not work inside whirled due to security restrictions.
      * For convenience, this method works even when you're not connected.
      */
-    public function getMicrophone () :Microphone
+    public function getMicrophone (index :int = 0) :Microphone
     {
-        return isConnected() ? callHostCode("getMicrophone_v1") as Microphone
-                             : Microphone.getMicrophone()
+        return isConnected() ? callHostCode("getMicrophone_v1", index) as Microphone
+                             : Microphone.getMicrophone(index)
     }
 
     /**
