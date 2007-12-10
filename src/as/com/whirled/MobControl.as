@@ -18,6 +18,11 @@ public class MobControl extends WhirledSubControl
         _id = id;
     }
 
+    public function getAVRGameControl () :AVRGameControl
+    {
+        return AVRGameControl(_ctrl);
+    }
+
     /**
      * Called when we start or stop moving or change orientation.
      */
