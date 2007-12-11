@@ -162,7 +162,7 @@ public class UserCookie
      */
     public function UserCookie ()
     {
-        (_timer = new Timer(SEND_TIME)).addEventListener(TimerEvent.TIMER, flush);
+        EventHandlers.registerEventListener(_timer = new Timer(SEND_TIME), TimerEvent.TIMER, flush);
         _timer.start();
     }
 
