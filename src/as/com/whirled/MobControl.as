@@ -7,6 +7,8 @@ package com.whirled {
 
 import flash.display.DisplayObject;
 
+import com.threerings.util.Log;
+
 /**
  * Defines actions, accessors and callbacks available to all MOBs.
  */
@@ -24,16 +26,15 @@ public class MobControl extends WhirledSubControl
     }
 
     /**
-     * Called when we start or stop moving or change orientation.
+     * Set the layout "hotspot" for your item, specified as pixels relative to (0, 0) the top-left
+     * coordinate.
+     *
+     * If unset, the default hotspot will be based off of the SWF dimensions, with x = width / 2,
+     * y = height.
      */
-    public function appearanceChanged (
-        location :Array, orient :Number, moving :Boolean, sleeping :Boolean) :void
+    public function setHotSpot (x :Number, y :Number, height :Number = NaN) :void
     {
-        _location = location;
-        _orient = orient;
-        _isMoving = moving;
-        // "sleeping" is ignored in this class
-        dispatchEvent(new ControlEvent(ControlEvent.APPEARANCE_CHANGED));
+        _ctrl.callHostCodeFriend("setMobHotSpot_v1", _id, x, y, height);
     }
 
     public function setDecoration (decoration :DisplayObject) :Boolean
@@ -51,6 +52,18 @@ public class MobControl extends WhirledSubControl
             return _ctrl.callHostCodeFriend("removeMobDecoration_v1", _id, _decoration, false);
         }
         return false;
+    }
+
+    // calls from AVRGameBackend
+
+    internal function appearanceChanged (
+        location :Array, orient :Number, moving :Boolean, sleeping :Boolean) :void
+    {
+        _location = location;
+        _orient = orient;
+        _isMoving = moving;
+        // "sleeping" is ignored in this class
+        dispatchEvent(new ControlEvent(ControlEvent.APPEARANCE_CHANGED));
     }
 
     protected var _id :String;
