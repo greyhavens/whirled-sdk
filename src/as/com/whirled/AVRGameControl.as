@@ -81,7 +81,7 @@ public class AVRGameControl extends WhirledControl
      */
     public function getStageSize (full :Boolean = true) :Rectangle
     {
-        return Rectangle(callHostCode("getStageBounds_v1", full));
+        return Rectangle(callHostCode("getStageSize_v1", full));
     }
 
     /**
