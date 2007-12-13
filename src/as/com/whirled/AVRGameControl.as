@@ -72,13 +72,16 @@ public class AVRGameControl extends WhirledControl
     }
 
     /**
-     * Returns the bounds of the "stage" on which the AVRG will be drawn. This is the entire
-     * area the AVRG can cover and includes potential empty space to the right of the room
-     * view. See <code>getRoomBounds</code>.
+     * Returns the bounds of the "stage" on which the AVRG will be drawn. By default, it
+     * returns the entire available area; if the argument is false, it doesn't include the
+     * part of the stage that's empty white when the player is in narrow rooms.
+     *
+     * Note that this value changes when the browser is resized, and the latter form when
+     * the player moves to another room.
      */
-    public function getStageBounds () :Rectangle
+    public function getStageSize (full :Boolean = true) :Rectangle
     {
-        return Rectangle(callHostCode("getStageBounds_v1"));
+        return Rectangle(callHostCode("getStageBounds_v1", full));
     }
 
     /**
