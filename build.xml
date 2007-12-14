@@ -120,6 +120,7 @@
     <mkdir dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="${projects.dir}/narya/src/as/com/threerings/util" includes="*.as"/>
+      <fileset dir="${projects.dir}/nenya/src/as/com/threerings/flash" includes="**/*.as"/>
       <fileset dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="*.as"/>
       <fileset dir="contrib/src/as/com/whirled" includes="**/*.as"/>
       <fileset dir="src/as/com/whirled" includes="*.as"/>
