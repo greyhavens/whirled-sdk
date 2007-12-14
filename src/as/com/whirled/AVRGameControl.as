@@ -183,9 +183,9 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("getPlayerIds_v1") as Array;
     }
 
-    public function spawnMob (id :String) :Boolean
+    public function spawnMob (id :String, name :String) :Boolean
     {
-        return callHostCode("spawnMob_v1", id);
+        return callHostCode("spawnMob_v1", id, name);
     }
 
     public function despawnMob (id :String) :Boolean
