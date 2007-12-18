@@ -7,13 +7,14 @@
     <include name="google-collect.jar"/>
     <include name="jetty-util.jar"/>
     <include name="jetty.jar"/>
-    <include name="narya-base.jar"/>
-    <include name="narya-distrib.jar"/>
-    <include name="nenya-media.jar"/>
-    <include name="nenya-rsrc.jar"/>
-    <include name="samskivert.jar"/>
     <include name="servlet-*.jar"/>
-    <include name="toybox.jar"/>
-    <include name="vilya-parlor.jar"/>
+    <!-- these might be named lib-SNAPSHOT-0.0.jar or lib.jar -->
+    <include name="samskivert*.jar"/>
+    <include name="narya-base*.jar"/>
+    <include name="narya-distrib*.jar"/>
+    <include name="nenya-media*.jar"/>
+    <include name="nenya-rsrc*.jar"/>
+    <include name="vilya-parlor*.jar"/>
+    <include name="toybox*.jar"/>
   </fileset>
 </project>
