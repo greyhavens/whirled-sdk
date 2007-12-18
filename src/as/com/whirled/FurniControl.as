@@ -9,7 +9,6 @@ import flash.display.DisplayObject;
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
-import flash.events.TextEvent;
 
 /**
  * This file should be included by furniture, so that it can communicate
@@ -34,9 +33,43 @@ public class FurniControl extends EntityControl
         super(disp);
     }
 
+    /**
+     * Register a function used for generating a custom config panel. This will
+     * be called when this piece of furniture is being edited inside whirled.
+     *
+     * @param func signature: function () :DisplayObject
+     * Your function should return a DisplayObject as a configuration panel.
+     * The width/height of the object at return time will be used to configure the amount
+     * of space given it. Any changes made by the user should effect immediately, or
+     * you should provide buttons to apply the change, if absolutely necessary.
+     */
+    public function registerCustomConfig (func :Function) :void
+    {
+        _customConfig = func;
+    }
+
     override protected function isAbstract () :Boolean
     {
         return false;
     }
+
+    override protected function populateProperties (o :Object) :void
+    {
+        super.populateProperties(o);
+
+        o["getConfigPanel_v1"] = getConfigPanel_v1;
+    }
+
+    /**
+     * Called when whirled is editing this furniture, to retrieve any custom configuration
+     * panel.
+     */
+    protected function getConfigPanel_v1 () :DisplayObject
+    {
+        return (_customConfig != null) ? (_customConfig() as DisplayObject) : null;
+    }
+
+    /** A function registered to return a custom configuration panel. */
+    protected var _customConfig :Function;
 }
 }
