@@ -88,10 +88,10 @@
   <property name="players" value="1"/>
   <property name="remotePlayers" value="0"/>
   <target name="test" depends="compile,test-only"
-    description="Recompiles your game and runs it within the test environment."/>
+    description="Recompiles your project and runs it within the test environment."/>
 
   <target name="test-debug" depends="debug,test-only"
-    description="Recompiles your game with debugging and runs it within the test environment."/>
+    description="Recompiles your project (with debugging) and runs it within the test environment."/>
 
   <target name="test-only">
     <!-- No description. You should use "test" or "test-debug". -->

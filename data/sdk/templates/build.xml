@@ -1,7 +1,7 @@
 <!-- build configuration -->
 <project name="@project@" default="compile" basedir=".">
 
-  <!-- defines our project name -->
+  <!-- defines our project name and type -->
   <property name="app.name" value="@project@"/>
   <property name="app.type" value="@type@"/>
 
