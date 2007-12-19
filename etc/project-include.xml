@@ -93,7 +93,9 @@
   <target name="test-debug" depends="debug,test-only"
     description="Recompiles your game with debugging and runs it within the test environment."/>
 
-  <target name="test-only"> <!-- No description. You should use "test" or "test-debug". -->
+  <target name="test-only">
+    <!-- No description. You should use "test" or "test-debug". -->
+
     <!-- make sure the build.properties file exists -->
     <fail>
       <condition><not><isset property="player.path"/></not></condition>
@@ -102,6 +104,22 @@
       your standalone Flash player.
     </fail>
 
+    <property name="app.type" value="game"/> <!-- default to game if unset -->
+    <antcall target="test-${app.type}"/>
+  </target>
+
+  <target name="test-avatar">
+    <echoxml file="parameters.xml">
+    <parameters>
+      <param name="avatar" value="file://${app.name}.swf"/>
+    </parameters>
+    </echoxml>
+    <exec executable="${player.path}">
+      <arg value="${build.root}/lib/avatarviewer.swf"/>
+    </exec>
+  </target>
+
+  <target name="test-game">
     <copy file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
 
     <!-- start the server which will start up the clients -->
@@ -119,4 +137,21 @@
     </java>
   </target>
 
+  <target name="test-furni">
+    <!-- TODO: create a furni viewer that emulates the server environ and loads up the
+      furni in two flashplayer instances. -->
+    <echo>NOTE: furni projects do not currently have a test environment.</echo>
+    <exec executable="${player.path}">
+      <arg value="${app.name}.swf"/>
+    </exec>
+  </target>
+
+  <target name="test-pet">
+    <!-- TODO: create a pet viewer that emulates the server environ and loads up the
+      pet in two flashplayer instances. -->
+    <echo>NOTE: pet projects do not currently have a test environment.</echo>
+    <exec executable="${player.path}">
+      <arg value="${app.name}.swf"/>
+    </exec>
+  </target>
 </project>

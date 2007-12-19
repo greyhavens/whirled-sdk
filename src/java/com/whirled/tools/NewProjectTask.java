@@ -78,6 +78,7 @@ public class NewProjectTask extends Task
         // customize the template files and copy them into the right place
         HashMap<String, String> subs = new HashMap<String, String>();
         subs.put("project", project);
+        subs.put("type", _type.toLowerCase());
 
         copyFile(input, new File(_templates, "build.xml"), new File(pdir, "build.xml"), subs);
         copyFile(input, new File(_templates, "build.bat"), new File(pdir, "build.bat"), subs);
