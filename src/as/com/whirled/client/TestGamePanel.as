@@ -20,7 +20,7 @@ import com.threerings.flex.CommandLinkButton;
 import com.threerings.parlor.game.data.GameObject;
 
 import com.threerings.ezgame.client.GameContainer;
-import com.threerings.ezgame.client.GameControlBackend;
+import com.threerings.ezgame.client.EZGameBackend;
 
 /**
  * Handles the main game view for test games.
@@ -82,9 +82,9 @@ public class TestGamePanel extends WhirledGamePanel
             ((gameObj.players.length == 1) ? "Play again" : "Request a rematch") ];
     }
 
-    override protected function createBackend () :GameControlBackend
+    override protected function createBackend () :EZGameBackend
     {
-        return new TestGameControlBackend(_ctx, _ezObj, _ctrl as TestGameController, this);
+        return new TestGameBackend(_ctx, _ezObj, _ctrl as TestGameController, this);
     }
 
     override protected function configureGameView (view :GameContainer) :void

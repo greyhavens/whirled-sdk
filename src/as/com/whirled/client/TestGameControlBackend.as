@@ -14,15 +14,15 @@ import flash.system.LoaderContext;
 import flash.utils.Dictionary;
 
 import com.threerings.crowd.util.CrowdContext;
-import com.threerings.ezgame.client.GameControlBackend;
+import com.threerings.ezgame.client.EZGameBackend;
 import com.threerings.ezgame.data.EZGameObject;
 
 /**
  * Extends the basic EZGame backend with flow and other whirled services.
  */
-public class TestGameControlBackend extends WhirledGameControlBackend
+public class TestGameBackend extends WhirledGameBackend
 {
-    public function TestGameControlBackend (
+    public function TestGameBackend (
         ctx :CrowdContext, ezObj :EZGameObject, ctrl :TestGameController, panel :TestGamePanel)
     {
         super(ctx, ezObj, ctrl);

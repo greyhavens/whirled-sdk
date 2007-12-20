@@ -17,7 +17,7 @@ import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.util.CrowdContext;
 
 import com.threerings.ezgame.client.EZGameController;
-import com.threerings.ezgame.client.GameControlBackend;
+import com.threerings.ezgame.client.EZGameBackend;
 import com.threerings.ezgame.data.EZGameObject;
 
 import com.whirled.data.GameData;
@@ -29,12 +29,12 @@ import com.whirled.data.WhirledGame;
 /**
  * Extends the basic EZGame backend with flow and other whirled services.
  */
-public class WhirledGameControlBackend extends GameControlBackend
+public class WhirledGameBackend extends EZGameBackend
 {
     /** From the WhirledGame.java; but we can't define constants in WhirledGame.as. */
     public static const FLOW_AWARDED_MESSAGE :String = "FlowAwarded";
 
-    public function WhirledGameControlBackend (
+    public function WhirledGameBackend (
         ctx :CrowdContext, ezObj :EZGameObject, ctrl :WhirledGameController)
     {
         super(ctx, ezObj, ctrl);
@@ -49,7 +49,7 @@ public class WhirledGameControlBackend extends GameControlBackend
         c = TrophyData;
     }
 
-    // from GameControlBackend
+    // from EZGameBackend
     override protected function messageReceivedOnUserObject (event :MessageEvent) :void
     {
         super.messageReceivedOnUserObject(event);
