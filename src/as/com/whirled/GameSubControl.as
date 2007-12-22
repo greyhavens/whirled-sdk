@@ -9,6 +9,10 @@ import com.threerings.util.Log;
 
 import com.threerings.ezgame.EZGameSubControl;
 
+/**
+ * Provides access to the 'game' game services. Do not instantiate this class yourself,
+ * access it via GameControl.game.
+ */
 public class GameSubControl extends EZGameSubControl
 {
     /** Cascading payout skews awards toward the winners by giving 50% of last place's payout to

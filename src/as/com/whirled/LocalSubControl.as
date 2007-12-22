@@ -7,6 +7,10 @@ package com.whirled {
 
 import com.threerings.ezgame.EZLocalSubControl;
 
+/**
+ * Provides access to the 'local' game services. Do not instantiate this class yourself,
+ * access it via GameControl.local.
+ */
 public class LocalSubControl extends EZLocalSubControl
 {
     public function LocalSubControl (parent :WhirledGameControl)

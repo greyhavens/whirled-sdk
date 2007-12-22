@@ -15,6 +15,10 @@ package com.whirled {
 
 import com.threerings.ezgame.EZPlayerSubControl;
 
+/**
+ * Access the 'player' game services. Do not instantiate this class yourself,
+ * access it via GameControl.player.
+ */
 public class PlayerSubControl extends EZPlayerSubControl
 {
     public function PlayerSubControl (parent :WhirledGameControl)

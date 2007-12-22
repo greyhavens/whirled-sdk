@@ -15,7 +15,11 @@ import com.threerings.ezgame.EZGameSubControl;
 import com.threerings.ezgame.EZServicesSubControl;
 
 /**
- * Adds whirled-specific controls to EZGameControl
+ * The primary class used to coordinate game state and control your multiplayer game.
+ *
+ * Typically, you create this in your top-level MovieClip/Sprite:
+ * var _ctrl :WhirledGameControl;
+ * _ctrl = new WhirledGameControl(this);
  */
 public class WhirledGameControl extends AbstractGameControl
 {
