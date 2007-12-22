@@ -19,7 +19,7 @@ public class PreferredCamera
      */
     public static function getPreferredCamera (ctrl :EntityControl) :Camera
     {
-        var prefCam :String = getConfig().getValue("camera", null) as String;
+        var prefCam :String = getPreferredCameraName();
         if (prefCam != null) {
             // find the preferred camera in the list of cameras
             var index :int = Camera.names.indexOf(prefCam);
@@ -28,6 +28,15 @@ public class PreferredCamera
             }
         }
         return ctrl.getCamera();
+    }
+
+    /**
+     * Get the name of this user's preferred camera, or null.
+     * Note: this camera may or may not be a valid camera currently.
+     */
+    public static function getPreferredCameraName () :String
+    {
+        return getConfig().getValue("camera", null) as String;
     }
 
     /**
