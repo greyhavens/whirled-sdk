@@ -108,9 +108,10 @@ public class UserCookie
         var cookie :UserCookie = new UserCookie();
         cookie._control = wgc;
         cookie._cookieDef = cookieDef;
-        cookie._readOnly = occId != -1 && occId != wgc.getMyId();
+        cookie._readOnly = occId != -1 && occId != wgc.game.getMyId();
         cookie._logDebug = enableDebugLogging;
-        wgc.getUserCookie(occId == -1 ? wgc.getMyId() : occId, function (obj :Object) :void {
+        wgc.player.getUserCookie(occId == -1 ? wgc.game.getMyId() : occId,
+        function (obj :Object) :void {
             if (obj is ByteArray) {
                 cookie.read(obj as ByteArray);
             } else {
@@ -282,7 +283,7 @@ public class UserCookie
     protected function flush (... ignored) :void
     {
         if (_dirty) {
-            _control.setUserCookie(write());
+            _control.player.setUserCookie(write());
             _dirty = false;
         }
     }
