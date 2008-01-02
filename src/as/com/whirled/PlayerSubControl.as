@@ -5,15 +5,14 @@
 
 package com.whirled {
 
+import com.threerings.ezgame.EZPlayerSubControl;
+
 /**
  * Dispatched when this player has been awarded flow.
  * 
  * @eventType com.whirled.FlowAwardedEvent.FLOW_AWARDED
  */
 [Event(name="flowAwarded", type="com.whirled.FlowAwardedEvent")]
-
-
-import com.threerings.ezgame.EZPlayerSubControl;
 
 /**
  * Access the 'player' game services. Do not instantiate this class yourself,
