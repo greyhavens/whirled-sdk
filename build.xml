@@ -126,10 +126,21 @@
       <fileset dir="src/as/com/whirled" includes="*.as"/>
       <fileset dir="src/as/com/whirled/util" includes="*.as"/>
     </copy>
+    <!-- work around annoying asdoc .svn directory freakout -->
+    <mkdir dir="${deploy.dir}/tmp/astemps"/>
+    <copy todir="${deploy.dir}/tmp/astemps">
+      <fileset dir="${flex.path}/asdoc/templates" includes="**/*"/>
+    </copy>
+    <exec executable="chmod" failonerror="true">
+      <arg line="a+rx"/>
+      <arg line="${deploy.dir}/tmp/astemps/asDocHelper.linux"/>
+      <arg line="${deploy.dir}/tmp/astemps/asDocHelper"/>
+    </exec>
+    <!-- finally actually run asdoc -->
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
       <arg line="-library-path ${deploy.dir}/whirled.swc"/>
-      <arg line="-templates-path ${flex.path}/asdoc/templates"/>
+      <arg line="-templates-path ${deploy.dir}/tmp/astemps"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
       <!-- TODO: Fix these lines.
       <arg value="-package"/>
@@ -138,6 +149,7 @@
       <arg line="-output ${sdk.build}/docs"/>
     </exec>
     <delete dir="${deploy.dir}/tmp/pubas"/>
+    <delete dir="${deploy.dir}/tmp/astemps"/>
   </target>
 
   <!-- builds the SDK -->
