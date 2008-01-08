@@ -26,6 +26,9 @@ import com.threerings.util.ValueEvent;
  * that someone is manipulating the toy, but the new entrant does not need to grab a lock or
  * wait for the toy to be free, they can start playing, and they will fork the state.
  */
+// TODO:
+// - an option to specifically save usernames in memory so they can be retrieved even
+//   when a user is no longer around.
 public class ForkingToyState extends EventDispatcher
 {
     /** Event type constant. */
@@ -156,7 +159,7 @@ public class ForkingToyState extends EventDispatcher
             _followKey = key;
         }
 
-        _timeout = getTimer() + _idleDelay;
+        setTimeout();
         _seqId = int(incoming[0]);
         _state = incoming[1];
         dispatchEvent(new Event(STATE_UPDATED));
