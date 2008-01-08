@@ -126,19 +126,17 @@
       <fileset dir="src/as/com/whirled" includes="*.as"/>
       <fileset dir="src/as/com/whirled/util" includes="*.as"/>
     </copy>
-    <java classpath="${flex.path}/lib/asdoc.jar" classname="flex2.tools.ASDoc" fork="true">
-      <jvmarg value="-Xmx1024m"/>
-      <jvmarg value="-Dsun.io.useCanonCashes=false"/>
-      <jvmarg value="-Xbootclasspath/p:${flex.path}/asdoc/lib/xalan.jar"/>
-      <jvmarg value="-Dos.name=Windows"/>
-      <arg value="+flexlib=${flex.path}/frameworks"/>
+    <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
       <arg line="-library-path ${deploy.dir}/whirled.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
-      <arg line="-package com.whirled.contrib 'Contains an archive of useful tools for game development, contributed by various authors and users of the Whirled SDK.  See whirled/contrib/README.txt in the SDK for further information.'"/>
+      <!-- TODO: Fix these lines.
+      <arg value="-package"/>
+      <arg value="com.whirled.contrib ${quote}Contains an archive of useful tools for game development, contributed by various authors and users of the Whirled SDK.  See whirled/contrib/README.txt in the SDK for further information.${quote}"/>
+      -->
       <arg line="-output ${sdk.build}/docs"/>
-    </java>
+    </exec>
     <delete dir="${deploy.dir}/tmp/pubas"/>
   </target>
 
