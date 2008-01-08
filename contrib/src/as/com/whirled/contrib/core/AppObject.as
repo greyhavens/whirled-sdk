@@ -73,10 +73,10 @@ public class AppObject
         return this.objectGroups.contains(groupName);
     }
 
-    /** Removes the AppObject from its parent mode. */
+    /** Removes the AppObject from its parent database. */
     public function destroySelf() :void
     {
-        _parentMode.destroyObject(_objectId);
+        _parentDB.destroyObject(_objectId);
     }
 
     /** Adds an unnamed task to this AppObject. */
@@ -147,10 +147,10 @@ public class AppObject
     }
 
     /**
-     * Called immediately after the AppObject has been added to an AppMode.
+     * Called immediately after the AppObject has been added to an ObjectDB.
      * (Subclasses can override this to do something useful.)
      */
-    protected function addedToMode (mode :AppMode) :void
+    protected function addedToDB (db :ObjectDB) :void
     {
     }
 
@@ -158,18 +158,18 @@ public class AppObject
      * Called immediately after the AppObject has been removed from an AppMode.
      * (Subclasses can override this to do something useful.)
      */
-    protected function destroyed (mode :AppMode) :void
+    protected function removedFromDB (db :ObjectDB) :void
     {
     }
 
-    internal function addedToModeInternal (mode :AppMode) :void
+    internal function addedToDBInternal (db :ObjectDB) :void
     {
-        addedToMode(mode);
+        addedToDB(db);
     }
 
-    internal function destroyedInternal (mode :AppMode) :void
+    internal function removedFromDBInternal (db :ObjectDB) :void
     {
-        destroyed(mode);
+        removedFromDB(db);
     }
 
     internal function updateInternal(dt :Number) :void
@@ -197,7 +197,7 @@ public class AppObject
 
     // managed by AppMode
     internal var _objectId :uint = 0xFFFFFFFF;
-    internal var _parentMode :AppMode;
+    internal var _parentDB :ObjectDB;
 }
 
 }

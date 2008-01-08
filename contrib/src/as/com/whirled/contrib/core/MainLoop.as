@@ -78,15 +78,15 @@ public class MainLoop
 
         _lastTime = this.elapsedSeconds;
     }
-    
+
     public function shutdown () :void
     {
         // Most games won't need to call shutdown because the MainLoop will be running as long as the game is.
         // This method is only necessary for games that use multiple MainLoops in their lifetimes.
-        
+
         _mainTimer.removeEventListener(TimerEvent.TIMER, update);
         _mainTimer.stop();
-        
+
         g_instance = null;
     }
 
@@ -142,23 +142,23 @@ public class MainLoop
             Assert.isNotNull(topMode);
 
             _modeStack.pop();
-            _hostSprite.removeChild(topMode);
+            _hostSprite.removeChild(topMode.modeSprite);
 
             // if the top mode is popped, make sure it's exited first
             if (topMode == initialTopMode) {
-                initialTopMode.exit();
+                initialTopMode.exitInternal();
                 initialTopMode = null;
             }
 
-            topMode.destroy();
+            topMode.destroyInternal();
         }
 
         function doPushMode (newMode :AppMode) :void {
             Assert.isNotNull(newMode);
 
             _modeStack.push(newMode);
-            _hostSprite.addChild(newMode);
-            newMode.setup();
+            _hostSprite.addChild(newMode.modeSprite);
+            newMode.setupInternal();
         }
 
         for each (var transition :* in _pendingModeTransitionQueue) {
@@ -200,11 +200,11 @@ public class MainLoop
         var topMode :AppMode = this.topMode;
         if (topMode != initialTopMode) {
             if (null != initialTopMode) {
-                initialTopMode.exit();
+                initialTopMode.exitInternal();
             }
 
             if (null != topMode) {
-                topMode.enter();
+                topMode.enterInternal();
             }
         }
 
