@@ -7,6 +7,7 @@ import com.threerings.util.ArrayUtil;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
+import com.whirled.contrib.core.components.SceneComponent;
 
 public class ObjectDB
 {
@@ -66,8 +67,9 @@ public class ObjectDB
         // (this is purely a convenience - the client is free to
         // do the attaching themselves)
         if (null != displayParent) {
-            Assert.isNotNull(obj.displayObject);
-            displayParent.addChild(obj.displayObject);
+            var sc :SceneComponent = (obj as SceneComponent);
+            Assert.isNotNull(sc);
+            displayParent.addChild(sc.displayObject);
         }
 
         obj.addedToDBInternal(this);
@@ -115,8 +117,9 @@ public class ObjectDB
         // if the object is attached to a DisplayObject, and if that
         // DisplayObject is in a display list, remove it from the display list
         // so that it will no longer be drawn to the screen
-        if (null != obj.displayObject && null != obj.displayObject.parent) {
-            obj.displayObject.parent.removeChild(obj.displayObject);
+        var sc :SceneComponent = (obj as SceneComponent);
+        if (null != sc && null != sc.displayObject && null != sc.displayObject.parent) {
+            sc.displayObject.parent.removeChild(sc.displayObject);
         }
 
         obj.removedFromDBInternal(this);

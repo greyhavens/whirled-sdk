@@ -11,6 +11,7 @@ import flash.geom.Point;
 
 import mx.effects.easing.*;
 import flash.display.DisplayObject;
+import com.whirled.contrib.core.components.LocationComponent;
 
 public class LocationTask extends ObjectTask
 {
@@ -75,18 +76,18 @@ public class LocationTask extends ObjectTask
 
     override public function update (dt :Number, obj :AppObject) :Boolean
     {
-        var displayObj :DisplayObject = obj.displayObject;
-        Assert.isNotNull(displayObj, "LocationTask can only be applied to AppObjects with attached display objects.");
+        var lc :LocationComponent = (obj as LocationComponent);
+        Assert.isNotNull(lc, "LocationTask can only be applied to AppObjects that implement LocationComponent.");
 
         if (0 == _elapsedTime) {
-            _fromX = displayObj.x;
-            _fromY = displayObj.y;
+            _fromX = lc.x;
+            _fromY = lc.y;
         }
 
         _elapsedTime += dt;
 
-        displayObj.x = _interpolator.interpolate(_fromX, _toX, _elapsedTime, _totalTime);
-        displayObj.y = _interpolator.interpolate(_fromY, _toY, _elapsedTime, _totalTime);
+        lc.x = _interpolator.interpolate(_fromX, _toX, _elapsedTime, _totalTime);
+        lc.y = _interpolator.interpolate(_fromY, _toY, _elapsedTime, _totalTime);
 
         return (_elapsedTime >= _totalTime);
     }

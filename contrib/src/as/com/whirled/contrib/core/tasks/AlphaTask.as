@@ -11,6 +11,7 @@ import flash.geom.Point;
 
 import mx.effects.easing.*;
 import flash.display.DisplayObject;
+import com.whirled.contrib.core.components.AlphaComponent;
 
 public class AlphaTask extends ObjectTask
 {
@@ -65,16 +66,16 @@ public class AlphaTask extends ObjectTask
 
     override public function update (dt :Number, obj :AppObject) :Boolean
     {
-        var displayObj :DisplayObject = obj.displayObject;
-        Assert.isNotNull(displayObj, "AlphaTask can only be applied to AppObjects with attached display objects.");
+        var alphaComponent :AlphaComponent = (obj as AlphaComponent);
+        Assert.isNotNull(alphaComponent, "AlphaTask can only be applied to AppObjects that implement AlphaComponent.");
 
         if (0 == _elapsedTime) {
-            _from = displayObj.alpha;
+            _from = alphaComponent.alpha;
         }
 
         _elapsedTime += dt;
 
-        displayObj.alpha = _interpolator.interpolate(_from, _to, _elapsedTime, _totalTime);
+        alphaComponent.alpha = _interpolator.interpolate(_from, _to, _elapsedTime, _totalTime);
 
         return (_elapsedTime >= _totalTime);
     }

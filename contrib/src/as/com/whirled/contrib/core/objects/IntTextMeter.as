@@ -1,11 +1,13 @@
 package com.whirled.contrib.core.objects {
 
 import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.objects.*;
 import com.whirled.contrib.core.components.MeterComponent;
+
 import flash.display.DisplayObject;
 import flash.text.TextField;
 
-public class IntTextMeter extends AppObject
+public class IntTextMeter extends SceneObject
     implements MeterComponent
 {
     public function IntTextMeter ()
@@ -13,6 +15,7 @@ public class IntTextMeter extends AppObject
         _display = new TextField();
     }
 
+    // from SceneObject
     override public function get displayObject () :DisplayObject
     {
         return _display;

@@ -11,6 +11,7 @@ import flash.geom.Point;
 
 import mx.effects.easing.*;
 import flash.display.DisplayObject;
+import com.whirled.contrib.core.components.ScaleComponent;
 
 public class ScaleTask extends ObjectTask
 {
@@ -67,18 +68,18 @@ public class ScaleTask extends ObjectTask
 
     override public function update (dt :Number, obj :AppObject) :Boolean
     {
-        var displayObj :DisplayObject = obj.displayObject;
-        Assert.isNotNull(displayObj, "ScaleTask can only be applied to AppObjects with attached display objects.");
+        var sc :ScaleComponent = (obj as ScaleComponent);
+        Assert.isNotNull(sc, "ScaleTask can only be applied to AppObjects that implement ScaleComponent.");
 
         if (0 == _elapsedTime) {
-            _fromX = displayObj.scaleX;
-            _fromY = displayObj.scaleY;
+            _fromX = sc.scaleX;
+            _fromY = sc.scaleY;
         }
 
         _elapsedTime += dt;
 
-        displayObj.scaleX = _interpolator.interpolate(_fromX, _toX, _elapsedTime, _totalTime);
-        displayObj.scaleY = _interpolator.interpolate(_fromY, _toY, _elapsedTime, _totalTime);
+        sc.scaleX = _interpolator.interpolate(_fromX, _toX, _elapsedTime, _totalTime);
+        sc.scaleY = _interpolator.interpolate(_fromY, _toY, _elapsedTime, _totalTime);
 
         return (_elapsedTime >= _totalTime);
     }

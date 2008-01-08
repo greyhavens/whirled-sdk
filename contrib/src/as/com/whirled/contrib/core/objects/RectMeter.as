@@ -5,7 +5,7 @@ import com.whirled.contrib.core.components.MeterComponent;
 import flash.display.Shape;
 import flash.display.DisplayObject;
 
-public class RectMeter extends AppObject
+public class RectMeter extends SceneObject
     implements MeterComponent
 {
     public function RectMeter ()

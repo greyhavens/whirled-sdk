@@ -2,8 +2,10 @@ package com.whirled.contrib.core.tasks {
 
 import com.threerings.util.Assert;
 
+import com.whirled.contrib.core.components.VisibleComponent;
 import com.whirled.contrib.core.ObjectTask;
 import com.whirled.contrib.core.AppObject;
+
 import flash.display.DisplayObject;
 
 public class VisibleTask extends ObjectTask
@@ -15,10 +17,10 @@ public class VisibleTask extends ObjectTask
 
     override public function update (dt :Number, obj :AppObject) :Boolean
     {
-        var displayObj :DisplayObject = obj.displayObject;
-        Assert.isNotNull(displayObj, "VisibleTask can only be applied to AppObjects with attached display objects.");
+        var vc :VisibleComponent = (obj as VisibleComponent);
+        Assert.isNotNull(displayObj, "VisibleTask can only be applied to AppObjects that implement VisibleComponent.");
 
-        displayObj.visible = _visible;
+        vc.visible = _visible;
 
         return true;
     }

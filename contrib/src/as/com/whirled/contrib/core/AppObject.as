@@ -19,35 +19,6 @@ public class AppObject
     }
 
     /**
-     * Returns the DisplayObject attached to this AppObject,
-     * if one exists, and null otherwise. Default to null.
-     */
-    public function get displayObject () :DisplayObject
-    {
-        return null;
-    }
-
-    /**
-     * Returns the InteractiveObject attached to this AppObject,
-     * if one exists, and null otherwise. Defaults to
-     * (displayObject as InteractiveObject).
-     */
-    public function get interactiveObject () :InteractiveObject
-    {
-        return (this.displayObject as InteractiveObject);
-    }
-
-    /**
-     * Returns the DisplayObjectContainer attached to this AppObject,
-     * if one exists, and null otherwise. Defaults to
-     * (displayObject as DisplayObjectContainer)
-     */
-    public function get displayObjectContainer () :DisplayObjectContainer
-    {
-        return (this.displayObject as DisplayObjectContainer);
-    }
-
-    /**
      * Returns the name of this object.
      * Two objects in the same mode cannot have the same name.
      * Objects cannot change their names once added to a mode.
