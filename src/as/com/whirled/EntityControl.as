@@ -336,6 +336,11 @@ public class EntityControl extends WhirledControl
      *
      * If unset, the default hotspot will be based off of the SWF dimensions, with x = width / 2,
      * y = height.
+     *
+     * @param x the new hotspot x coordinate
+     * @param y the new hotspot y coordinate
+     * @param height if specified, the entity's actual current height, as pixels above the hotspot.
+     *               This is used by avatars to position the name label.
      */
     public function setHotSpot (x :Number, y :Number, height :Number = NaN) :void
     {
