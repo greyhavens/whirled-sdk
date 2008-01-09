@@ -4,8 +4,10 @@ import com.threerings.util.Assert;
 
 import com.whirled.contrib.core.ObjectTask;
 import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.ObjectMessage;
 
-internal class TaskContainer extends ObjectTask
+internal class TaskContainer
+    implements ObjectTask
 {
     public static const TYPE_PARALLEL :uint = 0;
     public static const TYPE_SERIAL :uint = 1;
@@ -47,59 +49,17 @@ internal class TaskContainer extends ObjectTask
         return (_activeTaskCount > 0);
     }
 
-    /** Updates all child tasks. */
-    override public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :AppObject) :Boolean
     {
-        var hasIncompleteTasks :Boolean = false;
-        var i :int;
-        for (i = 0; i < _tasks.length; ++i) {
-            var task :ObjectTask = (_tasks[i] as ObjectTask);
-
-            // we can have holes in the array
-            if (null == task) {
-                continue;
+        return this.applyFunction(
+            function (task :ObjectTask) :Boolean {
+                return task.update(dt, obj);
             }
-
-            var complete :Boolean = task.update(dt, obj);
-
-            if (!complete) {
-                hasIncompleteTasks = true;
-
-                // Serial and Repeating tasks proceed one task at a time
-                if (_type != TYPE_PARALLEL) {
-                    break;
-                }
-
-            } else {
-                // the task is complete - move it the completed tasks array
-                _completedTasks[i] = _tasks[i];
-                _tasks[i] = null;
-                _activeTaskCount -= 1;
-            }
-        }
-
-        // if this is a repeating task and all its tasks have been completed, start over again
-        if (_type == TYPE_REPEATING && !hasIncompleteTasks && _completedTasks.length > 0) {
-            _tasks = new Array(_completedTasks.length);
-
-            for (i = 0; i < _completedTasks.length; ++i) {
-                var completedTask :ObjectTask = (_completedTasks[i] as ObjectTask);
-                Assert.isNotNull(completedTask);
-                _tasks[i] = completedTask.clone();
-            }
-
-            _completedTasks = new Array(_tasks.length);
-
-            hasIncompleteTasks = true;
-
-            _activeTaskCount = _tasks.length;
-        }
-
-        return (!hasIncompleteTasks);
+        );
     }
 
     /** Returns a clone of the TaskContainer. */
-    override public function clone () :ObjectTask
+    public function clone () :ObjectTask
     {
         var theClone :TaskContainer = new TaskContainer(_type);
 
@@ -113,6 +73,67 @@ internal class TaskContainer extends ObjectTask
         }
 
         return theClone;
+    }
+
+    public function receiveMessage (msg :ObjectMessage) :Boolean
+    {
+        return this.applyFunction(
+            function (task :ObjectTask) :Boolean {
+                return task.receiveMessage(msg);
+            }
+        );
+    }
+
+    /**
+     * Helper function that applies the function f to each object in the container
+     * (for parallel tasks) or the first object in the container (for serial and repeating tasks)
+     * and returns true if there are no more active tasks in the container.
+     * f must be of the form:
+     * function f (task :ObjectTask) :Boolean
+     * it must return true if the task is complete after f is applied.
+     */
+    protected function applyFunction (f :Function) :Boolean
+    {
+        var i :int;
+
+        for (i = 0; i < _tasks.length; ++i) {
+            var task :ObjectTask = (_tasks[i] as ObjectTask);
+
+            // we can have holes in the array
+            if (null == task) {
+                continue;
+            }
+
+            var complete :Boolean = f(task);
+
+            if (!complete && TYPE_PARALLEL != _type) {
+                // Serial and Repeating tasks proceed one task at a time
+                break;
+
+            } else if (complete) {
+                // the task is complete - move it the completed tasks array
+                _completedTasks[i] = _tasks[i];
+                _tasks[i] = null;
+                _activeTaskCount -= 1;
+            }
+        }
+
+        // if this is a repeating task and all its tasks have been completed, start over again
+        if (_type == TYPE_REPEATING && 0 == _activeTaskCount && _completedTasks.length > 0) {
+            _tasks = new Array(_completedTasks.length);
+
+            for (i = 0; i < _completedTasks.length; ++i) {
+                var completedTask :ObjectTask = (_completedTasks[i] as ObjectTask);
+                Assert.isNotNull(completedTask);
+                _tasks[i] = completedTask.clone();
+            }
+
+            _completedTasks = new Array(_tasks.length);
+            _activeTaskCount = _tasks.length;
+        }
+
+        // once we have no more active tasks, we're complete
+        return (0 == _activeTaskCount);
     }
 
     protected var _type :int;

@@ -4,13 +4,16 @@ import com.threerings.util.Assert;
 
 import com.whirled.contrib.core.AppObject;
 import com.whirled.contrib.core.ObjectTask;
+import com.whirled.contrib.core.ObjectMessage;
+
 import com.whirled.contrib.core.util.Interpolator;
 import com.whirled.contrib.core.util.MXInterpolatorAdapter;
 import com.whirled.contrib.core.components.MeterComponent;
 
 import mx.effects.easing.*;
 
-public class MeterValueTask extends ObjectTask
+public class MeterValueTask
+    implements ObjectTask
 {
     public static function CreateLinear (value :Number, time :Number) :MeterValueTask
     {
@@ -69,7 +72,7 @@ public class MeterValueTask extends ObjectTask
         _interpolator = interpolator;
     }
 
-    override public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :AppObject) :Boolean
     {
         var meterComponent :MeterComponent = (obj as MeterComponent);
         Assert.isNotNull(meterComponent, "MeterValueTask can only be applied to MeterComponents.");
@@ -85,9 +88,14 @@ public class MeterValueTask extends ObjectTask
         return (_elapsedTime >= _totalTime);
     }
 
-    override public function clone () :ObjectTask
+    public function clone () :ObjectTask
     {
         return new MeterValueTask(_to, _totalTime, _interpolator);
+    }
+
+    public function receiveMessage (msg :ObjectMessage) :Boolean
+    {
+        return false;
     }
 
     protected var _interpolator :Interpolator;

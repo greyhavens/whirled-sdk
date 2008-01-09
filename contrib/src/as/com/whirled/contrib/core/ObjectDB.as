@@ -23,7 +23,6 @@ public class ObjectDB
     public function addObject (obj :AppObject, displayParent :DisplayObjectContainer = null) :uint
     {
         Assert.isTrue(null != obj);
-        Assert.isTrue(0xFFFFFFFF == obj._objectId);
         Assert.isTrue(null == obj._parentDB);
 
         // if there's no free slot in our objects array,

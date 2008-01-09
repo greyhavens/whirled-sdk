@@ -1,24 +1,21 @@
 package com.whirled.contrib.core {
 
-import com.threerings.util.Assert;
-
-public class ObjectTask
+public interface ObjectTask
 {
     /**
      * Updates the ObjectTask.
      * Returns true if the task has completed, otherwise false.
      */
-    public function update (dt :Number, obj :AppObject) :Boolean
-    {
-        return true;
-    }
+    function update (dt :Number, obj :AppObject) :Boolean;
 
     /** Returns a copy of the ObjectTask */
-    public function clone () :ObjectTask
-    {
-        Assert.fail("ObjectTask.clone() called on a task that doesn't implement it.");
-        return null;
-    }
+    function clone () :ObjectTask;
+
+    /**
+     * Called when the task's parent object receives a message.
+     * Returns true if the task has completed, otherwise false.
+     */
+    function receiveMessage (msg :ObjectMessage) :Boolean;
 }
 
 }

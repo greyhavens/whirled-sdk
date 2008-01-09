@@ -12,8 +12,10 @@ import flash.geom.Point;
 import mx.effects.easing.*;
 import flash.display.DisplayObject;
 import com.whirled.contrib.core.components.LocationComponent;
+import com.whirled.contrib.core.ObjectMessage;
 
-public class LocationTask extends ObjectTask
+public class LocationTask
+    implements ObjectTask
 {
     public static function CreateLinear (x :Number, y :Number, time :Number) :LocationTask
     {
@@ -74,7 +76,7 @@ public class LocationTask extends ObjectTask
         _interpolator = interpolator;
     }
 
-    override public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :AppObject) :Boolean
     {
         var lc :LocationComponent = (obj as LocationComponent);
         Assert.isNotNull(lc, "LocationTask can only be applied to AppObjects that implement LocationComponent.");
@@ -92,9 +94,14 @@ public class LocationTask extends ObjectTask
         return (_elapsedTime >= _totalTime);
     }
 
-    override public function clone () :ObjectTask
+    public function clone () :ObjectTask
     {
         return new LocationTask(_toX, _toY, _totalTime, _interpolator);
+    }
+
+    public function receiveMessage (msg :ObjectMessage) :Boolean
+    {
+        return false;
     }
 
     protected var _interpolator :Interpolator;

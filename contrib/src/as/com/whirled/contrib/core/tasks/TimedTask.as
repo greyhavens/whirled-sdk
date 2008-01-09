@@ -2,24 +2,31 @@ package com.whirled.contrib.core.tasks {
 
 import com.whirled.contrib.core.AppObject;
 import com.whirled.contrib.core.ObjectTask;
+import com.whirled.contrib.core.ObjectMessage;
 
-public class TimedTask extends ObjectTask
+public class TimedTask
+    implements ObjectTask
 {
     public function TimedTask (time :Number)
     {
         _time = time;
     }
 
-    override public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :AppObject) :Boolean
     {
         _elapsedTime += dt;
 
         return (_elapsedTime >= _time);
     }
 
-    override public function clone () :ObjectTask
+    public function clone () :ObjectTask
     {
         return new TimedTask(_time);
+    }
+
+    public function receiveMessage (msg :ObjectMessage) :Boolean
+    {
+        return false;
     }
 
     protected var _time :Number = 0;

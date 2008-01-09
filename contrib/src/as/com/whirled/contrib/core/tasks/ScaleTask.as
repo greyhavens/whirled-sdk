@@ -4,6 +4,7 @@ import com.threerings.util.Assert;
 
 import com.whirled.contrib.core.AppObject;
 import com.whirled.contrib.core.ObjectTask;
+import com.whirled.contrib.core.ObjectMessage;
 import com.whirled.contrib.core.util.Interpolator;
 import com.whirled.contrib.core.util.MXInterpolatorAdapter;
 
@@ -13,7 +14,8 @@ import mx.effects.easing.*;
 import flash.display.DisplayObject;
 import com.whirled.contrib.core.components.ScaleComponent;
 
-public class ScaleTask extends ObjectTask
+public class ScaleTask
+    implements ObjectTask
 {
     public static function CreateLinear (x :Number, y :Number, time :Number) :ScaleTask
     {
@@ -66,7 +68,7 @@ public class ScaleTask extends ObjectTask
         _interpolator = interpolator;
     }
 
-    override public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :AppObject) :Boolean
     {
         var sc :ScaleComponent = (obj as ScaleComponent);
         Assert.isNotNull(sc, "ScaleTask can only be applied to AppObjects that implement ScaleComponent.");
@@ -84,9 +86,14 @@ public class ScaleTask extends ObjectTask
         return (_elapsedTime >= _totalTime);
     }
 
-    override public function clone () :ObjectTask
+    public function clone () :ObjectTask
     {
         return new ScaleTask(_toX, _toY, _totalTime, _interpolator);
+    }
+
+    public function receiveMessage (msg :ObjectMessage) :Boolean
+    {
+        return false;
     }
 
     protected var _interpolator :Interpolator;

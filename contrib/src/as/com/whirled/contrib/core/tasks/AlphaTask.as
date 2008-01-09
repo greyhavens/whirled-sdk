@@ -4,6 +4,8 @@ import com.threerings.util.Assert;
 
 import com.whirled.contrib.core.AppObject;
 import com.whirled.contrib.core.ObjectTask;
+import com.whirled.contrib.core.ObjectMessage;
+
 import com.whirled.contrib.core.util.Interpolator;
 import com.whirled.contrib.core.util.MXInterpolatorAdapter;
 
@@ -13,7 +15,8 @@ import mx.effects.easing.*;
 import flash.display.DisplayObject;
 import com.whirled.contrib.core.components.AlphaComponent;
 
-public class AlphaTask extends ObjectTask
+public class AlphaTask
+    implements ObjectTask
 {
     public static function CreateLinear (alpha :Number, time :Number) :AlphaTask
     {
@@ -64,7 +67,7 @@ public class AlphaTask extends ObjectTask
         _interpolator = interpolator;
     }
 
-    override public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :AppObject) :Boolean
     {
         var alphaComponent :AlphaComponent = (obj as AlphaComponent);
         Assert.isNotNull(alphaComponent, "AlphaTask can only be applied to AppObjects that implement AlphaComponent.");
@@ -80,9 +83,14 @@ public class AlphaTask extends ObjectTask
         return (_elapsedTime >= _totalTime);
     }
 
-    override public function clone () :ObjectTask
+    public function clone () :ObjectTask
     {
         return new AlphaTask(_to, _totalTime, _interpolator);
+    }
+
+    public function receiveMessage (msg :ObjectMessage) :Boolean
+    {
+        return false;
     }
 
     protected var _interpolator :Interpolator;
