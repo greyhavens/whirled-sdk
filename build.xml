@@ -142,10 +142,7 @@
       <arg line="-library-path ${deploy.dir}/whirled.swc"/>
       <arg line="-templates-path ${deploy.dir}/tmp/astemps"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
-      <!-- TODO: Fix these lines.
-      <arg value="-package"/>
-      <arg value="com.whirled.contrib ${quote}Contains an archive of useful tools for game development, contributed by various authors and users of the Whirled SDK.  See whirled/contrib/README.txt in the SDK for further information.${quote}"/>
-      -->
+      <arg line="-load-config+=etc/asdoc-config.xml"/>
       <arg line="-output ${sdk.build}/docs"/>
     </exec>
     <delete dir="${deploy.dir}/tmp/pubas"/>
