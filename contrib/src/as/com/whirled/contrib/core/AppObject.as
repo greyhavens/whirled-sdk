@@ -161,7 +161,7 @@ public class AppObject
 
         update(dt);
 
-        function updateNamedTaskContainer (name :*, tasks:*) :void {
+        function updateNamedTaskContainer (name :*, tasks :*) :void {
             // Tasks may be removed from the object during the _namedTasks.forEach() loop.
             // When this happens, we'll get undefined 'tasks' objects.
             if (undefined !== tasks) {
@@ -172,6 +172,15 @@ public class AppObject
 
     internal function receiveMessageInternal (msg :ObjectMessage) :void
     {
+        _anonymousTasks.receiveMessage(msg);
+
+        _namedTasks.forEach(
+            function (name :*, tasks:*) :void {
+                if (undefined !== tasks) {
+                    (tasks as ParallelTask).receiveMessage(msg);
+                }
+            });
+
         receiveMessage(msg);
     }
 
