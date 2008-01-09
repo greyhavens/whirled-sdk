@@ -121,7 +121,7 @@ public class AvatarControl extends ActorControl
         // if the state is null, call it by the name of the first registered state
         var state :String = super.getState();
         if (state == null && _states.length > 0) {
-            state = String(_states[0]);
+            state = _states[0] as String;
         }
         return state;
     }
