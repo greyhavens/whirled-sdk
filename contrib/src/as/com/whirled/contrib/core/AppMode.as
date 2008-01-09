@@ -41,6 +41,9 @@ public class AppMode extends ObjectDB
 
     internal function setupInternal () :void
     {
+        this.modeSprite.mouseEnabled = false;
+        this.modeSprite.mouseChildren = false;
+
         setup();
     }
 
@@ -51,11 +54,17 @@ public class AppMode extends ObjectDB
 
     internal function enterInternal () :void
     {
+        this.modeSprite.mouseEnabled = true;
+        this.modeSprite.mouseChildren = true;
+
         enter();
     }
 
     internal function exitInternal () :void
     {
+        this.modeSprite.mouseEnabled = false;
+        this.modeSprite.mouseChildren = false;
+
         exit();
     }
 
