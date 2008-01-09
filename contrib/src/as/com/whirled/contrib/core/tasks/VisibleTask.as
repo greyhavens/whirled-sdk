@@ -18,7 +18,7 @@ public class VisibleTask extends ObjectTask
     override public function update (dt :Number, obj :AppObject) :Boolean
     {
         var vc :VisibleComponent = (obj as VisibleComponent);
-        Assert.isNotNull(displayObj, "VisibleTask can only be applied to AppObjects that implement VisibleComponent.");
+        Assert.isNotNull(vc, "VisibleTask can only be applied to AppObjects that implement VisibleComponent.");
 
         vc.visible = _visible;
 
