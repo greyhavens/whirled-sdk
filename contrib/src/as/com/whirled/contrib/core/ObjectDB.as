@@ -16,7 +16,7 @@ public class ObjectDB
     }
 
     /**
-     * Adds an AppObject to the mode. The AppObject must not be owned by another mode.
+     * Adds an AppObject to the database. The AppObject must not be owned by another database.
      * If displayParent is not null, obj's attached DisplayObject will be added as a child
      * of displayParent.
      */
@@ -169,10 +169,54 @@ public class ObjectDB
         }
     }
 
+    /** Sends a message to every object in the database. */
+    public function broadcastMessage (msg :ObjectMessage) :void
+    {
+        for each (var obj :AppObject in _objects) {
+            if (null != obj) {
+                obj.receiveMessageInternal(msg);
+            }
+        }
+    }
+
+    /** Sends a message to a specific object. */
+    public function sendMessageTo (msg :ObjectMessage, targetId :uint) :void
+    {
+        var target :AppObject = this.getObject(targetId);
+        if (null != target) {
+            target.receiveMessageInternal(msg);
+        }
+    }
+
+    /** Sends a message to the object with the given name. */
+    public function sendMessageToNamedObject (msg :ObjectMessage, objectName :String) :void
+    {
+        var target :AppObject = this.getObjectNamed(objectName);
+        if (null != target) {
+            target.receiveMessageInternal(msg);
+        }
+    }
+
+    /** Sends a message to each object in the given group. */
+    public function sendMessageToGroup (msg :ObjectMessage, groupName :String) :void
+    {
+        var objs :Array = this.getObjectsInGroup(groupName);
+        for each (var obj :AppObject in objs) {
+            obj.receiveMessageInternal(msg);
+        }
+    }
+
     internal function createObjectId (index :uint) :uint
     {
         Assert.isTrue(index <= 0x0000FFFF);
-        return ((_serialNumberCounter++ << 16) | (index & 0x0000FFFF));
+
+        var sn :uint = _serialNumberCounter++;
+
+        if (_serialNumberCounter > 0x0000FFFF) {
+            _serialNumberCounter = 1; // never generate a sn of 0
+        }
+
+        return ((sn << 16) | (index & 0x0000FFFF));
     }
 
     internal function idToIndex (id :uint) :uint
@@ -193,7 +237,7 @@ public class ObjectDB
     protected var _objectCount :uint;
     protected var _objects :Array = new Array();
     protected var _freeIndexes :Array = new Array();
-    protected var _serialNumberCounter :uint;
+    protected var _serialNumberCounter :uint = 1;
 
     /** stores a mapping from String to Object */
     protected var _namedObjects :HashMap = new HashMap();

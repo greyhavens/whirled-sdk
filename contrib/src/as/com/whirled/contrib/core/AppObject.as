@@ -133,6 +133,15 @@ public class AppObject
     {
     }
 
+    /**
+     * Called to deliver a message to the object.
+     * (Subclasses can override this to do something useful.)
+     */
+    protected function receiveMessage (msg :ObjectMessage) :void
+    {
+
+    }
+
     internal function addedToDBInternal (db :ObjectDB) :void
     {
         addedToDB(db);
@@ -143,7 +152,7 @@ public class AppObject
         removedFromDB(db);
     }
 
-    internal function updateInternal(dt :Number) :void
+    internal function updateInternal (dt :Number) :void
     {
         _anonymousTasks.update(dt, this);
 
@@ -161,13 +170,18 @@ public class AppObject
         }
     }
 
+    internal function receiveMessageInternal (msg :ObjectMessage) :void
+    {
+        receiveMessage(msg);
+    }
+
     protected var _anonymousTasks :ParallelTask = new ParallelTask();
 
     // stores a mapping from String to ParallelTask
     protected var _namedTasks :SortedHashMap = new SortedHashMap(SortedHashMap.STRING_KEYS);
 
     // managed by AppMode
-    internal var _objectId :uint = 0xFFFFFFFF;
+    internal var _objectId :uint;
     internal var _parentDB :ObjectDB;
 }
 

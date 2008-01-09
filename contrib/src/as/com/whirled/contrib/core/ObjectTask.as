@@ -5,7 +5,7 @@ import com.threerings.util.Assert;
 public class ObjectTask
 {
     /**
-     * Updates the IObjectTask.
+     * Updates the ObjectTask.
      * Returns true if the task has completed, otherwise false.
      */
     public function update (dt :Number, obj :AppObject) :Boolean
