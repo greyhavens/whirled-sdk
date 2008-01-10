@@ -30,6 +30,20 @@ import deng.fzip.FZipErrorEvent;
 import deng.fzip.FZipEvent;
 
 /**
+ * Dispatched when the DataPack has completed loading.
+ *
+ * @eventType flash.events.Event.COMPLETE
+ */
+[Event(name="complete", type="flash.events.Event")]
+
+/**
+ * Dispatched when the DataPack could not load due to an error.
+ *
+ * @eventType flash.events.ErrorEvent.ERROR
+ */
+[Event(name="error", type="flash.events.ErrorEvent")]
+
+/**
  * Handles downloading and extracting goodies from a DataPack.
  */
 public class DataPack extends EventDispatcher
