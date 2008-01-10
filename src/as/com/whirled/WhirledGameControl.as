@@ -77,16 +77,25 @@ public class WhirledGameControl extends AbstractGameControl
         return _servicesCtrl;
     }
 
+    /**
+     * @private
+     */
     override protected function createLocalControl () :EZLocalSubControl
     {
         return new LocalSubControl(this);
     }
 
+    /**
+     * @private
+     */
     override protected function createPlayerControl () :EZPlayerSubControl
     {
         return new PlayerSubControl(this);
     }
 
+    /**
+     * @private
+     */
     override protected function createGameControl () :EZGameSubControl
     {
         return new GameSubControl(this);

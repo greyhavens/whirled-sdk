@@ -87,6 +87,9 @@ public class PlayerSubControl extends EZPlayerSubControl
         callHostCode("awardPrize_v1", ident);
     }
 
+    /**
+     * @private
+     */
     override protected function populateProperties (o :Object) :void
     {
         super.populateProperties(o);
