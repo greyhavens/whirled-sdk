@@ -2,14 +2,10 @@ package com.whirled.contrib.core {
 
 public class ObjectMessage
 {
-    public function ObjectMessage (name :String, sourceId :uint = 0)
+    public function ObjectMessage (name :String, data :* = null)
     {
-        _sourceId = sourceId;
-    }
-
-    public function get sourceId () :uint
-    {
-        return _sourceId;
+        _name = name;
+        _data = data;
     }
 
     public function get name () :String
@@ -17,8 +13,13 @@ public class ObjectMessage
         return _name;
     }
 
+    public function get data () :*
+    {
+        return _data;
+    }
+
     protected var _name :String;
-    protected var _sourceId :uint;
+    protected var _data :*;
 
 }
 
