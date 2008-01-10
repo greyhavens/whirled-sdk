@@ -77,6 +77,26 @@
     </java>
   </target>
 
+  <target name="asdoc" description="Builds documentation in a 'docs' subdirectory.">
+    <mkdir dir="tmp-templates"/>
+    <copy todir="tmp-templates">
+      <fileset dir="${flex.path}/asdoc/templates" includes="**/*"/>
+    </copy>
+    <exec executable="chmod" failonerror="true">
+      <arg line="a+rx"/>
+      <arg line="tmp-templates/asDocHelper.linux"/>
+      <arg line="tmp-templates/asDocHelper"/>
+    </exec>
+    <exec executable="${flex.path}/bin/asdoc" failonerror="true">
+      <arg line="-library-path ${build.root}/dist"/>
+      <arg line="-library-path ${app.library-dir}"/>
+      <arg line="-templates-path tmp-templates"/>
+      <arg line="-doc-sources ."/>
+      <arg line="-output docs"/>
+    </exec>
+    <delete dir="tmp-templates"/>
+  </target>
+
   <!-- cleans out the compiled SWF -->
   <target name="clean">
     <delete>
