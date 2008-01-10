@@ -117,28 +117,13 @@
   <target name="asdoc">
     <mkdir dir="${sdk.build}/docs"/>
     <!-- we need to generate docs just for the public facing stuff, so we do this hackery -->
-    <mkdir dir="${deploy.dir}/tmp/pubas/com/threerings/util"/>
-    <mkdir dir="${deploy.dir}/tmp/pubas/com/threerings/flash"/>
-    <mkdir dir="${deploy.dir}/tmp/pubas/com/threerings/ezgame"/>
-    <mkdir dir="${deploy.dir}/tmp/pubas/com/whirled"/>
-    <mkdir dir="${deploy.dir}/tmp/pubas/com/whirled/contrib"/>
-    <copy todir="${deploy.dir}/tmp/pubas/com/threerings/util">
-      <fileset dir="${projects.dir}/narya/src/as/com/threerings/util" includes="*.as"/>
-    </copy>
-    <copy todir="${deploy.dir}/tmp/pubas/com/threerings/flash">
-      <fileset dir="${projects.dir}/nenya/src/as/com/threerings/flash" includes="**/*.as"/>
-    </copy>
-    <copy todir="${deploy.dir}/tmp/pubas/com/threerings/ezgame">
+    <copy todir="${deploy.dir}/tmp/pubas">
+      <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/*.as"/>
+      <fileset dir="${projects.dir}/nenya/src/as" includes="com/threerings/flash/**/*.as"/>
       <fileset dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="*.as"/>
-    </copy>
-    <copy todir="${deploy.dir}/tmp/pubas/com/whirled/contrib">
-      <fileset dir="contrib/src/as/com/whirled" includes="**/*.as"/>
-    </copy>
-    <copy todir="${deploy.dir}/tmp/pubas/com/whirled">
-      <fileset dir="src/as/com/whirled" includes="*.as"/>
-    </copy>
-    <copy todir="${deploy.dir}/tmp/pubas/com/whirled/util">
-      <fileset dir="src/as/com/whirled/util" includes="*.as"/>
+      <fileset dir="src/as" includes="com/whirled/*.as"/>
+      <fileset dir="src/as" includes="com/whirled/util/*.as"/>
+      <fileset dir="contrib/src/as" includes="com/whirled/**/*.as"/>
     </copy>
     <!-- work around annoying asdoc .svn directory freakout -->
     <mkdir dir="${deploy.dir}/tmp/astemps"/>
