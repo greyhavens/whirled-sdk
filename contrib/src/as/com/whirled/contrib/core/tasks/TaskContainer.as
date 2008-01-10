@@ -6,7 +6,7 @@ import com.whirled.contrib.core.ObjectTask;
 import com.whirled.contrib.core.AppObject;
 import com.whirled.contrib.core.ObjectMessage;
 
-internal class TaskContainer
+public class TaskContainer
     implements ObjectTask
 {
     public static const TYPE_PARALLEL :uint = 0;
@@ -120,16 +120,14 @@ internal class TaskContainer
 
         // if this is a repeating task and all its tasks have been completed, start over again
         if (_type == TYPE_REPEATING && 0 == _activeTaskCount && _completedTasks.length > 0) {
-            _tasks = new Array(_completedTasks.length);
+            var completedTasks :Array = _completedTasks;
 
-            for (i = 0; i < _completedTasks.length; ++i) {
-                var completedTask :ObjectTask = (_completedTasks[i] as ObjectTask);
-                Assert.isNotNull(completedTask);
-                _tasks[i] = completedTask.clone();
+            _tasks = new Array();
+            _completedTasks = new Array();
+
+            for each (var completedTask :ObjectTask in completedTasks) {
+                this.addTask(completedTask);
             }
-
-            _completedTasks = new Array(_tasks.length);
-            _activeTaskCount = _tasks.length;
         }
 
         // once we have no more active tasks, we're complete
