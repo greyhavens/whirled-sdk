@@ -126,7 +126,7 @@ public class TaskContainer
             _completedTasks = new Array();
 
             for each (var completedTask :ObjectTask in completedTasks) {
-                this.addTask(completedTask);
+                this.addTask(completedTask.clone());
             }
         }
 
