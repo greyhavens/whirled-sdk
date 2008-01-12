@@ -23,12 +23,8 @@ package deng.fzip
 	import flash.events.*;
 	import flash.net.URLRequest;
 	import flash.net.URLStream;
-	import flash.utils.ByteArray;
-	import flash.utils.Endian;
-	import flash.utils.IDataInput;
-	import flash.utils.Dictionary;
-	
 	import flash.text.*;
+	import flash.utils.*;
 
 	/**
 	 * Dispatched when a file contained in a ZIP archive has 
@@ -78,6 +74,7 @@ package deng.fzip
 	 *
 	 * @eventType flash.events.Event.OPEN
 	 */
+	 
 	[Event(name="open", type="flash.events.Event")]
 
 	/**
@@ -100,13 +97,17 @@ package deng.fzip
 	/**
 	 * Loads and parses ZIP archives.
 	 * 
-	 * <p>FZip is able to process standard ZIP archives as described in the
+	 * <p>FZip is able to process, create and modify standard ZIP archives as described in the
 	 * <a href="http://www.pkware.com/business_and_developers/developer/popups/appnote.txt">PKZIP file format documentation</a>.</p>
 	 * 
 	 * <p>Limitations:</p>
 	 * <ul>
 	 * <li>ZIP feature versions &gt; 2.0 are not supported</li>
 	 * <li>ZIP archives containing data descriptor records are not supported.</li>
+	 * <li>If running in the Flash Player browser plugin, FZip requires ZIPs to be 
+	 * patched (Adler32 checksums need to be added). This is not required if
+	 * FZip runs in the Adobe AIR runtime or if files contained in the ZIP 
+	 * are not compressed.</li>
 	 * </ul>
 	 */		
 	public class FZip extends EventDispatcher
@@ -183,6 +184,58 @@ package deng.fzip
 		}
 
 		/**
+		 * Serializes this zip archive into an IDataOutput stream (such as 
+		 * ByteArray or FileStream) according to PKZIP APPNOTE.TXT
+		 * 
+		 * @param stream The stream to serialize the zip file into.
+		 */		
+		public function serialize(stream:IDataOutput):void {
+			if(stream != null && filesList.length > 0) {
+				var endian:String = stream.endian;
+				var ba:ByteArray = new ByteArray();
+				stream.endian = ba.endian = Endian.LITTLE_ENDIAN;
+				var offset:uint = 0;
+				var files:uint = 0;
+				for(var i:int = 0; i < filesList.length; i++) {
+					var file:FZipFile = filesList[i] as FZipFile;
+					if(file != null) {
+						// first serialize the central directory item
+						// into our temporary ByteArray
+						file.serialize(ba, true, offset);
+						// then serialize the file itself into the stream
+						// and update the offset
+						offset += file.serialize(stream);
+						// keep track of how many files we have written
+						files++;
+					}
+				}
+				if(ba.length > 0) {
+					// Write the central diectory items
+					stream.writeBytes(ba);
+				}
+				// Write end of central directory:
+				// Write signature
+				stream.writeUnsignedInt(0x06054b50);
+				// Write number of this disk (always 0)
+				stream.writeShort(0);
+				// Write number of this disk with the start of the central directory (always 0)
+				stream.writeShort(0);
+				// Write total number of entries on this disk
+				stream.writeShort(files);
+				// Write total number of entries
+				stream.writeShort(files);
+				// Write size
+				stream.writeUnsignedInt(ba.length);
+				// Write offset of start of central directory with respect to the starting disk number
+				stream.writeUnsignedInt(offset);
+				// Write zip file comment length (always 0)
+				stream.writeShort(0);
+				// Reset endian of stream
+				stream.endian = endian;
+			}
+		}
+
+		/**
 		 * Gets the number of accessible files in the ZIP archive.
 		 * 
 		 * @return The number of files
@@ -209,6 +262,106 @@ package deng.fzip
 		 */				
 		public function getFileByName(name:String):FZipFile {
 			return filesDict[name] ? filesDict[name] as FZipFile : null;
+		}
+
+		/**
+		 * Adds a file to the ZIP archive.
+		 * 
+		 * @param name The filename
+		 * @param content The ByteArray containing the uncompressed data (pass <code>null</code> to add a folder)
+		 * @return A reference to the newly created FZipFile object
+		 */				
+		public function addFile(name:String, content:ByteArray = null):FZipFile {
+			return addFileAt(filesList ? filesList.length : 0, name, content);
+		}
+
+		/**
+		 * Adds a file from a String to the ZIP archive.
+		 * 
+		 * @param name The filename
+		 * @param content The String
+		 * @param charset The character set
+		 * @return A reference to the newly created FZipFile object
+		 */				
+		public function addFileFromString(name:String, content:String, charset:String = "utf-8"):FZipFile {
+			return addFileFromStringAt(filesList ? filesList.length : 0, name, content, charset);
+		}
+
+		/**
+		 * Adds a file to the ZIP archive, at a specified index.
+		 * 
+		 * @param index The index
+		 * @param name The filename
+		 * @param content The ByteArray containing the uncompressed data (pass <code>null</code> to add a folder)
+		 * @return A reference to the newly created FZipFile object
+		 */				
+		public function addFileAt(index:uint, name:String, content:ByteArray = null):FZipFile {
+			if(filesList == null) {
+				filesList = [];
+			}
+			if(filesDict == null) {
+				filesDict = new Dictionary();
+			} else if(filesDict[name]) {
+				throw(new Error("File already exists: " + name + ". Please remove first."));
+			}
+			var file:FZipFile = new FZipFile();
+			file.filename = name;
+			file.content = content;
+			if(index >= filesList.length) {
+				filesList.push(file);
+			} else {
+				filesList.splice(index, 0, file);
+			}
+			filesDict[name] = file;
+			return file;
+		}
+
+		/**
+		 * Adds a file from a String to the ZIP archive, at a specified index.
+		 * 
+		 * @param index The index
+		 * @param name The filename
+		 * @param content The String
+		 * @param charset The character set
+		 * @return A reference to the newly created FZipFile object
+		 */				
+		public function addFileFromStringAt(index:uint, name:String, content:String, charset:String = "utf-8"):FZipFile {
+			if(filesList == null) {
+				filesList = [];
+			}
+			if(filesDict == null) {
+				filesDict = new Dictionary();
+			} else if(filesDict[name]) {
+				throw(new Error("File already exists: " + name + ". Please remove first."));
+			}
+			var file:FZipFile = new FZipFile();
+			file.filename = name;
+			file.setContentAsString(content, charset);
+			if(index >= filesList.length) {
+				filesList.push(file);
+			} else {
+				filesList.splice(index, 0, file);
+			}
+			filesDict[name] = file;
+			return file;
+		}
+
+		/**
+		 * Removes a file at a specified index from the ZIP archive.
+		 * 
+		 * @param index The index
+		 * @return A reference to the removed FZipFile object
+		 */				
+		public function removeFileAt(index:uint):FZipFile {
+			if(filesList != null && filesDict != null && index < filesList.length) {
+				var file:FZipFile = filesList[index] as FZipFile;
+				if(file != null) {
+					filesList.splice(index, 1);
+					delete filesDict[file.filename];
+					return file;
+				}
+			}
+			return null;
 		}
 
 		/**
@@ -259,9 +412,9 @@ package deng.fzip
 				if (currentFile.filename) {
 					filesDict[currentFile.filename] = currentFile;
 				}
-				parseState = signature;
 				dispatchEvent(new FZipEvent(FZipEvent.FILE_LOADED, currentFile));
 				currentFile = null;
+				parseState = signature;
 				return true;
 			}
 			return false;

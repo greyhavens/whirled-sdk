@@ -20,18 +20,17 @@
 
 package deng.fzip
 {
-	import flash.display.Loader;
-	import flash.system.LoaderContext;
+	import deng.utils.ChecksumUtil;
 	import flash.utils.*;
 
 	/**
-	 * Represents a file contained in a ZIP archive loaded by FZip.
+	 * Represents a file contained in a ZIP archive.
 	 */		
 	public class FZipFile
 	{
-		private var _versionHost:int = -1;
-		private var _versionNumber:String = "";
-		private var _compressionMethod:int = -1;
+		private var _versionHost:int = 0;
+		private var _versionNumber:String = "2.0";
+		private var _compressionMethod:int = 8;
 		private var _encrypted:Boolean = false;
 		private var _implodeDictSize:int = -1;
 		private var _implodeShannonFanoTrees:int = -1;
@@ -40,8 +39,8 @@ package deng.fzip
 		private var _hasCompressedPatchedData:Boolean = false;
 		private var _date:Date;
 		private var _crc32:uint;
-		private var _hasAdler32:Boolean = false;
 		private var _adler32:uint;
+		private var _hasAdler32:Boolean = false;
 		private var _sizeCompressed:uint = 0;
 		private var _sizeUncompressed:uint = 0;
 		private var _sizeFilename:uint = 0;
@@ -49,7 +48,8 @@ package deng.fzip
 		private var _filename:String = "";
 		private var _filenameEncoding:String;
 		private var _extraFields:Dictionary;
-		private var _content:*;
+		private var _comment:String = "";
+		private var _content:ByteArray;
 
 		private var isCompressed:Boolean = false;
 		private var parseState:Namespace = fileHead;
@@ -109,20 +109,7 @@ package deng.fzip
 		/**
 		 * @private
 		 */		
-		private static var HAS_INFLATE:Boolean = false; //testInflate();
-//		/**
-//		 * @private
-//		 */		
-//		private static function testInflate():Boolean {
-//			var ret:Boolean = false;
-//			try {
-//				var ba:ByteArray = new ByteArray();
-//				ba.uncompress("deflate");
-//				ret = true;
-//			}
-//			catch(e:Error) {}
-//			return ret;
-//		}
+		private static var HAS_INFLATE:Boolean = describeType(ByteArray).factory.method.(@name == "uncompress").hasComplexContent();
 		
 		/**
 		 * Constructor
@@ -130,6 +117,50 @@ package deng.fzip
 		public function FZipFile(filenameEncoding:String = "utf-8") {
 			_filenameEncoding = filenameEncoding;
 			_extraFields = new Dictionary();
+			_content = new ByteArray();
+			_content.endian = Endian.BIG_ENDIAN;
+		}
+		
+		/**
+		 * The Date and time the file was created.
+		 */
+		public function get date():Date {
+			return _date;
+		}
+		public function set date(value:Date):void {
+			_date = (value != null) ? value : new Date();
+		}
+		
+		/**
+		 * The file name (including relative path).
+		 */
+		public function get filename():String {
+			return _filename;
+		}
+		public function set filename(value:String):void {
+			_filename = value;
+		}
+		
+		/**
+		 * The raw, uncompressed file. 
+		 */
+		public function get content():ByteArray {
+			if(isCompressed) {
+				uncompress();
+			}
+			return _content;
+		}
+		public function set content(data:ByteArray):void {
+			if(data != null && data.length > 0) {
+				data.position = 0;
+				data.readBytes(_content, 0, data.length);
+				_crc32 = ChecksumUtil.CRC32(_content);
+			} else {
+				_content.length = 0;
+				_content.position = 0;
+				isCompressed = false;
+			}
+			compress();
 		}
 		
 		/**
@@ -138,13 +169,6 @@ package deng.fzip
 		 */
 		public function get versionNumber():String {
 			return _versionNumber;
-		}
-		
-		/**
-		 * The Date and time the file was created.
-		 */
-		public function get date():Date {
-			return _date;
 		}
 		
 		/**
@@ -162,26 +186,6 @@ package deng.fzip
 		}
 		
 		/**
-		 * The file name (including relative path).
-		 */
-		public function get filename():String {
-			return _filename;
-		}
-		
-		/**
-		 * The raw file. 
-		 */
-		public function get content():ByteArray {
-			if(isCompressed) {
-				_content.position = 0;
-				_content.uncompress();
-				_content.position = 0;
-				isCompressed = false;
-			}
-			return _content;
-		}
-		
-		/**
 		 * Gets the files content as string.
 		 * 
 		 * @param recompress If <code>true</code>, the raw file content
@@ -193,8 +197,7 @@ package deng.fzip
 		 */
 		public function getContentAsString(recompress:Boolean = true, charset:String = "utf-8"):String {
 			if(isCompressed) {
-				_content.position = 0;
-				_content.uncompress();
+				uncompress();
 			}
 			_content.position = 0;
 			var str:String;
@@ -206,16 +209,138 @@ package deng.fzip
 				str = _content.readMultiByte(_content.bytesAvailable, charset);
 			}
 			_content.position = 0;
-			if(isCompressed) {
-				if(recompress) {
-					_content.compress();
-					_content.position = 0;
-				} else {
-					isCompressed = true;
-				}
+			if(recompress) {
+				compress();
 			}
 			return str;
 		}
+
+		/**
+		 * Sets a string as the file's content.
+		 * 
+		 * @param value The string.
+		 * @param charset The character set used for decoding.
+		 */
+		public function setContentAsString(value:String, charset:String = "utf-8"):void {
+			_content.length = 0;
+			_content.position = 0;
+			isCompressed = false;
+			if(value != null && value.length > 0) {
+				if(charset == "utf-8") {
+					_content.writeUTFBytes(value);
+				} else {
+					_content.writeMultiByte(value, charset);
+				}
+				_crc32 = ChecksumUtil.CRC32(_content);
+			}
+			compress();
+		}
+
+		/**
+		 * Serializes this zip archive into an IDataOutput stream (such as 
+		 * ByteArray or FileStream) according to PKZIP APPNOTE.TXT
+		 * 
+		 * @param stream The stream to serialize the zip archive into.
+		 * @param centralDir If set to true, serialize a central directory entry
+		 * @param centralDirOffset Relative offset of local header (central directory only)
+		 * 
+		 * @return The serialized zip file.
+		 */
+		public function serialize(stream:IDataOutput, centralDir:Boolean = false, centralDirOffset:uint = 0):uint {
+			if(stream == null) { return 0; }
+			if(centralDir) {
+				// Write central directory file header signature
+				stream.writeUnsignedInt(0x02014b50);
+				// Write "version made by" host (usually 0) and number (always 2.0)
+				stream.writeShort((_versionHost << 8) | 0x14);
+			} else {
+				// Write local file header signature
+				stream.writeUnsignedInt(0x04034b50);
+			}
+			// Write "version needed to extract" host (usually 0) and number (always 2.0)
+			stream.writeShort((_versionHost << 8) | 0x14);
+			// Write the general purpose flag
+			// - no encryption
+			// - normal deflate
+			// - no data descriptors
+			// - no compressed patched data
+			// - unicode as specified in _filenameEncoding 
+			stream.writeShort((_filenameEncoding == "utf-8") ? 0x0800 : 0);
+			// Write compression method (always deflate)
+			stream.writeShort(COMPRESSION_DEFLATED);
+			// Write date
+			var d:Date = (_date != null) ? _date : new Date();
+			var msdosTime:uint = uint(d.getSeconds()) | (uint(d.getMinutes()) << 5) | (uint(d.getHours()) << 11);
+			var msdosDate:uint = uint(d.getDate()) | (uint(d.getMonth() + 1) << 5) | (uint(d.getFullYear() - 1980) << 9);
+			stream.writeShort(msdosTime);
+			stream.writeShort(msdosDate);
+			// Write CRC32
+			stream.writeUnsignedInt(_crc32);
+			// Write compressed size
+			stream.writeUnsignedInt(_sizeCompressed);
+			// Write uncompressed size
+			stream.writeUnsignedInt(_sizeUncompressed);
+			// Prep filename
+			var ba:ByteArray = new ByteArray();
+			if (_filenameEncoding == "utf-8") {
+				ba.writeUTFBytes(_filename);
+			} else {
+				ba.writeMultiByte(_filename, _filenameEncoding);
+			}
+			var filenameSize:uint = ba.position;
+			// Prep extra fields
+			for(var headerId:Object in _extraFields) {
+				var extraBytes:ByteArray = _extraFields[headerId] as ByteArray;
+				if(extraBytes != null) {
+					ba.writeShort(uint(headerId));
+					ba.writeBytes(extraBytes);
+				}
+			}
+			var extrafieldsSize:uint = ba.position - filenameSize;
+			// Prep comment (currently unused)
+			if(centralDir && _comment.length > 0) {
+				if (_filenameEncoding == "utf-8") {
+					ba.writeUTFBytes(_comment);
+				} else {
+					ba.writeMultiByte(_comment, _filenameEncoding);
+				}
+			}
+			var commentSize:uint = ba.position - filenameSize - extrafieldsSize;
+			// Write filename and extra field sizes
+			stream.writeShort(filenameSize);
+			stream.writeShort(extrafieldsSize);
+			if(centralDir) {
+				// Write comment size
+				stream.writeShort(commentSize);
+				// Write disk number start (always 0)
+				stream.writeShort(0);
+				// Write file attributes (always 0)
+				stream.writeShort(0);
+				stream.writeUnsignedInt(0);
+				// Write relative offset of local header
+				stream.writeUnsignedInt(centralDirOffset);
+			}
+			// Write filename, extra field and comment
+			if(filenameSize + extrafieldsSize + commentSize > 0) {
+				stream.writeBytes(ba);
+			}
+			// Write file
+			var fileSize:uint = 0;
+			if(!centralDir && _sizeCompressed > 0) {
+				if(HAS_INFLATE) {
+					fileSize = _content.length;
+					stream.writeBytes(_content, 0, fileSize);
+				} else {
+					fileSize = _content.length - 6;
+					stream.writeBytes(_content, 2, fileSize);
+				}
+			}
+			var size:uint = 30 + filenameSize + extrafieldsSize + commentSize + fileSize;
+			if(centralDir) {
+				size += 16;
+			}
+			return size;
+		} 
 
 
 		/**
@@ -353,18 +478,15 @@ package deng.fzip
 		 * @private
 		 */		
 		protected function parseContent(data:IDataInput):void {
-			_content = new ByteArray();
-			_content.endian = Endian.BIG_ENDIAN;
 			if(_compressionMethod === COMPRESSION_DEFLATED && !_encrypted) {
 				if(HAS_INFLATE) {
-//					// Adobe Air supports inflate decompression.
-//					// If we got here, this is an Air application
-//					// and we can decompress without using the Adler32 hack.
-//					data.readBytes(_content, 0, _sizeCompressed);
-//					_content.uncompress(CompressionAlgorithm.DEFLATE);
-//					_content.position = 0;
+					// Adobe Air supports inflate decompression.
+					// If we got here, this is an Air application
+					// and we can decompress without using the Adler32 hack
+					// so we just write out the raw deflate compressed file
+					data.readBytes(_content, 0, _sizeCompressed);
 				} else if(_hasAdler32) {
-					// Add header
+					// Add zlib header
 					// CMF (compression method and info)
 					_content.writeByte(0x78);
 					// FLG (compression level, preset dict, checkbits)
@@ -376,19 +498,77 @@ package deng.fzip
 					// Add adler32 checksum
 					_content.position = _content.length;
 					_content.writeUnsignedInt(_adler32);
-					// Flag as compressed
-					isCompressed = true;
-					// Reset fileposition to start-of-file
-					_content.position = 0;
 				} else {
 					throw new Error("Adler32 checksum not found.");
 				}
+				isCompressed = true;
 			} else if(_compressionMethod == COMPRESSION_NONE) {
 				data.readBytes(_content, 0, _sizeCompressed);
 				isCompressed = false;
 			} else {
 				throw new Error("Compression method " + _compressionMethod + " is not supported.");
 			}
+			_content.position = 0;
+		}
+		
+		/**
+		 * @private
+		 */		
+		protected function compress():void {
+			if(!isCompressed) {
+				if(_content.length > 0) {
+					_content.position = 0;
+					_sizeUncompressed = _content.length;
+					if(HAS_INFLATE) {
+						_content.compress.apply(_content, ["deflate"]);
+						_sizeCompressed = _content.length;
+					} else {
+						_content.compress();
+						_sizeCompressed = _content.length - 6;
+					}
+					_content.position = 0;
+					isCompressed = true;
+				} else {
+					_sizeCompressed = 0;
+					_sizeUncompressed = 0;
+				}
+			}
+		}
+		
+		/**
+		 * @private
+		 */		
+		protected function uncompress():void {
+			if(isCompressed && _content.length > 0) {
+				_content.position = 0;
+				if(HAS_INFLATE) {
+					_content.uncompress.apply(_content, ["deflate"]);
+				} else {
+					_content.uncompress();
+				}
+				_content.position = 0;
+				isCompressed = false;
+			}
+		}
+		
+		/**
+		 * Returns a string representation of the FZipFile object.
+		 */		
+		public function toString():String {
+			return "[FZipFile]"
+				+ "\n  name:" + _filename
+				+ "\n  date:" + _date
+				+ "\n  sizeCompressed:" + _sizeCompressed
+				+ "\n  sizeUncompressed:" + _sizeUncompressed
+				+ "\n  versionHost:" + _versionHost
+				+ "\n  versionNumber:" + _versionNumber
+				+ "\n  compressionMethod:" + _compressionMethod
+				+ "\n  encrypted:" + _encrypted
+				+ "\n  hasDataDescriptor:" + _hasDataDescriptor
+				+ "\n  hasCompressedPatchedData:" + _hasCompressedPatchedData
+				+ "\n  filenameEncoding:" + _filenameEncoding
+				+ "\n  crc32:" + _crc32.toString(16)
+				+ "\n  adler32:" + _adler32.toString(16);
 		}
 	}
 }
