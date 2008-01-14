@@ -45,6 +45,14 @@ public class Vector2
         return new Vector2(-v.x, -v.y);
     }
 
+    /** Return v rotated by angle radians. v is unmodified. */
+    public static function rotate (v :Vector2, angleRadians :Number) :Vector2
+    {
+        var out :Vector2 = v.clone();
+        out.rotate(angleRadians);
+        return out;
+    }
+
     /**
      * Returns the smaller of the two angles between v1 and v2, in radians.
      * Result will be in range [0, pi].
@@ -138,6 +146,14 @@ public class Vector2
         y = (sinTheta * oldX) + (cosTheta * y);
     }
 
+    /** Returns a rotated copy of the Vector */
+    public function getRotate (angleRadians :Number) :Vector2
+    {
+        var out :Vector2 = this.clone();
+        out.rotate(angleRadians);
+        return out;
+    }
+
     /** Normalizes the vector. */
     public function normalize () :void
     {
@@ -145,6 +161,14 @@ public class Vector2
 
         x /= len;
         y /= len;
+    }
+
+    /** Returns a normalized copy of the vector. */
+    public function getNormalized () :Vector2
+    {
+        var out :Vector2 = this.clone();
+        out.normalize();
+        return out;
     }
 
     /** Returns the dot product of this vector with vector v. */
@@ -160,11 +184,23 @@ public class Vector2
         y += v.y;
     }
 
+    /** Returns (this + v). */
+    public function getAdd (v :Vector2) :Vector2
+    {
+        return Vector2.add(this, v);
+    }
+
     /** Subtracts another vector from this. */
     public function subtract (v :Vector2) :void
     {
         x -= v.x;
         y -= v.y;
+    }
+
+    /** Returns (this - v). */
+    public function getSubtract (v :Vector2) :Vector2
+    {
+       return Vector2.subtract(this, v);
     }
 
     /**
@@ -190,6 +226,12 @@ public class Vector2
         y *= value;
     }
 
+    /** Returns (this * value). */
+    public function getScale (value :Number) :Vector2
+    {
+        return Vector2.scale(this, value);
+    }
+
     /**
      * Scales the vector by -1;
      */
@@ -197,6 +239,12 @@ public class Vector2
     {
         x = -x;
         y = -y;
+    }
+
+    /** Returns a copy of this vector, inverted. */
+    public function getInverted () :Vector2
+    {
+       return Vector2.invert(this);
     }
 
     /**
