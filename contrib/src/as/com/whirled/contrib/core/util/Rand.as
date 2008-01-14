@@ -5,8 +5,8 @@ import com.threerings.util.Assert;
 
 public class Rand
 {
-    public static const STREAM_GAME :int = 0;
-    public static const STREAM_COSMETIC :int = 1;
+    public static const STREAM_GAME :uint = 0;
+    public static const STREAM_COSMETIC :uint = 1;
 
     public static function setup () :void
     {
@@ -16,52 +16,52 @@ public class Rand
 
         _hasSetup = true;
 
-        _randStreams[STREAM_GAME] = new Random();
-        _randStreams[STREAM_COSMETIC] = new Random();
+        _randStreams.push(new Random());    // STREAM_GAME
+        _randStreams.push(new Random());    // STREAM_COSMETIC
     }
 
-    public static function addStream (streamId :int, seed :uint = 0) :Random
+    public static function addStream (seed :uint = 0) :uint
     {
-        _randStreams[streamId] = new Random(seed);
-        return (_randStreams[streamId] as Random);
+        _randStreams.push(new Random(seed));
+        return (_randStreams.length - 1);
     }
 
-    public static function getStream (streamId :int) :Random
+    public static function getStream (streamId :uint) :Random
     {
         Assert.isTrue(_hasSetup);
 
         return (_randStreams[streamId] as Random);
     }
 
-    public static function seedStream (streamId :int, seed :uint) :void
+    public static function seedStream (streamId :uint, seed :uint) :void
     {
         getStream(streamId).setSeed(seed);
     }
 
     /** Returns an integer in the range [0, MAX) */
-    public static function nextInt (streamId :int) :int
+    public static function nextInt (streamId :uint) :int
     {
         return getStream(streamId).nextInt();
     }
 
     /** Returns an int in the range [low, high) */
-    public static function nextIntRange (low :int, high :int, streamId :int) :int
+    public static function nextIntRange (low :int, high :int, streamId :uint) :int
     {
         return low + getStream(streamId).nextInt(high - low);
     }
 
-    public static function nextBoolean (streamId :int) :Boolean
+    public static function nextBoolean (streamId :uint) :Boolean
     {
         return getStream(streamId).nextBoolean();
     }
 
-    public static function nextNumber (streamId :int) :Number
+    public static function nextNumber (streamId :uint) :Number
     {
         return getStream(streamId).nextNumber();
     }
 
     /** Returns a Number in the range [low, high) */
-    public static function nextNumberRange (low :Number, high :Number, streamId :int) :Number
+    public static function nextNumberRange (low :Number, high :Number, streamId :uint) :Number
     {
         return low + (getStream(streamId).nextNumber() * (high - low));
     }
