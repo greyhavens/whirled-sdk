@@ -17,6 +17,8 @@ import javax.swing.JOptionPane;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
+import com.samskivert.util.RunAnywhere;
+
 /**
  * Sets up the build.properties file for an SDK installation interactively.
  */
@@ -51,7 +53,12 @@ public class ConfigBuildPropsTask extends Task
 
         // otherwise pop up dialogs asking where things are
         sdkpath = displayPickSDK(sdkpath.getParentFile());
-        playerpath = displayPickPlayer(sdkpath.getParentFile());
+        if (RunAnywhere.isMacOS()) {
+            // on the Mac we just run "open foo.swf"
+            playerpath = new File("/usr/bin/open");
+        } else {
+            playerpath = displayPickPlayer(sdkpath.getParentFile());
+        }
 
         // and create the new build.properties file
         props.setProperty("flex.path", sdkpath.getAbsolutePath());
