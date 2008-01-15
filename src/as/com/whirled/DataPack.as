@@ -113,6 +113,14 @@ public class DataPack extends EventDispatcher
     }
 
     /**
+     * Convenience function to access some data as a color (uint).
+     */
+    public function getColor (name :String) :uint
+    {
+        return getData(name) as uint;
+    }
+
+    /**
      * Convenience function to access some data as an Array.
      */
     public function getArray (name :String) :Array
@@ -168,6 +176,9 @@ public class DataPack extends EventDispatcher
 
         case "Boolean":
             return "true" == value.toLowerCase();
+
+        case "Color":
+            return parseInt(value, 16);
 
         case "Array":
             return value.split(",").map(unescape);
