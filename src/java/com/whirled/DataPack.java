@@ -1,5 +1,7 @@
 package com.whirled;
 
+import java.awt.Color;
+
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -119,6 +121,14 @@ public class DataPack
     public Boolean getBoolean (String name)
     {
         return (Boolean) getData(name);
+    }
+
+    /**
+     * Convenience method to access some data as a Color.
+     */
+    public Color getColor (String name)
+    {
+        return (Color) getData(name);
     }
 
     /**
@@ -403,6 +413,9 @@ public class DataPack
         /** A boolean value. */
         BOOLEAN("Boolean", "A value of true or false"),
 
+        /** A color value. */
+        COLOR("Color", "An RGB color value"),
+
         /** An untyped array. */
         ARRAY("Array", "An array of strings"),
 
@@ -450,6 +463,13 @@ public class DataPack
 
             case BOOLEAN:
                 return String.valueOf(value);
+
+            case COLOR:
+                String colorStr = Integer.toHexString(((Color) value).getRGB());
+                while (colorStr.length() < 6) {
+                    colorStr = "0" + colorStr;
+                }
+                return colorStr;
 
             case ARRAY:
                 String[] arr = (String[]) value;
@@ -505,6 +525,15 @@ public class DataPack
 
             case BOOLEAN:
                 return Boolean.valueOf("true".equals(value.toLowerCase()));
+
+            case COLOR:
+            {
+                try {
+                    return new Color(Integer.parseInt(value, 16));
+                } catch (NumberFormatException nfe) {
+                    return Color.WHITE;
+                }
+            }
 
             case ARRAY:
             {
