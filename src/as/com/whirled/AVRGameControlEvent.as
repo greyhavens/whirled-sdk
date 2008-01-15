@@ -92,6 +92,14 @@ public class AVRGameControlEvent extends ControlEvent
      */
     public static const SIZE_CHANGED :String = "sizeChanged";
 
+    /** An event type dispatched when a something has changed about a player's avatar.
+     * key: N/A
+     * value: N/A
+     *
+     * @eventType avatarChanged
+     */
+    public static const AVATAR_CHANGED :String = "avatarChanged";
+
     /**
      * Create a new AVRGameControlEvent.
      */

@@ -193,6 +193,43 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("despawnMob_v1", id);
     }
 
+    public function getAvatarInfo (playerId :int) :AVRGameAvatar
+    {
+        var data :Object = callHostCode("getAvatarInfo_v1", playerId);
+
+        var info :AVRGameAvatar = new AVRGameAvatar();
+        info.state = data.state;
+        info.x = data.x;
+        info.y = data.y;
+        info.z = data.z;
+        info.orientation = data.orientation;
+        info.moveSpeed = data.moveSpeed;
+        info.isMoving = data.isMoving;
+        info.isIdle = data.isIdle;
+        info.bounds = data.bonds;
+        return info;
+    }
+
+    public function setAvatarState_v1 (state :String) :Boolean
+    {
+        return callHostCode("setAvatarState_v1", state);
+    }
+
+    public function setAvatarMoveSpeed_v1 (pixelsPerSecond :Number) :Boolean
+    {
+        return callHostCode("setAvatarMoveSpeed_v1", state);
+    }
+
+    public function setAvatarLocation_v1 (x :Number, y :Number, z: Number, orient :Number) :Boolean
+    {
+        return callHostCode("setAvatarLocation_v1", state);
+    }
+
+    public function setAvatarOrientation_v1 (orient :Number) :Boolean
+    {
+        return callHostCode("setAvatarOrientation_v1", state);
+    }
+
     override protected function isAbstract () :Boolean
     {
         return false;
@@ -212,6 +249,9 @@ public class AVRGameControl extends WhirledControl
         o["requestMobSprite_v1"] = requestMobSprite_v1;
         o["mobRemoved_v1"] = mobRemoved_v1;
         o["mobAppearanceChanged_v1"] = mobAppearanceChanged_v1;
+
+        o["actorStateSet_v1"] = actorStateSet_v1;
+        o["actorAppearanceChanged_v1"] = actorAppearanceChanged_v1;
 
         _state = new StateControl(this);
         _state.populateSubProperties(o);
@@ -290,6 +330,17 @@ public class AVRGameControl extends WhirledControl
     protected function panelResized_v1 () :void
     {
         dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.SIZE_CHANGED));
+    }
+
+    protected function actorAppearanceChanged_v1 (playerId :int) :void
+    {
+        dispatchEvent(new AVRGameControlEvent(
+                          AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
+    }
+
+    protected function actorStateSet_v1 (playerId :int) :void
+    {
+        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
     }
 
     protected var _quests :QuestControl;
