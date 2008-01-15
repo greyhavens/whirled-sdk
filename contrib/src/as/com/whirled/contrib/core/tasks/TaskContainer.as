@@ -58,19 +58,27 @@ public class TaskContainer
         );
     }
 
-    /** Returns a clone of the TaskContainer. */
-    public function clone () :ObjectTask
+    protected function cloneSubtasks () :Array
     {
-        var theClone :TaskContainer = new TaskContainer(_type);
-
         Assert.isTrue(_tasks.length == _completedTasks.length);
+
+        var out :Array = new Array(_tasks.length);
 
         // clone each child task and put it in the cloned container
         for (var i:int = 0; i < _tasks.length; ++i) {
             var task :ObjectTask = (null != _tasks[i] ? _tasks[i] as ObjectTask : _completedTasks[i] as ObjectTask);
             Assert.isNotNull(task);
-            theClone.addTask(task.clone());
+            out[i] = task.clone();
         }
+
+        return out;
+    }
+
+    /** Returns a clone of the TaskContainer. */
+    public function clone () :ObjectTask
+    {
+        var theClone :TaskContainer = new TaskContainer(_type);
+        theClone._tasks = this.cloneSubtasks();
 
         return theClone;
     }
