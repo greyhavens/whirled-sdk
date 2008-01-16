@@ -130,7 +130,7 @@
     <copy todir="${deploy.dir}/tmp/astemps">
       <fileset dir="${flex.path}/asdoc/templates" includes="**/*"/>
     </copy>
-    <exec executable="chmod" failonerror="true">
+    <exec executable="chmod" failonerror="false">
       <arg line="a+rx"/>
       <arg line="${deploy.dir}/tmp/astemps/asDocHelper.linux"/>
       <arg line="${deploy.dir}/tmp/astemps/asDocHelper"/>
