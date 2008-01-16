@@ -195,18 +195,20 @@ public class AVRGameControl extends WhirledControl
 
     public function getAvatarInfo (playerId :int) :AVRGameAvatar
     {
-        var data :Object = callHostCode("getAvatarInfo_v1", playerId);
-
+        var data :Array = callHostCode("getAvatarInfo_v1", playerId);
+        if (data == null) {
+            return null;
+        }
         var info :AVRGameAvatar = new AVRGameAvatar();
-        info.state = data.state;
-        info.x = data.x;
-        info.y = data.y;
-        info.z = data.z;
-        info.orientation = data.orientation;
-        info.moveSpeed = data.moveSpeed;
-        info.isMoving = data.isMoving;
-        info.isIdle = data.isIdle;
-        info.bounds = data.bonds;
+        info.state = data[0];
+        info.x = data[1];
+        info.y = data[2];
+        info.z = data[3];
+        info.orientation = data[4];
+        info.moveSpeed = data[5];
+        info.isMoving = data[6];
+        info.isIdle = data[7];
+        info.stageBounds = data[8];
         return info;
     }
 

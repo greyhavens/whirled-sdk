@@ -31,6 +31,6 @@ public class AVRGameAvatar
 
     public var isIdle :Boolean;
 
-    public var bounds :Rectangle;
+    public var stageBounds :Rectangle;
 }
 }
