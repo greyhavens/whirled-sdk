@@ -12,6 +12,8 @@ public class AppMode extends ObjectDB
 {
     public function AppMode ()
     {
+        this.modeSprite.mouseEnabled = false;
+        this.modeSprite.mouseChildren = false;
     }
 
     public function get modeSprite () :Sprite
@@ -41,9 +43,6 @@ public class AppMode extends ObjectDB
 
     internal function setupInternal () :void
     {
-        this.modeSprite.mouseEnabled = false;
-        this.modeSprite.mouseChildren = false;
-
         setup();
     }
 

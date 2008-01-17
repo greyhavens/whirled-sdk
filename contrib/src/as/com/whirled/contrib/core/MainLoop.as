@@ -129,9 +129,13 @@ public class MainLoop
 
         return _defaultAppSettings;
     }
-
-    protected function update (e :TimerEvent) :void
+    
+    protected function handleModeTransitions () :void
     {
+        if (_pendingModeTransitionQueue.length <= 0) {
+            return;
+        }
+        
         // save 'this' for local functions
         var thisMainLoop :MainLoop = this;
 
@@ -209,6 +213,11 @@ public class MainLoop
         }
 
         _pendingModeTransitionQueue = new Array();
+    }
+
+    protected function update (e :TimerEvent) :void
+    {
+        this.handleModeTransitions();
 
         // how much time has elapsed since last frame?
         var newTime :Number = this.elapsedSeconds;
