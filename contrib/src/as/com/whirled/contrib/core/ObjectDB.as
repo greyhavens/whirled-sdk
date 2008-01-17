@@ -68,6 +68,8 @@ public class ObjectDB
         if (null != displayParent) {
             var sc :SceneComponent = (obj as SceneComponent);
             Assert.isNotNull(sc);
+            Assert.isNotNull(sc.displayObject);
+            
             displayParent.addChild(sc.displayObject);
         }
 
