@@ -51,9 +51,21 @@ public class DataPack extends EventDispatcher
     /**
      * Construct a DataPack to be loaded from specified URL.
      */
-    public function DataPack (url :String)
+    public function DataPack (urlOrByteArray :*)
     {
-        var req :URLRequest = new URLRequest(url); // throw any errors with the URL immediately
+        trace("It's a newstyle datapack!");
+        var req :URLRequest = null;
+        var bytes :ByteArray;
+
+        if (urlOrByteArray is String) {
+            req = new URLRequest(String(urlOrByteArray)); // throw malformedURL asap
+
+        } else if (urlOrByteArray is ByteArray) {
+            bytes = ByteArray(urlOrByteArray);
+
+        } else {
+            throw new TypeError("Expected a String or ByteArray");
+        }
 
         _zip = new FZip();
         _zip.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
@@ -62,7 +74,12 @@ public class DataPack extends EventDispatcher
 //        _zip.addEventListener(FZipEvent.FILE_LOADED, handleFileLoaded);
         _zip.addEventListener(Event.COMPLETE, handleLoadingComplete);
 
-        _zip.load(req);
+        if (req != null) {
+            _zip.load(req);
+
+        } else {
+            _zip.loadBytes(bytes);
+        }
     }
 
     /**
@@ -347,20 +364,7 @@ public class DataPack extends EventDispatcher
 
     protected function getFileInternal (name :String, asString :Boolean) :*
     {
-        name = validateAccess(name);
-
-        var datum :XML = _metadata..file.(@name == name)[0];
-        if (datum == null) {
-            return undefined;
-        }
-
-        var val :XMLList = datum.@value;
-        if (val.length == 0 || val[0] === undefined) {
-            return undefined;
-        }
-
-        var value :String = String(val[0]);
-        trace("Raw value for file '" + name + "' is '" + value + "'");
+        var value :String = getFileName(name);
         if (value == null) {
             return undefined;
         }
@@ -369,8 +373,32 @@ public class DataPack extends EventDispatcher
         return (file == null) ? null : (asString ? file.getContentAsString() : file.content);
     }
 
+    /**
+     * Translate the requested file into the actual filename stored in the zip.
+     */
+    protected function getFileName (name :String) :String
+    {
+        name = validateAccess(name);
+
+        var datum :XML = _metadata..file.(@name == name)[0];
+        if (datum == null) {
+            return null;
+        }
+
+        var val :XMLList = datum.@value;
+        if (val.length == 0 || val[0] === undefined) {
+            return null;
+        }
+
+        var value :String = String(val[0]);
+        trace("Raw value for file '" + name + "' is '" + value + "'");
+        return value;
+    }
+
     protected function validateAccess (name :String) :String
     {
+        validateComplete();
+
         if (name == null) {
             throw new ArgumentError("Invalid name: " + name);
         }
@@ -414,9 +442,9 @@ public class DataPack extends EventDispatcher
     protected function handleLoadingComplete (event :Event) :void
     {
         // find the metadata file
-        var dataFile :FZipFile = _zip.getFileByName("_data.xml");
+        var dataFile :FZipFile = _zip.getFileByName(METADATA_FILENAME);
         if (dataFile == null) {
-            dispatchError("No _data.xml contained in DataPack.");
+            dispatchError("No " + METADATA_FILENAME + " contained in DataPack.");
             return;
         }
 
@@ -442,5 +470,7 @@ public class DataPack extends EventDispatcher
     protected var _zip :FZip;
 
     protected var _metadata :XML;
+
+    protected static const METADATA_FILENAME :String = "_data.xml";
 }
 }
