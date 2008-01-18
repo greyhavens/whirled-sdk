@@ -53,7 +53,6 @@ public class DataPack extends EventDispatcher
      */
     public function DataPack (urlOrByteArray :*)
     {
-        trace("It's a newstyle datapack!");
         var req :URLRequest = null;
         var bytes :ByteArray;
 
@@ -179,7 +178,7 @@ public class DataPack extends EventDispatcher
         }
 
         var value :String = String(val[0]);
-        trace("Raw value for data '" + name + "' is '" + value + "'");
+//        trace("Raw value for data '" + name + "' is '" + value + "'");
         if (value == null) {
             return undefined;
         }
@@ -391,7 +390,7 @@ public class DataPack extends EventDispatcher
         }
 
         var value :String = String(val[0]);
-        trace("Raw value for file '" + name + "' is '" + value + "'");
+//        trace("Raw value for file '" + name + "' is '" + value + "'");
         return value;
     }
 
