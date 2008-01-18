@@ -168,6 +168,26 @@ package deng.fzip
 				urlStream.load(request);
 			}
 		}
+
+                /**
+                 * Load a zip from some bytes.
+                 */
+                public function loadBytes (bytes :ByteArray) :void
+                {
+                    if (!urlStream && parseState == idle) {
+                        filesList = [];
+                        filesDict = new Dictionary();
+                        bytes.position = 0;
+                        bytes.endian = Endian.LITTLE_ENDIAN;
+                        parseState = signature;
+                        if (parse(bytes)) {
+                            parseState = idle;
+                            dispatchEvent(new Event(Event.COMPLETE));
+                        } else {
+                            dispatchEvent(new FZipErrorEvent(FZipErrorEvent.PARSE_ERROR, "EOF"));
+                        }
+                    }
+                }
 		
 		/**
 		 * Immediately closes the stream and cancels the download operation.
