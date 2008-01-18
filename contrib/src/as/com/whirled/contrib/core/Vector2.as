@@ -246,6 +246,18 @@ public class Vector2
     {
        return Vector2.invert(this);
     }
+    
+    /** Returns true if v is identical to this Vector2. */
+    public function equals (v :Vector2) :Boolean
+    {
+        return (this.x == v.x && this.y == v.y);
+    }
+    
+    /** Returns true if the components of v are equal to the components of this Vector2, within the given epsilon. */
+    public function similar (v :Vector2, epsilon :Number) :Boolean
+    {
+        return ((Math.abs(this.x - v.x) <= epsilon) && (Math.abs(this.y - v.y) <= epsilon));
+    }
 
     /**
      * Returns a new vector that is the linear interpolation of vectors a and b
