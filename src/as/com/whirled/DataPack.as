@@ -50,6 +50,7 @@ public class DataPack extends EventDispatcher
 {
     /**
      * Construct a DataPack to be loaded from specified source.
+     * Note that passing a ByteArray will result in a DataPack that is instantly complete.
      *
      * @param urlOrByteArray a url (as a String or as a URLRequest) from which to load the
      *        DataPack, or a ByteArray containing the raw data.
@@ -418,17 +419,14 @@ public class DataPack extends EventDispatcher
     }
 
     /**
-     * Validate that the specified data name is legal.
+     * Validate that the everything is ok accessing the specified data name.
      *
      * @private
      */
     protected function validateAccess (name :String) :String
     {
         validateComplete();
-
-        if (name == null) {
-            throw new ArgumentError("Invalid name: " + name);
-        }
+        validateName(name);
 
         // TODO: we may need to verify that the urlencoding is happening the same
         // way that it is in Java
@@ -444,6 +442,20 @@ public class DataPack extends EventDispatcher
     {
         if (!isComplete()) {
             throw new IllegalOperationError("DataPack is not loaded.");
+        }
+    }
+
+    /**
+     * Validate that the specified data name is legal.
+     *
+     * @private
+     */
+    protected function validateName (name :String) :void
+    {
+        switch (name) {
+        case null: // names can't be null
+        case "_content": // reserved for special all-in-one media
+            throw new ArgumentError("Invalid name: " + name);
         }
     }
 
