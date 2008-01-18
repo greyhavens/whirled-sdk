@@ -7,7 +7,6 @@ package com.whirled {
 
 import flash.display.DisplayObject;
 import flash.display.Sprite;
-import flash.utils.Timer;
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -15,6 +14,9 @@ import flash.events.TimerEvent;
 
 import flash.media.Camera;
 import flash.media.Microphone;
+
+import flash.utils.ByteArray;
+import flash.utils.Timer;
 
 /**
  * Dispatched when the instance in control sends a trigger action to all instances.
@@ -77,6 +79,21 @@ public class EntityControl extends WhirledControl
     public function EntityControl (disp :DisplayObject)
     {
         super(disp);
+    }
+
+    /**
+     * Get the default datapack for this entity, or null if there is none defined.
+     * The DataPack is returned as a ByteArray, which can easily be passed to the
+     * com.whirled.DataPack constructor. We do not return a DataPack for you, because otherwise
+     * including this class would include all the DataPack support classes, even if your
+     * project never made use of it.
+     */
+    // TODO: better documentation, better name? (default is not the greatest)
+    // TODO: Gawd, it'd be nice to be able to clear this once the user grabs it, so that
+    // we don't have these bytes in memory as well as all the decoded info in the DataPack...
+    public function getDefaultDataPack () :ByteArray
+    {
+        return _datapack;
     }
 
     /**
@@ -417,6 +434,7 @@ public class EntityControl extends WhirledControl
         super.gotInitProperties(o);
 
         _location = (o["location"] as Array);
+        _datapack = (o["datapack"] as ByteArray);
     }
 
     /**
@@ -522,5 +540,8 @@ public class EntityControl extends WhirledControl
 
     /** Whether this instance has control. */
     protected var _hasControl :Boolean = false;
+
+    /** The default datapack, if any. */
+    protected var _datapack :ByteArray;
 }
 }
