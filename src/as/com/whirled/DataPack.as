@@ -454,7 +454,7 @@ public class DataPack extends EventDispatcher
     {
         switch (name) {
         case null: // names can't be null
-        case "_content": // reserved for special all-in-one media
+        case CONTENT_DATANAME: // reserved for special all-in-one media
             throw new ArgumentError("Invalid name: " + name);
         }
     }
@@ -530,5 +530,8 @@ public class DataPack extends EventDispatcher
 
     /** The filename of the metadata file. @private */
     protected static const METADATA_FILENAME :String = "_data.xml";
+
+    /** The data name of the primary media file, used for all-in-one remixable media. @private */
+    protected static const CONTENT_DATANAME :String = "_CONTENT";
 }
 }
