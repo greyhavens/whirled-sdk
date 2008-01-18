@@ -49,7 +49,12 @@ import deng.fzip.FZipEvent;
 public class DataPack extends EventDispatcher
 {
     /**
-     * Construct a DataPack to be loaded from specified URL.
+     * Construct a DataPack to be loaded from specified source.
+     *
+     * @param urlOrByteArray a url (as a String or as a URLRequest) from which to load the
+     *        DataPack, or a ByteArray containing the raw data.
+     *
+     * @throws TypeError if urlOrByteArray is not of the right type.
      */
     public function DataPack (urlOrByteArray :*)
     {
@@ -59,6 +64,9 @@ public class DataPack extends EventDispatcher
         if (urlOrByteArray is String) {
             req = new URLRequest(String(urlOrByteArray)); // throw malformedURL asap
 
+        } else if (urlOrByteArray is URLRequest) {
+            req = URLRequest(urlOrByteArray);
+            
         } else if (urlOrByteArray is ByteArray) {
             bytes = ByteArray(urlOrByteArray);
 
@@ -296,8 +304,11 @@ public class DataPack extends EventDispatcher
         doGetObjects(names, callback, useSubDomain, true);
     }
 
-
-    // internal name array loader
+    /**
+     * Start the asynchronous loading of files from within the DataPack.
+     *
+     * @private
+     */
     protected function doGetObjects (
         names :Array, callback :Function, useSubDomain :Boolean, returnRawLoaders :Boolean) :void
     {
@@ -341,6 +352,11 @@ public class DataPack extends EventDispatcher
         }
     }
 
+    /**
+     * Load one file up with an EmbeddedSwfLoader.
+     *
+     * @private
+     */
     protected function doLoadObject (
         name :String, bytes :ByteArray, loadHandler :Function,
         useSubDomain :Boolean, returnRawLoaders :Boolean) :void
@@ -361,6 +377,11 @@ public class DataPack extends EventDispatcher
         esl.load(bytes);
     }
 
+    /**
+     * Locate the data contained within a file with the specified data name.
+     *
+     * @private
+     */
     protected function getFileInternal (name :String, asString :Boolean) :*
     {
         var value :String = getFileName(name);
@@ -374,6 +395,8 @@ public class DataPack extends EventDispatcher
 
     /**
      * Translate the requested file into the actual filename stored in the zip.
+     *
+     * @private
      */
     protected function getFileName (name :String) :String
     {
@@ -394,6 +417,11 @@ public class DataPack extends EventDispatcher
         return value;
     }
 
+    /**
+     * Validate that the specified data name is legal.
+     *
+     * @private
+     */
     protected function validateAccess (name :String) :String
     {
         validateComplete();
@@ -407,6 +435,11 @@ public class DataPack extends EventDispatcher
         return escape(name);
     }
 
+    /**
+     * Validate that this DataPack has completed loading.
+     *
+     * @private
+     */
     protected function validateComplete () :void
     {
         if (!isComplete()) {
@@ -416,6 +449,8 @@ public class DataPack extends EventDispatcher
 
     /**
      * Handle some sort of problem loading the datapack.
+     *
+     * @private
      */
     protected function handleLoadError (event :ErrorEvent) :void
     {
@@ -424,6 +459,8 @@ public class DataPack extends EventDispatcher
 
     /**
      * Handle some sort of problem parsing datapack.
+     *
+     * @private
      */
     protected function handleParseError (event :FZipErrorEvent) :void
     {
@@ -437,6 +474,8 @@ public class DataPack extends EventDispatcher
 
     /**
      * Handle the successful completion of datapack loading.
+     *
+     * @private
      */
     protected function handleLoadingComplete (event :Event) :void
     {
@@ -461,15 +500,23 @@ public class DataPack extends EventDispatcher
         dispatchEvent(new Event(Event.COMPLETE));
     }
 
+    /**
+     * Dispatch an error event with the specified message.
+     *
+     * @private
+     */
     protected function dispatchError (message :String) :void
     {
         dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, message));
     }
 
+    /** The contents of the datapack. @private */
     protected var _zip :FZip;
 
+    /** The metadata. @private */
     protected var _metadata :XML;
 
+    /** The filename of the metadata file. @private */
     protected static const METADATA_FILENAME :String = "_data.xml";
 }
 }
