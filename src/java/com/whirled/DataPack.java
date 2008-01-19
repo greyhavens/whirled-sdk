@@ -12,9 +12,9 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import java.util.HashMap;
 
@@ -42,7 +42,7 @@ public class DataPack
             public void run () {
                 try {
                     URL u = new URL(url);
-                    HttpURLConnection conn = (HttpURLConnection) u.openConnection();
+                    URLConnection conn = (URLConnection) u.openConnection();
                     // TODO: This is qualified only to work past a bug in Eclipse. I apologize for
                     // TODO: making our code uglier to cater to an IDE; let's hope it's fixed soon.
                     DataPack.this.init(conn.getInputStream());
@@ -61,7 +61,8 @@ public class DataPack
                     listener.requestCompleted(DataPack.this);
 
                 } else {
-                    listener.requestFailed(new Exception("No _data.xml contained in DataPack."));
+                    listener.requestFailed(new Exception("No " + METADATA_FILENAME +
+                        " contained in DataPack."));
                 }
             }
         };
@@ -229,17 +230,22 @@ public class DataPack
     protected String validateAccess (String name)
     {
         validateComplete();
-        if (name == null) {
-            throw new IllegalArgumentException("Invalid file name: " + name);
-        }
+        validateName(name);
 
-        return name;
+        return name; // here on the Java side, the names are already decoded in _metadata.
     }
 
     protected void validateComplete ()
     {
         if (!isComplete()) {
             throw new IllegalStateException("DataPack is not loaded.");
+        }
+    }
+
+    protected void validateName (String name)
+    {
+        if (name == null || CONTENT_DATANAME.equals(name)) {
+            throw new IllegalArgumentException("Invalid name: " + name);
         }
     }
 
@@ -264,7 +270,7 @@ public class DataPack
                 offset += read;
             }
 
-            if ("_data.xml".equals(name)) {
+            if (METADATA_FILENAME.equals(name)) {
                 metadata = parseMetaData(data);
 
             } else {
@@ -853,4 +859,10 @@ public class DataPack
 
     /** File entries that present in the datapack. */
     protected HashMap<String,byte[]> _files = new HashMap<String,byte[]>();
+
+    /** The filename of the metadata file. */
+    protected static final String METADATA_FILENAME = "_data.xml";
+
+    /** The data name of the primary media file, used for all-in-one remixable media. */
+    protected static final String CONTENT_DATANAME = "_CONTENT";
 }

@@ -376,9 +376,9 @@ public class EditableDataPack extends DataPack
         // write the metadata
         String metaXML = _metadata.toXML();
         byte[] data = metaXML.getBytes("utf-8");
-        System.out.println("Storing '_data.xml' (" + data.length + " bytes):");
+        System.out.println("Storing '" + METADATA_FILENAME + "' (" + data.length + " bytes):");
         System.out.println(metaXML);
-        ZipEntry entry = new ZipEntry("_data.xml");
+        ZipEntry entry = new ZipEntry(METADATA_FILENAME);
         entry.setSize(data.length);
         crc.reset();
         crc.update(data);
@@ -403,6 +403,15 @@ public class EditableDataPack extends DataPack
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void validateName (String name)
+    {
+        // let CONTENT_DATANAME pass here.
+        if (!CONTENT_DATANAME.equals(name)) {
+            super.validateName(name);
+        }
     }
 
     /** Hold change listeners. */

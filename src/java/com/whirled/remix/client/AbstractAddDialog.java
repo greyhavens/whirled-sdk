@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -58,6 +59,7 @@ public abstract class AbstractAddDialog extends JInternalDialog
 
         // make a panel to hold everything
         JPanel panel = GroupLayout.makeVBox();
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         // allow it to be populated by a subclass
         createContent(panel);
         validateData();
@@ -149,6 +151,7 @@ public abstract class AbstractAddDialog extends JInternalDialog
     {
         JTextArea t = new JTextArea();
         t.setEditable(false);
+        t.setFocusable(false);
         t.setLineWrap(true);
         t.setWrapStyleWord(true);
         t.setText(text);
