@@ -3,16 +3,17 @@ package com.whirled.contrib.core.objects {
 import com.whirled.contrib.core.AppObject;
 import com.whirled.contrib.core.components.AlphaComponent;
 import com.whirled.contrib.core.components.LocationComponent;
+import com.whirled.contrib.core.components.RotationComponent;
 import com.whirled.contrib.core.components.ScaleComponent;
 import com.whirled.contrib.core.components.SceneComponent;
 import com.whirled.contrib.core.components.VisibleComponent;
 
+import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.InteractiveObject;
-import flash.display.DisplayObject;
 
 public class SceneObject extends AppObject
-    implements AlphaComponent, LocationComponent, ScaleComponent, SceneComponent, VisibleComponent
+    implements AlphaComponent, LocationComponent, ScaleComponent, SceneComponent, VisibleComponent, RotationComponent
 {
     public function get displayObject () :DisplayObject
     {
@@ -87,6 +88,16 @@ public class SceneObject extends AppObject
     public function set visible (val :Boolean) :void
     {
         this.displayObject.visible = val;
+    }
+
+    public function get rotation () :Number
+    {
+        return this.displayObject.rotation;
+    }
+
+    public function set rotation (val :Number) :void
+    {
+        this.displayObject.rotation = val;
     }
 }
 
