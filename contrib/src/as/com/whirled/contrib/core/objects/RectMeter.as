@@ -1,9 +1,9 @@
 package com.whirled.contrib.core.objects {
 
-import com.whirled.contrib.core.AppObject;
 import com.whirled.contrib.core.components.MeterComponent;
-import flash.display.Shape;
+
 import flash.display.DisplayObject;
+import flash.display.Shape;
 
 public class RectMeter extends SceneObject
     implements MeterComponent
@@ -94,23 +94,23 @@ public class RectMeter extends SceneObject
         _dirty = true;
     }
 
-    public function get width () :int
+    override public function get width () :Number
     {
         return _width;
     }
 
-    public function set width (val :int) :void
+    override public function set width (val :Number) :void
     {
         _width = val;
         _dirty = true;
     }
 
-    public function get height () :int
+    override public function get height () :Number
     {
         return _height;
     }
 
-    public function set height (val :int) :void
+    override public function set height (val :Number) :void
     {
         _height = val;
         _dirty = true;
