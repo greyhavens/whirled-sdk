@@ -212,22 +212,22 @@ public class AVRGameControl extends WhirledControl
         return info;
     }
 
-    public function setAvatarState_v1 (state :String) :Boolean
+    public function setAvatarState (state :String) :Boolean
     {
         return callHostCode("setAvatarState_v1", state);
     }
 
-    public function setAvatarMoveSpeed_v1 (pixelsPerSecond :Number) :Boolean
+    public function setAvatarMoveSpeed (pixelsPerSecond :Number) :Boolean
     {
         return callHostCode("setAvatarMoveSpeed_v1", state);
     }
 
-    public function setAvatarLocation_v1 (x :Number, y :Number, z: Number, orient :Number) :Boolean
+    public function setAvatarLocation (x :Number, y :Number, z: Number, orient :Number) :Boolean
     {
         return callHostCode("setAvatarLocation_v1", state);
     }
 
-    public function setAvatarOrientation_v1 (orient :Number) :Boolean
+    public function setAvatarOrientation (orient :Number) :Boolean
     {
         return callHostCode("setAvatarOrientation_v1", state);
     }
