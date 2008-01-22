@@ -2,7 +2,7 @@ package com.whirled.contrib.core.objects {
 
 import com.whirled.contrib.core.AppObject;
 import com.whirled.contrib.core.components.AlphaComponent;
-import com.whirled.contrib.core.components.LocationComponent;
+import com.whirled.contrib.core.components.BoundsComponent;
 import com.whirled.contrib.core.components.RotationComponent;
 import com.whirled.contrib.core.components.ScaleComponent;
 import com.whirled.contrib.core.components.SceneComponent;
@@ -13,7 +13,7 @@ import flash.display.DisplayObjectContainer;
 import flash.display.InteractiveObject;
 
 public class SceneObject extends AppObject
-    implements AlphaComponent, LocationComponent, ScaleComponent, SceneComponent, VisibleComponent, RotationComponent
+    implements AlphaComponent, BoundsComponent, ScaleComponent, SceneComponent, VisibleComponent, RotationComponent
 {
     public function get displayObject () :DisplayObject
     {
@@ -58,6 +58,26 @@ public class SceneObject extends AppObject
     public function set y (val :Number) :void
     {
         this.displayObject.y = val;
+    }
+
+    public function get width () :Number
+    {
+        return this.displayObject.width;
+    }
+
+    public function set width (val :Number) :void
+    {
+        this.displayObject.width = val;
+    }
+
+    public function get height () :Number
+    {
+        return this.displayObject.height;
+    }
+
+    public function set height (val :Number) :void
+    {
+        this.displayObject.height = val;
     }
 
     public function get scaleX () :Number
