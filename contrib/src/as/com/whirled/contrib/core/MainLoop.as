@@ -1,14 +1,12 @@
 package com.whirled.contrib.core {
 
-import com.threerings.util.Assert;
 import com.threerings.util.ArrayUtil;
-
-import flash.events.TimerEvent;
-import flash.utils.Timer;
-import flash.utils.getTimer;
-
+import com.threerings.util.Assert;
 import com.whirled.contrib.core.util.Rand;
+
 import flash.display.Sprite;
+import flash.events.Event;
+import flash.utils.getTimer;
 
 public class MainLoop
 {
@@ -54,8 +52,6 @@ public class MainLoop
         _hasSetup = true;
 
         Rand.setup();
-
-        addUpdatable(ResourceManager.instance);
     }
 
     public function run () :void
@@ -66,15 +62,8 @@ public class MainLoop
         // it's an error to call run() multiple times
         Assert.isFalse(_running);
         _running = true;
-
-        var appSettings :CoreAppSettings = this.applicationSettings;
-
-        // convert fps to update interval
-        var updateInterval :Number = 1000.0 / Number(appSettings.frameRate);
-
-        _mainTimer = new Timer(updateInterval, 0);
-        _mainTimer.addEventListener(TimerEvent.TIMER, update);
-        _mainTimer.start();
+        
+        _hostSprite.addEventListener(Event.ENTER_FRAME, update);
 
         _lastTime = this.elapsedSeconds;
     }
@@ -83,9 +72,8 @@ public class MainLoop
     {
         // Most games won't need to call shutdown because the MainLoop will be running as long as the game is.
         // This method is only necessary for games that use multiple MainLoops in their lifetimes.
-
-        _mainTimer.removeEventListener(TimerEvent.TIMER, update);
-        _mainTimer.stop();
+        
+        _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
 
         g_instance = null;
     }
@@ -119,15 +107,6 @@ public class MainLoop
         modeTransition.mode = mode;
         modeTransition.transitionType = transitionType;
         _pendingModeTransitionQueue.push(modeTransition);
-    }
-
-    public function get applicationSettings () :CoreAppSettings
-    {
-        if (null == _defaultAppSettings) {
-            _defaultAppSettings = new CoreAppSettings();
-        }
-
-        return _defaultAppSettings;
     }
     
     protected function handleModeTransitions () :void
@@ -215,7 +194,7 @@ public class MainLoop
         _pendingModeTransitionQueue = new Array();
     }
 
-    protected function update (e :TimerEvent) :void
+    protected function update (e :Event) :void
     {
         this.handleModeTransitions();
 
@@ -244,12 +223,9 @@ public class MainLoop
 
     protected static var g_instance :MainLoop;
 
-    protected var _defaultAppSettings :CoreAppSettings;
-
     protected var _hostSprite :Sprite;
     protected var _hasSetup :Boolean = false;
     protected var _running :Boolean = false;
-    protected var _mainTimer :Timer;
     protected var _lastTime :Number;
     protected var _modeStack :Array = new Array();
     protected var _pendingModeTransitionQueue :Array = new Array();
