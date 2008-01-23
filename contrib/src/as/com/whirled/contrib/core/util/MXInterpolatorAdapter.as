@@ -25,6 +25,10 @@ public class MXInterpolatorAdapter
         // b - specifies the initial position of a component
         // c - specifies the total change in position of the component
         // d - specifies the duration of the effect, in milliseconds
+        
+        if (duration <= 0) {
+            return b;
+        }
 
         t = Math.max(t, 0);
         t = Math.min(t, duration);
