@@ -18,40 +18,40 @@ import com.whirled.contrib.core.components.RotationComponent;
 public class RotationTask
     implements ObjectTask
 {
-    public static function CreateLinear (rotation :Number, time :Number) :RotationTask
+    public static function CreateLinear (rotationDegrees :Number, time :Number) :RotationTask
     {
         return new RotationTask(
-            rotation,
+            rotationDegrees,
             time,
             new MXInterpolatorAdapter(mx.effects.easing.Linear.easeNone));
     }
 
-    public static function CreateSmooth (rotation :Number, time :Number) :RotationTask
+    public static function CreateSmooth (rotationDegrees :Number, time :Number) :RotationTask
     {
         return new RotationTask(
-            rotation,
+            rotationDegrees,
             time,
             new MXInterpolatorAdapter(mx.effects.easing.Cubic.easeInOut));
     }
 
-    public static function CreateEaseIn (rotation :Number, time :Number) :RotationTask
+    public static function CreateEaseIn (rotationDegrees :Number, time :Number) :RotationTask
     {
         return new RotationTask(
-            rotation,
+            rotationDegrees,
             time,
             new MXInterpolatorAdapter(mx.effects.easing.Cubic.easeIn));
     }
 
-    public static function CreateEaseOut (rotation :Number, time :Number) :RotationTask
+    public static function CreateEaseOut (rotationDegrees :Number, time :Number) :RotationTask
     {
         return new RotationTask(
-            rotation,
+            rotationDegrees,
             time,
             new MXInterpolatorAdapter(mx.effects.easing.Cubic.easeOut));
     }
 
     public function RotationTask (
-        rotation :Number,
+        rotationDegrees :Number,
         time :Number = 0,
         interpolator :Interpolator = null)
     {
@@ -62,7 +62,7 @@ public class RotationTask
 
         Assert.isTrue(time >= 0);
 
-        _to = rotation;
+        _to = rotationDegrees;
         _totalTime = time;
         _interpolator = interpolator;
     }
