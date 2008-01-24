@@ -52,6 +52,8 @@ public class MainLoop
         _hasSetup = true;
 
         Rand.setup();
+        
+        this.addUpdatable(ResourceManager.instance);
     }
 
     public function run () :void
