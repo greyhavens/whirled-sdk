@@ -33,17 +33,23 @@ public class ResourceManager
     
     public function loadFromDisk (resourceName :String, filename :String) :void
     {
-        _pendingResources.put(resourceName, new FileResourceLoader(resourceName, filename));
+        this.loadInternal(resourceName, new FileResourceLoader(resourceName, filename));
     }
     
     public function loadFromBytes (resourceName :String, bytes :ByteArray) :void
     {
-        _pendingResources.put(resourceName, new ByteArrayResourceLoader(resourceName, bytes));
+        this.loadInternal(resourceName, new ByteArrayResourceLoader(resourceName, bytes));
     }
     
     public function loadFromClass (resourceName :String, theClass :Class) :void
     {
-        _pendingResources.put(resourceName, new EmbeddedClassResourceLoader(resourceName, theClass));
+        this.loadInternal(resourceName, new EmbeddedClassResourceLoader(resourceName, theClass));
+    }
+    
+    protected function loadInternal (resourceName :String, resourceLoader :ResourceLoader) :void
+    {
+        this.unload(resourceName);
+        _pendingResources.put(resourceName, resourceLoader);
     }
     
     public function getResource (resourceName :String) :*
@@ -56,6 +62,12 @@ public class ResourceManager
     {
         _resources.remove(name);
         _pendingResources.remove(name);
+    }
+    
+    public function unloadAll () :void
+    {
+        _resources = new HashMap();
+        _pendingResources = new HashMap();
     }
 
     public function isLoaded (name :String) :Boolean
