@@ -70,15 +70,23 @@ public class Vector2
     }
 
     /**
-     * Creates a Vector2 of magnitude 'len' that that has been rotated about the origin by 'angle'.
+     * Creates a Vector2 of magnitude 'len' that that has been rotated about the origin by 'angleRadians'.
      */
-    public static function fromAngle (angleRadians :Number, len :Number = 1) :Vector2
+    public static function fromAngleRadians (angleRadians :Number, len :Number = 1) :Vector2
     {
        // we use the unit vector (1, 0)
 
         return new Vector2(
             Math.cos(angleRadians) * len,   // == len * (cos(theta)*x - sin(theta)*y)
             Math.sin(angleRadians) * len);  // == len * (sin(theta)*x + cos(theta)*y)
+    }
+    
+    /**
+     * Creates a Vector2 of magnitude 'len' that that has been rotated about the origin by 'angleDegrees'.
+     */
+    public static function fromAngleDegrees (angleDegrees :Number, len :Number = 1) :Vector2
+    {
+        return Vector2.fromAngleRadians(angleDegrees * (Math.PI / 180), len);
     }
 
     /**
