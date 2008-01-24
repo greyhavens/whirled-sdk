@@ -31,9 +31,9 @@ public class ResourceManager
         return (null != bitmap ? bitmap.bitmapData : null);
     }
     
-    public function loadFromDisk (resourceName :String, filename :String) :void
+    public function loadFromURL (resourceName :String, url :String) :void
     {
-        this.loadInternal(resourceName, new FileResourceLoader(resourceName, filename));
+        this.loadInternal(resourceName, new URLResourceLoader(resourceName, url));
     }
     
     public function loadFromBytes (resourceName :String, bytes :ByteArray) :void
@@ -60,12 +60,31 @@ public class ResourceManager
 
     public function unload (name :String) :void
     {
-        _resources.remove(name);
-        _pendingResources.remove(name);
+        var rsrc :ResourceLoader;
+        
+        rsrc = _resources.remove(name);
+        if (null != rsrc) {
+            rsrc.unload();
+        }
+        
+        rsrc = _pendingResources.remove(name);
+        if (null != rsrc) {
+            rsrc.unload();
+        }
     }
     
     public function unloadAll () :void
     {
+        var rsrc :ResourceLoader;
+        
+        for each (rsrc in _resources.values()) {
+            rsrc.unload();
+        }
+        
+        for each (rsrc in _pendingResources.values()) {
+            rsrc.unload();
+        }
+        
         _resources = new HashMap();
         _pendingResources = new HashMap();
     }
@@ -123,6 +142,8 @@ interface ResourceLoader
     function get hasError () :Boolean;
     
     function get resourceData () :*;
+    
+    function unload () :void;
 }
 
 class ResourceLoaderBase
@@ -155,6 +176,16 @@ class ResourceLoaderBase
     {
         return (this.isLoaded ? _loader.content : null);
     }
+    
+    public function unload () :void
+    {
+        try {
+            _loader.close();
+            _loader.unload();
+        } catch (e :Error) {
+            // swallow the exception
+        }
+    }
 
     protected function onInit (e :Event) :void
     {
@@ -173,12 +204,12 @@ class ResourceLoaderBase
     protected var _loader :Loader;
 }
 
-class FileResourceLoader extends ResourceLoaderBase
+class URLResourceLoader extends ResourceLoaderBase
 {
-    public function FileResourceLoader (resourceName :String, filename :String)
+    public function URLResourceLoader (resourceName :String, url :String)
     {
         super(resourceName);
-        _loader.load(new URLRequest(filename));
+        _loader.load(new URLRequest(url));
     }
 }
 
