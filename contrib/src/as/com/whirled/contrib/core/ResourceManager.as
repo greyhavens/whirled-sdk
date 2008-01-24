@@ -25,10 +25,10 @@ public class ResourceManager
         g_instance = this;
     }
     
-    public function getImage (resourceName :String) :Bitmap
+    public function getImage (resourceName :String) :BitmapData
     {
         var bitmap :Bitmap = (this.getResource(resourceName) as Bitmap);
-        return (null != bitmap ? new Bitmap(bitmap.bitmapData) : null);
+        return (null != bitmap ? bitmap.bitmapData : null);
     }
     
     public function loadFromDisk (resourceName :String, filename :String) :void
