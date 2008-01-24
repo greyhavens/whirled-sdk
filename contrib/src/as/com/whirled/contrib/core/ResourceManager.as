@@ -181,10 +181,11 @@ class ResourceLoaderBase
     {
         try {
             _loader.close();
-            _loader.unload();
         } catch (e :Error) {
             // swallow the exception
         }
+        
+        _loader.unload();
     }
 
     protected function onInit (e :Event) :void
