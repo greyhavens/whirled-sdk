@@ -1,13 +1,11 @@
 package com.whirled.contrib.core {
 
+import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
-import com.threerings.util.ArrayUtil;
-
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
-import flash.display.Sprite;
 import com.whirled.contrib.core.components.SceneComponent;
+
+import flash.display.DisplayObjectContainer;
 
 public class ObjectDB
 {
@@ -24,6 +22,7 @@ public class ObjectDB
     {
         Assert.isTrue(null != obj);
         Assert.isTrue(null == obj._parentDB);
+        Assert.isTrue(AppObject.STATE_NEW == obj._objState);
 
         // if there's no free slot in our objects array,
         // make a new one
@@ -41,6 +40,7 @@ public class ObjectDB
 
         obj._objectId = createObjectId(index);
         obj._parentDB = this;
+        obj._objState = AppObject.STATE_LIVE;
 
         // does the object have a name?
         if (null != obj.objectName) {
@@ -58,7 +58,7 @@ public class ObjectDB
                     _groupedObjects.put(groupName, groupArray);
                 }
 
-                groupArray.push(obj);
+                groupArray.push(obj.id);
             }
         }
 
@@ -73,48 +73,24 @@ public class ObjectDB
             displayParent.addChild(sc.displayObject);
         }
 
-        obj.addedToDBInternal(this);
+        obj.addedToDBInternal();
 
         ++_objectCount;
 
         return obj.id;
     }
-
+    
     /** Removes an AppObject from the mode. */
     public function destroyObject (id :uint) :void
     {
-        var obj :AppObject = getObject(id);
-
+        var obj :AppObject = this.getObject(id);
+        
         if (null == obj) {
             return;
         }
-
-        obj._parentDB = null;
-
-        var index :uint = idToIndex(id);
-
-        Assert.isTrue(obj == _objects[index]);
-
-        _objects[index] = null;
-        _freeIndexes.unshift(index); // we have a new free index
-
-        // does the object have a name?
-        if (null != obj.objectName) {
-            Assert.isTrue(_namedObjects.get(obj.objectName) == obj);
-            _namedObjects.put(obj.objectName, null);
-        }
-
-        // is the object in any groups?
-        var groupNames :Array = obj.objectGroups;
-        if (null != groupNames) {
-            for each (var groupName :* in groupNames) {
-                var groupArray :Array = (_groupedObjects.get(groupName) as Array);
-                Assert.isTrue(null != groupArray);
-                var wasInArray :Boolean = ArrayUtil.removeFirst(groupArray, obj);
-                Assert.isTrue(wasInArray);
-            }
-        }
-
+        
+        obj._objState = AppObject.STATE_PENDING_DESTROY;
+        
         // if the object is attached to a DisplayObject, and if that
         // DisplayObject is in a display list, remove it from the display list
         // so that it will no longer be drawn to the screen
@@ -123,9 +99,50 @@ public class ObjectDB
             sc.displayObject.parent.removeChild(sc.displayObject);
         }
 
-        obj.removedFromDBInternal(this);
+        // does the object have a name?
+        if (null != obj.objectName) {
+            Assert.isTrue(_namedObjects.get(obj.objectName) == obj);
+            _namedObjects.put(obj.objectName, null);
+        }
+
+        obj.destroyedInternal();
+        
+        if (null == _objectsPendingDestroy) {
+            _objectsPendingDestroy = new Array();
+        }
+        
+        // don't remove the object
+        _objectsPendingDestroy.push(obj);
 
         --_objectCount;
+    }
+
+    protected function finalizeObjectDestruction (obj :AppObject) :void
+    {
+        Assert.isTrue(AppObject.STATE_PENDING_DESTROY == obj._objState);
+
+        var index :uint = idToIndex(obj.id);
+        Assert.isTrue(obj == _objects[index]);
+        _objects[index] = null;
+        _freeIndexes.unshift(index); // we have a new free index
+
+        // is the object in any groups?
+        // (we remove the object from its groups here, rather than in
+        // destroyObject(), because client code might be iterating an
+        // object group Array when destroyObject is called)
+        var groupNames :Array = obj.objectGroups;
+        if (null != groupNames) {
+            for each (var groupName :* in groupNames) {
+                var groupArray :Array = (_groupedObjects.get(groupName) as Array);
+                Assert.isTrue(null != groupArray);
+                var wasInArray :Boolean = ArrayUtil.removeFirst(groupArray, obj.id);
+                Assert.isTrue(wasInArray);
+            }
+        }
+        
+        obj._objState = AppObject.STATE_DESTROYED;
+        obj._parentDB = null;
+        obj._objectId = 0;
     }
 
     public function getObject (id :uint) :AppObject
@@ -136,7 +153,7 @@ public class ObjectDB
 
             var obj :AppObject = _objects[index];
 
-            if (null != obj && idToSerialNumber(id) == idToSerialNumber(obj.id)) {
+            if (null != obj && AppObject.STATE_LIVE == obj._objState && idToSerialNumber(id) == idToSerialNumber(obj.id)) {
                 return obj;
             }
         }
@@ -150,7 +167,13 @@ public class ObjectDB
         return (_namedObjects.get(name) as AppObject);
     }
 
-    /** Returns the set of objects in the given group. This set must not be modified by client code. */
+    /** 
+     * Returns an Array containing the object IDs of all the objects in the given group. 
+     * This Array must not be modified by client code.
+     * 
+     * Note: because of the method that object destruction is implemented with,
+     * the returned Array may contain invalid object IDs.
+     */
     public function getObjectsInGroup (groupName :String) :Array
     {
         var objects :Array = (_groupedObjects.get(groupName) as Array);
@@ -161,12 +184,22 @@ public class ObjectDB
     /** Called once per update tick. Updates all objects in the mode. */
     public function update (dt :Number) :void
     {
+        var obj :AppObject;
+        
         // update all objects in this mode
-        // there may be holes in the array, so check each object against null
-        for each (var obj :AppObject in _objects) {
-            if (null != obj) {
+        for each (obj in _objects) {
+            if (null != obj && AppObject.STATE_LIVE == obj._objState) {
                 obj.updateInternal(dt);
             }
+        }
+        
+        // clean out all objects that were destroyed during the update loop
+        if (null != _objectsPendingDestroy) {
+            for each (obj in _objectsPendingDestroy) {
+                this.finalizeObjectDestruction(obj);
+            }
+            
+            _objectsPendingDestroy = null;
         }
     }
 
@@ -214,7 +247,7 @@ public class ObjectDB
         var sn :uint = _serialNumberCounter++;
 
         if (_serialNumberCounter > 0x0000FFFF) {
-            _serialNumberCounter = 1; // never generate a sn of 0
+            _serialNumberCounter = 1; // never generate a sn of 0. objectId==0 is the "null" object.
         }
 
         return ((sn << 16) | (index & 0x0000FFFF));
@@ -239,6 +272,8 @@ public class ObjectDB
     protected var _objects :Array = new Array();
     protected var _freeIndexes :Array = new Array();
     protected var _serialNumberCounter :uint = 1;
+    
+    protected var _objectsPendingDestroy :Array;
 
     /** stores a mapping from String to Object */
     protected var _namedObjects :HashMap = new HashMap();

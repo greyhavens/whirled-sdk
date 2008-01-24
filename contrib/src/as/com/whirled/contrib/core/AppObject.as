@@ -2,11 +2,7 @@ package com.whirled.contrib.core {
 
 import com.threerings.util.Assert;
 import com.threerings.util.SortedHashMap;
-
 import com.whirled.contrib.core.tasks.ParallelTask;
-import flash.display.DisplayObject;
-import flash.display.InteractiveObject;
-import flash.display.DisplayObjectContainer;
 
 public class AppObject
 {
@@ -16,6 +12,14 @@ public class AppObject
     public final function get id () :uint
     {
         return _objectId;
+    }
+    
+    /**
+     * Returns the ObjectDB that this object is contained in.
+     */
+    public final function get db () :ObjectDB
+    {
+        return _parentDB;
     }
 
     /**
@@ -121,7 +125,7 @@ public class AppObject
      * Called immediately after the AppObject has been added to an ObjectDB.
      * (Subclasses can override this to do something useful.)
      */
-    protected function addedToDB (db :ObjectDB) :void
+    protected function addedToDB () :void
     {
     }
 
@@ -129,7 +133,7 @@ public class AppObject
      * Called immediately after the AppObject has been removed from an AppMode.
      * (Subclasses can override this to do something useful.)
      */
-    protected function removedFromDB (db :ObjectDB) :void
+    protected function destroyed () :void
     {
     }
 
@@ -142,14 +146,14 @@ public class AppObject
 
     }
 
-    internal function addedToDBInternal (db :ObjectDB) :void
+    internal function addedToDBInternal () :void
     {
-        addedToDB(db);
+        addedToDB();
     }
 
-    internal function removedFromDBInternal (db :ObjectDB) :void
+    internal function destroyedInternal () :void
     {
-        removedFromDB(db);
+        destroyed();
     }
 
     internal function updateInternal (dt :Number) :void
@@ -192,6 +196,12 @@ public class AppObject
     // managed by AppMode
     internal var _objectId :uint;
     internal var _parentDB :ObjectDB;
+    internal var _objState :uint = STATE_NEW;
+    
+    internal static const STATE_NEW :uint = 0;
+    internal static const STATE_LIVE :uint = 1;
+    internal static const STATE_PENDING_DESTROY :uint = 2;
+    internal static const STATE_DESTROYED :uint = 3;
 }
 
 }
