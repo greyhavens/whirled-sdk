@@ -2,8 +2,31 @@ package com.whirled.contrib.core.util {
 
 import com.whirled.contrib.core.*;
 
+import flash.display.DisplayObject;
+import flash.geom.Point;
+
 public class Collision
 {
+    /** Returns true if the two circular display objects intersect. */
+    public static function circularDisplayObjectsIntersect (
+        center1 :Vector2,
+        radius1 :Number,
+        do1 :DisplayObject,
+        center2 :Vector2,
+        radius2 :Number,
+        do2 :DisplayObject) :Boolean
+    {
+        if (null == do1 || null == do2 || null == do1.parent || null == do2.parent) {
+            throw new ArgumentError("do1 and do2 must be non-null, and part of the display list");
+        }
+        
+        var p :Point = center1.toPoint();
+        p = do1.parent.localToGlobal(p);
+        p = do2.parent.globalToLocal(p);
+        
+        return Collision.circlesIntersect(Vector2.fromPoint(p), radius1, center2, radius2);
+    }
+    
     /** Returns true if the two circles intersect. */
     public static function circlesIntersect (
         center1 :Vector2,
