@@ -206,8 +206,8 @@ public class EditableDataPack extends DataPack
         try {
             writeTo(baos);
         } catch (IOException ioe) {
-            // this shouldn't happen
-            return new byte[0];
+            // this'll never happen with a ByteArrayOutputStream
+            throw new RuntimeException(ioe);
         }
         return baos.toByteArray();
     }
