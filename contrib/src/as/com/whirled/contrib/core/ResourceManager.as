@@ -142,25 +142,25 @@ public class ResourceManager extends EventDispatcher
     
     protected function onResourceLoaded (e :SingleResourceLoadEvent) :void
     {
-        var rsrc :ResourceLoader = e.rsrc;
+        var rsrc :ResourceLoader = (e.target as ResourceLoader);
         this.cleanupPendingResource(rsrc.resourceName);
         _resources.put(rsrc.resourceName, rsrc);
         
         if (_pendingResources.size() == 0) {
             _loading = false;
-            this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.RESOURCES_LOADED, this));
+            this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.RESOURCES_LOADED));
         }
     }
     
     protected function onResourceError (e :SingleResourceLoadEvent) :void
     {
-        var rsrc :ResourceLoader = e.rsrc;
+        var rsrc :ResourceLoader = (e.target as ResourceLoader);
         this.cleanupPendingResource(rsrc.resourceName);
         
         // upon error, cancel all pending loads
         this.cancelLoad();
         
-        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR, this));
+        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR));
     }
     
     protected function cleanupPendingResource (resourceName :String) :ResourceLoader
@@ -200,12 +200,9 @@ class SingleResourceLoadEvent extends Event
     public static const LOADED :String = "SingleResource_Loaded";
     public static const ERROR :String = "SingleResource_Error";
     
-    public var rsrc :ResourceLoader;
-    
-    public function SingleResourceLoadEvent (type :String, rsrc :ResourceLoader)
+    public function SingleResourceLoadEvent (type :String)
     {
         super(type, false, false);
-        this.rsrc = rsrc;
     }
 }
 
@@ -277,7 +274,7 @@ class ResourceLoaderBase extends EventDispatcher
     {
         _isLoaded = true;
         
-        this.dispatchEvent(new SingleResourceLoadEvent(SingleResourceLoadEvent.LOADED, this));
+        this.dispatchEvent(new SingleResourceLoadEvent(SingleResourceLoadEvent.LOADED));
     }
 
     protected function onError (e :IOErrorEvent) :void
@@ -285,7 +282,7 @@ class ResourceLoaderBase extends EventDispatcher
         _errorString = e.text;
         _hasError = true;
         
-        this.dispatchEvent(new SingleResourceLoadEvent(SingleResourceLoadEvent.ERROR, this));
+        this.dispatchEvent(new SingleResourceLoadEvent(SingleResourceLoadEvent.ERROR));
     }
 
     protected var _name :String;
