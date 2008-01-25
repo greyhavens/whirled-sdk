@@ -6,6 +6,7 @@ package com.whirled.remix.data;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -194,6 +195,21 @@ public class EditableDataPack extends DataPack
 
         // TODO: cope with clobbering an existing filename?
         _files.put(filename, data);
+    }
+
+    /**
+     * Serialize this DataPack back into a ByteArray.
+     */
+    public byte[] toByteArray ()
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            writeTo(baos);
+        } catch (IOException ioe) {
+            // this shouldn't happen
+            return new byte[0];
+        }
+        return baos.toByteArray();
     }
 
     /**
