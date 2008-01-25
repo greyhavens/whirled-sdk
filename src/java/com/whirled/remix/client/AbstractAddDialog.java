@@ -29,11 +29,11 @@ import com.samskivert.swing.Spacer;
 
 import com.samskivert.swing.event.DocumentAdapter;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 public abstract class AbstractAddDialog extends JInternalDialog
 {
-    public AbstractAddDialog (JComponent host, EditableDataPack pack, Action popupAction)
+    public AbstractAddDialog (JComponent host, CreatingDataPack pack, Action popupAction)
     {
         super(host);
         _pack = pack;
@@ -139,8 +139,8 @@ public abstract class AbstractAddDialog extends JInternalDialog
         _type.setEditable(false);
         _type.addActionListener(new ActionListener() {
             public void actionPerformed (ActionEvent event) {
-                EditableDataPack.AbstractType type =
-                    (EditableDataPack.AbstractType) _type.getSelectedItem();
+                CreatingDataPack.AbstractType type =
+                    (CreatingDataPack.AbstractType) _type.getSelectedItem();
                 _typeLabel.setText((type != null) ? type.getDescription() : "");
                 validateData();
             }
@@ -182,7 +182,7 @@ public abstract class AbstractAddDialog extends JInternalDialog
      */
     protected abstract void createRow (String name, Object type, String desc);
 
-    protected EditableDataPack _pack;
+    protected CreatingDataPack _pack;
 
     protected Action _okAction;
 

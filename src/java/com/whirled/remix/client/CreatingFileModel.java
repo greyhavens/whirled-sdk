@@ -5,13 +5,13 @@ package com.whirled.remix.client;
 
 import java.util.List;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 /**
  */
 public class CreatingFileModel extends RemixingFileModel
 {
-    public CreatingFileModel (EditableDataPack pack, CreatingFileTable table)
+    public CreatingFileModel (CreatingDataPack pack, CreatingFileTable table)
     {
         super(pack, table);
         _deleteRows = true;

@@ -20,11 +20,11 @@ import javax.swing.table.TableModel;
 import com.samskivert.swing.GroupLayout;
 import com.samskivert.swing.VGroupLayout;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 public class RemixingPanel extends JPanel
 {
-    public RemixingPanel (EditableDataPack pack)
+    public RemixingPanel (CreatingDataPack pack)
     {
         super(new VGroupLayout(
             VGroupLayout.STRETCH, VGroupLayout.STRETCH, 5, //VGroupLayout.DEFAULT_GAP,
@@ -64,7 +64,7 @@ public class RemixingPanel extends JPanel
     /**
      * Create the table model to use for the data elements.
      */
-    protected JTable createDataTable (EditableDataPack pack)
+    protected JTable createDataTable (CreatingDataPack pack)
     {
         return new RemixingDataTable(pack);
     }
@@ -72,7 +72,7 @@ public class RemixingPanel extends JPanel
     /**
      * Create the table model to use for the file elements.
      */
-    protected JTable createFileTable (EditableDataPack pack)
+    protected JTable createFileTable (CreatingDataPack pack)
     {
         return new RemixingFileTable(pack);
     }
@@ -112,7 +112,7 @@ public class RemixingPanel extends JPanel
     }
 
     /** The DataPack we're editing. */
-    protected EditableDataPack _pack;
+    protected CreatingDataPack _pack;
 
     /** The table editing the data fields. */
     protected JTable _dataTable;

@@ -17,11 +17,11 @@ import javax.swing.JTextField;
 
 import com.samskivert.util.StringUtil;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 public class AddDataDialog extends AbstractAddDialog
 {
-    public AddDataDialog (JComponent host, EditableDataPack pack, Action popupAction)
+    public AddDataDialog (JComponent host, CreatingDataPack pack, Action popupAction)
     {
         super(host, pack, popupAction);
         setTitle("Add new data field");
@@ -32,8 +32,8 @@ public class AddDataDialog extends AbstractAddDialog
     {
         super.createContent(panel);
 
-        for (EditableDataPack.DataType type : EditableDataPack.DataType.values()) {
-            if (type != EditableDataPack.DataType.UNKNOWN_TYPE) {
+        for (CreatingDataPack.DataType type : CreatingDataPack.DataType.values()) {
+            if (type != CreatingDataPack.DataType.UNKNOWN_TYPE) {
                 _type.addItem(type);
             }
         }
@@ -48,7 +48,7 @@ public class AddDataDialog extends AbstractAddDialog
     // from AbstractAddDialog
     protected void createRow (String name, Object type, String desc)
     {
-        _pack.addDataEntry(name, (EditableDataPack.DataType) type, desc);
+        _pack.addDataEntry(name, (CreatingDataPack.DataType) type, desc);
     }
 
     // from AbstractAddDialog

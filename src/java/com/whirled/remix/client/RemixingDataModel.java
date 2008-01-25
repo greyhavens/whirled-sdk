@@ -5,13 +5,13 @@ package com.whirled.remix.client;
 
 import java.util.List;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 /**
  */
 public class RemixingDataModel extends AbstractModel
 {
-    public RemixingDataModel (EditableDataPack pack)
+    public RemixingDataModel (CreatingDataPack pack)
     {
         super(pack);
     }
@@ -21,7 +21,7 @@ public class RemixingDataModel extends AbstractModel
     {
         switch (columnIndex) {
         case DEFAULT_COL:
-            EditableDataPack.DataEntry entry = (EditableDataPack.DataEntry) getEntry(rowIndex);
+            CreatingDataPack.DataEntry entry = (CreatingDataPack.DataEntry) getEntry(rowIndex);
             return entry.defaultValue;
 
         default:
@@ -30,13 +30,13 @@ public class RemixingDataModel extends AbstractModel
     }
 
     // from AbstractModel
-    protected List<String> initFields (EditableDataPack pack)
+    protected List<String> initFields (CreatingDataPack pack)
     {
         return pack.getDataFields();
     }
 
     // from AbstractModel
-    protected EditableDataPack.AbstractEntry getEntry (int rowIndex)
+    protected CreatingDataPack.AbstractEntry getEntry (int rowIndex)
     {
         return _pack.getDataEntry(_fields.get(rowIndex));
     }

@@ -20,11 +20,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 public class RemixingDataTable extends AbstractTable
 {
-    public RemixingDataTable (EditableDataPack pack)
+    public RemixingDataTable (CreatingDataPack pack)
     {
         super(pack);
     }
@@ -38,7 +38,7 @@ public class RemixingDataTable extends AbstractTable
 
         case RemixingDataModel.VALUE_COL:
         case RemixingDataModel.DEFAULT_COL:
-            EditableDataPack.DataType type = (EditableDataPack.DataType)
+            CreatingDataPack.DataType type = (CreatingDataPack.DataType)
                 getModel().getValueAt(row, RemixingDataModel.TYPE_COL);
             switch (type) {
             default:
@@ -71,7 +71,7 @@ public class RemixingDataTable extends AbstractTable
 
         case RemixingDataModel.VALUE_COL:
         case RemixingDataModel.DEFAULT_COL:
-            EditableDataPack.DataType type = (EditableDataPack.DataType)
+            CreatingDataPack.DataType type = (CreatingDataPack.DataType)
                 getModel().getValueAt(row, RemixingDataModel.TYPE_COL);
             switch (type) {
             default:
@@ -96,7 +96,7 @@ public class RemixingDataTable extends AbstractTable
     }
 
     // from AbstractTable
-    protected AbstractModel createModel (EditableDataPack pack)
+    protected AbstractModel createModel (CreatingDataPack pack)
     {
         return new RemixingDataModel(pack);
     }

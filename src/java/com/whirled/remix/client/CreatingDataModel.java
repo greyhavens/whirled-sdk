@@ -5,13 +5,13 @@ package com.whirled.remix.client;
 
 import java.util.List;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 /**
  */
 public class CreatingDataModel extends RemixingDataModel
 {
-    public CreatingDataModel (EditableDataPack pack)
+    public CreatingDataModel (CreatingDataPack pack)
     {
         super(pack);
         _deleteRows = true;
@@ -37,7 +37,7 @@ public class CreatingDataModel extends RemixingDataModel
     {
         switch (columnIndex) {
         case DEFAULT_COL:
-            EditableDataPack.DataEntry entry = (EditableDataPack.DataEntry) getEntry(rowIndex);
+            CreatingDataPack.DataEntry entry = (CreatingDataPack.DataEntry) getEntry(rowIndex);
             entry.defaultValue = newValue;
             break;
 

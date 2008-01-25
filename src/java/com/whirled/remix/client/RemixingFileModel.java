@@ -10,13 +10,13 @@ import java.util.List;
 
 import com.samskivert.util.StringUtil;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 /**
  */
 public class RemixingFileModel extends AbstractModel
 {
-    public RemixingFileModel (EditableDataPack pack, RemixingFileTable table)
+    public RemixingFileModel (CreatingDataPack pack, RemixingFileTable table)
     {
         super(pack);
         _table = table;
@@ -48,11 +48,11 @@ public class RemixingFileModel extends AbstractModel
         try {
             if (column == VALUE_COL) {
                 File newFile = (File) newValue;
-                EditableDataPack.AbstractEntry entry = getEntry(row);
+                CreatingDataPack.AbstractEntry entry = getEntry(row);
                 newValue = _pack.replaceFile(entry.name, newFile);
 
             } else if (column == ACTIONS_COL && ((Integer) newValue).intValue() == ACTION_REVERT) {
-                EditableDataPack.AbstractEntry entry = getEntry(row);
+                CreatingDataPack.AbstractEntry entry = getEntry(row);
                 String oldFilename = (String) _revertValues.get(entry.name);
                 if (!StringUtil.isBlank(oldFilename)) {
                     _pack.replaceFile(entry.name, oldFilename);
@@ -67,13 +67,13 @@ public class RemixingFileModel extends AbstractModel
     }
 
     // from AbstractModel
-    protected List<String> initFields (EditableDataPack pack)
+    protected List<String> initFields (CreatingDataPack pack)
     {
         return pack.getFileFields();
     }
 
     // from AbstractModel
-    protected EditableDataPack.AbstractEntry getEntry (int rowIndex)
+    protected CreatingDataPack.AbstractEntry getEntry (int rowIndex)
     {
         return _pack.getFileEntry(_fields.get(rowIndex));
     }

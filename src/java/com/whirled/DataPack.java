@@ -280,6 +280,7 @@ public class DataPack
 
         // only after we've had success parsing everything do we accept the metadata
         _metadata = metadata;
+        didInit();
     }
 
     protected MetaData parseMetaData (byte[] data)
@@ -382,6 +383,14 @@ public class DataPack
         } catch (SAXException saxe) {
             throw (IOException) new IOException().initCause(saxe);
         }
+    }
+
+    /**
+     * A place for subclasses to do something after initialization.
+     */
+    protected void didInit ()
+    {
+        // nothing right now, but please call super()
     }
 
     /**

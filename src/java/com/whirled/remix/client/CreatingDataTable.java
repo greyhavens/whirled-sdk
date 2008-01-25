@@ -3,17 +3,17 @@
 
 package com.whirled.remix.client;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 public class CreatingDataTable extends RemixingDataTable
 {
-    public CreatingDataTable (EditableDataPack pack)
+    public CreatingDataTable (CreatingDataPack pack)
     {
         super(pack);
     }
 
     @Override // from AbstractTable
-    protected AbstractModel createModel (EditableDataPack pack)
+    protected AbstractModel createModel (CreatingDataPack pack)
     {
         return new CreatingDataModel(pack);
     }

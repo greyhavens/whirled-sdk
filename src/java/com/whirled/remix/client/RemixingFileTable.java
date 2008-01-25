@@ -15,11 +15,11 @@ import javax.swing.filechooser.FileFilter;
 
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumnModel;
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 public class RemixingFileTable extends AbstractTable
 {
-    public RemixingFileTable (EditableDataPack pack)
+    public RemixingFileTable (CreatingDataPack pack)
     {
         super(pack);
 
@@ -40,7 +40,7 @@ public class RemixingFileTable extends AbstractTable
     }
 
     // from AbstractTable
-    protected AbstractModel createModel (EditableDataPack pack)
+    protected AbstractModel createModel (CreatingDataPack pack)
     {
         return new RemixingFileModel(pack, this);
     }
@@ -51,7 +51,7 @@ public class RemixingFileTable extends AbstractTable
     protected void openFileDialog (int row)
     {
         RemixingFileModel model = (RemixingFileModel) getModel();
-        EditableDataPack.FileEntry entry = (EditableDataPack.FileEntry) model.getEntry(row);
+        CreatingDataPack.FileEntry entry = (CreatingDataPack.FileEntry) model.getEntry(row);
 
         JFileChooser chooser = new JFileChooser();
         chooser.setAcceptAllFileFilterUsed(false);
@@ -67,14 +67,14 @@ public class RemixingFileTable extends AbstractTable
      */
     protected void viewFile (int row, int column)
     {
-        EditableDataPack.FileEntry entry = (EditableDataPack.FileEntry)
+        CreatingDataPack.FileEntry entry = (CreatingDataPack.FileEntry)
             ((AbstractModel) getModel()).getEntry(row);
 
         // TODO
         System.err.println("== file viewing is TODO [filename=" + entry.value + "].");
     }
 
-    protected FileFilter createFilter (final EditableDataPack.FileType type)
+    protected FileFilter createFilter (final CreatingDataPack.FileType type)
     {
         // the following class could be replaced by 1.6's FileNameExtensionFilter
         return new FileFilter() {

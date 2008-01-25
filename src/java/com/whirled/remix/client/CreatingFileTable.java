@@ -5,17 +5,17 @@ package com.whirled.remix.client;
 
 import javax.swing.table.TableModel;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 public class CreatingFileTable extends RemixingFileTable
 {
-    public CreatingFileTable (EditableDataPack pack)
+    public CreatingFileTable (CreatingDataPack pack)
     {
         super(pack);
     }
 
     @Override // from AbstractTable
-    protected AbstractModel createModel (EditableDataPack pack)
+    protected AbstractModel createModel (CreatingDataPack pack)
     {
         return new CreatingFileModel(pack, this);
     }

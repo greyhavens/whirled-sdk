@@ -29,11 +29,11 @@ import javax.swing.table.TableModel;
 import com.samskivert.swing.GroupLayout;
 import com.samskivert.util.StringUtil;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 public abstract class AbstractTable extends JTable
 {
-    public AbstractTable (EditableDataPack pack)
+    public AbstractTable (CreatingDataPack pack)
     {
         AbstractModel model = createModel(pack);
         setModel(model);
@@ -96,7 +96,7 @@ public abstract class AbstractTable extends JTable
     /**
      * Create the table model to use.
      */
-    protected abstract AbstractModel createModel (EditableDataPack pack);
+    protected abstract AbstractModel createModel (CreatingDataPack pack);
 
     // TODO... will this work?
     protected static class ActionCellRenderer extends AbstractCellEditor

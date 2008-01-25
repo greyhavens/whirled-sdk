@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 
 import com.samskivert.util.ResultListener;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 public class RemixingApp
 {
@@ -22,8 +22,8 @@ public class RemixingApp
             return;
         }
 
-        new EditableDataPack(args[0], new ResultListener<EditableDataPack>() {
-            public void requestCompleted (EditableDataPack pack) {
+        new CreatingDataPack(args[0], new ResultListener<CreatingDataPack>() {
+            public void requestCompleted (CreatingDataPack pack) {
                 JFrame frame = new JFrame("Remixing");
                 frame.setContentPane(new RemixingPanel(pack));
                 frame.pack();

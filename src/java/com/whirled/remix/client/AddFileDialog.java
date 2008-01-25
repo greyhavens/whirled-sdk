@@ -17,11 +17,11 @@ import javax.swing.JTextField;
 
 import com.samskivert.util.StringUtil;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 public class AddFileDialog extends AbstractAddDialog
 {
-    public AddFileDialog (JComponent host, EditableDataPack pack, Action popupAction)
+    public AddFileDialog (JComponent host, CreatingDataPack pack, Action popupAction)
     {
         super(host, pack, popupAction);
         setTitle("Add new file field");
@@ -32,8 +32,8 @@ public class AddFileDialog extends AbstractAddDialog
     {
         super.createContent(panel);
 
-        for (EditableDataPack.FileType type : EditableDataPack.FileType.values()) {
-            if (type != EditableDataPack.FileType.UNKNOWN_TYPE) {
+        for (CreatingDataPack.FileType type : CreatingDataPack.FileType.values()) {
+            if (type != CreatingDataPack.FileType.UNKNOWN_TYPE) {
                 _type.addItem(type);
             }
         }
@@ -48,7 +48,7 @@ public class AddFileDialog extends AbstractAddDialog
     // from AbstractAddDialog
     protected void createRow (String name, Object type, String desc)
     {
-        _pack.addFileEntry(name, (EditableDataPack.FileType) type, desc);
+        _pack.addFileEntry(name, (CreatingDataPack.FileType) type, desc);
     }
 
     // from AbstractAddDialog

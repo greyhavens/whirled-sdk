@@ -14,7 +14,7 @@ import javax.swing.table.AbstractTableModel;
 import com.samskivert.util.ObjectUtil;
 import com.samskivert.util.StringUtil;
 
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 /**
  */
@@ -35,7 +35,7 @@ public abstract class AbstractModel extends AbstractTableModel
     public static final int ACTION_DELETE = 1 << 2;
     public static final int ACTION_VIEW = 1 << 3;
 
-    public AbstractModel (EditableDataPack pack)
+    public AbstractModel (CreatingDataPack pack)
     {
         _pack = pack;
         _fields = initFields(pack);
@@ -82,7 +82,7 @@ public abstract class AbstractModel extends AbstractTableModel
     // from TableModel
     public Object getValueAt (int rowIndex, int columnIndex)
     {
-        EditableDataPack.AbstractEntry entry = getEntry(rowIndex);
+        CreatingDataPack.AbstractEntry entry = getEntry(rowIndex);
         switch (columnIndex) {
         case NAME_COL:
             return entry.name;
@@ -107,7 +107,7 @@ public abstract class AbstractModel extends AbstractTableModel
             if (_revertValues.containsKey(entry.name)) {
                 flags |= ACTION_REVERT;
             }
-            if (entry instanceof EditableDataPack.FileEntry &&
+            if (entry instanceof CreatingDataPack.FileEntry &&
                     !StringUtil.isBlank((String) entry.value)) {
                 flags |= ACTION_VIEW;
             }
@@ -186,7 +186,7 @@ public abstract class AbstractModel extends AbstractTableModel
     @Override
     public void setValueAt (Object newValue, int rowIndex, int columnIndex)
     {
-        EditableDataPack.AbstractEntry entry = getEntry(rowIndex);
+        CreatingDataPack.AbstractEntry entry = getEntry(rowIndex);
         switch (columnIndex) {
         case VALUE_COL:
             // (We use containsKey in case the value stored is null)
@@ -233,12 +233,12 @@ public abstract class AbstractModel extends AbstractTableModel
     /**
      * Extract the String names of the entries in this model.
      */
-    protected abstract List<String> initFields (EditableDataPack pack);
+    protected abstract List<String> initFields (CreatingDataPack pack);
 
     /**
      * Get the entry for the specified row.
      */
-    protected abstract EditableDataPack.AbstractEntry getEntry (int rowIndex);
+    protected abstract CreatingDataPack.AbstractEntry getEntry (int rowIndex);
 
     /**
      * Delete the specified row.
@@ -255,7 +255,7 @@ public abstract class AbstractModel extends AbstractTableModel
     protected boolean _blockRevert;
 
     /** The pack we're editing. */
-    protected EditableDataPack _pack;
+    protected CreatingDataPack _pack;
 
     /** A List of the names to be used in the rows. */
     protected List<String> _fields;

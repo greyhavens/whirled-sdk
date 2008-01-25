@@ -12,23 +12,23 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 
 import com.samskivert.swing.GroupLayout;
-import com.whirled.remix.data.EditableDataPack;
+import com.whirled.remix.data.CreatingDataPack;
 
 public class CreatingPanel extends RemixingPanel
 {
     public CreatingPanel ()
     {
-        super(new EditableDataPack());
+        super(new CreatingDataPack());
     }
 
     @Override
-    protected JTable createDataTable (EditableDataPack pack)
+    protected JTable createDataTable (CreatingDataPack pack)
     {
         return new CreatingDataTable(pack);
     }
 
     @Override
-    protected JTable createFileTable (EditableDataPack pack)
+    protected JTable createFileTable (CreatingDataPack pack)
     {
         return new CreatingFileTable(pack);
     }
