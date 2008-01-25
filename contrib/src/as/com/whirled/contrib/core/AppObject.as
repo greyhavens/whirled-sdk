@@ -57,16 +57,23 @@ public class AppObject
     /** Adds an unnamed task to this AppObject. */
     public function addTask (task :ObjectTask) :void
     {
-        Assert.isTrue(null != task);
+        if (null == task) {
+            throw new ArgumentError("task must be non-null");
+        }
+        
         _anonymousTasks.addTask(task);
     }
 
     /** Adds a named task to this AppObject. */
     public function addNamedTask (name :String, task :ObjectTask) :void
     {
-        Assert.isTrue(null != task);
-        Assert.isTrue(null != name);
-        Assert.isTrue(name.length > 0);
+        if (null == task) {
+            throw new ArgumentError("task must be non-null");
+        }
+        
+        if (null == name || name.length == 0) {
+            throw new ArgumentError("name must be at least 1 character long");
+        }
 
         var namedTaskContainer :ParallelTask = (_namedTasks.get(name) as ParallelTask);
         if (null == namedTaskContainer) {
@@ -87,8 +94,9 @@ public class AppObject
     /** Removes all tasks with the given name from the AppObject. */
     public function removeNamedTasks (name :String) :void
     {
-        Assert.isTrue(null != name);
-        Assert.isTrue(name.length > 0);
+        if (null == name || name.length == 0) {
+            throw new ArgumentError("name must be at least 1 character long");
+        }
 
         _namedTasks.remove(name);
     }

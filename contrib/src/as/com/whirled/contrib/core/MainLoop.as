@@ -17,10 +17,13 @@ public class MainLoop
 
     public function MainLoop (hostSprite :Sprite)
     {
+        if (null == hostSprite) {
+            throw new ArgumentError("hostSprite must be non-null");
+        }
+        
         Assert.isNull(g_instance);
         g_instance = this;
 
-        Assert.isNotNull(hostSprite);
         _hostSprite = hostSprite;
     }
 
@@ -58,11 +61,13 @@ public class MainLoop
 
     public function run () :void
     {
+        if (_running) {
+            return;
+        }
+        
         // ensure that proper setup has completed
         setup();
 
-        // it's an error to call run() multiple times
-        Assert.isFalse(_running);
         _running = true;
         
         _hostSprite.addEventListener(Event.ENTER_FRAME, update);
@@ -82,7 +87,10 @@ public class MainLoop
 
     public function pushMode (mode :AppMode) :void
     {
-        Assert.isTrue(null != mode);
+        if (null == mode) {
+            throw new ArgumentError("mode must be non-null");
+        }
+        
         createModeTransition(mode, TRANSITION_PUSH);
     }
 
@@ -93,13 +101,19 @@ public class MainLoop
 
     public function changeMode (mode :AppMode) :void
     {
-        Assert.isTrue(null != mode);
+        if (null == mode) {
+            throw new ArgumentError("mode must be non-null");
+        }
+        
         createModeTransition(mode, TRANSITION_CHANGE);
     }
 
     public function unwindToMode (mode :AppMode) :void
     {
-        Assert.isTrue(null != mode);
+        if (null == mode) {
+            throw new ArgumentError("mode must be non-null");
+        }
+        
         createModeTransition(mode, TRANSITION_UNWIND);
     }
 

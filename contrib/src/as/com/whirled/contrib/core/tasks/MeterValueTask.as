@@ -65,17 +65,18 @@ public class MeterValueTask
             interpolator = new MXInterpolatorAdapter(mx.effects.easing.Linear.easeNone);
         }
 
-        Assert.isTrue(time >= 0);
-
         _to = value;
-        _totalTime = time;
+        _totalTime = Math.max(time, 0);
         _interpolator = interpolator;
     }
 
     public function update (dt :Number, obj :AppObject) :Boolean
     {
         var meterComponent :MeterComponent = (obj as MeterComponent);
-        Assert.isNotNull(meterComponent, "MeterValueTask can only be applied to MeterComponents.");
+        
+        if (null == meterComponent) {
+            throw new Error("MeterValueTask can only be applied to AppObjects that implement MeterComponent");
+        }
 
         if (0 == _elapsedTime) {
             _from = meterComponent.value;

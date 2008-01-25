@@ -24,8 +24,7 @@ public class Checksum
         } else if (val is String) {
             return this.addString(val as String);
         } else {
-            Assert.fail("Checksum.add: unsupported object type");
-            return null;
+            throw new ArgumentError("unsupported object type");
         }
     }
 

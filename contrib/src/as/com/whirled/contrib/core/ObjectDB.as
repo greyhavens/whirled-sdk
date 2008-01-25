@@ -20,9 +20,9 @@ public class ObjectDB
      */
     public function addObject (obj :AppObject, displayParent :DisplayObjectContainer = null) :uint
     {
-        Assert.isTrue(null != obj);
-        Assert.isTrue(null == obj._parentDB);
-        Assert.isTrue(AppObject.STATE_NEW == obj._objState);
+        if (null == obj || null != obj._parentDB || AppObject.STATE_NEW != obj._objState) {
+            throw new ArgumentError("obj must be non-null, and must never have belonged to another ObjectDB");
+        }
 
         // if there's no free slot in our objects array,
         // make a new one
@@ -44,7 +44,10 @@ public class ObjectDB
 
         // does the object have a name?
         if (null != obj.objectName) {
-            Assert.isTrue(_namedObjects.get(obj.objectName) == null, "Can't add two objects with the same name to the same mode.");
+            if (_namedObjects.get(obj.objectName) != null) {
+                throw new Error("can't add two objects with the same name to the same ObjectDB");
+            }
+            
             _namedObjects.put(obj.objectName, obj);
         }
 
@@ -67,8 +70,9 @@ public class ObjectDB
         // do the attaching themselves)
         if (null != displayParent) {
             var sc :SceneComponent = (obj as SceneComponent);
-            Assert.isNotNull(sc);
-            Assert.isNotNull(sc.displayObject);
+            if (null == sc || null == sc.displayObject) {
+                throw new Error("only objects implementing SceneComponent can be attached to a display parent");
+            }
             
             displayParent.addChild(sc.displayObject);
         }

@@ -60,18 +60,19 @@ public class ScaleTask
             interpolator = new MXInterpolatorAdapter(mx.effects.easing.Linear.easeNone);
         }
 
-        Assert.isTrue(time >= 0);
-
         _toX = x;
         _toY = y;
-        _totalTime = time;
+        _totalTime = Math.max(time, 0);
         _interpolator = interpolator;
     }
 
     public function update (dt :Number, obj :AppObject) :Boolean
     {
         var sc :ScaleComponent = (obj as ScaleComponent);
-        Assert.isNotNull(sc, "ScaleTask can only be applied to AppObjects that implement ScaleComponent.");
+        
+        if (null == sc) {
+            throw new Error("ScaleTask can only be applied to AppObjects that implement ScaleComponent");
+        }
 
         if (0 == _elapsedTime) {
             _fromX = sc.scaleX;

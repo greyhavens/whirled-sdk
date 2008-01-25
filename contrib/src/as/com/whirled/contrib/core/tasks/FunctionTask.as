@@ -1,17 +1,19 @@
 package com.whirled.contrib.core.tasks {
 
 import com.threerings.util.Assert;
-import com.whirled.contrib.core.ObjectTask;
 import com.whirled.contrib.core.AppObject;
 import com.whirled.contrib.core.ObjectMessage;
+import com.whirled.contrib.core.ObjectTask;
 
 public class FunctionTask
     implements ObjectTask
 {
     public function FunctionTask (fn :Function)
     {
-        Assert.isNotNull(fn);
-        Assert.isTrue(fn.length == 0 || fn.length == 1);
+        if (null == fn || fn.length > 1) {
+            throw new ArgumentError("fn must be non-null, and must accept either 0 or 1 arguments");
+        }
+        
         _fn = fn;
     }
 

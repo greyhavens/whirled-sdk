@@ -1,10 +1,9 @@
 package com.whirled.contrib.core.tasks {
 
 import com.threerings.util.Assert;
-
-import com.whirled.contrib.core.ObjectTask;
 import com.whirled.contrib.core.AppObject;
 import com.whirled.contrib.core.ObjectMessage;
+import com.whirled.contrib.core.ObjectTask;
 
 public class TaskContainer
     implements ObjectTask
@@ -12,10 +11,15 @@ public class TaskContainer
     public static const TYPE_PARALLEL :uint = 0;
     public static const TYPE_SERIAL :uint = 1;
     public static const TYPE_REPEATING :uint = 2;
+    
+    public static const TYPE__LIMIT :uint = 3;
 
     public function TaskContainer (type :uint, task1 :ObjectTask = null, task2 :ObjectTask = null)
     {
-        Assert.isTrue(type == TYPE_PARALLEL || type == TYPE_SERIAL || type == TYPE_REPEATING);
+        if (type >= TYPE__LIMIT) {
+            throw new ArgumentError("invalid 'type' parameter");
+        }
+        
         _type = type;
 
         if (null != task1) {
@@ -29,7 +33,10 @@ public class TaskContainer
     /** Adds a child task to the TaskContainer. */
     public function addTask (task :ObjectTask) :void
     {
-        Assert.isTrue(null != task);
+        if (null == task) {
+            throw new ArgumentError("task must be non-null");
+        }
+        
         _tasks.push(task);
         _completedTasks.push(null);
         _activeTaskCount += 1;

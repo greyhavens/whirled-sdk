@@ -13,7 +13,6 @@ public class MXInterpolatorAdapter
      */
     public function MXInterpolatorAdapter (easingFunction :Function)
     {
-        Assert.isTrue(null != easingFunction);
         _easingFunction = easingFunction;
     }
 

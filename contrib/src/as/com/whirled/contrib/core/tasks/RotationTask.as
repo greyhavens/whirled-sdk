@@ -60,17 +60,18 @@ public class RotationTask
             interpolator = new MXInterpolatorAdapter(mx.effects.easing.Linear.easeNone);
         }
 
-        Assert.isTrue(time >= 0);
-
         _to = rotationDegrees;
-        _totalTime = time;
+        _totalTime = Math.max(time, 0);
         _interpolator = interpolator;
     }
 
     public function update (dt :Number, obj :AppObject) :Boolean
     {
         var rotationComponent :RotationComponent = (obj as RotationComponent);
-        Assert.isNotNull(rotationComponent, "RotationTask can only be applied to AppObjects that implement RotationComponent.");
+        
+        if (null == rotationComponent) {
+            throw new Error("RotationTask can only be applied to AppObjects that implement RotationComponent");
+        }
 
         if (0 == _elapsedTime) {
             _from = rotationComponent.rotation;

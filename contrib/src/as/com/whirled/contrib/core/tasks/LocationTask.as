@@ -68,18 +68,19 @@ public class LocationTask
             interpolator = new MXInterpolatorAdapter(mx.effects.easing.Linear.easeNone);
         }
 
-        Assert.isTrue(time >= 0);
-
         _toX = x;
         _toY = y;
-        _totalTime = time;
+        _totalTime = Math.max(time, 0);
         _interpolator = interpolator;
     }
 
     public function update (dt :Number, obj :AppObject) :Boolean
     {
         var lc :LocationComponent = (obj as LocationComponent);
-        Assert.isNotNull(lc, "LocationTask can only be applied to AppObjects that implement LocationComponent.");
+        
+        if (null == lc) {
+            throw new Error("LocationTask can only be applied to AppObjects that implement LocationComponent");
+        }
 
         if (0 == _elapsedTime) {
             _fromX = lc.x;
