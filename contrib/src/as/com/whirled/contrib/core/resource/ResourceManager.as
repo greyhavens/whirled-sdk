@@ -38,9 +38,10 @@ public class ResourceManager extends EventDispatcher
             throw new Error("missing factory for '" + resourceType + "' resource type");
         }
         
-        // unload any previously-loaded resource of the same name
-        // @TODO - should we throw an error here instead?
-        this.unload(resourceName);
+        // check for existing resource with the same name
+        if (null != _resources.get(resourceName) || null != _pendingResources.get(resourceName)) {
+            throw new Error("A resource named '" + resourceName + "' is already loaded");
+        }
         
         var loader :ResourceLoader = factory.createResourceLoader(resourceName, loadParams);
         _pendingResources.put(resourceName, loader);
