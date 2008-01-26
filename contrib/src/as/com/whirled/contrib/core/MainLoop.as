@@ -2,6 +2,7 @@ package com.whirled.contrib.core {
 
 import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
+import com.whirled.contrib.core.resource.*;
 import com.whirled.contrib.core.util.Rand;
 
 import flash.display.Sprite;
@@ -55,6 +56,10 @@ public class MainLoop
         _hasSetup = true;
 
         Rand.setup();
+        
+        // add resource factories
+        ResourceManager.instance.addResourceFactory("image", new ImageResourceFactory());
+        ResourceManager.instance.addResourceFactory("swf", new SwfResourceFactory());
     }
 
     public function run () :void
