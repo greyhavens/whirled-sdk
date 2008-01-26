@@ -9,6 +9,7 @@ import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
 import flash.utils.ByteArray;
+import flash.utils.getQualifiedClassName;
 
 public class SwfResourceLoader extends EventDispatcher
     implements ResourceLoader
@@ -26,6 +27,14 @@ public class SwfResourceLoader extends EventDispatcher
     public function get resourceName () :String
     {
         return _resourceName;
+    }
+    
+    public function createSwfClone () :DisplayObject
+    {
+        var moduleClassName :String = flash.utils.getQualifiedClassName(this.displayRoot);
+        var moduleClass :Class = this.getClass(moduleClassName);
+        
+        return (new moduleClass() as DisplayObject);
     }
 
     public function get displayRoot () :DisplayObject
