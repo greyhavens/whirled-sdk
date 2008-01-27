@@ -95,7 +95,7 @@ public class EditableDataPack extends DataPack
      */
     public List<String> getFileFields ()
     {
-        return getFileFields(true);
+        return getFileFields(false);
     }
 
     /**
