@@ -42,9 +42,7 @@ public class DataPack
             public void run () {
                 try {
                     URL u = new URL(url);
-                    URLConnection conn = (URLConnection) u.openConnection();
-                    // TODO: This is qualified only to work past a bug in Eclipse. I apologize for
-                    // TODO: making our code uglier to cater to an IDE; let's hope it's fixed soon.
+                    URLConnection conn = u.openConnection();
                     DataPack.this.init(conn.getInputStream());
 
                 } catch (MalformedURLException mue) {
