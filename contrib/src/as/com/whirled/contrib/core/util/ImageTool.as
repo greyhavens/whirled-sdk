@@ -52,11 +52,16 @@ public class ImageTool
     
     public static function createThresholdTransform (n :Number) :Array 
     {
+        var r :Number = LUM_R * 256;
+        var g :Number = LUM_G * 256;
+        var b :Number = LUM_B * 256;
+        var offset :Number = -256 * n;
+        
         return [
-            LUM_R * 256, LUM_G * 256, LUM_B * 256, 0,  -256 * n, 
-            LUM_R * 256, LUM_G * 256, LUM_B * 256, 0,  -256 * n, 
-            LUM_R * 256, LUM_G * 256, LUM_B * 256, 0,  -256 * n, 
-                      0,           0,           0, 1,         0
+            r, g, b, 0, offset, 
+            r, g, b, 0, offset, 
+            r, g, b, 0, offset,
+            0, 0, 0, 1,      0,
         ]; 
     }
     
@@ -107,10 +112,12 @@ public class ImageTool
     {
         n += 0.01;
         
+        var offset :Number = 128 * (1 - n);
+        
         return [
-            n, 0, 0, 0, 128 * (1 - n),
-            0, n, 0, 0, 128 * (1 - n),
-            0, 0, n, 0, 128 * (1 - n),
+            n, 0, 0, 0, offset,
+            0, n, 0, 0, offset,
+            0, 0, n, 0, offset,
             0, 0, 0, 1, 0
         ];
     }
