@@ -478,11 +478,12 @@ public class DataPack
                 return String.valueOf(value);
 
             case COLOR:
-                String colorStr = Integer.toHexString(((Color) value).getRGB());
-                while (colorStr.length() < 6) {
-                    colorStr = "0" + colorStr;
+                {
+                    Color c = (Color) value;
+                    // printf is 1.5, and a slight pain
+                    return formatColorComponent(c.getRed()) + formatColorComponent(c.getGreen()) +
+                        formatColorComponent(c.getBlue());
                 }
-                return colorStr;
 
             case ARRAY:
                 String[] arr = (String[]) value;
@@ -518,7 +519,17 @@ public class DataPack
          */
         public Object parseValue (String value)
         {
+            return parseValue(value, false);
+        }
+
+        /**
+         * Parse the String value into an Object, choosing to throw a RuntimeException
+         * if there's trouble.
+         */
+        public Object parseValue (String value, boolean throwRuntimeExceptions)
+        {
             if (value == null) {
+                // TODO: accept this? We may not want to.
                 return null;
             }
 
@@ -532,6 +543,9 @@ public class DataPack
                     return new Double(StringUtil.decode(value));
 
                 } catch (NumberFormatException nfe) {
+                    if (throwRuntimeExceptions) {
+                        throw new RuntimeException(nfe);
+                    }
                     return Double.valueOf(Double.NaN);
                 }
             }
@@ -544,6 +558,9 @@ public class DataPack
                 try {
                     return new Color(Integer.parseInt(value, 16));
                 } catch (NumberFormatException nfe) {
+                    if (throwRuntimeExceptions) {
+                        throw new RuntimeException(nfe);
+                    }
                     return Color.WHITE;
                 }
             }
@@ -561,11 +578,17 @@ public class DataPack
             case POINT:
             {
                 String[] bits = value.split(",");
+                if (bits.length != 2 && throwRuntimeExceptions) {
+                    throw new RuntimeException("Points must be made of two numbers.");
+                }
                 try {
                     return new Point2D.Double(
                         Double.parseDouble(bits[0]), Double.parseDouble(bits[1]));
 
                 } catch (NumberFormatException nfe) {
+                    if (throwRuntimeExceptions) {
+                        throw new RuntimeException(nfe);
+                    }
                     return new Point2D.Double();
                 }
             }
@@ -573,12 +596,18 @@ public class DataPack
             case RECTANGLE:
             {
                 String[] bits = value.split(",");
+                if (bits.length != 4 && throwRuntimeExceptions) {
+                    throw new RuntimeException("Rectangles must be made of four numbers.");
+                }
                 try {
                     return new Rectangle2D.Double(
                         Double.parseDouble(bits[0]), Double.parseDouble(bits[1]),
                         Double.parseDouble(bits[2]), Double.parseDouble(bits[3]));
 
                 } catch (NumberFormatException nfe) {
+                    if (throwRuntimeExceptions) {
+                        throw new RuntimeException(nfe);
+                    }
                     return new Rectangle2D.Double();
                 }
             }
@@ -602,6 +631,18 @@ public class DataPack
 
             System.err.println("Unknown data type: " + typeStr);
             return UNKNOWN_TYPE;
+        }
+
+        /**
+         * Format an RGB color component (with a value from 0 - 255) into a 2-digit hex string.
+         */
+        protected static String formatColorComponent (int value)
+        {
+            String s = Integer.toHexString(value);
+            if (s.length() < 2) {
+                s = "0" + s;
+            }
+            return s;
         }
 
         /** The String name of this type. */
