@@ -110,6 +110,11 @@ public class MainLoop
         
         createModeTransition(mode, TRANSITION_CHANGE);
     }
+    
+    public function popAllModes () :void
+    {
+        createModeTransition(null, TRANSITION_UNWIND);
+    }
 
     public function unwindToMode (mode :AppMode) :void
     {
@@ -192,7 +197,7 @@ public class MainLoop
 
                 Assert.isTrue(this.topMode == mode || _modeStack.length == 0);
 
-                if (_modeStack.length == 0) {
+                if (_modeStack.length == 0 && null != mode) {
                     doPushMode();
                 }
                 break;
