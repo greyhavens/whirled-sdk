@@ -28,14 +28,6 @@ public class SwfResourceLoader extends EventDispatcher
     {
         return _resourceName;
     }
-    
-    public function createSwfClone () :DisplayObject
-    {
-        var moduleClassName :String = flash.utils.getQualifiedClassName(this.displayRoot);
-        var moduleClass :Class = this.getClass(moduleClassName);
-        
-        return (new moduleClass() as DisplayObject);
-    }
 
     public function get displayRoot () :DisplayObject
     {
