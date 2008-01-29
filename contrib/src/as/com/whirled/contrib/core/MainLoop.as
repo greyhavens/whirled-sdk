@@ -22,7 +22,10 @@ public class MainLoop
             throw new ArgumentError("hostSprite must be non-null");
         }
         
-        Assert.isNull(g_instance);
+        if (null != g_instance) {
+            throw new Error("only one MainLoop may exist at a time");
+        }
+        
         g_instance = this;
 
         _hostSprite = hostSprite;
