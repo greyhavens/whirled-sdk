@@ -315,7 +315,7 @@ public class ColorMatrix
 		
 	}
 	
-	public function get filter():ColorMatrixFilter
+	public function createFilter():ColorMatrixFilter
 	{
 		return new ColorMatrixFilter( matrix );
 	}
