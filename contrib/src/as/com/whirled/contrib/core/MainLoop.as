@@ -168,7 +168,6 @@ public class MainLoop
 
             _modeStack.push(newMode);
             _hostSprite.addChild(newMode.modeSprite);
-            newMode.setupInternal();
         }
 
         for each (var transition :* in _pendingModeTransitionQueue) {
@@ -214,6 +213,10 @@ public class MainLoop
             }
 
             if (null != topMode) {
+                if (!topMode._hasSetup) {
+                    topMode.setupInternal();
+                }
+                
                 topMode.enterInternal();
             }
         }

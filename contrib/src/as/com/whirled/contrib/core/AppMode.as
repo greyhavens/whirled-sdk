@@ -1,11 +1,5 @@
 package com.whirled.contrib.core {
 
-import com.threerings.util.Assert;
-import com.threerings.util.HashMap;
-import com.threerings.util.ArrayUtil;
-
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
 
 public class AppMode extends ObjectDB
@@ -44,6 +38,7 @@ public class AppMode extends ObjectDB
     internal function setupInternal () :void
     {
         setup();
+        _hasSetup = true;
     }
 
     internal function destroyInternal () :void
@@ -68,6 +63,8 @@ public class AppMode extends ObjectDB
     }
 
     protected var _modeSprite :Sprite = new Sprite();
+    
+    internal var _hasSetup :Boolean;
 }
 
 }
