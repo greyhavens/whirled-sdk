@@ -199,16 +199,18 @@ public class AVRGameControl extends WhirledControl
         if (data == null) {
             return null;
         }
+        var ix :int = 0;
         var info :AVRGameAvatar = new AVRGameAvatar();
-        info.state = data[0];
-        info.x = data[1];
-        info.y = data[2];
-        info.z = data[3];
-        info.orientation = data[4];
-        info.moveSpeed = data[5];
-        info.isMoving = data[6];
-        info.isIdle = data[7];
-        info.stageBounds = data[8];
+        info.name = data[ix ++];
+        info.state = data[ix ++];
+        info.x = data[ix ++];
+        info.y = data[ix ++];
+        info.z = data[ix ++];
+        info.orientation = data[ix ++];
+        info.moveSpeed = data[ix ++];
+        info.isMoving = data[ix ++];
+        info.isIdle = data[ix ++];
+        info.stageBounds = data[ix ++];
         return info;
     }
 

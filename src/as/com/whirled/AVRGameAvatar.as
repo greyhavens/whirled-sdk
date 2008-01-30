@@ -9,6 +9,9 @@ import flash.geom.Rectangle;
 
 public class AVRGameAvatar
 {
+    /* The avatar's associated display name. */
+    public var name :String;
+
     /* The avatar's current state. */
     public var state :String;
 
