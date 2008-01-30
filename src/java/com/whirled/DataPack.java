@@ -17,6 +17,8 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -861,10 +863,10 @@ public class DataPack
         public MetaData () { }
 
         /** Data entries. */
-        public HashMap<String, DataEntry> datas = new HashMap<String, DataEntry>();
+        public Map<String, DataEntry> datas = new LinkedHashMap<String, DataEntry>();
 
         /** File entries. */
-        public HashMap<String, FileEntry> files = new HashMap<String, FileEntry>();
+        public Map<String, FileEntry> files = new LinkedHashMap<String, FileEntry>();
 
         /**
          * Convert this metadata to XML.
