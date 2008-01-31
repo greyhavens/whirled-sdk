@@ -103,6 +103,12 @@ public class Vector2
         this.x = x;
         this.y = y;
     }
+    
+    public function set (x :Number, y :Number) :void
+    {
+        this.x = x;
+        this.y = y;
+    }
 
     /** Returns a copy of this Vector2. */
     public function clone () :Vector2
