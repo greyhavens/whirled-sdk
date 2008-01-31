@@ -342,7 +342,7 @@ public class AVRGameControl extends WhirledControl
                           AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
     }
 
-    protected function actorStateSet_v1 (playerId :int) :void
+    protected function actorStateSet_v1 (playerId :int, state :String) :void
     {
         dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
     }

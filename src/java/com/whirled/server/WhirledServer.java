@@ -195,7 +195,8 @@ public class WhirledServer extends CrowdServer
                 String player = getFlashPlayerPath();
                 String url = "http://localhost:8080/game-client.swf?username=" + name;
                 try {
-                    Process proc = Runtime.getRuntime().exec(new String[] { player, url });
+                    Process proc = Runtime.getRuntime().exec(new String[] {
+                            "/usr/bin/open", player, url });
                     new StreamEater(proc.getErrorStream());
                 } catch (Exception e) {
                     reportError("Failed to start client [player=" + player + ", url=" + url + "].", e);
