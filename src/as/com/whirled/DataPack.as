@@ -16,6 +16,8 @@ import flash.events.SecurityErrorEvent;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
+import flash.net.URLLoader;
+import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 
 import flash.media.Sound;
@@ -24,10 +26,9 @@ import flash.utils.ByteArray;
 
 import com.threerings.util.EmbeddedSwfLoader;
 
-import deng.fzip.FZip;
-import deng.fzip.FZipFile;
-import deng.fzip.FZipErrorEvent;
-import deng.fzip.FZipEvent;
+import nochump.util.zip.ZipEntry;
+import nochump.util.zip.ZipError;
+import nochump.util.zip.ZipFile;
 
 /**
  * Dispatched when the DataPack has completed loading.
@@ -75,18 +76,17 @@ public class DataPack extends EventDispatcher
             throw new TypeError("Expected a String or ByteArray");
         }
 
-        _zip = new FZip();
-        _zip.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
-        _zip.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handleLoadError);
-        _zip.addEventListener(FZipErrorEvent.PARSE_ERROR, handleParseError);
-//        _zip.addEventListener(FZipEvent.FILE_LOADED, handleFileLoaded);
-        _zip.addEventListener(Event.COMPLETE, handleLoadingComplete);
-
         if (req != null) {
-            _zip.load(req);
+            _loader = new URLLoader();
+            _loader.dataFormat = URLLoaderDataFormat.BINARY;
+            _loader.addEventListener(Event.COMPLETE, handleLoadingComplete);
+            _loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handleLoadError);
+            _loader.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
+            _loader.load(req);
 
         } else {
-            _zip.loadBytes(bytes);
+            bytes.position = 0;
+            bytesAvailable(bytes);
         }
     }
 
@@ -96,7 +96,14 @@ public class DataPack extends EventDispatcher
      */
     public function close () :void
     {
-        _zip.close();
+        if (_loader != null) {
+            try {
+                _loader.close();
+            } catch (err :Error) {
+                // ignore
+            }
+            _loader = null;
+        }
     }
 
     /**
@@ -390,8 +397,12 @@ public class DataPack extends EventDispatcher
             return undefined;
         }
 
-        var file :FZipFile = _zip.getFileByName(value);
-        return (file == null) ? null : (asString ? file.getContentAsString() : file.content);
+        var entry :ZipEntry = _zip.getEntry(value);
+        if (entry == null) {
+            return null;
+        }
+        var bytes :ByteArray = _zip.getInput(entry);
+        return asString ? bytesToString(bytes) : bytes;
     }
 
     /**
@@ -466,23 +477,9 @@ public class DataPack extends EventDispatcher
      */
     protected function handleLoadError (event :ErrorEvent) :void
     {
+        close();
         dispatchError("Error loading datapack: " + event.text);
     }
-
-    /**
-     * Handle some sort of problem parsing datapack.
-     *
-     * @private
-     */
-    protected function handleParseError (event :FZipErrorEvent) :void
-    {
-        dispatchError("Error parsing datapack: " + event.text);
-    }
-
-//    protected function handleFileLoaded (event :FZipEvent) :void
-//    {
-//        trace("Got file: " + event.file.filename);
-//    }
 
     /**
      * Handle the successful completion of datapack loading.
@@ -491,17 +488,37 @@ public class DataPack extends EventDispatcher
      */
     protected function handleLoadingComplete (event :Event) :void
     {
-        // find the metadata file
-        var dataFile :FZipFile = _zip.getFileByName(METADATA_FILENAME);
+        var ba :ByteArray = ByteArray(_loader.data);
+        _loader = null;
+        bytesAvailable(ba);
+    }
+
+    /**
+     * Read the zip file.
+     *
+     * @private
+     */
+    protected function bytesAvailable (bytes :ByteArray) :void
+    {
+        try {
+            _zip = new ZipFile(bytes);
+        } catch (zipError :ZipError) {
+            dispatchError("Unable to read datapack: " + zipError.message);
+            return;
+        }
+
+        var dataFile :ZipEntry = _zip.getEntry(METADATA_FILENAME);
         if (dataFile == null) {
             dispatchError("No " + METADATA_FILENAME + " contained in DataPack.");
             return;
         }
 
+        var asString :String = bytesToString(_zip.getInput(dataFile));
+
         // now try parsing the data
         try {
             // this also can throw an Error if the XML doesn't parse
-            _metadata = XML(dataFile.getContentAsString());
+            _metadata = XML(asString);
 
         } catch (error :Error) {
             dispatchError("Could not parse datapack: " + error.message);
@@ -510,6 +527,17 @@ public class DataPack extends EventDispatcher
 
         // yay, we're completely loaded!
         dispatchEvent(new Event(Event.COMPLETE));
+    }
+
+    /**
+     * Turn the specified ByteArray into a String.
+     *
+     * @private
+     */
+    protected function bytesToString (ba :ByteArray) :String
+    {
+        ba.position = 0;
+        return ba.readUTFBytes(ba.bytesAvailable);
     }
 
     /**
@@ -522,8 +550,11 @@ public class DataPack extends EventDispatcher
         dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, message));
     }
 
+    /** Used only while loading the zip bytes. @private */
+    protected var _loader :URLLoader;
+
     /** The contents of the datapack. @private */
-    protected var _zip :FZip;
+    protected var _zip :ZipFile;
 
     /** The metadata. @private */
     protected var _metadata :XML;
