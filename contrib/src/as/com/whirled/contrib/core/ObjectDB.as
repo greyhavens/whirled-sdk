@@ -85,6 +85,15 @@ public class ObjectDB
     }
     
     /** Removes an AppObject from the mode. */
+    public function destroyObjectNamed (name :String) :void
+    {
+        var obj :AppObject = this.getObjectNamed(name);
+        if (null != obj) {
+            this.destroyObject(obj.id);
+        }
+    }
+    
+    /** Removes an AppObject from the mode. */
     public function destroyObject (id :uint) :void
     {
         var obj :AppObject = this.getObject(id);
