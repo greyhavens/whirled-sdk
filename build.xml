@@ -182,6 +182,7 @@
     <copy todir="${sdk.build}/examples/games">
       <fileset dir="projects/games" includes="reversi/**"/>
       <fileset dir="projects/games" includes="fat_reversi/**"/>
+      <fileset dir="projects/games" includes="clickfest/**"/>
     </copy>
     <!-- copy some example pets and the urpet -->
     <mkdir dir="${sdk.build}/examples/pets"/>
