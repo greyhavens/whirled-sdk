@@ -188,18 +188,30 @@ public class DataPack extends EventDispatcher
             return undefined;
         }
 
-        var val :XMLList = datum.@value;
+        return parseValue(datum);
+    }
+
+    /**
+     * Parse a data value from the specified XML datum.
+     *
+     * @private
+     */
+    protected function parseValue (
+        datum :XML, valueField :String = "value", typeOverride :String = null) :*
+    {
+        var val :XMLList = datum.@[valueField];
         if (val.length == 0 || val[0] === undefined) {
             return undefined;
         }
 
         var value :String = String(val[0]);
-//        trace("Raw value for data '" + name + "' is '" + value + "'");
+//        trace("Raw " + valueField + " for data '" + name + "' is '" + value + "'");
         if (value == null) {
             return undefined;
         }
         var bits :Array;
-        switch (String(datum.attribute("type"))) {
+        var type :String = (typeOverride != null) ? typeOverride : String(datum.@type);
+        switch (type) {
         case "String":
             return unescape(value);
 
@@ -213,7 +225,9 @@ public class DataPack extends EventDispatcher
             return parseInt(value, 16);
 
         case "Array":
-            return value.split(",").map(unescape);
+            return value.split(",").map(function (item :String, ... rest) :String {
+                return unescape(item);
+            });
 
         case "Point":
             bits = value.split(",");
@@ -225,7 +239,7 @@ public class DataPack extends EventDispatcher
                 parseFloat(bits[2]), parseFloat(bits[3]));
 
         default:
-            trace("Unknown resource type: " + datum.attribute("type"));
+            trace("Unknown resource type: " + type);
             return value;
         }
     }

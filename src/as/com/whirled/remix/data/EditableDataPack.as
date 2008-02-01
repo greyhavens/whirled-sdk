@@ -3,6 +3,9 @@
 
 package com.whirled.remix.data {
 
+import flash.geom.Point;
+import flash.geom.Rectangle;
+
 import flash.utils.ByteArray;
 
 import nochump.util.zip.ZipEntry;
@@ -22,29 +25,124 @@ public class EditableDataPack extends DataPack
         }
     }
 
+    /**
+     * Get a list of all the data fields.
+     */
     public function getDataFields () :Array /* of String */
     {
         var list :XMLList = _metadata..data;
-        trace(list);
-
         var fields :Array = [];
+        for each (var data :XML in list) {
+            fields.push(data.@name);
+        }
         return fields;
     }
 
+    /**
+     * Get a list of all the file fields.
+     */
     public function getFileFields (includeContent :Boolean = false) :Array /* of String */
     {
         var list :XMLList = _metadata..file;
-        trace(list);
 
-        // TODO
         var fields :Array = [];
-        if (!includeContent) {
-            var dex :int = fields.indexOf(CONTENT_DATANAME);
-            if (dex != -1) {
-                fields.splice(dex, 1);
+        for each (var file :XML in list) {
+            var name :String = file.@name;
+            if (includeContent || (name != CONTENT_DATANAME)) {
+                fields.push(name);
             }
         }
         return fields;
+    }
+
+    /**
+     * Return an Object map containing information about the specified data entry.
+     * Fields:
+     *    name: <dataName>:String
+     *    type: <typeOfData>:String
+     *    info: <description>:String
+     *    optional: <isOptional>:Boolean
+     *    value: <objectValue>:*
+     *    defaultValue: <objectValue>:*
+     */
+    public function getDataEntry (name :String) :Object
+    {
+        name = validateAccess(name);
+
+        var datum :XML = _metadata..data.(@name == name)[0];
+        if (datum == null) {
+            return null;
+        }
+
+        return {
+            name: parseValue(datum, "name", "String"),
+            type: parseValue(datum, "type", "String"),
+            info: parseValue(datum, "info", "String"),
+            optional: Boolean(parseValue(datum, "optional", "Boolean")),
+            value: parseValue(datum),
+            defaultValue: parseValue(datum, "defaultValue")
+        };
+    }
+
+    /**
+     * Set a data value.
+     */
+    public function setData (name :String, value :*) :void
+    {
+        name = validateAccess(name);
+
+        var datum :XML = _metadata..data.(@name == name)[0];
+        if (datum == null) {
+            throw new Error("No such data name");
+        }
+
+        formatValue(datum, value);
+    }
+
+    protected function formatValue (
+        datum :XML, value :*, valueField :String = "value", typeOverride :String = null) :void
+    {
+        if (value == null) {
+            delete datum.@[valueField];
+            return;
+        }
+
+        var type :String = (typeOverride != null) ? typeOverride : String(datum.@type);
+        datum.@[valueField] = formatValueString(value, type);
+    }
+
+    protected function formatValueString (value :*, type :String) :String
+    {
+        switch (type) {
+        case "String":
+            return escape(String(value));
+
+        case "Number":
+            return String(value);
+
+        case "Boolean":
+            return String(Boolean(value));
+
+        case "Color":
+            return uint(value).toString(16);
+
+        case "Array":
+            return value.map(function (item :String, ... rest) :String {
+                return escape(item);
+            }).join(",");
+
+        case "Point":
+            var p :Point = Point(value);
+            return String(p.x) + "," + p.y;
+
+        case "Rectangle":
+            var r :Rectangle = Rectangle(value);
+            return String(r.x) + "," + r.y + "," + r.width + "," + r.height;
+
+        default:
+            trace("Unknown resource type: " + type);
+            return null;
+        }
     }
 
     /**
@@ -106,11 +204,11 @@ public class EditableDataPack extends DataPack
     }
 
 //    /** Contains filenames that are in the _zip that should not be written.
-//     * Maps: <filename:String> -> true */
+//     * Maps: <filename>:String -> true */
 //    protected var _omittedFiles :Object = {};
 
     /** New file data not contained in the _zip.
-     * Maps: <filename:String> -> <data:ByteArray> */
+     * Maps: <filename>:String -> <data>:ByteArray */
     protected var _newFiles :Object = {};
 }
 }
