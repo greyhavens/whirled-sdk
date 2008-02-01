@@ -13,6 +13,8 @@ import nochump.util.zip.ZipOutput;
 
 import com.whirled.DataPack;
 
+import com.threerings.util.StringUtil;
+
 public class EditableDataPack extends DataPack
 {
     public function EditableDataPack (urlOrByteArrayOrNothing :*)
@@ -175,10 +177,12 @@ public class EditableDataPack extends DataPack
 
         for each (var name :String in names) {
             var fileName :String = getFileName(name);
-            entry = new ZipEntry(fileName);
-            outZip.putNextEntry(entry);
-            outZip.write(getFileBytes(fileName));
-            outZip.closeEntry();
+            if (fileName != null) {
+                entry = new ZipEntry(fileName);
+                outZip.putNextEntry(entry);
+                outZip.write(getFileBytes(fileName));
+                outZip.closeEntry();
+            }
         }
         outZip.finish();
 
