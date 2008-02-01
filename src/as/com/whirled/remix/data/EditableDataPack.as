@@ -99,6 +99,19 @@ public class EditableDataPack extends DataPack
         formatValue(datum, value);
     }
 
+    public function replaceFile (name :String, filename :String, data :ByteArray) :void
+    {
+        name = validateAccess(name);
+
+        var datum :XML = _metadata..file.(@name == name)[0];
+        if (datum == null) {
+            throw new Error("No such file name");
+        }
+
+        formatValue(datum, filename, "value", "String");
+        _newFiles[filename] = data;
+    }
+
     protected function formatValue (
         datum :XML, value :*, valueField :String = "value", typeOverride :String = null) :void
     {
