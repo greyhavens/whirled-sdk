@@ -397,12 +397,27 @@ public class DataPack extends EventDispatcher
             return undefined;
         }
 
-        var entry :ZipEntry = _zip.getEntry(value);
+        var bytes :ByteArray = getFileBytes(value);
+        if (asString && bytes != null) {
+            return bytesToString(bytes);
+
+        } else {
+            return bytes;
+        }
+    }
+
+    /**
+     * Get the actual bytes in use for the specified filename.
+     *
+     * @private
+     */
+    protected function getFileBytes (fileName :String) :ByteArray
+    {
+        var entry :ZipEntry = _zip.getEntry(fileName);
         if (entry == null) {
             return null;
         }
-        var bytes :ByteArray = _zip.getInput(entry);
-        return asString ? bytesToString(bytes) : bytes;
+        return _zip.getInput(entry);
     }
 
     /**
