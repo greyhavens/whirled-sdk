@@ -168,27 +168,28 @@ package deng.fzip
 				urlStream.load(request);
 			}
 		}
-
-                /**
-                 * Load a zip from some bytes.
-                 */
-                public function loadBytes (bytes :ByteArray) :void
-                {
-                    if (!urlStream && parseState == idle) {
-                        filesList = [];
-                        filesDict = new Dictionary();
-                        bytes.position = 0;
-                        bytes.endian = Endian.LITTLE_ENDIAN;
-                        parseState = signature;
-                        if (parse(bytes)) {
-                            parseState = idle;
-                            dispatchEvent(new Event(Event.COMPLETE));
-                        } else {
-                            dispatchEvent(new FZipErrorEvent(FZipErrorEvent.PARSE_ERROR, "EOF"));
-                        }
-                    }
-                }
 		
+		/**
+		 * Loads a ZIP archive from a ByteArray.
+		 *
+		 * @param bytes The ByteArray containing the ZIP archive
+		 */
+		public function loadBytes(bytes:ByteArray):void {
+			if (!urlStream && parseState == idle) {
+				filesList = [];
+				filesDict = new Dictionary();
+				bytes.position = 0;
+				bytes.endian = Endian.LITTLE_ENDIAN;
+				parseState = signature;
+				if (parse(bytes)) {
+					parseState = idle;
+					dispatchEvent(new Event(Event.COMPLETE));
+				} else {
+					dispatchEvent(new FZipErrorEvent(FZipErrorEvent.PARSE_ERROR, "EOF"));
+				}
+			}
+		}
+
 		/**
 		 * Immediately closes the stream and cancels the download operation.
 		 * Files contained in the ZIP archive being loaded stay accessible
@@ -208,8 +209,13 @@ package deng.fzip
 		 * ByteArray or FileStream) according to PKZIP APPNOTE.TXT
 		 * 
 		 * @param stream The stream to serialize the zip file into.
+		 * @param includeAdler32 To decompress compressed files, FZip needs Adler32
+		 * 		checksums to be injected into the zipped files. FZip will do that 
+		 * 		automatically if includeAdler32 is set to true. Note that if the
+		 * 		ZIP contains a lot of files, or big files, the calculation of the
+		 * 		checksums may take a while.
 		 */		
-		public function serialize(stream:IDataOutput):void {
+		public function serialize(stream:IDataOutput, includeAdler32:Boolean = false):void {
 			if(stream != null && filesList.length > 0) {
 				var endian:String = stream.endian;
 				var ba:ByteArray = new ByteArray();
@@ -221,10 +227,10 @@ package deng.fzip
 					if(file != null) {
 						// first serialize the central directory item
 						// into our temporary ByteArray
-						file.serialize(ba, true, offset);
+						file.serialize(ba, includeAdler32, true, offset);
 						// then serialize the file itself into the stream
 						// and update the offset
-						offset += file.serialize(stream);
+						offset += file.serialize(stream, includeAdler32);
 						// keep track of how many files we have written
 						files++;
 					}
@@ -434,8 +440,10 @@ package deng.fzip
 				}
 				dispatchEvent(new FZipEvent(FZipEvent.FILE_LOADED, currentFile));
 				currentFile = null;
-				parseState = signature;
-				return true;
+				if (parseState != idle) {
+					parseState = signature;
+					return true;
+				}
 			}
 			return false;
 		}

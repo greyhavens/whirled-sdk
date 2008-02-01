@@ -155,6 +155,7 @@ package deng.fzip
 				data.position = 0;
 				data.readBytes(_content, 0, data.length);
 				_crc32 = ChecksumUtil.CRC32(_content);
+				_hasAdler32 = false;
 			} else {
 				_content.length = 0;
 				_content.position = 0;
@@ -232,6 +233,7 @@ package deng.fzip
 					_content.writeMultiByte(value, charset);
 				}
 				_crc32 = ChecksumUtil.CRC32(_content);
+				_hasAdler32 = false;
 			}
 			compress();
 		}
@@ -241,12 +243,13 @@ package deng.fzip
 		 * ByteArray or FileStream) according to PKZIP APPNOTE.TXT
 		 * 
 		 * @param stream The stream to serialize the zip archive into.
-		 * @param centralDir If set to true, serialize a central directory entry
-		 * @param centralDirOffset Relative offset of local header (central directory only)
+		 * @param includeAdler32 If set to true, include Adler32 checksum.
+		 * @param centralDir If set to true, serialize a central directory entry.
+		 * @param centralDirOffset Relative offset of local header (for central directory only).
 		 * 
 		 * @return The serialized zip file.
 		 */
-		public function serialize(stream:IDataOutput, centralDir:Boolean = false, centralDirOffset:uint = 0):uint {
+		public function serialize(stream:IDataOutput, includeAdler32:Boolean, centralDir:Boolean = false, centralDirOffset:uint = 0):uint {
 			if(stream == null) { return 0; }
 			if(centralDir) {
 				// Write central directory file header signature
@@ -295,6 +298,17 @@ package deng.fzip
 					ba.writeShort(uint(headerId));
 					ba.writeBytes(extraBytes);
 				}
+			}
+			if (includeAdler32) {
+				if (!_hasAdler32) {
+					var compressed:Boolean = isCompressed;
+					if (compressed) { uncompress(); }
+					_adler32 = ChecksumUtil.Adler32(_content, 0, _content.length);
+					_hasAdler32 = true;
+					if (compressed) { compress(); }
+				}
+				ba.writeShort(0xdada);
+				ba.writeUnsignedInt(_adler32);
 			}
 			var extrafieldsSize:uint = ba.position - filenameSize;
 			// Prep comment (currently unused)
