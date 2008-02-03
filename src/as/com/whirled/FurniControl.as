@@ -9,6 +9,7 @@ import flash.display.DisplayObject;
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
+import flash.events.MouseEvent;
 
 /**
  * This file should be included by furniture, so that it can communicate
@@ -17,11 +18,13 @@ import flash.events.EventDispatcher;
 public class FurniControl extends EntityControl
 {
     /** An action triggered when someone arrives at the location at which
-     * this furniture is placed, if this piece of furniture is a doorway. */
+     * this furniture is placed, if this piece of furniture is a doorway.
+     */
     public static const BODY_ENTERED :String = "bodyEntered";
 
     /** An action triggered when someone leaves via this piece of doorway
-     * furniture. */
+     * furniture.
+     */
     public static const BODY_LEFT :String = "bodyLeft";
 
     /**
@@ -31,6 +34,7 @@ public class FurniControl extends EntityControl
     public function FurniControl (disp :DisplayObject)
     {
         super(disp);
+        _top = disp.root;
     }
 
     /**
@@ -58,6 +62,7 @@ public class FurniControl extends EntityControl
         super.populateProperties(o);
 
         o["getConfigPanel_v1"] = getConfigPanel_v1;
+        o["mouseEvents_v1"] = mouseEvents_v1;
     }
 
     /**
@@ -69,7 +74,17 @@ public class FurniControl extends EntityControl
         return (_customConfig != null) ? (_customConfig() as DisplayObject) : null;
     }
 
+    /**
+     * Dispatches mouse events to furni with actions.
+     */
+    protected function mouseEvents_v1 (event :MouseEvent) :void
+    {
+        _top.dispatchEvent(event);
+    }
+
     /** A function registered to return a custom configuration panel. */
     protected var _customConfig :Function;
+
+    protected var _top :DisplayObject;
 }
 }
