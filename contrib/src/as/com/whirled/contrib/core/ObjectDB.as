@@ -189,10 +189,35 @@ public class ObjectDB
      */
     public function getObjectIdsInGroup (groupName :String) :Array
     {
-        var objects :Array = (_groupedObjects.get(groupName) as Array);
+        var ids :Array = (_groupedObjects.get(groupName) as Array);
 
-        return (null != objects ? objects : new Array());
-    } 
+        return (null != ids ? ids : new Array());
+    }
+    
+    /**
+     * Returns an Array containing the AppObjects in the given group.
+     * The returned Array is instantiated by the function, and so can be
+     * safely modified by client code.
+     * 
+     * This function is not as performant as getObjectIdsInGroup().
+     */
+    public function getObjectsInGroup (groupName :String) :Array
+    {
+        var ids :Array = this.getObjectIdsInGroup(groupName);
+        
+        // Array.map would be appropriate here, except that the resultant
+        // Array might contain fewer entries than the source.
+        
+        var objs :Array = new Array();
+        for each (var id :uint in ids) {
+            var obj :AppObject = this.getObject(id);
+            if (null != obj) {
+                objs.push(obj);
+            }
+        }
+        
+        return objs;
+    }
 
     /** Called once per update tick. Updates all objects in the mode. */
     public function update (dt :Number) :void
