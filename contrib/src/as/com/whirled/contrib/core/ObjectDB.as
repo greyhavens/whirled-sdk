@@ -187,12 +187,12 @@ public class ObjectDB
      * Note: because of the method that object destruction is implemented with,
      * the returned Array may contain invalid object IDs.
      */
-    public function getObjectsInGroup (groupName :String) :Array
+    public function getObjectIdsInGroup (groupName :String) :Array
     {
         var objects :Array = (_groupedObjects.get(groupName) as Array);
 
         return (null != objects ? objects : new Array());
-    }
+    } 
 
     /** Called once per update tick. Updates all objects in the mode. */
     public function update (dt :Number) :void
@@ -247,9 +247,9 @@ public class ObjectDB
     /** Sends a message to each object in the given group. */
     public function sendMessageToGroup (msg :ObjectMessage, groupName :String) :void
     {
-        var objs :Array = this.getObjectsInGroup(groupName);
-        for each (var obj :AppObject in objs) {
-            obj.receiveMessageInternal(msg);
+        var ids :Array = this.getObjectIdsInGroup(groupName);
+        for each (var id :uint in ids) {
+            this.sendMessageTo(msg, id);
         }
     }
 
