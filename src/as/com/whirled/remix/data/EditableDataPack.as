@@ -87,6 +87,33 @@ public class EditableDataPack extends DataPack
     }
 
     /**
+     * Return an Object map containing information about the specified file entry.
+     * Fields:
+     *    name: <fieldName>:String
+     *    type: <typeOfFile>:String
+     *    info: <description>:String
+     *    optional: <isOptional>:Boolean
+     *    value: <filename>:*
+     */
+    public function getFileEntry (name :String) :Object
+    {
+        name = validateAccess(name);
+
+        var datum :XML = _metadata..file.(@name == name)[0];
+        if (datum == null) {
+            return null;
+        }
+
+        return {
+            name: parseValue(datum, "name", "String"),
+            type: parseValue(datum, "type", "String"),
+            info: parseValue(datum, "info", "String"),
+            optional: Boolean(parseValue(datum, "optional", "Boolean")),
+            value: parseValue(datum, "value", "String")
+        };
+    }
+
+    /**
      * Set a data value.
      */
     public function setData (name :String, value :*) :void
@@ -101,6 +128,14 @@ public class EditableDataPack extends DataPack
         formatValue(datum, value);
     }
 
+    /**
+     * Replace a file.
+     *
+     * @param name the fieldName of the file to replace.
+     * @param the filename, can be used to point multiple fields at the same file,
+     * or may be null to remove the file.
+     * @param data the bytes associated with the specified filename.
+     */
     public function replaceFile (name :String, filename :String, data :ByteArray) :void
     {
         name = validateAccess(name);
@@ -108,6 +143,11 @@ public class EditableDataPack extends DataPack
         var datum :XML = _metadata..file.(@name == name)[0];
         if (datum == null) {
             throw new Error("No such file name");
+        }
+
+        if (filename == null) {
+            delete datum.@value;
+            return;
         }
 
         formatValue(datum, filename, "value", "String");
