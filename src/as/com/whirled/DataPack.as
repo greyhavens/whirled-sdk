@@ -114,6 +114,10 @@ public class DataPack extends EventDispatcher
         return (_metadata != null);
     }
 
+    /**
+     * TODO
+     * @private
+     */
     public function getNamespace () :String
     {
         validateComplete();
@@ -270,6 +274,7 @@ public class DataPack extends EventDispatcher
     
     /**
      * Get sounds. TODO. This is not quite ready for primetime.
+     * @private
      */
     public function getSounds (names :Array, callback :Function) :void
     {

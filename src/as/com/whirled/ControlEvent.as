@@ -7,6 +7,11 @@ package com.whirled {
 
 import flash.events.Event;
 
+/**
+ * An Event dispatched on controls (AvatarControl, PetControl...) to indicate
+ * that something has happened. Not all event types will be dispatched to all controls,
+ * please see the documentation for those controls.
+ */
 public class ControlEvent extends Event
 {
     /** An event type dispatched when an Actor has had its appearance
@@ -90,7 +95,7 @@ public class ControlEvent extends Event
      * name: speaker name
      * value: chat message
      *
-     * @eventType gotChat
+     * @eventType receivedChat
      */
     public static const RECEIVED_CHAT :String = "receivedChat";
 

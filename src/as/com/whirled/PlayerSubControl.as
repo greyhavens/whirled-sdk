@@ -20,6 +20,9 @@ import com.threerings.ezgame.EZPlayerSubControl;
  */
 public class PlayerSubControl extends EZPlayerSubControl
 {
+    /**
+     * @private Constructed via WhirledGameControl.
+     */
     public function PlayerSubControl (parent :WhirledGameControl)
     {
         super(parent);

@@ -17,9 +17,21 @@ import com.threerings.ezgame.EZServicesSubControl;
 /**
  * The primary class used to coordinate game state and control your multiplayer game.
  *
+ * (Are you viewing the <a href="/code/WhirledGameControl.html" target="_top">Easy
+ *   WhirledGameControl Index</a>?)
+ *
  * Typically, you create this in your top-level MovieClip/Sprite:
- * var _ctrl :WhirledGameControl;
- * _ctrl = new WhirledGameControl(this);
+ * <code>
+ * public class MyGame extends Sprite
+ * {
+ *     public var ctrl :WhirledGameControl;
+ *
+ *     // Constructor
+ *     public function MyGame ()
+ *     {
+ *          ctrl = new WhirledGameControl(this);
+ *          ...
+ * </code>
  */
 public class WhirledGameControl extends AbstractGameControl
 {

@@ -13,6 +13,8 @@ import flash.events.TextEvent;
 
 /**
  * This file should be included by effects.
+ * There are currently no such thing as effects.
+ * @private
  */
 public class EffectControl extends EntityControl
 {

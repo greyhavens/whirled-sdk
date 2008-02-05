@@ -28,6 +28,9 @@ public class GameSubControl extends EZGameSubControl
      * influenced by their relative ranking to one another. */
     public static const TO_EACH_THEIR_OWN :int = 2;
 
+    /**
+     * @private Constructed via WhirledGameControl.
+     */
     public function GameSubControl (parent :WhirledGameControl)
     {
         super(parent);
@@ -143,6 +146,7 @@ public class GameSubControl extends EZGameSubControl
 
     /**
      * Don't use this method. Use endGameWithWinners() or endGameWithScores().
+     * @private
      */
     override public function endGame (winnerIds :Array) :void
     {

@@ -13,6 +13,9 @@ import com.threerings.ezgame.EZLocalSubControl;
  */
 public class LocalSubControl extends EZLocalSubControl
 {
+    /**
+     * @private Constructed via WhirledGameControl.
+     */
     public function LocalSubControl (parent :WhirledGameControl)
     {
         super(parent);

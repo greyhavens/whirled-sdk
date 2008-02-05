@@ -11,9 +11,13 @@ import flash.events.EventDispatcher;
 
 /**
  * Abstract base class. Do not instantiate.
+ * @private
  */
 public class WhirledSubControl extends EventDispatcher
 {
+    /**
+     * @private
+     */
     public function WhirledSubControl (ctrl :WhirledControl)
     {
         super();
@@ -24,6 +28,7 @@ public class WhirledSubControl extends EventDispatcher
         _ctrl = ctrl;
     }
 
+    /** Daddy. @private */
     protected var _ctrl :WhirledControl;
 }
 }
