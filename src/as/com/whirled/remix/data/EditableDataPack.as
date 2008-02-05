@@ -14,6 +14,7 @@ import nochump.util.zip.ZipOutput;
 import com.whirled.DataPack;
 
 import com.threerings.util.StringUtil;
+import com.threerings.util.Util;
 
 public class EditableDataPack extends DataPack
 {
@@ -210,7 +211,7 @@ public class EditableDataPack extends DataPack
         // let's write out the metadata first
         var entry :ZipEntry = new ZipEntry(METADATA_FILENAME);
         outZip.putNextEntry(entry);
-        outZip.write(stringToBytes(String(_metadata)));
+        outZip.write(stringToBytes(Util.XMLtoXMLString(_metadata)));
         outZip.closeEntry();
 
         var names :Array = getFileFields(true);

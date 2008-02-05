@@ -25,6 +25,7 @@ import flash.media.Sound;
 import flash.utils.ByteArray;
 
 import com.threerings.util.EmbeddedSwfLoader;
+import com.threerings.util.Util;
 
 import nochump.util.zip.ZipEntry;
 import nochump.util.zip.ZipError;
@@ -269,7 +270,7 @@ public class DataPack extends EventDispatcher
      */
     public function getFileAsXML (name :String) :XML
     {
-        return XML(getFileAsString(name));
+        return Util.newXML(getFileAsString(name));
     }
     
     /**
@@ -552,7 +553,7 @@ public class DataPack extends EventDispatcher
         // now try parsing the data
         try {
             // this also can throw an Error if the XML doesn't parse
-            _metadata = XML(asString);
+            _metadata = Util.newXML(asString);
 
         } catch (error :Error) {
             dispatchError("Could not parse datapack: " + error.message);
