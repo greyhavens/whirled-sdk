@@ -11,6 +11,7 @@ import flash.events.Event;
 import flash.events.EventDispatcher;
 
 /**
+ * Event.UNLOAD
  * Dispatched when the SWF using this control has been unloaded.
  * You should clean-up any resources that would otherwise stick around, like stopping any
  * Timers.
@@ -21,10 +22,12 @@ import flash.events.EventDispatcher;
 
 /**
  * Base class for services that connect back to whirled.
+ * Do not use. Use a specific subclass like AvatarControl, PetControl, FurniControl...
  */
 public class WhirledControl extends EventDispatcher
 {
     /**
+     * @private
      */
     public function WhirledControl (disp :DisplayObject)
     {
@@ -58,6 +61,7 @@ public class WhirledControl extends EventDispatcher
 
     /**
      * Populate any properties that we provide back to whirled.
+     * @private
      */
     protected function populateProperties (o :Object) :void
     {
@@ -66,6 +70,7 @@ public class WhirledControl extends EventDispatcher
 
     /**
      * Initialize/examine any properties sent from whirled after connecting.
+     * @private
      */
     protected function gotInitProperties (o :Object) :void
     {
@@ -75,6 +80,7 @@ public class WhirledControl extends EventDispatcher
     /**
      * Helper method to dispatch a ControlEvent, but only if there
      * is an associated listener.
+     * @private
      */
     internal function dispatch (ctrlEvent :String, key :String = null, value :Object = null) :void
     {
@@ -85,6 +91,7 @@ public class WhirledControl extends EventDispatcher
 
     /**
      * Call an exposed function back in our hosting Whirled.
+     * @private
      */
     protected function callHostCode (name :String, ... args) :*
     {
@@ -107,6 +114,7 @@ public class WhirledControl extends EventDispatcher
 
     /**
      * A "friend" version of callHostCode for WhirledSubControls.
+     * @private
      */
     internal function callHostCodeFriend (name :String, ... args) :*
     {
@@ -117,6 +125,7 @@ public class WhirledControl extends EventDispatcher
 
     /**
      * Handle any shutdown required.
+     * @private
      */
     protected function handleUnload (evt :Event) :void
     {
@@ -126,13 +135,14 @@ public class WhirledControl extends EventDispatcher
 
     /**
      * Should we disallow instantiation of this class?
+     * @private
      */
     protected function isAbstract () :Boolean
     {
         return true;
     }
 
-    /** The properties given us by our host. */
+    /** The properties given us by our host. @private */
     protected var _props :Object;
 }
 }

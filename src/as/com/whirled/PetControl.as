@@ -27,19 +27,6 @@ public class PetControl extends ActorControl
         super(disp);
     }
 
-    override protected function isAbstract () :Boolean
-    {
-        return false;
-    }
-
-    // from WhirledControl
-    override protected function populateProperties (o :Object) :void
-    {
-        super.populateProperties(o);
-
-        o["receivedChat_v1"] = receivedChat_v1;
-    }
-
     /**
      * Send a chat message to the entire room. The chat message will be treated as if it
      * were typed in at the chat message box - it will be filtered, and any action commands
@@ -51,9 +38,28 @@ public class PetControl extends ActorControl
     }
 
     /**
+     * @private
+     */
+    override protected function isAbstract () :Boolean
+    {
+        return false;
+    }
+
+    /**
+     * @private
+     */
+    override protected function populateProperties (o :Object) :void
+    {
+        super.populateProperties(o);
+
+        o["receivedChat_v1"] = receivedChat_v1;
+    }
+
+    /**
      * Called when the pet is overhearing a line of chatter in the room.
      * If this instance of the pet has control, it will dispatch a new receivedChat event,
      * otherwise the line will be ignored.
+     * @private
      */
     protected function receivedChat_v1 (speaker :String, message :String) :void
     {

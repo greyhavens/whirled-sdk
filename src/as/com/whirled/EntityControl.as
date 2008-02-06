@@ -75,6 +75,7 @@ import flash.utils.Timer;
 public class EntityControl extends WhirledControl
 {
     /**
+     * @private
      */
     public function EntityControl (disp :DisplayObject)
     {
@@ -112,6 +113,10 @@ public class EntityControl extends WhirledControl
 
     /**
      * Returns our current location in the scene, in pixel coordinates.
+     *
+     * @return an array containing [ x, y, z ] in pixel coordinates. Obviously there is not a
+     * real Z coordinate, but the value will coorrespond to real Z distance in proportion
+     * to the distance in X and Y.
      */
     public function getPixelLocation () :Array
     {
@@ -212,6 +217,26 @@ public class EntityControl extends WhirledControl
     }
 
     /**
+     * Requests that this item's memory be updated with the supplied key/value pair. The supplied
+     * value must be a simple object (Integer, Number, String) or an Array of simple objects. The
+     * contents of the Pet's memory (keys and values) must not exceed 4096 bytes when AMF3 encoded.
+     *
+     * Setting the memory for a key to null clears that key; subsequent lookups will return the
+     * default value.
+     *
+     * NOTE: Avatar memories are inconsistent at the moment and should not be used.
+     *
+     * @return true if the memory was updated, false if the memory update could not be completed
+     * due to size restrictions.
+     *
+     * Note: any instance can update memories!
+     */
+    public function updateMemory (key :String, value :Object) :Boolean
+    {
+        return callHostCode("updateMemory_v1", key, value);
+    }
+
+    /**
      * Return an associative hash of all the room properties. This is not a cheap operation.
      * Use getRoomProperty if you know what you want.
      */
@@ -233,6 +258,27 @@ public class EntityControl extends WhirledControl
     {
         var value :Object = callHostCode("getRoomProperty_v1", key);
         return (value == null) ? defval : value;
+    }
+
+    /**
+     * Requests that the room's shared property space be updated with the supplied key/value
+     * pair. The supplied value must be a simple object (Integer, Number, String) or an Array
+     * of simple objects. The key must be no more than 64 bytes long and the value no more
+     * than 256 when encoded. There can be no more than 16 entries in a room's property space
+     * so be frugal.
+     *
+     * Please note that these properties are not persisted through server reboots. They are
+     * meant for state coordination, not long-term storage. Use item memory for persistence.
+     *
+     * Setting the value for a key to null clears that property; subsequent lookups will return
+     * the default value.
+     *
+     * @return true if the memory was updated, false if the memory update could not be completed
+     * due to size restrictions.
+     */
+    public function setRoomProperty (key :String, value :Object) :Boolean
+    {
+        return callHostCode("setRoomProperty_v1", key, value);
     }
 
     /**
@@ -307,47 +353,6 @@ public class EntityControl extends WhirledControl
     }
 
     /**
-     * Requests that this item's memory be updated with the supplied key/value pair. The supplied
-     * value must be a simple object (Integer, Number, String) or an Array of simple objects. The
-     * contents of the Pet's memory (keys and values) must not exceed 4096 bytes when AMF3 encoded.
-     *
-     * Setting the memory for a key to null clears that key; subsequent lookups will return the
-     * default value.
-     *
-     * NOTE: Avatar memories are inconsistent at the moment and should not be used.
-     *
-     * @return true if the memory was updated, false if the memory update could not be completed
-     * due to size restrictions.
-     *
-     * Note: any instance can update memories!
-     */
-    public function updateMemory (key :String, value :Object) :Boolean
-    {
-        return callHostCode("updateMemory_v1", key, value);
-    }
-
-    /**
-     * Requests that the room's shared property space be updated with the supplied key/value
-     * pair. The supplied value must be a simple object (Integer, Number, String) or an Array
-     * of simple objects. The key must be no more than 64 bytes long and the value no more
-     * than 256 when encoded. There can be no more than 16 entries in a room's property space
-     * so be frugal.
-     *
-     * Please note that these properties are not persisted through server reboots. They are
-     * meant for state coordination, not long-term storage. Use item memory for persistence.
-     *
-     * Setting the value for a key to null clears that property; subsequent lookups will return
-     * the default value.
-     *
-     * @return true if the memory was updated, false if the memory update could not be completed
-     * due to size restrictions.
-     */
-    public function setRoomProperty (key :String, value :Object) :Boolean
-    {
-        return callHostCode("setRoomProperty_v1", key, value);
-    }
-
-    /**
      * Set the layout "hotspot" for your item, specified as pixels relative to (0, 0) the top-left
      * coordinate.
      *
@@ -418,6 +423,7 @@ public class EntityControl extends WhirledControl
 
     /**
      * Populate any properties that we provide back to whirled.
+     * @private
      */
     override protected function populateProperties (o :Object) :void
     {
@@ -428,7 +434,9 @@ public class EntityControl extends WhirledControl
         o["signalReceived_v1"] = signalReceived_v1;
     }
 
-    // from WhirledControl
+    /**
+     * @private
+     */
     override protected function gotInitProperties (o :Object) :void
     {
         super.gotInitProperties(o);
@@ -439,6 +447,7 @@ public class EntityControl extends WhirledControl
 
     /**
      * Called when an action or message is triggered on this scene object.
+     * @private
      */
     protected function messageReceived_v1 (name :String, arg :Object, isAction :Boolean) :void
     {
@@ -448,6 +457,7 @@ public class EntityControl extends WhirledControl
 
     /**
      * Called when an action or message is triggered on this scene object.
+     * @private
      */
     protected function signalReceived_v1 (name :String, arg :Object) :void
     {
@@ -456,6 +466,7 @@ public class EntityControl extends WhirledControl
 
     /**
      * Called when one of this item's memory entries has changed.
+     * @private
      */
     protected function memoryChanged_v1 (key :String, value :Object) :void
     {
@@ -464,6 +475,7 @@ public class EntityControl extends WhirledControl
 
     /**
      * Called when one of this item's memory entries has changed.
+     * @private
      */
     protected function roomPropertyChanged_v1 (key :String, value :Object) :void
     {
@@ -472,6 +484,7 @@ public class EntityControl extends WhirledControl
 
     /**
      * Called when this client has been assigned control of this object.
+     * @private
      */
     protected function gotControl_v1 () :void
     {
@@ -489,6 +502,7 @@ public class EntityControl extends WhirledControl
 
     /**
      * Check the status of the ticker, starting or stopping it as necessary.
+     * @private
      */
     protected function recheckTicker () :void
     {
@@ -512,6 +526,7 @@ public class EntityControl extends WhirledControl
 
     /**
      * Stops our AI ticker.
+     * @private
      */
     protected function stopTicker () :void
     {
@@ -521,6 +536,9 @@ public class EntityControl extends WhirledControl
         }
     }
 
+    /**
+     * @private
+     */
     override protected function handleUnload (evt :Event) :void
     {
         super.handleUnload(evt);
@@ -529,19 +547,19 @@ public class EntityControl extends WhirledControl
         stopTicker();
     }
 
-    /** Contains our current location in the scene [x, y, z], or null. */
+    /** Contains our current location in the scene [x, y, z], or null. @private */
     protected var _location :Array;
 
-    /** Our desired tick interval (in milliseconds). */
+    /** Our desired tick interval (in milliseconds). @private */
     protected var _tickInterval :Number = 0;
 
-    /** Used to tick this object when this client is running its AI. */
+    /** Used to tick this object when this client is running its AI. @private */
     protected var _ticker :Timer;
 
-    /** Whether this instance has control. */
+    /** Whether this instance has control. @private */
     protected var _hasControl :Boolean = false;
 
-    /** The default datapack, if any. */
+    /** The default datapack, if any. @private */
     protected var _datapack :ByteArray;
 }
 }

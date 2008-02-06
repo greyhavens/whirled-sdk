@@ -21,7 +21,7 @@ import com.threerings.ezgame.EZServicesSubControl;
  *   WhirledGameControl Index</a>?)
  *
  * Typically, you create this in your top-level MovieClip/Sprite:
- * <code>
+ * <code><pre>
  * public class MyGame extends Sprite
  * {
  *     public var ctrl :WhirledGameControl;
@@ -31,7 +31,7 @@ import com.threerings.ezgame.EZServicesSubControl;
  *     {
  *          ctrl = new WhirledGameControl(this);
  *          ...
- * </code>
+ * </pre></code>
  */
 public class WhirledGameControl extends AbstractGameControl
 {

@@ -96,6 +96,8 @@ public class ActorControl extends EntityControl
      * @param orient an orientation between 0 (facing straight ahead) and going to 359, counter-clockwise.
      *
      * @see ControlEvent#APPEARANCE_CHANGED
+     *
+     * NOTE: this is currently not working.
      */
     public function setOrientation (orient :Number) :void
     {
@@ -125,7 +127,9 @@ public class ActorControl extends EntityControl
         return isConnected() ? (callHostCode("getState_v1") as String) : null;
     }
 
-    // from WhirledControl
+    /**
+     * @private
+     */
     override protected function populateProperties (o :Object) :void
     {
         super.populateProperties(o);
@@ -134,7 +138,9 @@ public class ActorControl extends EntityControl
         o["stateSet_v1"] = stateSet_v1;
     }
 
-    // from WhirledControl
+    /**
+     * @private
+     */
     override protected function gotInitProperties (o :Object) :void
     {
         super.gotInitProperties(o);
@@ -145,6 +151,7 @@ public class ActorControl extends EntityControl
 
     /**
      * Called when we start or stop moving or change orientation.
+     * @private
      */
     protected function appearanceChanged_v2 (
         location :Array, orient :Number, moving :Boolean, sleeping :Boolean) :void
@@ -158,16 +165,17 @@ public class ActorControl extends EntityControl
 
     /**
      * Called when a new state is set.
+     * @private
      */
     protected function stateSet_v1 (newState :String) :void
     {
         dispatch(ControlEvent.STATE_CHANGED, newState);
     }
 
-    /** Our current orientation, or 0. */
+    /** Our current orientation, or 0. @private */
     protected var _orient :Number = 0;
 
-    /** Indicates whether or not we're currently moving. */
+    /** Indicates whether or not we're currently moving. @private */
     protected var _isMoving :Boolean;
 }
 }

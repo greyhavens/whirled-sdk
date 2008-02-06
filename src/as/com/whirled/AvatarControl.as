@@ -31,6 +31,14 @@ import com.threerings.util.Util;
 public class AvatarControl extends ActorControl
 {
     /**
+     * Create an AvatarControl.
+     *
+     * @param disp A display object from your hierarchy. Must be on the stage.
+     *
+     * Typical usage:
+     * <code>
+     *    var ctrl :AvatarControl = new AvatarControl(this);
+     * </code>
      */
     public function AvatarControl (disp :DisplayObject)
     {
@@ -105,7 +113,9 @@ public class AvatarControl extends ActorControl
         callHostCode("setPreferredY_v1", pixels);
     }
 
-    // documentation in ActorControl
+    /**
+     * @inheritDoc
+     */
     override public function setState (state :String) :void
     {
         // translate to null if setting to the default state
@@ -115,7 +125,9 @@ public class AvatarControl extends ActorControl
         super.setState(state);
     }
 
-    // documentation in ActorControl
+    /**
+     * @inheritDoc
+     */
     override public function getState () :String
     {
         // if the state is null, call it by the name of the first registered state
@@ -126,6 +138,9 @@ public class AvatarControl extends ActorControl
         return state;
     }
 
+    /**
+     * @private
+     */
     override protected function populateProperties (o :Object) :void
     {
         super.populateProperties(o);
@@ -135,6 +150,9 @@ public class AvatarControl extends ActorControl
         o["getStates_v1"] = getStates_v1;
     }
 
+    /**
+     * @private
+     */
     override protected function gotInitProperties (o :Object) :void
     {
         super.gotInitProperties(o);
@@ -142,6 +160,9 @@ public class AvatarControl extends ActorControl
         _isSleeping = (o["isSleeping"] as Boolean);
     }
 
+    /**
+     * @private
+     */
     protected function avatarSpoke_v1 () :void
     {
         dispatch(ControlEvent.AVATAR_SPOKE);
@@ -149,6 +170,7 @@ public class AvatarControl extends ActorControl
 
     /** 
      * Get the names of all the current actions.
+     * @private
      */
     protected function getActions_v1 () :Array
     {
@@ -157,12 +179,16 @@ public class AvatarControl extends ActorControl
 
     /**
      * Get the names of all the current states.
+     * @private
      */
     protected function getStates_v1 () :Array
     {
         return _states;
     }
 
+    /**
+     * @private
+     */
     override protected function appearanceChanged_v2 (
         location :Array, orient :Number, moving :Boolean, sleeping :Boolean) :void
     {
@@ -174,6 +200,7 @@ public class AvatarControl extends ActorControl
 
     /**
      * Helpy method to verify that the actions or states are legal.
+     * @private
      */
     protected function verifyActionsOrStates (vals :Array, isAction :Boolean) :void
     {
@@ -197,18 +224,21 @@ public class AvatarControl extends ActorControl
         }
     }
 
+    /**
+     * @private
+     */
     override protected function isAbstract () :Boolean
     {
         return false;
     }
 
-    /** An array of all action names. */
+    /** An array of all action names. @private */
     protected var _actions :Array = [];
 
-    /** An array of state names. */
+    /** An array of state names. @private */
     protected var _states :Array = [];
 
-    /** Is this avatar asleep? */
+    /** Is this avatar asleep? @private */
     protected var _isSleeping :Boolean;
 }
 }

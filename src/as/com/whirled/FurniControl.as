@@ -19,11 +19,17 @@ public class FurniControl extends EntityControl
 {
     /** An action triggered when someone arrives at the location at which
      * this furniture is placed, if this piece of furniture is a doorway.
+     *
+     * This will arrive via an ACTION_TRIGGERED event with the name property set
+     * to BODY_ENTERED.
      */
     public static const BODY_ENTERED :String = "bodyEntered";
 
     /** An action triggered when someone leaves via this piece of doorway
      * furniture.
+     *
+     * This will arrive via an ACTION_TRIGGERED event with the name property set
+     * to BODY_LEFT.
      */
     public static const BODY_LEFT :String = "bodyLeft";
 
@@ -52,11 +58,17 @@ public class FurniControl extends EntityControl
         _customConfig = func;
     }
 
+    /**
+     * @private
+     */
     override protected function isAbstract () :Boolean
     {
         return false;
     }
 
+    /**
+     * @private
+     */
     override protected function populateProperties (o :Object) :void
     {
         super.populateProperties(o);
@@ -68,6 +80,7 @@ public class FurniControl extends EntityControl
     /**
      * Called when whirled is editing this furniture, to retrieve any custom configuration
      * panel.
+     * @private
      */
     protected function getConfigPanel_v1 () :DisplayObject
     {
@@ -76,15 +89,17 @@ public class FurniControl extends EntityControl
 
     /**
      * Dispatches mouse events to furni with actions.
+     * @private
      */
     protected function mouseEvents_v1 (event :MouseEvent) :void
     {
         _top.dispatchEvent(event);
     }
 
-    /** A function registered to return a custom configuration panel. */
+    /** A function registered to return a custom configuration panel. @private */
     protected var _customConfig :Function;
 
+    /** The top-level display object. @private */
     protected var _top :DisplayObject;
 }
 }
