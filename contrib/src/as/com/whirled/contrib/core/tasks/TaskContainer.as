@@ -72,7 +72,8 @@ public class TaskContainer
         var out :Array = new Array(_tasks.length);
 
         // clone each child task and put it in the cloned container
-        for (var i:int = 0; i < _tasks.length; ++i) {
+        var n :int = _tasks.length;
+        for (var i :int = 0; i < n; ++i) {
             var task :ObjectTask = (null != _tasks[i] ? _tasks[i] as ObjectTask : _completedTasks[i] as ObjectTask);
             Assert.isNotNull(task);
             out[i] = task.clone();
@@ -109,9 +110,8 @@ public class TaskContainer
      */
     protected function applyFunction (f :Function) :Boolean
     {
-        var i :int;
-
-        for (i = 0; i < _tasks.length; ++i) {
+        var n :int = _tasks.length;
+        for (var i :int = 0; i < n; ++i) {
             var task :ObjectTask = (_tasks[i] as ObjectTask);
 
             // we can have holes in the array

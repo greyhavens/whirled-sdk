@@ -54,7 +54,8 @@ public class Checksum
 
     public function addString (val :String) :Checksum
     {
-        for (var i :uint = 0; i < val.length; ++i) {
+        var n :uint;
+        for (var i :uint = 0; i < n; ++i) {
             this.addUint(val.charCodeAt(i));
         }
 
