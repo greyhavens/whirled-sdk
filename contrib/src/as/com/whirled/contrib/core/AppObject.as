@@ -1,10 +1,11 @@
 package com.whirled.contrib.core {
 
-import com.threerings.util.Assert;
 import com.threerings.util.SortedHashMap;
 import com.whirled.contrib.core.tasks.ParallelTask;
 
-public class AppObject
+import flash.events.EventDispatcher;
+
+public class AppObject extends EventDispatcher
 {
     /**
      * Returns the id that uniquely identifies this object in its containing AppMode.
