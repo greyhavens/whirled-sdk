@@ -7,10 +7,6 @@ public class ResourceFactoryRegistry
 {
     public static function get instance () :ResourceFactoryRegistry
     {
-        if (null == g_instance) {
-            new ResourceManager();
-        }
-        
         return g_instance;
     }
     
