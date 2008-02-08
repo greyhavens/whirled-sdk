@@ -60,7 +60,7 @@ public class MainLoop
 
         Rand.setup();
         
-        // add resource factories
+        // instantiate singleton
         new ResourceFactoryRegistry();
         
         // add resource factories
