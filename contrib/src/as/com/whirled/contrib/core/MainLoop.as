@@ -61,8 +61,8 @@ public class MainLoop
         Rand.setup();
         
         // add resource factories
-        ResourceManager.instance.addResourceFactory("image", new ImageResourceFactory());
-        ResourceManager.instance.addResourceFactory("swf", new SwfResourceFactory());
+        ResourceFactoryRegistry.instance.registerFactory("image", new ImageResourceFactory());
+        ResourceFactoryRegistry.instance.registerFactory("swf", new SwfResourceFactory());
     }
 
     public function run () :void

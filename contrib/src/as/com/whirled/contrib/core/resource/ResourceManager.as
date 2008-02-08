@@ -7,33 +7,13 @@ import flash.events.EventDispatcher;
 
 public class ResourceManager extends EventDispatcher
 {
-    public static function get instance () :ResourceManager
-    {
-        if (null == g_instance) {
-            new ResourceManager();
-        }
-
-        return g_instance;
-    }
-
-    public function ResourceManager ()
-    {
-        Assert.isNull(g_instance);
-        g_instance = this;
-    }
-    
-    public function addResourceFactory (resourceType :String, factory :ResourceFactory) :void
-    {
-        _resourceFactories.put(resourceType, factory);
-    }
-    
     public function pendResourceLoad (resourceType :String, resourceName: String, loadParams :*) :void
     {
         if (_loading) {
             throw new Error("A load operation is already in progress");
         }
         
-        var factory :ResourceFactory = _resourceFactories.get(resourceType);
+        var factory :ResourceFactory = ResourceFactoryRegistry.instance.getFactory(resourceType);
         if (null == factory) {
             throw new Error("missing factory for '" + resourceType + "' resource type");
         }
@@ -167,9 +147,6 @@ public class ResourceManager extends EventDispatcher
 
     protected var _resources :HashMap = new HashMap();
     protected var _pendingResources :HashMap = new HashMap();
-    protected var _resourceFactories :HashMap = new HashMap();
-
-    protected static var g_instance :ResourceManager;
 }
 
 }
