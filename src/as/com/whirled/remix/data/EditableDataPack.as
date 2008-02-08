@@ -36,7 +36,7 @@ public class EditableDataPack extends DataPack
         var list :XMLList = _metadata..data;
         var fields :Array = [];
         for each (var data :XML in list) {
-            fields.push(data.@name);
+            fields.push(unescape(data.@name));
         }
         return fields;
     }
@@ -52,7 +52,7 @@ public class EditableDataPack extends DataPack
         for each (var file :XML in list) {
             var name :String = file.@name;
             if (includeContent || (name != CONTENT_DATANAME)) {
-                fields.push(name);
+                fields.push(unescape(name));
             }
         }
         return fields;
