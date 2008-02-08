@@ -49,7 +49,7 @@ public class Configurator
         var value :Object = control.lookupMemory(key);
         if (value != null) {
             setTimeout(configured, 0, value);
-
+            return;
         }
         // otherwise remember all the bits
         _control = control;
