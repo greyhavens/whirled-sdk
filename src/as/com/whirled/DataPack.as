@@ -454,14 +454,7 @@ public class DataPack extends EventDispatcher
             return null;
         }
 
-        var val :XMLList = datum.@value;
-        if (val.length == 0 || val[0] === undefined) {
-            return null;
-        }
-
-        var value :String = String(val[0]);
-//        trace("Raw value for file '" + name + "' is '" + value + "'");
-        return value;
+        return parseValue(datum, "value", "String");
     }
 
     /**

@@ -137,7 +137,7 @@ public class EditableDataPack extends DataPack
      * or may be null to remove the file.
      * @param data the bytes associated with the specified filename.
      */
-    public function replaceFile (name :String, filename :String, data :ByteArray) :void
+    public function replaceFile (name :String, filename :String, data :ByteArray = null) :void
     {
         name = validateAccess(name);
 
@@ -152,7 +152,9 @@ public class EditableDataPack extends DataPack
         }
 
         formatValue(datum, filename, "value", "String");
-        _newFiles[filename] = data;
+        if (data != null) {
+            _newFiles[filename] = data;
+        }
     }
 
     protected function formatValue (
@@ -170,6 +172,9 @@ public class EditableDataPack extends DataPack
     protected function formatValueString (value :*, type :String) :String
     {
         switch (type) {
+//        case "bareString":
+//            return String(value);
+//
         case "String":
             return escape(String(value));
 
