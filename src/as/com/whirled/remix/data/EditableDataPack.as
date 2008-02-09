@@ -13,6 +13,7 @@ import nochump.util.zip.ZipOutput;
 
 import com.whirled.DataPack;
 
+import com.threerings.util.ArrayUtil;
 import com.threerings.util.StringUtil;
 import com.threerings.util.Util;
 
@@ -124,6 +125,36 @@ public class EditableDataPack extends DataPack
             optional: Boolean(parseValue(datum, "optional", "Boolean")),
             value: parseValue(datum, "value", "String")
         };
+    }
+
+    /**
+     * Get the filenames of all (normal) files currently stored in this pack
+     * during editing.
+     */
+    public function getFilenames () :Array /* of String */
+    {
+        var names :Array = [];
+        for each (var zipEntry :ZipEntry in _zip.entries) {
+            names.push(zipEntry.name);
+        }
+
+        for (var name :String in _newFiles) {
+            if (!ArrayUtil.contains(names, name)) {
+                names.push(name);
+            }
+        }
+        ArrayUtil.removeFirst(names, METADATA_FILENAME);
+        ArrayUtil.removeFirst(names, getFileName(CONTENT_DATANAME));
+
+        return names;
+    }
+
+    /**
+     * Retrieve a file by the filename.
+     */
+    public function getFileByFilename (filename :String) :ByteArray
+    {
+        return getFileBytes(filename);
     }
 
     /**
