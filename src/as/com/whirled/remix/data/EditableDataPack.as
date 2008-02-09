@@ -67,6 +67,11 @@ public class EditableDataPack extends DataPack
      *    optional: <isOptional>:Boolean
      *    value: <objectValue>:*
      *    defaultValue: <objectValue>:*
+     *
+     * Additional optional fields:
+     *    Type: Number
+     *       min: <minimumValue>:Number
+     *       max: <maximumValue>:Number
      */
     public function getDataEntry (name :String) :Object
     {
@@ -77,7 +82,7 @@ public class EditableDataPack extends DataPack
             return null;
         }
 
-        return {
+        var entry :Object = {
             name: parseValue(datum, "name", "String"),
             type: parseValue(datum, "type", "String"),
             info: parseValue(datum, "info", "String"),
@@ -85,6 +90,13 @@ public class EditableDataPack extends DataPack
             value: parseValue(datum),
             defaultValue: parseValue(datum, "defaultValue")
         };
+
+        if (entry.type == "Number") {
+            entry.min = parseValue(datum, "min", "Number");
+            entry.max = parseValue(datum, "max", "Number");
+        }
+
+        return entry;
     }
 
     /**
