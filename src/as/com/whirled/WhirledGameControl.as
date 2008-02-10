@@ -15,10 +15,10 @@ import com.threerings.ezgame.EZGameSubControl;
 import com.threerings.ezgame.EZServicesSubControl;
 
 /**
- * The primary class used to coordinate game state and control your multiplayer game.
+ * Used to coordinate game state and control your multiplayer game.
  *
- * (Are you viewing the <a href="/code/WhirledGameControl.html" target="_top">Easy
- *   WhirledGameControl Index</a>?)
+ * <b>Note:</b> Check out the <a href="/code/WhirledGameControl.html" target="_top">Easy
+ *   WhirledGameControl Index</a>.
  *
  * Typically, you create this in your top-level MovieClip/Sprite:
  * <code><pre>
