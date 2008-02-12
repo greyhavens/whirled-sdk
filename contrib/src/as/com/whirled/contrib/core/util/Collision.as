@@ -34,10 +34,63 @@ public class Collision
         center2 :Vector2,
         radius2 :Number) :Boolean
     {
-        var maxDistSquared :Number = ((radius1 + radius2) * (radius1 + radius2));
+        var minDistSquared :Number = ((radius1 + radius2) * (radius1 + radius2));
         var dVec :Vector2 = Vector2.subtract(center1, center2);
 
-        return (dVec.lengthSquared <= maxDistSquared);
+        return (dVec.lengthSquared <= minDistSquared);
+    }
+    
+    /**
+     * Returns a value in [0, 1] that indicates the distance along the path given
+     * by (distance * direction) that the circle given by (center1, radius1) will
+     * intersect the circle given by (center2, radius2), or -1 if no intersection
+     * occurs.
+     * 
+     * "direction" must be a unit-length vector. The two circles must not already be
+     * intersecting.
+     */
+    public static function movingCircleIntersectsCircle (
+        center1 :Vector2,
+        radius1 :Number,
+        direction :Vector2,
+        distance :Number,
+        center2 :Vector2,
+        radius2 :Number) :Number
+    {
+        // http://www.gamasutra.com/features/20020118/vandenhuevel_02.htm
+        
+        var c :Vector2 = center2.getSubtract(center1);
+        var cLengthSquared :Number = c.lengthSquared;
+        
+        // the circle will not move far enough
+        if (c.lengthSquared >= (distance * distance)) {
+            return -1;
+        }
+        
+        var d :Number = c.dot(direction);
+        
+        // the circle is moving in the wrong direction
+        if (d <= 0) {
+            return -1;
+        }
+        
+        var f :Number = (cLengthSquared + (d * d));
+        var minDistSquared :Number = ((radius1 + radius2) * (radius1 + radius2));
+        
+        // the circle won't intersect
+        if (f > minDistSquared) {
+            return -1;
+        }
+        
+        var t :Number = minDistSquared - f;
+        
+        var collideDistance :Number = d - Math.sqrt(t);
+        
+        if (collideDistance > distance) {
+            return -1;
+        }
+        
+        return collideDistance / distance;
     }
     
     /** 
