@@ -58,11 +58,6 @@ public class Collision
         var c :Vector2 = cB.getSubtract(cA);
         var cLengthSquared :Number = c.lengthSquared;
         
-        // A will not move far enough
-        if (c.lengthSquared >= (distanceA * distanceA)) {
-            return -1;
-        }
-        
         var d :Number = c.dot(directionA);
         
         // A is moving in the wrong direction
