@@ -9,57 +9,54 @@ public class Collision
 {
     /** Returns true if the two circular display objects intersect. */
     public static function circularDisplayObjectsIntersect (
-        center1 :Vector2,
-        radius1 :Number,
+        cA :Vector2,
+        rA :Number,
         do1 :DisplayObject,
-        center2 :Vector2,
-        radius2 :Number,
+        cB :Vector2,
+        rB :Number,
         do2 :DisplayObject) :Boolean
     {
         if (null == do1 || null == do2 || null == do1.parent || null == do2.parent) {
             throw new ArgumentError("do1 and do2 must be non-null, and part of the display list");
         }
         
-        var p :Point = center1.toPoint();
+        var p :Point = cA.toPoint();
         p = do1.parent.localToGlobal(p);
         p = do2.parent.globalToLocal(p);
         
-        return Collision.circlesIntersect(Vector2.fromPoint(p), radius1, center2, radius2);
+        return Collision.circlesIntersect(Vector2.fromPoint(p), rA, cB, rB);
     }
     
     /** Returns true if the two circles intersect. */
     public static function circlesIntersect (
-        center1 :Vector2,
-        radius1 :Number,
-        center2 :Vector2,
-        radius2 :Number) :Boolean
+        cA :Vector2,
+        rA :Number,
+        cB :Vector2,
+        rB :Number) :Boolean
     {
-        var minDistSquared :Number = ((radius1 + radius2) * (radius1 + radius2));
-        var dVec :Vector2 = Vector2.subtract(center1, center2);
-
-        return (dVec.lengthSquared <= minDistSquared);
+        return (cB.getSubtract(cA).lengthSquared <= ((rA + rB) * (rA + rB)));
     }
     
     /**
      * Returns a value in [0, 1] that indicates the distance along the path given
-     * by (distance * direction) that the circle given by (center1, radius1) will
-     * intersect the circle given by (center2, radius2), or -1 if no intersection
+     * by (distance * direction) that the circle given by (cA, rA) will
+     * intersect the circle given by (cB, rB), or -1 if no intersection
      * occurs.
      * 
      * "direction" must be a unit-length vector. The two circles must not already be
      * intersecting.
      */
     public static function movingCircleIntersectsCircle (
-        center1 :Vector2,
-        radius1 :Number,
+        cA :Vector2,
+        rA :Number,
         direction :Vector2,
         distance :Number,
-        center2 :Vector2,
-        radius2 :Number) :Number
+        cB :Vector2,
+        rB :Number) :Number
     {
         // http://www.gamasutra.com/features/20020118/vandenhuevel_02.htm
         
-        var c :Vector2 = center2.getSubtract(center1);
+        var c :Vector2 = cB.getSubtract(cA);
         var cLengthSquared :Number = c.lengthSquared;
         
         // the circle will not move far enough
@@ -75,7 +72,7 @@ public class Collision
         }
         
         var f :Number = (cLengthSquared + (d * d));
-        var minDistSquared :Number = ((radius1 + radius2) * (radius1 + radius2));
+        var minDistSquared :Number = ((rA + rB) * (rA + rB));
         
         // the circle won't intersect
         if (f > minDistSquared) {
