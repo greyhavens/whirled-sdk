@@ -16,9 +16,39 @@ import com.whirled.DataPack;
 import com.threerings.util.ArrayUtil;
 import com.threerings.util.StringUtil;
 import com.threerings.util.Util;
+import com.threerings.util.ValueEvent;
+
+/**
+ * Dispatched when a data field has changed.
+ * value: data name
+ *
+ * @eventType com.whirled.remix.data.EditableDataPack.DATA_CHANGED
+ */
+[Event(name="dataChanged", type="com.threerings.util.ValueEvent")]
+
+/**
+ * Dispatched when a file field has changed.
+ * value: file data name
+ *
+ * @eventType com.whirled.remix.data.EditableDataPack.FILE_CHANGED
+ */
+[Event(name="dataChanged", type="com.threerings.util.ValueEvent")]
 
 public class EditableDataPack extends DataPack
 {
+    /**
+     * @eventType dataChanged
+     */
+    public static const DATA_CHANGED :String = "dataChanged";
+
+    /**
+     * @eventType fileChanged
+     */
+    public static const FILE_CHANGED :String = "fileChanged";
+
+    /**
+     * Create an EditableDataPack.
+     */
     public function EditableDataPack (urlOrByteArrayOrNothing :*)
     {
         // allow blank packs to be created
@@ -162,14 +192,15 @@ public class EditableDataPack extends DataPack
      */
     public function setData (name :String, value :*) :void
     {
-        name = validateAccess(name);
+        var cleanName :String = validateAccess(name);
 
-        var datum :XML = _metadata..data.(@name == name)[0];
+        var datum :XML = _metadata..data.(@name == cleanName)[0];
         if (datum == null) {
             throw new Error("No such data name");
         }
 
         formatValue(datum, value);
+        dispatchEvent(new ValueEvent(DATA_CHANGED, name));
     }
 
     /**
@@ -182,22 +213,23 @@ public class EditableDataPack extends DataPack
      */
     public function replaceFile (name :String, filename :String, data :ByteArray = null) :void
     {
-        name = validateAccess(name);
+        var cleanName :String = validateAccess(name);
 
-        var datum :XML = _metadata..file.(@name == name)[0];
+        var datum :XML = _metadata..file.(@name == cleanName)[0];
         if (datum == null) {
             throw new Error("No such file name");
         }
 
         if (filename == null) {
             delete datum.@value;
-            return;
-        }
 
-        formatValue(datum, filename, "value", "String");
-        if (data != null) {
-            _newFiles[filename] = data;
+        } else {
+            formatValue(datum, filename, "value", "String");
+            if (data != null) {
+                _newFiles[filename] = data;
+            }
         }
+        dispatchEvent(new ValueEvent(FILE_CHANGED, name));
     }
 
     protected function formatValue (
