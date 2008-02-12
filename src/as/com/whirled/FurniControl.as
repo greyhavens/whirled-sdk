@@ -12,6 +12,26 @@ import flash.events.EventDispatcher;
 import flash.events.MouseEvent;
 
 /**
+ * Dispatched when the local user hovers the mouse over this sprite.
+ * Note that normal MouseEvents are blocked when this sprite has "action", like it
+ * is a doorway. If you want the doorway to react to the mouse being over it then
+ * you should listen for this event.
+ *
+ * @eventType com.whirled.ControlEvent.HOVER_OVER
+ */
+[Event(name="hoverOver", type="com.whirled.ControlEvent")]
+
+/**
+ * Dispatched when the local user unhovers the mouse from this sprite.
+ * Note that normal MouseEvents are blocked when this sprite has "action", like it
+ * is a doorway. If you want the doorway to react to the mouse being over it then
+ * you should listen for this event.
+ *
+ * @eventType com.whirled.ControlEvent.HOVER_OVER
+ */
+[Event(name="hoverOut", type="com.whirled.ControlEvent")]
+
+/**
  * This file should be included by furniture, so that it can communicate
  * with the whirled.
  */
@@ -40,7 +60,8 @@ public class FurniControl extends EntityControl
     public function FurniControl (disp :DisplayObject)
     {
         super(disp);
-        _top = disp.root;
+        disp.root.addEventListener(MouseEvent.ROLL_OVER, handleMouseRoll);
+        disp.root.addEventListener(MouseEvent.ROLL_OUT, handleMouseRoll);
     }
 
     /**
@@ -74,7 +95,7 @@ public class FurniControl extends EntityControl
         super.populateProperties(o);
 
         o["getConfigPanel_v1"] = getConfigPanel_v1;
-        o["mouseEvents_v1"] = mouseEvents_v1;
+        o["mouseHover_v1"] = mouseHover_v1;
     }
 
     /**
@@ -88,18 +109,26 @@ public class FurniControl extends EntityControl
     }
 
     /**
-     * Dispatches mouse events to furni with actions.
+     * Dispatches hover events.
      * @private
      */
-    protected function mouseEvents_v1 (event :MouseEvent) :void
+    protected function mouseHover_v1 (over :Boolean) :void
     {
-        _top.dispatchEvent(event);
+        dispatch(over ? ControlEvent.HOVER_OVER : ControlEvent.HOVER_OUT);
+    }
+
+    /**
+     * @private
+     */
+    protected function handleMouseRoll (event :MouseEvent) :void
+    {
+        // when we don't have action in whirled, we need to hand-dispatch these events
+        // but when we do have action, we won't receive normal mouse events and we'll be
+        // getting our HOVERs from whirled.
+        mouseHover_v1(event.type == MouseEvent.ROLL_OVER);
     }
 
     /** A function registered to return a custom configuration panel. @private */
     protected var _customConfig :Function;
-
-    /** The top-level display object. @private */
-    protected var _top :DisplayObject;
 }
 }

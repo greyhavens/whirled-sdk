@@ -99,6 +99,26 @@ public class ControlEvent extends Event
      */
     public static const RECEIVED_CHAT :String = "receivedChat";
 
+    /** An event type dispatched to Furniture and Toys when the mouse is over them.
+     * Note that the normal MouseEvents will be blocked if the furniture has an action,
+     * so this is necessary to make doorways that react to mouse hovering.
+     * name: unused
+     * value: unused
+     *
+     * @eventType hoverOver
+     */
+    public static const HOVER_OVER :String = "hoverOver";
+
+    /** An event type dispatched to Furniture and Toys when the mouse is leaves them.
+     * Note that the normal MouseEvents will be blocked if the furniture has an action,
+     * so this is necessary to make doorways that react to mouse hovering.
+     * name: unused
+     * value: unused
+     *
+     * @eventType hoverOut
+     */
+    public static const HOVER_OUT :String = "hoverOut";
+
     /**
      * Retrieve the event target, which will be the WhirledControl instance that
      * dispatched this event.
