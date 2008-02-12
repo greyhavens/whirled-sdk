@@ -39,9 +39,8 @@ public class Collision
     
     /**
      * Returns a value in [0, 1] that indicates the distance along the path given
-     * by (distance * direction) that the circle given by (cA, rA) will
-     * intersect the circle given by (cB, rB), or -1 if no intersection
-     * occurs.
+     * by (distance * direction) that circle A will intersect circle B, or -1 
+     * if no intersection occurs.
      * 
      * "direction" must be a unit-length vector. The two circles must not already be
      * intersecting.
@@ -49,37 +48,41 @@ public class Collision
     public static function movingCircleIntersectsCircle (
         cA :Vector2,
         rA :Number,
-        direction :Vector2,
-        distance :Number,
         cB :Vector2,
-        rB :Number) :Number
+        rB :Number,
+        direction :Vector2,
+        distance :Number) :Number
     {
         // http://www.gamasutra.com/features/20020118/vandenhuevel_02.htm
         
         var c :Vector2 = cB.getSubtract(cA);
         var cLengthSquared :Number = c.lengthSquared;
         
-        // the circle will not move far enough
+        // A will not move far enough
         if (c.lengthSquared >= (distance * distance)) {
             return -1;
         }
         
         var d :Number = c.dot(direction);
         
-        // the circle is moving in the wrong direction
+        // A is moving in the wrong direction
         if (d <= 0) {
             return -1;
         }
         
-        var f :Number = (cLengthSquared + (d * d));
+        var f :Number = cLengthSquared - (d * d);
         var minDistSquared :Number = ((rA + rB) * (rA + rB));
         
-        // the circle won't intersect
+        // A will pass but not collide with B
         if (f > minDistSquared) {
             return -1;
         }
         
         var t :Number = minDistSquared - f;
+        
+        if (t < 0) {
+            return -1;
+        }
         
         var collideDistance :Number = d - Math.sqrt(t);
         
