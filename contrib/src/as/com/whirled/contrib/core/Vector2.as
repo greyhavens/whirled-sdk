@@ -176,6 +176,17 @@ public class Vector2
         x /= len;
         y /= len;
     }
+    
+    /** Normalizes the vector and returns its original length. */
+    public function normalizeAndGetLength () :Number
+    {
+        var len :Number = this.length;
+        
+        x /= len;
+        y /= len;
+        
+        return len;
+    }
 
     /** Returns a normalized copy of the vector. */
     public function getNormalized () :Vector2

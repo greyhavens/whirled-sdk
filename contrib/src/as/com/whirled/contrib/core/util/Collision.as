@@ -38,20 +38,20 @@ public class Collision
     }
     
     /**
-     * Returns a value in [0, 1] that indicates the distance along the path given
-     * by (distance * direction) that circle A will intersect circle B, or -1 
-     * if no intersection occurs.
+     * Returns a value in [0, 1] that indicates the distance that circle A's path
+     * must be scaled to avoid intersecting with circle B, or -1 if no interesection
+     * occurs.
      * 
      * "direction" must be a unit-length vector. The two circles must not already be
      * intersecting.
      */
-    public static function movingCircleIntersectsCircle (
+    public static function movingCircleIntersectsStaticCircle (
         cA :Vector2,
         rA :Number,
+        directionA :Vector2,
+        distanceA :Number,
         cB :Vector2,
-        rB :Number,
-        direction :Vector2,
-        distance :Number) :Number
+        rB :Number) :Number
     {
         // http://www.gamasutra.com/features/20020118/vandenhuevel_02.htm
         
@@ -59,11 +59,11 @@ public class Collision
         var cLengthSquared :Number = c.lengthSquared;
         
         // A will not move far enough
-        if (c.lengthSquared >= (distance * distance)) {
+        if (c.lengthSquared >= (distanceA * distanceA)) {
             return -1;
         }
         
-        var d :Number = c.dot(direction);
+        var d :Number = c.dot(directionA);
         
         // A is moving in the wrong direction
         if (d <= 0) {
@@ -86,11 +86,33 @@ public class Collision
         
         var collideDistance :Number = d - Math.sqrt(t);
         
-        if (collideDistance > distance) {
+        if (collideDistance > distanceA) {
             return -1;
         }
         
-        return collideDistance / distance;
+        return collideDistance / distanceA;
+    }
+    
+    /**
+     * Returns a value in [0, 1] that indicates the distance that the two circles'
+     * paths must be scaled to avoid intersecting each other, or -1 if no interesection
+     * will occurs.
+     * 
+     * dA and dB *don't* need to be unit length vectors. The two circles must not already be
+     * intersecting.
+     */
+    public static function movingCirclesIntersect (
+        cA :Vector2,
+        rA :Number,
+        dA :Vector2,
+        cB :Vector2,
+        rB :Number,
+        dB :Vector2) :Number
+    {
+        var direction :Vector2 = dA.getSubtract(dB);
+        var distance :Number = dA.normalizeAndGetLength();
+        
+        return movingCircleIntersectsStaticCircle(cA, rA, direction, distance, cB, rB);
     }
     
     /** 
