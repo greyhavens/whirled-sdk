@@ -9,6 +9,15 @@ import flash.events.Event;
 
 public class AVRGameControlEvent extends ControlEvent
 {
+    /** An event type dispatched when this client-side instance of the AVRG
+     * has gained "control" over the other client-side instances.
+     * name: unused
+     * value: unused
+     *
+     * @eventType gotControl
+     */
+    public static const GOT_CONTROL :String = "gotControl";
+
     /** An event type dispatched when a datum of game state has changed.
      * key: property key
      * value: property value

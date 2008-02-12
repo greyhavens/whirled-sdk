@@ -183,6 +183,32 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("getPlayerIds_v1") as Array;
     }
 
+    /**
+     * Is this client in control?
+     *
+     * <p>Control is a mutually exclusive lock across all instances of the AVRG in a given
+     * room (i.e. running in other browsers across the network). Only one client per room
+     * can hold the lock at any time.
+     *
+     * <p>Note: control is <em>not</em> automatically assigned. If an entity wishes to obtain
+     * control, it should first call <code>requestControl</code> and it will then receive a
+     * <code>GOT_CONTROL</code> event if and when control has been assigned to this client.
+     * There are no guarantees which of the requesting clients will receive it, or when.
+     */
+    public function hasControl () :Boolean
+   {
+        return _hasControl;
+    }
+
+    /**
+     * Request to have this client control all the instances of this entity. The other instances
+     * are the same code, but running in other browsers. See the <code>hasControl</code> method.
+     */
+    public function requestControl () :void
+    {
+        callHostCode("requestControl_v1");
+    }
+
     public function spawnMob (id :String, name :String) :Boolean
     {
         return callHostCode("spawnMob_v1", id, name);
@@ -242,6 +268,8 @@ public class AVRGameControl extends WhirledControl
     override protected function populateProperties (o :Object) :void
     {
         super.populateProperties(o);
+
+        o["gotControl_v1"] = gotControl_v1;
 
         o["playerLeft_v1"] = playerLeft_v1;
         o["playerEntered_v1"] = playerEntered_v1;
@@ -306,6 +334,16 @@ public class AVRGameControl extends WhirledControl
         return _hitPointTester != null && _hitPointTester(x, y, shapeFlag);
     }
 
+    protected function gotControl_v1 () :void
+    {
+        if (_hasControl) {
+            return; // avoid re-dispatching
+        }
+        _hasControl = true;
+
+        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.GOT_CONTROL));
+    }
+
     protected function playerLeft_v1 (id :int) :void
     {
         dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_LEFT, null, id));
@@ -352,6 +390,8 @@ public class AVRGameControl extends WhirledControl
 
     protected var _mobSpriteExporter :Function;
     protected var _hitPointTester :Function;
+
+    protected var _hasControl :Boolean;
 
     protected var _mobs :Dictionary = new Dictionary();
 }
