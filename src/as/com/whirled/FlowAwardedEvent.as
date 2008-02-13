@@ -16,9 +16,9 @@ public class FlowAwardedEvent extends Event
      * An event type dispatched at the end of a game (before GAME_ENDED) to inform the game that
      * the player has earned flow.
      *
-     * @eventType flowAwarded
+     * @eventType FlowAwarded
      */
-    public static const FLOW_AWARDED :String = "flowAwarded";
+    public static const FLOW_AWARDED :String = "FlowAwarded";
 
     /**
      * Returns the amount of flow awarded to the player.

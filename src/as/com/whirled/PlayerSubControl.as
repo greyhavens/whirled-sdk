@@ -12,7 +12,7 @@ import com.threerings.ezgame.EZPlayerSubControl;
  * 
  * @eventType com.whirled.FlowAwardedEvent.FLOW_AWARDED
  */
-[Event(name="flowAwarded", type="com.whirled.FlowAwardedEvent")]
+[Event(name="FlowAwarded", type="com.whirled.FlowAwardedEvent")]
 
 /**
  * Access the 'player' game services. Do not instantiate this class yourself,
