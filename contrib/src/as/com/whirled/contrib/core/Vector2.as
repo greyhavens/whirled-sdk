@@ -115,6 +115,13 @@ public class Vector2
     {
         return new Vector2(x, y);
     }
+    
+    /** Returns the angle represented by this Vector2. */
+    public function get angleRadians () :Number
+    {
+        var angle :Number = Math.atan2(y, x);
+        return (angle >= 0 ? angle : angle + (2 * Math.PI));
+    }
 
     /** Returns this vector's length. */
     public function get length () :Number
