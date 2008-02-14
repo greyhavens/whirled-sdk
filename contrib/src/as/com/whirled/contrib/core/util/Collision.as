@@ -1,5 +1,7 @@
 package com.whirled.contrib.core.util {
 
+import com.threerings.flash.Vector2;
+
 import com.whirled.contrib.core.*;
 
 import flash.display.DisplayObject;
