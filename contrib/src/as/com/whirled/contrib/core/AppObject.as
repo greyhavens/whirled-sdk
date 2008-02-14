@@ -202,7 +202,7 @@ public class AppObject extends EventDispatcher
     // stores a mapping from String to ParallelTask
     protected var _namedTasks :SortedHashMap = new SortedHashMap(SortedHashMap.STRING_KEYS);
 
-    // managed by AppMode
+    // managed by ObjectDB
     internal var _objectId :uint;
     internal var _parentDB :ObjectDB;
     internal var _objState :uint = STATE_NEW;
