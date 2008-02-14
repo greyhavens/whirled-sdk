@@ -240,6 +240,11 @@ public class AVRGameControl extends WhirledControl
         return info;
     }
 
+    public function playAvatarAction (action :String) :Boolean
+    {
+        return callHostCode("playAvatarAction_v1", action);
+    }
+
     public function setAvatarState (state :String) :Boolean
     {
         return callHostCode("setAvatarState_v1", state);
