@@ -34,7 +34,7 @@ public class Collision
         cB :Vector2,
         rB :Number) :Boolean
     {
-        return (cB.getSubtract(cA).lengthSquared <= ((rA + rB) * (rA + rB)));
+        return (cB.subtract(cA).lengthSquared <= ((rA + rB) * (rA + rB)));
     }
     
     /**
@@ -55,7 +55,7 @@ public class Collision
     {
         // http://www.gamasutra.com/features/20020118/vandenhuevel_02.htm
         
-        var c :Vector2 = cB.getSubtract(cA);
+        var c :Vector2 = cB.subtract(cA);
         var cLengthSquared :Number = c.lengthSquared;
         
         var d :Number = c.dot(directionA);
@@ -104,8 +104,8 @@ public class Collision
         rB :Number,
         dB :Vector2) :Number
     {
-        var direction :Vector2 = dA.getSubtract(dB);
-        var distance :Number = dA.normalizeAndGetLength();
+        var direction :Vector2 = dA.subtract(dB);
+        var distance :Number = dA.normalizeLocalAndGetLength();
         
         return movingCircleIntersectsStaticCircle(cA, rA, direction, distance, cB, rB);
     }
@@ -121,7 +121,7 @@ public class Collision
         // technique described at http://local.wasp.uwa.edu.au/~pbourke/geometry/pointline/
         
         // determine 'u'
-        var uDenom :Number = Vector2.subtract(linePt2, linePt1).lengthSquared;
+        var uDenom :Number = linePt2.subtract(linePt1).lengthSquared;
         
         if (uDenom == 0) {
             return Infinity;    // the line points given are coincident
@@ -141,8 +141,8 @@ public class Collision
         
         if (u < 0 || u > 1) {
             // find the smallest distance between pt and both line segment points
-            var a :Number = Math.abs(Vector2.subtract(linePt1, pt).length);
-            var b :Number = Math.abs(Vector2.subtract(linePt2, pt).length);
+            var a :Number = linePt1.subtract(pt).length;
+            var b :Number = linePt2.subtract(pt).length;
             
             return Math.min(a, b);
         } else {
@@ -153,7 +153,7 @@ public class Collision
             p.y = linePt1.y + (u * (linePt2.y - linePt1.y));
             
             // return the distance from pt to p
-            p.subtract(pt);
+            p.subtractLocal(pt);
             return Math.abs(p.length);
         }
     }
