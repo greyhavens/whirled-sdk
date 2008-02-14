@@ -36,6 +36,9 @@ import com.threerings.util.ValueEvent;
 
 public class EditableDataPack extends DataPack
 {
+    /** Exposed: the metadata filename (_data.xml) */
+    public static const METADATA_FILENAME :String = DataPack.METADATA_FILENAME;
+
     /**
      * @eventType dataChanged
      */
@@ -122,9 +125,11 @@ public class EditableDataPack extends DataPack
             defaultValue: parseValue(datum, "defaultValue")
         };
 
-        if (entry.type == "Number") {
+        switch (entry.type) {
+        case "Number":
             entry.min = parseValue(datum, "min", "Number");
             entry.max = parseValue(datum, "max", "Number");
+            break;
         }
 
         return entry;
@@ -138,6 +143,11 @@ public class EditableDataPack extends DataPack
      *    info: <description>:String
      *    optional: <isOptional>:Boolean
      *    value: <filename>:*
+     *
+     * Additional optional fields:
+     *    Type: Image|DisplayObject
+     *       width: <requiredWidth>:Number
+     *       height: <requiredHeight>:Number
      */
     public function getFileEntry (name :String) :Object
     {
@@ -148,20 +158,30 @@ public class EditableDataPack extends DataPack
             return null;
         }
 
-        return {
+        var entry :Object = {
             name: parseValue(datum, "name", "String"),
             type: parseValue(datum, "type", "String"),
             info: parseValue(datum, "info", "String"),
             optional: Boolean(parseValue(datum, "optional", "Boolean")),
             value: parseValue(datum, "value", "String")
         };
+
+        switch (entry.type) {
+        case "Image": // fall through to DisplayObject
+        case "DisplayObject":
+            entry.width = parseValue(datum, "width", "Number");
+            entry.height = parseValue(datum, "height", "Number");
+            break;
+        }
+
+        return entry;
     }
 
     /**
      * Get the filenames of all (normal) files currently stored in this pack
      * during editing.
      */
-    public function getFilenames () :Array /* of String */
+    public function getFilenames (includeContent :Boolean = false) :Array /* of String */
     {
         var names :Array = [];
         for each (var zipEntry :ZipEntry in _zip.entries) {
@@ -174,7 +194,9 @@ public class EditableDataPack extends DataPack
             }
         }
         ArrayUtil.removeFirst(names, METADATA_FILENAME);
-        ArrayUtil.removeFirst(names, getFileName(CONTENT_DATANAME));
+        if (!includeContent) {
+            ArrayUtil.removeFirst(names, getFileName(CONTENT_DATANAME));
+        }
 
         return names;
     }
