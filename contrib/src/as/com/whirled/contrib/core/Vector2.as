@@ -21,15 +21,15 @@ public class Vector2
     }
 
     /**
-     * Creates a Vector2 of magnitude 'len' that has been rotated about the origin by 'angleRadians'.
+     * Creates a Vector2 of magnitude 'len' that has been rotated about the origin by 'radians'.
      */
-    public static function fromAngleRadians (angleRadians :Number, len :Number = 1) :Vector2
+    public static function fromAngle (radians :Number, len :Number = 1) :Vector2
     {
        // we use the unit vector (1, 0)
 
         return new Vector2(
-            Math.cos(angleRadians) * len,   // == len * (cos(theta)*x - sin(theta)*y)
-            Math.sin(angleRadians) * len);  // == len * (sin(theta)*x + cos(theta)*y)
+            Math.cos(radians) * len,   // == len * (cos(theta)*x - sin(theta)*y)
+            Math.sin(radians) * len);  // == len * (sin(theta)*x + cos(theta)*y)
     }
 
     /** 
@@ -75,9 +75,9 @@ public class Vector2
     }
     
     /** 
-     * Returns the angle represented by this Vector2. 
+     * Returns the angle represented by this Vector2, in radians. 
      */
-    public function get angleRadians () :Number
+    public function get angle () :Number
     {
         var angle :Number = Math.atan2(y, x);
         return (angle >= 0 ? angle : angle + (2 * Math.PI));
@@ -111,13 +111,13 @@ public class Vector2
     }
 
     /** 
-     * Rotates the vector in place by angleRadians.
+     * Rotates the vector in place by 'radians'.
      * Returns a reference to 'this', for chaining.
      */
-    public function rotateLocal (angleRadians :Number) :Vector2
+    public function rotateLocal (radians :Number) :Vector2
     {
-        var cosTheta :Number = Math.cos(angleRadians);
-        var sinTheta :Number = Math.sin(angleRadians);
+        var cosTheta :Number = Math.cos(radians);
+        var sinTheta :Number = Math.sin(radians);
 
         var oldX :Number = x;
         x = (cosTheta * oldX) - (sinTheta * y);
@@ -129,9 +129,9 @@ public class Vector2
     /** 
      * Returns a rotated copy of this vector.
      */
-    public function rotate (angleRadians :Number) :Vector2
+    public function rotate (radians :Number) :Vector2
     {
-        return this.clone().rotateLocal(angleRadians);
+        return this.clone().rotateLocal(radians);
     }
     
     /** 
