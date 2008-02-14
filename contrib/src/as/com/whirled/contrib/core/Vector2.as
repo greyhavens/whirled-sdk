@@ -20,57 +20,8 @@ public class Vector2
         return new Vector2(p.x, p.y);
     }
 
-
-    /** Returns v1 + v2. v1 and v2 are not modified. */
-    public static function add (v1 :Vector2, v2 :Vector2) :Vector2
-    {
-        return new Vector2(v1.x + v2.x, v1.y + v2.y);
-    }
-
-    /** Returns v1 - v2. v1 and v2 are not modified. */
-    public static function subtract (v1 :Vector2, v2 :Vector2) :Vector2
-    {
-        return new Vector2(v1.x - v2.x, v1.y - v2.y);
-    }
-
-    /** Returns v * val. v is unmodified. */
-    public static function scale (v :Vector2, val :Number) :Vector2
-    {
-        return new Vector2(v.x * val, v.y * val);
-    }
-
-    /** Returns -v. v is unmodified. */
-    public static function invert (v :Vector2) :Vector2
-    {
-        return new Vector2(-v.x, -v.y);
-    }
-
-    /** Return v rotated by angle radians. v is unmodified. */
-    public static function rotate (v :Vector2, angleRadians :Number) :Vector2
-    {
-        var out :Vector2 = v.clone();
-        out.rotate(angleRadians);
-        return out;
-    }
-
     /**
-     * Returns the smaller of the two angles between v1 and v2, in radians.
-     * Result will be in range [0, pi].
-     */
-    public static function smallerAngleBetween (v1 :Vector2, v2 :Vector2) :Number
-    {
-        // v1 dot v2 == |v1||v2|cos(theta)
-        // theta = acos ((v1 dot v2) / (|v1||v2|))
-
-        var dot :Number = v1.dot(v2);
-        var len1 :Number = v1.length;
-        var len2 :Number = v2.length;
-
-        return Math.acos(dot / (len1 * len2));
-    }
-
-    /**
-     * Creates a Vector2 of magnitude 'len' that that has been rotated about the origin by 'angleRadians'.
+     * Creates a Vector2 of magnitude 'len' that has been rotated about the origin by 'angleRadians'.
      */
     public static function fromAngleRadians (angleRadians :Number, len :Number = 1) :Vector2
     {
@@ -80,13 +31,31 @@ public class Vector2
             Math.cos(angleRadians) * len,   // == len * (cos(theta)*x - sin(theta)*y)
             Math.sin(angleRadians) * len);  // == len * (sin(theta)*x + cos(theta)*y)
     }
-    
-    /**
-     * Creates a Vector2 of magnitude 'len' that that has been rotated about the origin by 'angleDegrees'.
+
+    /** 
+     * Constructs a Vector2 from the given values. 
      */
-    public static function fromAngleDegrees (angleDegrees :Number, len :Number = 1) :Vector2
+    public function Vector2 (x :Number = 0, y :Number = 0)
     {
-        return Vector2.fromAngleRadians(angleDegrees * (Math.PI / 180), len);
+        this.x = x;
+        this.y = y;
+    }
+    
+    /** 
+     * Sets the vector's components to the given values. 
+     */
+    public function set (x :Number, y :Number) :void
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    /** 
+     * Returns the dot product of this vector with vector v. 
+     */
+    public function dot (v :Vector2) :Number
+    {
+        return x * v.x + y * v.y;
     }
 
     /**
@@ -97,67 +66,55 @@ public class Vector2
         return new Point(x, y);
     }
 
-    /** Constructs a Vector2 from the given values. */
-    public function Vector2 (x :Number = 0, y :Number = 0)
-    {
-        this.x = x;
-        this.y = y;
-    }
-    
-    public function set (x :Number, y :Number) :void
-    {
-        this.x = x;
-        this.y = y;
-    }
-
-    /** Returns a copy of this Vector2. */
+    /** 
+     * Returns a copy of this Vector2. 
+     */
     public function clone () :Vector2
     {
         return new Vector2(x, y);
     }
     
-    /** Returns the angle represented by this Vector2. */
+    /** 
+     * Returns the angle represented by this Vector2. 
+     */
     public function get angleRadians () :Number
     {
         var angle :Number = Math.atan2(y, x);
         return (angle >= 0 ? angle : angle + (2 * Math.PI));
     }
 
-    /** Returns this vector's length. */
+    /** 
+     * Returns this vector's length. 
+     */
     public function get length () :Number
     {
-        if (this == INFINITE || x == Infinity || y == Infinity) {
-            return Infinity;
-        } else {
-            return Math.sqrt(x * x + y * y);
-        }
+        return Math.sqrt(x * x + y * y);
     }
 
-    /** Sets this vector's length. */
+    /** 
+     * Sets this vector's length. 
+     */
     public function set length (newLen :Number) :void
     {
-        var curLen :Number = this.length;
-        if (curLen == Infinity) {
-            return;
-        } else {
-            var scale :Number = newLen / curLen;
-            x *= scale;
-            y *= scale;
-        }
+        var scale :Number = newLen / this.length;
+        
+        x *= scale;
+        y *= scale;
     }
 
-    /** Returns the square of this vector's length. */
+    /** 
+     * Returns the square of this vector's length. 
+     */
     public function get lengthSquared () :Number
     {
-        if (this == INFINITE || x == Infinity || y == Infinity) {
-            return Infinity;
-        } else {
-            return (x * x + y * y);
-        }
+        return (x * x + y * y);
     }
 
-    /** Rotates the vector by 'angleRadians' radians. */
-    public function rotate (angleRadians :Number) :void
+    /** 
+     * Rotates the vector in place by angleRadians.
+     * Returns a reference to 'this', for chaining.
+     */
+    public function rotateLocal (angleRadians :Number) :Vector2
     {
         var cosTheta :Number = Math.cos(angleRadians);
         var sinTheta :Number = Math.sin(angleRadians);
@@ -165,74 +122,91 @@ public class Vector2
         var oldX :Number = x;
         x = (cosTheta * oldX) - (sinTheta * y);
         y = (sinTheta * oldX) + (cosTheta * y);
+        
+        return this;
     }
 
-    /** Returns a rotated copy of the Vector */
-    public function getRotate (angleRadians :Number) :Vector2
+    /** 
+     * Returns a rotated copy of this vector.
+     */
+    public function rotate (angleRadians :Number) :Vector2
     {
-        var out :Vector2 = this.clone();
-        out.rotate(angleRadians);
-        return out;
-    }
-
-    /** Normalizes the vector. */
-    public function normalize () :void
-    {
-        var len :Number = this.length;
-
-        x /= len;
-        y /= len;
+        return this.clone().rotateLocal(angleRadians);
     }
     
-    /** Normalizes the vector and returns its original length. */
-    public function normalizeAndGetLength () :Number
+    /** 
+     * Normalizes the vector in place and returns its original length. 
+     */
+    public function normalizeLocalAndGetLength () :Number
     {
-        var len :Number = this.length;
+        var length :Number = this.length;
         
-        x /= len;
-        y /= len;
+        x /= length;
+        y /= length;
         
-        return len;
+        return length;
     }
 
-    /** Returns a normalized copy of the vector. */
-    public function getNormalized () :Vector2
+    /** 
+     * Normalizes this vector in place.
+     * Returns a reference to 'this', for chaining. 
+     */
+    public function normalizeLocal () :Vector2
     {
-        var out :Vector2 = this.clone();
-        out.normalize();
-        return out;
+        var lengthInverse :Number = 1 / this.length;
+
+        x *= lengthInverse;
+        y *= lengthInverse;
+        
+        return this;
     }
 
-    /** Returns the dot product of this vector with vector v. */
-    public function dot (v :Vector2) :Number
+    /** 
+     * Returns a normalized copy of the vector. 
+     */
+    public function normalize () :Vector2
     {
-        return x * v.x + y * v.y;
+        return this.clone().normalizeLocal();
     }
 
-    /** Adds another Vector2 to this. */
-    public function add (v :Vector2) :void
+    /** 
+     * Adds another Vector2 to this, in place.
+     * Returns a reference to 'this', for chaining.
+     */
+    public function addLocal (v :Vector2) :Vector2
     {
         x += v.x;
         y += v.y;
+        
+        return this;
     }
 
-    /** Returns (this + v). */
-    public function getAdd (v :Vector2) :Vector2
+    /** 
+     * Returns a copy of this vector added to 'v'.
+     */
+    public function add (v :Vector2) :Vector2
     {
-        return Vector2.add(this, v);
+        return this.clone().addLocal(v);
     }
 
-    /** Subtracts another vector from this. */
-    public function subtract (v :Vector2) :void
+    /** 
+     * Subtracts another vector from this one, in place.
+     * Returns a reference to 'this', for chaining.
+     */
+    public function subtractLocal (v :Vector2) :Vector2
     {
         x -= v.x;
         y -= v.y;
+        
+        return this;
     }
 
-    /** Returns (this - v). */
-    public function getSubtract (v :Vector2) :Vector2
+    /** 
+     * Returns (this - v). 
+     */
+    public function subtract (v :Vector2) :Vector2
     {
-       return Vector2.subtract(this, v);
+       return this.clone().subtractLocal(v);
     }
 
     /**
@@ -252,43 +226,54 @@ public class Vector2
     /**
      * Scales this vector by value.
      */
-    public function scale (value :Number) :void
+    public function scaleLocal (value :Number) :Vector2
     {
         x *= value;
         y *= value;
+        
+        return this;
     }
 
     /** Returns (this * value). */
-    public function getScale (value :Number) :Vector2
+    public function scale (value :Number) :Vector2
     {
-        return Vector2.scale(this, value);
+        return this.clone().scaleLocal(value);
     }
 
     /**
-     * Scales the vector by -1;
+     * Inverts the vector.
      */
-    public function invert () :void
+    public function invertLocal () :Vector2
     {
         x = -x;
         y = -y;
+        
+        return this;
     }
 
-    /** Returns a copy of this vector, inverted. */
-    public function getInverted () :Vector2
+    /** 
+     * Returns a copy of the vector, inverted. 
+     */
+    public function invert () :Vector2
     {
-       return Vector2.invert(this);
+       return this.clone().invertLocal();
     }
     
-    /** Returns true if v is identical to this Vector2. */
+    /** 
+     * Returns true if this vector is equal to v.
+     */
     public function equals (v :Vector2) :Boolean
     {
-        return (this.x == v.x && this.y == v.y);
+        return (x == v.x && y == v.y);
     }
     
-    /** Returns true if the components of v are equal to the components of this Vector2, within the given epsilon. */
+    /** 
+     * Returns true if the components of v are equal to the components of this Vector2, 
+     * within the given epsilon. 
+     */
     public function similar (v :Vector2, epsilon :Number) :Boolean
     {
-        return ((Math.abs(this.x - v.x) <= epsilon) && (Math.abs(this.y - v.y) <= epsilon));
+        return ((Math.abs(x - v.x) <= epsilon) && (Math.abs(y - v.y) <= epsilon));
     }
 
     /**
@@ -304,6 +289,23 @@ public class Vector2
                            q * a.y + p * b.y);
     }
 
+    /**
+     * Returns the smaller of the two angles between v1 and v2, in radians.
+     * Result will be in range [0, pi].
+     */
+    public static function smallerAngleBetween (v1 :Vector2, v2 :Vector2) :Number
+    {
+        // v1 dot v2 == |v1||v2|cos(theta)
+        // theta = acos ((v1 dot v2) / (|v1||v2|))
+
+        var dot :Number = v1.dot(v2);
+        var len1 :Number = v1.length;
+        var len2 :Number = v2.length;
+
+        return Math.acos(dot / (len1 * len2));
+    }
+
+    /** Returns a string representation of the Vector2. */
     public function toString () :String
     {
         return "[" + x + ", " + y + "]";
