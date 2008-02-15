@@ -1,7 +1,7 @@
 package com.whirled.contrib.core.tasks {
 
 import com.threerings.util.Assert;
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.ObjectMessage;
 import com.whirled.contrib.core.ObjectTask;
 import com.whirled.contrib.core.components.AlphaComponent;
@@ -60,12 +60,12 @@ public class AlphaTask
         _interpolator = interpolator;
     }
 
-    public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :SimObject) :Boolean
     {
         var alphaComponent :AlphaComponent = (obj as AlphaComponent);
         
         if (null == alphaComponent) {
-            throw new Error("AlphaTask can only be applied to AppObjects that implement AlphaComponent");
+            throw new Error("AlphaTask can only be applied to SimObjects that implement AlphaComponent");
         }
         
         if (0 == _elapsedTime) {

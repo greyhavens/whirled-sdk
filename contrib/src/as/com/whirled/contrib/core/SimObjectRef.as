@@ -1,12 +1,12 @@
 package com.whirled.contrib.core {
     
-public class AppObjectRef
+public class SimObjectRef
 {
-    public function AppObjectRef ()
+    public function SimObjectRef ()
     {
     }
     
-    public function get object () :AppObject
+    public function get object () :SimObject
     {
         return _obj;
     }
@@ -17,9 +17,9 @@ public class AppObjectRef
     }
     
     // managed by ObjectDB
-    internal var _obj :AppObject;
-    internal var _next :AppObjectRef;
-    internal var _prev :AppObjectRef;
+    internal var _obj :SimObject;
+    internal var _next :SimObjectRef;
+    internal var _prev :SimObjectRef;
 }
 
 }

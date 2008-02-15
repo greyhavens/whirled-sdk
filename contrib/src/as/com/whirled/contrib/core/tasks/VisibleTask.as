@@ -4,7 +4,7 @@ import com.threerings.util.Assert;
 
 import com.whirled.contrib.core.components.VisibleComponent;
 import com.whirled.contrib.core.ObjectTask;
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.ObjectMessage;
 
 import flash.display.DisplayObject;
@@ -17,12 +17,12 @@ public class VisibleTask
         _visible = visible;
     }
 
-    public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :SimObject) :Boolean
     {
         var vc :VisibleComponent = (obj as VisibleComponent);
         
         if (null == vc) {
-            throw new Error("VisibleTask can only be applied to AppObjects that implement VisibleComponent");
+            throw new Error("VisibleTask can only be applied to SimObjects that implement VisibleComponent");
         }
 
         vc.visible = _visible;

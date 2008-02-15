@@ -2,7 +2,7 @@ package com.whirled.contrib.core.tasks {
 
 import com.threerings.util.Assert;
 
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.ObjectTask;
 import com.whirled.contrib.core.ObjectMessage;
 
@@ -65,12 +65,12 @@ public class RotationTask
         _interpolator = interpolator;
     }
 
-    public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :SimObject) :Boolean
     {
         var rotationComponent :RotationComponent = (obj as RotationComponent);
         
         if (null == rotationComponent) {
-            throw new Error("RotationTask can only be applied to AppObjects that implement RotationComponent");
+            throw new Error("RotationTask can only be applied to SimObjects that implement RotationComponent");
         }
 
         if (0 == _elapsedTime) {

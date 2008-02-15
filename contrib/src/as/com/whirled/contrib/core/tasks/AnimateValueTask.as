@@ -1,6 +1,6 @@
 package com.whirled.contrib.core.tasks {
 
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.ObjectMessage;
 import com.whirled.contrib.core.ObjectTask;
 import com.whirled.contrib.core.util.Interpolator;
@@ -68,7 +68,7 @@ public class AnimateValueTask
         _boxedValue = boxedValue;
     }
 
-    public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :SimObject) :Boolean
     {
         if (0 == _elapsedTime) {
             _from = (_boxedValue.value as Number);

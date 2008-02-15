@@ -1,6 +1,6 @@
 package com.whirled.contrib.core.objects {
 
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.components.AlphaComponent;
 import com.whirled.contrib.core.components.BoundsComponent;
 import com.whirled.contrib.core.components.RotationComponent;
@@ -12,7 +12,7 @@ import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.InteractiveObject;
 
-public class SceneObject extends AppObject
+public class SceneObject extends SimObject
     implements AlphaComponent, BoundsComponent, ScaleComponent, SceneComponent, VisibleComponent, RotationComponent
 {
     public function get displayObject () :DisplayObject

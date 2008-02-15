@@ -1,7 +1,7 @@
 package com.whirled.contrib.core.tasks {
 
 import com.threerings.util.Assert;
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.ObjectMessage;
 import com.whirled.contrib.core.ObjectTask;
 
@@ -56,7 +56,7 @@ public class TaskContainer
         return (_activeTaskCount > 0);
     }
 
-    public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :SimObject) :Boolean
     {
         return this.applyFunction(
             function (task :ObjectTask) :Boolean {

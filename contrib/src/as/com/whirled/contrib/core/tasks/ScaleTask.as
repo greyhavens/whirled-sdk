@@ -2,7 +2,7 @@ package com.whirled.contrib.core.tasks {
 
 import com.threerings.util.Assert;
 
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.ObjectTask;
 import com.whirled.contrib.core.ObjectMessage;
 import com.whirled.contrib.core.util.Interpolator;
@@ -66,12 +66,12 @@ public class ScaleTask
         _interpolator = interpolator;
     }
 
-    public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :SimObject) :Boolean
     {
         var sc :ScaleComponent = (obj as ScaleComponent);
         
         if (null == sc) {
-            throw new Error("ScaleTask can only be applied to AppObjects that implement ScaleComponent");
+            throw new Error("ScaleTask can only be applied to SimObjects that implement ScaleComponent");
         }
 
         if (0 == _elapsedTime) {

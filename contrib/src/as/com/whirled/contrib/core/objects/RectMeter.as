@@ -116,7 +116,7 @@ public class RectMeter extends SceneObject
         _dirty = true;
     }
 
-    // from AppObject
+    // from SimObject
     override protected function update (dt :Number) :void
     {
         if (_dirty) {

@@ -2,7 +2,7 @@ package com.whirled.contrib.core.tasks {
 
 import com.threerings.util.Assert;
 
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.ObjectTask;
 import com.whirled.contrib.core.ObjectMessage;
 
@@ -70,12 +70,12 @@ public class MeterValueTask
         _interpolator = interpolator;
     }
 
-    public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :SimObject) :Boolean
     {
         var meterComponent :MeterComponent = (obj as MeterComponent);
         
         if (null == meterComponent) {
-            throw new Error("MeterValueTask can only be applied to AppObjects that implement MeterComponent");
+            throw new Error("MeterValueTask can only be applied to SimObjects that implement MeterComponent");
         }
 
         if (0 == _elapsedTime) {

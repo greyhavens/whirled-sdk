@@ -2,7 +2,7 @@ package com.whirled.contrib.core.tasks {
 
 import com.threerings.util.Assert;
 import com.whirled.contrib.core.ObjectTask;
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.ObjectMessage;
 
 public class SelfDestructTask
@@ -12,7 +12,7 @@ public class SelfDestructTask
     {
     }
 
-    public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :SimObject) :Boolean
     {
         obj.destroySelf();
         return true;

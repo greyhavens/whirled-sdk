@@ -5,12 +5,12 @@ import com.whirled.contrib.core.tasks.ParallelTask;
 
 import flash.events.EventDispatcher;
 
-public class AppObject extends EventDispatcher
+public class SimObject extends EventDispatcher
 {
     /**
-     * Returns the unique AppObjectRef that stores a reference to this AppObject.
+     * Returns the unique SimObjectRef that stores a reference to this SimObject.
      */ 
-    public final function get ref () :AppObjectRef
+    public final function get ref () :SimObjectRef
     {
         return _ref;
     }
@@ -58,13 +58,13 @@ public class AppObject extends EventDispatcher
         return this.objectGroups.contains(groupName);
     }
 
-    /** Removes the AppObject from its parent database. */
+    /** Removes the SimObject from its parent database. */
     public function destroySelf() :void
     {
         _parentDB.destroyObject(_ref);
     }
 
-    /** Adds an unnamed task to this AppObject. */
+    /** Adds an unnamed task to this SimObject. */
     public function addTask (task :ObjectTask) :void
     {
         if (null == task) {
@@ -74,7 +74,7 @@ public class AppObject extends EventDispatcher
         _anonymousTasks.addTask(task);
     }
 
-    /** Adds a named task to this AppObject. */
+    /** Adds a named task to this SimObject. */
     public function addNamedTask (name :String, task :ObjectTask) :void
     {
         if (null == task) {
@@ -94,14 +94,14 @@ public class AppObject extends EventDispatcher
         namedTaskContainer.addTask(task);
     }
 
-    /** Removes all tasks from the AppObject. */
+    /** Removes all tasks from the SimObject. */
     public function removeAllTasks () :void
     {
         _anonymousTasks.removeAllTasks();
         _namedTasks.clear();
     }
 
-    /** Removes all tasks with the given name from the AppObject. */
+    /** Removes all tasks with the given name from the SimObject. */
     public function removeNamedTasks (name :String) :void
     {
         if (null == name || name.length == 0) {
@@ -111,7 +111,7 @@ public class AppObject extends EventDispatcher
         _namedTasks.remove(name);
     }
 
-    /** Returns true if the AppObject has any tasks. */
+    /** Returns true if the SimObject has any tasks. */
     public function hasTasks () :Boolean
     {
         if (_anonymousTasks.hasTasks()) {
@@ -127,7 +127,7 @@ public class AppObject extends EventDispatcher
         return false;
     }
 
-    /** Returns true if the AppObject has any tasks with the given name. */
+    /** Returns true if the SimObject has any tasks with the given name. */
     public function hasTasksNamed (name :String) :Boolean
     {
         var namedTaskContainer :ParallelTask = (_namedTasks.get(name) as ParallelTask);
@@ -140,7 +140,7 @@ public class AppObject extends EventDispatcher
     }
 
     /**
-     * Called immediately after the AppObject has been added to an ObjectDB.
+     * Called immediately after the SimObject has been added to an ObjectDB.
      * (Subclasses can override this to do something useful.)
      */
     protected function addedToDB () :void
@@ -148,7 +148,7 @@ public class AppObject extends EventDispatcher
     }
 
     /**
-     * Called immediately after the AppObject has been removed from an AppMode.
+     * Called immediately after the SimObject has been removed from an AppMode.
      * (Subclasses can override this to do something useful.)
      */
     protected function destroyed () :void
@@ -178,7 +178,7 @@ public class AppObject extends EventDispatcher
     {
         _anonymousTasks.update(dt, this);
 
-        var thisAppObject :AppObject = this;
+        var thisSimObject :SimObject = this;
         _namedTasks.forEach(updateNamedTaskContainer);
 
         update(dt);
@@ -187,7 +187,7 @@ public class AppObject extends EventDispatcher
             // Tasks may be removed from the object during the _namedTasks.forEach() loop.
             // When this happens, we'll get undefined 'tasks' objects.
             if (undefined !== tasks) {
-                (tasks as ParallelTask).update(dt, thisAppObject);
+                (tasks as ParallelTask).update(dt, thisSimObject);
             }
         }
     }
@@ -212,7 +212,7 @@ public class AppObject extends EventDispatcher
     protected var _namedTasks :SortedHashMap = new SortedHashMap(SortedHashMap.STRING_KEYS);
 
     // managed by ObjectDB
-    internal var _ref :AppObjectRef;
+    internal var _ref :SimObjectRef;
     internal var _parentDB :ObjectDB;
 }
 

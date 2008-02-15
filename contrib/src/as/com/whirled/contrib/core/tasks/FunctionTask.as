@@ -1,7 +1,7 @@
 package com.whirled.contrib.core.tasks {
 
 import com.threerings.util.Assert;
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.ObjectMessage;
 import com.whirled.contrib.core.ObjectTask;
 
@@ -17,7 +17,7 @@ public class FunctionTask
         _fn = fn;
     }
 
-    public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :SimObject) :Boolean
     {
         if (_fn.length == 0) {
             _fn();

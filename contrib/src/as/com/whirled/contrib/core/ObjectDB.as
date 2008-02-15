@@ -14,22 +14,22 @@ public class ObjectDB
     }
 
     /**
-     * Adds an AppObject to the database. The AppObject must not be owned by another database.
+     * Adds an SimObject to the database. The SimObject must not be owned by another database.
      * If displayParent is not null, obj's attached DisplayObject will be added as a child
      * of displayParent.
      */
-    public function addObject (obj :AppObject, displayParent :DisplayObjectContainer = null) :AppObjectRef
+    public function addObject (obj :SimObject, displayParent :DisplayObjectContainer = null) :SimObjectRef
     {
         if (null == obj || null != obj._ref) {
             throw new ArgumentError("obj must be non-null, and must never have belonged to another ObjectDB");
         }
         
-        // create a new AppObjectRef
-        var ref :AppObjectRef = new AppObjectRef();
+        // create a new SimObjectRef
+        var ref :SimObjectRef = new SimObjectRef();
         ref._obj = obj;
         
         // add the ref to the list
-        var oldListHead :AppObjectRef = _listHead;
+        var oldListHead :SimObjectRef = _listHead;
         _listHead = ref;
         
         if (null != oldListHead) {
@@ -83,23 +83,23 @@ public class ObjectDB
         return ref;
     }
     
-    /** Removes an AppObject from the mode. */
+    /** Removes an SimObject from the mode. */
     public function destroyObjectNamed (name :String) :void
     {
-        var obj :AppObject = this.getObjectNamed(name);
+        var obj :SimObject = this.getObjectNamed(name);
         if (null != obj) {
             this.destroyObject(obj.ref);
         }
     }
     
-    /** Removes an AppObject from the mode. */
-    public function destroyObject (ref :AppObjectRef) :void
+    /** Removes an SimObject from the mode. */
+    public function destroyObject (ref :SimObjectRef) :void
     {
         if (null == ref) {
             return;
         }
         
-        var obj :AppObject = ref.object;
+        var obj :SimObject = ref.object;
         
         if (null == obj) {
             return;
@@ -135,15 +135,15 @@ public class ObjectDB
         --_objectCount;
     }
 
-    protected function finalizeObjectDestruction (obj :AppObject) :void
+    protected function finalizeObjectDestruction (obj :SimObject) :void
     {
         Assert.isTrue(null != obj._ref && null == obj._ref._obj);
         
         // unlink the object ref
-        var ref :AppObjectRef = obj._ref;
+        var ref :SimObjectRef = obj._ref;
         
-        var prev :AppObjectRef = ref._prev;
-        var next :AppObjectRef = ref._next;
+        var prev :SimObjectRef = ref._prev;
+        var next :SimObjectRef = ref._next;
         
         if (null != prev) {
             prev._next = next;
@@ -175,9 +175,9 @@ public class ObjectDB
     }
 
     /** Returns the object in this mode with the given name, or null if no such object exists. */
-    public function getObjectNamed (name :String) :AppObject
+    public function getObjectNamed (name :String) :SimObject
     {
-        return (_namedObjects.get(name) as AppObject);
+        return (_namedObjects.get(name) as SimObject);
     }
 
     /** 
@@ -195,7 +195,7 @@ public class ObjectDB
     }
     
     /**
-     * Returns an Array containing the AppObjects in the given group.
+     * Returns an Array containing the SimObjects in the given group.
      * The returned Array is instantiated by the function, and so can be
      * safely modified by client code.
      * 
@@ -209,7 +209,7 @@ public class ObjectDB
         // Array might contain fewer entries than the source.
         
         var objs :Array = new Array();
-        for each (var ref :AppObjectRef in refs) {
+        for each (var ref :SimObjectRef in refs) {
             if (!ref.isNull) {
                 objs.push(ref.object);
             }
@@ -221,11 +221,11 @@ public class ObjectDB
     /** Called once per update tick. Updates all objects in the mode. */
     public function update (dt :Number) :void
     {
-        var obj :AppObject;
+        var obj :SimObject;
         
         // update all objects
         
-        var ref :AppObjectRef = _listHead;
+        var ref :SimObjectRef = _listHead;
         while (null != ref) {
             if (!ref.isNull) {
                 ref.object.updateInternal(dt);
@@ -248,7 +248,7 @@ public class ObjectDB
     /** Sends a message to every object in the database. */
     public function broadcastMessage (msg :ObjectMessage) :void
     {
-        var ref :AppObjectRef = _listHead;
+        var ref :SimObjectRef = _listHead;
         while (null != ref) {
             if (!ref.isNull) {
                 ref.object.receiveMessageInternal(msg);
@@ -259,7 +259,7 @@ public class ObjectDB
     }
 
     /** Sends a message to a specific object. */
-    public function sendMessageTo (msg :ObjectMessage, targetRef :AppObjectRef) :void
+    public function sendMessageTo (msg :ObjectMessage, targetRef :SimObjectRef) :void
     {
         if (!targetRef.isNull) {
             targetRef.object.receiveMessageInternal(msg);
@@ -269,7 +269,7 @@ public class ObjectDB
     /** Sends a message to the object with the given name. */
     public function sendMessageToNamedObject (msg :ObjectMessage, objectName :String) :void
     {
-        var target :AppObject = this.getObjectNamed(objectName);
+        var target :SimObject = this.getObjectNamed(objectName);
         if (null != target) {
             target.receiveMessageInternal(msg);
         }
@@ -279,7 +279,7 @@ public class ObjectDB
     public function sendMessageToGroup (msg :ObjectMessage, groupName :String) :void
     {
         var refs :Array = this.getObjectRefsInGroup(groupName);
-        for each (var ref :AppObjectRef in refs) {
+        for each (var ref :SimObjectRef in refs) {
             this.sendMessageTo(msg, ref);
         }
     }
@@ -289,10 +289,10 @@ public class ObjectDB
         return _objectCount;
     }
 
-    protected var _listHead :AppObjectRef;
+    protected var _listHead :SimObjectRef;
     protected var _objectCount :uint;
     
-    /** An array of AppObjects */
+    /** An array of SimObjects */
     protected var _objectsPendingDestroy :Array;
 
     /** stores a mapping from String to Object */

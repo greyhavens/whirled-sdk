@@ -1,6 +1,6 @@
 package com.whirled.contrib.core.objects {
 
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.objects.*;
 import com.whirled.contrib.core.components.MeterComponent;
 
@@ -84,7 +84,7 @@ public class IntTextMeter extends SceneObject
         _display.defaultTextFormat.font = newFont;
     }
 
-    // from AppObject
+    // from SimObject
     override protected function update (dt :Number) :void
     {
         if (_dirty) {

@@ -2,7 +2,7 @@ package com.whirled.contrib.core.tasks {
 
 import com.threerings.util.Assert;
 
-import com.whirled.contrib.core.AppObject;
+import com.whirled.contrib.core.SimObject;
 import com.whirled.contrib.core.ObjectTask;
 import com.whirled.contrib.core.util.Interpolator;
 import com.whirled.contrib.core.util.MXInterpolatorAdapter;
@@ -74,12 +74,12 @@ public class LocationTask
         _interpolator = interpolator;
     }
 
-    public function update (dt :Number, obj :AppObject) :Boolean
+    public function update (dt :Number, obj :SimObject) :Boolean
     {
         var lc :LocationComponent = (obj as LocationComponent);
         
         if (null == lc) {
-            throw new Error("LocationTask can only be applied to AppObjects that implement LocationComponent");
+            throw new Error("LocationTask can only be applied to SimObjects that implement LocationComponent");
         }
 
         if (0 == _elapsedTime) {
