@@ -14,7 +14,7 @@ public class ObjectDB
     }
 
     /**
-     * Adds an SimObject to the database. The SimObject must not be owned by another database.
+     * Adds a SimObjectto the database. The SimObject must not be owned by another database.
      * If displayParent is not null, obj's attached DisplayObject will be added as a child
      * of displayParent.
      */
@@ -83,7 +83,7 @@ public class ObjectDB
         return ref;
     }
     
-    /** Removes an SimObject from the mode. */
+    /** Removes aa SimObjectrom the mode. */
     public function destroyObjectNamed (name :String) :void
     {
         var obj :SimObject = this.getObjectNamed(name);
@@ -92,7 +92,7 @@ public class ObjectDB
         }
     }
     
-    /** Removes an SimObject from the mode. */
+    /** Removes a a SimObjectom the mode. */
     public function destroyObject (ref :SimObjectRef) :void
     {
         if (null == ref) {
