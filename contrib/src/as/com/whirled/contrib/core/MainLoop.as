@@ -9,7 +9,7 @@ import flash.display.Sprite;
 import flash.events.Event;
 import flash.utils.getTimer;
 
-public class MainLoop
+public final class MainLoop
 {
     public static function get instance () :MainLoop
     {

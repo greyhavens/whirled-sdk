@@ -59,7 +59,7 @@ public class SimObject extends EventDispatcher
     }
 
     /** Removes the SimObject from its parent database. */
-    public function destroySelf() :void
+    public function destroySelf () :void
     {
         _parentDB.destroyObject(_ref);
     }
