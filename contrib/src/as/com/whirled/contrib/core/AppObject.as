@@ -8,11 +8,11 @@ import flash.events.EventDispatcher;
 public class AppObject extends EventDispatcher
 {
     /**
-     * Returns the id that uniquely identifies this object in its containing AppMode.
-     */
-    public final function get id () :uint
+     * Returns the unique AppObjectRef that stores a reference to this AppObject.
+     */ 
+    public final function get ref () :AppObjectRef
     {
-        return _objectId;
+        return _ref;
     }
     
     /**
@@ -29,7 +29,7 @@ public class AppObject extends EventDispatcher
      */ 
     public function get isLiveObject () :Boolean
     {
-        return (STATE_LIVE == _objState);
+        return (null != _ref && !_ref.isNull);
     }
 
     /**
@@ -61,7 +61,7 @@ public class AppObject extends EventDispatcher
     /** Removes the AppObject from its parent database. */
     public function destroySelf() :void
     {
-        _parentDB.destroyObject(_objectId);
+        _parentDB.destroyObject(_ref);
     }
 
     /** Adds an unnamed task to this AppObject. */
@@ -212,14 +212,8 @@ public class AppObject extends EventDispatcher
     protected var _namedTasks :SortedHashMap = new SortedHashMap(SortedHashMap.STRING_KEYS);
 
     // managed by ObjectDB
-    internal var _objectId :uint;
+    internal var _ref :AppObjectRef;
     internal var _parentDB :ObjectDB;
-    internal var _objState :uint = STATE_NEW;
-    
-    internal static const STATE_NEW :uint = 0;
-    internal static const STATE_LIVE :uint = 1;
-    internal static const STATE_PENDING_DESTROY :uint = 2;
-    internal static const STATE_DESTROYED :uint = 3;
 }
 
 }

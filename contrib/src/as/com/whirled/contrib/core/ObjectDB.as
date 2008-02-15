@@ -18,29 +18,28 @@ public class ObjectDB
      * If displayParent is not null, obj's attached DisplayObject will be added as a child
      * of displayParent.
      */
-    public function addObject (obj :AppObject, displayParent :DisplayObjectContainer = null) :uint
+    public function addObject (obj :AppObject, displayParent :DisplayObjectContainer = null) :AppObjectRef
     {
-        if (null == obj || null != obj._parentDB || AppObject.STATE_NEW != obj._objState) {
+        if (null == obj || null != obj._ref) {
             throw new ArgumentError("obj must be non-null, and must never have belonged to another ObjectDB");
         }
-
-        // if there's no free slot in our objects array,
-        // make a new one
-        if (_freeIndexes.length == 0) {
-            _freeIndexes.push(uint(_objects.length));
-            _objects.push(null);
+        
+        // create a new AppObjectRef
+        var ref :AppObjectRef = new AppObjectRef();
+        ref._obj = obj;
+        
+        // add the ref to the list
+        var oldListHead :AppObjectRef = _listHead;
+        _listHead = ref;
+        
+        if (null != oldListHead) {
+            ref._next = oldListHead;
+            oldListHead._prev = ref;
         }
-
-        Assert.isTrue(_freeIndexes.length > 0);
-        var index :uint = _freeIndexes.pop();
-        Assert.isTrue(index >= 0 && index < _objects.length);
-        Assert.isTrue(_objects[index] == null);
-
-        _objects[index] = obj;
-
-        obj._objectId = createObjectId(index);
+        
+        // initialize object
         obj._parentDB = this;
-        obj._objState = AppObject.STATE_LIVE;
+        obj._ref = ref;
 
         // does the object have a name?
         if (null != obj.objectName) {
@@ -61,7 +60,7 @@ public class ObjectDB
                     _groupedObjects.put(groupName, groupArray);
                 }
 
-                groupArray.push(obj.id);
+                groupArray.push(ref);
             }
         }
 
@@ -81,7 +80,7 @@ public class ObjectDB
 
         ++_objectCount;
 
-        return obj.id;
+        return ref;
     }
     
     /** Removes an AppObject from the mode. */
@@ -89,20 +88,25 @@ public class ObjectDB
     {
         var obj :AppObject = this.getObjectNamed(name);
         if (null != obj) {
-            this.destroyObject(obj.id);
+            this.destroyObject(obj.ref);
         }
     }
     
     /** Removes an AppObject from the mode. */
-    public function destroyObject (id :uint) :void
+    public function destroyObject (ref :AppObjectRef) :void
     {
-        var obj :AppObject = this.getObject(id);
+        if (null == ref) {
+            return;
+        }
+        
+        var obj :AppObject = ref.object;
         
         if (null == obj) {
             return;
         }
         
-        obj._objState = AppObject.STATE_PENDING_DESTROY;
+        // the ref no longer points to the object
+        ref._obj = null;
         
         // if the object is attached to a DisplayObject, and if that
         // DisplayObject is in a display list, remove it from the display list
@@ -124,7 +128,8 @@ public class ObjectDB
             _objectsPendingDestroy = new Array();
         }
         
-        // don't remove the object
+        // the ref will be unlinked from the objects list
+        // at the end of the update()
         _objectsPendingDestroy.push(obj);
 
         --_objectCount;
@@ -132,12 +137,25 @@ public class ObjectDB
 
     protected function finalizeObjectDestruction (obj :AppObject) :void
     {
-        Assert.isTrue(AppObject.STATE_PENDING_DESTROY == obj._objState);
-
-        var index :uint = idToIndex(obj.id);
-        Assert.isTrue(obj == _objects[index]);
-        _objects[index] = null;
-        _freeIndexes.unshift(index); // we have a new free index
+        Assert.isTrue(null != obj._ref && null == obj._ref._obj);
+        
+        // unlink the object ref
+        var ref :AppObjectRef = obj._ref;
+        
+        var prev :AppObjectRef = ref._prev;
+        var next :AppObjectRef = ref._next;
+        
+        if (null != prev) {
+            prev._next = next;
+        } else {
+            // if prev is null, ref was the head of the list
+            Assert.isTrue(ref == _listHead);
+            _listHead = next;
+        }
+        
+        if (null != next) {
+            next._prev = prev;
+        }
 
         // is the object in any groups?
         // (we remove the object from its groups here, rather than in
@@ -148,30 +166,12 @@ public class ObjectDB
             for each (var groupName :* in groupNames) {
                 var groupArray :Array = (_groupedObjects.get(groupName) as Array);
                 Assert.isTrue(null != groupArray);
-                var wasInArray :Boolean = ArrayUtil.removeFirst(groupArray, obj.id);
+                var wasInArray :Boolean = ArrayUtil.removeFirst(groupArray, ref);
                 Assert.isTrue(wasInArray);
             }
         }
         
-        obj._objState = AppObject.STATE_DESTROYED;
         obj._parentDB = null;
-        obj._objectId = 0;
-    }
-
-    public function getObject (id :uint) :AppObject
-    {
-        var index :uint = idToIndex(id);
-
-        if (index < _objects.length) {
-
-            var obj :AppObject = _objects[index];
-
-            if (null != obj && AppObject.STATE_LIVE == obj._objState && idToSerialNumber(id) == idToSerialNumber(obj.id)) {
-                return obj;
-            }
-        }
-
-        return null;
     }
 
     /** Returns the object in this mode with the given name, or null if no such object exists. */
@@ -181,17 +181,17 @@ public class ObjectDB
     }
 
     /** 
-     * Returns an Array containing the object IDs of all the objects in the given group. 
+     * Returns an Array containing the object refs of all the objects in the given group. 
      * This Array must not be modified by client code.
      * 
      * Note: because of the method that object destruction is implemented with,
-     * the returned Array may contain invalid object IDs.
+     * the returned Array may contain null object refs.
      */
-    public function getObjectIdsInGroup (groupName :String) :Array
+    public function getObjectRefsInGroup (groupName :String) :Array
     {
-        var ids :Array = (_groupedObjects.get(groupName) as Array);
+        var refs :Array = (_groupedObjects.get(groupName) as Array);
 
-        return (null != ids ? ids : new Array());
+        return (null != refs ? refs : new Array());
     }
     
     /**
@@ -199,20 +199,19 @@ public class ObjectDB
      * The returned Array is instantiated by the function, and so can be
      * safely modified by client code.
      * 
-     * This function is not as performant as getObjectIdsInGroup().
+     * This function is not as performant as getObjectRefsInGroup().
      */
     public function getObjectsInGroup (groupName :String) :Array
     {
-        var ids :Array = this.getObjectIdsInGroup(groupName);
+        var refs :Array = this.getObjectRefsInGroup(groupName);
         
         // Array.map would be appropriate here, except that the resultant
         // Array might contain fewer entries than the source.
         
         var objs :Array = new Array();
-        for each (var id :uint in ids) {
-            var obj :AppObject = this.getObject(id);
-            if (null != obj) {
-                objs.push(obj);
+        for each (var ref :AppObjectRef in refs) {
+            if (!ref.isNull) {
+                objs.push(ref.object);
             }
         }
         
@@ -224,14 +223,19 @@ public class ObjectDB
     {
         var obj :AppObject;
         
-        // update all objects in this mode
-        for each (obj in _objects) {
-            if (null != obj && AppObject.STATE_LIVE == obj._objState) {
-                obj.updateInternal(dt);
+        // update all objects
+        
+        var ref :AppObjectRef = _listHead;
+        while (null != ref) {
+            if (!ref.isNull) {
+                ref.object.updateInternal(dt);
             }
+            
+            ref = ref._next;
         }
         
         // clean out all objects that were destroyed during the update loop
+        
         if (null != _objectsPendingDestroy) {
             for each (obj in _objectsPendingDestroy) {
                 this.finalizeObjectDestruction(obj);
@@ -244,19 +248,21 @@ public class ObjectDB
     /** Sends a message to every object in the database. */
     public function broadcastMessage (msg :ObjectMessage) :void
     {
-        for each (var obj :AppObject in _objects) {
-            if (null != obj) {
-                obj.receiveMessageInternal(msg);
+        var ref :AppObjectRef = _listHead;
+        while (null != ref) {
+            if (!ref.isNull) {
+                ref.object.receiveMessageInternal(msg);
             }
+            
+            ref = ref._next;
         }
     }
 
     /** Sends a message to a specific object. */
-    public function sendMessageTo (msg :ObjectMessage, targetId :uint) :void
+    public function sendMessageTo (msg :ObjectMessage, targetRef :AppObjectRef) :void
     {
-        var target :AppObject = this.getObject(targetId);
-        if (null != target) {
-            target.receiveMessageInternal(msg);
+        if (!targetRef.isNull) {
+            targetRef.object.receiveMessageInternal(msg);
         }
     }
 
@@ -272,33 +278,10 @@ public class ObjectDB
     /** Sends a message to each object in the given group. */
     public function sendMessageToGroup (msg :ObjectMessage, groupName :String) :void
     {
-        var ids :Array = this.getObjectIdsInGroup(groupName);
-        for each (var id :uint in ids) {
-            this.sendMessageTo(msg, id);
+        var refs :Array = this.getObjectRefsInGroup(groupName);
+        for each (var ref :AppObjectRef in refs) {
+            this.sendMessageTo(msg, ref);
         }
-    }
-
-    internal function createObjectId (index :uint) :uint
-    {
-        Assert.isTrue(index <= 0x0000FFFF);
-
-        var sn :uint = _serialNumberCounter++;
-
-        if (_serialNumberCounter > 0x0000FFFF) {
-            _serialNumberCounter = 1; // never generate a sn of 0. objectId==0 is the "null" object.
-        }
-
-        return ((sn << 16) | (index & 0x0000FFFF));
-    }
-
-    internal function idToIndex (id :uint) :uint
-    {
-        return (id & 0x0000FFFF);
-    }
-
-    internal function idToSerialNumber (id :uint) :uint
-    {
-        return (id >> 16);
     }
 
     public function get objectCount () :uint
@@ -306,11 +289,10 @@ public class ObjectDB
         return _objectCount;
     }
 
+    protected var _listHead :AppObjectRef;
     protected var _objectCount :uint;
-    protected var _objects :Array = new Array();
-    protected var _freeIndexes :Array = new Array();
-    protected var _serialNumberCounter :uint = 1;
     
+    /** An array of AppObjects */
     protected var _objectsPendingDestroy :Array;
 
     /** stores a mapping from String to Object */
