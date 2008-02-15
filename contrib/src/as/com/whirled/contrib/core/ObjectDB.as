@@ -135,45 +135,6 @@ public class ObjectDB
         --_objectCount;
     }
 
-    protected function finalizeObjectDestruction (obj :SimObject) :void
-    {
-        Assert.isTrue(null != obj._ref && null == obj._ref._obj);
-        
-        // unlink the object ref
-        var ref :SimObjectRef = obj._ref;
-        
-        var prev :SimObjectRef = ref._prev;
-        var next :SimObjectRef = ref._next;
-        
-        if (null != prev) {
-            prev._next = next;
-        } else {
-            // if prev is null, ref was the head of the list
-            Assert.isTrue(ref == _listHead);
-            _listHead = next;
-        }
-        
-        if (null != next) {
-            next._prev = prev;
-        }
-
-        // is the object in any groups?
-        // (we remove the object from its groups here, rather than in
-        // destroyObject(), because client code might be iterating an
-        // object group Array when destroyObject is called)
-        var groupNames :Array = obj.objectGroups;
-        if (null != groupNames) {
-            for each (var groupName :* in groupNames) {
-                var groupArray :Array = (_groupedObjects.get(groupName) as Array);
-                Assert.isTrue(null != groupArray);
-                var wasInArray :Boolean = ArrayUtil.removeFirst(groupArray, ref);
-                Assert.isTrue(wasInArray);
-            }
-        }
-        
-        obj._parentDB = null;
-    }
-
     /** Returns the object in this mode with the given name, or null if no such object exists. */
     public function getObjectNamed (name :String) :SimObject
     {
@@ -221,8 +182,13 @@ public class ObjectDB
     /** Called once per update tick. Updates all objects in the mode. */
     public function update (dt :Number) :void
     {
-        var obj :SimObject;
-        
+        this.beginUpdate(dt);
+        this.endUpdate(dt);
+    }
+    
+    /** Updates all objects in the mode. */
+    protected function beginUpdate (dt :Number) :void
+    {
         // update all objects
         
         var ref :SimObjectRef = _listHead;
@@ -233,16 +199,60 @@ public class ObjectDB
             
             ref = ref._next;
         }
-        
+    }
+    
+    /** Removes dead objects from the object list at the end of an update. */
+    protected function endUpdate (dt :Number) :void
+    {
         // clean out all objects that were destroyed during the update loop
         
         if (null != _objectsPendingDestroy) {
-            for each (obj in _objectsPendingDestroy) {
+            for each (var obj :SimObject in _objectsPendingDestroy) {
                 this.finalizeObjectDestruction(obj);
             }
             
             _objectsPendingDestroy = null;
         }
+    }
+
+    /** Removes a single dead object from the object list. */
+    protected function finalizeObjectDestruction (obj :SimObject) :void
+    {
+        Assert.isTrue(null != obj._ref && null == obj._ref._obj);
+        
+        // unlink the object ref
+        var ref :SimObjectRef = obj._ref;
+        
+        var prev :SimObjectRef = ref._prev;
+        var next :SimObjectRef = ref._next;
+        
+        if (null != prev) {
+            prev._next = next;
+        } else {
+            // if prev is null, ref was the head of the list
+            Assert.isTrue(ref == _listHead);
+            _listHead = next;
+        }
+        
+        if (null != next) {
+            next._prev = prev;
+        }
+
+        // is the object in any groups?
+        // (we remove the object from its groups here, rather than in
+        // destroyObject(), because client code might be iterating an
+        // object group Array when destroyObject is called)
+        var groupNames :Array = obj.objectGroups;
+        if (null != groupNames) {
+            for each (var groupName :* in groupNames) {
+                var groupArray :Array = (_groupedObjects.get(groupName) as Array);
+                Assert.isTrue(null != groupArray);
+                var wasInArray :Boolean = ArrayUtil.removeFirst(groupArray, ref);
+                Assert.isTrue(wasInArray);
+            }
+        }
+        
+        obj._parentDB = null;
     }
 
     /** Sends a message to every object in the database. */
