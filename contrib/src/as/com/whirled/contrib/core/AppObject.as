@@ -22,6 +22,15 @@ public class AppObject extends EventDispatcher
     {
         return _parentDB;
     }
+    
+    /**
+     * Returns true if the object is in an ObjectDB and is "live"
+     * (not pending removal from the database)
+     */ 
+    public function get isLiveObject () :Boolean
+    {
+        return (STATE_LIVE == _objState);
+    }
 
     /**
      * Returns the name of this object.
