@@ -4,10 +4,9 @@ import com.whirled.contrib.core.Updatable;
 
 import com.threerings.util.HashMap;
 import com.threerings.util.Assert;
-import com.whirled.WhirledGameControl;
-import com.threerings.ezgame.MessageReceivedEvent;
-import com.threerings.ezgame.EZServicesSubControl;
-import com.threerings.ezgame.EZNetSubControl;
+
+import com.whirled.game.GameControl;
+import com.whirled.game.MessageReceivedEvent;
 
 import flash.utils.getTimer;
 
@@ -19,7 +18,7 @@ import flash.utils.getTimer;
 public class TickedMessageManager
     implements Updatable
 {
-    public function TickedMessageManager (gameCtrl :WhirledGameControl)
+    public function TickedMessageManager (gameCtrl :GameControl)
     {
         _gameCtrl = gameCtrl;
     }
@@ -209,7 +208,7 @@ public class TickedMessageManager
     protected var _isFirstPlayer :Boolean;
     protected var _tickIntervalMS :uint;
 
-    protected var _gameCtrl :WhirledGameControl;
+    protected var _gameCtrl :GameControl;
     protected var _ticks :Array = new Array();
     protected var _pendingSends :Array = new Array();
     protected var _maxPendingSends :uint = 10;

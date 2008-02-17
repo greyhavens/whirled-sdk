@@ -12,10 +12,10 @@ import flash.utils.Timer;
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 
-import com.whirled.WhirledGameControl;
+import com.whirled.game.GameControl;
 
 /**
- * <p>A class to manage complicated user cookies on a WhirledGameControl.  Using this class, user 
+ * <p>A class to manage complicated user cookies on a GameControl.  Using this class, user 
  * cookies can contain a list of various different data types, which are read from the server and
  * saved back to the server automatically.  The data structure is compressed into a ByteArray to 
  * save space (user cookies are only allowed to go up to 4k).  Data is saved to the server as it is
@@ -87,10 +87,10 @@ import com.whirled.WhirledGameControl;
 public class UserCookie
 {
     /**
-     * Get a player's user cookie via WhirledGameControl.getUserCookie, wrapped in a UserCookie
+     * Get a player's user cookie via GameControl.getUserCookie, wrapped in a UserCookie
      * object.
      * 
-     * @param wgc The WhirledGameControl of the current instance
+     * @param wgc The GameControl of the current instance
      * @param validCallback This function is called with a single UserCookie parameter when the
      *                      cookie has been retrieved and validated.
      * @param cookieDef An array of cookie parameters that define the format of the user cookie.  
@@ -102,7 +102,7 @@ public class UserCookie
      *              a different player is specified, this UserCookie will be read-only - attempting
      *              to set a value will generate an IllegalOperationError.
      */
-    public static function getCookie (wgc :WhirledGameControl, validCallback :Function, 
+    public static function getCookie (wgc :GameControl, validCallback :Function, 
         cookieDef :Array, enableDebugLogging :Boolean = false, occId :int = -1) :void
     {
         var cookie :UserCookie = new UserCookie();
@@ -388,7 +388,7 @@ public class UserCookie
 
     protected static const SEND_TIME :int = 2 * 1000;
 
-    protected var _control :WhirledGameControl;
+    protected var _control :GameControl;
     protected var _cookieDef :Array;
     protected var _parameters :HashMap = new HashMap();
     protected var _dirty :Boolean = false;

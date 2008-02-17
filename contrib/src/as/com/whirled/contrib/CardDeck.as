@@ -21,7 +21,7 @@
 
 package com.whirled.contrib {
 
-import com.whirled.WhirledGameControl;
+import com.whirled.game.GameControl;
 
 /**
  * A simple card deck for use with games that encodes cards as a string like "Ac" for the
@@ -29,7 +29,7 @@ import com.whirled.WhirledGameControl;
  */
 public class CardDeck
 {
-    public function CardDeck (gameCtrl :WhirledGameControl, deckName :String = "deck")
+    public function CardDeck (gameCtrl :GameControl, deckName :String = "deck")
     {
         _gameCtrl = gameCtrl;
         _deckName = deckName;
@@ -58,7 +58,7 @@ public class CardDeck
     }
 
     /** The game control. */
-    protected var _gameCtrl :WhirledGameControl;
+    protected var _gameCtrl :GameControl;
 
     /** The name of our deck. */
     protected var _deckName :String;
