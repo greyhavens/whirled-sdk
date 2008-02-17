@@ -5,6 +5,10 @@ package com.whirled.util;
 
 import java.awt.image.BufferedImage;
 
+import java.io.IOException;
+
+import com.threerings.crowd.data.BodyObject;
+
 import com.threerings.media.FrameManager;
 import com.threerings.media.image.ImageUtil;
 import com.threerings.media.image.ImageManager;
@@ -23,7 +27,8 @@ import com.whirled.game.util.WhirledGameContext;
 /**
  * Extends the context with Whirled bits.
  */
-public abstract class WhirledContext extends WhirledGameContext
+public abstract class WhirledContext
+    implements WhirledGameContext
 {
     /**
      * Provides image loading and caching.
@@ -83,18 +88,6 @@ public abstract class WhirledContext extends WhirledGameContext
     /**
      * Convenience method to load an image from our resource bundles.
      */
-    public BufferedImage loadImage (String rsrcPath)
-    {
-        try {
-            return getResourceManager().getImageResource(rsrcPath);
-        } catch (IOException ioe) {
-            log.log(Level.WARNING,"Unable to load image resource [path=" + rsrcPath + "].", ioe);
-            // cope; return an error image of abitrary size
-            return ImageUtil.createErrorImage(50, 50);
-        }
-    }
-
-    @Override
     public BufferedImage loadImage (String rsrcPath)
     {
         return getImageManager().getImage(rsrcPath);

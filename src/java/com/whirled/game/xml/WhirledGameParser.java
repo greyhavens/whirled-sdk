@@ -25,7 +25,7 @@ import com.samskivert.xml.SetPropertyFieldsRule;
 
 import com.threerings.parlor.data.ChoiceParameter;
 import com.threerings.parlor.data.RangeParameter;
-import com.threerings.parlor.data.TableMatchConfig;
+import com.threerings.parlor.data.ToggleParameter;
 
 import com.threerings.parlor.game.data.GameConfig;
 
@@ -33,7 +33,7 @@ import com.whirled.game.data.AIParameter;
 import com.whirled.game.data.FileParameter;
 import com.whirled.game.data.GameDefinition;
 import com.whirled.game.data.MatchConfig;
-import com.whirled.game.data.ToggleParameter;
+import com.whirled.game.data.TableMatchConfig;
 
 /**
  * Parses the XML definition of a game.
