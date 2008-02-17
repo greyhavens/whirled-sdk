@@ -8,6 +8,8 @@ import flash.display.Loader;
 import flash.errors.IllegalOperationError;
 
 /**
+ * <b>Note</b>: This class is deprecated. It will be removed or replaced soon.<br>
+ *
  * Wrapper class that wraps a content pack's Loader instance with some useful accessors.
  *
  * <p><b>Note:</b> in order to access the data while running on the test server, you'll need to
