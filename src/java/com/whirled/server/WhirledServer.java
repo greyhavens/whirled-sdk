@@ -39,15 +39,16 @@ import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.server.ParlorManager;
 import com.threerings.parlor.server.ParlorSender;
 
-import com.threerings.ezgame.data.EZGameConfig;
-import com.threerings.ezgame.data.GameDefinition;
-import com.threerings.ezgame.data.Parameter;
-import com.threerings.ezgame.data.TableMatchConfig;
-import com.threerings.ezgame.server.DictionaryManager;
-import com.threerings.ezgame.server.EZGameManager;
-
-import com.whirled.data.WhirledGameDefinition;
-import com.whirled.xml.WhirledGameParser;
+import com.whirled.game.data.WhirledGameConfig;
+import com.whirled.game.data.GameDefinition;
+import com.whirled.game.data.Parameter;
+import com.whirled.game.data.TableMatchConfig;
+import com.whirled.game.data.TestGameDefinition;
+import com.whirled.game.server.DictionaryManager;
+import com.whirled.game.server.TestDispatcher;
+import com.whirled.game.server.TestProvider;
+import com.whirled.game.server.WhirledGameManager;
+import com.whirled.game.xml.WhirledGameParser;
 
 import static com.whirled.Log.log;
 
@@ -140,8 +141,8 @@ public class WhirledServer extends CrowdServer
     public void clientReady (ClientObject caller)
     {
         // if this is a party game, send the player straight in, it's already running
-        if (_ezmgr != null) {
-            ParlorSender.gameIsReady(caller, _ezmgr.getPlaceObject().getOid());
+        if (_gameMgr != null) {
+            ParlorSender.gameIsReady(caller, _gameMgr.getPlaceObject().getOid());
             return;
         }
 
@@ -163,7 +164,7 @@ public class WhirledServer extends CrowdServer
             gamedef = new WhirledGameParser().parseGame(getGameConfig());
         } catch (Exception e) {
             log.warning("Failed to locate 'config.xml' file. [error=" + e + "].");
-            gamedef = new WhirledGameDefinition();
+            gamedef = new TestGameDefinition();
             gamedef.params = new Parameter[0];
         }
 
@@ -182,7 +183,7 @@ public class WhirledServer extends CrowdServer
         gamedef.match = match;
 
         // set up our game configuration and start up the game clients
-        _config = new EZGameConfig(-1, gamedef);
+        _config = new WhirledGameConfig(-1, gamedef);
         _config.players = new Name[match.isPartyGame ? 0 : playerCount];
         for (int ii = 0; ii < playerCount; ii++) {
             Name name = new Name("tester_" + (ii+1));
@@ -205,16 +206,14 @@ public class WhirledServer extends CrowdServer
 
         // if this is a party game, start it up immediately
         if (match.isPartyGame) {
-            _ezmgr = createGameManager(_config);
+            _gameMgr = createGameManager(_config);
         }
     }
 
-    protected EZGameManager createGameManager (EZGameConfig config)
+    protected WhirledGameManager createGameManager (WhirledGameConfig config)
     {
         try {
-            List<PlaceManagerDelegate> delegates = Lists.newArrayList();
-            delegates.add(new WhirledGameManagerDelegate());
-            return (EZGameManager)plreg.createPlace(config, delegates);
+            return (WhirledGameManager)plreg.createPlace(config);
 
         } catch (Exception e) {
             reportError("Failed to start game " + config + ".", e);
@@ -285,10 +284,10 @@ public class WhirledServer extends CrowdServer
     } // END: static class StreamEater
 
     /** The configuration for the game we'll start when everyone is ready. */
-    protected EZGameConfig _config;
+    protected WhirledGameConfig _config;
 
     /** The manager for our test game. */
-    protected EZGameManager _ezmgr;
+    protected WhirledGameManager _gameMgr;
 
     /** Contains a mapping of all clients that are ready to play. */
     protected HashSet<Name> _ready = new HashSet<Name>();

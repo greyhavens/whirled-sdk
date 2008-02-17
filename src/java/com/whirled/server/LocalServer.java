@@ -26,8 +26,6 @@ import com.threerings.crowd.server.PlaceManagerDelegate;
 import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.server.ParlorManager;
 
-import com.threerings.ezgame.server.EZGameManager;
-
 import com.whirled.client.WhirledClient;
 
 import static com.whirled.Log.log;
@@ -42,9 +40,7 @@ public class LocalServer extends CrowdServer
         @Override protected void createGameManager (GameConfig config)
             throws InstantiationException, InvocationException
         {
-            List<PlaceManagerDelegate> delegates = Lists.newArrayList();
-            delegates.add(new WhirledGameManagerDelegate());
-            _plreg.createPlace(config, delegates);
+            _plreg.createPlace(config);
         }
     };
 

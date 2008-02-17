@@ -31,12 +31,12 @@ import com.threerings.crowd.client.LocationDirector;
 import com.threerings.crowd.client.OccupantDirector;
 import com.threerings.crowd.client.PlaceView;
 
-import com.threerings.ezgame.data.EZGameConfig;
 import com.threerings.parlor.client.ParlorDirector;
 import com.threerings.toybox.client.ToyBoxDirector;
 
 import com.whirled.util.WhirledContext;
-import com.whirled.xml.WhirledGameParser;
+import com.whirled.game.data.WhirledGameConfig;
+import com.whirled.game.xml.WhirledGameParser;
 
 import static com.whirled.Log.log;
 
@@ -114,10 +114,10 @@ public class WhirledClient
     protected void startTestGame (String gameId)
     {
         // parse the game definition
-        EZGameConfig config;
+        WhirledGameConfig config;
         try {
             WhirledGameParser parser = new WhirledGameParser();
-            config = new EZGameConfig(-1, parser.parseGame(new FileReader(gameId + ".xml")));
+            config = new WhirledGameConfig(-1, parser.parseGame(new FileReader(gameId + ".xml")));
         } catch (Exception e) {
             log.warning("Failed to start test game: " + e);
             System.exit(0);
