@@ -6,6 +6,8 @@ package com.whirled.game.data;
 import java.io.File;
 import java.util.ArrayList;
 
+import com.threerings.parlor.data.Parameter;
+
 /**
  * Customizes the game definition, providing the path to the game code and media when running in
  * the test server.

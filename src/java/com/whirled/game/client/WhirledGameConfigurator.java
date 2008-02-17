@@ -32,14 +32,15 @@ import com.threerings.util.MessageManager;
 import com.threerings.parlor.game.client.SwingGameConfigurator;
 import com.threerings.parlor.game.data.GameAI;
 
+import com.threerings.parlor.data.ChoiceParameter;
+import com.threerings.parlor.data.Parameter;
+import com.threerings.parlor.data.RangeParameter;
+import com.threerings.parlor.data.ToggleParameter;
+
 import com.whirled.game.data.AIParameter;
-import com.whirled.game.data.ChoiceParameter;
 import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.FileParameter;
 import com.whirled.game.data.GameDefinition;
-import com.whirled.game.data.Parameter;
-import com.whirled.game.data.RangeParameter;
-import com.whirled.game.data.ToggleParameter;
 import com.whirled.game.util.WhirledGameContext;
 
 import static com.whirled.game.Log.log;

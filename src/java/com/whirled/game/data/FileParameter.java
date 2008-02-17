@@ -5,6 +5,8 @@ package com.whirled.game.data;
 
 import com.threerings.util.ActionScript;
 
+import com.threerings.parlor.data.Parameter;
+
 /**
  * Models a paramter that can be used to load the contents of a file into a byte array or string
  * and ship it to the server.

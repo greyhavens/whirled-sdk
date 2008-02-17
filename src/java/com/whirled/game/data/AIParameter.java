@@ -5,6 +5,8 @@ package com.whirled.game.data;
 
 import com.threerings.util.ActionScript;
 
+import com.threerings.parlor.Parameter;
+
 /**
  * Models a parameter that is used to configure AIs.
  */

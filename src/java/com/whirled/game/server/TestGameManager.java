@@ -13,12 +13,13 @@ import com.threerings.presents.server.InvocationException;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.server.CrowdServer;
 
+import com.threerings.parlor.data.Parameter;
+
 import com.whirled.game.client.WhirledGameService;
 
 import com.whirled.game.data.ContentPackParameter;
 import com.whirled.game.data.GameData;
 import com.whirled.game.data.GameDefinition;
-import com.whirled.game.data.Parameter;
 import com.whirled.game.data.TestGameDefinition;
 import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.WhirledGameObject;

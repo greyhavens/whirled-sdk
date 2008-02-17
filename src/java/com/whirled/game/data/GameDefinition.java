@@ -10,6 +10,8 @@ import com.samskivert.util.StringUtil;
 import com.threerings.io.Streamable;
 import com.threerings.util.ActionScript;
 
+import com.threerings.parlor.data.Parameter;
+
 /**
  * Contains the information about a game as described by the game definition XML file.
  */

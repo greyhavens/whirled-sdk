@@ -35,13 +35,14 @@ import com.threerings.crowd.server.CrowdClientResolver;
 import com.threerings.crowd.server.CrowdServer;
 import com.threerings.crowd.server.PlaceManagerDelegate;
 
+import com.threerings.parlor.data.Parameter;
+
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.server.ParlorManager;
 import com.threerings.parlor.server.ParlorSender;
 
 import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.GameDefinition;
-import com.whirled.game.data.Parameter;
 import com.whirled.game.data.TableMatchConfig;
 import com.whirled.game.data.TestGameDefinition;
 import com.whirled.game.server.DictionaryManager;
