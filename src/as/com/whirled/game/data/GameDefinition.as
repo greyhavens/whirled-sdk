@@ -8,6 +8,11 @@ import com.threerings.io.ObjectOutputStream;
 import com.threerings.io.Streamable;
 import com.threerings.io.TypedArray;
 
+import com.threerings.parlor.data.Parameter;
+import com.threerings.parlor.data.ChoiceParameter;
+import com.threerings.parlor.data.RangeParameter;
+import com.threerings.parlor.data.ToggleParameter;
+
 /**
  * Contains the information about a game as described by the game definition XML file.
  */

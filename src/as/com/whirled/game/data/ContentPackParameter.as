@@ -6,6 +6,8 @@ package com.whirled.game.data {
 import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
 
+import com.threerings.parlor.data.Parameter;
+
 /**
  * A file parameter for representing downloadable content packs on the test server.
  */

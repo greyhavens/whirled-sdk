@@ -19,11 +19,12 @@ import com.threerings.flex.LabeledSlider;
 
 import com.threerings.parlor.game.client.FlexGameConfigurator;
 
-import com.whirled.game.data.ChoiceParameter;
+import com.threerings.parlor.data.Parameter;
+import com.threerings.parlor.data.ChoiceParameter;
+import com.threerings.parlor.data.RangeParameter;
+import com.threerings.parlor.data.ToggleParameter;
+
 import com.whirled.game.data.WhirledGameConfig;
-import com.whirled.game.data.Parameter;
-import com.whirled.game.data.RangeParameter;
-import com.whirled.game.data.ToggleParameter;
 
 /**
  * Adds custom configuration of options specified in XML.
