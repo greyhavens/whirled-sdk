@@ -32,7 +32,6 @@ import com.threerings.crowd.client.OccupantDirector;
 import com.threerings.crowd.client.PlaceView;
 
 import com.threerings.parlor.client.ParlorDirector;
-import com.threerings.toybox.client.ToyBoxDirector;
 
 import com.whirled.util.WhirledContext;
 import com.whirled.game.data.WhirledGameConfig;
@@ -226,10 +225,6 @@ public class WhirledClient
 
         public MessageManager getMessageManager () {
             return _msgmgr;
-        }
-
-        public ToyBoxDirector getToyBoxDirector () {
-            throw new RuntimeException("ToyBoxDirector is not supported in Whirled.");
         }
 
         public FrameManager getFrameManager () {
