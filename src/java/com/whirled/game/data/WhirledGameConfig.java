@@ -81,6 +81,7 @@ public class WhirledGameConfig extends GameConfig
         if (ctrl == null) {
             throw new IllegalStateException("Game definition missing controller [gdef=" +
                 getGameDefinition() + "]");
+        }
         try {
             return (PlaceController) Class.forName(ctrl).newInstance();
         } catch (Exception e) {
