@@ -1,10 +1,6 @@
 <flex-config>
   <packages>
     <package>
-      <string>com.threerings.ezgame</string>
-      <string>EZGame is a library used by com.whirled.WhirledGameControl.</string>
-    </package>
-    <package>
       <string>com.threerings.flash</string>
       <string>Contains display utilities and random useful bits.</string>
     </package>
@@ -14,7 +10,11 @@
     </package>
     <package>
       <string>com.whirled</string>
-      <string>Primary classes used for developing games, avatars, toys and other whirled creations.</string>
+      <string>Primary classes used for developing avatars, toys and other whirled creations.</string>
+    </package>
+    <package>
+      <string>com.whirled.game</string>
+      <string>Used for developing games for whirled.</string>
     </package>
     <package>
       <string>com.whirled.contrib</string>
