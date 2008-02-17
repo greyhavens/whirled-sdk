@@ -13,7 +13,7 @@
 
   <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"  value="libraries"/>
-  <property name="projects" value="samskivert,narya,nenya,vilya,toybox"/>
+  <property name="projects" value="samskivert,narya,nenya,vilya"/>
   <import file="build/etc/build-support.xml"/>
 
   <!-- archive of contributed libraries -->
@@ -86,7 +86,6 @@
       <arg value="-include-sources=${projects.dir}/narya/src/as/"/>
       <arg value="-include-sources=${projects.dir}/nenya/src/as/com/threerings/flash/"/>
       <arg value="-include-sources=${projects.dir}/vilya/src/as/com/threerings/parlor/"/>
-      <arg value="-include-sources=${projects.dir}/vilya/src/as/com/threerings/ezgame/"/>
       <arg value="-include-sources=${asrc.dir}/"/>
       <arg value="-output"/>
       <arg value="${deploy.dir}/whirled.swc"/>
@@ -120,7 +119,6 @@
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/*.as"/>
       <fileset dir="${projects.dir}/nenya/src/as" includes="com/threerings/flash/**/*.as"/>
-      <fileset dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="*.as"/>
       <fileset dir="src/as" includes="com/whirled/*.as"/>
       <fileset dir="src/as" includes="com/whirled/util/*.as"/>
       <fileset dir="contrib/src/as" includes="com/whirled/**/*.as"/>
@@ -167,7 +165,6 @@
     <mkdir dir="${sdk.build}/lib"/>
     <copy todir="${sdk.build}">
       <fileset dir="." includes="src/as/com/whirled/**" excludes="**/WorldGameControl.as"/>
-      <fileset dir="${projects.dir}/vilya" includes="src/as/com/threerings/ezgame/*.as"/>
       <fileset dir="${projects.dir}/narya" includes="src/as/com/threerings/util/*.as"/>
       <fileset dir="${projects.dir}/narya" includes="src/as/Log.as"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>

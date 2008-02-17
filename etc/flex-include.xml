@@ -31,7 +31,6 @@
       <srcfiles dir="${projects.dir}/narya/src/as" includes="**/*.as"/>
       <srcfiles dir="${projects.dir}/nenya/src/as/com/threerings/flash" includes="**/*.as"/>
       <srcfiles dir="${projects.dir}/vilya/src/as/com/threerings/parlor" includes="**/*.as"/>
-      <srcfiles dir="${projects.dir}/vilya/src/as/com/threerings/ezgame" includes="**/*.as"/>
       <srcfiles dir="${asrc.dir}" includes="**/*.as"/>
     </uptodate>
   </target>
