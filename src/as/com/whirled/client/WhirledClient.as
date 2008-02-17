@@ -21,11 +21,12 @@ import com.threerings.crowd.data.BodyMarshaller;
 import com.threerings.crowd.data.LocationMarshaller;
 
 import com.threerings.parlor.data.ParlorMarshaller;
-import com.threerings.ezgame.data.EZGameConfig;
 
-import com.whirled.data.TestGameObject;
-import com.whirled.data.TestMarshaller;
-import com.whirled.data.WhirledGameDefinition;
+import com.whirled.game.client.TestGameController;
+import com.whirled.game.client.TestService;
+import com.whirled.game.data.TestGameDefinition;
+import com.whirled.game.data.TestMarshaller;
+import com.whirled.game.data.WhirledGameConfig;
 
 /**
  * A client used for testing games.
@@ -56,10 +57,9 @@ public class WhirledClient extends Client
         var c :Class;
         c = ParlorMarshaller;
         c = TestMarshaller;
-        c = EZGameConfig;
-        c = WhirledGameDefinition;
+        c = WhirledGameConfig;
+        c = TestGameDefinition;
         c = TestGameController;
-        c = TestGameObject;
 
         [ResourceBundle("global")]
         [ResourceBundle("chat")]
