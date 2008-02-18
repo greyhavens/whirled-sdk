@@ -70,8 +70,8 @@ public class GameControl extends AbstractControl
         ourProps["autoReady_v1"] = autoReady;
         event.userProps = ourProps;
         disp.root.loaderInfo.sharedEvents.dispatchEvent(event);
-        if ("hostProps" in event) {
-            setHostProps(event.hostProps);
+        if ("ezProps" in event) {
+            setHostProps(event.ezProps);
         }
 
         // set up our focusing click handler
@@ -246,7 +246,7 @@ dynamic class DynEvent extends Event
 {
     public function DynEvent ()
     {
-        super("gameConnect", true, false);
+        super("ezgameQuery", true, false);
     }
 
     override public function clone () :Event
