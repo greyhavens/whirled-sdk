@@ -16,7 +16,6 @@
     <include name="nenya-media*.jar"/>
     <include name="nenya-rsrc*.jar"/>
     <include name="vilya-parlor*.jar"/>
-    <include name="toybox*.jar"/>
     <!-- ActionScript dependencies -->
     <include name="naryalib.swc"/>
     <include name="nenyalib.swc"/>
