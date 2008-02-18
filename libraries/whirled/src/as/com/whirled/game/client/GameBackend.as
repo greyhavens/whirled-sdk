@@ -575,13 +575,116 @@ public class GameBackend
         o["getStageBounds_v1"] = getStageBounds_v1;
     }
 
-    /**
-     * Called by the client code when it is ready for the game to be started (if called before the
-     * game ever starts) or rematched (if called after the game has ended).
-     */
-    protected function playerReady_v1 () :void
+    //---- GameControl -----------------------------------------------------
+
+    protected function focusContainer_v1 () :void
     {
-        _ctrl.playerIsReady();
+        validateConnected();
+        _container.setFocus();
+    }
+
+    /**
+     * Starts a transaction that will group all game state changes into a single message.
+     */
+    protected function startTransaction_v1 () :void
+    {
+        validateConnected();
+        _ctx.getClient().getInvocationDirector().startTransaction();
+    }
+
+    /**
+     * Commits a transaction started with {@link #startTransaction_v1}.
+     */
+    protected function commitTransaction_v1 () :void
+    {
+        _ctx.getClient().getInvocationDirector().commitTransaction();
+    }
+
+    //---- .local ----------------------------------------------------------
+
+    protected function alterKeyEvents_v1 (keyEventType :String, add :Boolean) :void
+    {
+        validateConnected();
+        if (add) {
+            _container.addEventListener(keyEventType, handleKeyEvent);
+        } else {
+            _container.removeEventListener(keyEventType, handleKeyEvent);
+        }
+    }
+
+    protected function backToWhirled_v1 (showLobby :Boolean = false) :void
+    {
+        _ctrl.backToWhirled(showLobby);
+    }
+
+    protected function localChat_v1 (msg :String) :void
+    {
+        validateChat(msg);
+        // The sendChat() messages will end up being routed through this method on each client.
+        // TODO: make this look distinct from other system chat
+        _ctx.getChatDirector().displayInfo(null, MessageBundle.taint(msg));
+    }
+
+    protected function filter_v1 (text :String) :String
+    {
+        return _ctx.getChatDirector().filter(text, null, true);
+    }
+
+    /**
+     * Get the size of the game area.
+     */
+    protected function getSize_v1 () :Point
+    {
+        return new Point(_container.width, _container.height);
+    }
+
+    protected function setShowButtons_v1 (rematch :Boolean, back :Boolean) :void
+    {
+        (_ctrl.getPlaceView() as WhirledGamePanel).setShowButtons(rematch, back, back);
+    }
+
+    protected function setOccupantsLabel_v1 (label :String) :void
+    {
+        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setLabel(label);
+    }
+
+    protected function clearScores_v1 (clearValue :Object = null,
+        sortValuesToo :Boolean = false) :void
+    {
+        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().clearScores(
+            clearValue, sortValuesToo);
+    }
+
+    protected function setPlayerScores_v1 (scores :Array, sortValues :Array = null) :void
+    {
+        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setPlayerScores(
+            scores, sortValues);
+    }
+
+    protected function setMappedScores_v1 (scores :Object) :void
+    {
+        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setMappedScores(scores);
+    }
+
+    protected function getHeadShot_v1 (occupant :int, callback :Function) :void
+    {
+        validateConnected();
+
+        // in here, we just return a dummy value
+        callback(new Sprite(), true);
+    }
+
+    //---- .net ------------------------------------------------------------
+
+    protected function sendMessage_v2 (messageName :String, value :Object, playerId :int) :void
+    {
+        validateConnected();
+        validateName(messageName);
+        validateValue(value);
+
+        var encoded :Object = ObjectMarshaller.encode(value, false);
+        _gameObj.whirledGameService.sendMessage(_ctx.getClient(), messageName, encoded, playerId,
+                                         createLoggingConfirmListener("sendMessage"));
     }
 
     /**
@@ -620,132 +723,7 @@ public class GameBackend
             createLoggingConfirmListener("setProperty"));
     }
 
-
-    protected function mergeCollection_v1 (srcColl :String, intoColl :String) :void
-    {
-        validateConnected();
-        validateName(srcColl);
-        validateName(intoColl);
-        _gameObj.whirledGameService.mergeCollection(_ctx.getClient(),
-            srcColl, intoColl, createLoggingConfirmListener("mergeCollection"));
-    }
-
-    protected function sendMessage_v2 (messageName :String, value :Object, playerId :int) :void
-    {
-        validateConnected();
-        validateName(messageName);
-        validateValue(value);
-
-        var encoded :Object = ObjectMarshaller.encode(value, false);
-        _gameObj.whirledGameService.sendMessage(_ctx.getClient(), messageName, encoded, playerId,
-                                         createLoggingConfirmListener("sendMessage"));
-    }
-
-    protected function setTicker_v1 (tickerName :String, msOfDelay :int) :void
-    {
-        validateConnected();
-        validateName(tickerName);
-        _gameObj.whirledGameService.setTicker(
-            _ctx.getClient(), tickerName, msOfDelay, createLoggingConfirmListener("setTicker"));
-    }
-
-    protected function sendChat_v1 (msg :String) :void
-    {
-        validateConnected();
-        validateChat(msg);
-        // Post a message to the game object, the controller will listen and call localChat().
-        _gameObj.postMessage(WhirledGameObject.GAME_CHAT, [ msg ]);
-    }
-
-    protected function localChat_v1 (msg :String) :void
-    {
-        validateChat(msg);
-        // The sendChat() messages will end up being routed through this method on each client.
-        // TODO: make this look distinct from other system chat
-        _ctx.getChatDirector().displayInfo(null, MessageBundle.taint(msg));
-    }
-
-    protected function filter_v1 (text :String) :String
-    {
-        return _ctx.getChatDirector().filter(text, null, true);
-    }
-
-    protected function getOccupants_v1 () :Array
-    {
-        validateConnected();
-        var occs :Array = [];
-        for (var ii :int = _gameObj.occupants.size() - 1; ii >= 0; ii--) {
-            occs.push(_gameObj.occupants.get(ii));
-        }
-        return occs;
-    }
-
-    protected function getPlayers_v1 () :Array
-    {
-        validateConnected();
-        if (_gameObj.players.length == 0) {
-            // party game
-            return getOccupants_v1();
-        }
-        var playerIds :Array = [];
-        for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
-            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
-            playerIds.push((occInfo == null) ? 0 : occInfo.bodyOid);
-        }
-        return playerIds;
-    }
-
-    protected function getOccupantName_v1 (playerId :int) :String
-    {
-        validateConnected();
-        var occInfo :OccupantInfo = (_gameObj.occupantInfo.get(playerId) as OccupantInfo);
-        return (occInfo == null) ? null : occInfo.username.toString();
-    }
-
-    protected function getMyId_v1 () :int
-    {
-        validateConnected();
-        return _ctx.getClient().getClientObject().getOid();
-    }
-
-    protected function getControllerId_v1 () :int
-    {
-        validateConnected();
-        return _gameObj.controllerOid;
-    }
-
-    // TODO: table games only
-    protected function getPlayerPosition_v1 (playerId :int) :int
-    {
-        validateConnected();
-        var occInfo :OccupantInfo = (_gameObj.occupantInfo.get(playerId) as OccupantInfo);
-        if (occInfo == null) {
-            return -1;
-        }
-        return _gameObj.getPlayerIndex(occInfo.username);
-    }
-
-    // TODO: table only
-    protected function getMyPosition_v1 () :int
-    {
-        validateConnected();
-        return _gameObj.getPlayerIndex(
-            (_ctx.getClient().getClientObject() as BodyObject).getVisibleName());
-    }
-
-    // TODO: table only
-    protected function getTurnHolder_v1 () :int
-    {
-        validateConnected();
-        var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.turnHolder);
-        return (occInfo == null) ? 0 : occInfo.bodyOid;
-    }
-
-    protected function getRound_v1 () :int
-    {
-        validateConnected();
-        return _gameObj.roundId;
-    }
+    //---- .player ---------------------------------------------------------
 
     protected function getUserCookie_v2 (playerId :int, callback :Function) :void
     {
@@ -787,6 +765,133 @@ public class GameBackend
         _gameObj.whirledGameService.setCookie(
             _ctx.getClient(), ba, createLoggingConfirmListener("setUserCookie"));
         return true;
+    }
+
+    protected function holdsTrophy_v1 (ident :String) :Boolean
+    {
+        return playerOwnsData(GameData.TROPHY_DATA, ident);
+    }
+
+    protected function awardTrophy_v1 (ident :String) :Boolean
+    {
+        if (playerOwnsData(GameData.TROPHY_DATA, ident)) {
+            return false;
+        }
+        _gameObj.whirledGameService.awardTrophy(
+            _ctx.getClient(), ident, new ConfirmAdapter(function (cause :String) :void {
+                // TODO: change GameCodes.GAME_MSGS to "game" and use that
+                _ctx.getChatDirector().displayFeedback("game", cause);
+            }));
+        return true;
+    }
+
+    protected function awardPrize_v1 (ident :String) :void
+    {
+        if (!playerOwnsData(GameData.PRIZE_MARKER, ident)) {
+            _gameObj.whirledGameService.awardPrize(
+                _ctx.getClient(), ident, createLoggingConfirmListener("awardPrize"));
+        }
+    }
+
+    protected function getPlayerItemPacks_v1 () :Array
+    {
+        return getItemPacks_v1().filter(function (data :GameData, idx :int, array :Array) :Boolean {
+            return playerOwnsData(data.getType(), data.ident);
+        });
+    }
+
+    //---- .game -----------------------------------------------------------
+
+    /**
+     * Called by the client code when it is ready for the game to be started (if called before the
+     * game ever starts) or rematched (if called after the game has ended).
+     */
+    protected function playerReady_v1 () :void
+    {
+        _ctrl.playerIsReady();
+    }
+
+    protected function sendChat_v1 (msg :String) :void
+    {
+        validateConnected();
+        validateChat(msg);
+        // Post a message to the game object, the controller will listen and call localChat().
+        _gameObj.postMessage(WhirledGameObject.GAME_CHAT, [ msg ]);
+    }
+
+    protected function getLevelPacks_v1 () :Array
+    {
+        var packs :Array = [];
+        for each (var data :GameData in _gameObj.gameData) {
+            if (data.getType() != GameData.LEVEL_DATA) {
+                continue;
+            }
+            // if the level pack is premium, only add it if we own it
+            if ((data as LevelData).premium && !playerOwnsData(data.getType(), data.ident)) {
+                continue;
+            }
+            packs.unshift({ ident: data.ident,
+                            name: data.name,
+                            mediaURL: data.mediaURL,
+                            premium: (data as LevelData).premium });
+        }
+        return packs;
+    }
+
+    protected function getItemPacks_v1 () :Array
+    {
+        var packs :Array = [];
+        for each (var data :GameData in _gameObj.gameData) {
+            if (data.getType() != GameData.ITEM_DATA) {
+                continue;
+            }
+            packs.unshift({ ident: data.ident,
+                            name: data.name,
+                            mediaURL: data.mediaURL });
+        }
+        return packs;
+    }
+
+    protected function getOccupants_v1 () :Array
+    {
+        validateConnected();
+        var occs :Array = [];
+        for (var ii :int = _gameObj.occupants.size() - 1; ii >= 0; ii--) {
+            occs.push(_gameObj.occupants.get(ii));
+        }
+        return occs;
+    }
+
+    protected function getOccupantName_v1 (playerId :int) :String
+    {
+        validateConnected();
+        var occInfo :OccupantInfo = (_gameObj.occupantInfo.get(playerId) as OccupantInfo);
+        return (occInfo == null) ? null : occInfo.username.toString();
+    }
+
+    protected function getMyId_v1 () :int
+    {
+        validateConnected();
+        return _ctx.getClient().getClientObject().getOid();
+    }
+
+    protected function getControllerId_v1 () :int
+    {
+        validateConnected();
+        return _gameObj.controllerOid;
+    }
+
+    protected function getTurnHolder_v1 () :int
+    {
+        validateConnected();
+        var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.turnHolder);
+        return (occInfo == null) ? 0 : occInfo.bodyOid;
+    }
+
+    protected function getRound_v1 () :int
+    {
+        validateConnected();
+        return _gameObj.roundId;
     }
 
     protected function isMyTurn_v1 () :Boolean
@@ -840,6 +945,28 @@ public class GameBackend
         endGameWithWinners_v1(winnerIds, loserIds, 0) // WhirledGameControl.CASCADING_PAYOUT
     }
 
+    protected function endGameWithWinners_v1 (
+        winnerIds :Array, loserIds :Array, payoutType :int) :void
+    {
+        validateConnected();
+
+        // pass the buck straight on through, the server will validate everything
+        _gameObj.whirledGameService.endGameWithWinners(
+            _ctx.getClient(), toTypedIntArray(winnerIds), toTypedIntArray(loserIds), payoutType,
+            createLoggingConfirmListener("endGameWithWinners"));
+    }
+
+    protected function endGameWithScores_v1 (playerIds :Array, scores :Array /* of int */,
+        payoutType :int) :void
+    {
+        validateConnected();
+
+        // pass the buck straight on through, the server will validate everything
+        _gameObj.whirledGameService.endGameWithScores(
+            _ctx.getClient(), toTypedIntArray(playerIds), toTypedIntArray(scores), payoutType,
+            createLoggingConfirmListener("endGameWithWinners"));
+    }
+
     protected function restartGameIn_v1 (seconds :int) :void
     {
         validateConnected();
@@ -847,10 +974,48 @@ public class GameBackend
             _ctx.getClient(), seconds, createLoggingConfirmListener("restartGameIn"));
     }
 
-    protected function getDictionaryLetterSet_v1 (
-        locale :String, count :int, callback :Function) :void
+    //---- .game.seating ---------------------------------------------------
+
+    protected function getPlayerPosition_v1 (playerId :int) :int
     {
-        getDictionaryLetterSet_v2(locale, null, count, callback);
+        validateConnected();
+        var occInfo :OccupantInfo = (_gameObj.occupantInfo.get(playerId) as OccupantInfo);
+        if (occInfo == null) {
+            return -1;
+        }
+        return _gameObj.getPlayerIndex(occInfo.username);
+    }
+
+    protected function getMyPosition_v1 () :int
+    {
+        validateConnected();
+        return _gameObj.getPlayerIndex(
+            (_ctx.getClient().getClientObject() as BodyObject).getVisibleName());
+    }
+
+    protected function getPlayers_v1 () :Array
+    {
+        validateConnected();
+        if (_gameObj.players.length == 0) {
+            // party game
+            return getOccupants_v1();
+        }
+        var playerIds :Array = [];
+        for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
+            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
+            playerIds.push((occInfo == null) ? 0 : occInfo.bodyOid);
+        }
+        return playerIds;
+    }
+
+    //---- .services -------------------------------------------------------
+
+    protected function setTicker_v1 (tickerName :String, msOfDelay :int) :void
+    {
+        validateConnected();
+        validateName(tickerName);
+        _gameObj.whirledGameService.setTicker(
+            _ctx.getClient(), tickerName, msOfDelay, createLoggingConfirmListener("setTicker"));
     }
 
     protected function getDictionaryLetterSet_v2 (
@@ -878,12 +1043,6 @@ public class GameBackend
             _ctx.getClient(), locale, dictionary, count, listener);
     }
 
-    protected function checkDictionaryWord_v1 (
-        locale :String, word :String, callback :Function) :void
-    {
-        checkDictionaryWord_v2(locale, null, word, callback);
-    }
-
     protected function checkDictionaryWord_v2 (
         locale :String, dictionary :String, word :String, callback :Function) :void
     {
@@ -907,6 +1066,17 @@ public class GameBackend
         // just relay the data over to the server
         _gameObj.whirledGameService.checkDictionaryWord(
             _ctx.getClient(), locale, dictionary, word, listener);
+    }
+
+    //---- .services.bags --------------------------------------------------
+
+    protected function mergeCollection_v1 (srcColl :String, intoColl :String) :void
+    {
+        validateConnected();
+        validateName(srcColl);
+        validateName(intoColl);
+        _gameObj.whirledGameService.mergeCollection(_ctx.getClient(),
+            srcColl, intoColl, createLoggingConfirmListener("mergeCollection"));
     }
 
     /**
@@ -962,179 +1132,18 @@ public class GameBackend
             _ctx.getClient(), collName, consume, count, msgOrPropName, playerId, listener);
     }
 
-    protected function alterKeyEvents_v1 (keyEventType :String, add :Boolean) :void
+    //---- backwards compatability -----------------------------------------
+
+    protected function getDictionaryLetterSet_v1 (
+        locale :String, count :int, callback :Function) :void
     {
-        validateConnected();
-        if (add) {
-            _container.addEventListener(keyEventType, handleKeyEvent);
-        } else {
-            _container.removeEventListener(keyEventType, handleKeyEvent);
-        }
+        getDictionaryLetterSet_v2(locale, null, count, callback);
     }
 
-    protected function focusContainer_v1 () :void
+    protected function checkDictionaryWord_v1 (
+        locale :String, word :String, callback :Function) :void
     {
-        validateConnected();
-        _container.setFocus();
-    }
-
-    /**
-     * Starts a transaction that will group all game state changes into a single message.
-     */
-    protected function startTransaction_v1 () :void
-    {
-        validateConnected();
-        _ctx.getClient().getInvocationDirector().startTransaction();
-    }
-
-    /**
-     * Commits a transaction started with {@link #startTransaction_v1}.
-     */
-    protected function commitTransaction_v1 () :void
-    {
-        _ctx.getClient().getInvocationDirector().commitTransaction();
-    }
-
-    /**
-     * Get the size of the game area.
-     */
-    protected function getSize_v1 () :Point
-    {
-        return new Point(_container.width, _container.height);
-    }
-
-    protected function setShowButtons_v1 (rematch :Boolean, back :Boolean) :void
-    {
-        (_ctrl.getPlaceView() as WhirledGamePanel).setShowButtons(rematch, back, back);
-    }
-
-    protected function setOccupantsLabel_v1 (label :String) :void
-    {
-        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setLabel(label);
-    }
-
-    protected function clearScores_v1 (clearValue :Object = null,
-        sortValuesToo :Boolean = false) :void
-    {
-        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().clearScores(
-            clearValue, sortValuesToo);
-    }
-
-    protected function setPlayerScores_v1 (scores :Array, sortValues :Array = null) :void
-    {
-        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setPlayerScores(
-            scores, sortValues);
-    }
-
-    protected function setMappedScores_v1 (scores :Object) :void
-    {
-        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setMappedScores(scores);
-    }
-
-    protected function getHeadShot_v1 (occupant :int, callback :Function) :void
-    {
-        validateConnected();
-
-        // in here, we just return a dummy value
-        callback(new Sprite(), true);
-    }
-
-    protected function endGameWithWinners_v1 (
-        winnerIds :Array, loserIds :Array, payoutType :int) :void
-    {
-        validateConnected();
-
-        // pass the buck straight on through, the server will validate everything
-        _gameObj.whirledGameService.endGameWithWinners(
-            _ctx.getClient(), toTypedIntArray(winnerIds), toTypedIntArray(loserIds), payoutType,
-            createLoggingConfirmListener("endGameWithWinners"));
-    }
-
-    protected function endGameWithScores_v1 (playerIds :Array, scores :Array /* of int */,
-        payoutType :int) :void
-    {
-        validateConnected();
-
-        // pass the buck straight on through, the server will validate everything
-        _gameObj.whirledGameService.endGameWithScores(
-            _ctx.getClient(), toTypedIntArray(playerIds), toTypedIntArray(scores), payoutType,
-            createLoggingConfirmListener("endGameWithWinners"));
-    }
-
-    protected function backToWhirled_v1 (showLobby :Boolean = false) :void
-    {
-        _ctrl.backToWhirled(showLobby);
-    }
-
-    protected function getLevelPacks_v1 () :Array
-    {
-        var packs :Array = [];
-        for each (var data :GameData in _gameObj.gameData) {
-            if (data.getType() != GameData.LEVEL_DATA) {
-                continue;
-            }
-            // if the level pack is premium, only add it if we own it
-            if ((data as LevelData).premium && !playerOwnsData(data.getType(), data.ident)) {
-                continue;
-            }
-            packs.unshift({ ident: data.ident,
-                            name: data.name,
-                            mediaURL: data.mediaURL,
-                            premium: (data as LevelData).premium });
-        }
-        return packs;
-    }
-
-    protected function getItemPacks_v1 () :Array
-    {
-        var packs :Array = [];
-        for each (var data :GameData in _gameObj.gameData) {
-            if (data.getType() != GameData.ITEM_DATA) {
-                continue;
-            }
-            packs.unshift({ ident: data.ident,
-                            name: data.name,
-                            mediaURL: data.mediaURL });
-        }
-        return packs;
-    }
-
-    protected function getPlayerItemPacks_v1 () :Array
-    {
-        return getItemPacks_v1().filter(function (data :GameData, idx :int, array :Array) :Boolean {
-            return playerOwnsData(data.getType(), data.ident);
-        });
-    }
-
-    protected function holdsTrophy_v1 (ident :String) :Boolean
-    {
-        return playerOwnsData(GameData.TROPHY_DATA, ident);
-    }
-
-    protected function awardTrophy_v1 (ident :String) :Boolean
-    {
-        if (playerOwnsData(GameData.TROPHY_DATA, ident)) {
-            return false;
-        }
-        _gameObj.whirledGameService.awardTrophy(
-            _ctx.getClient(), ident, new ConfirmAdapter(function (cause :String) :void {
-                // TODO: change GameCodes.GAME_MSGS to "game" and use that
-                _ctx.getChatDirector().displayFeedback("game", cause);
-            }));
-        return true;
-    }
-
-    protected function awardPrize_v1 (ident :String) :void
-    {
-        if (!playerOwnsData(GameData.PRIZE_MARKER, ident)) {
-            _gameObj.whirledGameService.awardPrize(
-                _ctx.getClient(), ident, createLoggingConfirmListener("awardPrize"));
-        }
-    }
-
-    protected function playerOwnsData (type :int, ident :String) :Boolean
-    {
-        return false; // this information is provided by the containing system
+        checkDictionaryWord_v2(locale, null, word, callback);
     }
 
     /**
@@ -1166,6 +1175,8 @@ public class GameBackend
         return 0;
     }
 
+    // --------------------------
+
     /**
      * Converts a Flash array of ints to a TypedArray for delivery over the wire to the server.
      */
@@ -1174,6 +1185,11 @@ public class GameBackend
         var tarray :TypedArray = TypedArray.create(int);
         tarray.addAll(array);
         return tarray;
+    }
+
+    protected function playerOwnsData (type :int, ident :String) :Boolean
+    {
+        return false; // this information is provided by the containing system
     }
 
     protected var _ctx :CrowdContext;
