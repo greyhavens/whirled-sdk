@@ -14,9 +14,6 @@
   <property name="projects" value="samskivert,narya,nenya,vilya,whirled"/>
   <import file="build/etc/build-support.xml"/>
 
-  <!-- archive of contributed libraries -->
-  <property name="contrib.dir" value="contrib"/>
-
   <!-- include bits to do the necessary Flex SDK path jockeying -->
   <import file="etc/flex-include.xml"/>
   <property name="flexsdk.dir" value="${flex.path}"/>
@@ -140,6 +137,7 @@
     <copy todir="${sdk.build}/dist">
      <fileset dir="${deploy.dir}">
        <include name="game-client.swf"/>
+       <include name="whirled-tools.jar"/>
        <include name="lib/**"/>
      </fileset>
     </copy>
@@ -153,7 +151,8 @@
     <!-- copy contributed files -->
     <mkdir dir="${sdk.build}/contrib"/>
     <copy todir="${sdk.build}/contrib">
-      <fileset dir="${contrib.dir}" includes="README.txt,src/as/com/whirled/contrib/*.as"/>
+      <fileset dir="${projects.dir}/whirled/contrib"
+               includes="README.txt,src/as/com/whirled/contrib/*.as"/>
     </copy>
     <!-- copy some example games -->
     <mkdir dir="${sdk.build}/examples/games"/>
