@@ -15,12 +15,12 @@
   <!-- out of it. otherwise just use a dummy value (can't easily skip it, alas). -->
   <condition property="app.source-extras.arg"
              value="-compiler.source-path=${app.source-extras}"
-             else="-compiler.as3"> <!-- dummy value -->
+             else="-externs=DummyValueIgnore">
     <isset property="app.source-extras"/>
   </condition>
   <condition property="app.lib-extras.arg"
              value="-library-path+=${app.lib-extras}"
-             else="-compiler.as3"> <!-- dummy value -->
+             else="-externs=DummyValueIgnore">
     <isset property="app.lib-extras"/>
   </condition>
 
