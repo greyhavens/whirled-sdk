@@ -120,6 +120,7 @@
       <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/*.as"/>
       <fileset dir="${projects.dir}/nenya/src/as" includes="com/threerings/flash/**/*.as"/>
       <fileset dir="src/as" includes="com/whirled/*.as"/>
+      <fileset dir="src/as" includes="com/whirled/game/*.as"/>
       <fileset dir="src/as" includes="com/whirled/util/*.as"/>
       <fileset dir="contrib/src/as" includes="com/whirled/**/*.as"/>
     </copy>
@@ -164,7 +165,7 @@
     </copy>
     <mkdir dir="${sdk.build}/lib"/>
     <copy todir="${sdk.build}">
-      <fileset dir="." includes="src/as/com/whirled/**" excludes="**/WorldGameControl.as"/>
+      <fileset dir="." includes="src/as/com/whirled/**" excludes="**/GameControl.as"/>
       <fileset dir="${projects.dir}/narya" includes="src/as/com/threerings/util/*.as"/>
       <fileset dir="${projects.dir}/narya" includes="src/as/Log.as"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
