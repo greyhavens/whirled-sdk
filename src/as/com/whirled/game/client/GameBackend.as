@@ -5,6 +5,7 @@ package com.whirled.game.client {
 
 import flash.display.DisplayObject;
 import flash.display.InteractiveObject;
+import flash.display.Sprite;
 
 import flash.errors.IllegalOperationError;
 
@@ -498,68 +499,79 @@ public class GameBackend
         });
         o["gameConfig"] = gameConfig;
 
-        // functions
-        o["playerReady_v1"] = playerReady_v1;
+        // GameControl
+        o["commitTransaction"] = commitTransaction_v1;
+        o["focusContainer_v1"] = focusContainer_v1;
+        o["startTransaction"] = startTransaction_v1;
+
+        // .local
+        o["alterKeyEvents_v1"] = alterKeyEvents_v1;
+        o["backToWhirled_v1"] = backToWhirled_v1;
+        o["clearScores_v1"] = clearScores_v1;
+        o["filter_v1"] = filter_v1;
+        o["getHeadShot_v1"] = getHeadShot_v1;
+        o["getSize_v1"] = getSize_v1;
+        o["localChat_v1"] = localChat_v1;
+        o["setMappedScores_v1"] = setMappedScores_v1;
+        o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
+        o["setPlayerScores_v1"] = setPlayerScores_v1;
+        o["setShowButtons_v1"] = setShowButtons_v1;
+
+        // .net
+        o["sendMessage_v2"] = sendMessage_v2;
         o["setProperty_v1"] = setProperty_v1;
         o["testAndSetProperty_v1"] = testAndSetProperty_v1;
-        o["mergeCollection_v1"] = mergeCollection_v1;
-        o["setTicker_v1"] = setTicker_v1;
-        o["sendChat_v1"] = sendChat_v1;
-        o["localChat_v1"] = localChat_v1;
-        o["setUserCookie_v1"] = setUserCookie_v1;
-        o["isMyTurn_v1"] = isMyTurn_v1;
-        o["isInPlay_v1"] = isInPlay_v1;
-        o["getDictionaryLetterSet_v2"] = getDictionaryLetterSet_v2;
-        o["checkDictionaryWord_v2"] = checkDictionaryWord_v2;
-        o["populateCollection_v1"] = populateCollection_v1;
-        o["alterKeyEvents_v1"] = alterKeyEvents_v1;
-        o["focusContainer_v1"] = focusContainer_v1;
 
-        // newest
-        o["getFromCollection_v2"] = getFromCollection_v2;
-        o["sendMessage_v2"] = sendMessage_v2;
-        o["getOccupants_v1"] = getOccupants_v1;
-        o["getMyId_v1"] = getMyId_v1;
-        o["getControllerId_v1"] = getControllerId_v1;
+        // .player
+        o["awardPrize_v1"] = awardPrize_v1;
+        o["awardTrophy_v1"] = awardTrophy_v1;
+        o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
         o["getUserCookie_v2"] = getUserCookie_v2;
-        o["startNextTurn_v1"] = startNextTurn_v1;
-        o["endRound_v1"] = endRound_v1;
+        o["holdsTrophy_v1"] = holdsTrophy_v1;
+        o["setUserCookie_v1"] = setUserCookie_v1;
+
+        // .game
         o["endGame_v2"] = endGame_v2;
-        o["restartGameIn_v1"] = restartGameIn_v1;
-        o["getTurnHolder_v1"] = getTurnHolder_v1;
-        o["getRound_v1"] = getRound_v1;
+        o["endGameWithScores_v1"] = endGameWithScores_v1;
+        o["endGameWithWinners_v1"] = endGameWithWinners_v1;
+        o["endRound_v1"] = endRound_v1;
+        o["getControllerId_v1"] = getControllerId_v1;
+        o["getItemPacks_v1"] = getItemPacks_v1;
+        o["getLevelPacks_v1"] = getLevelPacks_v1;
+        o["getMyId_v1"] = getMyId_v1;
+        o["getOccupants_v1"] = getOccupants_v1;
         o["getOccupantName_v1"] = getOccupantName_v1;
+        o["getRound_v1"] = getRound_v1;
+        o["getTurnHolder_v1"] = getTurnHolder_v1;
+        o["isInPlay_v1"] = isInPlay_v1;
+        o["isMyTurn_v1"] = isMyTurn_v1;
+        o["playerReady_v1"] = playerReady_v1;
+        o["restartGameIn_v1"] = restartGameIn_v1;
+        o["sendChat_v1"] = sendChat_v1;
+        o["startNextTurn_v1"] = startNextTurn_v1;
+
+        // .game.seating
+        o["getMyPosition_v1"] = getMyPosition_v1;
         o["getPlayers_v1"] = getPlayers_v1;
         o["getPlayerPosition_v1"] = getPlayerPosition_v1;
-        o["getMyPosition_v1"] = getMyPosition_v1;
-        o["filter_v1"] = filter_v1;
 
-        o["startTransaction"] = startTransaction_v1;
-        o["commitTransaction"] = commitTransaction_v1;
+        // .services
+        o["checkDictionaryWord_v2"] = checkDictionaryWord_v2;
+        o["getDictionaryLetterSet_v2"] = getDictionaryLetterSet_v2;
+        o["setTicker_v1"] = setTicker_v1;
 
-        o["getSize_v1"] = getSize_v1;
+        // .services.bags
+        o["getFromCollection_v2"] = getFromCollection_v2;
+        o["mergeCollection_v1"] = mergeCollection_v1;
+        o["populateCollection_v1"] = populateCollection_v1;
 
-        o["endGameWithWinners_v1"] = endGameWithWinners_v1;
-        o["endGameWithScores_v1"] = endGameWithScores_v1;
-        o["backToWhirled_v1"] = backToWhirled_v1;
-
-        o["getLevelPacks_v1"] = getLevelPacks_v1;
-        o["getItemPacks_v1"] = getItemPacks_v1;
-        o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
-        o["holdsTrophy_v1"] = holdsTrophy_v1;
-        o["awardTrophy_v1"] = awardTrophy_v1;
-        o["awardPrize_v1"] = awardPrize_v1;
-
-        o["setShowButtons_v1"] = setShowButtons_v1;
-        o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
-        o["clearScores_v1"] = clearScores_v1;
-        o["setPlayerScores_v1"] = setPlayerScores_v1;
-        o["setMappedScores_v1"] = setMappedScores_v1;
-
-        // compatability
-        o["endTurn_v2"] = startNextTurn_v1; // it's the same!
-        o["getDictionaryLetterSet_v1"] = getDictionaryLetterSet_v1;
+        // Old methods: backwards compatability
+        o["awardFlow_v1"] = awardFlow_v1;
+        o["awardFlow_v2"] = awardFlow_v2;
         o["checkDictionaryWord_v1"] = checkDictionaryWord_v1;
+        o["endTurn_v2"] = startNextTurn_v1; // it's the same!
+        o["getAvailableFlow_v1"] = getAvailableFlow_v1;
+        o["getDictionaryLetterSet_v1"] = getDictionaryLetterSet_v1;
         o["getStageBounds_v1"] = getStageBounds_v1;
     }
 
@@ -1019,6 +1031,14 @@ public class GameBackend
         (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setMappedScores(scores);
     }
 
+    protected function getHeadShot_v1 (occupant :int, callback :Function) :void
+    {
+        validateConnected();
+
+        // in here, we just return a dummy value
+        callback(new Sprite(), true);
+    }
+
     protected function endGameWithWinners_v1 (
         winnerIds :Array, loserIds :Array, payoutType :int) :void
     {
@@ -1126,6 +1146,24 @@ public class GameBackend
     {
         var size :Point = getSize_v1();
         return new Rectangle(0, 0, size.x, size.y);
+    }
+
+    /** A backwards compatible method. */
+    protected function getAvailableFlow_v1 () :int
+    {
+        return 0;
+    }
+
+    /** A backwards compatible method. */
+    protected function awardFlow_v1 (amount :int) :void
+    {
+        // NOOP!
+    }
+
+    /** A backwards compatible method. */
+    protected function awardFlow_v2 (perf :int) :int
+    {
+        return 0;
     }
 
     /**
