@@ -251,7 +251,7 @@ public class WhirledClient
     protected WhirledContext _ctx;
     protected ManagedJFrame _frame;
     protected JPanel _root = new JPanel(new BorderLayout()); // TODO?
-    protected Config _config = new Config("toybox");
+    protected Config _config = new Config("whirled");
 
     protected Client _client;
     protected ResourceManager _rsrcmgr;
