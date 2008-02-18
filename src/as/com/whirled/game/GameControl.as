@@ -55,10 +55,20 @@ public class GameControl extends AbstractControl
      */
     public function GameControl (disp :DisplayObject, autoReady :Boolean = true)
     {
+        // create all our sub-controls
+        _subControls.push(
+            _localCtrl = new LocalSubControl(this),
+            _netCtrl = new NetSubControl(this),
+            _playerCtrl = new PlayerSubControl(this),
+            _gameCtrl = new GameSubControl(this),
+            _servicesCtrl = new ServicesSubControl(this)
+        );
+
         var event :DynEvent = new DynEvent();
-        event.userProps = new Object();
-        populateProperties(event.userProps);
-        event.userProps["autoReady_v1"] = autoReady;
+        var ourProps :Object = new Object();
+        populateProperties(ourProps);
+        ourProps["autoReady_v1"] = autoReady;
+        event.userProps = ourProps;
         disp.root.loaderInfo.sharedEvents.dispatchEvent(event);
         if ("hostProps" in event) {
             setHostProps(event.hostProps);
@@ -69,15 +79,6 @@ public class GameControl extends AbstractControl
 
         // set up the unload event to propagate
         disp.root.loaderInfo.addEventListener(Event.UNLOAD, dispatch);
-
-        // create all our sub-controls
-        _subControls.push(
-            _localCtrl = new LocalSubControl(this),
-            _netCtrl = new NetSubControl(this),
-            _playerCtrl = new PlayerSubControl(this),
-            _gameCtrl = new GameSubControl(this),
-            _servicesCtrl = new ServicesSubControl(this)
-        );
     }
 
     /**
