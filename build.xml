@@ -7,13 +7,11 @@
   <property name="asrc.dir"    value="src/as"/>
   <property name="deploy.dir"  value="dist"/>
   <property name="classes.dir" value="${deploy.dir}/classes"/>
-  <property name="javadoc.dir" value="${deploy.dir}/docs"/>
-  <property name="savedoc.dir" value="docs"/>
   <property name="sdk.build"   value="${deploy.dir}/sdk/whirled"/>
 
   <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"  value="libraries"/>
-  <property name="projects" value="samskivert,narya,nenya,vilya"/>
+  <property name="projects" value="samskivert,narya,nenya,vilya,whirled"/>
   <import file="build/etc/build-support.xml"/>
 
   <!-- archive of contributed libraries -->
@@ -21,6 +19,7 @@
 
   <!-- include bits to do the necessary Flex SDK path jockeying -->
   <import file="etc/flex-include.xml"/>
+  <property name="flexsdk.dir" value="${flex.path}"/>
 
   <!-- declares the libraries needed by the Whirled runtime -->
   <filelist dir="." id="dist.libs">
@@ -42,6 +41,7 @@
     <file name="lib/lwjgl.jar"/>
     <file name="lib/servlet-api.jar"/>
     <file name="lib/velocity-1.5-dev.jar"/>
+    <file name="lib/flexlib.swc"/>
   </filelist>
 
   <!-- declare our classpath -->
@@ -61,7 +61,6 @@
   <target name="prepare-java" depends="prepare">
     <mkdir dir="${classes.dir}"/>
     <mkdir dir="${classes.dir}/rsrc"/>
-    <mkdir dir="${javadoc.dir}"/>
     <copy todir="${classes.dir}/rsrc">
       <fileset dir="rsrc">
        <include name="**/*"/>
@@ -69,36 +68,22 @@
     </copy>
   </target>
 
-  <!-- builds our whirled.swc Flash library -->
-  <target name="aslib" unless="aslib_is_up_to_date" depends="prepare,prepare-flex,checkaslib">
-    <!-- build the version for clients to build against -->
-    <java jar="${flex.path}/lib/compc.jar" fork="true" failonerror="true">
-      <arg value="-load-config"/>
-      <arg value="etc/whirled-config.xml"/>
-      <arg value="-external-library-path"/>
-      <arg value="${flex.path}/frameworks/libs"/>
-      <arg value="-compiler.optimize"/>
-      <arg value="-compiler.source-path=${projects.dir}/narya/src/as/"/>
-      <arg value="-compiler.source-path=${projects.dir}/nenya/src/as/"/>
-      <arg value="-compiler.source-path=${projects.dir}/vilya/src/as/"/>
-      <arg value="-compiler.source-path=${asrc.dir}/"/>
-      <arg value="-compiler.source-path=rsrc/{locale}/i18n"/>
-      <arg value="-include-sources=${projects.dir}/narya/src/as/"/>
-      <arg value="-include-sources=${projects.dir}/nenya/src/as/com/threerings/flash/"/>
-      <arg value="-include-sources=${projects.dir}/vilya/src/as/com/threerings/parlor/"/>
-      <arg value="-include-sources=${asrc.dir}/"/>
-      <arg value="-output"/>
-      <arg value="${deploy.dir}/whirled.swc"/>
-    </java>
+  <!-- build the java class files -->
+  <target name="compile" depends="prepare-java">
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" optimize="off" deprecation="on"
+           target="1.5">
+      <classpath refid="classpath"/>
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
   </target>
 
-  <!-- builds our Flash game test client without checking dependencies -->
-  <target name="asquick">
+  <!-- builds our Flash game test client -->
+  <target name="asclient">
     <exec executable="${flex.path}/bin/mxmlc" failonerror="true">
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
       <arg value="-compiler.optimize"/>
-      <arg value="-library-path+=${deploy.dir}"/>
+      <arg value="-library-path+=${deploy.dir}/lib"/>
       <arg value="-compiler.source-path=${asrc.dir}/"/>
       <arg value="-compiler.source-path=rsrc/{locale}/i18n"/>
       <arg value="-incremental=true"/>
@@ -109,9 +94,6 @@
     </exec>
   </target>
 
-  <!-- builds our Flash game test client -->
-  <target name="asclient" depends="aslib,asquick"/>
-
   <!-- builds the ActionScript documention -->
   <target name="asdoc">
     <mkdir dir="${sdk.build}/docs"/>
@@ -119,10 +101,10 @@
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/*.as"/>
       <fileset dir="${projects.dir}/nenya/src/as" includes="com/threerings/flash/**/*.as"/>
-      <fileset dir="src/as" includes="com/whirled/*.as"/>
-      <fileset dir="src/as" includes="com/whirled/game/*.as"/>
-      <fileset dir="src/as" includes="com/whirled/util/*.as"/>
-      <fileset dir="contrib/src/as" includes="com/whirled/**/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/util/*.as"/>
+      <fileset dir="${projects.dir}/whirled/contrib/src/as" includes="com/whirled/**/*.as"/>
     </copy>
     <!-- work around annoying asdoc .svn directory freakout -->
     <mkdir dir="${deploy.dir}/tmp/astemps"/>
@@ -137,7 +119,7 @@
     <!-- finally actually run asdoc -->
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
-      <arg line="-library-path ${deploy.dir}/whirled.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib"/>
       <arg line="-templates-path ${deploy.dir}/tmp/astemps"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
       <arg line="-load-config+=etc/asdoc-config.xml"/>
@@ -148,7 +130,7 @@
   </target>
 
   <!-- builds the SDK -->
-  <target name="sdk" depends="aslib,asclient,dist,asdoc">
+  <target name="sdk" depends="distprojects,asclient,asdoc">
     <mkdir dir="${sdk.build}"/>
     <copy todir="${sdk.build}">
       <fileset dir="data/sdk" includes="**"/>
@@ -157,8 +139,6 @@
     <mkdir dir="${sdk.build}/dist"/>
     <copy todir="${sdk.build}/dist">
      <fileset dir="${deploy.dir}">
-       <include name="whirled.swc"/>
-       <include name="whirled-*.jar"/>
        <include name="game-client.swf"/>
        <include name="lib/**"/>
      </fileset>
@@ -201,75 +181,8 @@
          basedir="${deploy.dir}/sdk" includes="whirled/**"/>
   </target>
 
-  <!-- generates additional methods for distributed object classes -->
-  <target name="gendobj" depends="prepare"> 
-    <taskdef name="dobj" classpathref="classpath"
-             classname="com.threerings.presents.tools.GenDObjectTask"/>
-    <!-- make sure the dobject class files are all compiled -->
-    <javac srcdir="src/java" destdir="${classes.dir}" includeAntRuntime="false" debug="on"
-           optimize="${build.optimize}" deprecation="on" target="1.5">
-      <classpath refid="classpath"/>
-      <include name="**/*Object.java"/>
-    </javac>
-    <!-- now generate the associated files -->
-    <dobj classpathref="classpath">
-      <fileset dir="src/java" includes="**/*Object.java"/>
-    </dobj>
-  </target>
-
-  <!-- generates marshaller and dispatcher classes for all invocation service declarations -->
-  <target name="genservice" depends="prepare-java">
-    <taskdef name="service" classpathref="classpath"
-             classname="com.threerings.presents.tools.GenServiceTask"/>
-    <!-- make sure the service class files are all compiled -->
-    <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" deprecation="on" target="1.5">
-      <classpath refid="classpath"/>
-      <include name="**/*Service.java"/>
-    </javac>
-    <!-- now generate the associated files -->
-    <service header="lib/SOURCE_HEADER" asroot="${asrc.dir}" classpathref="classpath">
-      <fileset dir="${src.dir}">
-        <include name="**/*Service.java"/>
-      </fileset>
-    </service>
-  </target>
-
-  <!-- generates ActionScript versions of our Streamable classes -->
-  <target name="genascript" depends="dist">
-    <taskdef name="genscript" classpathref="classpath"
-             classname="com.threerings.presents.tools.GenActionScriptTask"/>
-    <!-- now generate the associated files -->
-    <genscript header="lib/SOURCE_HEADER" asroot="${asrc.dir}">
-      <fileset dir="${src.dir}">
-        <include name="**/whirled/data/*.java"/>
-      </fileset>
-    </genscript>
-  </target>
-
-  <!-- build the java class files -->
-  <target name="compile" depends="prepare-java">
-    <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" optimize="off" deprecation="on"
-           target="1.5">
-      <classpath refid="classpath"/>
-      <compilerarg value="-Xlint:unchecked"/>
-    </javac>
-  </target>
-
-  <!-- builds the javadoc documentation -->
-  <target name="javadoc" depends="prepare-java">
-    <property name="copy.holder"  value="Three Rings Design, Inc."/>
-    <javadoc windowtitle="${app.name} API" doctitle="${app.name} API"
-             bottom="Copyright &#169; 2006-2007 ${copy.holder}. All Rights Reserved."
-             destdir="${javadoc.dir}" additionalparam="-breakiterator">
-      <classpath refid="classpath"/>
-      <link href="http://java.sun.com/j2se/1.5/docs/api/"/>
-      <link href="http://samskivert.com/code/samskivert/samskivert/docs/api"/>
-      <fileset dir="${src.dir}" includes="**/*.java"/>
-    </javadoc>
-  </target>
-
-  <!-- builds and tests the FAT test server -->
-  <target name="testfat" depends="compile">
+  <!-- runs the FAT test server -->
+  <target name="testfat">
     <!-- start the server which will start up the clients -->
     <java classname="com.whirled.server.FATControlPanel" fork="true">
       <classpath>
@@ -282,41 +195,16 @@
 
   <!-- builds the distribution jar files -->
   <target name="dist" depends="compile">
-    <!-- stick all our code in one jar file -->
-    <jar file="${deploy.dir}/${app.name}-code.jar" basedir="${classes.dir}">
-      <include name="com/**"/>
-      <include name="*.properties"/>
-      <include name="rsrc/**/*.properties"/>
-      <include name="rsrc/**/*.tmpl"/>
-    </jar>
-    <!-- and all of our configuration and media in another -->
-    <jar file="${deploy.dir}/${app.name}-media.jar" basedir="${classes.dir}" includes="rsrc/**"/>
-    <!-- and our server-only data in yet another -->
-    <jar file="${deploy.dir}/${app.name}-data.jar" basedir="." includes="data/dictionary/**"/>
+    <jar file="${deploy.dir}/${app.name}-tools.jar" basedir="${classes.dir}" includes="com/**"/>
   </target>
-
-  <!-- a target for rebuilding the top-level project (but not subprojects) -->
-  <target name="all" depends="prepare,compile,javadoc,dist"/>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
-  <target name="distall" depends="prepare,distprojects,dist,sdk">
-  </target>
-
-  <!-- cleans out the compiled code -->
-  <target name="clean" depends="asclean">
-    <delete dir="${classes.dir}"/>
-    <delete><fileset dir="${deploy.dir}" includes="*.jar"/></delete>
-    <delete><fileset dir="${deploy.dir}" includes="*.swc"/></delete>
+  <target name="distall" depends="prepare,distprojects,dist,asclient,sdk">
   </target>
 
   <!-- fully cleans out the application -->
-  <target name="distclean" depends="asclean">
+  <target name="distclean">
     <delete dir="${deploy.dir}"/>
-  </target>
-
-  <!-- cleans the actionscript cache files -->
-  <target name="asclean">
-    <delete><fileset dir="${asrc.dir}" includes="*.cache"/></delete>
   </target>
 
   <!-- fully cleans out the application and all subprojects -->

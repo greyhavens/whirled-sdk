@@ -11,12 +11,12 @@
     <taskdef name="checkbuild" classname="com.whirled.tools.ConfigBuildPropsTask">
       <classpath>
         <fileset dir="${build.root}/dist/lib" includes="samskivert.jar"/>
-        <fileset dir="${build.root}/dist" includes="whirled-code.jar"/>
+        <fileset dir="${build.root}/dist" includes="whirled-tools.jar"/>
       </classpath>
     </taskdef>
     <checkbuild props="${build.root}/build.properties"/>
 
-    <!-- generate the whirled-config.xml file using the flex.path -->
+    <!-- generate the whirled-config.xml file using the flexsdk.path -->
     <copy tofile="${etc.dir}/whirled-config.xml" file="${etc.dir}/whirled-config.xml.in" 
           overwrite="true">
       <filterset>

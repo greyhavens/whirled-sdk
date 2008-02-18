@@ -1,6 +1,7 @@
 <!-- declares the libraries needed by the Whirled runtime -->
 <project name="whirled-dependencies" basedir=".">
   <fileset dir="${libs.dir}" id="whirled.libs">
+    <!-- Java dependencies -->
     <include name="ant.jar"/>
     <include name="commons-digester.jar"/>
     <include name="commons-io.jar"/>
@@ -16,5 +17,9 @@
     <include name="nenya-rsrc*.jar"/>
     <include name="vilya-parlor*.jar"/>
     <include name="toybox*.jar"/>
+    <!-- ActionScript dependencies -->
+    <include name="naryalib.swc"/>
+    <include name="nenyalib.swc"/>
+    <include name="vilyalib.swc"/>
   </fileset>
 </project>

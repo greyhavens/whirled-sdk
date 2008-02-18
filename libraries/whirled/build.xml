@@ -1,0 +1,171 @@
+<!-- build configuration -->
+<project name="whirled" default="compile" basedir=".">
+
+  <!-- define some basic project parameters -->
+  <property name="lib.name"    value="whirled"/>
+  <property name="src.dir"     value="src/java"/>
+  <property name="asrc.dir"    value="src/as"/>
+  <property name="deploy.dir"  value="dist"/>
+  <property name="classes.dir" value="${deploy.dir}/classes"/>
+  <property name="javadoc.dir" value="${deploy.dir}/docs"/>
+
+  <property name="libs.dir"     value="lib"/>
+  <import file="etc/libs-incl.xml"/>
+
+  <!-- declare our classpath -->
+  <path id="classpath">
+    <pathelement location="${classes.dir}"/>
+    <fileset dir="${deploy.dir}/lib" includes="*.jar"/>
+  </path>
+
+  <!-- prepares the build directories -->
+  <target name="prepare">
+    <mkdir dir="${deploy.dir}"/>
+    <mkdir dir="${deploy.dir}/tmp"/>
+    <mkdir dir="${deploy.dir}/lib"/>
+    <copy todir="${deploy.dir}/lib" flatten="true">
+      <fileset refid="${lib.name}.libs"/>
+    </copy>
+  </target>
+
+  <!-- prepares the java bits -->
+  <target name="prepare-java" depends="prepare">
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${classes.dir}/rsrc"/>
+    <mkdir dir="${javadoc.dir}"/>
+    <copy todir="${classes.dir}/rsrc">
+      <fileset dir="rsrc">
+       <include name="**/*"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- generates additional methods for distributed object classes -->
+  <target name="gendobj" depends="prepare"> 
+    <taskdef name="dobj" classpathref="classpath"
+             classname="com.threerings.presents.tools.GenDObjectTask"/>
+    <!-- make sure the dobject class files are all compiled -->
+    <javac srcdir="src/java" destdir="${classes.dir}" includeAntRuntime="false" debug="on"
+           optimize="${build.optimize}" deprecation="on" target="1.5">
+      <classpath refid="classpath"/>
+      <include name="**/*Object.java"/>
+    </javac>
+    <!-- now generate the associated files -->
+    <dobj classpathref="classpath">
+      <fileset dir="src/java" includes="**/*Object.java"/>
+    </dobj>
+  </target>
+
+  <!-- generates marshaller and dispatcher classes for all invocation service declarations -->
+  <target name="genservice" depends="prepare-java">
+    <taskdef name="service" classpathref="classpath"
+             classname="com.threerings.presents.tools.GenServiceTask"/>
+    <!-- make sure the service class files are all compiled -->
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" deprecation="on" target="1.5">
+      <classpath refid="classpath"/>
+      <include name="**/*Service.java"/>
+    </javac>
+    <!-- now generate the associated files -->
+    <service header="lib/SOURCE_HEADER" asroot="${asrc.dir}" classpathref="classpath">
+      <fileset dir="${src.dir}">
+        <include name="**/*Service.java"/>
+      </fileset>
+    </service>
+  </target>
+
+  <!-- generates ActionScript versions of our Streamable classes -->
+  <target name="genascript" depends="dist">
+    <taskdef name="genscript" classpathref="classpath"
+             classname="com.threerings.presents.tools.GenActionScriptTask"/>
+    <!-- now generate the associated files -->
+    <genscript header="lib/SOURCE_HEADER" asroot="${asrc.dir}">
+      <fileset dir="${src.dir}">
+        <include name="**/whirled/data/*.java"/>
+      </fileset>
+    </genscript>
+  </target>
+
+  <!-- build the java class files -->
+  <target name="compile" depends="prepare-java">
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" optimize="off" deprecation="on"
+           target="1.5">
+      <classpath refid="classpath"/>
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
+  </target>
+
+  <!-- checks whether our Flash library needs building -->
+  <target name="checkaslib">
+    <condition property="no_build_aslib"><or>
+      <not><available file="${flexsdk.dir}/lib/compc.jar"/></not>
+      <uptodate targetfile="${deploy.dir}/${lib.name}lib.swc">
+        <srcfiles dir="src/as" includes="**/*.as"/>
+      </uptodate>
+    </or></condition>
+  </target>
+
+  <!-- builds our Flash library -->
+  <target name="aslib" unless="no_build_aslib" depends="checkaslib">
+    <copy file="etc/aslib-config.xml.in" tofile="${deploy.dir}/aslib-config.xml">
+      <filterset>
+        <filter token="flex_sdk_dir" value="${flexsdk.dir}"/>
+        <filter token="lib_name_dir" value="${lib.name}"/>
+      </filterset>
+    </copy>
+    <java jar="${flexsdk.dir}/lib/compc.jar" fork="true" failonerror="true">
+      <arg value="-load-config"/>
+      <arg value="${deploy.dir}/aslib-config.xml"/>
+      <arg value="-compiler.optimize"/>
+      <arg value="-compiler.source-path=src/as/"/>
+      <arg value="-include-sources=src/as/"/>
+      <arg value="-output"/>
+      <arg value="${deploy.dir}/${lib.name}lib.swc"/>
+    </java>
+    <delete file="${deploy.dir}/aslib-config.xml"/>
+  </target>
+
+  <!-- builds the javadoc documentation -->
+  <target name="javadoc" depends="prepare-java">
+    <property name="copy.holder"  value="Three Rings Design, Inc."/>
+    <javadoc windowtitle="${lib.name} API" doctitle="${lib.name} API"
+             bottom="Copyright &#169; 2006-2008 ${copy.holder}. All Rights Reserved."
+             destdir="${javadoc.dir}" additionalparam="-breakiterator">
+      <classpath refid="classpath"/>
+      <link href="http://java.sun.com/j2se/1.5/docs/api/"/>
+      <link href="http://samskivert.com/code/samskivert/samskivert/docs/api"/>
+      <fileset dir="${src.dir}" includes="**/*.java"/>
+    </javadoc>
+  </target>
+
+  <!-- builds the distribution jar files -->
+  <target name="dist" depends="compile,aslib">
+    <!-- stick all our code in one jar file -->
+    <jar file="${deploy.dir}/${lib.name}-code.jar" basedir="${classes.dir}">
+      <include name="com/**"/>
+      <include name="*.properties"/>
+      <include name="rsrc/**/*.properties"/>
+      <include name="rsrc/**/*.tmpl"/>
+    </jar>
+    <!-- and all of our configuration and media in another -->
+    <jar file="${deploy.dir}/${lib.name}-media.jar" basedir="${classes.dir}" includes="rsrc/**"/>
+    <!-- and our server-only data in yet another -->
+    <jar file="${deploy.dir}/${lib.name}-data.jar" basedir="." includes="data/dictionary/**"/>
+  </target>
+
+  <!-- a target for rebuilding the top-level project (but not subprojects) -->
+  <target name="all" depends="prepare,compile,javadoc,dist"/>
+
+  <!-- cleans out the compiled code -->
+  <target name="clean">
+    <delete dir="${classes.dir}"/>
+    <delete dir="${javadoc.dir}"/>
+    <delete failonerror="false"><fileset dir="${deploy.dir}" includes="*.jar"/></delete>
+    <delete failonerror="false"><fileset dir="${deploy.dir}" includes="*.swc"/></delete>
+  </target>
+
+  <!-- fully cleans out the application -->
+  <target name="distclean">
+    <delete dir="${deploy.dir}"/>
+  </target>
+
+</project>
