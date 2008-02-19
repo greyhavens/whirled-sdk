@@ -109,7 +109,7 @@ public class GameBackend
         // old style listener. Deprecated 2008-02-15, but we'll probably always need it
         disp.addEventListener("ezgameQuery", handleUserCodeConnect);
         // newer listener
-        disp.addEventListener("gameConnect", handleUserCodeConnect);
+        disp.addEventListener("controlConnect", handleUserCodeConnect);
     }
 
     /**
@@ -445,15 +445,19 @@ public class GameBackend
         return (-1 != _gameObj.getPlayerIndex(occupantName));
     }
 
-    protected function handleUserCodeConnect (evt :Object) :void
+    protected function handleUserCodeConnect (evt :Event) :void
     {
-        var userProps :Object = evt.userProps;
+        // Old-style queries were deprecated 2008-02-18, but we'll probably always need them.
+        // Old: eventName: "ezQuery", userProps: "userProps", ourProps: "ezProps"
+        // New: eventName: "controlConnect", userProps: "userProps", ourProps: "hostProps"
+        var hostPropName :String = (evt.type == "controlConnect") ? "hostProps" : "ezProps";
+
+        var userProps :Object = Object(evt).userProps;
         setUserCodeProperties(userProps);
 
         var ourProps :Object = new Object();
         populateProperties(ourProps);
-        evt.ezProps = ourProps; // old-style name (deprecated 2008-02-15, but we should always keep)
-        evt.hostProps = ourProps; // new-style name
+        Object(evt)[hostPropName] = ourProps;
 
         // determine whether to automatically start the game in a backwards compatible way
         var autoReady :Boolean = ("autoReady_v1" in userProps) ? userProps["autoReady_v1"] : true;
