@@ -9,9 +9,9 @@ import flash.display.Sprite;
 
 import flash.events.Event;
 
-import com.whirled.WhirledGameControl;
+import com.whirled.game.GameControl;
 
-[SWF(width="400", height="400")]
+[SWF(width="700", height="500")]
 public class @project@ extends Sprite
 {
     public function @project@ ()
@@ -19,7 +19,7 @@ public class @project@ extends Sprite
         // listen for an unload event
         root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
 
-        _control = new WhirledGameControl(this);
+        _control = new GameControl(this);
     }
 
     /**
@@ -31,6 +31,6 @@ public class @project@ extends Sprite
         // unregistering listeners to any events - especially Event.ENTER_FRAME
     }
 
-    protected var _control :WhirledGameControl;
+    protected var _control :GameControl;
 }
 }
