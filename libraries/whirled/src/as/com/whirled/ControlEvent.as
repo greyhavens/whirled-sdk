@@ -170,10 +170,10 @@ public class ControlEvent extends Event
         return new ControlEvent(type, _name, _value);
     }
 
-    /** Internal storage for our name property. */
+    /** Internal storage for our name property. @private */
     protected var _name :String;
 
-    /** Internal storage for our value property. */
+    /** Internal storage for our value property. @private */
     protected var _value :Object;
 }
 }
