@@ -130,9 +130,9 @@ public class ActorControl extends EntityControl
     /**
      * @private
      */
-    override protected function populateProperties (o :Object) :void
+    override protected function setUserProps (o :Object) :void
     {
-        super.populateProperties(o);
+        super.setUserProps(o);
 
         o["appearanceChanged_v2"] = appearanceChanged_v2;
         o["stateSet_v1"] = stateSet_v1;
@@ -141,9 +141,9 @@ public class ActorControl extends EntityControl
     /**
      * @private
      */
-    override protected function gotInitProperties (o :Object) :void
+    override protected function gotInitProps (o :Object) :void
     {
-        super.gotInitProperties(o);
+        super.gotInitProps(o);
 
         _orient = (o["orient"] as Number);
         _isMoving = (o["isMoving"] as Boolean);
@@ -160,7 +160,7 @@ public class ActorControl extends EntityControl
         _orient = orient;
         _isMoving = moving;
         // "sleeping" is ignored in this class
-        dispatch(ControlEvent.APPEARANCE_CHANGED);
+        dispatchCtrlEvent(ControlEvent.APPEARANCE_CHANGED);
     }
 
     /**
@@ -169,7 +169,7 @@ public class ActorControl extends EntityControl
      */
     protected function stateSet_v1 (newState :String) :void
     {
-        dispatch(ControlEvent.STATE_CHANGED, newState);
+        dispatchCtrlEvent(ControlEvent.STATE_CHANGED, newState);
     }
 
     /** Our current orientation, or 0. @private */

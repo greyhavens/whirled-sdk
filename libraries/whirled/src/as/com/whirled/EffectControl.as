@@ -43,16 +43,11 @@ public class EffectControl extends EntityControl
     }
 
     // from WhirledControl
-    override protected function gotInitProperties (o :Object) :void
+    override protected function gotInitProps (o :Object) :void
     {
-        super.gotInitProperties(o);
+        super.gotInitProps(o);
 
         _params = (o["parameters"] as String);
-    }
-
-    override protected function isAbstract () :Boolean
-    {
-        return false;
     }
 
     /** Our parameters, if any. */

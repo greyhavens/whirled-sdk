@@ -3,6 +3,8 @@
 
 package com.whirled.game {
 
+import com.whirled.AbstractSubControl;
+
 /**
  * Dispatched when the controller changes for the game.
  *
@@ -91,9 +93,6 @@ public class GameSubControl extends AbstractSubControl
     public function GameSubControl (parent :GameControl)
     {
         super(parent);
-
-        // TODO: party games shouldn't even create this!
-        _seatingCtrl = new SeatingSubControl(parent, this);
     }
 
     /**
@@ -361,12 +360,10 @@ public class GameSubControl extends AbstractSubControl
         callHostCode("restartGameIn_v1", seconds);
     }
 
-    /**
-     * @private
-     */
-    override protected function populateProperties (o :Object) :void
+    /** @private */
+    override protected function setUserProps (o :Object) :void
     {
-        super.populateProperties(o);
+        super.setUserProps(o);
 
         o["controlDidChange_v1"] = controlDidChange_v1;
         o["turnDidChange_v1"] = turnDidChange_v1;
@@ -374,20 +371,25 @@ public class GameSubControl extends AbstractSubControl
         o["roundStateChanged_v1"] = roundStateChanged_v1;
         o["occupantChanged_v1"] = occupantChanged_v1;
         o["userChat_v1"] = userChat_v1;
-
-        _seatingCtrl.populatePropertiesFriend(o);
     }
 
-    /**
-     * @private
-     */
-    override protected function setHostProps (o :Object) :void
+    /** @private */
+    override protected function gotHostProps (o :Object) :void
     {
-        super.setHostProps(o);
+        super.gotHostProps(o);
 
         _gameConfig = o.gameConfig;
+    }
 
-        _seatingCtrl.setHostPropsFriend(o);
+    /** @private */
+    override protected function createSubControls () :Array
+    {
+        return [
+            // TODO
+            // party games shouldn't have this, but it needs to be created before we
+            // we even know what type of game we are. Maybe after we find out we destroy it??
+            _seatingCtrl = new SeatingSubControl(_parent, this)
+        ];
     }
 
     /**

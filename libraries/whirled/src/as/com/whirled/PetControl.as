@@ -40,17 +40,9 @@ public class PetControl extends ActorControl
     /**
      * @private
      */
-    override protected function isAbstract () :Boolean
+    override protected function setUserProps (o :Object) :void
     {
-        return false;
-    }
-
-    /**
-     * @private
-     */
-    override protected function populateProperties (o :Object) :void
-    {
-        super.populateProperties(o);
+        super.setUserProps(o);
 
         o["receivedChat_v1"] = receivedChat_v1;
     }
@@ -64,7 +56,7 @@ public class PetControl extends ActorControl
     protected function receivedChat_v1 (speaker :String, message :String) :void
     {
         if (_hasControl) {
-            dispatch(ControlEvent.RECEIVED_CHAT, speaker, message);
+            dispatchCtrlEvent(ControlEvent.RECEIVED_CHAT, speaker, message);
         }
     }
 }

@@ -141,9 +141,9 @@ public class AvatarControl extends ActorControl
     /**
      * @private
      */
-    override protected function populateProperties (o :Object) :void
+    override protected function setUserProps (o :Object) :void
     {
-        super.populateProperties(o);
+        super.setUserProps(o);
 
         o["avatarSpoke_v1"] = avatarSpoke_v1;
         o["getActions_v1"] = getActions_v1;
@@ -153,9 +153,9 @@ public class AvatarControl extends ActorControl
     /**
      * @private
      */
-    override protected function gotInitProperties (o :Object) :void
+    override protected function gotInitProps (o :Object) :void
     {
-        super.gotInitProperties(o);
+        super.gotInitProps(o);
 
         _isSleeping = (o["isSleeping"] as Boolean);
     }
@@ -165,7 +165,7 @@ public class AvatarControl extends ActorControl
      */
     protected function avatarSpoke_v1 () :void
     {
-        dispatch(ControlEvent.AVATAR_SPOKE);
+        dispatchCtrlEvent(ControlEvent.AVATAR_SPOKE);
     }
 
     /** 
@@ -222,14 +222,6 @@ public class AvatarControl extends ActorControl
                 }
             }
         }
-    }
-
-    /**
-     * @private
-     */
-    override protected function isAbstract () :Boolean
-    {
-        return false;
     }
 
     /** An array of all action names. @private */

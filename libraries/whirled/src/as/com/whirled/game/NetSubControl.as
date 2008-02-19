@@ -3,6 +3,8 @@
 
 package com.whirled.game {
 
+import com.whirled.AbstractSubControl;
+
 /**
  * Dispatched when a property has changed in the shared game state.
  *
@@ -125,9 +127,9 @@ public class NetSubControl extends AbstractSubControl
     /**
      * @private
      */
-    override protected function populateProperties (o :Object) :void
+    override protected function setUserProps (o :Object) :void
     {
-        super.populateProperties(o);
+        super.setUserProps(o);
 
         o["propertyWasSet_v1"] = propertyWasSet_v1;
         o["messageReceived_v1"] = messageReceived_v1;
@@ -136,9 +138,9 @@ public class NetSubControl extends AbstractSubControl
     /**
      * @private
      */
-    override protected function setHostProps (o :Object) :void
+    override protected function gotHostProps (o :Object) :void
     {
-        super.setHostProps(o);
+        super.gotHostProps(o);
 
         _gameData = o.gameData;
     }

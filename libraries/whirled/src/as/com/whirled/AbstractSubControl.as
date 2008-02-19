@@ -1,13 +1,14 @@
 //
 // $Id$
 
-package com.whirled.game {
+package com.whirled {
 
 import flash.errors.IllegalOperationError;
 
+import flash.events.Event;
+
 /**
  * Abstract base class. Do not instantiate.
- * @private
  */
 public class AbstractSubControl extends AbstractControl
 {
@@ -16,12 +17,10 @@ public class AbstractSubControl extends AbstractControl
      */
     public function AbstractSubControl (parent :AbstractControl)
     {
-        super();
-        if (parent == null || Object(this).constructor == AbstractSubControl) {
-            throw new IllegalOperationError("Abstract");
-        }
-
         _parent = parent;
+        // chain the unload events of our parent
+        _parent.addEventListener(Event.UNLOAD, handleUnload);
+        super(null);
     }
 
     /**
@@ -51,17 +50,23 @@ public class AbstractSubControl extends AbstractControl
     /**
      * @private
      */
-    internal function populatePropertiesFriend (o :Object) :void
+    internal function setUserPropsFriend (o :Object) :void
     {
-        populateProperties(o);
+        setUserProps(o);
     }
 
     /**
      * @private
      */
-    internal function setHostPropsFriend (o :Object) :void
+    internal function gotHostPropsFriend (o :Object) :void
     {
-        setHostProps(o);
+        gotHostProps(o);
+    }
+
+    /** @private */
+    override protected function isSubControl () :Boolean
+    {
+        return true;
     }
 
     /** @private */

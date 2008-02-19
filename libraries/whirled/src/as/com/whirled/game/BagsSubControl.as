@@ -3,6 +3,9 @@
 
 package com.whirled.game {
 
+import com.whirled.AbstractControl;
+import com.whirled.AbstractSubControl;
+
 /**
  * Contains 'bags' game services. Do not instantiate this class yourself, access it
  * via GameControl.services.bags.

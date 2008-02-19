@@ -26,40 +26,43 @@ package com.whirled {
  */
 [Event(name="messageReceived", type="com.whirled.AVRGameControlEvent")]
 
-public class StateControl extends WhirledSubControl
+public class StateControl extends AbstractSubControl
 {
-    public function StateControl (ctrl :WhirledControl)
+    public function StateControl (ctrl :AbstractControl)
     {
         super(ctrl)
     }
 
     public function getProperty (key :String) :Object
     {
-        return _ctrl.callHostCodeFriend("getProperty_v1", key);
+        return callHostCode("getProperty_v1", key);
     }
 
     public function setProperty (key :String, value :Object, persistent :Boolean) :Boolean
     {
-        return _ctrl.callHostCodeFriend("setProperty_v1", key, value, persistent);
+        return callHostCode("setProperty_v1", key, value, persistent);
     }
 
     public function getPlayerProperty (key :String) :Object
     {
-        return _ctrl.callHostCodeFriend("getPlayerProperty_v1", key);
+        return callHostCode("getPlayerProperty_v1", key);
     }
 
     public function setPlayerProperty (key :String, value :Object, persistent :Boolean) :Boolean
     {
-        return _ctrl.callHostCodeFriend("setPlayerProperty_v1", key, value, persistent);
+        return callHostCode("setPlayerProperty_v1", key, value, persistent);
     }
 
     public function sendMessage (key :String, value :Object, playerId :int = 0) :Boolean
     {
-        return _ctrl.callHostCodeFriend("sendMessage_v1", key, value, playerId);
+        return callHostCode("sendMessage_v1", key, value, playerId);
     }
 
-    internal function populateSubProperties (o :Object) :void
+    /** @private */
+    override protected function setUserProps (o :Object) :void
     {
+        super.setUserProps(o);
+
         o["stateChanged_v1"] = stateChanged_v1;
         o["playerStateChanged_v1"] = playerStateChanged_v1;
         o["messageReceived_v1"] = messageReceived_v1;
@@ -70,8 +73,7 @@ public class StateControl extends WhirledSubControl
      */
     protected function stateChanged_v1 (key :String, value :Object) :void
     {
-        dispatchEvent(new AVRGameControlEvent(
-            AVRGameControlEvent.PROPERTY_CHANGED, key, value));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PROPERTY_CHANGED, key, value));
     }
 
     /**
@@ -79,8 +81,7 @@ public class StateControl extends WhirledSubControl
      */
     protected function playerStateChanged_v1 (key :String, value :Object) :void
     {
-        dispatchEvent(new AVRGameControlEvent(
-            AVRGameControlEvent.PLAYER_PROPERTY_CHANGED, key, value));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_PROPERTY_CHANGED, key, value));
     }
 
     /**
@@ -88,8 +89,7 @@ public class StateControl extends WhirledSubControl
      */
     protected function messageReceived_v1 (key :String, value :Object) :void
     {
-        dispatchEvent(new AVRGameControlEvent(
-            AVRGameControlEvent.MESSAGE_RECEIVED, key, value));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.MESSAGE_RECEIVED, key, value));
     }
 }
 }

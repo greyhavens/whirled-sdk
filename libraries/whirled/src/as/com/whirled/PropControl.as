@@ -48,20 +48,12 @@ public class PropControl extends FurniControl
         return callHostCode("activateGame_v1") as Boolean;
     }
 
-    override protected function isAbstract () :Boolean
+    override protected function createSubControls () :Array
     {
-        return false;
-    }
-
-    override protected function populateProperties (o :Object) :void
-    {
-        super.populateProperties(o);
-
-        _state = new StateControl(this);
-        _state.populateSubProperties(o);
-
-        _quests = new QuestControl(this);
-        _quests.populateSubProperties(o);
+        return [
+            _state = new StateControl(this),
+            _quests = new QuestControl(this)
+        ];
     }
 
     protected var _state :StateControl;

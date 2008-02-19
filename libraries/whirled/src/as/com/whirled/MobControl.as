@@ -12,7 +12,7 @@ import com.threerings.util.Log;
 /**
  * Defines actions, accessors and callbacks available to all MOBs.
  */
-public class MobControl extends WhirledSubControl
+public class MobControl extends AbstractSubControl
 {
     public function MobControl (ctrl :AVRGameControl, id :String)
     {
@@ -22,7 +22,7 @@ public class MobControl extends WhirledSubControl
 
     public function getAVRGameControl () :AVRGameControl
     {
-        return AVRGameControl(_ctrl);
+        return AVRGameControl(_parent);
     }
 
     /**
@@ -34,14 +34,14 @@ public class MobControl extends WhirledSubControl
      */
     public function setHotSpot (x :Number, y :Number, height :Number = NaN) :void
     {
-        _ctrl.callHostCodeFriend("setMobHotSpot_v1", _id, x, y, height);
+        callHostCode("setMobHotSpot_v1", _id, x, y, height);
     }
 
     public function setDecoration (decoration :DisplayObject) :Boolean
     {
         if (_decoration == null) {
             _decoration = decoration;
-            return _ctrl.callHostCodeFriend("setMobDecoration_v1", _id, _decoration, true);
+            return callHostCode("setMobDecoration_v1", _id, _decoration, true);
         }
         return false;
     }
@@ -49,7 +49,9 @@ public class MobControl extends WhirledSubControl
     public function removeDecoration () :Boolean
     {
         if (_decoration != null) {
-            return _ctrl.callHostCodeFriend("removeMobDecoration_v1", _id, _decoration, false);
+            var oldDec :DisplayObject = _decoration;
+            _decoration = null;
+            return callHostCode("removeMobDecoration_v1", _id, oldDec, false);
         }
         return false;
     }
@@ -63,7 +65,7 @@ public class MobControl extends WhirledSubControl
         _orient = orient;
         _isMoving = moving;
         // "sleeping" is ignored in this class
-        dispatchEvent(new ControlEvent(ControlEvent.APPEARANCE_CHANGED));
+        dispatch(new ControlEvent(ControlEvent.APPEARANCE_CHANGED));
     }
 
     protected var _id :String;

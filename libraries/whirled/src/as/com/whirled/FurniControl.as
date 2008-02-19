@@ -82,17 +82,9 @@ public class FurniControl extends EntityControl
     /**
      * @private
      */
-    override protected function isAbstract () :Boolean
+    override protected function setUserProps (o :Object) :void
     {
-        return false;
-    }
-
-    /**
-     * @private
-     */
-    override protected function populateProperties (o :Object) :void
-    {
-        super.populateProperties(o);
+        super.setUserProps(o);
 
         o["getConfigPanel_v1"] = getConfigPanel_v1;
         o["mouseHover_v1"] = mouseHover_v1;
@@ -105,6 +97,7 @@ public class FurniControl extends EntityControl
      */
     protected function getConfigPanel_v1 () :DisplayObject
     {
+        // TODO: make this dispatch an event that receives the config in a method
         return (_customConfig != null) ? (_customConfig() as DisplayObject) : null;
     }
 
@@ -114,7 +107,7 @@ public class FurniControl extends EntityControl
      */
     protected function mouseHover_v1 (over :Boolean) :void
     {
-        dispatch(over ? ControlEvent.HOVER_OVER : ControlEvent.HOVER_OUT);
+        dispatchCtrlEvent(over ? ControlEvent.HOVER_OVER : ControlEvent.HOVER_OUT);
     }
 
     /**

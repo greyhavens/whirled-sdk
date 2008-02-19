@@ -11,7 +11,7 @@ import flash.display.DisplayObject;
  * Control for a minigame- tiny, simple, non-networked games which are
  * used inside some larger games.
  */
-public class MiniGameControl extends WhirledControl
+public class MiniGameControl extends AbstractControl
 {
     /**
      */
@@ -30,12 +30,6 @@ public class MiniGameControl extends WhirledControl
     public function reportPerformance (score :Number, style :Number = 0) :void
     {
         callHostCode("reportPerformance_v1", score, style);
-    }
-
-    // internal bizniss
-    override protected function isAbstract () :Boolean
-    {
-        return false;
     }
 }
 }

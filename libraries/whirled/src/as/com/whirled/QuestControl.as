@@ -17,41 +17,43 @@ import flash.display.DisplayObject;
 /**
  * Defines actions, accessors and callbacks available to all Quests.
  */
-public class QuestControl extends WhirledSubControl
+public class QuestControl extends AbstractSubControl
 {
-    public function QuestControl (ctrl :WhirledControl)
+    public function QuestControl (ctrl :AbstractControl)
     {
         super(ctrl);
     }
 
     public function offerQuest (questId :String, intro :String, initialStatus :String) :Boolean
     {
-        return _ctrl.callHostCodeFriend("offerQuest_v1", questId, intro, initialStatus);
+        return callHostCode("offerQuest_v1", questId, intro, initialStatus);
     }
 
     public function updateQuest (questId :String, step :int, status :String) :Boolean
     {
-        return _ctrl.callHostCodeFriend("updateQuest_v1", questId, step, status);
+        return callHostCode("updateQuest_v1", questId, step, status);
     }
 
     public function completeQuest (questId :String, outro :String, payout :int) :Boolean
     {
-        return _ctrl.callHostCodeFriend("completeQuest_v1", questId, outro, payout);
+        return callHostCode("completeQuest_v1", questId, outro, payout);
     }
 
     public function cancelQuest (questId :String) :Boolean
     {
-        return _ctrl.callHostCodeFriend("cancelQuest_v1", questId);
+        return callHostCode("cancelQuest_v1", questId);
     }
 
     public function getActiveQuests () :Array
     {
-        return _ctrl.callHostCodeFriend("getActiveQuests_v1");
+        return callHostCode("getActiveQuests_v1");
     }
 
-    internal function populateSubProperties (o :Object) :void
+    override protected function setUserProps (o :Object) :void
     {
-         o["questStateChanged_v1"] = questStateChanged_v1;
+        super.setUserProps(o);
+
+        o["questStateChanged_v1"] = questStateChanged_v1;
     }
 
     /**
@@ -59,8 +61,7 @@ public class QuestControl extends WhirledSubControl
      */
     protected function questStateChanged_v1 (questId :String, state :Boolean) :void
     {
-        dispatchEvent(new AVRGameControlEvent(
-            AVRGameControlEvent.QUEST_STATE_CHANGED, questId, state));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.QUEST_STATE_CHANGED, questId, state));
     }
 }
 }

@@ -58,7 +58,7 @@ import com.threerings.util.Log;
  * AVRGame means: Alternate Virtual Reality Game, and refers to games
  * played within the whirled environment.
  */
-public class AVRGameControl extends WhirledControl
+public class AVRGameControl extends AbstractControl
 {
     /**
      * Create a world game interface. The display object is your world game.
@@ -265,14 +265,9 @@ public class AVRGameControl extends WhirledControl
         return callHostCode("setAvatarOrientation_v1", state);
     }
 
-    override protected function isAbstract () :Boolean
+    override protected function setUserProps (o :Object) :void
     {
-        return false;
-    }
-
-    override protected function populateProperties (o :Object) :void
-    {
-        super.populateProperties(o);
+        super.setUserProps(o);
 
         o["gotControl_v1"] = gotControl_v1;
 
@@ -289,12 +284,6 @@ public class AVRGameControl extends WhirledControl
 
         o["actorStateSet_v1"] = actorStateSet_v1;
         o["actorAppearanceChanged_v1"] = actorAppearanceChanged_v1;
-
-        _state = new StateControl(this);
-        _state.populateSubProperties(o);
-
-        _quests = new QuestControl(this);
-        _quests.populateSubProperties(o);
     }
 
     protected function requestMobSprite_v1 (id :String) :DisplayObject
@@ -346,48 +335,56 @@ public class AVRGameControl extends WhirledControl
         }
         _hasControl = true;
 
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.GOT_CONTROL));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.GOT_CONTROL));
     }
 
     protected function playerLeft_v1 (id :int) :void
     {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_LEFT, null, id));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_LEFT, null, id));
     }
 
     protected function playerEntered_v1 (id :int) :void
     {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_ENTERED, null, id));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_ENTERED, null, id));
     }
 
     protected function playerMoved_v1 (id :int) :void
     {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_MOVED, null, id));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_MOVED, null, id));
     }
 
     protected function leftRoom_v1 () :void
     {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.LEFT_ROOM));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.LEFT_ROOM));
     }
 
     protected function enteredRoom_v1 (newScene :int) :void
     {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.ENTERED_ROOM, null, newScene));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.ENTERED_ROOM, null, newScene));
     }
 
     protected function panelResized_v1 () :void
     {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.SIZE_CHANGED));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.SIZE_CHANGED));
     }
 
     protected function actorAppearanceChanged_v1 (playerId :int) :void
     {
-        dispatchEvent(new AVRGameControlEvent(
-                          AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
     }
 
     protected function actorStateSet_v1 (playerId :int, state :String) :void
     {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
+    }
+
+    /** @private */
+    override protected function createSubControls () :Array
+    {
+        return [
+            _state = new StateControl(this),
+            _quests = new QuestControl(this)
+        ];
     }
 
     protected var _quests :QuestControl;

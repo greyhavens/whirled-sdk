@@ -3,6 +3,8 @@
 
 package com.whirled.game {
 
+import com.whirled.AbstractSubControl;
+
 /**
  * Dispatched when this player has been awarded flow.
  * 
@@ -114,9 +116,9 @@ public class PlayerSubControl extends AbstractSubControl
     /**
      * @private
      */
-    override protected function populateProperties (o :Object) :void
+    override protected function setUserProps (o :Object) :void
     {
-        super.populateProperties(o);
+        super.setUserProps(o);
 
         o["flowAwarded_v1"] = flowAwarded_v1;
     }

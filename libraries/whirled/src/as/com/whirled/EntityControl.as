@@ -72,7 +72,7 @@ import flash.utils.Timer;
  * Handles services that are available to all entities in a room.  This includes dispatching
  * trigger events and maintaining memory.
  */
-public class EntityControl extends WhirledControl
+public class EntityControl extends AbstractControl
 {
     /**
      * @private
@@ -80,6 +80,11 @@ public class EntityControl extends WhirledControl
     public function EntityControl (disp :DisplayObject)
     {
         super(disp);
+
+        if (Object(this).constructor == EntityControl) {
+            throw new Error("Do not directly use EntityContrl. " +
+                "Use the appropriate subclass: AvatarControl, FurniControl, etc.");
+        }
     }
 
     /**
@@ -425,8 +430,10 @@ public class EntityControl extends WhirledControl
      * Populate any properties that we provide back to whirled.
      * @private
      */
-    override protected function populateProperties (o :Object) :void
+    override protected function setUserProps (o :Object) :void
     {
+        super.setUserProps(o);
+
         o["memoryChanged_v1"] = memoryChanged_v1;
         o["roomPropertyChanged_v1"] = roomPropertyChanged_v1;
         o["gotControl_v1"] = gotControl_v1;
@@ -434,15 +441,37 @@ public class EntityControl extends WhirledControl
         o["signalReceived_v1"] = signalReceived_v1;
     }
 
+    /** @private */
+    override protected function gotHostProps (o :Object) :void
+    {
+        super.gotHostProps(o);
+
+        if ("initProps" in o) {
+            gotInitProps(o.initProps);
+            delete o.initProps; // not needed after startup
+        }
+    }
+
     /**
+     * Entities get another packet of data called the initProps.
+     *
      * @private
      */
-    override protected function gotInitProperties (o :Object) :void
+    protected function gotInitProps (o :Object) :void
     {
-        super.gotInitProperties(o);
-
         _location = (o["location"] as Array);
         _datapack = (o["datapack"] as ByteArray);
+    }
+
+    /**
+     * Helper method to dispatch a ControlEvent, avoiding creation if there are no listeners.
+     */
+    internal function dispatchCtrlEvent (
+        ctrlEvent :String, key :String = null, value :Object = null) :void
+    {
+        if (hasEventListener(ctrlEvent)) {
+            dispatch(new ControlEvent(ctrlEvent, key, value));
+        }
     }
 
     /**
@@ -451,8 +480,8 @@ public class EntityControl extends WhirledControl
      */
     protected function messageReceived_v1 (name :String, arg :Object, isAction :Boolean) :void
     {
-        dispatch(isAction ? ControlEvent.ACTION_TRIGGERED
-                          : ControlEvent.MESSAGE_RECEIVED, name, arg);
+        dispatchCtrlEvent(isAction ? ControlEvent.ACTION_TRIGGERED
+                                   : ControlEvent.MESSAGE_RECEIVED, name, arg);
     }
 
     /**
@@ -461,7 +490,7 @@ public class EntityControl extends WhirledControl
      */
     protected function signalReceived_v1 (name :String, arg :Object) :void
     {
-        dispatch(ControlEvent.SIGNAL_RECEIVED, name, arg);
+        dispatchCtrlEvent(ControlEvent.SIGNAL_RECEIVED, name, arg);
     }
 
     /**
@@ -470,7 +499,7 @@ public class EntityControl extends WhirledControl
      */
     protected function memoryChanged_v1 (key :String, value :Object) :void
     {
-        dispatch(ControlEvent.MEMORY_CHANGED, key, value);
+        dispatchCtrlEvent(ControlEvent.MEMORY_CHANGED, key, value);
     }
 
     /**
@@ -479,7 +508,7 @@ public class EntityControl extends WhirledControl
      */
     protected function roomPropertyChanged_v1 (key :String, value :Object) :void
     {
-        dispatch(ControlEvent.ROOM_PROPERTY_CHANGED, key, value);
+        dispatchCtrlEvent(ControlEvent.ROOM_PROPERTY_CHANGED, key, value);
     }
 
     /**
@@ -494,7 +523,7 @@ public class EntityControl extends WhirledControl
         _hasControl = true;
 
         // dispatch to user code..
-        dispatch(ControlEvent.GOT_CONTROL);
+        dispatchCtrlEvent(ControlEvent.GOT_CONTROL);
 
         // possibly set up a ticker now
         recheckTicker();
@@ -511,7 +540,7 @@ public class EntityControl extends WhirledControl
                 // we may be creating the timer for the first time
                 _ticker = new Timer(_tickInterval);
                 // re-route it
-                _ticker.addEventListener(TimerEvent.TIMER, dispatchEvent);
+                _ticker.addEventListener(TimerEvent.TIMER, dispatch);
 
             } else {
                 // we may just be committing a new interval

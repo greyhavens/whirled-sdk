@@ -7,6 +7,8 @@ import flash.events.KeyboardEvent;
 
 import flash.geom.Point;
 
+import com.whirled.AbstractSubControl;
+
 /**
  * Dispatched when a key is pressed when the game has focus.
  *
@@ -202,9 +204,9 @@ public class LocalSubControl extends AbstractSubControl
     /**
      * @private
      */
-    override protected function populateProperties (o :Object) :void
+    override protected function setUserProps (o :Object) :void
     {
-        super.populateProperties(o);
+        super.setUserProps(o);
 
         o["dispatchEvent_v1"] = dispatch; // for re-dispatching keyboard events
         o["sizeChanged_v1"] = sizeChanged_v1;

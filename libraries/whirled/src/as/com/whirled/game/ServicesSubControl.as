@@ -3,6 +3,8 @@
 
 package com.whirled.game {
 
+import com.whirled.AbstractSubControl;
+
 /**
  * Provides access to 'services' game services. Do not instantiate this class yourself,
  * access it via GameControl.services.
@@ -15,8 +17,6 @@ public class ServicesSubControl extends AbstractSubControl
     public function ServicesSubControl (parent :GameControl)
     {
         super(parent);
-
-        _bagsCtrl = new BagsSubControl(_parent);
     }
 
     /**
@@ -83,24 +83,12 @@ public class ServicesSubControl extends AbstractSubControl
         startTicker(tickerName, 0);
     }
 
-    /**
-     * @private
-     */
-    override protected function populateProperties (o :Object) :void
+    /** @private */
+    override protected function createSubControls () :Array
     {
-        super.populateProperties(o);
-
-        _bagsCtrl.populatePropertiesFriend(o);
-    }
-
-    /**
-     * @private
-     */
-    override protected function setHostProps (o :Object) :void
-    {
-        super.setHostProps(o);
-
-        _bagsCtrl.setHostPropsFriend(o);
+        return [
+            _bagsCtrl = new BagsSubControl(_parent)
+        ];
     }
 
     /** The bags sub-control. @private */

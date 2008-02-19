@@ -120,7 +120,7 @@ public class ControlEvent extends Event
     public static const HOVER_OUT :String = "hoverOut";
 
     /**
-     * Retrieve the event target, which will be the WhirledControl instance that
+     * Retrieve the event target, which will be the Control instance that
      * dispatched this event.
      */
     override public function get target () :Object

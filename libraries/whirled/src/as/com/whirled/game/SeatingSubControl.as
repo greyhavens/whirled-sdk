@@ -3,6 +3,9 @@
 
 package com.whirled.game {
 
+import com.whirled.AbstractControl;
+import com.whirled.AbstractSubControl;
+
 /**
  * Access seating information for a seated game. Do not instantiate this class directly,
  * access it via GameControl.game.seating.
@@ -13,7 +16,7 @@ public class SeatingSubControl extends AbstractSubControl
     /**
      * @private Constructed via GameControl.
      */
-    public function SeatingSubControl (parent :GameControl, game :GameSubControl)
+    public function SeatingSubControl (parent :AbstractControl, game :GameSubControl)
     {
         super(parent);
         _game = game;
