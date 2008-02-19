@@ -42,7 +42,7 @@ public class EffectControl extends EntityControl
         sendMessage("effectFinished");
     }
 
-    // from WhirledControl
+    /** @private */
     override protected function gotInitProps (o :Object) :void
     {
         super.gotInitProps(o);
@@ -50,7 +50,7 @@ public class EffectControl extends EntityControl
         _params = (o["parameters"] as String);
     }
 
-    /** Our parameters, if any. */
+    /** Our parameters, if any. @private */
     protected var _params :String;
 }
 }

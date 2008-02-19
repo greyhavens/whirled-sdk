@@ -58,6 +58,7 @@ public class MobControl extends AbstractSubControl
 
     // calls from AVRGameBackend
 
+    /** @private */
     internal function appearanceChanged (
         location :Array, orient :Number, moving :Boolean, sleeping :Boolean) :void
     {
@@ -68,17 +69,19 @@ public class MobControl extends AbstractSubControl
         dispatch(new ControlEvent(ControlEvent.APPEARANCE_CHANGED));
     }
 
+    /** @private */
     protected var _id :String;
 
+    /** @private */
     protected var _decoration :DisplayObject;
 
-    /** Our current orientation, or 0. */
+    /** Our current orientation, or 0. @private */
     protected var _orient :Number = 0;
 
-    /** Indicates whether or not we're currently moving. */
+    /** Indicates whether or not we're currently moving. @private */
     protected var _isMoving :Boolean;
 
-    /** Contains our current location in the scene [x, y, z], or null. */
+    /** Contains our current location in the scene [x, y, z], or null. @private */
     protected var _location :Array;
 }
 }

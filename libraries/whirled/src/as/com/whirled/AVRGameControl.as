@@ -196,7 +196,7 @@ public class AVRGameControl extends AbstractControl
      * There are no guarantees which of the requesting clients will receive it, or when.
      */
     public function hasControl () :Boolean
-   {
+    {
         return _hasControl;
     }
 
@@ -265,6 +265,7 @@ public class AVRGameControl extends AbstractControl
         return callHostCode("setAvatarOrientation_v1", state);
     }
 
+    /** @private */
     override protected function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
@@ -286,6 +287,7 @@ public class AVRGameControl extends AbstractControl
         o["actorAppearanceChanged_v1"] = actorAppearanceChanged_v1;
     }
 
+    /** @private */
     protected function requestMobSprite_v1 (id :String) :DisplayObject
     {
         var info :MobEntry = _mobs[id];
@@ -308,12 +310,14 @@ public class AVRGameControl extends AbstractControl
         return sprite;
     }
 
+    /** @private */
     protected function mobRemoved_v1 (id :String) :void
     {
         Log.getLog(this).debug("Nuking control [id=" + id + "]");
         delete _mobs[id];
     }
 
+    /** @private */
     protected function mobAppearanceChanged_v1 (
         id :String, locArray :Array, orient :Number, moving :Boolean, idle :Boolean) :void
     {
@@ -323,11 +327,13 @@ public class AVRGameControl extends AbstractControl
         }
     }
 
+    /** @private */
     protected function hitTestPoint_v1 (x :Number, y :Number, shapeFlag :Boolean) :Boolean
     {
         return _hitPointTester != null && _hitPointTester(x, y, shapeFlag);
     }
 
+    /** @private */
     protected function gotControl_v1 () :void
     {
         if (_hasControl) {
@@ -338,41 +344,49 @@ public class AVRGameControl extends AbstractControl
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.GOT_CONTROL));
     }
 
+    /** @private */
     protected function playerLeft_v1 (id :int) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_LEFT, null, id));
     }
 
+    /** @private */
     protected function playerEntered_v1 (id :int) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_ENTERED, null, id));
     }
 
+    /** @private */
     protected function playerMoved_v1 (id :int) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_MOVED, null, id));
     }
 
+    /** @private */
     protected function leftRoom_v1 () :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.LEFT_ROOM));
     }
 
+    /** @private */
     protected function enteredRoom_v1 (newScene :int) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.ENTERED_ROOM, null, newScene));
     }
 
+    /** @private */
     protected function panelResized_v1 () :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.SIZE_CHANGED));
     }
 
+    /** @private */
     protected function actorAppearanceChanged_v1 (playerId :int) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
     }
 
+    /** @private */
     protected function actorStateSet_v1 (playerId :int, state :String) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
@@ -387,14 +401,20 @@ public class AVRGameControl extends AbstractControl
         ];
     }
 
+    /** @private */
     protected var _quests :QuestControl;
+    /** @private */
     protected var _state :StateControl;
 
+    /** @private */
     protected var _mobSpriteExporter :Function;
+    /** @private */
     protected var _hitPointTester :Function;
 
+    /** @private */
     protected var _hasControl :Boolean;
 
+    /** @private */
     protected var _mobs :Dictionary = new Dictionary();
 }
 }

@@ -19,6 +19,7 @@ import flash.display.DisplayObject;
  */
 public class QuestControl extends AbstractSubControl
 {
+    /** @private */
     public function QuestControl (ctrl :AbstractControl)
     {
         super(ctrl);
@@ -49,6 +50,7 @@ public class QuestControl extends AbstractSubControl
         return callHostCode("getActiveQuests_v1");
     }
 
+    /** @private */
     override protected function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
@@ -58,6 +60,7 @@ public class QuestControl extends AbstractSubControl
 
     /**
      * Called when a quest has been added or removed from our list of active quests.
+     * @private
      */
     protected function questStateChanged_v1 (questId :String, state :Boolean) :void
     {

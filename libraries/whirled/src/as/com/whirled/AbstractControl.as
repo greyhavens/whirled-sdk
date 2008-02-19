@@ -25,6 +25,11 @@ import flash.events.EventDispatcher;
  */
 public class AbstractControl extends EventDispatcher
 {
+    /**
+     * @param disp the display object on the stage
+     * @param initialUserProps any userProps that should be configured even prior to setUserProps.
+     * @private
+     */
     public function AbstractControl (disp :DisplayObject, initialUserProps :Object = null)
     {
         _subControls = createSubControls();
@@ -85,6 +90,7 @@ public class AbstractControl extends EventDispatcher
 
     /**
      * Handle any shutdown required.
+     * @private
      */
     protected function handleUnload (event :Event) :void
     {

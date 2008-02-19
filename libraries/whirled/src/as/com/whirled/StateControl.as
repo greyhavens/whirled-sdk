@@ -28,6 +28,7 @@ package com.whirled {
 
 public class StateControl extends AbstractSubControl
 {
+    /** @private */
     public function StateControl (ctrl :AbstractControl)
     {
         super(ctrl)
@@ -70,6 +71,7 @@ public class StateControl extends AbstractSubControl
 
     /**
      * Called when a game-global state property has changed.
+     * @private
      */
     protected function stateChanged_v1 (key :String, value :Object) :void
     {
@@ -78,6 +80,7 @@ public class StateControl extends AbstractSubControl
 
     /**
      * Called when a player-local state property has changed.
+     * @private
      */
     protected function playerStateChanged_v1 (key :String, value :Object) :void
     {
@@ -86,6 +89,7 @@ public class StateControl extends AbstractSubControl
 
     /**
      * Called when a user message has arrived.
+     * @private
      */
     protected function messageReceived_v1 (key :String, value :Object) :void
     {

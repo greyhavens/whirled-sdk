@@ -48,6 +48,7 @@ public class PropControl extends FurniControl
         return callHostCode("activateGame_v1") as Boolean;
     }
 
+    /** @private */
     override protected function createSubControls () :Array
     {
         return [
@@ -56,7 +57,9 @@ public class PropControl extends FurniControl
         ];
     }
 
+    /** @private */
     protected var _state :StateControl;
+    /** @private */
     protected var _quests :QuestControl;
 }
 }
