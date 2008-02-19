@@ -341,15 +341,6 @@ public class GameSubControl extends AbstractSubControl
         endGameWithScores([ getMyId() ], [ score ], TO_EACH_THEIR_OWN);
     }
 
-// TODO: REMOVE completely?
-//    /**
-//     * End the game. The specified player ids are winners!
-//     */
-//    public function endGame (winnerIds :Array) :void
-//    {
-//        callHostCode("endGame_v2", winnerIds);
-//    }
-
     /**
      * Requests to start the game again in the specified number of seconds. This should only be
      * used for party games. Seated table games should have each player report that they are ready

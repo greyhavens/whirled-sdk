@@ -14,14 +14,14 @@ import flash.events.EventDispatcher;
  * Event.UNLOAD
  * Dispatched when the SWF using this control has been unloaded.
  * You should clean-up any resources that would otherwise stick around, like stopping any
- * Timers.
+ * Timers, cancelling any sound streams, etc.
  *
  * @eventType flash.events.Event.UNLOAD
  */
 [Event(name="unload", type="flash.events.Event")]
 
 /**
- * The abstract base class for Game controls and subcontrols.
+ * The abstract base class for all controls and subcontrols.
  */
 public class AbstractControl extends EventDispatcher
 {
@@ -32,11 +32,17 @@ public class AbstractControl extends EventDispatcher
      */
     public function AbstractControl (disp :DisplayObject, initialUserProps :Object = null)
     {
+        // always create our sub-controls
         _subControls = createSubControls();
 
-        if (isSubControl()) {
+        // stop here if we ourselves are a sub-control
+        if (this is AbstractSubControl) {
             return;
         }
+
+        // set up the unload event to propagate
+        // (Also causes a NPE as quickly as possible if disp is null or not on the stage.)
+        disp.root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
 
         // do the connect!
         var userProps :Object = (initialUserProps != null) ? initialUserProps : new Object();
@@ -45,13 +51,10 @@ public class AbstractControl extends EventDispatcher
         event.userProps = userProps;
         disp.root.loaderInfo.sharedEvents.dispatchEvent(event);
         gotHostProps(event.hostProps);
-
-        // set up the unload event to propagate
-        disp.root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
     }
 
     /**
-     * Are we connected and running inside the game environment, or has someone just
+     * Are we connected and running inside the whirled environment, or has someone just
      * loaded up our SWF by itself?
      */
     public function isConnected () :Boolean
@@ -145,7 +148,7 @@ public class AbstractControl extends EventDispatcher
             super.dispatchEvent(event);
         } catch (err :Error) {
             // AFAIK, this will never happen: dispatchEvent catches and copes with all exceptions.
-            trace("Error dispatching event to user game.");
+            trace("Error dispatching event to user code.");
             trace(err.getStackTrace());
         }
     }
@@ -194,18 +197,9 @@ public class AbstractControl extends EventDispatcher
     {
         if (!isConnected()) {
             throw new IllegalOperationError(
-                "The game is not connected to the host framework, please check isConnected(). " +
-                "If false, your game is being viewed standalone and should adjust.");
+                "The control is not connected to the host framework, please check isConnected(). " +
+                "If false, your SWF is being viewed standalone and should adjust.");
         }
-    }
-
-    /**
-     * Are we a sub-control?
-     * @private
-     */
-    protected function isSubControl () :Boolean
-    {
-        return false;
     }
 
     /**

@@ -64,12 +64,6 @@ public class AbstractSubControl extends AbstractControl
     }
 
     /** @private */
-    override protected function isSubControl () :Boolean
-    {
-        return true;
-    }
-
-    /** @private */
     protected var _parent :AbstractControl;
 }
 }
