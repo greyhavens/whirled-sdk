@@ -56,7 +56,7 @@
     <java jar="${flex.path}/lib/mxmlc.jar" fork="true" failonerror="true">
       <arg value="-load-config"/>
       <arg value="${etc.dir}/whirled-config.xml"/>
-      <arg value="-library-path+=${build.root}/dist"/>
+      <arg value="-library-path+=${build.root}/dist/lib"/>
       <arg value="-library-path+=${app.library-dir}"/>
       <arg value="-use-network=${flex.use-network}"/>
       <arg value="-compiler.debug"/>
