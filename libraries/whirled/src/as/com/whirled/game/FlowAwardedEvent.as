@@ -60,7 +60,7 @@ public class FlowAwardedEvent extends Event
             ", percentile=" + _percentile + "]";
     }
 
-    /** The amount of flow awarded to the player. @private*/
+    /** The amount of flow awarded to the player. @private */
     protected var _amount :int;
 
     /** The % of scores lower than the player's reported score,
