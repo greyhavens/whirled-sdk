@@ -77,7 +77,7 @@ public class AbstractControl extends EventDispatcher
      * });
      * </code>
      *
-     * <br><br>
+     * <br></br><br></br>
      * <b>Note</b>: This will work on any control, but batching is only supported on
      * GameControl and its sub-controls.
      */

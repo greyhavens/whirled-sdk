@@ -316,7 +316,7 @@ public class GameSubControl extends AbstractSubControl
      * game, for example), then you must convert your score to a positive integer by, for example,
      * subtracting your score from a hypothentical worse possible score. For example: </p>
      *
-     * <p><code>score = Math.max(WORST_POSSIBLE_TIME - actualTime, 1)</code>
+     * <p><code>score = Math.max(WORST_POSSIBLE_TIME - actualTime, 1)</code></p>
      *
      * <p> Note that if a game is ended with all players scores equal of zero, it will be assumed
      * that the players in question abandoned the game and no flow will be paid out, nor will their

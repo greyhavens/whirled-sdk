@@ -10,7 +10,7 @@ import com.whirled.DataPack;
 
 /**
  * <b>Note</b>: This class is deprecated. It will be removed when a suitable replacement
- * is made.<br>
+ * is made.<br></br>
  *
  * Utility for loading item and level packs as data packs. A data pack is a zipped data bundle,
  * containing arbitrary files, and a <code>_data.xml</code> file describing the contents
@@ -29,7 +29,7 @@ public class DataPackLoader
      * packs. Every time a data pack is finished processing, if the <i>loaded</i> callback is
      * specified, it will be called, passing it the newly processed pack. Finally, after all packs
      * have been processed, if the <i>done</i> callback is specified, it will be called with an
-     * array of all DataPack instances. 
+     * array of all DataPack instances. </p>
      *
      *  @param definitions Array of content pack definitions.
      *  @param loaded Optional callback that will be called once for each loaded data pack. It

@@ -188,12 +188,12 @@ public class AVRGameControl extends AbstractControl
      *
      * <p>Control is a mutually exclusive lock across all instances of the AVRG in a given
      * room (i.e. running in other browsers across the network). Only one client per room
-     * can hold the lock at any time.
+     * can hold the lock at any time.</p>
      *
      * <p>Note: control is <em>not</em> automatically assigned. If an entity wishes to obtain
      * control, it should first call <code>requestControl</code> and it will then receive a
      * <code>GOT_CONTROL</code> event if and when control has been assigned to this client.
-     * There are no guarantees which of the requesting clients will receive it, or when.
+     * There are no guarantees which of the requesting clients will receive it, or when.</p>
      */
     public function hasControl () :Boolean
     {

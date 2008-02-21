@@ -17,7 +17,7 @@ import flash.system.LoaderContext;
 
 /**
  * <b>Note</b>: This class is deprecated. It will be removed when a suitable replacement
- * is made.<br>
+ * is made.<br></br>
  *
  * Loader utility for loading item and level packs.
  */
