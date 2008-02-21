@@ -13,6 +13,13 @@ import com.whirled.AbstractSubControl;
 [Event(name="PropChanged", type="com.whirled.game.PropertyChangedEvent")]
 
 /**
+ * Dispatched when an element in property has changed in the shared game state.
+ *
+ * @eventType com.whirled.game.ElementChangedEvent.ELEMENT_CHANGED
+ */
+[Event(name="ElemChanged", type="com.whirled.game.ElementChangedEvent")]
+
+/**
  * Dispatched when a message arrives with information that is not part of the shared game state.
  *
  * @eventType com.whirled.game.MessageReceivedEvent.MESSAGE_RECEIVED
@@ -38,61 +45,60 @@ public class NetSubControl extends AbstractSubControl
     /**
      * Get a property value.
      */
-    public function get (propName :String, index :int = -1) :Object
+    public function get (propName :String) :Object
     {
         checkIsConnected();
-
-        var value :Object = _gameData[propName];
-        if (index >= 0) {
-            if (value is Array) {
-                return (value as Array)[index];
-
-            } else {
-                throw new ArgumentError("Property " + propName + " is not an array.");
-            }
-        }
-        return value;
+        return _gameData[propName];
     }
 
     /**
-     * Set a property that will be distributed. 
+     * Set a top-level property. Note that if you set the value as an Array or Dictionary,
+     * you can update the values within by using either setAt (for Arrays) or
+     * setIn (for Dictionarys), and you'll receive an ElementChangedEvent.
      */
-    public function set (propName :String, value :Object, index :int = -1) :void
+    public function set (propName :String, value :Object, immediate :Boolean = false) :void
     {
-        callHostCode("setProperty_v1", propName, value, index, false);
+        callHostCode("setProperty_v2", propName, value, null, false, immediate);
     }
 
     /**
-     * Set a property, but have this client immediately set the value so that it can be
-     * re-read. The property change event will still arrive and will be your clue as to when the
-     * other clients will see the newly set value. Be careful with this method, as it can allow
-     * data inconsistency: two clients may see different values for a property if one of them
-     * recently set it immediately, and the resultant PropertyChangedEvent's oldValue also may not
-     * be consistent.
+     * Update one element of an Array.
+     * Note that no update will take place if there is no array currently set with that name,
+     * or if the index is out of bounds,
      */
-    public function setImmediate (propName :String, value :Object, index :int = -1) :void
+    public function setAt (
+        propName :String, index :int, value :Object, immediate :Boolean = false) :void
     {
-        callHostCode("setProperty_v1", propName, value, index, true);
+        callHostCode("setProperty_v2", propName, value, index, true, immediate);
     }
 
     /**
+     * Update one element of a Dictionary.
+     * Unlike setAt, this will work even if there's no Dictionary stored at that property
+     * or if there's no such key currently in use.
+     */
+    public function setIn (
+        propName :String, key :int, value :Object, immediate :Boolean = false) :void
+    {
+        callHostCode("setProperty_v2", propName, value, key, false, immediate);
+    }
+
+    /**
+     * Set 
      * Set a property that will be distributed, but only if it's equal to the specified test value.
      *
-     * <p> Please note that, unlike in the setImmediate() function, the property will not be
-     * updated right away, but will require a request to the server and a response back. For this
-     * reason, there may be a considerable delay between calling testAndSet, and seeing the result
-     * of the update.
+     * <p> Please note that there is no way to test and set a property immediately,
+     * because the value must be sent to the server to perform the test.</p>
      *
      * <p> The operation is 'atomic', in the sense that testing and setting take place during the
      * same server event. In comparison, a separate 'get' followed by a 'set' operation would
      * first read the current value as seen on your client and then send a request to overwrite
      * any value with a new value. By the time the 'set' reaches the server the old value
-     * may no longer be valid. Since that's sketchy, we have this method.
+     * may no longer be valid. Since that's sketchy, we have this method.</p>
      */
-    public function testAndSet (
-        propName :String, newValue :Object, testValue :Object, index :int = -1) :void
+    public function testAndSet (propName :String, newValue :Object, testValue :Object) :void
     {
-        callHostCode("testAndSetProperty_v1", propName, newValue, testValue, index);
+        callHostCode("testAndSetProperty_v1", propName, newValue, testValue);
     }
 
     /**
@@ -131,7 +137,7 @@ public class NetSubControl extends AbstractSubControl
     {
         super.setUserProps(o);
 
-        o["propertyWasSet_v1"] = propertyWasSet_v1;
+        o["propertyWasSet_v2"] = propertyWasSet_v2;
         o["messageReceived_v1"] = messageReceived_v1;
     }
 
@@ -148,10 +154,16 @@ public class NetSubControl extends AbstractSubControl
     /**
      * Private method to post a PropertyChangedEvent.
      */
-    private function propertyWasSet_v1 (
-        name :String, newValue :Object, oldValue :Object, index :int) :void
+    private function propertyWasSet_v2 (
+        name :String, newValue :Object, oldValue :Object, key :Object) :void
     {
-        dispatch(new PropertyChangedEvent(name, newValue, oldValue, index));
+        if (key == null) {
+            dispatch(new PropertyChangedEvent(PropertyChangedEvent.PROPERTY_CHANGED,
+                name, newValue, oldValue));
+        } else {
+            dispatch(new ElementChangedEvent(ElementChangedEvent.ELEMENT_CHANGED,
+                name, newValue, oldValue, int(key)));
+        }
     }
 
     /**

@@ -30,6 +30,18 @@ import com.whirled.game.util.ObjectMarshaller;
 public class WhirledGameObject extends GameObject
     implements TurnGameObject
 {
+    /**
+     * A checked exception thrown by applyPropertySet to indicate when
+     * an array set hasn't gone through.
+     */
+    public static class ArrayRangeException extends Exception
+    {
+        public ArrayRangeException (String msg)
+        {
+            super(msg);
+        }
+    }
+
     /** The identifier for a MessageEvent containing a user message. */
     public static final String USER_MESSAGE = "Umsg";
 
@@ -118,47 +130,50 @@ public class WhirledGameObject extends GameObject
      * Called by PropertySetEvent to effect the property update.
      * 
      * @return the old value.
+     *
+     * @throws ArrayIndexOutOfBoundsException if an array update is out of bounds.
      */
-    public Object applyPropertySet (String propName, Object data, int index)
+    public Object applyPropertySet (String propName, Object data, Integer key, boolean isArray)
+        throws ArrayRangeException
     {
-        Object oldValue = _props.get(propName);
-        if (index >= 0) {
-            if (isOnServer()) {
-                byte[][] arr = (oldValue instanceof byte[][])
-                    ? (byte[][]) oldValue : null;
-                if (arr == null || arr.length <= index) {
-                    // TODO: in case a user sets element 0 and element 90000,
-                    // we might want to store elements in a hash
-                    byte[][] newArr = new byte[index + 1][];
-                    if (arr != null) {
-                        System.arraycopy(arr, 0, newArr, 0, arr.length);
-                    }
-                    _props.put(propName, newArr);
-                    arr = newArr;
+        Object oldValue;
+        if (key != null) {
+            Object curValue = _props.get(propName);
+            if (isArray) {
+                if (!(curValue instanceof Object[])) {
+                    throw new ArrayRangeException("Current value is not an Array.");
                 }
-                oldValue = arr[index];
-                arr[index] = (byte[]) data;
-                
-            } else {
-                Object[] arr = (oldValue instanceof Object[])
-                    ? (Object[]) oldValue : null;
-                if (arr == null || arr.length <= index) {
-                    Object[] newArr = new Object[index + 1];
-                    if (arr != null) {
-                        System.arraycopy(arr, 0, newArr, 0, arr.length);
-                    }
-                    _props.put(propName, newArr);
-                    arr = newArr;
+                // this is actually a byte[][] on the server..
+                Object[] arr = (Object[]) curValue;
+                int index = key.intValue();
+                if (index < 0 || index >= arr.length) {
+                    throw new ArrayRangeException("Array index out of range.");
                 }
                 oldValue = arr[index];
                 arr[index] = data;
+
+            } else {
+                GameMap map;
+                if (curValue instanceof GameMap) {
+                    map = (GameMap) curValue;
+                } else {
+                    map = new GameMap(); // force anything else to be a map
+                    _props.put(propName, map);
+                }
+                if (data == null) {
+                    oldValue = map.remove(key);
+                } else {
+                    oldValue = map.put(key, (byte[]) data);
+                }
             }
             
         } else if (data != null) {
-            _props.put(propName, data);
+            // normal property set
+            oldValue = _props.put(propName, data);
 
         } else {
-            _props.remove(propName);
+            // remove a property
+            oldValue = _props.remove(propName);
         }
     
         return oldValue;
@@ -170,48 +185,9 @@ public class WhirledGameObject extends GameObject
      *
      * @return true if the property contains the value specified.
      */
-    public boolean testProperty (
-        String propName, int index, Object testValue)
+    public boolean testProperty (String propName, Object testValue)
     {
         Object curValue = _props.get(propName);
-
-        if (curValue != null && index >= 0) {
-            // see if there's an array there already
-            if (isOnServer()) {
-                if (curValue instanceof byte[][]) {
-                    byte[][] curArray = (byte[][]) curValue;
-                    if (curArray.length > index) {
-                        curValue = curArray[index];
-
-                    } else {
-                        // the index is out of range, but since we auto-grow,
-                        // we treat it like null
-                        curValue = null;
-                    }
-
-                } else {
-                    // curData is not an array, so the test fails
-                    return false;
-                }
-
-            } else {
-                if (curValue instanceof Object[]) {
-                    Object[] curArray = (Object[]) curValue;
-                    if (curArray.length > index) {
-                        curValue = curArray[index];
-
-                    } else {
-                        // the index is out of range, but since we auto-grow,
-                        // we treat it like null
-                        curValue = null;
-                    }
-
-                } else {
-                    // curData is not an array, so the test fails
-                    return false;
-                }
-            }
-        }
 
         // let's test the values!
         if ((testValue instanceof Object[]) && (curValue instanceof Object[])) {

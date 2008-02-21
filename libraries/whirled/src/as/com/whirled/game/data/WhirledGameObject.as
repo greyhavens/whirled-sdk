@@ -6,6 +6,7 @@ package com.whirled.game.data {
 import flash.events.Event;
 
 import flash.utils.ByteArray;
+import flash.utils.Dictionary;
 
 import com.threerings.util.Name;
 import com.threerings.util.ObjectMarshaller;
@@ -22,6 +23,28 @@ import com.threerings.parlor.turn.data.TurnGameObject;
 public class WhirledGameObject extends GameObject
     implements TurnGameObject
 {
+    /**
+     * Utility to encode values.
+     */
+    public static function encodeProperty (value :Object, splitElements :Boolean) :Object
+    {
+        if (splitElements && (value is Dictionary)) {
+            return new GameMap(value as Dictionary);
+        }
+        return ObjectMarshaller.encode(value, splitElements);
+    }
+
+    /**
+     * Utility to decode values.
+     */
+    public static function decodeProperty (value :Object) :Object
+    {
+        if (value is GameMap) {
+            return (value as GameMap).toDictionary();
+        }
+        return ObjectMarshaller.decode(value);
+    }
+
     /** The identifier for a MessageEvent containing a user message. */
     public static const USER_MESSAGE :String = "Umsg";
 
@@ -93,19 +116,39 @@ public class WhirledGameObject extends GameObject
     /**
      * Called by a PropertySetEvent to enact a property change.
      * @return the old value
+     *
+     * @throws RangeError if the key is out of range (arrays only)
      */
-    public function applyPropertySet (propName :String, value :Object, index :int) :Object
+    public function applyPropertySet (
+        propName :String, value :Object, key :Object, isArray :Boolean) :Object
     {
         var oldValue :Object = _props[propName];
-        if (index >= 0) {
-            // set an array element
-            var arr :Array = (oldValue as Array);
-            if (arr == null) {
-                arr = [];
-                _props[propName] = arr;
+        if (key != null) {
+            var index :int = int(key);
+            if (isArray) {
+                if (!(oldValue is Array)) {
+                    throw new RangeError("Current value is not an Array.");
+                }
+                var arr :Array = (oldValue as Array);
+                if (index < 0 || index >= arr.length) {
+                    throw new RangeError("Array index out of range.");
+                }
+                oldValue = arr[index];
+                arr[index] = value;
+
+            } else {
+                var dict :Dictionary = (oldValue as Dictionary);
+                if (dict == null) {
+                    dict = new Dictionary(); // force creation
+                    _props[propName] = dict;
+                }
+                oldValue = dict[index];
+                if (value == null) {
+                    delete dict[index];
+                } else {
+                    dict[index] = value;
+                }
             }
-            oldValue = arr[index];
-            arr[index] = value;
 
         } else if (value != null) {
             // normal property set

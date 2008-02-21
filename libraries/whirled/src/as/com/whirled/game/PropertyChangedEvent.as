@@ -45,35 +45,25 @@ public class PropertyChangedEvent extends Event
     }
     
     /**
-     * If an array element was updated, get the index, or -1 if not applicable.
-     */
-    public function get index () :int
-    {
-        return _index;
-    }
-
-    /**
      * Constructor.
      */
     public function PropertyChangedEvent (
-        propName :String, newValue :Object, oldValue :Object, index :int = -1)
+        type :String, propName :String, newValue :Object, oldValue :Object)
     {
-        super(PROPERTY_CHANGED);
+        super(type);
         _name = propName;
         _newValue = newValue;
         _oldValue = oldValue;
-        _index = index;
     }
 
     override public function toString () :String
     {
-        return "[PropertyChangedEvent name=" + _name + ", value=" + _newValue +
-            ((_index < 0) ? "" : (", index=" + _index)) + "]";
+        return "[PropertyChangedEvent name=" + _name + ", value=" + _newValue + "]";
     }
 
     override public function clone () :Event
     {
-        return new PropertyChangedEvent(_name, _newValue, _oldValue, _index);
+        return new PropertyChangedEvent(type, _name, _newValue, _oldValue);
     }
 
     /** @private */
@@ -84,8 +74,5 @@ public class PropertyChangedEvent extends Event
 
     /** @private */
     protected var _oldValue :Object;
-
-    /** @private */
-    protected var _index :int;
 }
 }

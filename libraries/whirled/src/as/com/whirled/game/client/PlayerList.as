@@ -197,7 +197,7 @@ public class PlayerList extends VBox
      */
     public function setMappedScores (scores :Object) :void
     {
-        for (var playerId :String in scores) {
+        for (var playerId :Object in scores) {
             var record :PlayerRecord = _byOid.get(int(playerId));
             if (record != null) {
                 var data :Object = scores[playerId];

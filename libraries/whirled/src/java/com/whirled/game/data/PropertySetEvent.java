@@ -30,11 +30,13 @@ public class PropertySetEvent extends NamedEvent
     /**
      * Create a PropertySetEvent.
      */
-    public PropertySetEvent (int targetOid, String propName, Object value, int index, Object ovalue)
+    public PropertySetEvent (
+        int targetOid, String propName, Object value, Integer key, boolean isArray, Object ovalue)
     {
         super(targetOid, propName);
         _data = value;
-        _index = index;
+        _key = key;
+        _isArray = isArray;
         _oldValue = ovalue;
     }
 
@@ -55,11 +57,19 @@ public class PropertySetEvent extends NamedEvent
     }
 
     /**
-     * Returns the index, or -1 if not applicable.
+     * Returns the key, or null if not applicable.
      */
-    public int getIndex ()
+    public Integer getKey ()
     {
-        return _index;
+        return _key;
+    }
+
+    /**
+     * Does the key apply to an array?
+     */
+    public boolean isArray ()
+    {
+        return _isArray;
     }
 
     // from abstract DEvent
@@ -67,11 +77,16 @@ public class PropertySetEvent extends NamedEvent
     {
         WhirledGameObject gameObj = (WhirledGameObject) target;
         if (!gameObj.isOnServer()) {
+            // TODO: this won't handle GameMaps
             _data = ObjectMarshaller.decode(_data);
         }
         if (_oldValue == UNSET_OLD_VALUE) {
             // only apply the property change if we haven't already
-            _oldValue = gameObj.applyPropertySet(_name, _data, _index);
+            try {
+                _oldValue = gameObj.applyPropertySet(_name, _data, _key, _isArray);
+            } catch (WhirledGameObject.ArrayRangeException are) {
+                return false;
+            }
         }
         return true;
     }
@@ -89,14 +104,17 @@ public class PropertySetEvent extends NamedEvent
     {
         buf.append("PropertySetEvent ");
         super.toString(buf);
-        buf.append(", index=").append(_index);
+        buf.append(", key=").append(_key);
     }
-
-    /** The index of the property, if applicable. */
-    protected int _index;
 
     /** The client-side data that is assigned to this property. */
     protected Object _data;
+
+    /** The key of the property, if applicable. */
+    protected Integer _key;
+
+    /** True if the key applies to an array. */
+    protected boolean _isArray;
 
     /** The old value. */
     protected transient Object _oldValue = UNSET_OLD_VALUE;

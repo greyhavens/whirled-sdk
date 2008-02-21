@@ -10,6 +10,7 @@ import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
 import com.threerings.io.Streamer;
 
+import com.threerings.util.Integer;
 import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringBuilder;
 
@@ -33,8 +34,12 @@ public class PropertySetEvent extends NamedEvent
     // from abstract DEvent
     override public function applyToObject (target :DObject) :Boolean
     {
-        // since we're in actionscript, we're always on the client
-        _oldValue = WhirledGameObject(target).applyPropertySet(_name, _data, _index);
+        try {
+            _oldValue = WhirledGameObject(target).applyPropertySet(_name, _data, _key, _isArray);
+        } catch (re :RangeError) {
+            trace("Error setting property: " + re);
+            return false;
+        }
         return true;
     }
 
@@ -47,11 +52,19 @@ public class PropertySetEvent extends NamedEvent
     }
 
     /**
-     * Get the index, or -1 if not applicable.
+     * Get the key, or null if not applicable.
      */
-    public function getIndex () :int
+    public function getKey () :Integer
     {
-        return _index;
+        return _key;
+    }
+
+    /**
+     * Does the key apply to an array?
+     */
+    public function isArray () :Boolean
+    {
+        return _isArray;
     }
 
     /**
@@ -66,16 +79,18 @@ public class PropertySetEvent extends NamedEvent
     override public function readObject (ins :ObjectInputStream) :void
     {
         super.readObject(ins);
-        _index = ins.readInt();
-        _data = ObjectMarshaller.decode(ins.readObject());
+        _data = WhirledGameObject.decodeProperty(ins.readObject());
+        _key = ins.readField(Integer) as Integer;
+        _isArray = ins.readBoolean();
     }
 
     // from interface Streamable
     override public function writeObject (out :ObjectOutputStream) :void
     {
         super.writeObject(out);
-        out.writeInt(_index);
         out.writeObject(_data);
+        out.writeField(_key);
+        out.writeBoolean(_isArray);
     }
 
     override protected function notifyListener (listener :Object) :void
@@ -89,14 +104,17 @@ public class PropertySetEvent extends NamedEvent
     {
         buf.append("PropertySetEvent ");
         super.toStringBuf(buf);
-        buf.append(", index=").append(_index);
+        buf.append(", key=").append(_key).append(", isArray=").append(_isArray);
     }
-
-    /** The index of the property, if applicable. */
-    protected var _index :int;
 
     /** The client-side data that is assigned to this property. */
     protected var _data :Object;
+
+    /** The key of the property, if applicable. */
+    protected var _key :Integer;
+
+    /** True if the key applies to an array. */
+    protected var _isArray :Boolean;
 
     /** The old value. */
     protected var _oldValue :Object;

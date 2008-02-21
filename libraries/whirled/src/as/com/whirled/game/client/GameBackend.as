@@ -289,8 +289,20 @@ public class GameBackend
     // from PropertySetListener
     public function propertyWasSet (event :PropertySetEvent) :void
     {
-        callUserCode("propertyWasSet_v1", event.getName(), event.getValue(),
-            event.getOldValue(), event.getIndex());
+        var key :Integer = event.getKey();
+
+        if ("propertyWasSet_v1" in _userFuncs) {
+            // dispatch the old way (Deprecated 2008-02-20, but we'll probably always need it)
+            var index :int = (key == null) ? -1 : key.value;
+            callUserCode("propertyWasSet_v1", event.getName(), event.getValue(),
+                event.getOldValue(), index);
+
+        } else {
+            // dispatch the new way
+            var keyObj :Object = (key == null) ? null : key.value;
+            callUserCode("propertyWasSet_v2", event.getName(), event.getValue(),
+                event.getOldValue(), keyObj);
+        }
     }
 
     // from ChatDisplay
@@ -347,18 +359,18 @@ public class GameBackend
     /**
      * Verify that the property name / value are valid.
      */
-    protected function validatePropertyChange (propName :String, value :Object, index :int) :void
+    protected function validatePropertyChange (
+        propName :String, value :Object, array :Boolean, index :int) :void
     {
         validateName(propName);
 
-        // check that we're setting an array element on an array
-        if (index >= 0) {
+        if (array) {
+            if (index < 0) {
+                throw new ArgumentError("Bogus array index specified.");
+            }
             if (!(_gameData[propName] is Array)) {
                 throw new ArgumentError("Property " + propName + " is not an Array.");
             }
-
-        } else if (index != -1) {
-            throw new ArgumentError("Invalid index specified: " + index);
         }
 
         // validate the value too
@@ -523,7 +535,7 @@ public class GameBackend
 
         // .net
         o["sendMessage_v2"] = sendMessage_v2;
-        o["setProperty_v1"] = setProperty_v1;
+        o["setProperty_v2"] = setProperty_v2;
         o["testAndSetProperty_v1"] = testAndSetProperty_v1;
 
         // .player
@@ -577,6 +589,7 @@ public class GameBackend
         o["getAvailableFlow_v1"] = getAvailableFlow_v1;
         o["getDictionaryLetterSet_v1"] = getDictionaryLetterSet_v1;
         o["getStageBounds_v1"] = getStageBounds_v1;
+        o["setProperty_v1"] = setProperty_v1;
     }
 
     //---- GameControl -----------------------------------------------------
@@ -699,32 +712,48 @@ public class GameBackend
      * immediate and did not pass a 4th value.  All callers should now specify that value
      * explicitly.
      */
-    protected function setProperty_v1 (
-        propName :String, value :Object, index :int, immediate :Boolean = true) :void
+    protected function setProperty_v2 (
+        propName :String, value :Object, key :Object, isArray :Boolean, immediate :Boolean) :void
     {
         validateConnected();
-        validatePropertyChange(propName, value, index);
+        validatePropertyChange(propName, value, isArray, int(key));
 
-        var encoded :Object = ObjectMarshaller.encode(value, (index == -1));
+        var encoded :Object = WhirledGameObject.encodeProperty(value, (key == null));
+        var ikey :Integer = (key == null) ? null : new Integer(int(key));
         _gameObj.whirledGameService.setProperty(
-            _ctx.getClient(), propName, encoded, index,
+            _ctx.getClient(), propName, encoded, ikey, isArray,
             false, null, createLoggingConfirmListener("setProperty"));
         if (immediate) {
-            _gameObj.applyPropertySet(propName, value, index);
+            // we re-decode so that it looks like it came off the net
+            try {
+                _gameObj.applyPropertySet(propName, WhirledGameObject.decodeProperty(encoded),
+                    key, isArray);
+            } catch (re :RangeError) {
+                trace("Error setting property (immediate): " + re);
+            }
         }
     }
 
+    /**
+     * Test and set a property. Note that the 'index' parameter was deprecated on 2008-02-20.
+     * Newer code will only pass in propName, value, testValue. Older code will also pass in the
+     * index, but that's ok as long as it's -1.
+     */
     protected function testAndSetProperty_v1 (
-        propName :String, value :Object, testValue :Object, index :int) :void
+        propName :String, value :Object, testValue :Object, index :int = -1) :void
     {
+        if (index != -1) {
+            throw new Error("Sorry, using testAndSet with an index value is no longer supported. " +
+                "Update your SDK.");
+        }
         validateConnected();
-        validatePropertyChange(propName, value, index);
+        validatePropertyChange(propName, value, false, 0);
 
-        var encodedValue :Object = ObjectMarshaller.encode(value, (index == -1));
-        var encodedTestValue :Object = ObjectMarshaller.encode(testValue, (index == -1));
+        var encodedValue :Object = WhirledGameObject.encodeProperty(value, true);
+        var encodedTestValue :Object = WhirledGameObject.encodeProperty(testValue, true);
         _gameObj.whirledGameService.setProperty(
-            _ctx.getClient(), propName, encodedValue, index, true, encodedTestValue,
-            createLoggingConfirmListener("setProperty"));
+            _ctx.getClient(), propName, encodedValue, null, false, true, encodedTestValue,
+            createLoggingConfirmListener("testAndSetProperty"));
     }
 
     //---- .player ---------------------------------------------------------
@@ -1177,6 +1206,23 @@ public class GameBackend
     protected function awardFlow_v2 (perf :int) :int
     {
         return 0;
+    }
+
+    /** 
+     * A backwards compatible method.
+     *
+     * Note: immediate defaults to true, even though immediate=false is the general case. We are
+     * providing some backwards compatibility to old versions of setProperty_v1() that assumed
+     * immediate and did not pass a 4th value.  All callers should now specify that value
+     * explicitly.
+     * (And of course, setProperty_v2 takes control of this situation.)
+     */
+    protected function setProperty_v1 (
+        propName :String, value :Object, index :int, immediate :Boolean = true) :void
+    {
+        var key :Object = (index < 0) ? null : index;
+        var isArray :Boolean = (key != null);
+        setProperty_v2(propName, value, key, isArray, immediate);
     }
 
     // --------------------------

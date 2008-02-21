@@ -116,7 +116,7 @@ public interface WhirledGameProvider extends InvocationProvider
     /**
      * Handles a {@link WhirledGameService#setProperty} request.
      */
-    public void setProperty (ClientObject caller, String arg1, Object arg2, int arg3, boolean arg4, Object arg5, InvocationService.InvocationListener arg6)
+    public void setProperty (ClientObject caller, String arg1, Object arg2, Integer arg3, boolean arg4, boolean arg5, Object arg6, InvocationService.InvocationListener arg7)
         throws InvocationException;
 
     /**

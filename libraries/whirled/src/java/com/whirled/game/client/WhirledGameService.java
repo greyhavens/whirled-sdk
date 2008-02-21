@@ -17,8 +17,8 @@ public interface WhirledGameService extends InvocationService
      * @param value either a byte[] if setting a non-array property or a property at an array
      * index, or a byte[][] if setting an array property where index is -1.
      */
-    public void setProperty (Client client, String propName, Object value, int index,
-                             boolean testAndSet, Object testValue, InvocationListener listener);
+    public void setProperty (Client client, String propName, Object value, Integer index,
+        boolean isArray, boolean testAndSet, Object testValue, InvocationListener listener);
 
     /**
      * Request to end the turn, possibly futzing the next turn holder unless -1 is specified for

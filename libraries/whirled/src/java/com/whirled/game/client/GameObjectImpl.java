@@ -75,11 +75,15 @@ public class GameObjectImpl
         Object encoded = ObjectMarshaller.encode(value);
         Object reconstituted = ObjectMarshaller.decode(encoded);
         _gameObj.whirledGameService.setProperty(
-            _ctx.getClient(), propName, encoded, index, false, null,
+            _ctx.getClient(), propName, encoded, index, false, false, null,
             createLoggingListener("setProperty"));
 
         // set it immediately in the game object
-        _gameObj.applyPropertySet(propName, reconstituted, index);
+        try {
+            _gameObj.applyPropertySet(propName, reconstituted, index, false);
+        } catch (WhirledGameObject.ArrayRangeException are) {
+            throw new RuntimeException(are);
+        }
     }
     
     // from WhirledGame
@@ -96,7 +100,7 @@ public class GameObjectImpl
 
         Object encoded = ObjectMarshaller.encode(value);
         _gameObj.whirledGameService.setProperty(
-            _ctx.getClient(), propName, encoded, index, true, testValue,
+            _ctx.getClient(), propName, encoded, null, false, true, testValue,
             createLoggingListener("testAndSet"));
     }
 

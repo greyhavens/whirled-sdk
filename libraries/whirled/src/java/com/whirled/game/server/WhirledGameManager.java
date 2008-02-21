@@ -214,16 +214,16 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     // from WhirledGameProvider
-    public void setProperty (ClientObject caller, String propName, Object data, int index,
-                             boolean testAndSet, Object testValue,
-                             InvocationService.InvocationListener listener)
+    public void setProperty (ClientObject caller, String propName, Object data, Integer key,
+        boolean isArray, boolean testAndSet, Object testValue,
+        InvocationService.InvocationListener listener)
         throws InvocationException
     {
         validateUser(caller);
-        if (testAndSet && !_gameObj.testProperty(propName, index, testValue)) {
+        if (testAndSet && !_gameObj.testProperty(propName, testValue)) {
             return; // the test failed: do not set the property
         }
-        setProperty(propName, data, index);
+        setProperty(propName, data, key, isArray);
     }
 
     // from WhirledGameProvider
@@ -309,7 +309,7 @@ public abstract class WhirledGameManager extends GameManager
                 }
 
                 if (playerId == 0) {
-                    setProperty(msgOrPropName, result, -1);
+                    setProperty(msgOrPropName, result, null, false);
                 } else {
                     sendPrivateMessage(playerId, msgOrPropName, result);
                 }
@@ -465,12 +465,16 @@ public abstract class WhirledGameManager extends GameManager
     /**
      * Helper method to post a property set event.
      */
-    protected void setProperty (String propName, Object value, int index)
+    protected void setProperty (String propName, Object value, Integer key, boolean isArray)
     {
         // apply the property set immediately
-        Object oldValue = _gameObj.applyPropertySet(propName, value, index);
-        _gameObj.postEvent(
-            new PropertySetEvent(_gameObj.getOid(), propName, value, index, oldValue));
+        try {
+            Object oldValue = _gameObj.applyPropertySet(propName, value, key, isArray);
+            _gameObj.postEvent(
+                new PropertySetEvent(_gameObj.getOid(), propName, value, key, isArray, oldValue));
+        } catch (WhirledGameObject.ArrayRangeException are) {
+            // do nothing, log nothing
+        }
     }
 
     /**
