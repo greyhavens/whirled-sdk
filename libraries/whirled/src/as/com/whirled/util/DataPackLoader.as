@@ -10,7 +10,7 @@ import com.whirled.DataPack;
 
 /**
  * <b>Note</b>: This class is deprecated. It will be removed when a suitable replacement
- * is made.<br></br>
+ * is made.<br/>
  *
  * Utility for loading item and level packs as data packs. A data pack is a zipped data bundle,
  * containing arbitrary files, and a <code>_data.xml</code> file describing the contents

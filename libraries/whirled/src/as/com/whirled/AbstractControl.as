@@ -77,9 +77,9 @@ public class AbstractControl extends EventDispatcher
      * });
      * </code>
      *
-     * <br></br><br></br>
-     * <b>Note</b>: This will work on any control, but batching is only supported on
-     * GameControl and its sub-controls.
+     * <br/><br/>
+     * <b>Note</b>: This will work on any control, but currently only GameControl and its
+     * sub-controls will actually do network batching.
      */
     public function doBatch (fn :Function) :void
     {

@@ -8,7 +8,7 @@ import flash.display.Loader;
 import flash.errors.IllegalOperationError;
 
 /**
- * <b>Note</b>: This class is deprecated. It will be removed or replaced soon.<br></br>
+ * <b>Note</b>: This class is deprecated. It will be removed or replaced soon.<br/>
  *
  * Wrapper class that wraps a content pack's Loader instance with some useful accessors.
  *

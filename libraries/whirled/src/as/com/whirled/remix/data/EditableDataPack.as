@@ -95,17 +95,17 @@ public class EditableDataPack extends DataPack
     /**
      * Return an Object map containing information about the specified data entry.
      * Fields:
-     *    name: <dataName>:String
-     *    type: <typeOfData>:String
-     *    info: <description>:String
-     *    optional: <isOptional>:Boolean
-     *    value: <objectValue>:*
-     *    defaultValue: <objectValue>:*
+     *    name: [dataName]:String
+     *    type: [typeOfData]:String
+     *    info: [description]:String
+     *    optional: [isOptional]:Boolean
+     *    value: [objectValue]:*
+     *    defaultValue: [objectValue]:*
      *
      * Additional optional fields:
      *    Type: Number
-     *       min: <minimumValue>:Number
-     *       max: <maximumValue>:Number
+     *       min: [minimumValue]:Number
+     *       max: [maximumValue]:Number
      */
     public function getDataEntry (name :String) :Object
     {
@@ -138,16 +138,16 @@ public class EditableDataPack extends DataPack
     /**
      * Return an Object map containing information about the specified file entry.
      * Fields:
-     *    name: <fieldName>:String
-     *    type: <typeOfFile>:String
-     *    info: <description>:String
-     *    optional: <isOptional>:Boolean
-     *    value: <filename>:*
+     *    name: [fieldName]:String
+     *    type: [typeOfFile]:String
+     *    info: [description]:String
+     *    optional: [isOptional]:Boolean
+     *    value: [filename]:*
      *
      * Additional optional fields:
      *    Type: Image|DisplayObject
-     *       width: <requiredWidth>:Number
-     *       height: <requiredHeight>:Number
+     *       width: [requiredWidth]:Number
+     *       height: [requiredHeight]:Number
      */
     public function getFileEntry (name :String) :Object
     {
@@ -229,7 +229,7 @@ public class EditableDataPack extends DataPack
      * Replace a file.
      *
      * @param name the fieldName of the file to replace.
-     * @param the filename, can be used to point multiple fields at the same file,
+     * @param filename, can be used to point multiple fields at the same file,
      * or may be null to remove the file.
      * @param data the bytes associated with the specified filename.
      */
