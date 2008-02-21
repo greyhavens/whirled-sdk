@@ -7,7 +7,7 @@ import flash.events.Event;
 
 /**
  * An event dispatched when a single element is updated in an Array or Dictionary
- * property.
+ * property as a result of calling setAt() or setIn().
  */
 public class ElementChangedEvent extends PropertyChangedEvent
 {

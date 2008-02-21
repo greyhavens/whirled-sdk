@@ -6,14 +6,16 @@ package com.whirled.game {
 import com.whirled.AbstractSubControl;
 
 /**
- * Dispatched when a property has changed in the shared game state.
+ * Dispatched when a property has changed in the shared game state. This event is a result
+ * of calling set() or testAndSet().
  *
  * @eventType com.whirled.game.PropertyChangedEvent.PROPERTY_CHANGED
  */
 [Event(name="PropChanged", type="com.whirled.game.PropertyChangedEvent")]
 
 /**
- * Dispatched when an element in property has changed in the shared game state.
+ * Dispatched when an element inside a property has changed in the shared game state.
+ * This event is a result of calling setIn() or setAt().
  *
  * @eventType com.whirled.game.ElementChangedEvent.ELEMENT_CHANGED
  */
@@ -44,6 +46,9 @@ public class NetSubControl extends AbstractSubControl
 
     /**
      * Get a property value.
+     *
+     * @param propName the name of the property to retrieve.
+     * @return the property value, or null if there is no property with that name.
      */
     public function get (propName :String) :Object
     {
@@ -52,9 +57,16 @@ public class NetSubControl extends AbstractSubControl
     }
 
     /**
-     * Set a top-level property. Note that if you set the value as an Array or Dictionary,
+     * Set a property value. Note that if you set the value as an Array or Dictionary,
      * you can update the values within by using either setAt (for Arrays) or
-     * setIn (for Dictionarys), and you'll receive an ElementChangedEvent.
+     * setIn (for Dictionarys) to efficiently update and distribute just that one change.
+     * Note that Dictionarys must have int keys, the intention is to use occupantIds as keys.
+     *
+     * @param propName the name of the property to set.
+     * @param value the value to set. Passing null clears the property.
+     * @param immediate if true, the value is updated immediately in the local object. Otherwise
+     * any old value will remain in effect until the PropertyChangedEvent arrives after
+     * a round-trip to the server.
      */
     public function set (propName :String, value :Object, immediate :Boolean = false) :void
     {
@@ -62,9 +74,20 @@ public class NetSubControl extends AbstractSubControl
     }
 
     /**
-     * Update one element of an Array.
-     * Note that no update will take place if there is no array currently set with that name,
-     * or if the index is out of bounds,
+     * Update one element of an Array.<br/>
+     * <b>Note</b>: Unlike setIn(), this update will fail silently if the index is out of
+     * bounds or if there is no array currently set at the specified property name.
+     * Furthermore, if you set the element with immediate=true, there are two updates:
+     * one locally that happens right away and the update on the server that will be
+     * dispatched back to all the clients. Either or both can fail, so be sure to set the Array up
+     * first using set().
+     *
+     * @param propName the name of the property to modify.
+     * @param index the array index of the element to update.
+     * @param value the value to set.
+     * @param immediate if true, the value is updated immediately in the local object. Otherwise
+     * any old value will remain in effect until the ElementChangedEvent arrives after
+     * a round-trip to the server.
      */
     public function setAt (
         propName :String, index :int, value :Object, immediate :Boolean = false) :void
@@ -73,9 +96,17 @@ public class NetSubControl extends AbstractSubControl
     }
 
     /**
-     * Update one element of a Dictionary.
-     * Unlike setAt, this will work even if there's no Dictionary stored at that property
-     * or if there's no such key currently in use.
+     * Update one element of a Dictionary.<br/>
+     * <b>Note</b>: Unlike setAt(), this will always work. No key is out of range, and if
+     * this is called on a property that doesn't currently contain a Dictionary, one will
+     * be automatically created and inserted at the specified property name.
+     *
+     * @param propName the name of the property to modify.
+     * @param key the key of the element to update.
+     * @param value the value to set. Passing null removes the specified key from the Dictionary.
+     * @param immediate if true, the value is updated immediately in the local object. Otherwise
+     * any old value will remain in effect until the ElementChangedEvent arrives after
+     * a round-trip to the server.
      */
     public function setIn (
         propName :String, key :int, value :Object, immediate :Boolean = false) :void
@@ -84,7 +115,6 @@ public class NetSubControl extends AbstractSubControl
     }
 
     /**
-     * Set 
      * Set a property that will be distributed, but only if it's equal to the specified test value.
      *
      * <p> Please note that there is no way to test and set a property immediately,
