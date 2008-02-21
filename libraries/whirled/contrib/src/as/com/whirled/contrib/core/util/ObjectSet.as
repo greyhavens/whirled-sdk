@@ -1,7 +1,8 @@
 package com.whirled.contrib.core.util {
 
-import flash.utils.Dictionary;
 import com.threerings.util.Set;
+
+import flash.utils.Dictionary;
 
 public class ObjectSet
     implements Set
@@ -61,6 +62,13 @@ public class ObjectSet
         }
 
         return arr;
+    }
+    
+    public function forEach (callback :Function, thisObject :* = null) :void
+    {
+        for (var key :* in _dict) {
+            callback.call(thisObject, key);
+        }
     }
 
     protected var _dict :Dictionary = new Dictionary();
