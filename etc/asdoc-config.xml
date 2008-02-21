@@ -16,9 +16,5 @@
       <string>com.whirled.game</string>
       <string>Used for developing games for whirled.</string>
     </package>
-    <package>
-      <string>com.whirled.contrib</string>
-      <string>Contains an archive of useful tools for game development, contributed by various authors and users of the Whirled SDK.  See whirled/contrib/README.txt in the SDK for further information.</string>
-    </package>
   </packages>
 </flex-config>

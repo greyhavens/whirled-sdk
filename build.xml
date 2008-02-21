@@ -93,16 +93,6 @@
 
   <!-- builds the ActionScript documention -->
   <target name="asdoc">
-    <mkdir dir="${sdk.build}/docs"/>
-    <!-- we need to generate docs just for the public facing stuff, so we do this hackery -->
-    <copy todir="${deploy.dir}/tmp/pubas">
-      <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/*.as"/>
-      <fileset dir="${projects.dir}/nenya/src/as" includes="com/threerings/flash/**/*.as"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/*.as"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/*.as"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/util/*.as"/>
-      <fileset dir="${projects.dir}/whirled/contrib/src/as" includes="com/whirled/**/*.as"/>
-    </copy>
     <!-- work around annoying asdoc .svn directory freakout -->
     <mkdir dir="${deploy.dir}/tmp/astemps"/>
     <copy todir="${deploy.dir}/tmp/astemps">
@@ -113,7 +103,16 @@
       <arg line="${deploy.dir}/tmp/astemps/asDocHelper.linux"/>
       <arg line="${deploy.dir}/tmp/astemps/asDocHelper"/>
     </exec>
-    <!-- finally actually run asdoc -->
+
+    <!-- generate docus for our whirled stuff -->
+    <mkdir dir="${sdk.build}/docs"/>
+    <copy todir="${deploy.dir}/tmp/pubas">
+      <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/*.as"/>
+      <fileset dir="${projects.dir}/nenya/src/as" includes="com/threerings/flash/**/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/util/*.as"/>
+    </copy>
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
       <arg line="-library-path ${deploy.dir}/lib"/>
@@ -123,6 +122,22 @@
       <arg line="-output ${sdk.build}/docs"/>
     </exec>
     <delete dir="${deploy.dir}/tmp/pubas"/>
+
+    <!-- generate docs for the contrib stuff -->
+    <mkdir dir="${sdk.build}/contrib/docs"/>
+    <copy todir="${deploy.dir}/tmp/pubas">
+      <fileset dir="${projects.dir}/whirled/contrib/src/as" includes="com/whirled/**/*.as"/>
+    </copy>
+    <exec executable="${flex.path}/bin/asdoc" failonerror="true">
+      <arg line="-library-path ${flex.path}/frameworks/libs"/>
+      <arg line="-library-path ${deploy.dir}/lib"/>
+      <arg line="-templates-path ${deploy.dir}/tmp/astemps"/>
+      <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
+      <arg line="-load-config+=etc/asdoc-contrib-config.xml"/>
+      <arg line="-output ${sdk.build}/contrib/docs"/>
+    </exec>
+    <delete dir="${deploy.dir}/tmp/pubas"/>
+
     <delete dir="${deploy.dir}/tmp/astemps"/>
   </target>
 
