@@ -234,6 +234,8 @@ public final class MainLoop
         // how much time has elapsed since last frame?
         var newTime :Number = this.elapsedSeconds;
         var dt :Number = newTime - _lastTime;
+        
+        _fps = 1 / dt;
 
         // update all our "updatables"
         for each (var updatable :Updatable in _updatables) {
@@ -253,6 +255,15 @@ public final class MainLoop
     {
         return (getTimer() / 1000); // getTimer() returns a value in milliseconds
     }
+    
+    /** 
+     * Returns the approximate frames-per-second that the application
+     * is running at.
+     */
+    public function get fps () :Number
+    {
+        return _fps;
+    }
 
     protected static var g_instance :MainLoop;
 
@@ -263,6 +274,8 @@ public final class MainLoop
     protected var _modeStack :Array = new Array();
     protected var _pendingModeTransitionQueue :Array = new Array();
     protected var _updatables :Array = new Array();
+    
+    protected var _fps :Number = 0;
 
     // mode transition constants
     internal static const TRANSITION_PUSH :uint = 0;
