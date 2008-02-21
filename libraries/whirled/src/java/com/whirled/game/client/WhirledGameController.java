@@ -78,7 +78,7 @@ public class WhirledGameController extends GameController
         // notify the user game
         dispatchUserEvent(new PropertyChangedEvent(
             gameObjImpl, event.getName(), event.getValue(),
-            event.getOldValue(), event.getIndex()));
+            event.getOldValue(), -1));
     }
 
     // from MessageListener
