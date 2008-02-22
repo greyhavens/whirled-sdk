@@ -24,8 +24,8 @@ import com.whirled.AbstractSubControl;
  *   <a href="/code/GameControl.html" target="_top">Easy GameControl Index</a>.
  * <br/><br/>
  *
- * Typically, you create this in your top-level MovieClip/Sprite:
- * <code><pre>
+ * @example Typically, you create this in your top-level MovieClip/Sprite:
+ * <listing version="3.0">
  * public class MyGame extends Sprite
  * {
  *     public var ctrl :GameControl;
@@ -35,7 +35,7 @@ import com.whirled.AbstractSubControl;
  *     {
  *          ctrl = new GameControl(this);
  *          ...
- * </pre></code>
+ * </listing>
  */
 public class GameControl extends AbstractControl
 {

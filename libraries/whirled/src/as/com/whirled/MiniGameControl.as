@@ -8,6 +8,8 @@ package com.whirled {
 import flash.display.DisplayObject;
 
 /**
+ * NOTE: currently not used anywhere. @private
+ *
  * Control for a minigame- tiny, simple, non-networked games which are
  * used inside some larger games.
  */
