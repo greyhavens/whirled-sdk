@@ -76,6 +76,11 @@
 
   <!-- builds our Flash game test client -->
   <target name="asclient">
+    <copy file="etc/whirled-config.xml.in" tofile="etc/whirled-config.xml">
+      <filterset>
+        <filter token="flex_path" value="${flex.path}"/>
+      </filterset>
+    </copy>
     <exec executable="${flex.path}/bin/mxmlc" failonerror="true">
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
