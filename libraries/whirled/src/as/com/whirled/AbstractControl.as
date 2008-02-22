@@ -50,7 +50,10 @@ public class AbstractControl extends EventDispatcher
         var event :ConnectEvent = new ConnectEvent();
         event.userProps = userProps;
         disp.root.loaderInfo.sharedEvents.dispatchEvent(event);
-        gotHostProps(event.hostProps);
+        var hostProps :Object = event.hostProps;
+        if (hostProps != null) {
+            gotHostProps(hostProps);
+        }
     }
 
     /**
