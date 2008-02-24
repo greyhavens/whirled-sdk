@@ -1,4 +1,7 @@
 <flex-config>
+  <window-title>Whirled "contrib" Documentation</window-title>
+  <main-title>Whirled "contrib" Documentation</main-title>
+  <footer></footer>
   <packages>
     <package>
       <string>com.whirled.contrib</string>
