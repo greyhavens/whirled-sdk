@@ -57,6 +57,25 @@ public class AbstractControl extends EventDispatcher
     }
 
     /**
+     * Registers an event listener.
+     */
+    override public function addEventListener (
+        type :String, listener :Function, useCapture :Boolean = false, priority :int = 0,
+        useWeakReference :Boolean = false) :void
+    {
+        super.addEventListener(type, listener, useCapture, priority, useWeakReference);
+    }
+
+    /**
+     * Unregisters an event listener.
+     */
+    override public function removeEventListener (
+        type :String, listener :Function, useCapture :Boolean = false) :void
+    {
+        super.removeEventListener(type, listener, useCapture);
+    }
+
+    /**
      * Are we connected and running inside the whirled environment, or has someone just
      * loaded up our SWF by itself?
      */
@@ -71,14 +90,14 @@ public class AbstractControl extends EventDispatcher
      * may result in better use of the network and should be used if setting a number of things
      * at once.
      *
-     * Example:
-     * <code>
+     * @example
+     * <listing version="3.0">
      * _ctrl.doBatch(function () :void {
      *     _ctrl.net.set("board", new Array());
      *     _ctrl.net.set("scores", new Array());
      *     _ctrl.net.set("captures", 0);
      * });
-     * </code>
+     * </listing>
      *
      * <br/><br/>
      * <b>Note</b>: This will work on any control, but currently only GameControl and its
