@@ -452,6 +452,12 @@ public class EntityControl extends AbstractControl
         }
     }
 
+    /** @private */
+    override protected function checkIsConnected () :void
+    {
+        // Nothing. It's ok for entity code to attempt to call methods even when not connected.
+    }
+
     /**
      * Entities get another packet of data called the initProps.
      *
