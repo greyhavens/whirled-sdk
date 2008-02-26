@@ -218,9 +218,11 @@ public class GameSubControl extends AbstractSubControl
     }
 
     /**
-     * Returns the current round number. Rounds start at 1 and increase if the game calls {@link
-     * #endRound} with a next round timeout. Between rounds, it returns a negative number,
-     * corresponding to the negation of the round that just ended.
+     * Returns the current round number. Rounds start at 1 and increase if the game calls
+     * <code>endRound</code> with a next round timeout. Between rounds, it returns a
+     * negative number, corresponding to the negation of the round that just ended.
+     *
+     * @see #endRound()
      */
     public function getRound () :int
     {

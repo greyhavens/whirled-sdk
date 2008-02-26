@@ -104,12 +104,14 @@ public class EntityControl extends AbstractControl
 
     /**
      * Returns our current logical location in the scene.  Note that if y is nonzero, you are
-     * *flying*. If applicable, an avatar should animate appropriately. {@link
-     * ActorControl#isMoving} may return true or false when flying, depending on whether you're
+     * *flying*. If applicable, an avatar should animate appropriately. <code>isMoving()</code>
+     * may return true or false when flying, depending on whether you're
      * floating or actually moving between locations.
      *
      * @return an array containing [ x, y, z ]. x, y, and z are Numbers between 0 and 1 or null if
      * our location is unknown.
+     *
+     * @see com.whirled.ActorControl#isMoving()
      */
     public function getLogicalLocation () :Array
     {

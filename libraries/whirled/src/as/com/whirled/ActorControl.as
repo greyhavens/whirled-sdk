@@ -72,7 +72,7 @@ public class ActorControl extends EntityControl
      * and depth respectively.  orient is a number between 0 (facing straight ahead) and 359, going
      * counter-clockwise.
      *
-     * @see ControlEvent#APPEARANCE_CHANGED
+     * @see com.whirled.ControlEvent#APPEARANCE_CHANGED
      */
     public function setLogicalLocation (x :Number, y :Number, z: Number, orient :Number) :void
     {
@@ -95,7 +95,7 @@ public class ActorControl extends EntityControl
      *
      * @param orient an orientation between 0 (facing straight ahead) and going to 359, counter-clockwise.
      *
-     * @see ControlEvent#APPEARANCE_CHANGED
+     * @see com.whirled.ControlEvent#APPEARANCE_CHANGED
      *
      * NOTE: this is currently not working.
      */

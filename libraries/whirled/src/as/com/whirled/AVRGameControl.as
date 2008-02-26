@@ -129,9 +129,11 @@ public class AVRGameControl extends AbstractControl
      * for mouse purposes and which are not. By default, all non-transparent pixels will
      * capture the mouse. The prototype for this method is identical to what the Flash
      * API establishes in DisplayObject:
+     * <code>
      *    testHitPoint(x :Number, y :Number, shapeFlag :Boolean) :Boolean
+     * </code>
      *
-     * {@see DisplayObject#testHitPoint}
+     * @see flash.display.DisplayObject#testHitPoint
      */
     public function setHitPointTester (tester :Function) :void
     {
@@ -141,7 +143,7 @@ public class AVRGameControl extends AbstractControl
     /**
      * Returns the AVRG's currently configured hit point tester.
      *
-     * {@see #setHitPointTester}
+     * @see #setHitPointTester
      */
     public function get hitPointTester () :Function
     {

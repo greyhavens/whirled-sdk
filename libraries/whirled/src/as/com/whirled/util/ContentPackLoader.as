@@ -25,8 +25,8 @@ public class ContentPackLoader
 {
     /**
      * This constructor takes a list of pack definitions, and two callback functions.
-     * Pack definitions should be in the format produced by {@link WhirledGameControl.getItemPacks}
-     * or {@link WhirledGameControl.getLevelPacks}.
+     * Pack definitions should be in the format produced by <code>GameControl.getItemPacks</code>
+     * <code>GameControl.getLevelPacks</code>
      *
      * The loader will start loading content packs immediately. Every time a content pack finished
      * processing, the <i>loaded</i> callback will be called, and it will receive either a
@@ -39,6 +39,9 @@ public class ContentPackLoader
      *  @param done Function of type: function () :void {}, called after all packs were processed.
      *  @param useSubDomain Optional boolean flag; if true, it will create a separate child
      *    application domain for the content pack, allowing class redefinition.
+     *
+     * @see com.whirled.game.GameControl#getItemPacks()
+     * @see com.whirled.game.GameControl#getLevelPacks()
      */
     public function ContentPackLoader (
         definitions :Array, loaded :Function, done :Function, useSubDomain :Boolean = false)
