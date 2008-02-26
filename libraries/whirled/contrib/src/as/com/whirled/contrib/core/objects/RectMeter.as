@@ -126,7 +126,7 @@ public class RectMeter extends SceneObject
         super.update(dt);
     }
 
-    protected function updateDisplay () :void
+    public function updateDisplay () :void
     {
         var normalizedVal :Number = ((_value - _minValue) / (_maxValue - _minValue));
 

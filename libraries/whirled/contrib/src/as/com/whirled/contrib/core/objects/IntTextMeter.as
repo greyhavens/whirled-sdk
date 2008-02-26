@@ -6,6 +6,7 @@ import com.whirled.contrib.core.components.MeterComponent;
 
 import flash.display.DisplayObject;
 import flash.text.TextField;
+import flash.text.TextFieldAutoSize;
 
 public class IntTextMeter extends SceneObject
     implements MeterComponent
@@ -13,6 +14,7 @@ public class IntTextMeter extends SceneObject
     public function IntTextMeter ()
     {
         _display = new TextField();
+        _display.autoSize = TextFieldAutoSize.LEFT
     }
 
     // from SceneObject
@@ -72,6 +74,7 @@ public class IntTextMeter extends SceneObject
     public function set textColor (val :uint) :void
     {
         _display.textColor = textColor;
+        _dirty = true;
     }
 
     public function get font () :String
@@ -82,6 +85,7 @@ public class IntTextMeter extends SceneObject
     public function set font (newFont :String) :void
     {
         _display.defaultTextFormat.font = newFont;
+        _dirty = true;
     }
 
     // from SimObject
@@ -94,12 +98,10 @@ public class IntTextMeter extends SceneObject
         super.update(dt);
     }
 
-    protected function updateDisplay () :void
+    public function updateDisplay () :void
     {
         var textString :String = Math.floor(_value) + "/" + Math.floor(_maxValue);
         _display.text = textString;
-        _display.width = _display.textWidth + 3;
-        _display.height = _display.textHeight + 3;
     }
 
     protected var _dirty :Boolean;
