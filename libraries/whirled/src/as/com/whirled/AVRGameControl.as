@@ -133,7 +133,7 @@ public class AVRGameControl extends AbstractControl
      *    testHitPoint(x :Number, y :Number, shapeFlag :Boolean) :Boolean
      * </code>
      *
-     * @see flash.display.DisplayObject#testHitPoint
+     * @see flash.display.DisplayObject#testHitPoint()
      */
     public function setHitPointTester (tester :Function) :void
     {
@@ -143,7 +143,7 @@ public class AVRGameControl extends AbstractControl
     /**
      * Returns the AVRG's currently configured hit point tester.
      *
-     * @see #setHitPointTester
+     * @see #setHitPointTester()
      */
     public function get hitPointTester () :Function
     {
