@@ -1,6 +1,5 @@
 package com.whirled.contrib.core.resource {
 
-import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
 
 import flash.events.EventDispatcher;
@@ -13,17 +12,16 @@ public class ResourceManager extends EventDispatcher
             throw new Error("A load operation is already in progress");
         }
         
-        var factory :ResourceFactory = ResourceFactoryRegistry.instance.getFactory(resourceType);
-        if (null == factory) {
-            throw new Error("missing factory for '" + resourceType + "' resource type");
-        }
-        
         // check for existing resource with the same name
         if (null != _resources.get(resourceName) || null != _pendingResources.get(resourceName)) {
             throw new Error("A resource named '" + resourceName + "' is already loaded");
         }
         
-        var loader :ResourceLoader = factory.createResourceLoader(resourceName, loadParams);
+        var loader :ResourceLoader = ResourceLoaderRegistry.instance.createLoader(resourceType, resourceName, loadParams);
+        if (null == loader) {
+            throw new Error("No ResourceLoader for '" + resourceType + "' resource type");
+        }
+        
         _pendingResources.put(resourceName, loader);
         this.subscribeToResourceLoaderEvents(loader);
     }

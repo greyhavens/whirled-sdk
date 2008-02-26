@@ -70,7 +70,7 @@ public class SwfResourceLoader extends EventDispatcher
         // parse loadParams
         
         var context :LoaderContext = new LoaderContext();
-        if (_loadParams.hasOwnProperty("useSubDomain") && Boolean(_loadParams["useSubDomain"]) == false) {
+        if (_loadParams.hasOwnProperty("useSubDomain") && !Boolean(_loadParams["useSubDomain"])) {
             context.applicationDomain = ApplicationDomain.currentDomain;
         } else {
             // default to loading symbols into a subdomain
