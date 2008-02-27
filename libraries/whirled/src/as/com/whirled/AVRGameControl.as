@@ -15,6 +15,44 @@ import flash.utils.Dictionary;
 import com.threerings.util.Log;
 
 /**
+ * Dispatched when this client-side instance of the AVRG
+ * has gained "control" over the other client-side instances.
+ * 
+ * @eventType com.whirled.AVRGameControlEvent.GOT_CONTROL
+ */
+[Event(name="gotControl", type="com.whirled.AVRGameControlEvent")]
+
+/**
+ * Dispatched when a datum of game state has changed.
+ * 
+ * @eventType com.whirled.AVRGameControlEvent.PROPERTY_CHANGED
+ */
+[Event(name="propertyChanged", type="com.whirled.AVRGameControlEvent")]
+
+/**
+ * Dispatched when a datum of a player-local game state has
+ * changed.
+ * 
+ * @eventType com.whirled.AVRGameControlEvent.PLAYER_PROPERTY_CHANGED
+ */
+[Event(name="playerPropertyChanged", type="com.whirled.AVRGameControlEvent")]
+
+/**
+ * Dispatched when a message is received.
+ * 
+ * @eventType com.whirled.AVRGameControlEvent.MESSAGE_RECEIVED
+ */
+[Event(name="messageReceived", type="com.whirled.AVRGameControlEvent")]
+
+/**
+ * Dispatched when a quest was activated or deactivated for
+ * this player.
+ * 
+ * @eventType com.whirled.AVRGameControlEvent.QUEST_STATE_CHANGED
+ */
+[Event(name="questStateChanged", type="com.whirled.AVRGameControlEvent")]
+
+/**
  * Dispatched either when somebody in our room entered our current game,
  * or somebody playing the game entered our current room.
  * 
@@ -50,6 +88,21 @@ import com.threerings.util.Log;
  * @eventType com.whirled.AVRGameControlEvent.LEFT_ROOM
  */
 [Event(name="leftRoom", type="com.whirled.AVRGameControlEvent")]
+
+/**
+ * Dispatched when the control has been resized.
+ * 
+ * @eventType com.whirled.AVRGameControlEvent.SIZE_CHANGED
+ */
+[Event(name="sizeChanged", type="com.whirled.AVRGameControlEvent")]
+
+/**
+ * Dispatched when something has changed about a player's
+ * avatar.
+ * 
+ * @eventType com.whirled.AVRGameControlEvent.AVATAR_CHANGED
+ */
+[Event(name="avatarChanged", type="com.whirled.AVRGameControlEvent")]
 
 /**
  * This file should be included by AVR games so that they can communicate
