@@ -23,36 +23,6 @@ import com.threerings.util.Log;
 [Event(name="gotControl", type="com.whirled.AVRGameControlEvent")]
 
 /**
- * Dispatched when a datum of game state has changed.
- * 
- * @eventType com.whirled.AVRGameControlEvent.PROPERTY_CHANGED
- */
-[Event(name="propertyChanged", type="com.whirled.AVRGameControlEvent")]
-
-/**
- * Dispatched when a datum of a player-local game state has
- * changed.
- * 
- * @eventType com.whirled.AVRGameControlEvent.PLAYER_PROPERTY_CHANGED
- */
-[Event(name="playerPropertyChanged", type="com.whirled.AVRGameControlEvent")]
-
-/**
- * Dispatched when a message is received.
- * 
- * @eventType com.whirled.AVRGameControlEvent.MESSAGE_RECEIVED
- */
-[Event(name="messageReceived", type="com.whirled.AVRGameControlEvent")]
-
-/**
- * Dispatched when a quest was activated or deactivated for
- * this player.
- * 
- * @eventType com.whirled.AVRGameControlEvent.QUEST_STATE_CHANGED
- */
-[Event(name="questStateChanged", type="com.whirled.AVRGameControlEvent")]
-
-/**
  * Dispatched either when somebody in our room entered our current game,
  * or somebody playing the game entered our current room.
  * 
