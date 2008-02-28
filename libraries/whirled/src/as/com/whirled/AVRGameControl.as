@@ -229,8 +229,8 @@ public class AVRGameControl extends AbstractControl
      * Request that a client be given a "control token" that is mutually exclusive across all
      * instances of this AVRG.
      * 
-     * Calling requestControl() does not guarantee that *this* client will get the "control token,"
-     * but rather that the server will attempt to ensure that *some* client will has the control
+     * Calling requestControl() does not guarantee that <em>this</em> client will get the "control token,"
+     * but rather that the server will attempt to ensure that <em>some</em> client will has the control
      * token at all times.
      * 
      * See the <code>hasControl</code> method.
