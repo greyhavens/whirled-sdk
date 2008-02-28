@@ -76,8 +76,9 @@ public class ConfigBuildPropsTask extends Task
 
     protected boolean isValidSDKPath (File path)
     {
-        String mxmlc = path.getPath() + File.separator + "lib" + File.separator + "mxmlc.jar";
-        return new File(mxmlc).exists();
+        String optimizer = path.getPath() + File.separator + "bin" + File.separator +
+            "optimizer.exe";
+        return new File(optimizer).exists();
     }
 
     protected boolean isValidPlayerPath (File path)
@@ -134,20 +135,20 @@ public class ConfigBuildPropsTask extends Task
     protected static final String FALLBACK_URL =
         "http://wiki.whirled.com/Setting_up_your_programming_environment";
 
-    protected static final String SELECT_SDK_TITLE = "Specify Flex SDK Path";
+    protected static final String SELECT_SDK_TITLE = "Specify Flex 3 SDK Path";
     protected static final String SELECT_SDK_MSG =
-        "We need to know the location of your Flex SDK.\n\n" +
+        "We need to know the location of your Flex 3 SDK.\n\n" +
         "If you are following the instructions from the Wiki, you have\n" +
-        "probably installed this in a directory named: flex_sdk_2\n\n" +
+        "probably installed this in a directory named: flex_sdk_3\n\n" +
         "Please click 'OK' and then a file dialog will appear in which\n" +
         "you can select the appropriate directory.";
 
-    protected static final String INVALID_SDK_TITLE = "Invalid Flex SDK Path";
+    protected static final String INVALID_SDK_TITLE = "Invalid Flex 3 SDK Path";
     protected static final String INVALID_SDK_MSG =
-        "The path you specified to the Flex SDK does not appear to contain an SDK.\n" +
-        "Please choose the directory in which you unpacked the flex_sdk_2.zip file.\n" +
+        "The path you specified to the Flex SDK does not appear to contain an Flex 3 SDK.\n" +
+        "Please choose the directory in which you unpacked the flex_sdk_3.zip file.\n" +
         "It should contain subdirectories like lib, bin, asdoc, etc.\n\n" +
-        "For instructions on how and where to download the Flex SDK please \n" +
+        "For instructions on how and where to download the Flex 3 SDK please \n" +
         "go to " + FALLBACK_URL;
 
     protected static final String SELECT_PLAYER_TITLE = "Specify Standalone Flash Player Path";
