@@ -57,7 +57,6 @@
       <arg value="-library-path+=${build.root}/dist/lib"/>
       <arg value="-library-path+=${app.library-dir}"/>
       <arg value="-compiler.debug"/>
-      <arg value="-compiler.verbose-stacktraces=true"/>
       <arg value="-compiler.source-path=${app.source-dir}"/>
       <arg value="${app.source-extras.arg}"/>
       <arg value="${app.lib-extras.arg}"/>
