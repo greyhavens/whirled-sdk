@@ -226,8 +226,14 @@ public class AVRGameControl extends AbstractControl
     }
 
     /**
-     * Request to have this client control all the instances of this entity. The other instances
-     * are the same code, but running in other browsers. See the <code>hasControl</code> method.
+     * Request that a client be given a "control token" that is mutually exclusive across all
+     * instances of this AVRG.
+     * 
+     * Calling requestControl() does not guarantee that *this* client will get the "control token,"
+     * but rather that the server will attempt to ensure that *some* client will has the control
+     * token at all times.
+     * 
+     * See the <code>hasControl</code> method.
      */
     public function requestControl () :void
     {
