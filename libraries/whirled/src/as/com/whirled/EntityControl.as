@@ -207,7 +207,7 @@ public class EntityControl extends AbstractControl
     {
         var mems :Object = callHostCode("getMemories_v1");
         // return an empty object if the host somereason returns null
-        return mems || {};
+        return (mems == null) ? {} : mems;
     }
 
     /**
@@ -220,7 +220,7 @@ public class EntityControl extends AbstractControl
     public function lookupMemory (key :String, defval :Object = null) :Object
     {
         var value :Object = callHostCode("lookupMemory_v1", key);
-        return value || defval;
+        return (value == null) ? defval : value;
     }
 
     /**
@@ -251,7 +251,7 @@ public class EntityControl extends AbstractControl
     {
         var mems :Object = callHostCode("getRoomProperties_v1");
         // return an empty object if the host somereason returns null
-        return mems || {};
+        return (mems == null) ? {} : mems;
     }
 
     /**
@@ -264,7 +264,7 @@ public class EntityControl extends AbstractControl
     public function getRoomProperty (key :String, defval :Object = null) :Object
     {
         var value :Object = callHostCode("getRoomProperty_v1", key);
-        return value || defval;
+        return (value == null) ? defval : value;
     }
 
     /**
