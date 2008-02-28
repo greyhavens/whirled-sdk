@@ -61,11 +61,11 @@ public final class MainLoop
         Rand.setup();
         
         // instantiate singleton
-        new ResourceFactoryRegistry();
+        new ResourceLoaderRegistry();
         
         // add resource factories
-        ResourceFactoryRegistry.instance.registerFactory("image", new ImageResourceFactory());
-        ResourceFactoryRegistry.instance.registerFactory("swf", new SwfResourceFactory());
+        ResourceLoaderRegistry.instance.registerLoaderClass("image", ImageResourceLoader);
+        ResourceLoaderRegistry.instance.registerLoaderClass("swf", SwfResourceLoader);
     }
 
     public function run () :void
