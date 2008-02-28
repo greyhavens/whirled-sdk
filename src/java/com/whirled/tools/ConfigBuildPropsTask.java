@@ -145,7 +145,7 @@ public class ConfigBuildPropsTask extends Task
 
     protected static final String INVALID_SDK_TITLE = "Invalid Flex 3 SDK Path";
     protected static final String INVALID_SDK_MSG =
-        "The path you specified to the Flex SDK does not appear to contain an Flex 3 SDK.\n" +
+        "The path you specified to the Flex SDK does not appear to contain a Flex 3 SDK.\n" +
         "Please choose the directory in which you unpacked the flex_sdk_3.zip file.\n" +
         "It should contain subdirectories like lib, bin, asdoc, etc.\n\n" +
         "For instructions on how and where to download the Flex 3 SDK please \n" +
