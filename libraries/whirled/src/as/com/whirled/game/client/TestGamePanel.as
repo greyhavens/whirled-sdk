@@ -5,6 +5,8 @@
 
 package com.whirled.game.client {
 
+import flash.display.Sprite;
+
 import flash.geom.Rectangle;
 
 import mx.containers.HBox;
@@ -85,6 +87,12 @@ public class TestGamePanel extends WhirledGamePanel
         // right on up; force games to 700x500 as that's what we want for whirled
         view.width = 700;
         view.height = 500;
+
+        var mask :Sprite = new Sprite();
+        mask.graphics.beginFill(0xFFFFFF);
+        mask.graphics.drawRect(0, 0, 700, 500);
+        mask.graphics.endFill();
+        view.mask = mask;
     }
 
     // from Container
