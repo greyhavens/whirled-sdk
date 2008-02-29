@@ -27,7 +27,7 @@ public class UserChatEvent extends Event
     /**
      * Get the content of the chat.
      */
-    public function get message () :Object
+    public function get message () :String
     {
         return _message;
     }
