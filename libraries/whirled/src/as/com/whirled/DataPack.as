@@ -56,10 +56,13 @@ public class DataPack extends EventDispatcher
      *
      * @param urlOrByteArray a url (as a String or as a URLRequest) from which to load the
      *        DataPack, or a ByteArray containing the raw data.
+     * @param completeListener a listener function to register to get COMPLETE events.
+     * @param errorListener a listener function to register to get ERROR events.
      *
      * @throws TypeError if urlOrByteArray is not of the right type.
      */
-    public function DataPack (urlOrByteArray :*)
+    public function DataPack (
+        urlOrByteArray :*, completeListener :Function = null, errorListener :Function = null)
     {
         var req :URLRequest = null;
         var bytes :ByteArray;
@@ -75,6 +78,14 @@ public class DataPack extends EventDispatcher
 
         } else {
             throw new TypeError("Expected a String or ByteArray");
+        }
+
+        // set up any Event listeners
+        if (completeListener != null) {
+            addEventListener(Event.COMPLETE, completeListener);
+        }
+        if (errorListener != null) {
+            addEventListener(ErrorEvent.ERROR, errorListener);
         }
 
         if (req != null) {
