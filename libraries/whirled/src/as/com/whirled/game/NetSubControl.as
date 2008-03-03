@@ -57,16 +57,52 @@ public class NetSubControl extends AbstractSubControl
     }
 
     /**
-     * Set a property value. Note that if you set the value as an Array or Dictionary,
-     * you can update the values within by using either setAt (for Arrays) or
-     * setIn (for Dictionarys) to efficiently update and distribute just that one change.
-     * Note that Dictionarys must have int keys, the intention is to use occupantIds as keys.
+     * Set a property value to be distributed to the other clients in this game.
+     * Property values can be any of the primitive types: int, Number, Boolean, String,
+     * ByteArray; or you may set Arrays, Dictionarys, or plain old Objects, as long as
+     * the values within them are primitive types or other Arrays, Dictionarys and Objects.
+     *
+     * <p>You may not set your own classes as properties. However, you can serialize your data
+     * into a ByteArray and set that.</p>
+     * 
+     * <p><b>Note</b>: top-level Dictionarys must have int keys, the intention is to use
+     * occupantIds as keys.</p>
+     *
+     * <p>Note that if you set the value as an Array or Dictionary, the value is serialized
+     * slightly differently in order to enable updating individual elements efficiently.
+     * The individual elements will be serialized separately. You may update the elements
+     * individually by using either setAt (for Arrays) or setIn (for Dictionarys). The
+     * effect of serializing elements individually is that references to the same object will
+     * not be reconstructed off the network as references to the same object. See the example
+     * below.</p>
      *
      * @param propName the name of the property to set.
      * @param value the value to set. Passing null clears the property.
      * @param immediate if true, the value is updated immediately in the local object. Otherwise
      * any old value will remain in effect until the PropertyChangedEvent arrives after
      * a round-trip to the server.
+     * 
+     * @example
+     * <listing version="3.0">
+     * // demonstrates expert-level difference between setting values in an array and an object.
+     * var o :Object = { blue: true };
+     * var objTest :Object = { 0: o, 1: o};
+     * var arrayTest :Array = [ o, o ];
+     * _ctrl.net.set("object", objTest);
+     * _ctrl.net.set("array", arrayTest);
+     * 
+     * // Later, when reading those values back out:
+     * var obj :Object = _ctrl.net.get("object");
+     * var array :Array = _ctrl.net.get("array") as Array;
+     * trace("array: " + (array[0] == array[1])); // traces false
+     * trace("object: " + (obj[0] == obj[1])); // traces true
+     * </listing>
+     *
+     *
+     * @see Array
+     * @see flash.utils.Dictionary
+     * @see #setAt()
+     * @see #setIn()
      */
     public function set (propName :String, value :Object, immediate :Boolean = false) :void
     {
@@ -88,6 +124,8 @@ public class NetSubControl extends AbstractSubControl
      * @param immediate if true, the value is updated immediately in the local object. Otherwise
      * any old value will remain in effect until the ElementChangedEvent arrives after
      * a round-trip to the server.
+     *
+     * @see #set()
      */
     public function setAt (
         propName :String, index :int, value :Object, immediate :Boolean = false) :void

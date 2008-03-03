@@ -182,6 +182,9 @@ public class LocalSubControl extends AbstractSubControl
     /**
      * Set score or sortValue values for occupants. You may want to call clearScores prior
      * to using this method to ensure that occupants that you don't specify are cleared out.
+     * You may use this method to update the "score" and sorting value for any subset of
+     * occupants in the game. You can update the score for one player having their occupantId
+     * as the only key. You can even set a "score" for any watchers.
      *
      * <b>Note:</b> this function changes local display only; other clients will not be affected.
      *
