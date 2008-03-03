@@ -586,7 +586,11 @@ public class DataPack extends EventDispatcher
      */
     protected function dispatchError (message :String) :void
     {
-        dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, message));
+        if (willTrigger(ErrorEvent.ERROR)) {
+            dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, message));
+        } else {
+            trace("Unhandled DataPack load error: " + message);
+        }
     }
 
     /** Used only while loading the zip bytes. @private */
