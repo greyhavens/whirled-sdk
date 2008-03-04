@@ -213,31 +213,11 @@ public class AVRGameControl extends AbstractControl
      *
      * <p>Control is a mutually exclusive lock across all instances of the AVRG in a given
      * room (i.e. running in other browsers across the network). Only one client per room
-     * can hold the lock at any time.</p>
-     *
-     * <p>Note: control is <em>not</em> automatically assigned. If an entity wishes to obtain
-     * control, it should first call <code>requestControl</code> and it will then receive a
-     * <code>GOT_CONTROL</code> event if and when control has been assigned to this client.
-     * There are no guarantees which of the requesting clients will receive it, or when.</p>
+     * can hold the lock at any time, and control is assigned automatically.</p>
      */
     public function hasControl () :Boolean
     {
         return _hasControl;
-    }
-
-    /**
-     * Request that a client be given a "control token" that is mutually exclusive across all
-     * instances of this AVRG.
-     * 
-     * Calling requestControl() does not guarantee that <em>this</em> client will get the "control token,"
-     * but rather that the server will attempt to ensure that <em>some</em> client will has the control
-     * token at all times.
-     * 
-     * See the <code>hasControl</code> method.
-     */
-    public function requestControl () :void
-    {
-        callHostCode("requestControl_v1");
     }
 
     public function spawnMob (id :String, name :String) :Boolean
