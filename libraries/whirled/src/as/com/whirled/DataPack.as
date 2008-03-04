@@ -22,9 +22,11 @@ import flash.net.URLRequest;
 
 import flash.media.Sound;
 
+import flash.system.ApplicationDomain;
+
 import flash.utils.ByteArray;
 
-import com.threerings.util.EmbeddedSwfLoader;
+import com.threerings.util.MultiLoader;
 import com.threerings.util.Util;
 
 import nochump.util.zip.ZipEntry;
@@ -51,31 +53,43 @@ import nochump.util.zip.ZipFile;
 public class DataPack extends EventDispatcher
 {
     /**
-     * Construct a DataPack to be loaded from specified source.
+     * Load one or more DataPacks.
+     */
+    public static function load (sources :Object, completeListener :Function) :void
+    {
+        var generator :Function = function (source :*) :DataPack {
+            return new DataPack(source);
+        };
+
+        new MultiLoader(sources, generator, completeListener, false, [ ErrorEvent.ERROR ]);
+    }
+
+    /**
+     * Construct a DataPack to be loaded from the specified source.
      * Note that passing a ByteArray will result in a DataPack that is instantly complete.
      *
-     * @param urlOrByteArray a url (as a String or as a URLRequest) from which to load the
+     * @param source a url (as a String or as a URLRequest) from which to load the
      *        DataPack, or a ByteArray containing the raw data.
-     * @param completeListener a listener function to register to get COMPLETE events.
-     * @param errorListener a listener function to register to get ERROR events.
+     * @param completeListener a listener function to automatically register for COMPLETE events.
+     * @param errorListener a listener function to automatically register for ERROR events.
      *
      * @throws TypeError if urlOrByteArray is not of the right type.
      */
     public function DataPack (
-        urlOrByteArray :*, completeListener :Function = null, errorListener :Function = null)
+        source :Object, completeListener :Function = null, errorListener :Function = null)
     {
+        // first transform the source from convenient forms into true sources
+        if (source is String) {
+            source = new URLRequest(String(source));
+        } else if (source is Class) {
+            source = new (source as Class)();
+        }
         var req :URLRequest = null;
         var bytes :ByteArray;
-
-        if (urlOrByteArray is String) {
-            req = new URLRequest(String(urlOrByteArray)); // throw malformedURL asap
-
-        } else if (urlOrByteArray is URLRequest) {
-            req = URLRequest(urlOrByteArray);
-            
-        } else if (urlOrByteArray is ByteArray) {
-            bytes = ByteArray(urlOrByteArray);
-
+        if (source is URLRequest) {
+            req = URLRequest(source);
+        } else if (source is ByteArray) {
+            bytes = ByteArray(source);
         } else {
             throw new TypeError("Expected a String or ByteArray");
         }
@@ -317,13 +331,13 @@ public class DataPack extends EventDispatcher
      *                 are loaded (or were unable to load).
      *                 Signature: <code>function (results :Object) :void</code>
      *                 results will contain a mapping from name -> DisplayObject, or null if none.
-     * @param useSubDomain if true, classes in a loaded SWF will be added to an
-     *                     ApplicationDomain that is a child of the current ApplicationDomain.
+     * @param appDom The ApplicationDomain in which to load the DisplayObjects. The default value
+     *               of null will load into a child of the current ApplicationDomain.
      */
     public function getDisplayObjects (
-        names :Array, callback :Function, useSubDomain :Boolean = false) :void
+        sources :Object, callback :Function, appDom :ApplicationDomain = null) :void
     {
-        doGetObjects(names, callback, useSubDomain, false);
+        doGetObjects(sources, callback, appDom, false);
     }
 
     /**
@@ -334,86 +348,34 @@ public class DataPack extends EventDispatcher
      *                 are loaded (or were unable to load).
      *                 Signature: <code>function (results :Object) :void</code>.
      *                 results will contain a mapping from name -> EmbeddedSwfLoader, or null.
-     * @param useSubDomain if true, classes in a loaded SWF will be added to an
-     *                     ApplicationDomain that is a child of the current ApplicationDomain.
+     * @param appDom The ApplicationDomain in which to load the DisplayObjects. The default value
+     *               of null will load into a child of the current ApplicationDomain.
      */
-    public function getSwfLoaders (
-        names :Array, callback :Function, useSubDomain :Boolean = false) :void
+    public function getLoaders (
+        sources :Object, callback :Function, appDom :ApplicationDomain = null) :void
     {
-        doGetObjects(names, callback, useSubDomain, true);
+        doGetObjects(sources, callback, appDom, true);
     }
 
-    /**
-     * Start the asynchronous loading of files from within the DataPack.
-     *
-     * @private
-     */
     protected function doGetObjects (
-        names :Array, callback :Function, useSubDomain :Boolean, returnRawLoaders :Boolean) :void
+        sources :Object, callback :Function, appDom :ApplicationDomain, returnRawLoaders :Boolean)
+        :void
     {
-        // our eventual return value
-        var dispObjects :Object = {};
-        var fileName :String;
-
-        // first, go through and extract the ByteArray for each file,
-        // which will also verify the names
-        for each (fileName in names) {
-            // if a name shows up twice in the list, we only load it once...
-            if (!(fileName in dispObjects)) {
-                dispObjects[fileName] = getFile(fileName);
+        // transform sources from Strings to ByteArrays
+        // TODO: move something like this to a utility function in MultiLoader?
+        if (sources is String) {
+            sources = getFile(String(sources));
+        } else {
+            for (var key :* in sources) {
+                var o :Object = sources[key];
+                if (o is String) {
+                    sources[key] = getFile(String(o));
+                }
             }
         }
 
-        var loaded :int = 0;
-        var toLoad :int = 0;
-        var loadHandler :Function = function (name :String, result :Object) :void {
-            // store the result of the load
-            dispObjects[name] = result;
-
-            // see if it's time to call the callback
-            if (++loaded == toLoad) {
-                callback(dispObjects);
-            }
-        };
-
-        // now actually load all the ByteArrays we successfully found
-        for (fileName in dispObjects) {
-            var bytes :ByteArray = dispObjects[fileName] as ByteArray;
-            if (bytes != null) {
-                toLoad++;
-                doLoadObject(fileName, bytes, loadHandler, useSubDomain, returnRawLoaders);
-            }
-        }
-
-        // finally, if by some reason there's nothing to load, succeed now
-        if (toLoad == 0) {
-            callback(dispObjects);
-        }
-    }
-
-    /**
-     * Load one file up with an EmbeddedSwfLoader.
-     *
-     * @private
-     */
-    protected function doLoadObject (
-        name :String, bytes :ByteArray, loadHandler :Function,
-        useSubDomain :Boolean, returnRawLoaders :Boolean) :void
-    {
-        var esl :EmbeddedSwfLoader = new EmbeddedSwfLoader(useSubDomain);
-
-        var eslHandler :Function = function (event :Event) :void {
-            if (event.type == Event.COMPLETE) {
-                loadHandler(name, returnRawLoaders ? esl : esl.getContent());
-            } else {
-                loadHandler(name, null);
-            }
-        }
-
-        esl.addEventListener(Event.COMPLETE, eslHandler);
-        esl.addEventListener(IOErrorEvent.IO_ERROR, eslHandler);
-
-        esl.load(bytes);
+        var toCall :Function = returnRawLoaders ? MultiLoader.getLoaders : MultiLoader.getContents;
+        toCall(sources, callback, false, appDom);
     }
 
     /**
