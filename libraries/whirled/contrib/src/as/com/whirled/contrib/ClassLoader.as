@@ -14,7 +14,24 @@ import com.threerings.util.Log;
  * This class is but a poor utility without much for brains.  It assumes that the loaders it is 
  * given have finished loading.  It also assumes that any string it is asked to search for is a 
  * Class.  You are warned!
+ *
+ * This is deprecated. The way you should do things is: use a MultiLoader.getLoaders() to load
+ * your assets and specify an ApplicationDomain in which to load everything.
+ * Then you can just load the classes out of that ApplicationDomain.
+ * @example
+ * <listing version="3.0">
+ * var appDom :ApplicationDomain = new ApplicationDomain(null); // create a new top-level appdom
+ *
+ * var complete :Function = function (result :Object) :void {
+ *     // now we can load classes from the appDom:
+ *     var someClass :Class = appDom.getDefinition("package.SomeClass") as Class;
+ *     // ...
+ * };
+ *
+ * MultiLoader.getLoaders([ RESOURCE1, RESOURCE2, ... ], complete, false, appDom);
+ * </listing>
  */
+[Deprecated(replacement="com.threerings.util.MultiLoader")]
 public class ClassLoader 
 {
     public function ClassLoader (... loaders) :void
