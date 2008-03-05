@@ -217,7 +217,7 @@ public class AVRGameControl extends AbstractControl
      */
     public function hasControl () :Boolean
     {
-        return _hasControl;
+        return callHostCode("hasControl_v1");
     }
 
     public function spawnMob (id :String, name :String) :Boolean
@@ -347,11 +347,6 @@ public class AVRGameControl extends AbstractControl
     /** @private */
     protected function gotControl_v1 () :void
     {
-        if (_hasControl) {
-            return; // avoid re-dispatching
-        }
-        _hasControl = true;
-
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.GOT_CONTROL));
     }
 
@@ -421,9 +416,6 @@ public class AVRGameControl extends AbstractControl
     protected var _mobSpriteExporter :Function;
     /** @private */
     protected var _hitPointTester :Function;
-
-    /** @private */
-    protected var _hasControl :Boolean;
 
     /** @private */
     protected var _mobs :Dictionary = new Dictionary();
