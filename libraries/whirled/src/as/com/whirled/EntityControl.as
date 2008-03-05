@@ -246,6 +246,11 @@ public class EntityControl extends AbstractControl
     /**
      * Return an associative hash of all the room properties. This is not a cheap operation.
      * Use getRoomProperty if you know what you want.
+     *
+     * <p><b>Note</b>: Room properties are an experimental feature and may be removed or
+     * incompatibly changed in the future. Use at your own risk. If you want to create something
+     * that depends on this, tell us about it and we'll try to account for that 
+     * in any changes we make.</p>
      */
     public function getRoomProperties () :Object
     {
@@ -260,6 +265,11 @@ public class EntityControl extends AbstractControl
      *
      * @return the value for the specified key from this room's property space or the
      * supplied default.
+     *
+     * <p><b>Note</b>: Room properties are an experimental feature and may be removed or
+     * incompatibly changed in the future. Use at your own risk. If you want to create something
+     * that depends on this, tell us about it and we'll try to account for that 
+     * in any changes we make.</p>
      */
     public function getRoomProperty (key :String, defval :Object = null) :Object
     {
@@ -282,6 +292,11 @@ public class EntityControl extends AbstractControl
      *
      * @return true if the memory was updated, false if the memory update could not be completed
      * due to size restrictions.
+     *
+     * <p><b>Note</b>: Room properties are an experimental feature and may be removed or
+     * incompatibly changed in the future. Use at your own risk. If you want to create something
+     * that depends on this, tell us about it and we'll try to account for that 
+     * in any changes we make.</p>
      */
     public function setRoomProperty (key :String, value :Object) :Boolean
     {
