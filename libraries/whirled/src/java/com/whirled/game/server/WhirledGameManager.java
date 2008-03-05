@@ -473,7 +473,7 @@ public abstract class WhirledGameManager extends GameManager
             _gameObj.postEvent(
                 new PropertySetEvent(_gameObj.getOid(), propName, value, key, isArray, oldValue));
         } catch (WhirledGameObject.ArrayRangeException are) {
-            // do nothing, log nothing
+            log.info("Game attempted deprecated set semantics: setting cells of an empty array.");
         }
     }
 

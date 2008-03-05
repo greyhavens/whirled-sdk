@@ -742,6 +742,13 @@ public class GameBackend
     protected function testAndSetProperty_v1 (
         propName :String, value :Object, testValue :Object, index :int = -1) :void
     {
+        // very naughty hack to support old setProperty semantics for auto-sizing arrays,
+        // since Defense relies on them. TODO: robert, remove after your game is fixed up!
+        if (value is Array && value.length == 0) {
+            value.length = 1000; 
+            log.warning("testAndSet() got an empty array. Auto-sizing arrays are deprecated.");
+        }
+
         if (index != -1) {
             throw new Error("Sorry, using testAndSet with an index value is no longer supported. " +
                 "Update your SDK.");
@@ -1220,6 +1227,13 @@ public class GameBackend
     protected function setProperty_v1 (
         propName :String, value :Object, index :int, immediate :Boolean = true) :void
     {
+        // very naughty hack to support old setProperty semantics for auto-sizing arrays,
+        // since Defense relies on them. TODO: robert, remove after your game is fixed up!
+        if (value is Array && value.length == 0) {
+            value.length = 1000; 
+            log.warning("Warning: set() got an empty array. Auto-sizing arrays are deprecated.");
+        }
+        
         var key :Object = (index < 0) ? null : index;
         var isArray :Boolean = (key != null);
         setProperty_v2(propName, value, key, isArray, immediate);
