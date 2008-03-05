@@ -49,6 +49,7 @@ import com.whirled.game.server.DictionaryManager;
 import com.whirled.game.server.TestDispatcher;
 import com.whirled.game.server.TestProvider;
 import com.whirled.game.server.WhirledGameManager;
+import com.whirled.game.xml.TestGameParser;
 import com.whirled.game.xml.WhirledGameParser;
 
 import static com.whirled.Log.log;
@@ -162,7 +163,7 @@ public class WhirledServer extends CrowdServer
         // parse the game configuration
         GameDefinition gamedef;
         try {
-            gamedef = new WhirledGameParser().parseGame(getGameConfig());
+            gamedef = new TestGameParser().parseGame(getGameConfig());
         } catch (Exception e) {
             log.warning("Failed to locate 'config.xml' file. [error=" + e + "].");
             gamedef = new TestGameDefinition();
