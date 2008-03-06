@@ -26,6 +26,14 @@ public class AVRGameControlEvent extends ControlEvent
      */
     public static const PROPERTY_CHANGED :String = "propertyChanged";
 
+    /** An event type dispatched when a datum of room-local game state has changed.
+     * key: property key
+     * value: property value
+     *
+     * @eventType roomPropertyChanged
+     */
+    public static const ROOM_PROPERTY_CHANGED :String = "roomPropertyChanged";
+
     /** An event type dispatched when a datum of player-local game state has changed.
      * key: property key
      * value: property value
