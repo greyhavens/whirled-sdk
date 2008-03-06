@@ -102,10 +102,9 @@
     <mkdir dir="${sdk.build}/docs"/>
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/*.as"/>
-      <fileset dir="${projects.dir}/nenya/src/as" includes="com/threerings/flash/**/*.as"/>
+      <fileset dir="${projects.dir}/nenya/src/as" includes="com/threerings/flash/**" excludes="com/threerings/flash/path/**"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/*.as"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/util/*.as"/>
     </copy>
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
@@ -152,9 +151,10 @@
     </copy>
     <mkdir dir="${sdk.build}/lib"/>
     <copy todir="${sdk.build}">
-      <fileset dir="." includes="src/as/com/whirled/**" excludes="**/GameControl.as"/>
-      <fileset dir="${projects.dir}/narya" includes="src/as/com/threerings/util/*.as"/>
-      <fileset dir="${projects.dir}/narya" includes="src/as/Log.as"/>
+      <fileset dir="${projects.dir}/narya" includes="src/as/com/threerings/util/**"/>
+      <fileset dir="${projects.dir}/nenya" includes="src/as/com/threerings/flash/**" excludes="src/as/com/threerings/flash/path/**"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/game/*.as"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
     </copy>
     <!-- copy contributed files -->
