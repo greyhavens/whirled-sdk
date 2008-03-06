@@ -16,6 +16,7 @@
     <echo>  ant newavatar - to create an avatar</echo>
     <echo>  ant newpet - to create a pet</echo>
     <echo>  ant newfurni - to create a piece of furniture</echo>
+    <echo>  ant newtoy - to create a toy</echo>
   </target>
 
   <!-- used to make our projects -->
@@ -31,6 +32,9 @@
   </target>
   <target name="newfurni" depends="prepare-flex">
     <newproject type="Furni" templates="templates"/>
+  </target>
+  <target name="newtoy" depends="prepare-flex">
+    <newproject type="Toy" templates="templates"/>
   </target>
   <target name="newproject" depends="prepare-flex">
     <newproject templates="templates"/>
