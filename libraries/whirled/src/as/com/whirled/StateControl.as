@@ -44,6 +44,16 @@ public class StateControl extends AbstractSubControl
         return callHostCode("setProperty_v1", key, value, persistent);
     }
 
+    public function getRoomProperty (key :String) :Object
+    {
+        return callHostCode("getRoomProperty_v1", key);
+    }
+
+    public function setRoomProperty (key :String, value :Object) :Boolean
+    {
+        return callHostCode("setRoomProperty_v1", key, value);
+    }
+
     public function getPlayerProperty (key :String) :Object
     {
         return callHostCode("getPlayerProperty_v1", key);
@@ -65,6 +75,7 @@ public class StateControl extends AbstractSubControl
         super.setUserProps(o);
 
         o["stateChanged_v1"] = stateChanged_v1;
+        o["roomPropertyChanged_v1"] = roomPropertyChanged_v1;
         o["playerStateChanged_v1"] = playerStateChanged_v1;
         o["messageReceived_v1"] = messageReceived_v1;
     }
@@ -76,6 +87,15 @@ public class StateControl extends AbstractSubControl
     protected function stateChanged_v1 (key :String, value :Object) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PROPERTY_CHANGED, key, value));
+    }
+
+    /**
+     * Called when a local room property changed.
+     * @private
+     */
+    protected function roomPropertyChanged_v1 (key :String, value :Object) :void
+    {
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.ROOM_PROPERTY_CHANGED, key, value));
     }
 
     /**
