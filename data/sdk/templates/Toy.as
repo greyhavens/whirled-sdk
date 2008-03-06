@@ -40,7 +40,7 @@ public class @project@ extends Sprite
     }
 
     /**
-     * This is called when your furni is unloaded.
+     * This is called when your toy is unloaded.
      */
     protected function handleUnload (event :Event) :void
     {
