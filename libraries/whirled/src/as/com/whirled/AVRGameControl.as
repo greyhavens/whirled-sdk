@@ -79,7 +79,11 @@ import com.threerings.util.Log;
  * with the whirled.
  *
  * AVRGame means: Alternate Virtual Reality Game, and refers to games
- * played within the whirled environment.
+ * played within the whirled environment with your avatar.
+ *
+ * <p><b>Note</b>: The AVRG framework is "alpha" and may be changed in incompatible ways.
+ * If you are making an AVRG game, please let us know what you're doing in the AVRG
+ * discussion forum: <a href="http://first.whirled.com/#whirleds-d_135_r">http://first.whirled.com/#whirleds-d_135_r</a></p>
  */
 public class AVRGameControl extends AbstractControl
 {
