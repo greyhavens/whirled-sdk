@@ -5,6 +5,7 @@
   <import file="${etc.dir}/flex-include.xml"/>
 
   <!-- overridable properties -->
+  <property name="flex.use-network" value="false"/>
   <property name="app.source-suffix" value="as"/>
   <property name="app.source-dir" value="."/>
   <property name="app.package-dir" value="."/>
@@ -40,6 +41,7 @@
       <arg value="-library-path+=${build.root}/dist/lib"/>
       <arg value="-library-path+=${app.library-dir}"/>
       <arg value="-compiler.source-path=${app.source-dir}"/>
+      <arg value="-use-network=${flex.use-network}"/>
       <arg value="${app.source-extras.arg}"/>
       <arg value="${app.lib-extras.arg}"/>
       <arg value="-file-specs"/>
@@ -58,6 +60,7 @@
       <arg value="-library-path+=${app.library-dir}"/>
       <arg value="-compiler.debug"/>
       <arg value="-compiler.source-path=${app.source-dir}"/>
+      <arg value="-use-network=${flex.use-network}"/>
       <arg value="${app.source-extras.arg}"/>
       <arg value="${app.lib-extras.arg}"/>
       <arg value="-file-specs"/>
