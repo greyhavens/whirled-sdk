@@ -99,6 +99,11 @@ public class AbstractControl extends EventDispatcher
      * });
      * </listing>
      *
+     * Note that it guarantees that those events get processed by the server as a unit, but
+     * the results will not come back as a unit. So, for instance, when you receive the
+     * PropertyChangedEvent for "board", checking the value of "scores" will still return
+     * the old value.
+     *
      * <br/><br/>
      * <b>Note</b>: This will work on any control, but currently only GameControl and its
      * sub-controls will actually do network batching.
