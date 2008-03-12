@@ -4,6 +4,7 @@
 package com.whirled.server;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -161,11 +162,16 @@ public class WhirledServer extends CrowdServer
     protected void prepareGame ()
     {
         // parse the game configuration
-        GameDefinition gamedef;
+        GameDefinition gamedef = null;
         try {
             gamedef = new TestGameParser().parseGame(getGameConfig());
+        } catch (FileNotFoundException fnfe) {
+            log.info("Unable to locate 'config.xml', no custom game config options will be set.");
+
         } catch (Exception e) {
-            log.warning("Failed to locate 'config.xml' file. [error=" + e + "].");
+            log.warning("Failed to parse 'config.xml' file. [error=" + e + "].");
+        }
+        if (gamedef == null) {
             gamedef = new TestGameDefinition();
             gamedef.params = new Parameter[0];
         }
