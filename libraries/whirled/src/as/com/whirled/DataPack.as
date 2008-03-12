@@ -61,7 +61,8 @@ public class DataPack extends EventDispatcher
             return new DataPack(source);
         };
 
-        new MultiLoader(sources, generator, completeListener, false, [ ErrorEvent.ERROR ]);
+        new MultiLoader(sources, generator, completeListener, false, "isComplete",
+            [ ErrorEvent.ERROR ]);
     }
 
     /**
@@ -111,7 +112,6 @@ public class DataPack extends EventDispatcher
             _loader.load(req);
 
         } else {
-            bytes.position = 0;
             bytesAvailable(bytes);
         }
     }
@@ -326,7 +326,7 @@ public class DataPack extends EventDispatcher
     /**
      * Get some display objects in the datapack.
      *
-     * @param names an Array of the names of the display objects to load.
+     * @param sources an Object containing keys mapping to the names of the display objects to load.
      * @param callback a Function that will be called when all the display objects
      *                 are loaded (or were unable to load).
      *                 Signature: <code>function (results :Object) :void</code>
@@ -343,7 +343,7 @@ public class DataPack extends EventDispatcher
     /**
      * Get SWF loaders for each SWF in the datapack.
      *
-     * @param names an Array of the names of the display objects to load.
+     * @param sources an Object containing keys mapping to the names of the display objects to load.
      * @param callback a Function that will be called when all the display objects
      *                 are loaded (or were unable to load).
      *                 Signature: <code>function (results :Object) :void</code>.
@@ -501,6 +501,7 @@ public class DataPack extends EventDispatcher
      */
     protected function bytesAvailable (bytes :ByteArray) :void
     {
+        bytes.position = 0;
         try {
             _zip = new ZipFile(bytes);
         } catch (zipError :ZipError) {
