@@ -5,19 +5,17 @@
 
 package com.whirled {
 
-import flash.display.DisplayObject;
+import com.threerings.util.Log;
 
+import flash.display.DisplayObject;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-
 import flash.utils.Dictionary;
-
-import com.threerings.util.Log;
 
 /**
  * Dispatched when this client-side instance of the AVRG
  * has gained "control" over the other client-side instances.
- * 
+ *
  * @eventType com.whirled.AVRGameControlEvent.GOT_CONTROL
  */
 [Event(name="gotControl", type="com.whirled.AVRGameControlEvent")]
@@ -25,7 +23,7 @@ import com.threerings.util.Log;
 /**
  * Dispatched either when somebody in our room entered our current game,
  * or somebody playing the game entered our current room.
- * 
+ *
  * @eventType com.whirled.AVRGameControlEvent.PLAYER_ENTERED
  */
 [Event(name="playerEntered", type="com.whirled.AVRGameControlEvent")]
@@ -33,35 +31,35 @@ import com.threerings.util.Log;
 /**
  * Dispatched either when somebody in our room left our current game,
  * or somebody playing the game left our current room.
- * 
+ *
  * @eventType com.whirled.AVRGameControlEvent.PLAYER_LEFT
  */
 [Event(name="playerLeft", type="com.whirled.AVRGameControlEvent")]
 
 /**
  * Dispatched when another player in our current room took up a new location.
- * 
+ *
  * @eventType com.whirled.AVRGameControlEvent.PLAYER_MOVED
  */
 [Event(name="playerMoved", type="com.whirled.AVRGameControlEvent")]
 
 /**
  * Dispatched when we've entered our current room.
- * 
+ *
  * @eventType com.whirled.AVRGameControlEvent.ENTERED_ROOM
  */
 [Event(name="enteredRoom", type="com.whirled.AVRGameControlEvent")]
 
 /**
  * Dispatched when we've left our current room.
- * 
+ *
  * @eventType com.whirled.AVRGameControlEvent.LEFT_ROOM
  */
 [Event(name="leftRoom", type="com.whirled.AVRGameControlEvent")]
 
 /**
  * Dispatched when the control has been resized.
- * 
+ *
  * @eventType com.whirled.AVRGameControlEvent.SIZE_CHANGED
  */
 [Event(name="sizeChanged", type="com.whirled.AVRGameControlEvent")]
@@ -69,7 +67,7 @@ import com.threerings.util.Log;
 /**
  * Dispatched when something has changed about a player's
  * avatar.
- * 
+ *
  * @eventType com.whirled.AVRGameControlEvent.AVATAR_CHANGED
  */
 [Event(name="avatarChanged", type="com.whirled.AVRGameControlEvent")]
@@ -131,6 +129,21 @@ public class AVRGameControl extends AbstractControl
     public function roomToStage (p :Point) :Point
     {
         return callHostCode("roomToStage_v1", p) as Point;
+    }
+
+    public function locationToRoom (x :Number, y :Number, z :Number) :Point
+    {
+        return callHostCode("locationToRoom_v1", x, y, z) as Point;
+    }
+
+    public function locationToStage (x :Number, y :Number, z :Number) :Point
+    {
+        var roomCoord :Point = locationToRoom(x, y, z);
+        if (null != roomCoord) {
+            return roomToStage(roomCoord);
+        }
+
+        return null;
     }
 
     /**
