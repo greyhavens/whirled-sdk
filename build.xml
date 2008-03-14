@@ -155,6 +155,7 @@
       <fileset dir="${projects.dir}/nenya" includes="src/as/com/threerings/flash/**" excludes="src/as/com/threerings/flash/path/**"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/game/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/as/nochump/**"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
     </copy>
     <!-- copy contributed files -->
