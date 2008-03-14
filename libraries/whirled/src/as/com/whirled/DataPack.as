@@ -298,30 +298,30 @@ public class DataPack extends EventDispatcher
         return Util.newXML(getFileAsString(name));
     }
     
-    /**
-     * Get sounds. TODO. This is not quite ready for primetime.
-     * @private
-     */
-    public function getSounds (names :Array, callback :Function) :void
-    {
-        var fn :Function = function (obj :Object) :void {
-            var newObj :Object = {};
-
-            for (var s :String in obj) {
-                var o :Object = obj[s];
-                try {
-                    o = o["getSound"]();
-                } catch (err :Error) {
-                    trace("Error getSound: " + err);
-                }
-                newObj[s] = (o as Sound);
-            }
-
-            callback(newObj);
-        };
-
-        getDisplayObjects(names, fn);
-    }
+//    /**
+//     * Get sounds. TODO. This is not quite ready for primetime.
+//     * @private
+//     */
+//    public function getSounds (names :Array, callback :Function) :void
+//    {
+//        var fn :Function = function (obj :Object) :void {
+//            var newObj :Object = {};
+//
+//            for (var s :String in obj) {
+//                var o :Object = obj[s];
+//                try {
+//                    o = o["getSound"]();
+//                } catch (err :Error) {
+//                    trace("Error getSound: " + err);
+//                }
+//                newObj[s] = (o as Sound);
+//            }
+//
+//            callback(newObj);
+//        };
+//
+//        getDisplayObjects(names, fn);
+//    }
 
     /**
      * Get some display objects in the datapack.
