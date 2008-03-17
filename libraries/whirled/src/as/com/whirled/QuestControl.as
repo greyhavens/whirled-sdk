@@ -35,7 +35,7 @@ public class QuestControl extends AbstractSubControl
         return callHostCode("updateQuest_v1", questId, step, status);
     }
 
-    public function completeQuest (questId :String, outro :String, payout :int) :Boolean
+    public function completeQuest (questId :String, outro :String, payout :Number) :Boolean
     {
         return callHostCode("completeQuest_v1", questId, outro, payout);
     }
