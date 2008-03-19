@@ -21,11 +21,11 @@ public final class MainLoop
         if (null == hostSprite) {
             throw new ArgumentError("hostSprite must be non-null");
         }
-        
+
         if (null != g_instance) {
             throw new Error("only one MainLoop may exist at a time");
         }
-        
+
         g_instance = this;
 
         _hostSprite = hostSprite;
@@ -56,16 +56,18 @@ public final class MainLoop
             return;
         }
 
-        _hasSetup = true;
-
         Rand.setup();
-        
+
         // instantiate singleton
-        new ResourceLoaderRegistry();
-        
+        if (null == ResourceLoaderRegistry.instance) {
+            new ResourceLoaderRegistry();
+        }
+
         // add resource factories
         ResourceLoaderRegistry.instance.registerLoaderClass("image", ImageResourceLoader);
         ResourceLoaderRegistry.instance.registerLoaderClass("swf", SwfResourceLoader);
+
+        _hasSetup = true;
     }
 
     public function run () :void
@@ -73,12 +75,12 @@ public final class MainLoop
         if (_running) {
             return;
         }
-        
+
         // ensure that proper setup has completed
         setup();
 
         _running = true;
-        
+
         _hostSprite.addEventListener(Event.ENTER_FRAME, update);
 
         _lastTime = this.elapsedSeconds;
@@ -88,7 +90,7 @@ public final class MainLoop
     {
         // Most games won't need to call shutdown because the MainLoop will be running as long as the game is.
         // This method is only necessary for games that use multiple MainLoops in their lifetimes.
-        
+
         _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
 
         g_instance = null;
@@ -99,7 +101,7 @@ public final class MainLoop
         if (null == mode) {
             throw new ArgumentError("mode must be non-null");
         }
-        
+
         createModeTransition(mode, TRANSITION_PUSH);
     }
 
@@ -113,10 +115,10 @@ public final class MainLoop
         if (null == mode) {
             throw new ArgumentError("mode must be non-null");
         }
-        
+
         createModeTransition(mode, TRANSITION_CHANGE);
     }
-    
+
     public function popAllModes () :void
     {
         createModeTransition(null, TRANSITION_UNWIND);
@@ -127,7 +129,7 @@ public final class MainLoop
         if (null == mode) {
             throw new ArgumentError("mode must be non-null");
         }
-        
+
         createModeTransition(mode, TRANSITION_UNWIND);
     }
 
@@ -138,13 +140,13 @@ public final class MainLoop
         modeTransition.transitionType = transitionType;
         _pendingModeTransitionQueue.push(modeTransition);
     }
-    
+
     protected function handleModeTransitions () :void
     {
         if (_pendingModeTransitionQueue.length <= 0) {
             return;
         }
-        
+
         // save 'this' for local functions
         var thisMainLoop :MainLoop = this;
 
@@ -219,7 +221,7 @@ public final class MainLoop
                 if (!topMode._hasSetup) {
                     topMode.setupInternal();
                 }
-                
+
                 topMode.enterInternal();
             }
         }
@@ -234,7 +236,7 @@ public final class MainLoop
         // how much time has elapsed since last frame?
         var newTime :Number = this.elapsedSeconds;
         var dt :Number = newTime - _lastTime;
-        
+
         _fps = 1 / dt;
 
         // update all our "updatables"
@@ -255,8 +257,8 @@ public final class MainLoop
     {
         return (getTimer() / 1000); // getTimer() returns a value in milliseconds
     }
-    
-    /** 
+
+    /**
      * Returns the approximate frames-per-second that the application
      * is running at.
      */
@@ -274,7 +276,7 @@ public final class MainLoop
     protected var _modeStack :Array = new Array();
     protected var _pendingModeTransitionQueue :Array = new Array();
     protected var _updatables :Array = new Array();
-    
+
     protected var _fps :Number = 0;
 
     // mode transition constants
