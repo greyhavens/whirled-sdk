@@ -319,7 +319,7 @@ public class AVRGameControl extends AbstractControl
         o["gotControl_v1"] = gotControl_v1;
         o["hitTestPoint_v1"] = hitTestPoint_v1;
         o["panelResized_v1"] = panelResized_v1;
-        o["flowAwarded_v1"] = flowAwarded_v1;
+        o["coinsAwarded_v1"] = coinsAwarded_v1;
 
         o["playerLeft_v1"] = playerLeft_v1;
         o["playerEntered_v1"] = playerEntered_v1;
@@ -381,9 +381,9 @@ public class AVRGameControl extends AbstractControl
     }
 
     /** @private */
-    protected function flowAwarded_v1 (amount :int) :void
+    protected function coinsAwarded_v1 (amount :int) :void
     {
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.FLOW_AWARDED, null, amount));
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.COINS_AWARDED, null, amount));
     }
 
     /** @private */
