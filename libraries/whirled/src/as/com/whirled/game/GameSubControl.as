@@ -79,7 +79,7 @@ public class GameSubControl extends AbstractSubControl
      * for example), and so on. */
     public static const CASCADING_PAYOUT :int = 0;
 
-    /** Winner takes all splits the total flow available to award to all players in the game among
+    /** Winner takes all splits the total coins available to award to all players in the game among
      * those identified as winners at the end of the game. */
     public static const WINNERS_TAKE_ALL :int = 1;
 
@@ -270,17 +270,17 @@ public class GameSubControl extends AbstractSubControl
 
     /**
      * Ends the game, declaring which players are the winners (if players tie, more than one player
-     * can be declared a winner. In addition to ending the game, this method awards flow and
+     * can be declared a winner. In addition to ending the game, this method awards coins and
      * updates players ratings.
      *
      * <p> Flow is awarded based on the supplied payout type, either CASCADING_PAYOUT or
      * WINNERS_TAKE_ALL. In the case of WINNERS_TAKE_ALL, the losers will have all of their
-     * individual flow payouts combined into a pool and that pool will be evenly divided among the
-     * winners and added to their respective individual flow payouts. In the case of
-     * CASCADING_PAYOUT, the losers will only have 50% of their individual flow payouts given to
+     * individual coin payouts combined into a pool and that pool will be evenly divided among the
+     * winners and added to their respective individual coin payouts. In the case of
+     * CASCADING_PAYOUT, the losers will only have 50% of their individual coin payouts given to
      * the winners. </p>
      *
-     * <p> If flow is awarded, a FLOW_AWARDED event will be dispatched <em>before</em> the
+     * <p> If coins are awarded, a COINS_AWARDED event will be dispatched <em>before</em> the
      * GAME_ENDED event is dispatched informing the client that the game has ended. </p>
      *
      * <p> Players' ratings will also be updated using the Elo algorigthm wherein each player is
@@ -295,23 +295,23 @@ public class GameSubControl extends AbstractSubControl
     }
 
     /**
-     * Ends the game, reporting the scores earned by each player in the game, awarding flow
+     * Ends the game, reporting the scores earned by each player in the game, awarding coins
      * according to the specified strategy and updating player ratings.
      *
-     * <p> Flow is awarded based on the supplied payout type, either CASCADING_PAYOUT,
+     * <p> Coins are awarded based on the supplied payout type, either CASCADING_PAYOUT,
      * WINNERS_TAKE_ALL or TO_EACH_THEIR_OWN. In the case of WINNERS_TAKE_CALL, the highest scoring
      * player or players will be considered the winner(s) and in the case of CASCADING_PAYOUT,
      * players will be ranked according to their scores, higher scores being considered better. </p>
      *
-     * <p> If flow is awarded, a FLOW_AWARDED event will be dispatched <em>before</em> the
+     * <p> If coins are awarded, a COINS_AWARDED event will be dispatched <em>before</em> the
      * GAME_ENDED event is dispatched informing the client that the game has ended. </p>
      *
-     * <p> Both rating and a player's flow payout will be adjusted based on their score. Whirled
+     * <p> Both rating and a player's coin payout will be adjusted based on their score. Whirled
      * will track every score reported by your game for its entire existence and will convert newly
      * reported scores to a percentile value between 0 and 99 (inclusive) indicating the percentage
      * of scores in the entire score history that are below the reported score. That percentile
      * ranking will be used to adjust the players rating as well as to determine their individual
-     * flow payout. </p>
+     * coin payout. </p>
      *
      * <p> Note that scores must be integers >= 0 and higher scores are considered better, so if
      * your game naturally operates with scores where lower is better (elapsed time in a racing
@@ -321,8 +321,8 @@ public class GameSubControl extends AbstractSubControl
      * <p><code>score = Math.max(WORST_POSSIBLE_TIME - actualTime, 1)</code></p>
      *
      * <p> Note that if a game is ended with all players scores equal of zero, it will be assumed
-     * that the players in question abandoned the game and no flow will be paid out, nor will their
-     * ratings be updated. </p>
+     * that the players in question abandoned the game and no coins will be paid out, nor will
+     * their ratings be updated. </p>
      */
     public function endGameWithScores (playerIds :Array, scores :Array /* of int */,
         payoutType :int) :void
@@ -334,9 +334,9 @@ public class GameSubControl extends AbstractSubControl
      * A convenience function for ending a single player game with the supplied score. This is
      * equivalent to: <code>endGameWithScores([ getMyId() ], [ score ], TO_EACH_THEIR_OWN)</code>.
      *
-     * <p> Note that if a single player game is ended with a score of zero, it will be assumed that
-     * the player in question abandoned the game and no flow will be paid out, nor will their
-     * rating be updated. </p>
+     * <p> Note that if a single player game is ended with a score of zero, it will be assumed
+     * that the player in question abandoned the game and no coins will be paid out, nor will
+     * their rating be updated. </p>
      */
     public function endGameWithScore (score :int) :void
     {

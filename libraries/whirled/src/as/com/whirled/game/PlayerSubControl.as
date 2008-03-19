@@ -6,11 +6,11 @@ package com.whirled.game {
 import com.whirled.AbstractSubControl;
 
 /**
- * Dispatched when this player has been awarded flow.
+ * Dispatched when this player has been awarded coins.
  * 
- * @eventType com.whirled.game.FlowAwardedEvent.FLOW_AWARDED
+ * @eventType com.whirled.game.CoinsAwardedEvent.COINS_AWARDED
  */
-[Event(name="FlowAwarded", type="com.whirled.game.FlowAwardedEvent")]
+[Event(name="CoinsAwarded", type="com.whirled.game.CoinsAwardedEvent")]
 
 /**
  * Provides access to 'player' game services. Do not instantiate this class directly,
@@ -120,15 +120,15 @@ public class PlayerSubControl extends AbstractSubControl
     {
         super.setUserProps(o);
 
-        o["flowAwarded_v1"] = flowAwarded_v1;
+        o["flowAwarded_v1"] = flowAwarded_v1; // old names. No real point in changing it.
     }
 
     /**
-     * Private method to post a FlowAwardedEvent.
+     * Private method to post a CoinsAwardedEvent.
      */
     private function flowAwarded_v1 (amount :int, percentile :int) :void
     {
-        dispatch(new FlowAwardedEvent(amount, percentile));
+        dispatch(new CoinsAwardedEvent(amount, percentile));
     }
 }
 }

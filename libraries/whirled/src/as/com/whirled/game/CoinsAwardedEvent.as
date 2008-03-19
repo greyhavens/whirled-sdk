@@ -8,20 +8,20 @@ package com.whirled.game {
 import flash.events.Event;
 
 /**
- * Dispatched to let a game know when the player has been awarded flow.
+ * Dispatched to let a game know when the player has been awarded coins.
  */
-public class FlowAwardedEvent extends Event
+public class CoinsAwardedEvent extends Event
 {
     /**
      * An event type dispatched at the end of a game (before GAME_ENDED) to inform the game that
-     * the player has earned flow.
+     * the player has earned coins.
      *
-     * @eventType FlowAwarded
+     * @eventType CoinsAwarded
      */
-    public static const FLOW_AWARDED :String = "FlowAwarded";
+    public static const COINS_AWARDED :String = "CoinsAwarded";
 
     /**
-     * Returns the amount of flow awarded to the player.
+     * Returns the amount of coins awarded to the player.
      */
     public function get amount () :int
     {
@@ -40,9 +40,9 @@ public class FlowAwardedEvent extends Event
     /**
      * Creates a new event.
      */
-    public function FlowAwardedEvent (amount :int, percentile :int)
+    public function CoinsAwardedEvent (amount :int, percentile :int)
     {
-        super(FLOW_AWARDED);
+        super(COINS_AWARDED);
         _amount = amount;
         _percentile = percentile;
     }
@@ -50,17 +50,17 @@ public class FlowAwardedEvent extends Event
     // from Event
     override public function clone () :Event
     {
-        return new FlowAwardedEvent(_amount, _percentile);
+        return new CoinsAwardedEvent(_amount, _percentile);
     }
 
     // from Event
     override public function toString () :String
     {
-        return "FlowAwardedEvent [type=" + type + ", amount=" + _amount +
+        return "CoinsAwardedEvent [type=" + type + ", amount=" + _amount +
             ", percentile=" + _percentile + "]";
     }
 
-    /** The amount of flow awarded to the player. @private */
+    /** The amount of coins awarded to the player. @private */
     protected var _amount :int;
 
     /** The % of scores lower than the player's reported score,
