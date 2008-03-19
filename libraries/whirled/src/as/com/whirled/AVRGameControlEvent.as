@@ -18,6 +18,14 @@ public class AVRGameControlEvent extends ControlEvent
      */
     public static const GOT_CONTROL :String = "gotControl";
 
+    /** An event type dispatched when the player receives some flow.
+     * name: unused
+     * value: the amount of flow awarded
+     *
+     * @eventType flowAwarded
+     */
+    public static const FLOW_AWARDED :String = "flowAwarded";
+
     /** An event type dispatched when a datum of game state has changed.
      * key: property key
      * value: property value

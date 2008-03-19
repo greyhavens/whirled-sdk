@@ -317,13 +317,14 @@ public class AVRGameControl extends AbstractControl
         super.setUserProps(o);
 
         o["gotControl_v1"] = gotControl_v1;
+        o["hitTestPoint_v1"] = hitTestPoint_v1;
+        o["panelResized_v1"] = panelResized_v1;
+        o["flowAwarded_v1"] = flowAwarded_v1;
 
         o["playerLeft_v1"] = playerLeft_v1;
         o["playerEntered_v1"] = playerEntered_v1;
         o["leftRoom_v1"] = leftRoom_v1;
         o["enteredRoom_v1"] = enteredRoom_v1;
-        o["panelResized_v1"] = panelResized_v1;
-        o["hitTestPoint_v1"] = hitTestPoint_v1;
 
         o["requestMobSprite_v1"] = requestMobSprite_v1;
         o["mobRemoved_v1"] = mobRemoved_v1;
@@ -377,6 +378,12 @@ public class AVRGameControl extends AbstractControl
     protected function hitTestPoint_v1 (x :Number, y :Number, shapeFlag :Boolean) :Boolean
     {
         return _hitPointTester != null && _hitPointTester(x, y, shapeFlag);
+    }
+
+    /** @private */
+    protected function flowAwarded_v1 (amount :int) :void
+    {
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.FLOW_AWARDED, null, amount));
     }
 
     /** @private */
