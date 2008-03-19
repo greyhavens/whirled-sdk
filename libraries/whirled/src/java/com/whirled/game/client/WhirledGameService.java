@@ -39,14 +39,14 @@ public interface WhirledGameService extends InvocationService
 
     /**
      * Ends the active game, declaring the specified players to be winners and losers and paying
-     * out flow using the specified payout type (defined in {@link WhirledGame}).
+     * out coins using the specified payout type (defined in {@link WhirledGame}).
      */
     public void endGameWithWinners (Client client, int[] winners, int[] losers, int payoutType,
                                     InvocationListener listener);
 
     /**
      * Ends the active game, using the supplied scores to determine the base payouts and new
-     * ratings and paying out flow using the specified payout type (defined in {@link
+     * ratings and paying out coins using the specified payout type (defined in {@link
      * WhirledGame}).
      */
     public void endGameWithScores (Client client, int[] playerIds, int[] scores, int payoutType,

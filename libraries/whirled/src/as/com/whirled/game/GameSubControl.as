@@ -273,7 +273,7 @@ public class GameSubControl extends AbstractSubControl
      * can be declared a winner. In addition to ending the game, this method awards coins and
      * updates players ratings.
      *
-     * <p> Flow is awarded based on the supplied payout type, either CASCADING_PAYOUT or
+     * <p> Coins are awarded based on the supplied payout type, either CASCADING_PAYOUT or
      * WINNERS_TAKE_ALL. In the case of WINNERS_TAKE_ALL, the losers will have all of their
      * individual coin payouts combined into a pool and that pool will be evenly divided among the
      * winners and added to their respective individual coin payouts. In the case of

@@ -54,8 +54,8 @@ public class WhirledGameObject extends GameObject
     /** The identifier for a MessageEvent containing ticker notifications. */
     public static const TICKER :String = "Utick";
 
-    /** A message dispatched to each player's client object when flow is awarded. */
-    public static const FLOW_AWARDED_MESSAGE :String = "FlowAwarded";
+    /** A message dispatched to each player's client object when coins are awarded. */
+    public static const COINS_AWARDED_MESSAGE :String = "CoinsAwarded";
 
     // AUTO-GENERATED: FIELDS START
     /** The field name of the <code>controllerOid</code> field. */

@@ -54,7 +54,7 @@ public class TestGameManager extends WhirledGameManager
         validateCanEndGame(caller);
 
         // TODO: award based on relative scores?
-        awardFakeFlow(playerIds);
+        awardFakeCoins(playerIds);
 
         // TODO: validate player ids?
         int highScore = 0;
@@ -76,7 +76,7 @@ public class TestGameManager extends WhirledGameManager
         throws InvocationException
     {
         validateCanEndGame(caller);
-        awardFakeFlow(winnerIds);
+        awardFakeCoins(winnerIds);
         endGame(caller, winnerIds, listener);
     }
 
@@ -100,15 +100,15 @@ public class TestGameManager extends WhirledGameManager
     }
 
     /**
-     * Award some fake flow, so that game creators can test the FlowAwardedEvent.
+     * Award some fake coins, so that game creators can test the CoinsAwardedEvent.
      */
-    protected void awardFakeFlow (int[] playerOids)
+    protected void awardFakeCoins (int[] playerOids)
     {
         for (int playerOid : playerOids) {
             ClientObject cliObj = (ClientObject) CrowdServer.omgr.getObject(playerOid);
             if (cliObj != null) {
-                cliObj.postMessage(WhirledGameObject.FLOW_AWARDED_MESSAGE,
-                    10 /*flow*/, 49 /*percentile*/);
+                cliObj.postMessage(WhirledGameObject.COINS_AWARDED_MESSAGE,
+                    10 /*coins*/, 49 /*percentile*/);
             }
         }
     }
