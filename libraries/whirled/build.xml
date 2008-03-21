@@ -87,10 +87,11 @@
 
   <!-- build the java class files -->
   <target name="compile" depends="prepare-java">
-    <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" optimize="off" deprecation="on"
-           target="1.5">
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
+           debug="on" optimize="off" deprecation="on" target="1.5">
       <classpath refid="classpath"/>
-      <compilerarg value="-Xlint:unchecked"/>
+      <compilerarg value="-Xlint"/>
+      <compilerarg value="-Xlint:-serial"/>
     </javac>
   </target>
 

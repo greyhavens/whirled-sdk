@@ -137,6 +137,7 @@ public class WhirledGameParser
      * Adds the rules needed to parse a custom match config, as well as the {@link MatchConfig}
      * derived instance itself, based on the supplied type.
      */
+    @SuppressWarnings("fallthrough")
     protected void addMatchParsingRules (Digester digester, String type)
         throws Exception
     {
@@ -152,20 +153,19 @@ public class WhirledGameParser
             }
         }
 
+        TableMatchConfig config = createMatchConfig();
         switch (itype) {
+        case GameConfig.PARTY:
+            // set up some standard stuff for party games
+            config.isPartyGame = true;
+            config.minSeats = config.maxSeats = config.startSeats = 1;
+            // and then fall through and wire up rules that allow this to be overridden
+
         case GameConfig.SEATED_GAME:
-            digester.push(createMatchConfig());
+            digester.push(config);
             digester.addRule("game/match/min_seats", new SetFieldRule("minSeats"));
             digester.addRule("game/match/max_seats", new SetFieldRule("maxSeats"));
             digester.addRule("game/match/start_seats", new SetFieldRule("startSeats"));
-            break;
-
-        case GameConfig.PARTY:
-            // party games are handled by a specially configured table
-            TableMatchConfig config = createMatchConfig();
-            config.minSeats = config.maxSeats = config.startSeats = 1;
-            config.isPartyGame = true;
-            digester.push(config);
             break;
 
         case GameConfig.SEATED_CONTINUOUS:
