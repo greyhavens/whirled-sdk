@@ -4,6 +4,7 @@ import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
 import com.whirled.contrib.core.components.SceneComponent;
+import com.whirled.contrib.core.tasks.*;
 
 import flash.display.DisplayObjectContainer;
 
@@ -11,6 +12,28 @@ public class ObjectDB
 {
     public function ObjectDB ()
     {
+    }
+
+    /**
+     * A convenience method for creating an object with a timed task attached to it that will call
+     * a function after a specified delay.
+     *
+     * If "objectName" is specified, the timer object will be named.
+     *
+     * If "repeating" is false, the timer object will be destroyed after it has fired.
+     */
+    public function createTimer (delay :Number, fn :Function, repeating :Boolean = false, objectName :String = null) :SimObjectRef
+    {
+        // SimpleNamedObject is just a convenience class that lets us assign a name to an object.
+        var timerObj :SimObject = new SimpleNamedObject(objectName);
+
+        if (repeating) {
+            timerObj.addTask(new RepeatingTask(After(delay, new FunctionTask(fn))));
+        } else {
+            timerObj.addTask(new SerialTask(After(delay, new FunctionTask(fn)), new SelfDestructTask()));
+        }
+
+        return this.addObject(timerObj);
     }
 
     /**
@@ -23,20 +46,20 @@ public class ObjectDB
         if (null == obj || null != obj._ref) {
             throw new ArgumentError("obj must be non-null, and must never have belonged to another ObjectDB");
         }
-        
+
         // create a new SimObjectRef
         var ref :SimObjectRef = new SimObjectRef();
         ref._obj = obj;
-        
+
         // add the ref to the list
         var oldListHead :SimObjectRef = _listHead;
         _listHead = ref;
-        
+
         if (null != oldListHead) {
             ref._next = oldListHead;
             oldListHead._prev = ref;
         }
-        
+
         // initialize object
         obj._parentDB = this;
         obj._ref = ref;
@@ -46,7 +69,7 @@ public class ObjectDB
             if (_namedObjects.get(obj.objectName) != null) {
                 throw new Error("can't add two objects with the same name to the same ObjectDB");
             }
-            
+
             _namedObjects.put(obj.objectName, obj);
         }
 
@@ -72,7 +95,7 @@ public class ObjectDB
             if (null == sc || null == sc.displayObject) {
                 throw new Error("only objects implementing SceneComponent can be attached to a display parent");
             }
-            
+
             displayParent.addChild(sc.displayObject);
         }
 
@@ -82,7 +105,7 @@ public class ObjectDB
 
         return ref;
     }
-    
+
     /** Removes a SimObject from the mode. */
     public function destroyObjectNamed (name :String) :void
     {
@@ -91,23 +114,23 @@ public class ObjectDB
             this.destroyObject(obj.ref);
         }
     }
-    
+
     /** Removes a SimObject from the mode. */
     public function destroyObject (ref :SimObjectRef) :void
     {
         if (null == ref) {
             return;
         }
-        
+
         var obj :SimObject = ref.object;
-        
+
         if (null == obj) {
             return;
         }
-        
+
         // the ref no longer points to the object
         ref._obj = null;
-        
+
         // if the object is attached to a DisplayObject, and if that
         // DisplayObject is in a display list, remove it from the display list
         // so that it will no longer be drawn to the screen
@@ -123,11 +146,11 @@ public class ObjectDB
         }
 
         obj.destroyedInternal();
-        
+
         if (null == _objectsPendingDestroy) {
             _objectsPendingDestroy = new Array();
         }
-        
+
         // the ref will be unlinked from the objects list
         // at the end of the update()
         _objectsPendingDestroy.push(obj);
@@ -141,10 +164,10 @@ public class ObjectDB
         return (_namedObjects.get(name) as SimObject);
     }
 
-    /** 
-     * Returns an Array containing the object refs of all the objects in the given group. 
+    /**
+     * Returns an Array containing the object refs of all the objects in the given group.
      * This Array must not be modified by client code.
-     * 
+     *
      * Note: because of the method that object destruction is implemented with,
      * the returned Array may contain null object refs.
      */
@@ -154,28 +177,28 @@ public class ObjectDB
 
         return (null != refs ? refs : new Array());
     }
-    
+
     /**
      * Returns an Array containing the SimObjects in the given group.
      * The returned Array is instantiated by the function, and so can be
      * safely modified by client code.
-     * 
+     *
      * This function is not as performant as getObjectRefsInGroup().
      */
     public function getObjectsInGroup (groupName :String) :Array
     {
         var refs :Array = this.getObjectRefsInGroup(groupName);
-        
+
         // Array.map would be appropriate here, except that the resultant
         // Array might contain fewer entries than the source.
-        
+
         var objs :Array = new Array();
         for each (var ref :SimObjectRef in refs) {
             if (!ref.isNull) {
                 objs.push(ref.object);
             }
         }
-        
+
         return objs;
     }
 
@@ -185,32 +208,32 @@ public class ObjectDB
         this.beginUpdate(dt);
         this.endUpdate(dt);
     }
-    
+
     /** Updates all objects in the mode. */
     protected function beginUpdate (dt :Number) :void
     {
         // update all objects
-        
+
         var ref :SimObjectRef = _listHead;
         while (null != ref) {
             if (!ref.isNull) {
                 ref.object.updateInternal(dt);
             }
-            
+
             ref = ref._next;
         }
     }
-    
+
     /** Removes dead objects from the object list at the end of an update. */
     protected function endUpdate (dt :Number) :void
     {
         // clean out all objects that were destroyed during the update loop
-        
+
         if (null != _objectsPendingDestroy) {
             for each (var obj :SimObject in _objectsPendingDestroy) {
                 this.finalizeObjectDestruction(obj);
             }
-            
+
             _objectsPendingDestroy = null;
         }
     }
@@ -219,13 +242,13 @@ public class ObjectDB
     protected function finalizeObjectDestruction (obj :SimObject) :void
     {
         Assert.isTrue(null != obj._ref && null == obj._ref._obj);
-        
+
         // unlink the object ref
         var ref :SimObjectRef = obj._ref;
-        
+
         var prev :SimObjectRef = ref._prev;
         var next :SimObjectRef = ref._next;
-        
+
         if (null != prev) {
             prev._next = next;
         } else {
@@ -233,7 +256,7 @@ public class ObjectDB
             Assert.isTrue(ref == _listHead);
             _listHead = next;
         }
-        
+
         if (null != next) {
             next._prev = prev;
         }
@@ -251,7 +274,7 @@ public class ObjectDB
                 Assert.isTrue(wasInArray);
             }
         }
-        
+
         obj._parentDB = null;
     }
 
@@ -263,7 +286,7 @@ public class ObjectDB
             if (!ref.isNull) {
                 ref.object.receiveMessageInternal(msg);
             }
-            
+
             ref = ref._next;
         }
     }
@@ -301,7 +324,7 @@ public class ObjectDB
 
     protected var _listHead :SimObjectRef;
     protected var _objectCount :uint;
-    
+
     /** An array of SimObjects */
     protected var _objectsPendingDestroy :Array;
 
@@ -312,4 +335,21 @@ public class ObjectDB
     protected var _groupedObjects :HashMap = new HashMap();
 }
 
+}
+
+import com.whirled.contrib.core.SimObject;
+
+class SimpleNamedObject extends SimObject
+{
+    public function SimpleNamedObject (name :String)
+    {
+        _name = name;
+    }
+
+    override public function get objectName () :String
+    {
+        return _name;
+    }
+
+    protected var _name :String;
 }
