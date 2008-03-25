@@ -145,7 +145,7 @@ public class ObjectDB
             _namedObjects.put(obj.objectName, null);
         }
 
-        obj.destroyedInternal();
+        obj.removedFromDBInternal();
 
         if (null == _objectsPendingDestroy) {
             _objectsPendingDestroy = new Array();

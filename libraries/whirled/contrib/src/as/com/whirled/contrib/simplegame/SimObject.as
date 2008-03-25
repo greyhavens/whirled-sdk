@@ -9,12 +9,12 @@ public class SimObject extends EventDispatcher
 {
     /**
      * Returns the unique SimObjectRef that stores a reference to this SimObject.
-     */ 
+     */
     public final function get ref () :SimObjectRef
     {
         return _ref;
     }
-    
+
     /**
      * Returns the ObjectDB that this object is contained in.
      */
@@ -22,11 +22,11 @@ public class SimObject extends EventDispatcher
     {
         return _parentDB;
     }
-    
+
     /**
      * Returns true if the object is in an ObjectDB and is "live"
      * (not pending removal from the database)
-     */ 
+     */
     public function get isLiveObject () :Boolean
     {
         return (null != _ref && !_ref.isNull);
@@ -70,7 +70,7 @@ public class SimObject extends EventDispatcher
         if (null == task) {
             throw new ArgumentError("task must be non-null");
         }
-        
+
         _anonymousTasks.addTask(task);
     }
 
@@ -80,7 +80,7 @@ public class SimObject extends EventDispatcher
         if (null == task) {
             throw new ArgumentError("task must be non-null");
         }
-        
+
         if (null == name || name.length == 0) {
             throw new ArgumentError("name must be at least 1 character long");
         }
@@ -151,7 +151,7 @@ public class SimObject extends EventDispatcher
      * Called immediately after the SimObject has been removed from an AppMode.
      * (Subclasses can override this to do something useful.)
      */
-    protected function destroyed () :void
+    protected function removedFromDB () :void
     {
     }
 
@@ -169,9 +169,9 @@ public class SimObject extends EventDispatcher
         addedToDB();
     }
 
-    internal function destroyedInternal () :void
+    internal function removedFromDBInternal () :void
     {
-        destroyed();
+        removedFromDB();
     }
 
     internal function updateInternal (dt :Number) :void
