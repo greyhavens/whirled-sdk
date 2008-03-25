@@ -11,29 +11,29 @@ public class SimpleTimer extends SimObject
         _timeLeft["value"] = delay;
 
         if (repeating) {
-            var timerTask :RepeatingTask = new RepeatingTask();
+            var repeatingTask :RepeatingTask = new RepeatingTask();
 
             // init _timeLeft to delay
-            timerTask.addTask(new AnimateValueTask(_timeLeft, delay, 0));
+            repeatingTask.addTask(new AnimateValueTask(_timeLeft, delay, 0));
 
             // animate _timeLeft to 0 over delay seconds
-            timerTask.addTask(new AnimateValueTask(_timeLeft, 0, delay));
+            repeatingTask.addTask(new AnimateValueTask(_timeLeft, 0, delay));
 
             // call the callback
-            timerTask.addTask(new FunctionTask(callback));
+            repeatingTask.addTask(new FunctionTask(callback));
 
-            this.addTask(timerTask);
+            this.addTask(repeatingTask);
 
         } else {
-            var timerTask :SerialTask = new SerialTask();
+            var serialTask :SerialTask = new SerialTask();
 
             // decrement _timeLeft to 0 over delay seconds
-            timerTask.addTask(new AnimateValueTask({ value: _timeLeft }, 0, delay));
+            serialTask.addTask(new AnimateValueTask({ value: _timeLeft }, 0, delay));
 
             // call the callback
-            timerTask.addTask(new FunctionTask(callback));
+            serialTask.addTask(new FunctionTask(callback));
 
-            this.addTask(timerTask);
+            this.addTask(serialTask);
         }
     }
 
