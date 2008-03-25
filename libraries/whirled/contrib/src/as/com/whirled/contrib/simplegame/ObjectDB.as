@@ -15,28 +15,6 @@ public class ObjectDB
     }
 
     /**
-     * A convenience method for creating an object with a timed task attached to it that will call
-     * a function after a specified delay.
-     *
-     * If "objectName" is specified, the timer object will be named.
-     *
-     * If "repeating" is false, the timer object will be destroyed after it has fired.
-     */
-    public function createTimer (delay :Number, fn :Function, repeating :Boolean = false, objectName :String = null) :SimObjectRef
-    {
-        // SimpleNamedObject is just a convenience class that lets us assign a name to an object.
-        var timerObj :SimObject = new SimpleNamedObject(objectName);
-
-        if (repeating) {
-            timerObj.addTask(new RepeatingTask(After(delay, new FunctionTask(fn))));
-        } else {
-            timerObj.addTask(new SerialTask(After(delay, new FunctionTask(fn)), new SelfDestructTask()));
-        }
-
-        return this.addObject(timerObj);
-    }
-
-    /**
      * Adds a SimObject to the database. The SimObject must not be owned by another database.
      * If displayParent is not null, obj's attached DisplayObject will be added as a child
      * of displayParent.
@@ -335,21 +313,4 @@ public class ObjectDB
     protected var _groupedObjects :HashMap = new HashMap();
 }
 
-}
-
-import com.whirled.contrib.simplegame.SimObject;
-
-class SimpleNamedObject extends SimObject
-{
-    public function SimpleNamedObject (name :String)
-    {
-        _name = name;
-    }
-
-    override public function get objectName () :String
-    {
-        return _name;
-    }
-
-    protected var _name :String;
 }

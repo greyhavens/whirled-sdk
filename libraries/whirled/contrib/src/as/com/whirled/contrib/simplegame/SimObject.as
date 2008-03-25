@@ -49,7 +49,7 @@ public class SimObject extends EventDispatcher
      */
     public function get objectGroups () :Array
     {
-        return new Array();
+        return null;
     }
 
     /** Returns true if the object is in the specified group. */
