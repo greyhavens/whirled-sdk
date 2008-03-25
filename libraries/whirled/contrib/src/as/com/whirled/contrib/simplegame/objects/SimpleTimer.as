@@ -28,7 +28,7 @@ public class SimpleTimer extends SimObject
             var serialTask :SerialTask = new SerialTask();
 
             // decrement _timeLeft to 0 over delay seconds
-            serialTask.addTask(new AnimateValueTask({ value: _timeLeft }, 0, delay));
+            serialTask.addTask(new AnimateValueTask(_timeLeft, 0, delay));
 
             // call the callback
             serialTask.addTask(new FunctionTask(callback));
@@ -47,7 +47,7 @@ public class SimpleTimer extends SimObject
         return _timeLeft["value"];
     }
 
-    protected var _name;
+    protected var _name :String;
     protected var _timeLeft :Object = {};
 
 }
