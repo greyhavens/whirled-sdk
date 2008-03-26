@@ -16,7 +16,7 @@ public class ImageResourceLoader extends EventDispatcher
     {
         _resourceName = resourceName;
         _loadParams = loadParams;
-        
+
         _loader = new Loader();
         _loader.contentLoaderInfo.addEventListener(Event.INIT, onInit);
         _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
@@ -31,17 +31,12 @@ public class ImageResourceLoader extends EventDispatcher
     {
         return (_loader.content as Bitmap).bitmapData;
     }
-    
+
     public function createBitmap (pixelSnapping :String = "auto", smoothing :Boolean = false) :Bitmap
     {
         return new Bitmap(this.bitmapData, pixelSnapping, smoothing);
     }
-    
-    public function get errorString () :String
-    {
-        return _errorString;
-    }
-    
+
     public function load () :void
     {
         // parse loadParams
@@ -52,11 +47,10 @@ public class ImageResourceLoader extends EventDispatcher
         } else if (_loadParams.hasOwnProperty("embeddedClass")) {
             _loader.loadBytes(ByteArray(new _loadParams["embeddedClass"]()));
         } else {
-            _errorString = "ImageResourceLoader: one of 'url', 'bytes', or 'embeddedClass' must specified in loadParams";
-            this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR));
+            throw new Error("ImageResourceLoader: one of 'url', 'bytes', or 'embeddedClass' must be specified in loadParams");
         }
     }
-    
+
     public function unload () :void
     {
         try {
@@ -64,7 +58,7 @@ public class ImageResourceLoader extends EventDispatcher
         } catch (e :Error) {
             // swallow the exception
         }
-        
+
         _loader.unload();
     }
 
@@ -75,13 +69,11 @@ public class ImageResourceLoader extends EventDispatcher
 
     protected function onError (e :IOErrorEvent) :void
     {
-        _errorString = e.text;
-        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR));
+        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR, "ImageResourceLoader (" + _resourceName + "): " + e.text));
     }
 
     protected var _resourceName :String;
     protected var _loadParams :Object;
-    protected var _errorString :String;
     protected var _loader :Loader;
 }
 

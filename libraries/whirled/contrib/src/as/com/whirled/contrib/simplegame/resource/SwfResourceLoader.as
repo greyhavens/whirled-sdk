@@ -9,7 +9,6 @@ import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
 import flash.utils.ByteArray;
-import flash.utils.getQualifiedClassName;
 
 public class SwfResourceLoader extends EventDispatcher
     implements ResourceLoader
@@ -18,7 +17,7 @@ public class SwfResourceLoader extends EventDispatcher
     {
         _resourceName = resourceName;
         _loadParams = loadParams;
-        
+
         _loader = new Loader();
         _loader.contentLoaderInfo.addEventListener(Event.INIT, onInit);
         _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
@@ -33,7 +32,7 @@ public class SwfResourceLoader extends EventDispatcher
     {
         return _loader.content;
     }
-    
+
     public function getSymbol (name :String) :Object
     {
         try {
@@ -41,34 +40,29 @@ public class SwfResourceLoader extends EventDispatcher
         } catch (e :Error) {
             // swallow the exception and return null
         }
-        
+
         return null;
     }
-    
+
     public function hasSymbol (name :String) :Boolean
     {
         return _loader.contentLoaderInfo.applicationDomain.hasDefinition(name);
     }
-    
+
     public function getFunction (name :String) :Function
     {
         return this.getSymbol(name) as Function;
     }
-    
+
     public function getClass (name :String) :Class
     {
         return this.getSymbol(name) as Class;
     }
-    
-    public function get errorString () :String
-    {
-        return _errorString;
-    }
-    
+
     public function load () :void
     {
         // parse loadParams
-        
+
         var context :LoaderContext = new LoaderContext();
         if (_loadParams.hasOwnProperty("useSubDomain") && !Boolean(_loadParams["useSubDomain"])) {
             context.applicationDomain = ApplicationDomain.currentDomain;
@@ -76,7 +70,7 @@ public class SwfResourceLoader extends EventDispatcher
             // default to loading symbols into a subdomain
             context.applicationDomain = new ApplicationDomain(ApplicationDomain.currentDomain);
         }
-        
+
         if (_loadParams.hasOwnProperty("url")) {
             _loader.load(new URLRequest(_loadParams["url"]), context);
         } else if (_loadParams.hasOwnProperty("bytes")) {
@@ -84,11 +78,10 @@ public class SwfResourceLoader extends EventDispatcher
         } else if (_loadParams.hasOwnProperty("embeddedClass")) {
             _loader.loadBytes(ByteArray(new _loadParams["embeddedClass"]()), context);
         } else {
-            _errorString = "SwfResourceLoader: one of 'url', 'bytes', or 'embeddedClass' must specified in loadParams";
-            this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR));
+            throw new Error("SwfResourceLoader: one of 'url', 'bytes', or 'embeddedClass' must be specified in loadParams");
         }
     }
-    
+
     public function unload () :void
     {
         try {
@@ -96,7 +89,7 @@ public class SwfResourceLoader extends EventDispatcher
         } catch (e :Error) {
             // swallow the exception
         }
-        
+
         _loader.unload();
     }
 
@@ -107,13 +100,11 @@ public class SwfResourceLoader extends EventDispatcher
 
     protected function onError (e :IOErrorEvent) :void
     {
-        _errorString = e.text;
-        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR));
+        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR, "SwfResouceLoader (" + _resourceName + "): " + e.text));
     }
 
     protected var _resourceName :String;
     protected var _loadParams :Object;
-    protected var _errorString :String;
     protected var _loader :Loader;
 }
 
