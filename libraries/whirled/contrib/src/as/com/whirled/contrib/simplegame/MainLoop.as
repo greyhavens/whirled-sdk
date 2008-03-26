@@ -93,6 +93,9 @@ public final class MainLoop
 
         _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
 
+        this.popAllModes();
+        this.handleModeTransitions();
+
         g_instance = null;
     }
 
