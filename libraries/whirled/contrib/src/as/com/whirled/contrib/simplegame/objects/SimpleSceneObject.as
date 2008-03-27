@@ -7,9 +7,15 @@ import flash.display.DisplayObject;
  */
 public class SimpleSceneObject extends SceneObject
 {
-    public function SimpleSceneObject (displayObject :DisplayObject = null)
+    public function SimpleSceneObject (displayObject :DisplayObject = null, name :String = null)
     {
         _displayObject = displayObject;
+        _name = name;
+    }
+
+    override public function get objectName () :String
+    {
+        return _name;
     }
 
     override public function get displayObject () :DisplayObject
@@ -23,6 +29,7 @@ public class SimpleSceneObject extends SceneObject
     }
 
     protected var _displayObject :DisplayObject;
+    protected var _name;
 
 }
 
