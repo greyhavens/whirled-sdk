@@ -29,7 +29,7 @@ public class SimpleSceneObject extends SceneObject
     }
 
     protected var _displayObject :DisplayObject;
-    protected var _name;
+    protected var _name :String;
 
 }
 
