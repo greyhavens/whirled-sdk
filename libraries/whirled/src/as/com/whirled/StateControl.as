@@ -54,6 +54,11 @@ public class StateControl extends AbstractSubControl
         return callHostCode("setRoomProperty_v1", key, value);
     }
 
+    public function getRoomProperties () :Object
+    {
+        return callHostCode("getRoomProperties_v1");
+    }
+
     public function getPlayerProperty (key :String) :Object
     {
         return callHostCode("getPlayerProperty_v1", key);
