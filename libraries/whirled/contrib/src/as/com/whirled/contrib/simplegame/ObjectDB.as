@@ -6,6 +6,7 @@ import com.threerings.util.HashMap;
 import com.whirled.contrib.simplegame.components.SceneComponent;
 import com.whirled.contrib.simplegame.tasks.*;
 
+import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 
 public class ObjectDB
@@ -70,11 +71,16 @@ public class ObjectDB
         // do the attaching themselves)
         if (null != displayParent) {
             var sc :SceneComponent = (obj as SceneComponent);
-            if (null == sc || null == sc.displayObject) {
+            if (null == sc) {
                 throw new Error("only objects implementing SceneComponent can be attached to a display parent");
             }
 
-            displayParent.addChild(sc.displayObject);
+            var displayObj :DisplayObject = sc.displayObject;
+            if (null == displayObj) {
+                throw new Error("object must return a non-null displayObject to be attached to a display parent");
+            }
+
+            displayParent.addChild(displayObj);
         }
 
         obj.addedToDBInternal();
