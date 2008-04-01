@@ -459,7 +459,7 @@ public class GameBackend
 
     protected function handleUserCodeConnect (evt :Event) :void
     {
-        var props :Object = ("props" in evt) ? evt.props : Object(evt);
+        var props :Object = ("props" in evt) ? Object(evt).props : evt;
 
         // Old-style queries were deprecated 2008-02-18, but we'll probably always need them.
         // Old: eventName: "ezQuery", userProps: "userProps", ourProps: "ezProps"
