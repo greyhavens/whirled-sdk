@@ -48,9 +48,12 @@ public class AbstractControl extends EventDispatcher
         var userProps :Object = (initialUserProps != null) ? initialUserProps : new Object();
         setUserProps(userProps);
         var event :ConnectEvent = new ConnectEvent();
-        event.userProps = userProps;
+        event.props.userProps = userProps;
         disp.root.loaderInfo.sharedEvents.dispatchEvent(event);
-        var hostProps :Object = event.hostProps;
+        if (Boolean(event.props.alreadyConnected)) {
+            throw new Error("You've already set up a Control instance. There should only be one.");
+        }
+        var hostProps :Object = event.props.hostProps;
         if (hostProps != null) {
             gotHostProps(hostProps);
         }
@@ -93,8 +96,8 @@ public class AbstractControl extends EventDispatcher
      * @example
      * <listing version="3.0">
      * _ctrl.doBatch(function () :void {
-     *     _ctrl.net.set("board", new Array());
-     *     _ctrl.net.set("scores", new Array());
+     *     _ctrl.net.set("board", new Array(100));
+     *     _ctrl.net.set("scores", new Dictionary());
      *     _ctrl.net.set("captures", 0);
      * });
      * </listing>
@@ -237,8 +240,7 @@ public class AbstractControl extends EventDispatcher
     /** The functions supplied by the host. @private */
     protected var _funcs :Object;
 
-    /** Any sub-controls we may have. If you need to have subcontrols on any
-     * control, set this array up before calling the super constructor. @private */
+    /** Any sub-controls we may have. @private */
     protected var _subControls :Array;
 }
 }
@@ -250,54 +252,16 @@ import flash.events.Event;
  */
 class ConnectEvent extends Event
 {
+    /** A place to store all properties, rather than make this a dynamic event. */
+    public const props :Object = {};
+
     public function ConnectEvent ()
     {
         super("controlConnect", true, false);
     }
 
-    /** Setter: hostProps */
-    public function set hostProps (props :Object) :void
-    {
-        if (_parent != null) {
-            _parent.hostProps = props;
-        } else {
-            _hostProps = props;
-        }
-    }
-
-    /** Getter: hostProps */
-    public function get hostProps () :Object
-    {
-        // we don't really allow this get on a child
-        return _hostProps;
-    }
-
-    /** Setter: userProps */
-    public function set userProps (props :Object) :void
-    {
-        // we don't really allow this set on a child
-        _userProps = props;
-    }
-
-    /** Getter: userProps */
-    public function get userProps () :Object
-    {
-        if (_parent != null) {
-            return _parent.userProps;
-        } else {
-            return _userProps;
-        }
-    }
-
     override public function clone () :Event
     {
-        var clone :ConnectEvent = new ConnectEvent();
-        clone._parent = this;
-        return clone;
+        return new ConnectEvent();
     }
-
-    protected var _parent :ConnectEvent;
-
-    protected var _hostProps :Object;
-    protected var _userProps :Object;
 }
