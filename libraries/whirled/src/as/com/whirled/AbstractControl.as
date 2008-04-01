@@ -252,16 +252,19 @@ import flash.events.Event;
  */
 class ConnectEvent extends Event
 {
-    /** A place to store all properties, rather than make this a dynamic event. */
-    public const props :Object = {};
+    /** A place to store all properties, rather than make this a dynamic class. */
+    public var props :Object;
 
-    public function ConnectEvent ()
+    /** Construct a new ConnectEvent. */
+    public function ConnectEvent (propsObj :Object = null)
     {
         super("controlConnect", true, false);
+        props = propsObj || {};
     }
 
     override public function clone () :Event
     {
-        return new ConnectEvent();
+        // The cloned object needs to accessing and modifying the same props.
+        return new ConnectEvent(props);
     }
 }
