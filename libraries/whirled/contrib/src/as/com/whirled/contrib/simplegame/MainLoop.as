@@ -41,6 +41,10 @@ public final class MainLoop
         ArrayUtil.removeFirst(_updatables, obj);
     }
 
+    /**
+     * Returns the top mode on the mode stack, or null
+     * if the stack is empty.
+     */
     public function get topMode () :AppMode
     {
         if (_modeStack.length == 0) {
@@ -50,6 +54,10 @@ public final class MainLoop
         }
     }
 
+    /**
+     * Initializes structures required by the framework, including the
+     * ResourceLoaderRegistry and the Rand utility.
+     */
     public function setup () :void
     {
         if (_hasSetup) {
@@ -70,6 +78,10 @@ public final class MainLoop
         _hasSetup = true;
     }
 
+    /**
+     * Kicks off the MainLoop. Game updates will start happening after this
+     * function is called.
+     */
     public function run () :void
     {
         if (_running) {
@@ -86,11 +98,15 @@ public final class MainLoop
         _lastTime = this.elapsedSeconds;
     }
 
+    /**
+     * Call this function before the application shuts down to release
+     * memory and disconnect event handlers.
+     *
+     * Most applications will want to install an Event.REMOVED_FROM_STAGE
+     * handler on the main sprite, and call shutdown from there.
+     */
     public function shutdown () :void
     {
-        // Most games won't need to call shutdown because the MainLoop will be running as long as the game is.
-        // This method is only necessary for games that use multiple MainLoops in their lifetimes.
-
         _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
 
         this.popAllModes();
@@ -99,6 +115,10 @@ public final class MainLoop
         g_instance = null;
     }
 
+    /**
+     * Pushes a mode to the mode stack.
+     * Mode changes take effect before game updates.
+     */
     public function pushMode (mode :AppMode) :void
     {
         if (null == mode) {
@@ -108,11 +128,20 @@ public final class MainLoop
         createModeTransition(mode, TRANSITION_PUSH);
     }
 
+    /**
+     * Pops the top mode from the mode stack.
+     * Mode changes take effect before game updates.
+     */
     public function popMode () :void
     {
         createModeTransition(null, TRANSITION_POP);
     }
 
+    /**
+     * Pops the top mode from the stack, and pushes
+     * a new mode in its place.
+     * Mode changes take effect before game updates.
+     */
     public function changeMode (mode :AppMode) :void
     {
         if (null == mode) {
@@ -122,11 +151,21 @@ public final class MainLoop
         createModeTransition(mode, TRANSITION_CHANGE);
     }
 
+    /**
+     * Pops all modes from the mode stack.
+     * Mode changes take effect before game updates.
+     */
     public function popAllModes () :void
     {
         createModeTransition(null, TRANSITION_UNWIND);
     }
 
+    /**
+     * Pops modes from the stack until the specified mode is reached.
+     * If the specified mode is not reached, it will be pushed to the top
+     * of the mode stack.
+     * Mode changes take effect before game updates.
+     */
     public function unwindToMode (mode :AppMode) :void
     {
         if (null == mode) {
