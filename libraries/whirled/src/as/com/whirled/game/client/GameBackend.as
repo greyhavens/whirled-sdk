@@ -459,17 +459,19 @@ public class GameBackend
 
     protected function handleUserCodeConnect (evt :Event) :void
     {
+        var props :Object = ("props" in evt) ? evt.props : Object(evt);
+
         // Old-style queries were deprecated 2008-02-18, but we'll probably always need them.
         // Old: eventName: "ezQuery", userProps: "userProps", ourProps: "ezProps"
         // New: eventName: "controlConnect", userProps: "userProps", ourProps: "hostProps"
         var hostPropName :String = (evt.type == "controlConnect") ? "hostProps" : "ezProps";
 
-        var userProps :Object = Object(evt).userProps;
+        var userProps :Object = props.userProps;
         setUserCodeProperties(userProps);
 
         var ourProps :Object = new Object();
         populateProperties(ourProps);
-        Object(evt)[hostPropName] = ourProps;
+        props[hostPropName] = ourProps;
 
         // determine whether to automatically start the game in a backwards compatible way
         var autoReady :Boolean = ("autoReady_v1" in userProps) ? userProps["autoReady_v1"] : true;
