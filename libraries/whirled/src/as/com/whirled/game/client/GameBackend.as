@@ -746,9 +746,8 @@ public class GameBackend
     {
         // very naughty hack to support old setProperty semantics for auto-sizing arrays,
         // since Defense relies on them. TODO: robert, remove after your game is fixed up!
-        if (value is Array && value.length == 0) {
+        if (value is Array && value.length == 0 && provideArrayCompatibility()) {
             value.length = 1000; 
-            log.warning("testAndSet() got an empty array. Auto-sizing arrays are deprecated.");
         }
 
         if (index != -1) {
@@ -1231,9 +1230,8 @@ public class GameBackend
     {
         // very naughty hack to support old setProperty semantics for auto-sizing arrays,
         // since Defense relies on them. TODO: robert, remove after your game is fixed up!
-        if (value is Array && value.length == 0) {
+        if (value is Array && value.length == 0 && provideArrayCompatibility()) {
             value.length = 1000; 
-            log.warning("Warning: set() got an empty array. Auto-sizing arrays are deprecated.");
         }
         
         var key :Object = (index < 0) ? null : index;
@@ -1256,6 +1254,16 @@ public class GameBackend
     protected function playerOwnsData (type :int, ident :String) :Boolean
     {
         return false; // this information is provided by the containing system
+    }
+
+    // TEMP TODO REMOVE XXX
+    protected function provideArrayCompatibility () :Boolean
+    {
+        var cfg :WhirledGameConfig = _ctrl.getPlaceConfig() as WhirledGameConfig;
+        var url :String = cfg.getGameDefinition().getMediaPath(cfg.getGameId());
+
+        // Tree house defense
+        return (url === "http://media.whirled.com/6c7fa832bd422899ffea685adadbf55c184edb2e.swf");
     }
 
     protected var _ctx :CrowdContext;
