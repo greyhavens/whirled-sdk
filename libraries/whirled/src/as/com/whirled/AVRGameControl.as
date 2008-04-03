@@ -102,7 +102,7 @@ public class AVRGameControl extends AbstractControl
 
 	 * @param full If true (the default), return the entire paintable area. If false,
 	 * return the area occupied by the room's decor, which can be smaller than the entire
-	 * paintable area if narrow rooms, or when the room view is zoomed out.
+	 * paintable area in narrow rooms, or when the room view is zoomed out.
 	 *
 	 * @return a Rectangle containing the stage bounds
      */
