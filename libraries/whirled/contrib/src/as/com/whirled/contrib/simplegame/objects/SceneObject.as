@@ -9,8 +9,6 @@ import com.whirled.contrib.simplegame.components.SceneComponent;
 import com.whirled.contrib.simplegame.components.VisibleComponent;
 
 import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
-import flash.display.InteractiveObject;
 
 public class SceneObject extends SimObject
     implements AlphaComponent, BoundsComponent, ScaleComponent, SceneComponent, VisibleComponent, RotationComponent
@@ -18,16 +16,6 @@ public class SceneObject extends SimObject
     public function get displayObject () :DisplayObject
     {
         return null;
-    }
-
-    public function get displayObjectContainer () :DisplayObjectContainer
-    {
-        return (this.displayObject as DisplayObjectContainer);
-    }
-
-    public function get interactiveObject () :InteractiveObject
-    {
-        return (this.displayObject as InteractiveObject);
     }
 
     public function get alpha () :Number
