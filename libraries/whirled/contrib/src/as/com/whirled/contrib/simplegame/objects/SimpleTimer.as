@@ -5,7 +5,7 @@ import com.whirled.contrib.simplegame.tasks.*;
 
 public class SimpleTimer extends SimObject
 {
-    public function SimpleTimer (delay :Number, callback :Function, repeating :Boolean = false, objectName :String = null)
+    public function SimpleTimer (delay :Number, callback :Function = null, repeating :Boolean = false, objectName :String = null)
     {
         _name = objectName;
         _timeLeft["value"] = delay;
@@ -19,8 +19,10 @@ public class SimpleTimer extends SimObject
             // animate _timeLeft to 0 over delay seconds
             repeatingTask.addTask(new AnimateValueTask(_timeLeft, 0, delay));
 
-            // call the callback
-            repeatingTask.addTask(new FunctionTask(callback));
+            if (null != callback) {
+                // call the callback
+                repeatingTask.addTask(new FunctionTask(callback));
+            }
 
             this.addTask(repeatingTask);
 
@@ -30,8 +32,13 @@ public class SimpleTimer extends SimObject
             // decrement _timeLeft to 0 over delay seconds
             serialTask.addTask(new AnimateValueTask(_timeLeft, 0, delay));
 
-            // call the callback
-            serialTask.addTask(new FunctionTask(callback));
+            if (null != callback) {
+                // call the callback
+                serialTask.addTask(new FunctionTask(callback));
+            }
+
+            // self-destruct when complete
+            serialTask.addTask(new SelfDestructTask());
 
             this.addTask(serialTask);
         }
