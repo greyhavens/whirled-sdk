@@ -17,6 +17,7 @@ import mx.controls.Label;
 import mx.controls.List;
 
 import com.threerings.util.ArrayUtil;
+import com.threerings.util.CommandEvent;
 import com.threerings.util.HashMap;
 import com.threerings.util.Name;
 
@@ -64,6 +65,15 @@ public class PlayerList extends VBox
         var sort :Sort = new Sort();
         sort.compareFunction = sortFunction;
         _players.sort = sort;
+
+        // listen for clicks on player names
+        addEventListener(CommandEvent.COMMAND, function (event: CommandEvent) :void {
+            var oid :int = int(event.arg);
+            if (_gameObj != null) {
+                handlePlayerClicked(_gameObj.occupantInfo.get(oid) as OccupantInfo);
+            }
+            event.markAsHandled();
+        });
     }
 
     /**
@@ -287,6 +297,13 @@ public class PlayerList extends VBox
     }
 
     /**
+     * Called when the user clicks on one of the names (or headshots) in our list.
+     */
+    protected function handlePlayerClicked (occInfo :OccupantInfo) :void
+    {
+    }
+
+    /**
      * The sort function that will be used to display occupant records.
      */
     protected function sortFunction (o1 :Object, o2 :Object, fields :Array = null) :int
@@ -315,18 +332,20 @@ public class PlayerList extends VBox
 }
 }
 
-import mx.containers.HBox;
+import flash.events.MouseEvent;
 
+import mx.containers.HBox;
 import mx.controls.Image;
 import mx.controls.Label;
-
 import mx.core.ScrollPolicy;
 
+import com.threerings.util.CommandEvent;
 import com.threerings.util.Comparable;
 
 import com.threerings.crowd.data.OccupantInfo;
 
 import com.whirled.data.WhirledOccupantInfo;
+import com.whirled.game.client.PlayerList;
 
 /**
  * A record for tracking player data.
@@ -433,11 +452,13 @@ class PlayerRecord
     }
 }
 
-
 // TODO: fuck fuck fuck. It's probably the case that a renderer that gets scrolled off and
 // back on will have to re-load the headshot completely.
 class PlayerRenderer extends HBox
 {
+    /** A command event dispatched when a player name is clicked. */
+    public static const PLAYER_CLICKED :String = "playerClicked";
+
     public function PlayerRenderer ()
     {
         super();
@@ -466,14 +487,21 @@ class PlayerRenderer extends HBox
         _headshot.height = 20; // 1/3 of headshot size
         _headshot.width = 20;
         _headshot.maintainAspectRatio = true;
+        _headshot.addEventListener(MouseEvent.CLICK, handleClick);
 
         addChild(_nameLabel = new Label());
         _nameLabel.width = 118;
+        _nameLabel.addEventListener(MouseEvent.CLICK, handleClick);
 
         addChild(_scoreLabel = new Label());
         _scoreLabel.width = 90;
 
         configureUI();
+    }
+
+    protected function handleClick (event :MouseEvent) :void
+    {
+        CommandEvent.dispatch(this, PLAYER_CLICKED, (data as PlayerRecord).oid);
     }
 
     /**

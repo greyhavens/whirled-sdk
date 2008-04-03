@@ -190,6 +190,14 @@ public class WhirledGamePanel extends Canvas
         return new GameBackend(_ctx, _gameObj, _ctrl);
     }
 
+    /**
+     * Creates the player list we'll use to display player names and scores.
+     */
+    protected function createPlayerList () :PlayerList
+    {
+        return new PlayerList();
+    }
+
     protected function configureGameView (view :GameContainer) :void
     {
         view.percentWidth = 100;
@@ -202,7 +210,7 @@ public class WhirledGamePanel extends Canvas
     protected var _gameObj :WhirledGameObject;
 
     /** The player list. */
-    protected var _playerList :PlayerList = new PlayerList();
+    protected var _playerList :PlayerList = createPlayerList();
 
     /** Some buttons. */
     protected var _rematch :CommandButton;
