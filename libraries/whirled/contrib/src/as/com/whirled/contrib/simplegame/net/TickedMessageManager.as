@@ -1,10 +1,9 @@
 package com.whirled.contrib.simplegame.net {
 
-import com.whirled.contrib.simplegame.Updatable;
-
-import com.threerings.util.HashMap;
 import com.threerings.util.Assert;
-
+import com.threerings.util.HashMap;
+import com.threerings.util.Log;
+import com.whirled.contrib.simplegame.Updatable;
 import com.whirled.game.GameControl;
 import com.whirled.game.MessageReceivedEvent;
 
@@ -64,7 +63,7 @@ public class TickedMessageManager
 
         if (name == "randSeed") {
             if (_receivedRandomSeed) {
-                trace("Error: TickedMessageManager received multiple randSeed messages.");
+                log.warning("Error: TickedMessageManager received multiple randSeed messages.");
                 return;
             }
 
@@ -78,7 +77,7 @@ public class TickedMessageManager
         } else {
 
             if (!_receivedRandomSeed) {
-                trace("Error: TickedMessageManager is receiving game messages prematurely.");
+                log.warning("Error: TickedMessageManager is receiving game messages prematurely.");
                 return;
             }
 
@@ -137,14 +136,14 @@ public class TickedMessageManager
     {
         var factory :MessageFactory = (_messageFactories.get(msg.name) as MessageFactory);
         if (null == factory) {
-            trace("Discarding outgoing '" + msg.name + "' message (no factory)");
+            log.warning("Discarding outgoing '" + msg.name + "' message (no factory)");
             return null;
         }
 
         var serialized :Object = factory.serialize(msg);
 
         if (null == serialized) {
-            trace("Discarding outgoing '" + msg.name + "' message (failed to serialize)");
+            log.warning("Discarding outgoing '" + msg.name + "' message (failed to serialize)");
             return null;
         }
 
@@ -155,14 +154,14 @@ public class TickedMessageManager
     {
         var factory :MessageFactory = (_messageFactories.get(name) as MessageFactory);
         if (null == factory) {
-            trace("Discarding incoming '" + name + "' message (no factory)");
+            log.warning("Discarding incoming '" + name + "' message (no factory)");
             return null;
         }
 
         var msg :Message = factory.deserialize(serialized);
 
         if (null == msg) {
-            trace("Discarding incoming '" + name + "' message (failed to deserialize)");
+            log.warning("Discarding incoming '" + name + "' message (failed to deserialize)");
             return null;
         }
 
@@ -218,6 +217,8 @@ public class TickedMessageManager
 
     protected var _receivedRandomSeed :Boolean;
     protected var _randomSeed :uint;
+
+    protected static const log :Log = Log.getLog(TickedMessageManager);
 }
 
 }
