@@ -99,12 +99,12 @@ public class AVRGameControl extends AbstractControl
     /**
      * Returns the bounds of the "stage" on which the AVRG will be drawn.
      * This value changes when the browser is resized, and when the player moves to another room.
-
-	 * @param full If true (the default), return the entire paintable area. If false,
-	 * return the area occupied by the room's decor, which can be smaller than the entire
-	 * paintable area in narrow rooms, or when the room view is zoomed out.
-	 *
-	 * @return a Rectangle containing the stage bounds
+     *
+     * @param full If true (the default), return the entire paintable area. If false,
+     * return the area occupied by the room's decor, which can be smaller than the entire
+     * paintable area in narrow rooms, or when the room view is zoomed out.
+     *
+     * @return a Rectangle containing the stage bounds
      */
     public function getStageSize (full :Boolean = true) :Rectangle
     {
