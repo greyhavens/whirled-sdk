@@ -49,6 +49,8 @@ public class WhirledGamePanel extends Canvas
         _rematch = new CommandButton();
         _rematch.toggle = true;
         _rematch.setCallback(handleRematchClicked);
+
+        _playerList = createPlayerList();
     }
 
     // from PlaceView
@@ -210,7 +212,7 @@ public class WhirledGamePanel extends Canvas
     protected var _gameObj :WhirledGameObject;
 
     /** The player list. */
-    protected var _playerList :PlayerList = createPlayerList();
+    protected var _playerList :PlayerList;
 
     /** Some buttons. */
     protected var _rematch :CommandButton;
