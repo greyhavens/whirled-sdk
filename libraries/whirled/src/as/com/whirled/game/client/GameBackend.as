@@ -174,6 +174,12 @@ public class GameBackend
      */
     public function gameStateChanged (started :Boolean) :void
     {
+        if (_userFuncs == null) {
+            // Normally this is not needed, because callUserCode will fail gracefully if we're
+            // not connected. However, this method accesses _userFuncs directly, and it may not
+            // yet be set up if the user is still downloading the game media.
+            return;
+        }
         if (started && _userFuncs["gameDidStart_v1"] != null) {
             callUserCode("gameDidStart_v1"); // backwards compatibility
         } else if (!started && _userFuncs["gameDidEnd_v1"] != null) {
@@ -289,8 +295,13 @@ public class GameBackend
     // from PropertySetListener
     public function propertyWasSet (event :PropertySetEvent) :void
     {
+        if (_userFuncs == null) {
+            // Normally this is not needed, because callUserCode will fail gracefully if we're
+            // not connected. However, this method accesses _userFuncs directly, and it may not
+            // yet be set up if the user is still downloading the game media.
+            return;
+        }
         var key :Integer = event.getKey();
-
         if ("propertyWasSet_v1" in _userFuncs) {
             // dispatch the old way (Deprecated 2008-02-20, but we'll probably always need it)
             var index :int = (key == null) ? -1 : key.value;
