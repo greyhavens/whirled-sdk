@@ -178,8 +178,10 @@ public class SimObject extends EventDispatcher
     {
         _anonymousTasks.update(dt, this);
 
-        var thisSimObject :SimObject = this;
-        _namedTasks.forEach(updateNamedTaskContainer);
+        if (!_namedTasks.isEmpty()) {
+            var thisSimObject :SimObject = this;
+            _namedTasks.forEach(updateNamedTaskContainer);
+        }
 
         update(dt);
 
@@ -196,12 +198,14 @@ public class SimObject extends EventDispatcher
     {
         _anonymousTasks.receiveMessage(msg);
 
-        _namedTasks.forEach(
-            function (name :*, tasks:*) :void {
-                if (undefined !== tasks) {
-                    (tasks as ParallelTask).receiveMessage(msg);
-                }
-            });
+        if (!_namedTasks.isEmpty()) {
+            _namedTasks.forEach(
+                function (name :*, tasks:*) :void {
+                    if (undefined !== tasks) {
+                        (tasks as ParallelTask).receiveMessage(msg);
+                    }
+                });
+        }
 
         receiveMessage(msg);
     }
