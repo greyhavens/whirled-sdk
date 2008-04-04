@@ -172,7 +172,7 @@ public class WhirledGameObject extends GameObject
         var count :int = ins.readInt();
         while (count-- > 0) {
             var key :String = ins.readUTF();
-            var value :Object = ObjectMarshaller.decode(ins.readObject());
+            var value :Object = decodeProperty(ins.readObject());
             _props[key] = value;
         }
     }
