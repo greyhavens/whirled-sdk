@@ -481,6 +481,12 @@ class PlayerRenderer extends HBox
     {
         super.createChildren();
 
+        // TODO: we need to make this use a MsoyMediaContainer (or ScalingMediaContainer) to
+        // display the headshot so that users can bleep it.
+        // I'm not going to make this change now, as this playerlist and the chat channel
+        // occupant list *may* be unified in the future...
+
+
         // 280 total width (??) - scrollbar thickness (16) - two gaps (8 each) = 228
         // 20 for headshot + 118 for name + 90 for score = 228
         addChild(_headshot = new Image());
