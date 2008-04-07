@@ -5,6 +5,8 @@ package com.whirled.game {
 
 import flash.events.KeyboardEvent;
 
+import flash.display.DisplayObject;
+
 import flash.geom.Point;
 
 import com.whirled.AbstractSubControl;
@@ -111,17 +113,17 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
-     * Return the headshot image for the given occupant in the form of a Sprite object.
+     * Return the headshot for the given occupant in the form of a DisplayObject.
      *
-     * The sprite are cached in the client backend so the user should not worry too much
-     * about multiple requests for the same occupant.
+     * The objects are cached in the client backend so the user should not worry too much
+     * about multiple requests for the same occupant, but be aware that you'll get the same
+     * instance back. (TODO?)
      *
-     * @param occupant the playerId to get the headshot for
-     * @param callback signature: function (sprite :Sprite, success :Boolean) :void
+     * @param occupantId the player for which to get a headshot.
      */
-    public function getHeadShot (occupant :int, callback :Function) :void
+    public function getHeadShot (occupantId :int) :DisplayObject
     {
-        callHostCode("getHeadShot_v1", occupant, callback);
+        return callHostCode("getHeadShot_v2", occupantId) as DisplayObject;
     }
 
     /**

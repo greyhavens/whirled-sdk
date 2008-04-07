@@ -5,7 +5,6 @@ package com.whirled.game.client {
 
 import flash.display.DisplayObject;
 import flash.display.InteractiveObject;
-import flash.display.Sprite;
 
 import flash.errors.IllegalOperationError;
 
@@ -538,7 +537,7 @@ public class GameBackend
         o["backToWhirled_v1"] = backToWhirled_v1;
         o["clearScores_v1"] = clearScores_v1;
         o["filter_v1"] = filter_v1;
-        o["getHeadShot_v1"] = getHeadShot_v1;
+        o["getHeadShot_v2"] = getHeadShot_v2;
         o["getSize_v1"] = getSize_v1;
         o["localChat_v1"] = localChat_v1;
         o["setMappedScores_v1"] = setMappedScores_v1;
@@ -603,6 +602,7 @@ public class GameBackend
         o["getDictionaryLetterSet_v1"] = getDictionaryLetterSet_v1;
         o["getStageBounds_v1"] = getStageBounds_v1;
         o["setProperty_v1"] = setProperty_v1;
+        o["getHeadShot_v1"] = getHeadShot_v1;
     }
 
     //---- GameControl -----------------------------------------------------
@@ -696,12 +696,12 @@ public class GameBackend
         (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setMappedScores(scores);
     }
 
-    protected function getHeadShot_v1 (occupant :int, callback :Function) :void
+    protected function getHeadShot_v2 (occupant :int) :DisplayObject
     {
         validateConnected();
 
         // in here, we just return a dummy value
-        callback(new Sprite(), true);
+        return new HeadSpriteShim();
     }
 
     //---- .net ------------------------------------------------------------
@@ -1250,6 +1250,18 @@ public class GameBackend
         setProperty_v2(propName, value, key, isArray, immediate);
     }
 
+    /** 
+     * A backwards compatible method.
+     */
+    protected function getHeadShot_v1 (occupant :int, callback :Function) :void
+    {
+        // this callback was defined to return a Sprite, so to preserve
+        // backwards compatibility we wrap the new headshot in a sprite
+        var s :HeadSpriteShim = new HeadSpriteShim();
+        s.addChild(getHeadShot_v2(occupant));
+        callback(s, true);
+    }
+
     // --------------------------
 
     /**
@@ -1301,4 +1313,19 @@ public class GameBackend
 
     protected static const MAX_USER_COOKIE :int = 4096;
 }
+}
+
+import flash.display.Sprite;
+
+class HeadSpriteShim extends Sprite
+{
+    override public function get width () :Number
+    {
+        return 80;
+    }
+
+    override public function get height () :Number
+    {
+        return 60;
+    }
 }
