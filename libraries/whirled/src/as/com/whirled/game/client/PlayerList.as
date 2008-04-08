@@ -490,8 +490,8 @@ class PlayerRenderer extends HBox
         // 280 total width (??) - scrollbar thickness (16) - two gaps (8 each) = 228
         // 20 for headshot + 118 for name + 90 for score = 228
         addChild(_headshot = new Image());
-        _headshot.height = 20; // 1/3 of headshot size
-        _headshot.width = 20;
+        _headshot.height = 15; // 1/4 of headshot size
+        _headshot.width = 20; // 1/4 of headshot size
         _headshot.maintainAspectRatio = true;
         _headshot.addEventListener(MouseEvent.CLICK, handleClick);
 
