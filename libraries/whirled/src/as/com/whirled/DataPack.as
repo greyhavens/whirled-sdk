@@ -48,12 +48,51 @@ import nochump.util.zip.ZipFile;
 [Event(name="error", type="flash.events.ErrorEvent")]
 
 /**
- * Handles downloading and extracting goodies from a DataPack.
+ * A DataPack is a bundle of stored goodies for use by your game, avatar, or other whirled
+ * creation. In a DataPack can be named data values as well as named files.
  */
 public class DataPack extends EventDispatcher
 {
     /**
-     * Load one or more DataPacks.
+     * A static helper method to load one or more DataPacks without using any event listeners.
+     * Take a deep breath and then read the parameter documentation.
+     *
+     * @param sources can be a String (representing a URL), or a URLRequest object, or a
+     * ByteArray containing an embedded DataPack, or a Class object that will instantiate
+     * with no args into a ByteArray or (unlikely) a URLRequest. Orrrrrr, sources can be
+     * an Array, Dictionary or plain Object containing primary kinds of sources as the values.
+     * @param completeListener a function with the signature:
+     * <code>function (result :Object) :void;</code>
+     * If you passed in only a single source, then this completeListener is called and provided
+     * with a result of either a DataPack (for a successful load) or an Error object.
+     * If it's an Error but your function only accepts a DataPack, an error message will be
+     * calmly logged. If your sources was an Array, Dictionary, or Object then the result will
+     * be an object of the same type, with the same keys, but with each value being either a
+     * DataPack or an Error.
+     *
+     * @example Load one DataPack from a url.
+     * <listing version="3.0">
+     * function gotDataPack (result :Object) :void {
+     *     if (!(result is DataPack)) { // result must be an Error
+     *         trace("Why? Oh why!? .. Oh: " + result);
+     *         return;
+     *     }
+     *     var pack :DataPack = (result as DataPack);
+     *     // _weapon is something set up outside the scope of this example
+     *     _weapon.name = pack.getString("name");
+     *     _weapon.astonishmentPoints = pack.getNumber("ap");
+     *     // etc.
+     * }
+     *
+     * // ok, the function is set up, let's load the DataPack
+     * var itemInfos :Array = _gameCtrl.getItemPacks();
+     * for each (var itemInfo :Object in itemInfos) {
+     *     if (itemInfo.ident == "bubblePopper") {
+     *          DataPack.load(itemInfo.mediaURL, gotDataPack);
+     *          break;
+     *     }
+     * }
+     * </listing>
      */
     public static function load (sources :Object, completeListener :Function) :void
     {
@@ -70,7 +109,7 @@ public class DataPack extends EventDispatcher
      * Note that passing a ByteArray will result in a DataPack that is instantly complete.
      *
      * @param source a url (as a String or as a URLRequest) from which to load the
-     *        DataPack, or a ByteArray containing the raw data.
+     *        DataPack, or a ByteArray containing the raw data, or a Class.
      * @param completeListener a listener function to automatically register for COMPLETE events.
      * @param errorListener a listener function to automatically register for ERROR events.
      *
@@ -117,8 +156,8 @@ public class DataPack extends EventDispatcher
     }
 
     /**
-     * Stop loading a DataPack, if not yet complete. You should probably call this
-     * during shutdown.
+     * If the DataPack is still loading, stop it, otherwise has no effect. It would
+     * be a good idea to call this during your UNLOAD handling.
      */
     public function close () :void
     {
@@ -222,6 +261,89 @@ public class DataPack extends EventDispatcher
     }
 
     /**
+     * Get a File, as a ByteArray.
+     */
+    public function getFile (name :String) :ByteArray
+    {
+        return getFileInternal(name, false) as ByteArray;
+    }
+
+    /**
+     * Get a File, as a String.
+     */
+    public function getFileAsString (name :String) :String
+    {
+        return getFileInternal(name, true) as String;
+    }
+
+    /**
+     * Get a File, as an XML object.
+     */
+    public function getFileAsXML (name :String) :XML
+    {
+        return Util.newXML(getFileAsString(name));
+    }
+
+    /**
+     * Get some display objects in the datapack.
+     *
+     * @param sources an Object containing keys mapping to the names of the display objects to load.
+     * @param callback a Function that will be called when all the display objects
+     *                 are loaded (or were unable to load).
+     *                 Signature: <code>function (results :Object) :void</code>
+     *                 results will contain a mapping from name -> DisplayObject, or null if none.
+     * @param appDom The ApplicationDomain in which to load the DisplayObjects. The default value
+     *               of null will load into a child of the current ApplicationDomain.
+     */
+    public function getDisplayObjects (
+        sources :Object, callback :Function, appDom :ApplicationDomain = null) :void
+    {
+        doGetObjects(sources, callback, appDom, false);
+    }
+
+    /**
+     * Get SWF loaders for each SWF in the datapack.
+     *
+     * @param sources an Object containing keys mapping to the names of the display objects to load.
+     * @param callback a Function that will be called when all the display objects
+     *                 are loaded (or were unable to load).
+     *                 Signature: <code>function (results :Object) :void</code>.
+     *                 results will contain a mapping from name -> EmbeddedSwfLoader, or null.
+     * @param appDom The ApplicationDomain in which to load the DisplayObjects. The default value
+     *               of null will load into a child of the current ApplicationDomain.
+     */
+    public function getLoaders (
+        sources :Object, callback :Function, appDom :ApplicationDomain = null) :void
+    {
+        doGetObjects(sources, callback, appDom, true);
+    }
+    
+//    /**
+//     * Get sounds. TODO. This is not quite ready for primetime.
+//     * @private
+//     */
+//    public function getSounds (names :Array, callback :Function) :void
+//    {
+//        var fn :Function = function (obj :Object) :void {
+//            var newObj :Object = {};
+//
+//            for (var s :String in obj) {
+//                var o :Object = obj[s];
+//                try {
+//                    o = o["getSound"]();
+//                } catch (err :Error) {
+//                    trace("Error getSound: " + err);
+//                }
+//                newObj[s] = (o as Sound);
+//            }
+//
+//            callback(newObj);
+//        };
+//
+//        getDisplayObjects(names, fn);
+//    }
+
+    /**
      * Parse a data value from the specified XML datum.
      *
      * @private
@@ -273,111 +395,6 @@ public class DataPack extends EventDispatcher
             return value;
         }
     }
-
-    /**
-     * Get a File, as a ByteArray.
-     */
-    public function getFile (name :String) :ByteArray
-    {
-        return getFileInternal(name, false) as ByteArray;
-    }
-
-    /**
-     * Get a File, as a String.
-     */
-    public function getFileAsString (name :String) :String
-    {
-        return getFileInternal(name, true) as String;
-    }
-
-    /**
-     * Get a File, as an XML object.
-     */
-    public function getFileAsXML (name :String) :XML
-    {
-        return Util.newXML(getFileAsString(name));
-    }
-    
-//    /**
-//     * Get sounds. TODO. This is not quite ready for primetime.
-//     * @private
-//     */
-//    public function getSounds (names :Array, callback :Function) :void
-//    {
-//        var fn :Function = function (obj :Object) :void {
-//            var newObj :Object = {};
-//
-//            for (var s :String in obj) {
-//                var o :Object = obj[s];
-//                try {
-//                    o = o["getSound"]();
-//                } catch (err :Error) {
-//                    trace("Error getSound: " + err);
-//                }
-//                newObj[s] = (o as Sound);
-//            }
-//
-//            callback(newObj);
-//        };
-//
-//        getDisplayObjects(names, fn);
-//    }
-
-    /**
-     * Get some display objects in the datapack.
-     *
-     * @param sources an Object containing keys mapping to the names of the display objects to load.
-     * @param callback a Function that will be called when all the display objects
-     *                 are loaded (or were unable to load).
-     *                 Signature: <code>function (results :Object) :void</code>
-     *                 results will contain a mapping from name -> DisplayObject, or null if none.
-     * @param appDom The ApplicationDomain in which to load the DisplayObjects. The default value
-     *               of null will load into a child of the current ApplicationDomain.
-     */
-    public function getDisplayObjects (
-        sources :Object, callback :Function, appDom :ApplicationDomain = null) :void
-    {
-        doGetObjects(sources, callback, appDom, false);
-    }
-
-    /**
-     * Get SWF loaders for each SWF in the datapack.
-     *
-     * @param sources an Object containing keys mapping to the names of the display objects to load.
-     * @param callback a Function that will be called when all the display objects
-     *                 are loaded (or were unable to load).
-     *                 Signature: <code>function (results :Object) :void</code>.
-     *                 results will contain a mapping from name -> EmbeddedSwfLoader, or null.
-     * @param appDom The ApplicationDomain in which to load the DisplayObjects. The default value
-     *               of null will load into a child of the current ApplicationDomain.
-     */
-    public function getLoaders (
-        sources :Object, callback :Function, appDom :ApplicationDomain = null) :void
-    {
-        doGetObjects(sources, callback, appDom, true);
-    }
-
-    protected function doGetObjects (
-        sources :Object, callback :Function, appDom :ApplicationDomain, returnRawLoaders :Boolean)
-        :void
-    {
-        // transform sources from Strings to ByteArrays
-        // TODO: move something like this to a utility function in MultiLoader?
-        if (sources is String) {
-            sources = getFile(String(sources));
-        } else {
-            for (var key :* in sources) {
-                var o :Object = sources[key];
-                if (o is String) {
-                    sources[key] = getFile(String(o));
-                }
-            }
-        }
-
-        var toCall :Function = returnRawLoaders ? MultiLoader.getLoaders : MultiLoader.getContents;
-        toCall(sources, callback, false, appDom);
-    }
-
     /**
      * Locate the data contained within a file with the specified data name.
      *
@@ -429,6 +446,34 @@ public class DataPack extends EventDispatcher
 
         return parseValue(datum, "value", "String");
     }
+
+    /**
+     * Helper method for @link getDisplaObjects and @link getLoaders. Turns the sources into
+     * the ByteArrays they address, have MultiLoader coordinate the loading.
+     *
+     * @private
+     */
+    protected function doGetObjects (
+        sources :Object, callback :Function, appDom :ApplicationDomain, returnRawLoaders :Boolean)
+        :void
+    {
+        // transform sources from Strings to ByteArrays
+        // TODO: move something like this to a utility function in MultiLoader?
+        if (sources is String) {
+            sources = getFile(String(sources));
+        } else {
+            for (var key :* in sources) {
+                var o :Object = sources[key];
+                if (o is String) {
+                    sources[key] = getFile(String(o));
+                }
+            }
+        }
+
+        var toCall :Function = returnRawLoaders ? MultiLoader.getLoaders : MultiLoader.getContents;
+        toCall(sources, callback, false, appDom);
+    }
+
 
     /**
      * Validate that the everything is ok accessing the specified data name.
