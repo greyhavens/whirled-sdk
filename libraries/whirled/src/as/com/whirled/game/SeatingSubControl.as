@@ -42,6 +42,7 @@ public class SeatingSubControl extends AbstractSubControl
     /**
      * Get all the players at the table, in their seated position.
      * Absent players will be represented by a 0.
+     * If you call this without waiting for the game to start, some players may be absent.
      */
     public function getPlayerIds () :Array /* of playerId (int) */
     {
