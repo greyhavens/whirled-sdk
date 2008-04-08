@@ -193,7 +193,7 @@ public abstract class WhirledGameManager extends GameManager
 
         } else {
             // start immediately
-            if (_gameObj.isActive()) {
+            if (_gameObj.isActive() && !_gameObj.isInPlay()) {
                 startGame();
             }
         }
