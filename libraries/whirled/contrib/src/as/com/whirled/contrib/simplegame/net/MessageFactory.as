@@ -2,8 +2,8 @@ package com.whirled.contrib.simplegame.net {
 
 public interface MessageFactory
 {
-    function serialize (msg :Message) :Object;
-    function deserialize (obj: Object) :Message;
+    function serializeForNetwork (msg :Message) :Object;
+    function deserializeFromNetwork (obj: Object) :Message;
 }
 
 }

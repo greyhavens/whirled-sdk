@@ -140,7 +140,7 @@ public class TickedMessageManager
             return null;
         }
 
-        var serialized :Object = factory.serialize(msg);
+        var serialized :Object = factory.serializeForNetwork(msg);
 
         if (null == serialized) {
             log.warning("Discarding outgoing '" + msg.name + "' message (failed to serialize)");
@@ -158,7 +158,7 @@ public class TickedMessageManager
             return null;
         }
 
-        var msg :Message = factory.deserialize(serialized);
+        var msg :Message = factory.deserializeFromNetwork(serialized);
 
         if (null == msg) {
             log.warning("Discarding incoming '" + name + "' message (failed to deserialize)");
