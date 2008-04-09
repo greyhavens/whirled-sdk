@@ -12,7 +12,7 @@ import com.whirled.EntityControl;
 /**
  * This class should be instantiated by any entity (a lamp, for example) that wishes to
  * synchronize with another entity (a lightswitch, for example) that is broadcasting some
- * part of its state using a {@link EntityStatePublisher}.
+ * part of its state using a @see EntityStatePublisher .
  */
 public class EntityStateListener extends EventDispatcher
 {
@@ -22,10 +22,8 @@ public class EntityStateListener extends EventDispatcher
         _key = key;
         _control = control;
         if (updated != null) {
-            _control.addEventListener(
-                ControlEvent.ROOM_PROPERTY_CHANGED, function (evt :ControlEvent) :void {
-                    updated(_key, evt.value);
-                });
+            _updated = updated;
+            _control.addEventListener(ControlEvent.ROOM_PROPERTY_CHANGED, handlePropertyChanged);
         }
     }
 
@@ -34,7 +32,15 @@ public class EntityStateListener extends EventDispatcher
         return _control.getRoomProperty(_key);
     }
 
+    protected function handlePropertyChanged (event :ControlEvent) :void
+    {
+        if (event.name == _key) {
+            _updated(_key, event.value);
+        }
+    }
+
     protected var _control :EntityControl;
     protected var _key :String;
+    protected var _updated :Function;
 }
 }
