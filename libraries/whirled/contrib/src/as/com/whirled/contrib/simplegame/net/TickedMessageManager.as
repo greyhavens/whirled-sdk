@@ -6,6 +6,7 @@ import com.threerings.util.Log;
 import com.whirled.contrib.simplegame.Updatable;
 import com.whirled.game.GameControl;
 import com.whirled.game.MessageReceivedEvent;
+import com.whirled.game.StateChangedEvent;
 
 import flash.utils.getTimer;
 
@@ -34,13 +35,17 @@ public class TickedMessageManager
         _isFirstPlayer = isFirstPlayer;
         _tickIntervalMS = tickIntervalMS;
 
-        if (isFirstPlayer) {
-            _gameCtrl.net.sendMessage("randSeed", uint(Math.random() * uint.MAX_VALUE));
-        }
+        // the game will start when all players are ready
+        _gameCtrl.game.addEventListener(StateChangedEvent.GAME_STARTED, handleGameStarted);
+
+        // we're ready!
+        _gameCtrl.game.playerReady();
     }
 
     public function shutdown () :void
     {
+        _gameCtrl.game.removeEventListener(StateChangedEvent.GAME_STARTED, handleGameStarted);
+
         _gameCtrl.services.stopTicker("tick");
         _gameCtrl.net.removeEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, msgReceived);
         _receivedRandomSeed = false;
@@ -55,6 +60,16 @@ public class TickedMessageManager
     {
         Assert.isTrue(_receivedRandomSeed);
         return _randomSeed;
+    }
+
+    protected function handleGameStarted (...ignored) :void
+    {
+        // When the game starts, send the random seed to everyone.
+        // When that is received, start the ticker
+
+        if (_isFirstPlayer) {
+            _gameCtrl.net.sendMessage("randSeed", uint(Math.random() * uint.MAX_VALUE));
+        }
     }
 
     protected function msgReceived (event :MessageReceivedEvent) :void
