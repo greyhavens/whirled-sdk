@@ -36,7 +36,10 @@
     <file name="lib/junit-3.7.jar"/>
     <file name="lib/junit4.jar"/>
     <file name="lib/lwjgl.jar"/>
+    <file name="lib/mina-core.jar"/>
     <file name="lib/servlet-api.jar"/>
+    <file name="lib/slf4j-api.jar"/>
+    <file name="lib/slf4j-jdk14.jar"/>
     <file name="lib/velocity-1.5-dev.jar"/>
     <file name="lib/flexlib.swc"/>
   </filelist>
