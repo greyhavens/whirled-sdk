@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.apache.mina.common.IoAcceptor;
+
 import com.google.common.collect.Lists;
 
 import com.samskivert.util.CollectionUtil;
@@ -120,6 +122,8 @@ public class WhirledServer extends CrowdServer
         httpServer = new WhirledHttpServer(getDocRoot());
         httpServer.start();
 
+        _policyServer = PolicyServer.init(47623, "localhost", getListenPorts(), 99999);
+
         // register ourselves as handling the test service
         invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
 
@@ -138,6 +142,8 @@ public class WhirledServer extends CrowdServer
         } catch (Exception e) {
             reportError("Failed to stop http server.", e);
         }
+
+        _policyServer.unbindAll();
     }
 
     // from interface TestProvider
@@ -299,4 +305,7 @@ public class WhirledServer extends CrowdServer
 
     /** Contains a mapping of all clients that are ready to play. */
     protected HashSet<Name> _ready = new HashSet<Name>();
+
+    /** A policy server. */
+    protected IoAcceptor _policyServer;
 }

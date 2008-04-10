@@ -9,6 +9,9 @@
     <include name="google-collect.jar"/>
     <include name="jetty-util.jar"/>
     <include name="jetty.jar"/>
+    <include name="mina-core.jar"/>
+    <include name="slf4j-api.jar"/>
+    <include name="slf4j-jdk14.jar"/>
     <include name="servlet-*.jar"/>
     <include name="velocity-1.5-dev.jar"/>
     <!-- these might be named lib-SNAPSHOT-0.0.jar or lib.jar -->
