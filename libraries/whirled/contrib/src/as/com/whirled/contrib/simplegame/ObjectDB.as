@@ -192,8 +192,6 @@ public class ObjectDB
     /** Updates all objects in the mode. */
     protected function beginUpdate (dt :Number) :void
     {
-        _dbTime += dt;
-
         // update all objects
 
         var ref :SimObjectRef = _listHead;
@@ -303,17 +301,6 @@ public class ObjectDB
     {
         return _objectCount;
     }
-
-    /**
-     * Returns the number of seconds that the ObjectDB has been updating for.
-     * Useful for generating timestamps, etc.
-     */
-    public function get dbTime () :Number
-    {
-        return _dbTime;
-    }
-
-    protected var _dbTime :Number = 0;
 
     protected var _listHead :SimObjectRef;
     protected var _objectCount :uint;
