@@ -5,12 +5,16 @@ package com.whirled.client {
 
 import flash.display.Stage;
 
+import flash.system.Security;
+
 import mx.resources.ResourceBundle;
 
 import com.threerings.util.Log;
 import com.threerings.util.Name;
 
 import com.threerings.presents.client.Client;
+import com.threerings.presents.client.ClientAdapter;
+import com.threerings.presents.client.ClientEvent;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.TimeBaseMarshaller;
 import com.threerings.presents.net.Credentials;
@@ -43,6 +47,10 @@ public class WhirledClient extends Client
         }
         super(new UsernamePasswordCreds(new Name(username), ""), stage);
         _ctx = createContext();
+
+        // prior to logging on to a server, set up our security policy for that server
+        addClientObserver(new ClientAdapter(clientWillLogon)); 
+
         setServer("localhost", DEFAULT_SERVER_PORTS);
         logon();
     }
@@ -81,6 +89,16 @@ public class WhirledClient extends Client
     protected function createContext () :WhirledContext
     {
         return new WhirledContext(this);
+    }
+
+    /**
+     * Called just before we logon to a server.
+     */
+    protected function clientWillLogon (event :ClientEvent) :void
+    {
+        var url :String = "xmlsocket://localhost:47623";
+        log.info("Loading security policy: " + url);
+        Security.loadPolicyFile(url);
     }
 
     protected var _ctx :WhirledContext;
