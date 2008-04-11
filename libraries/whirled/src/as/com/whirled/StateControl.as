@@ -39,6 +39,11 @@ public class StateControl extends AbstractSubControl
         return callHostCode("getProperty_v1", key);
     }
 
+    public function getProperties () :Object
+    {
+        return callHostCode("getProperties_v1");
+    }
+
     public function setProperty (key :String, value :Object, persistent :Boolean) :Boolean
     {
         return callHostCode("setProperty_v1", key, value, persistent);
