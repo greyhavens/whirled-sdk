@@ -33,6 +33,8 @@ import com.threerings.presents.dobj.SetListener;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 
+import com.threerings.flex.AmbidextrousList;
+
 import com.threerings.parlor.game.data.GameObject;
 
 import com.threerings.parlor.turn.data.TurnGameObject;
@@ -51,7 +53,7 @@ public class PlayerList extends VBox
         width = 280;
         height = 125;
         //percentHeight = 25; // doesn't work
-        _list = new List();
+        _list = new AmbidextrousList();
         _list.verticalScrollPolicy = ScrollPolicy.ON;
         _list.selectable = false; // don't let the user select, as we use selection to show turn
         _list.percentWidth = 100;
