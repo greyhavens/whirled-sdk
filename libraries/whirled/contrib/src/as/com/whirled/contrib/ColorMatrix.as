@@ -209,6 +209,21 @@ public class ColorMatrix
         concat(mat);
     }
 
+    /**
+     * Converts the target to grayscale.
+     */
+    public function makeGrayscale () :void
+    {
+        const oneThird :Number = 1 / 3;
+
+        var mat :Array = [ oneThird, oneThird, oneThird, 0, 0,
+                           oneThird, oneThird, oneThird, 0, 0,
+                           oneThird, oneThird, oneThird, 0, 0,
+                           0, 0, 0, 1, 0 ];
+
+        concat(mat);
+    }
+
     public function setAlpha( alpha:Number ):void
     {
         var mat:Array =        [ 1, 0, 0, 0, 0,
