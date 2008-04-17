@@ -7,6 +7,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 
 import flash.utils.ByteArray;
+import flash.utils.Dictionary;
 
 import nochump.util.zip.ZipEntry;
 import nochump.util.zip.ZipOutput;
@@ -316,15 +317,17 @@ public class EditableDataPack extends DataPack
         outZip.write(stringToBytes(Util.XMLtoXMLString(_metadata)));
         outZip.closeEntry();
 
+        var seenFiles :Dictionary = new Dictionary();
         var names :Array = getFileFields(true);
 
         for each (var name :String in names) {
             var fileName :String = getFileName(name);
-            if (fileName != null) {
+            if (fileName != null && !Boolean(seenFiles[fileName])) {
                 entry = new ZipEntry(fileName);
                 outZip.putNextEntry(entry);
                 outZip.write(getFileBytes(fileName));
                 outZip.closeEntry();
+                seenFiles[fileName] = true;
             }
         }
         outZip.finish();
