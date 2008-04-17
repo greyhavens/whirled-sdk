@@ -34,7 +34,7 @@ public class OfflineTickedMessageManager
                 _msTillNextTick -= dtMS;
                 dtMS = 0;
             } else {
-                _dtMS -= _msTillNextTick;
+                dtMS -= _msTillNextTick;
                 _msTillNextTick = _tickIntervalMS;
                 _ticks.push(new Array());
             }
