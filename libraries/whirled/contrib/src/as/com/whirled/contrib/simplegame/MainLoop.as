@@ -196,7 +196,9 @@ public final class MainLoop
 
         function doPopMode () :void {
             var topMode :AppMode = thisMainLoop.topMode;
-            Assert.isNotNull(topMode);
+            if (null == topMode) {
+                throw new Error("Can't pop from an empty mode stack");
+            }
 
             _modeStack.pop();
             _hostSprite.removeChild(topMode.modeSprite);
@@ -211,7 +213,9 @@ public final class MainLoop
         }
 
         function doPushMode (newMode :AppMode) :void {
-            Assert.isNotNull(newMode);
+            if (null == newMode) {
+                throw new Error("Can't push a null mode to the mode stack");
+            }
 
             _modeStack.push(newMode);
             _hostSprite.addChild(newMode.modeSprite);
