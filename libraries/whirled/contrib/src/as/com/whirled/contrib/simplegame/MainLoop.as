@@ -200,9 +200,6 @@ public final class MainLoop
                 throw new Error("Can't pop from an empty mode stack");
             }
 
-            _modeStack.pop();
-            _hostSprite.removeChild(topMode.modeSprite);
-
             // if the top mode is popped, make sure it's exited first
             if (topMode == initialTopMode) {
                 initialTopMode.exitInternal();
@@ -210,6 +207,9 @@ public final class MainLoop
             }
 
             topMode.destroyInternal();
+
+            _modeStack.pop();
+            _hostSprite.removeChild(topMode.modeSprite);
         }
 
         function doPushMode (newMode :AppMode) :void {
