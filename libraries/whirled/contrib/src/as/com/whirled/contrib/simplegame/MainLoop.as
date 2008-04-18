@@ -221,7 +221,13 @@ public final class MainLoop
             _hostSprite.addChild(newMode.modeSprite);
         }
 
-        for each (var transition :* in _pendingModeTransitionQueue) {
+        // create a new _pendingModeTransitionQueue right now
+        // so that we can properly handle mode transition requests
+        // that occur during the processing of the current queue
+        var transitionQueue :Array = _pendingModeTransitionQueue;
+        _pendingModeTransitionQueue = [];
+
+        for each (var transition :* in transitionQueue) {
             var type :uint = transition.transitionType as uint;
             var mode :AppMode = transition.mode as AppMode;
 
@@ -271,8 +277,6 @@ public final class MainLoop
                 topMode.enterInternal();
             }
         }
-
-        _pendingModeTransitionQueue = new Array();
     }
 
     protected function update (e :Event) :void
