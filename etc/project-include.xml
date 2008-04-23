@@ -64,7 +64,6 @@
 
   <!-- zip things up for remixables -->
   <target name="zip" if="app.data-dir">
-    <property name="app.suffix" value="zip"/>
     <zip destfile="${app.name}.zip" compress="false">
       <zipfileset dir="." includes="${app.name}.swf, _data.xml"/>
       <zipfileset dir="${app.data-dir}" includes="*" prefix=""/>
@@ -112,7 +111,10 @@
       your standalone Flash player.
     </fail>
 
-    <property name="app.suffix" value="swf"/> <!-- default to swf if not set in zip target -->
+    <!-- if this appears to be a remixable project, the suffix is zip. -->
+    <condition property="app.suffix" value="zip" else="swf">
+      <isset property="app.data-dir"/>
+    </condition>
     <property name="app.type" value="game"/> <!-- default to game if unset -->
     <antcall target="test-${app.type}"/>
   </target>
