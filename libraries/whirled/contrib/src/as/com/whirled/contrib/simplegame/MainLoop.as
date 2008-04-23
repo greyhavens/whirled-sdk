@@ -258,7 +258,7 @@ public final class MainLoop
                 Assert.isTrue(this.topMode == mode || _modeStack.length == 0);
 
                 if (_modeStack.length == 0 && null != mode) {
-                    doPushMode();
+                    doPushMode(mode);
                 }
                 break;
             }
