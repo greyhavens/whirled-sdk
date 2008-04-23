@@ -100,7 +100,7 @@ public class DataPack extends EventDispatcher
             return new DataPack(source);
         };
 
-        new MultiLoader(sources, generator, completeListener, false, "isComplete",
+        new MultiLoader(sources, completeListener, generator, false, "isComplete",
             [ ErrorEvent.ERROR ]);
     }
 
