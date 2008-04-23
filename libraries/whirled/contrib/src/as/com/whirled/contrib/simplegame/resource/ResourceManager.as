@@ -45,7 +45,7 @@ public class ResourceManager extends EventDispatcher
     public function cancelLoad () :void
     {
         if (!_loading) {
-            throw new Error("There's no load operation to cancel");
+            return;
         }
 
         for each (var rsrc :ResourceLoader in _pendingResources.values()) {

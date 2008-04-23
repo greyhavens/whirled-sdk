@@ -74,6 +74,7 @@ public final class MainLoop
         // add resource factories
         ResourceLoaderRegistry.instance.registerLoaderClass("image", ImageResourceLoader);
         ResourceLoaderRegistry.instance.registerLoaderClass("swf", SwfResourceLoader);
+        ResourceLoaderRegistry.instance.registerLoaderClass("xml", XmlResourceLoader);
 
         _hasSetup = true;
     }
