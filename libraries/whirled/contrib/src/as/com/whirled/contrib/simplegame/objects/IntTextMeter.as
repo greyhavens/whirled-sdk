@@ -15,6 +15,7 @@ public class IntTextMeter extends SceneObject
     {
         _display = new TextField();
         _display.autoSize = TextFieldAutoSize.LEFT
+        _display.selectable = false;
     }
 
     // from SceneObject
