@@ -1,13 +1,15 @@
 package com.whirled.contrib.simplegame.resource {
 
+import com.threerings.util.Util;
+
+import flash.events.ErrorEvent;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.IOErrorEvent;
 import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
-
-import mx.core.ByteArrayAsset;
+import flash.utils.ByteArray;
 
 public class XmlResourceLoader extends EventDispatcher
     implements ResourceLoader
@@ -43,21 +45,15 @@ public class XmlResourceLoader extends EventDispatcher
     {
         _urlLoader = new URLLoader();
         _urlLoader.addEventListener(Event.COMPLETE, onComplete);
-        _urlLoader.addEventListener(IOErrorEvent.IO_ERROR,
-            function (e :IOErrorEvent) :void {
-                onError(e.text);
-            });
-        _urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,
-            function (e :SecurityErrorEvent) :void {
-                onError(e.text);
-            });
+        _urlLoader.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
+        _urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handleLoadError);
 
         _urlLoader.load(new URLRequest(_loadParams["url"]));
     }
 
     protected function loadFromEmbeddedClass (theClass :Class) :void
     {
-        var ba :ByteArrayAsset = ByteArrayAsset(new theClass());
+        var ba :ByteArray = ByteArray(new theClass());
         this.instantiateXml(ba.readUTFBytes(ba.length));
     }
 
@@ -81,13 +77,18 @@ public class XmlResourceLoader extends EventDispatcher
     {
         // the XML may be malformed, so catch errors thrown when it's instantiated
         try {
-            _xml = new XML(data);
+            _xml = Util.newXML(data);
         } catch (e :Error) {
             this.onError(e.message);
             return;
         }
 
         this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.LOADED));
+    }
+
+    protected function handleLoadError (e :ErrorEvent) :void
+    {
+        this.onError(e.text);
     }
 
     protected function onError (errText :String) :void
