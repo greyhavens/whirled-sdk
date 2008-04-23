@@ -34,12 +34,23 @@
   </target>
 
   <!-- builds our SWF file -->
-  <target name="compile" depends="prepare-flex">
+  <target name="compile" depends="build,zip"/>
+
+  <!-- builds our SWF file in debug mode -->
+  <target name="debug">
+    <property name="flex.debug-arg" value="-compiler.debug"/>
+    <antcall target="compile"/>
+  </target>
+
+  <!-- handles the heavy lifting for compile/debug -->
+  <target name="build" depends="prepare-flex">
+    <property name="flex.debug-arg" value="-externs=DummyValueIgnore"/>
     <java jar="${flex.path}/lib/mxmlc.jar" fork="true" failonerror="true">
       <arg value="-load-config"/>
       <arg value="${etc.dir}/whirled-config.xml"/>
       <arg value="-library-path+=${build.root}/dist/lib"/>
       <arg value="-library-path+=${app.library-dir}"/>
+      <arg value="${flex.debug-arg}"/>
       <arg value="-compiler.source-path=${app.source-dir}"/>
       <arg value="-use-network=${flex.use-network}"/>
       <arg value="${app.source-extras.arg}"/>
@@ -51,23 +62,14 @@
     </java>
   </target>
 
-  <!-- builds our SWF file in debug mode -->
-  <target name="debug" depends="prepare-flex">
-    <java jar="${flex.path}/lib/mxmlc.jar" fork="true" failonerror="true">
-      <arg value="-load-config"/>
-      <arg value="${etc.dir}/whirled-config.xml"/>
-      <arg value="-library-path+=${build.root}/dist/lib"/>
-      <arg value="-library-path+=${app.library-dir}"/>
-      <arg value="-compiler.debug"/>
-      <arg value="-compiler.source-path=${app.source-dir}"/>
-      <arg value="-use-network=${flex.use-network}"/>
-      <arg value="${app.source-extras.arg}"/>
-      <arg value="${app.lib-extras.arg}"/>
-      <arg value="-file-specs"/>
-      <arg value="${app.source-dir}/${app.package-dir}/${app.name}.${app.source-suffix}"/>
-      <arg value="-output"/>
-      <arg value="${app.name}.swf"/>
-    </java>
+  <!-- zip things up for remixables -->
+  <target name="zip" if="app.data-dir">
+    <property name="app.suffix" value="zip"/>
+    <zip destfile="${app.name}.zip" compress="false">
+      <zipfileset dir="." includes="${app.name}.swf, _data.xml"/>
+      <zipfileset dir="${app.data-dir}" includes="*" prefix=""/>
+    </zip>
+    <delete file="${app.name}.swf"/>
   </target>
 
   <target name="asdoc" description="Builds documentation in a 'docs' subdirectory.">
@@ -86,6 +88,7 @@
   <target name="clean">
     <delete>
        <fileset file="${app.name}.swf"/>
+       <fileset file="${app.name}.zip"/> <!-- danger? -->
     </delete>
   </target>
 
@@ -109,6 +112,7 @@
       your standalone Flash player.
     </fail>
 
+    <property name="app.suffix" value="swf"/> <!-- default to swf if not set in zip target -->
     <property name="app.type" value="game"/> <!-- default to game if unset -->
     <antcall target="test-${app.type}"/>
   </target>
@@ -116,7 +120,7 @@
   <target name="test-avatar">
     <echoxml file="parameters.xml">
     <parameters>
-      <param name="avatar" value="file://${app.name}.swf"/>
+      <param name="avatar" value="file://${app.name}.${app.suffix}"/>
     </parameters>
     </echoxml>
     <exec executable="${player.path}">
