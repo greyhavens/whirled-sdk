@@ -15,6 +15,12 @@ public class ResourceLoadEvent extends Event
 
         this.data = data;
     }
+
+    // from Event
+    override public function clone () :Event
+    {
+        return new ResourceLoadEvent(type, data);
+    }
 }
 
 }
