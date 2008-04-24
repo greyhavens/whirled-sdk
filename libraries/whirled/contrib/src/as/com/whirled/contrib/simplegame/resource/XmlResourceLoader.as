@@ -14,10 +14,11 @@ import flash.utils.ByteArray;
 public class XmlResourceLoader extends EventDispatcher
     implements ResourceLoader
 {
-    public function XmlResourceLoader (resourceName :String, loadParams :Object)
+    public function XmlResourceLoader (resourceName :String, loadParams :Object, objectGenerator :Function = null)
     {
         _resourceName = resourceName;
         _loadParams = loadParams;
+        _objectGenerator = objectGenerator;
     }
 
     public function get resourceName () :String
@@ -28,6 +29,11 @@ public class XmlResourceLoader extends EventDispatcher
     public function get xml () :XML
     {
         return _xml;
+    }
+
+    public function get generatedObject () :*
+    {
+        return _generatedObject;
     }
 
     public function load () :void
@@ -83,6 +89,16 @@ public class XmlResourceLoader extends EventDispatcher
             return;
         }
 
+        // if we have an object generator function, run the XML through it
+        if (null != _objectGenerator) {
+            try {
+                _generatedObject = _objectGenerator(_xml);
+            } catch (e :Error) {
+                this.onError(e.message);
+                return;
+            }
+        }
+
         this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.LOADED));
     }
 
@@ -100,6 +116,8 @@ public class XmlResourceLoader extends EventDispatcher
     protected var _loadParams :Object;
     protected var _urlLoader :URLLoader;
     protected var _xml :XML;
+    protected var _generatedObject :*;
+    protected var _objectGenerator :Function;
 }
 
 }
