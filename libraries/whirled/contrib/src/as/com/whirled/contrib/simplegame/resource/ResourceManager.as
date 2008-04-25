@@ -35,11 +35,11 @@ public class ResourceManager extends EventDispatcher
             throw new Error("A load operation is already in progress");
         }
 
+        _loading = true;
+
         for each (var rsrc :ResourceLoader in _pendingResources.values()) {
             rsrc.load();
         }
-
-        _loading = true;
     }
 
     public function cancelLoad () :void
