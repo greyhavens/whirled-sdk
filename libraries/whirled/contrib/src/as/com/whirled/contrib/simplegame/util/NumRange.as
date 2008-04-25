@@ -17,6 +17,11 @@ public class NumRange
     {
         return Rand.nextNumberRange(this.min, this.max, (randStreamId >= 0 ? randStreamId : defaultRandStreamId));
     }
+
+    public function clone () :NumRange
+    {
+        return new NumRange(min, max, defaultRandStreamId);
+    }
 }
 
 }
