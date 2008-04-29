@@ -126,7 +126,7 @@
     </parameters>
     </echoxml>
     <exec executable="${player.path}">
-      <arg value="${build.root}/lib/avatarviewer.swf"/>
+      <arg value="${build.root}/lib/viewer.swf"/>
     </exec>
   </target>
 
