@@ -43,19 +43,22 @@ public class SimObject extends EventDispatcher
     }
 
     /**
-     * Returns the set of groups that this object belongs to.
-     * The groups are returned as an Array of Strings.
-     * Objects cannot change their group membership once added to a mode.
+     * Iterates over the groups that this object is a member of.
+     * If a subclass overrides this function, it should do something
+     * along the lines of:
+     *
+     * override public function getObjectGroup (groupNum :int) :String
+     * {
+     *     switch (groupNum) {
+     *     case 0: return "Group0";
+     *     case 1: return "Group1";
+     *     default: return super.getObjectGroup(groupNum - 2); // 2 is the number of groups this class defines
+     *     }
+     * }
      */
-    public function get objectGroups () :Array
+    public function getObjectGroup (groupNum :int) :String
     {
         return null;
-    }
-
-    /** Returns true if the object is in the specified group. */
-    public function isInGroup (groupName :String) :Boolean
-    {
-        return this.objectGroups.contains(groupName);
     }
 
     /** Removes the SimObject from its parent database. */

@@ -48,19 +48,20 @@ public class ObjectDB
             _namedObjects.put(obj.objectName, obj);
         }
 
-        // is the object in any groups?
-        var groupNames :Array = obj.objectGroups;
-        if (null != groupNames) {
-            for each (var groupName :* in groupNames) {
+        // iterate over the object's groups
+        var groupNum :int = 0;
+        do {
+            var groupName :String = obj.getObjectGroup(groupNum++);
+            if (null != groupName) {
                 var groupArray :Array = (_groupedObjects.get(groupName) as Array);
                 if (null == groupArray) {
-                    groupArray = new Array();
+                    groupArray = [];
                     _groupedObjects.put(groupName, groupArray);
                 }
 
                 groupArray.push(ref);
             }
-        }
+        } while (null != groupName);
 
         // should the object be attached to a display parent?
         // (this is purely a convenience - the client is free to
@@ -241,19 +242,25 @@ public class ObjectDB
             next._prev = prev;
         }
 
-        // is the object in any groups?
+        // iterate over the object's groups
         // (we remove the object from its groups here, rather than in
         // destroyObject(), because client code might be iterating an
         // object group Array when destroyObject is called)
-        var groupNames :Array = obj.objectGroups;
-        if (null != groupNames) {
-            for each (var groupName :* in groupNames) {
+        var groupNum :int = 0;
+        do {
+            var groupName :String = obj.getObjectGroup(groupNum++);
+            if (null != groupName) {
                 var groupArray :Array = (_groupedObjects.get(groupName) as Array);
-                Assert.isTrue(null != groupArray);
+                if (null == groupArray) {
+                    throw new Error("destroyed SimObject is returning different object groups than it did on creation");
+                }
+
                 var wasInArray :Boolean = ArrayUtil.removeFirst(groupArray, ref);
-                Assert.isTrue(wasInArray);
+                if (!wasInArray) {
+                    throw new Error("destroyed SimObject is returning different object groups than it did on creation");
+                }
             }
-        }
+        } while (null != groupName);
 
         obj._parentDB = null;
     }
