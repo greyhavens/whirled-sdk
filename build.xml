@@ -18,7 +18,7 @@
   <import file="etc/flex-include.xml"/>
   <property name="flexsdk.dir" value="${flex.path}"/>
 
-  <!-- declares the libraries needed by the Whirled runtime -->
+  <!-- declares the libraries needed by the Whirled runtime (or for compiling whirled swfs) -->
   <filelist dir="." id="dist.libs">
     <file name="lib/ant.jar"/>
     <file name="lib/ant-launcher.jar"/>
@@ -42,6 +42,7 @@
     <file name="lib/slf4j-jdk14.jar"/>
     <file name="lib/velocity-1.5-dev.jar"/>
     <file name="lib/flexlib.swc"/>
+    <file name="lib/tweener.swc"/>
   </filelist>
 
   <!-- declare our classpath -->
@@ -104,9 +105,8 @@
     </exec>
   </target>
 
-  <!-- builds the ActionScript documention -->
-  <target name="asdoc">
-    <!-- generate docus for our whirled stuff -->
+  <!-- generate docus for our whirled stuff -->
+  <target name="asdoc-whirled" depends="prepare">
     <mkdir dir="${sdk.build}/docs"/>
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/**" excludes="**/MessageBundle.as **/MessageManager.as **/HashObjectMap.as"/>
@@ -123,8 +123,10 @@
       <arg line="-output ${sdk.build}/docs"/>
     </exec>
     <delete dir="${deploy.dir}/tmp/pubas"/>
+  </target>
 
-    <!-- generate docs for the contrib stuff -->
+  <!-- generate docs for the contrib stuff -->
+  <target name="asdoc-contrib" depends="prepare">
     <mkdir dir="${sdk.build}/contrib/docs"/>
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="${projects.dir}/whirled/contrib/src/as" includes="com/whirled/**/*.as"/>
@@ -141,6 +143,9 @@
 
     <delete dir="${deploy.dir}/tmp/astemps"/>
   </target>
+
+  <!-- builds all ActionScript documention -->
+  <target name="asdoc" depends="asdoc-contrib,asdoc-whirled"/>
 
   <!-- builds the SDK -->
   <target name="sdk" depends="distprojects,asclient,asdoc">
