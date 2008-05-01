@@ -20,9 +20,9 @@
 
 package com.whirled.contrib.card.graphics {
 
+import flash.geom.Point;
 import flash.display.Sprite;
 import flash.display.Bitmap;
-import com.threerings.flash.Vector2;
 import com.threerings.util.MultiLoader;
 import com.whirled.contrib.card.trick.Bids;
 import com.whirled.contrib.card.trick.BidEvent;
@@ -50,7 +50,7 @@ public class TeamSprite extends Sprite
         scores :Scores,
         team :int,
         height :int,
-        lastTrickPos :Vector2,
+        lastTrickPos :Point,
         background :Class,
         nameTextColor :uint,
         nameTextOutlineColor :uint,
@@ -116,15 +116,14 @@ public class TeamSprite extends Sprite
      *  @param winnerPos the global coordinates of the position of the winning player */
     public function takeTrick (
         cards :Array, 
-        mainTrickPos :Vector2,
-        winnerPos :Vector2) :void
+        mainTrickPos :Point,
+        winnerPos :Point) :void
     {
         // get the starting position in local coordinates
-        var localStartPos :Vector2 = Vector2.fromPoint(
-            globalToLocal(mainTrickPos.toPoint()));
+        var localStartPos :Point = globalToLocal(mainTrickPos);
 
         // get the winner position in local coordinates
-        winnerPos = Vector2.fromPoint(globalToLocal(winnerPos.toPoint()));
+        winnerPos = globalToLocal(winnerPos);
 
         // reset the last trick before tweening
         _lastTrick.setCards(cards);
@@ -245,7 +244,7 @@ public class TeamSprite extends Sprite
     protected var _lastTrick :LastTrickSprite;
 
     /** Static position of our last trick display */
-    protected var _lastTrickPos :Vector2;
+    protected var _lastTrickPos :Point;
 
     /** Tricks score, e.g. "1/5" */
     protected var _tricks :ScoreBar;

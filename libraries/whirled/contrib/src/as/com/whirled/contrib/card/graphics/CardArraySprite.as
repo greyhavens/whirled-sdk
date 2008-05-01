@@ -20,12 +20,12 @@
 
 package com.whirled.contrib.card.graphics {
 
+import flash.geom.Point;
 import flash.display.Sprite;
 import com.whirled.contrib.card.Card;
 import com.whirled.contrib.card.CardArray;
 import com.whirled.contrib.card.CardArrayEvent;
 import com.whirled.contrib.card.Debug;
-import com.threerings.flash.Vector2;
 
 /**
  * Superclass to display of an array of cards. Delegates layout and some animation to subclasses.
@@ -85,7 +85,7 @@ public class CardArraySprite extends Sprite
     /** Get the x, y position of a card in the array. The base implmentation just lays out the 
      *  cards in a row using some hard-wired constants for width and height. Subclasses should 
      *  override and use more specific values. */
-    protected function getStaticCardPosition (i :int, pos :Vector2) :void
+    protected function getStaticCardPosition (i :int, pos :Point) :void
     {
         var halfCardWidth :Number = _factory.getCardWidth() / 2;
         var wid :Number = (_cards.length + 1) * halfCardWidth;
@@ -97,7 +97,7 @@ public class CardArraySprite extends Sprite
     /** Positions all cards (that are not currently animating). */
     protected function positionCards () :void
     {
-        var pos :Vector2 = new Vector2();
+        var pos :Point = new Point();
         _cards.forEach(positionSprite);
 
         function positionSprite(c :CardSprite, index :int, arr :Array) :void

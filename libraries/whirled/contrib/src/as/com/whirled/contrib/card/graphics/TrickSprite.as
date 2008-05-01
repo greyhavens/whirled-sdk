@@ -20,10 +20,10 @@
 
 package com.whirled.contrib.card.graphics {
 
+import flash.geom.Point;
 import com.whirled.contrib.card.Table;
 import com.whirled.contrib.card.trick.Trick;
 import com.whirled.contrib.card.trick.TrickEvent;
-import com.threerings.flash.Vector2;
 
 /** Graphics for the cards in the trick. */
 public class TrickSprite extends CardArraySprite
@@ -77,11 +77,11 @@ public class TrickSprite extends CardArraySprite
 
     /** Use the static proportional positions and the current trick leader to place the cards in 
      * a cross, mimicking the player positions at the table. */
-    override protected function getStaticCardPosition (index :int, pos :Vector2) :void
+    override protected function getStaticCardPosition (index :int, pos :Point) :void
     {
         var leader :int = _seating.getRelativeFromId(_trick.leader);
         var posIdx :int = _seating.getSeatAlong(leader, index);
-        var staticPos :Vector2 = CARD_POSITIONS[posIdx] as Vector2;
+        var staticPos :Point = CARD_POSITIONS[posIdx] as Point;
         pos.x = staticPos.x * _factory.getCardWidth();
         pos.y = staticPos.y * _factory.getCardHeight();
     }
@@ -92,10 +92,10 @@ public class TrickSprite extends CardArraySprite
 
     // layout in a cross
     protected static const CARD_POSITIONS :Array = [
-        new Vector2(0, 0.5),
-        new Vector2(-0.5, 0),
-        new Vector2(0, -0.5),
-        new Vector2(0.5, 0)];
+        new Point(0, 0.5),
+        new Point(-0.5, 0),
+        new Point(0, -0.5),
+        new Point(0.5, 0)];
 }
 
 }

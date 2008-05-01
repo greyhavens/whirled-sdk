@@ -23,7 +23,6 @@ package com.whirled.contrib.card.graphics {
 import flash.events.MouseEvent;
 import flash.geom.Point;
 import flash.display.DisplayObject;
-import com.threerings.flash.Vector2;
 import com.whirled.contrib.card.CardArray;
 import com.whirled.contrib.card.CardArrayEvent;
 import com.whirled.contrib.card.CardException;
@@ -161,7 +160,7 @@ public class HandSprite extends CardArraySprite
     {
         var index :int = _cards.indexOf(card);
         if (index >= 0) {
-            var pos :Vector2 = new Vector2();
+            var pos :Point = new Point();
             getStaticCardPosition(index, pos);
             
             var tween :Object = {
@@ -228,7 +227,7 @@ public class HandSprite extends CardArraySprite
         });
 
         // Squeeze the leftover cards together
-        var pos :Vector2 = new Vector2();
+        var pos :Point = new Point();
         _cards.forEach(function (c :CardSprite, i :int, a :Array) :void {
             // Since _cards has already been updated, just animate to the static position
             getStaticCardPosition(i, pos);
@@ -249,7 +248,7 @@ public class HandSprite extends CardArraySprite
         card.state = CardSprite.DISABLED;
         _added.push(card);
 
-        var pos :Vector2 = new Vector2();
+        var pos :Point = new Point();
         _cards.forEach(function (c :CardSprite, i :int, a :Array) :void {
             getStaticCardPosition(i, pos);
             var tween :Object = {

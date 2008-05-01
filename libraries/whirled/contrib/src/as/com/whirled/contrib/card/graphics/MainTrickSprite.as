@@ -20,7 +20,6 @@
 
 package com.whirled.contrib.card.graphics {
 
-import com.threerings.flash.Vector2;
 import com.whirled.contrib.card.trick.Trick;
 import com.whirled.contrib.card.Table;
 import flash.geom.Point;
@@ -68,7 +67,7 @@ public class MainTrickSprite extends TrickSprite
         var seat :int = _seating.getSeatAlong(
             _seating.getRelativeFromId(_trick.leader), idx);
 
-        var start :Vector2;
+        var start :Point;
 
         // check if card is from local player
         if (seat == 0 && _localHand != null) {
@@ -79,19 +78,18 @@ public class MainTrickSprite extends TrickSprite
                 (removals[0] as CardSprite) : null;
 
             if (handCard != null) {
-                start = new Vector2(handCard.x, handCard.y);
+                start = new Point(handCard.x, handCard.y);
             }
             else {
-                start = new Vector2(0, -_factory.getCardHeight());
+                start = new Point(0, -_factory.getCardHeight());
             }
                 
             // convert to local coordinates
-            start = Vector2.fromPoint(globalToLocal(
-                _localHand.localToGlobal(start.toPoint())));
+            start = globalToLocal(_localHand.localToGlobal(start));
         }
         else {
-            start = Vector2.fromPoint(globalToLocal(
-                _playerSprites[seat].localToGlobal(new Point(0, 0))));
+            start = globalToLocal(
+                _playerSprites[seat].localToGlobal(new Point(0, 0)));
         }
 
         // set the starting position
@@ -100,7 +98,7 @@ public class MainTrickSprite extends TrickSprite
         card.y = start.y;
 
         // get the finish position
-        var finish :Vector2 = new Vector2();
+        var finish :Point = new Point();
         getStaticCardPosition(idx, finish);
 
         // tween it
