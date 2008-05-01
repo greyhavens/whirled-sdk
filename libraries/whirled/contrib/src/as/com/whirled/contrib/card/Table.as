@@ -20,9 +20,6 @@
 
 package com.whirled.contrib.card {
 
-import spades.Debug;
-
-
 /** Class to perform various transformations between player id, absolute seats and relative seats. 
  *  Most functions are of the form getXFromY where X and Y are one of:
  *  
