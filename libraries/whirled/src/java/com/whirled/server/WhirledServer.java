@@ -34,7 +34,6 @@ import com.threerings.presents.server.PresentsClient;
 
 import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.PlaceConfig;
-import com.threerings.crowd.server.CrowdClientResolver;
 import com.threerings.crowd.server.CrowdServer;
 import com.threerings.crowd.server.PlaceManagerDelegate;
 
@@ -100,7 +99,7 @@ public class WhirledServer extends CrowdServer
                 return new WhirledClient();
             }
             public ClientResolver createClientResolver (Name username) {
-                return new CrowdClientResolver();
+                return new WhirledClientResolver();
             }
         });
 

@@ -45,6 +45,7 @@ import com.threerings.util.MessageBundle;
 import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameMarshaller;
 import com.whirled.game.data.WhirledGameObject;
+import com.whirled.game.data.WhirledGameOccupantInfo;
 import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.data.UserCookie;
 
@@ -67,6 +68,14 @@ public abstract class WhirledGameManager extends GameManager
     public void setWinners (int[] winnerOids)
     {
         _winnerOids = winnerOids;
+    }
+
+    @Override
+    public void occupantInRoom (BodyObject caller)
+    {
+        setAsInitialized(caller);
+
+        super.occupantInRoom(caller);
     }
 
     @Override
@@ -533,6 +542,18 @@ public abstract class WhirledGameManager extends GameManager
         }
         // return the body
         return (BodyObject) CrowdServer.omgr.getObject(oid);
+    }
+
+    /**
+     * Flag this user as now being initailized. Done once the usercode has connected.
+     */
+    protected void setAsInitialized (BodyObject body)
+    {
+        WhirledGameOccupantInfo info = (WhirledGameOccupantInfo) getOccupantInfo(body.getOid());
+        if (!info.initialized) {
+            info.initialized = true;
+            updateOccupantInfo(info);
+        }
     }
 
     @Override

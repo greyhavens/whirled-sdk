@@ -72,6 +72,7 @@ import com.whirled.game.data.TrophyData;
 import com.whirled.game.data.UserCookie;
 import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.WhirledGameObject;
+import com.whirled.game.data.WhirledGameOccupantInfo;
 
 /**
  * Manages the backend of the game.
@@ -215,7 +216,10 @@ public class GameBackend
 
         case PlaceObject.OCCUPANT_INFO:
             var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo)
-            callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username), true);
+            if (isInited(occInfo)) {
+                callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username),
+                    true);
+            }
             break;
         }
     }
@@ -228,6 +232,16 @@ public class GameBackend
         case WhirledGameObject.USER_COOKIES:
             receivedUserCookie(event.getEntry() as UserCookie);
             break;
+
+        case PlaceObject.OCCUPANT_INFO:
+            var occInfo :WhirledGameOccupantInfo = (event.getEntry() as WhirledGameOccupantInfo);
+            var oldInfo :WhirledGameOccupantInfo = (event.getOldEntry() as WhirledGameOccupantInfo);
+            // only report something if they transitioned from uninitialized to initialized
+            if (occInfo.initialized && !oldInfo.initialized) {
+                callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username),
+                    true);
+            }
+            break;
         }
     }
 
@@ -238,7 +252,10 @@ public class GameBackend
         switch (name) {
         case PlaceObject.OCCUPANT_INFO:
             var occInfo :OccupantInfo = (event.getOldEntry() as OccupantInfo)
-            callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username), false);
+            if (isInited(occInfo)) {
+                callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username),
+                    false);
+            }
             break;
         }
     }
@@ -253,7 +270,7 @@ public class GameBackend
             var occInfo :OccupantInfo;
             if (oldPlayer != null) {
                 occInfo = _gameObj.getOccupantInfo(oldPlayer);
-                if (occInfo != null) {
+                if (isInited(occInfo)) {
                     // old player became a watcher
                     // send player-left, then occupant-added
                     callUserCode("occupantChanged_v1", occInfo.bodyOid, true, false);
@@ -262,7 +279,7 @@ public class GameBackend
             }
             if (newPlayer != null) {
                 occInfo = _gameObj.getOccupantInfo(newPlayer);
-                if (occInfo != null) {
+                if (isInited(occInfo)) {
                     // watcher became a player
                     // send occupant-left, then player-added
                     callUserCode("occupantChanged_v1", occInfo.bodyOid, false, false);
@@ -325,9 +342,10 @@ public class GameBackend
     public function displayMessage (msg :ChatMessage, alreadyDisplayed :Boolean) :Boolean
     {
         if (msg is UserMessage && msg.localtype == ChatCodes.PLACE_CHAT_TYPE) {
-            var info :OccupantInfo = _gameObj.getOccupantInfo((msg as UserMessage).speaker);
-            if (info != null) {
-                callUserCode("userChat_v1", info.bodyOid, msg.message);
+            var occInfo :OccupantInfo = _gameObj.getOccupantInfo((msg as UserMessage).speaker);
+            // the game doesn't hear about the chat until the speaker is initialized
+            if (isInited(occInfo)) {
+                callUserCode("userChat_v1", occInfo.bodyOid, msg.message);
             }
         }
         return true;
@@ -364,6 +382,17 @@ public class GameBackend
             Log.getLog(this).warning(
                 "Service failure [service=" + service + ", cause=" + cause + "].");
         });
+    }
+
+    /**
+     * Helper for various occupantInfo-related bits.
+     * Returns true if the occupant info is not null and is reportable to the usercode.
+     */
+    protected function isInited (occInfo :OccupantInfo) :Boolean
+    {
+        return (occInfo != null) &&
+            ((occInfo as WhirledGameOccupantInfo).initialized ||
+             (occInfo.bodyOid == _ctx.getClient().getClientOid()));
     }
 
     /**
@@ -908,8 +937,10 @@ public class GameBackend
     {
         validateConnected();
         var occs :Array = [];
-        for (var ii :int = _gameObj.occupants.size() - 1; ii >= 0; ii--) {
-            occs.push(_gameObj.occupants.get(ii));
+        for each (var occInfo :OccupantInfo in _gameObj.occupantInfo.toArray()) {
+            if (isInited(occInfo)) {
+                occs.push(occInfo.bodyOid);
+            }
         }
         return occs;
     }
@@ -918,7 +949,7 @@ public class GameBackend
     {
         validateConnected();
         var occInfo :OccupantInfo = (_gameObj.occupantInfo.get(playerId) as OccupantInfo);
-        return (occInfo == null) ? null : occInfo.username.toString();
+        return isInited(occInfo) ? occInfo.username.toString() : null;
     }
 
     protected function getMyId_v1 () :int
@@ -937,7 +968,7 @@ public class GameBackend
     {
         validateConnected();
         var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.turnHolder);
-        return (occInfo == null) ? 0 : occInfo.bodyOid;
+        return isInited(occInfo) ? occInfo.bodyOid : 0;
     }
 
     protected function getRound_v1 () :int
@@ -990,7 +1021,7 @@ public class GameBackend
         // party games have a zero length players array
         for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
             var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
-            if (occInfo != null) {
+            if (isInited(occInfo)) {
                 loserIds.push(occInfo.bodyOid);
             }
         }
@@ -1032,7 +1063,7 @@ public class GameBackend
     {
         validateConnected();
         var occInfo :OccupantInfo = (_gameObj.occupantInfo.get(playerId) as OccupantInfo);
-        if (occInfo == null) {
+        if (!isInited(occInfo)) {
             return -1;
         }
         return _gameObj.getPlayerIndex(occInfo.username);
@@ -1055,7 +1086,7 @@ public class GameBackend
         var playerIds :Array = [];
         for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
             var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
-            playerIds.push((occInfo == null) ? 0 : occInfo.bodyOid);
+            playerIds.push(isInited(occInfo) ? occInfo.bodyOid : 0);
         }
         return playerIds;
     }

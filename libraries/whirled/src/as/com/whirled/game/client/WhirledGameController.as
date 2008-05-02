@@ -44,21 +44,21 @@ public class WhirledGameController extends GameController
      */
     public function userCodeIsConnected (autoReady :Boolean) :void
     {
-        // if we're not a player, we don't need to report anything to the server
-        var bobj :BodyObject = (_ctx.getClient().getClientObject() as BodyObject);
-        if (_gconfig.getMatchType() != GameConfig.PARTY &&
-            _gobj.getPlayerIndex(bobj.getVisibleName()) == -1) {
-            return;
+        // Every occupant should call occupntInRoom, but if we end up calling playerReady()
+        // then that suffices.
+        if (autoReady) {
+            var bobj :BodyObject = (_ctx.getClient().getClientObject() as BodyObject);
+            var isPlayer :Boolean = (_gconfig.getMatchType() == GameConfig.PARTY) || 
+                (_gobj.getPlayerIndex(bobj.getVisibleName()) != -1);
+            if (isPlayer) {
+                playerIsReady();
+                return;
+            }
+            // else, we're not a player, so fall through...
         }
 
-        if (autoReady) {
-            // let the game manager know that we're here and we want to start the game now
-            playerIsReady();
-        } else {
-            // let the game manager know that we're here even though we don't want the game to
-            // start yet
-            _gobj.manager.invoke("playerInRoom");
-        }
+        // either we're just an observer, or autoReady is false
+        _gobj.manager.invoke("occupantInRoom");
     }
 
     /**
