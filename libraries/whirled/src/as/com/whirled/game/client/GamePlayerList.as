@@ -340,7 +340,6 @@ class PlayerRecord
             oid = occInfo.bodyOid;
 
         } else {
-            name = null;
             oid = 0;
         }
     }
