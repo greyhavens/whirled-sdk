@@ -374,7 +374,7 @@ class PlayerRecord
     // from Hashable
     public function hashCode () :int
     {
-        return name.hashCode();
+        return name == null ? 0 : name.hashCode();
     }
 
     // from Equalable via Hashable
