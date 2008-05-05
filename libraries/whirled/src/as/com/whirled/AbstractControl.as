@@ -40,8 +40,11 @@ public class AbstractControl extends EventDispatcher
             return;
         }
 
+        if (disp.root == null) {
+            throw new Error("Display object used to instantiate a control must be on the stage");
+        }
+
         // set up the unload event to propagate
-        // (Also causes a NPE as quickly as possible if disp is null or not on the stage.)
         disp.root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
 
         // do the connect!
