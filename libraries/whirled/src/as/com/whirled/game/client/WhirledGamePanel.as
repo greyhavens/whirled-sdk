@@ -96,7 +96,7 @@ public class WhirledGamePanel extends Canvas
     /**
      * Get a handle on the player list.
      */
-    public function getPlayerList () :PlayerList
+    public function getPlayerList () :GamePlayerList
     {
         return _playerList;
     }
@@ -195,9 +195,9 @@ public class WhirledGamePanel extends Canvas
     /**
      * Creates the player list we'll use to display player names and scores.
      */
-    protected function createPlayerList () :PlayerList
+    protected function createPlayerList () :GamePlayerList
     {
-        return new PlayerList();
+        return new GamePlayerList();
     }
 
     protected function configureGameView (view :GameContainer) :void
@@ -212,7 +212,7 @@ public class WhirledGamePanel extends Canvas
     protected var _gameObj :WhirledGameObject;
 
     /** The player list. */
-    protected var _playerList :PlayerList;
+    protected var _playerList :GamePlayerList;
 
     /** Some buttons. */
     protected var _rematch :CommandButton;

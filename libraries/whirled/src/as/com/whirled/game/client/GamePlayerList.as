@@ -11,14 +11,15 @@ import mx.core.ScrollPolicy;
 import mx.collections.ArrayCollection;
 import mx.collections.Sort;
 
-import mx.containers.VBox;
-
 import mx.controls.Label;
 import mx.controls.List;
 
+import com.threerings.flex.NameLabelCreator;
+import com.threerings.flex.PlayerList;
+
 import com.threerings.util.ArrayUtil;
-import com.threerings.util.CommandEvent;
 import com.threerings.util.HashMap;
+import com.threerings.util.Log;
 import com.threerings.util.Name;
 
 import com.threerings.presents.dobj.AttributeChangeListener;
@@ -33,8 +34,6 @@ import com.threerings.presents.dobj.SetListener;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 
-import com.threerings.flex.AmbidextrousList;
-
 import com.threerings.parlor.game.data.GameObject;
 
 import com.threerings.parlor.turn.data.TurnGameObject;
@@ -42,40 +41,12 @@ import com.threerings.parlor.turn.data.TurnGameObject;
 /**
  * A standard flex players list for use in games.
  */
-public class PlayerList extends VBox
+public class GamePlayerList extends PlayerList
     implements AttributeChangeListener, ElementUpdateListener, SetListener
 {
-    public function PlayerList ()
+    public function GamePlayerList (labelCreator :NameLabelCreator = null)
     {
-        super();
-
-        // set up the UI
-        width = 280;
-        height = 125;
-        //percentHeight = 25; // doesn't work
-        _list = new AmbidextrousList();
-        _list.verticalScrollPolicy = ScrollPolicy.ON;
-        _list.selectable = false; // don't let the user select, as we use selection to show turn
-        _list.percentWidth = 100;
-        _list.percentHeight = 100;
-        _list.itemRenderer = new ClassFactory(PlayerRenderer);
-        _list.dataProvider = _players;
-
-        addChild(_list);
-
-        // set up the sort for the collection
-        var sort :Sort = new Sort();
-        sort.compareFunction = sortFunction;
-        _players.sort = sort;
-
-        // listen for clicks on player names
-        addEventListener(CommandEvent.COMMAND, function (event: CommandEvent) :void {
-            var oid :int = int(event.arg);
-            if (_gameObj != null) {
-                handlePlayerClicked(_gameObj.occupantInfo.get(oid) as OccupantInfo);
-            }
-            event.markAsHandled();
-        });
+        super(labelCreator);
     }
 
     /**
@@ -95,7 +66,7 @@ public class PlayerList extends VBox
 
             _byName.put(occInfo.username, record);
             _byOid.put(occInfo.bodyOid, record);
-            _players.addItem(record);
+            addItem(record);
         }
 
         // add all the players specified in the players array, if any
@@ -104,14 +75,14 @@ public class PlayerList extends VBox
             var newRecord :Boolean = (record == null);
             if (newRecord) {
                 record = new PlayerRecord();
-                record.name = name.toString();
+                record.name = name;
             }
 
             record.isPlayer = true;
 
             if (newRecord) {
                 _byName.put(name, record);
-                _players.addItem(record);
+                addItem(record);
             }
         }
 
@@ -120,7 +91,7 @@ public class PlayerList extends VBox
         // set the current turn-holder, if applicable
         if (_gameObj is TurnGameObject) {
             record = _byName.get((_gameObj as TurnGameObject).getTurnHolder());
-            _list.selectedItem = record;
+            _list.selectedItem = _values.get(record);
         }
     }
 
@@ -232,7 +203,7 @@ public class PlayerList extends VBox
         if ((_gameObj is TurnGameObject) &&
                 (event.getName() == (_gameObj as TurnGameObject).getTurnHolderFieldName())) {
             var record :PlayerRecord = _byName.get(event.getValue()) as PlayerRecord;
-            _list.selectedItem = record;
+            _list.selectedItem = _values.get(record);
         }
     }
 
@@ -258,10 +229,10 @@ public class PlayerList extends VBox
             _byOid.put(occInfo.bodyOid, record);
             if (newRecord) {
                 _byName.put(occInfo.username, record);
-                _players.addItem(record);
+                addItem(record);
 
             } else {
-                _players.itemUpdated(record);
+                itemUpdated(record);
             }
         }
     }
@@ -272,9 +243,9 @@ public class PlayerList extends VBox
         if (event.getName() == PlaceObject.OCCUPANT_INFO) {
             // I guess we might be updating the name or the headshot
             var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo);
-            var record :Object = _byOid.get(occInfo.bodyOid);
+            var record :PlayerRecord = _byOid.get(occInfo.bodyOid) as PlayerRecord;
             record.setup(occInfo);
-            _players.itemUpdated(record);
+            itemUpdated(record);
         }
     }
 
@@ -288,30 +259,23 @@ public class PlayerList extends VBox
             // if this is a player, strip the oid but leave it in the lists
             if (ArrayUtil.contains(_gameObj.players, occInfo.username)) {
                 record.setup(null);
-                _players.itemUpdated(record);
+                itemUpdated(record);
 
             } else {
                 // otherwise, remove it completely
                 _byName.remove(occInfo.username);
-                _players.removeItemAt(_players.getItemIndex(record));
+                removeItem(record);
             }
         }
     }
 
-    /**
-     * Called when the user clicks on one of the names (or headshots) in our list.
-     */
-    protected function handlePlayerClicked (occInfo :OccupantInfo) :void
+    // we have our own implementation of PlayerRenderer
+    override protected function getRenderingClass () :Class
     {
+        return PlayerRenderer;
     }
 
-    /**
-     * The sort function that will be used to display occupant records.
-     */
-    protected function sortFunction (o1 :Object, o2 :Object, fields :Array = null) :int
-    {
-        return (o1 as PlayerRecord).compareTo(o2);
-    }
+    private static const log :Log = Log.getLog(GamePlayerList);
 
     /** The game object. */
     protected var _gameObj :GameObject;
@@ -319,50 +283,43 @@ public class PlayerList extends VBox
     /** An optional label for the list of players. */
     protected var _label :Label;
 
-    /** The List widget that displays the players. */
-    protected var _list :List;
-
     /** A mapping of oid -> record */
     protected var _byOid :HashMap = new HashMap();
 
     /** A mapping of name -> record. */
     protected var _byName :HashMap = new HashMap();
-
-    /** A collection of the records, used as backing for the List. Note that _byOid, _byName,
-     * and this collection all refer to the same record objects. */
-    protected var _players :ArrayCollection = new ArrayCollection();
 }
 }
 
 import flash.events.MouseEvent;
 
 import mx.containers.HBox;
-import mx.controls.Image;
-import mx.controls.Label;
-import mx.core.ScrollPolicy;
 
-import com.threerings.util.CommandEvent;
+import mx.controls.Label;
+
+import mx.core.ScrollPolicy;
+import mx.core.UIComponent;
+
+import com.threerings.flex.NameLabelCreator;
+
 import com.threerings.util.Comparable;
+import com.threerings.util.Hashable;
+import com.threerings.util.Log;
+import com.threerings.util.Name;
 
 import com.threerings.crowd.data.OccupantInfo;
-
-import com.whirled.data.WhirledOccupantInfo;
-import com.whirled.game.client.PlayerList;
 
 /**
  * A record for tracking player data.
  */
 class PlayerRecord
-    implements Comparable
+    implements Comparable, Hashable
 {
     /** The player's name. */
-    public var name :String;
+    public var name :Name;
 
     /** The player's oid, or 0 if the player is not present. */
     public var oid :int;
-
-    /** The headshot url. */
-    public var headshotUrl :String;
 
     /** Is it an actual player in the game's players array? */
     public var isPlayer :Boolean;
@@ -379,18 +336,12 @@ class PlayerRecord
     public function setup (occInfo :OccupantInfo) :void
     {
         if (occInfo != null) {
-            name = occInfo.username.toString();
+            name = occInfo.username;
             oid = occInfo.bodyOid;
-            if (occInfo is WhirledOccupantInfo) {
-                headshotUrl = (occInfo as WhirledOccupantInfo).getHeadshotURL();
-
-            } else {
-                headshotUrl = null;
-            }
 
         } else {
+            name = null;
             oid = 0;
-            headshotUrl = null;
         }
     }
 
@@ -399,32 +350,38 @@ class PlayerRecord
     {
         var that :PlayerRecord = other as PlayerRecord;
 
-//        trace("Comparing " + this.name + " and " + that.name);
-
         // compare by sortData
         var cmp :int = compare(this.sortData, that.sortData);
-//        trace("SortData: " + cmp);
         if (cmp == 0) {
             // if equal, compare by scoreData
             cmp = compare(this.scoreData, that.scoreData);
-//            trace("scoreData: " + cmp);
             if (cmp == 0) {
                 // if equal, put actual players ahead of watchers
                 cmp = compare(this.isPlayer, that.isPlayer);
-//                trace("isPlayer: " + cmp);
                 if (cmp == 0) {
                     // if equal, compare by name (lowest first)
-                    cmp = compare(that.name, this.name);
-//                    trace("name: " + cmp);
+                    cmp = compare("" + that.name, "" + name);
                     if (cmp == 0) {
                         // if equal, compare by oid
                         cmp = compare(this.oid, that.oid);
-//                        trace("oid: " + cmp);
                     }
                 }
             }
         }
         return cmp;
+    }
+
+    // from Hashable
+    public function hashCode () :int
+    {
+        return name.hashCode();
+    }
+
+    // from Equalable via Hashable
+    public function equals (other :Object) :Boolean
+    {
+        // deep, strict equals
+        return other is PlayerRecord && compareTo(other) == 0;
     }
 
     /**
@@ -454,8 +411,8 @@ class PlayerRecord
     }
 }
 
-// TODO: fuck fuck fuck. It's probably the case that a renderer that gets scrolled off and
-// back on will have to re-load the headshot completely.
+// We have our own PlayerRenderer implementation. Screw you and the hidden local classes you rode 
+// in on, Actionscript.
 class PlayerRenderer extends HBox
 {
     /** A command event dispatched when a player name is clicked. */
@@ -483,33 +440,10 @@ class PlayerRenderer extends HBox
     {
         super.createChildren();
 
-        // TODO: we need to make this use a MsoyMediaContainer (or ScalingMediaContainer) to
-        // display the headshot so that users can bleep it.
-        // I'm not going to make this change now, as this playerlist and the chat channel
-        // occupant list *may* be unified in the future...
-
-
-        // 280 total width (??) - scrollbar thickness (16) - two gaps (8 each) = 228
-        // 20 for headshot + 118 for name + 90 for score = 228
-        addChild(_headshot = new Image());
-        _headshot.height = 15; // 1/4 of headshot size
-        _headshot.width = 20; // 1/4 of headshot size
-        _headshot.maintainAspectRatio = true;
-        _headshot.addEventListener(MouseEvent.CLICK, handleClick);
-
-        addChild(_nameLabel = new Label());
-        _nameLabel.width = 118;
-        _nameLabel.addEventListener(MouseEvent.CLICK, handleClick);
-
         addChild(_scoreLabel = new Label());
         _scoreLabel.width = 90;
 
         configureUI();
-    }
-
-    protected function handleClick (event :MouseEvent) :void
-    {
-        CommandEvent.dispatch(this, PLAYER_CLICKED, (data as PlayerRecord).oid);
     }
 
     /**
@@ -517,27 +451,33 @@ class PlayerRenderer extends HBox
      */
     protected function configureUI () :void
     {
-        var record :PlayerRecord = this.data as PlayerRecord;
-        if (record != null) {
-            _headshot.source = record.headshotUrl;
-            _nameLabel.text = record.name;
-            _nameLabel.setStyle("color",
+        if (this.data != null && (this.data is Array) && (this.data as Array).length == 2) {
+            var dataArray :Array = this.data as Array;
+            var creator :NameLabelCreator = dataArray[0] as NameLabelCreator;
+            var record :PlayerRecord = dataArray[1] as PlayerRecord;
+            if (_nameLabel != null && contains(_nameLabel)) {
+                removeChild(_nameLabel);
+            }
+            addChildAt(_nameLabel = creator.createLabel(record.name), 0);
+            _nameLabel.percentWidth = 100;
+            _nameLabel.setStyle("color", 
                 (record.oid != 0) ? PRESENT_NAME_COLOR : ABSENT_NAME_COLOR);
             _scoreLabel.text = (record.scoreData == null) ? "" : String(record.scoreData);
             _scoreLabel.setStyle("textAlign", (record.scoreData is Number) ? "right" : "left");
 
         } else {
-            _nameLabel.text = "";
-            _headshot.source = null;
+            if (_nameLabel != null && contains(_nameLabel)) {
+                removeChild(_nameLabel);
+            }
+            _nameLabel = null;
             _scoreLabel.text = "";
         }
     }
-
-    /** Display's the user's icon. */
-    protected var _headshot :Image;
+    
+    private static const log :Log = Log.getLog(PlayerRenderer);
 
     /** The label used to display the player's name. */
-    protected var _nameLabel :Label;
+    protected var _nameLabel :UIComponent;
 
     /** The label used to display score data, if applicable. */
     protected var _scoreLabel :Label;

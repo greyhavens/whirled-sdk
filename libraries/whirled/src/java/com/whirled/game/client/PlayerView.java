@@ -46,7 +46,6 @@ import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.game.data.GameObject;
 import com.threerings.parlor.turn.data.TurnGameObject;
 
-import com.whirled.data.WhirledOccupantInfo;
 import com.whirled.util.WhirledContext;
 
 /**
@@ -215,11 +214,6 @@ public class PlayerView
             gfx.setComposite(ocomp);
         }
 
-        // draw the face icon
-        if (_faceIcon != null) {
-            _faceIcon.paintIcon(_host, gfx, (getLeftWidth() - _faceIcon.getIconWidth())/2, 20);
-        }
-
         // paint any extra
         paintExtraAntiAlias(gfx);
         SwingUtil.restoreAntiAliasing(gfx, oalias);
@@ -374,15 +368,6 @@ public class PlayerView
     protected void updateOccupantInfo ()
     {
         _occinfo = _gameObj.getOccupantInfo(_username);
-        if (_occinfo != null && _occinfo instanceof WhirledOccupantInfo) {
-            if (_faceIcon == null) {
-                _faceIcon = new HeadshotIcon((WhirledOccupantInfo)_occinfo, getFaceIconSize());
-            } else {
-                _faceIcon.setInfo((WhirledOccupantInfo)_occinfo);
-            }
-        } else {
-            _faceIcon = null;
-        }
         invalidate();
     }
 
@@ -456,9 +441,6 @@ public class PlayerView
 
     /** The player's character sprite fingerprint. */
     protected int[] _charPrint;
-
-    /** The player's character face icon. */
-    protected HeadshotIcon _faceIcon;
 
     /** The timer view. */
     protected HourglassView _timerView;
