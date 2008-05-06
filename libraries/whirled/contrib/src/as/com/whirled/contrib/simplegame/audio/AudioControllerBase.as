@@ -59,8 +59,8 @@ public class AudioControllerBase
         } else {
             _initialVolume = _localVolume;
             var targetVolume :Number = Math.max(targetVal, 0);
-            targetVolume = Math.min(_targetVolume, 1);
-            _targetVolumeDelta = targetVolume - volume;
+            targetVolume = Math.min(targetVolume, 1);
+            _targetVolumeDelta = targetVolume - _initialVolume;
             _targetVolumeElapsedTime = 0;
             _targetVolumeTotalTime = time;
         }
@@ -73,7 +73,7 @@ public class AudioControllerBase
         return this.volumeTo(0, time);
     }
 
-    public function fadeIn (time) :AudioController
+    public function fadeIn (time :Number) :AudioController
     {
         return this.volumeTo(1, time);
     }
@@ -93,7 +93,7 @@ public class AudioControllerBase
         } else {
             _initialPan = _localPan;
             var targetPan :Number = Math.max(targetVal, -1);
-            targetPan = Math.min(_targetPan, 1);
+            targetPan = Math.min(targetPan, 1);
             _targetPanDelta = targetPan - _initialPan;
             _targetPanElapsedTime = 0;
             _targetPanTotalTime = time;
@@ -102,24 +102,18 @@ public class AudioControllerBase
         return this;
     }
 
-    public function pause () :AudioController
+    public function pause (val :Boolean) :AudioController
     {
-        _localPaused = true;
+        _localPaused = val;
         _pauseCountdown = 0;
-        return this;
-    }
-
-    public function resume () :AudioController
-    {
-        _localPaused = false;
-        _pauseCountdown = 0;
+        _unpauseCountdown = 0;
         return this;
     }
 
     public function pauseAfter (time :Number) :AudioController
     {
         if (time <= 0) {
-            this.pause();
+            this.pause(true);
         } else {
             _pauseCountdown = time;
         }
@@ -127,12 +121,42 @@ public class AudioControllerBase
         return this;
     }
 
-    public function resumeAfter (time :Number) :AudioController
+    public function unpauseAfter (time :Number) :AudioController
     {
         if (time <= 0) {
-            this.resume();
+            this.pause(false);
         } else {
-            _resumeCountdown = time;
+            _unpauseCountdown = time;
+        }
+
+        return this;
+    }
+
+    public function mute (val :Boolean) :AudioController
+    {
+        _localMuted = val;
+        _muteCountdown = 0;
+        _unmuteCountdown = 0;
+        return this;
+    }
+
+    public function muteAfter (time :Number) :AudioController
+    {
+        if (time <= 0) {
+            this.mute(true);
+        } else {
+            _muteCountdown = time;
+        }
+
+        return this;
+    }
+
+    public function unmuteAfter (time :Number) :AudioController
+    {
+        if (time <= 0) {
+            this.mute(false);
+        } else {
+            _unmuteCountdown = time;
         }
 
         return this;
@@ -172,9 +196,9 @@ public class AudioControllerBase
             }
         }
 
-        if (_resumeCountdown >= 0) {
-            _resumeCountdown = Math.max(_resumeCountdown - dt, 0);
-            if (_resumeCountdown == 0) {
+        if (_unpauseCountdown >= 0) {
+            _unpauseCountdown = Math.max(_unpauseCountdown - dt, 0);
+            if (_unpauseCountdown == 0) {
                 _localPaused = false;
             }
         }
@@ -217,7 +241,7 @@ public class AudioControllerBase
     protected var _localMuted :Boolean;
 
     protected var _pauseCountdown :Number = 0;
-    protected var _resumeCountdown :Number = 0;
+    protected var _unpauseCountdown :Number = 0;
     protected var _muteCountdown :Number = 0;
     protected var _unmuteCountdown :Number = 0;
 }

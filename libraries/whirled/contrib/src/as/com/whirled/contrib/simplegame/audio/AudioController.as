@@ -32,11 +32,10 @@ public interface AudioController
     function fadeIn (time :Number) :AudioController;
     function pan (val :Number) :AudioController;
     function panTo (targetVal :Number, time :Number) :AudioController;
-    function pause () :AudioController;
+    function pause (val :Boolean) :AudioController;
     function pauseAfter (time :Number) :AudioController;
-    function resume () :AudioController;
-    function resumeAfter (time :Number) :AudioController;
-    function mute () :AudioController;
+    function unpauseAfter (time :Number) :AudioController;
+    function mute (val :Boolean) :AudioController;
     function muteAfter (time :Number) :AudioController;
 
     function stop () :void;

@@ -22,16 +22,16 @@ package com.whirled.contrib.simplegame.audio {
 
 public class Audio
 {
-    public static function get masterControls () :AudioControllerBase
+    public static function get masterControls () :AudioControllerContainer
     {
         if (null == g_masterControls) {
-            g_masterControls = new AudioControllerBase();
+            g_masterControls = new AudioControllerContainer();
         }
 
         return g_masterControls;
     }
 
-    protected static var g_masterControls :AudioControllerBase;
+    protected static var g_masterControls :AudioControllerContainer;
 }
 
 }

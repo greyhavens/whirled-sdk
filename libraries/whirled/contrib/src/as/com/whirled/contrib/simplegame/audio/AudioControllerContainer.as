@@ -27,14 +27,14 @@ public class AudioControllerContainer extends AudioControllerBase
         super(parentControls);
     }
 
-    protected function attachChild (child :AudioController) :void
+    internal function attachChild (child :AudioController) :void
     {
         _children.push(child);
     }
 
     override public function update (dt :Number, parentVolume :Number, parentPan :Number, parentPaused :Boolean, parentMuted :Boolean) :void
     {
-        super.update(dt, parentVolume, parentPan, parentPaused);
+        super.update(dt, parentVolume, parentPan, parentPaused, parentMuted);
 
         // update children
         for (var i :int = 0; i < _children.length; ++i) {
@@ -44,7 +44,7 @@ public class AudioControllerContainer extends AudioControllerBase
                 dt,
                 parentVolume * _localVolume,
                 (parentPan != 0 ? parentPan : _localPan),
-                parentPaused || _localPaused
+                parentPaused || _localPaused,
                 parentMuted || _localMuted);
 
             if (childController.needsCleanup) {
@@ -59,8 +59,6 @@ public class AudioControllerContainer extends AudioControllerBase
         for each (var child :AudioControllerBase in _children) {
             child.stop();
         }
-
-        return this;
     }
 
     override public function get needsCleanup () :Boolean
