@@ -61,6 +61,7 @@ import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.util.CrowdContext;
 
+import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.data.GameObject;
 
 import com.whirled.game.data.GameData;
@@ -556,6 +557,7 @@ public class GameBackend
             gameConfig[key] = (value is Wrapped) ? Wrapped(value).unwrap() : value;
         });
         o["gameConfig"] = gameConfig;
+        o["gameInfo"] = createGameInfo();
 
         // GameControl
         o["commitTransaction"] = commitTransaction_v1;
@@ -633,6 +635,37 @@ public class GameBackend
         o["getStageBounds_v1"] = getStageBounds_v1;
         o["setProperty_v1"] = setProperty_v1;
         o["getHeadShot_v1"] = getHeadShot_v1;
+    }
+
+    /**
+     * Populate a small gameInfo property to communicate attributes to clients.
+     */
+    protected function createGameInfo () :Object
+    {
+        var o :Object = {};
+
+        // for now, all we indicate is the game type
+        o["type"] = getGameInfoType();
+
+        return o;
+    }
+
+    /**
+     * Get a String name for the game type.
+     */
+    protected function getGameInfoType () :String
+    {
+        var cfg :WhirledGameConfig = _ctrl.getPlaceConfig() as WhirledGameConfig;
+        switch (cfg.getMatchType()) {
+        case GameConfig.SEATED_GAME:
+            return "seated";
+        case GameConfig.SEATED_CONTINUOUS:
+            return "seated_continuous";
+        case GameConfig.PARTY:
+            return "party";
+        default:
+            return "unknown";
+        }
     }
 
     //---- GameControl -----------------------------------------------------

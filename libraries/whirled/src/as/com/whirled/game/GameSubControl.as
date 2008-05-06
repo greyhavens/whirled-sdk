@@ -372,15 +372,22 @@ public class GameSubControl extends AbstractSubControl
         super.gotHostProps(o);
 
         _gameConfig = o.gameConfig;
+
+        // if we're in a party game, kill the seating control: it's not applicable
+        try {
+            if (o["gameInfo"]["type"] == "party") {
+                _seatingCtrl = null;
+            }
+        } catch (er :Error) {
+            // ignore
+        }
     }
 
     /** @private */
     override protected function createSubControls () :Array
     {
         return [
-            // TODO
-            // party games shouldn't have this, but it needs to be created before we
-            // we even know what type of game we are. Maybe after we find out we destroy it??
+            // we create this, but it may get cleared out in gotHostProps
             _seatingCtrl = new SeatingSubControl(_parent, this)
         ];
     }
