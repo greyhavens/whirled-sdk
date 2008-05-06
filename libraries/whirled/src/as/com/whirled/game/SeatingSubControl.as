@@ -41,8 +41,10 @@ public class SeatingSubControl extends AbstractSubControl
 
     /**
      * Get all the players at the table, in their seated position.
+     * Note that the number of seats never changes during a game, even as players come and go.
      * Absent players will be represented by a 0.
-     * If you call this without waiting for the game to start, some players may be absent.
+     *
+     * @return an Array of ints.
      */
     public function getPlayerIds () :Array /* of playerId (int) */
     {
@@ -51,12 +53,17 @@ public class SeatingSubControl extends AbstractSubControl
 
     /**
      * Get the names of the seated players, in the order of their seated position.
+     * Note that the number of seats never changes during a game, even as players come and go.
+     * Absent players will have a name of null.
+     *
+     * @return an Array of Strings.
      */
     public function getPlayerNames () :Array /* of String */
     {
         return getPlayerIds().map(
             function (playerId :int, o2:*, o3:*) :String
             {
+                // we'll just get a null if we ask for the name of occupant 0 anyway
                 return (playerId == 0) ? null : _game.getOccupantName(playerId);
             }
         );
