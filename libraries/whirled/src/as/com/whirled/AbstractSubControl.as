@@ -19,7 +19,7 @@ public class AbstractSubControl extends AbstractControl
     {
         _parent = parent;
         // chain the unload events of our parent
-        _parent.addEventListener(Event.UNLOAD, handleUnload);
+        _parent.addEventListener(Event.UNLOAD, handleUnload, false, 0, true);
         super(null);
     }
 

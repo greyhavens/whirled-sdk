@@ -45,7 +45,7 @@ public class AbstractControl extends EventDispatcher
         }
 
         // set up the unload event to propagate
-        disp.root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
+        disp.root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload, false, 0, true);
 
         // do the connect!
         var userProps :Object = (initialUserProps != null) ? initialUserProps : new Object();
