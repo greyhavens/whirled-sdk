@@ -32,21 +32,14 @@ public class AudioControllerContainer extends AudioControllerBase
         _children.push(child);
     }
 
-    override public function update (dt :Number, parentVolume :Number, parentPan :Number, parentPaused :Boolean, parentMuted :Boolean) :void
+    override public function update (dt :Number, parentState :AudioControllerState) :void
     {
-        super.update(dt, parentVolume, parentPan, parentPaused, parentMuted);
+        super.update(dt, parentState);
 
         // update children
         for (var i :int = 0; i < _children.length; ++i) {
             var childController :AudioController = _children[i];
-
-            childController.update(
-                dt,
-                parentVolume * _localVolume,
-                (parentPan != 0 ? parentPan : _localPan),
-                parentPaused || _localPaused,
-                parentMuted || _localMuted);
-
+            childController.update(dt, _globalState);
             if (childController.needsCleanup) {
                 // @TODO - use a linked list?
                 _children.splice(i--, 1);

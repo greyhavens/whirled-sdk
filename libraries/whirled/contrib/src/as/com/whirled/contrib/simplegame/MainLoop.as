@@ -22,6 +22,7 @@ package com.whirled.contrib.simplegame {
 
 import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
+import com.whirled.contrib.simplegame.audio.*;
 import com.whirled.contrib.simplegame.resource.*;
 import com.whirled.contrib.simplegame.util.Rand;
 
@@ -95,6 +96,7 @@ public final class MainLoop
         ResourceLoaderRegistry.instance.registerLoaderClass("image", ImageResourceLoader);
         ResourceLoaderRegistry.instance.registerLoaderClass("swf", SwfResourceLoader);
         ResourceLoaderRegistry.instance.registerLoaderClass("xml", XmlResourceLoader);
+        ResourceLoaderRegistry.instance.registerLoaderClass("sound", SoundResourceLoader);
 
         _hasSetup = true;
     }
@@ -319,6 +321,9 @@ public final class MainLoop
         if (null != topMode) {
             topMode.update(dt);
         }
+
+        // update audio
+        Audio.masterControls.update(dt, new AudioControllerState());
 
         _lastTime = newTime;
     }

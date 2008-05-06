@@ -20,28 +20,20 @@
 
 package com.whirled.contrib.simplegame.audio {
 
-import flash.media.Sound;
-
-public class Audio
+public class AudioControllerState
 {
-    public static function play (sound :Sound, parentControls :AudioControllerContainer = null) :GameSoundChannel
+    public var volume :Number = 1;
+    public var pan :Number = 0;
+    public var paused :Boolean;
+    public var muted :Boolean;
+
+    public function combineStates (a :AudioControllerState, b :AudioControllerState) :void
     {
-        var gsm :GameSoundChannel = new GameSoundChannel(parentControls);
-        gsm.play(sound);
-        return gsm;
+        volume = a.volume * b.volume;
+        pan = (a.pan + b.pan) * 0.5;
+        paused = a.paused || b.paused;
+        muted = a.muted || b.muted;
     }
-
-    public static function get masterControls () :AudioControllerContainer
-    {
-        if (null == g_masterControls) {
-            g_masterControls = new AudioControllerContainer();
-            g_masterControls.volume(0.5);
-        }
-
-        return g_masterControls;
-    }
-
-    protected static var g_masterControls :AudioControllerContainer;
 }
 
 }

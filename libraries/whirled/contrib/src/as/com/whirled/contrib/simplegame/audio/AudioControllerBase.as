@@ -28,7 +28,8 @@ public class AudioControllerBase
     public function AudioControllerBase (parentControls :AudioControllerContainer = null)
     {
         if (null != parentControls) {
-            parentControls.attachChild(this);
+            _parent = parentControls;
+            _parent.attachChild(this);
         }
     }
 
@@ -46,8 +47,8 @@ public class AudioControllerBase
 
     public function volume (val :Number) :AudioController
     {
-        _localVolume = Math.max(val, 0);
-        _localVolume = Math.min(_localVolume, 1);
+        _localState.volume = Math.max(val, 0);
+        _localState.volume = Math.min(_localState.volume, 1);
         return this;
     }
 
@@ -57,7 +58,7 @@ public class AudioControllerBase
             this.volume(targetVal);
             _targetVolumeTotalTime = 0;
         } else {
-            _initialVolume = _localVolume;
+            _initialVolume = _localState.volume;
             var targetVolume :Number = Math.max(targetVal, 0);
             targetVolume = Math.min(targetVolume, 1);
             _targetVolumeDelta = targetVolume - _initialVolume;
@@ -80,8 +81,8 @@ public class AudioControllerBase
 
     public function pan (val :Number) :AudioController
     {
-        _localPan = Math.max(val, -1);
-        _localPan = Math.min(_localPan, 1);
+        _localState.pan = Math.max(val, -1);
+        _localState.pan = Math.min(_localState.pan, 1);
         return this;
     }
 
@@ -91,7 +92,7 @@ public class AudioControllerBase
             this.pan(targetVal);
             _targetPanTotalTime = 0;
         } else {
-            _initialPan = _localPan;
+            _initialPan = _localState.pan;
             var targetPan :Number = Math.max(targetVal, -1);
             targetPan = Math.min(targetPan, 1);
             _targetPanDelta = targetPan - _initialPan;
@@ -104,7 +105,7 @@ public class AudioControllerBase
 
     public function pause (val :Boolean) :AudioController
     {
-        _localPaused = val;
+        _localState.paused = val;
         _pauseCountdown = 0;
         _unpauseCountdown = 0;
         return this;
@@ -134,7 +135,7 @@ public class AudioControllerBase
 
     public function mute (val :Boolean) :AudioController
     {
-        _localMuted = val;
+        _localState.muted = val;
         _muteCountdown = 0;
         _unmuteCountdown = 0;
         return this;
@@ -167,12 +168,12 @@ public class AudioControllerBase
         // no-op
     }
 
-    public function update (dt :Number, parentVolume :Number, parentPan :Number, parentPaused :Boolean, parentMuted :Boolean) :void
+    public function update (dt :Number, parentState :AudioControllerState) :void
     {
         if (_targetVolumeTotalTime > 0) {
             _targetVolumeElapsedTime = Math.min(_targetVolumeElapsedTime + dt, _targetVolumeTotalTime);
             var volumeTransition :Number = _targetVolumeElapsedTime / _targetVolumeTotalTime;
-            _localVolume = _initialVolume + (_targetVolumeDelta * volumeTransition);
+            _localState.volume = _initialVolume + (_targetVolumeDelta * volumeTransition);
 
             if (_targetVolumeElapsedTime >= _targetVolumeTotalTime) {
                 _targetVolumeTotalTime = 0;
@@ -182,7 +183,7 @@ public class AudioControllerBase
         if (_targetPanTotalTime > 0) {
             _targetPanElapsedTime = Math.min(_targetPanElapsedTime + dt, _targetPanTotalTime);
             var panTransition :Number = _targetPanElapsedTime / _targetPanTotalTime;
-            _localPan = _initialPan + (_targetPanDelta * panTransition);
+            _localState.pan = _initialPan + (_targetPanDelta * panTransition);
 
             if (_targetPanElapsedTime >= _targetPanTotalTime) {
                 _targetPanTotalTime = 0;
@@ -192,29 +193,41 @@ public class AudioControllerBase
         if (_pauseCountdown >= 0) {
             _pauseCountdown = Math.max(_pauseCountdown - dt, 0);
             if (_pauseCountdown == 0) {
-                _localPaused = true;
+                _localState.paused = true;
             }
         }
 
         if (_unpauseCountdown >= 0) {
             _unpauseCountdown = Math.max(_unpauseCountdown - dt, 0);
             if (_unpauseCountdown == 0) {
-                _localPaused = false;
+                _localState.paused = false;
             }
         }
 
         if (_muteCountdown >= 0) {
             _muteCountdown = Math.max(_muteCountdown - dt, 0);
             if (_muteCountdown == 0) {
-                _localMuted = true;
+                _localState.muted = true;
             }
         }
 
         if (_unmuteCountdown >= 0) {
             _unmuteCountdown = Math.max(_unmuteCountdown - dt, 0);
             if (_unmuteCountdown == 0) {
-                _localMuted = false;
+                _localState.muted = false;
             }
+        }
+
+        _globalState.combineStates(_localState, parentState);
+    }
+
+    public function computeState () :AudioControllerState
+    {
+        if (null != _parent) {
+            _globalState.combineStates(_localState, _parent.computeState());
+            return _globalState;
+        } else {
+            return _localState;
         }
     }
 
@@ -223,22 +236,22 @@ public class AudioControllerBase
         return (_refCount <= 0);
     }
 
+    protected var _parent :AudioControllerContainer;
+
     protected var _refCount :int;
 
-    protected var _localVolume :Number = 1;
+    protected var _localState :AudioControllerState = new AudioControllerState();
+    protected var _globalState :AudioControllerState = new AudioControllerState();
+
     protected var _initialVolume :Number = 0;
     protected var _targetVolumeDelta :Number = 0;
     protected var _targetVolumeElapsedTime :Number = 0;
     protected var _targetVolumeTotalTime :Number = 0;
 
-    protected var _localPan :Number = 1;
     protected var _initialPan :Number = 0;
     protected var _targetPanDelta :Number = 0;
     protected var _targetPanElapsedTime :Number = 0;
     protected var _targetPanTotalTime :Number = 0;
-
-    protected var _localPaused :Boolean;
-    protected var _localMuted :Boolean;
 
     protected var _pauseCountdown :Number = 0;
     protected var _unpauseCountdown :Number = 0;

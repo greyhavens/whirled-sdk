@@ -36,17 +36,25 @@ public class GameSoundChannel extends AudioControllerBase
     public function play (sound :Sound) :void
     {
         _sound = sound;
-        this.playInternal(0);
+        _startTime = 0;
+        this.playInternal();
     }
 
-    protected function playInternal (startTime :Number) :void
+    protected function playInternal () :void
     {
         this.stop();
 
-        _channel = _sound.play(startTime, _soundTransform);
-        _channel.addEventListener(Event.SOUND_COMPLETE, handleComplete);
+        // update the global sound state immediately
+        this.computeState();
+        _soundTransform.volume = _globalState.muted ? 0 : _globalState.volume;
+        _soundTransform.pan = _globalState.pan;
+
+        if (!_globalState.paused) {
+            _channel = _sound.play(_startTime, 0, _soundTransform);
+            _channel.addEventListener(Event.SOUND_COMPLETE, handleComplete);
+        }
+
         _isPlaying = true;
-        _paused = false;
     }
 
     override public function stop () :void
@@ -56,7 +64,6 @@ public class GameSoundChannel extends AudioControllerBase
             _channel.stop();
             _channel = null;
             _isPlaying = false;
-            _paused = false;
         }
     }
 
@@ -76,32 +83,34 @@ public class GameSoundChannel extends AudioControllerBase
         return (!_isPlaying && super.needsCleanup);
     }
 
-    override public function update (dt :Number, parentVolume :Number, parentPan :Number, parentPaused :Boolean, parentMuted :Boolean) :void
+    override public function update (dt :Number, parentState :AudioControllerState) :void
     {
-        super.update(dt, parentVolume, parentPan, parentPaused);
+        var wasPaused :Boolean = _globalState.paused;
 
-        // update volume/pan
-        var muted :Boolean = (_localMuted || parentMuted);
-        _soundTransform.volume = (muted ? 0 : _localVolume * parentVolume);
-        _soundTransform.pan = (parentPan != 0 ? parentPan : _localPan); // @TODO - do something else with pan here?
+        super.update(dt, parentState);
 
         // update paused
-        var paused :Boolean = _localPaused || parentPaused;
-        if (paused && !_paused && _isPlaying) {
-            _savedPosition = _channel.position;
-            this.stop();
-            // stop() sets isPlaying and paused to false, but we still consider the sound to be playing
-            _isPlaying = true;
-            _paused = true;
-        } else if (!paused && _paused) {
-            this.playInternal(_savedPosition);
+        if (_isPlaying) {
+            // update the sound transform
+            _soundTransform.volume = _globalState.muted ? 0 : _globalState.volume;
+            _soundTransform.pan = _globalState.pan;
+
+            // update paused state
+            if (!wasPaused && _globalState.paused) {
+                _startTime = _channel.position;
+                this.stop();
+                // stop() sets isPlaying to false, but we still consider the sound to be playing
+                _isPlaying = true;
+            } else if (wasPaused && !_globalState.paused) {
+                this.playInternal();
+            }
         }
     }
 
     protected var _sound :Sound;
     protected var _channel :SoundChannel;
     protected var _soundTransform :SoundTransform;
-    protected var _savedPosition :Number;
+    protected var _startTime :Number;
     protected var _isPlaying :Boolean;
 }
 
