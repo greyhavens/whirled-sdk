@@ -91,7 +91,7 @@ public class GamePlayerList extends PlayerList
         // set the current turn-holder, if applicable
         if (_gameObj is TurnGameObject) {
             record = _byName.get((_gameObj as TurnGameObject).getTurnHolder());
-            _list.selectedItem = _values[record];
+            _list.selectedItem = _values.get(record);
         }
     }
 
@@ -203,7 +203,7 @@ public class GamePlayerList extends PlayerList
         if ((_gameObj is TurnGameObject) &&
                 (event.getName() == (_gameObj as TurnGameObject).getTurnHolderFieldName())) {
             var record :PlayerRecord = _byName.get(event.getValue()) as PlayerRecord;
-            _list.selectedItem = _values[record];
+            _list.selectedItem = _values.get(record);
         }
     }
 
