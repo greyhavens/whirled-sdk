@@ -153,8 +153,6 @@ public class GamePlayerList extends PlayerList
     {
         var names :Array = _gameObj.players;
 
-        log.debug("setPlayerScores [" + names.length + ", " + scores.length + ", " + 
-            sortValues.length + "]");
         if (scores != null && scores.length != names.length) {
             throw new IllegalOperationError("The length of the scores array does not match " +
                 "the length of the players array.");
