@@ -218,13 +218,13 @@ public class AudioControllerBase
             }
         }
 
-        AudioState.combine(_localState, parentState, _globalState);
+        _globalState = AudioState.combine(_localState, parentState, _globalState);
     }
 
     public function computeState () :AudioState
     {
         if (null != _parent) {
-            AudioState.combine(_localState, _parent.computeState(), _globalState);
+            _globalState = AudioState.combine(_localState, _parent.computeState(), _globalState);
             return _globalState;
         } else {
             return _localState;
