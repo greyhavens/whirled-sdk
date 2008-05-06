@@ -303,6 +303,7 @@ import mx.core.UIComponent;
 import com.threerings.flex.NameLabelCreator;
 
 import com.threerings.util.Comparable;
+import com.threerings.util.Hashable;
 import com.threerings.util.Log;
 import com.threerings.util.Name;
 
@@ -312,7 +313,7 @@ import com.threerings.crowd.data.OccupantInfo;
  * A record for tracking player data.
  */
 class PlayerRecord
-    implements Comparable
+    implements Comparable, Hashable
 {
     /** The player's name. */
     public var name :Name;
@@ -369,6 +370,24 @@ class PlayerRecord
         return cmp;
     }
 
+    // from Hashable
+    public function hashCode () :int
+    {
+        if (name == null) {
+            log.warning("Asked for hashCode when we have a null name!");
+            return 0;
+        }
+
+        return name.hashCode();
+    }
+
+    // from Equalable via Hashable
+    public function equals (other :Object) :Boolean
+    {
+        // object equality or deep, strict equals
+        return other == this || (other is PlayerRecord && compareTo(other) == 0);
+    }
+
     /**
      * Comparison utility method that sorts non-null over null, and otherwise
      * uses actionscript's greater than or less than operators to magically compare
@@ -394,6 +413,8 @@ class PlayerRecord
             return 0;
         }
     }
+
+    private static const log :Log = Log.getLog(PlayerRecord);
 }
 
 // We have our own PlayerRenderer implementation. Screw you and the hidden local classes you rode 
