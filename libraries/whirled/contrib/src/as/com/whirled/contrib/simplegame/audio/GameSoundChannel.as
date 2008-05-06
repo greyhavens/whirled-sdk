@@ -83,7 +83,7 @@ public class GameSoundChannel extends AudioControllerBase
         return (!_isPlaying && super.needsCleanup);
     }
 
-    override public function update (dt :Number, parentState :AudioControllerState) :void
+    override public function update (dt :Number, parentState :AudioState) :void
     {
         var wasPaused :Boolean = _globalState.paused;
 

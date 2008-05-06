@@ -323,7 +323,7 @@ public final class MainLoop
         }
 
         // update audio
-        Audio.masterControls.update(dt, new AudioControllerState());
+        Audio.masterControls.update(dt, AudioState.defaultState());
 
         _lastTime = newTime;
     }

@@ -20,19 +20,30 @@
 
 package com.whirled.contrib.simplegame.audio {
 
-public class AudioControllerState
+public class AudioState
 {
     public var volume :Number = 1;
     public var pan :Number = 0;
     public var paused :Boolean;
     public var muted :Boolean;
 
-    public function combineStates (a :AudioControllerState, b :AudioControllerState) :void
+    public static function defaultState () :AudioState
     {
-        volume = a.volume * b.volume;
-        pan = (a.pan + b.pan) * 0.5;
-        paused = a.paused || b.paused;
-        muted = a.muted || b.muted;
+        return new AudioState();
+    }
+
+    public static function combine (a :AudioState, b :AudioState, into :AudioState = null) :AudioState
+    {
+        if (null == into) {
+            into = new AudioState();
+        }
+
+        into.volume = a.volume * b.volume;
+        into.pan = (a.pan + b.pan) * 0.5;
+        into.paused = a.paused || b.paused;
+        into.muted = a.muted || b.muted;
+
+        return into;
     }
 }
 

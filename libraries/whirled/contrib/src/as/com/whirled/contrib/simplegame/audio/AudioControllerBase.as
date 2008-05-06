@@ -168,7 +168,7 @@ public class AudioControllerBase
         // no-op
     }
 
-    public function update (dt :Number, parentState :AudioControllerState) :void
+    public function update (dt :Number, parentState :AudioState) :void
     {
         if (_targetVolumeTotalTime > 0) {
             _targetVolumeElapsedTime = Math.min(_targetVolumeElapsedTime + dt, _targetVolumeTotalTime);
@@ -218,13 +218,13 @@ public class AudioControllerBase
             }
         }
 
-        _globalState.combineStates(_localState, parentState);
+        AudioState.combine(_localState, parentState, _globalState);
     }
 
-    public function computeState () :AudioControllerState
+    public function computeState () :AudioState
     {
         if (null != _parent) {
-            _globalState.combineStates(_localState, _parent.computeState());
+            AudioState.combine(_localState, _parent.computeState(), _globalState);
             return _globalState;
         } else {
             return _localState;
@@ -240,8 +240,8 @@ public class AudioControllerBase
 
     protected var _refCount :int;
 
-    protected var _localState :AudioControllerState = new AudioControllerState();
-    protected var _globalState :AudioControllerState = new AudioControllerState();
+    protected var _localState :AudioState = new AudioState();
+    protected var _globalState :AudioState = new AudioState();
 
     protected var _initialVolume :Number = 0;
     protected var _targetVolumeDelta :Number = 0;

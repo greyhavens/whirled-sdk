@@ -32,7 +32,7 @@ public class AudioControllerContainer extends AudioControllerBase
         _children.push(child);
     }
 
-    override public function update (dt :Number, parentState :AudioControllerState) :void
+    override public function update (dt :Number, parentState :AudioState) :void
     {
         super.update(dt, parentState);
 

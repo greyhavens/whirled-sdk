@@ -40,9 +40,9 @@ public interface AudioController
 
     function stop () :void;
 
-    function update (dt :Number, parentState :AudioControllerState) :void;
+    function update (dt :Number, parentState :AudioState) :void;
 
-    function computeState () :AudioControllerState;
+    function computeState () :AudioState;
 }
 
 }
