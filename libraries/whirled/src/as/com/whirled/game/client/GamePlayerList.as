@@ -136,7 +136,19 @@ public class GamePlayerList extends PlayerList
     public function clearScores (clearValue :Object = null, sortValuesToo :Boolean = false) :void
     {
         for (var ii :int = _players.length - 1; ii >= 0; ii--) {
-            var record :PlayerRecord = _players.getItemAt(ii) as PlayerRecord;
+            var entry :Array = _players.getItemAt(ii) as Array;
+            if (entry == null) {
+                log.warning("null entry in _players [ii=" + ii + "]");
+                continue;
+            }
+
+            var record :PlayerRecord = entry[1] as PlayerRecord;
+            if (record == null) {
+                log.warning("data field in _players not a PlayerRecord [ii=" + ii + ", data" + 
+                            entry[1] + "]");
+                continue;
+            }
+
             record.scoreData = clearValue;
             if (sortValuesToo) {
                 record.sortData = null;
