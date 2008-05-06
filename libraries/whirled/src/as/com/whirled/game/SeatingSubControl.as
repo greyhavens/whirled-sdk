@@ -57,7 +57,7 @@ public class SeatingSubControl extends AbstractSubControl
         return getPlayerIds().map(
             function (playerId :int, o2:*, o3:*) :String
             {
-                return _game.getOccupantName(playerId);
+                return (playerId == 0) ? null : _game.getOccupantName(playerId);
             }
         );
     }
