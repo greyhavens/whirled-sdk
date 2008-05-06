@@ -91,7 +91,7 @@ public class GamePlayerList extends PlayerList
         // set the current turn-holder, if applicable
         if (_gameObj is TurnGameObject) {
             record = _byName.get((_gameObj as TurnGameObject).getTurnHolder());
-            _list.selectedItem = _values.get(record);
+            _list.selectedItem = _values[record];
         }
     }
 
@@ -153,6 +153,8 @@ public class GamePlayerList extends PlayerList
     {
         var names :Array = _gameObj.players;
 
+        log.debug("setPlayerScores [" + names.length + ", " + scores.length + ", " + 
+            sortValues.length + "]");
         if (scores != null && scores.length != names.length) {
             throw new IllegalOperationError("The length of the scores array does not match " +
                 "the length of the players array.");
@@ -203,7 +205,7 @@ public class GamePlayerList extends PlayerList
         if ((_gameObj is TurnGameObject) &&
                 (event.getName() == (_gameObj as TurnGameObject).getTurnHolderFieldName())) {
             var record :PlayerRecord = _byName.get(event.getValue()) as PlayerRecord;
-            _list.selectedItem = _values.get(record);
+            _list.selectedItem = _values[record];
         }
     }
 
@@ -303,7 +305,6 @@ import mx.core.UIComponent;
 import com.threerings.flex.NameLabelCreator;
 
 import com.threerings.util.Comparable;
-import com.threerings.util.Hashable;
 import com.threerings.util.Log;
 import com.threerings.util.Name;
 
@@ -313,7 +314,7 @@ import com.threerings.crowd.data.OccupantInfo;
  * A record for tracking player data.
  */
 class PlayerRecord
-    implements Comparable, Hashable
+    implements Comparable
 {
     /** The player's name. */
     public var name :Name;
@@ -368,19 +369,6 @@ class PlayerRecord
             }
         }
         return cmp;
-    }
-
-    // from Hashable
-    public function hashCode () :int
-    {
-        return name == null ? 0 : name.hashCode();
-    }
-
-    // from Equalable via Hashable
-    public function equals (other :Object) :Boolean
-    {
-        // deep, strict equals
-        return other is PlayerRecord && compareTo(other) == 0;
     }
 
     /**
