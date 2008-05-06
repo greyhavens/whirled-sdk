@@ -47,8 +47,8 @@ public class WhirledClient extends Client
         if (username == null) {
             username = "tester";
         }
-        super(new UsernamePasswordCreds(new Name(username), ""), stage);
-        _ctx = createContext();
+        super(new UsernamePasswordCreds(new Name(username), ""));
+        _ctx = createContext(stage);
 
         // prior to logging on to a server, set up our security policy for that server
         addClientObserver(new ClientAdapter(clientWillLogon)); 
@@ -89,9 +89,9 @@ public class WhirledClient extends Client
     /**
      * Creates the context we'll use with this client.
      */
-    protected function createContext () :WhirledContext
+    protected function createContext (stage :Stage) :WhirledContext
     {
-        return new WhirledContext(this);
+        return new WhirledContext(this, stage);
     }
 
     /**

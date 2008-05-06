@@ -31,9 +31,10 @@ import com.threerings.parlor.util.ParlorContext;
 public class WhirledContext
     implements CrowdContext, ParlorContext
 {
-    public function WhirledContext (client :Client)
+    public function WhirledContext (client :Client, stage :Stage)
     {
         _client = client;
+        _stage = stage;
         _msgMgr = new MessageManager();
         _locDir = new LocationDirector(this);
         _occDir = new OccupantDirector(this);
@@ -43,7 +44,7 @@ public class WhirledContext
 
     public function getStage () :Stage
     {
-        return _client.getStage();
+        return _stage;
     }
 
     /**
@@ -136,6 +137,7 @@ public class WhirledContext
     }
 
     protected var _client :Client;
+    protected var _stage :Stage;
     protected var _msgMgr :MessageManager;
     protected var _locDir :LocationDirector;
     protected var _occDir :OccupantDirector;
