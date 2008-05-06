@@ -91,10 +91,6 @@ public class GameSoundChannel extends AudioControllerBase
 
         // update paused
         if (_isPlaying) {
-            // update the sound transform
-            _soundTransform.volume = _globalState.muted ? 0 : _globalState.volume;
-            _soundTransform.pan = _globalState.pan;
-
             // update paused state
             if (!wasPaused && _globalState.paused) {
                 _startTime = _channel.position;
@@ -103,6 +99,17 @@ public class GameSoundChannel extends AudioControllerBase
                 _isPlaying = true;
             } else if (wasPaused && !_globalState.paused) {
                 this.playInternal();
+            } else {
+                // update the sound transform
+                _soundTransform.volume = _globalState.muted ? 0 : _globalState.volume;
+                _soundTransform.pan = _globalState.pan;
+
+                // Simply modifying the channel's existing sound transform isn't sufficient.
+                // We need to reassign the SoundTransform to the channel to get the change
+                // to stick.
+                // @TODO - is it less expensive if we do this only when the sound transform
+                // has actually changed?
+                _channel.soundTransform = _soundTransform;
             }
         }
     }

@@ -190,28 +190,28 @@ public class AudioControllerBase
             }
         }
 
-        if (_pauseCountdown >= 0) {
+        if (_pauseCountdown > 0) {
             _pauseCountdown = Math.max(_pauseCountdown - dt, 0);
             if (_pauseCountdown == 0) {
                 _localState.paused = true;
             }
         }
 
-        if (_unpauseCountdown >= 0) {
+        if (_unpauseCountdown > 0) {
             _unpauseCountdown = Math.max(_unpauseCountdown - dt, 0);
             if (_unpauseCountdown == 0) {
                 _localState.paused = false;
             }
         }
 
-        if (_muteCountdown >= 0) {
+        if (_muteCountdown > 0) {
             _muteCountdown = Math.max(_muteCountdown - dt, 0);
             if (_muteCountdown == 0) {
                 _localState.muted = true;
             }
         }
 
-        if (_unmuteCountdown >= 0) {
+        if (_unmuteCountdown > 0) {
             _unmuteCountdown = Math.max(_unmuteCountdown - dt, 0);
             if (_unmuteCountdown == 0) {
                 _localState.muted = false;
