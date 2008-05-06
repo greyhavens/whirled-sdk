@@ -20,8 +20,6 @@
 
 package com.whirled.contrib.simplegame.audio {
 
-import flash.media.SoundTransform;
-
 public class AudioControllerBase
     implements AudioController
 {
