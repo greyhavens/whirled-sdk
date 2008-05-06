@@ -236,9 +236,9 @@ public class GameBackend
         case PlaceObject.OCCUPANT_INFO:
             var occInfo :WhirledGameOccupantInfo = (event.getEntry() as WhirledGameOccupantInfo);
             var oldInfo :WhirledGameOccupantInfo = (event.getOldEntry() as WhirledGameOccupantInfo);
-            // only report someone else if they transitioned from uninitialized to initialized
-            if ((occInfo.bodyOid != _ctx.getClient().getClientOid()) &&
-                    occInfo.initialized && !oldInfo.initialized) {
+            // Only report someone else if they transitioned from uninitialized to initialized
+            // Note that our own occupantInfo will never pass this test, that is correct.
+            if (!isInited(oldInfo) && isInited(occInfo)) {
                 callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username),
                     true);
             }
