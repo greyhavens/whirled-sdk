@@ -66,6 +66,8 @@
   <!-- zip things up for remixables -->
   <target name="zip" if="app.data-dir">
     <zip destfile="${app.name}.zip" compress="false">
+      <!-- Let _data.xml be in either the top-level or the data dir, even though
+           we now prefer it to be in the data dir. -->
       <zipfileset dir="." includes="${app.name}.swf, _data.xml"/>
       <zipfileset dir="${app.data-dir}" includes="*" prefix=""/>
     </zip>
