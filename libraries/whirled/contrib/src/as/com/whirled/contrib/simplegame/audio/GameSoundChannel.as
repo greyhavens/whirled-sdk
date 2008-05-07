@@ -33,28 +33,33 @@ public class GameSoundChannel extends AudioControllerBase
         _soundTransform = new SoundTransform();
     }
 
-    public function play (sound :Sound) :void
-    {
-        _sound = sound;
-        _startTime = 0;
-        this.playInternal();
-    }
-
-    protected function playInternal () :void
+    public function sound (sound :Sound) :GameSoundChannel
     {
         this.stop();
 
-        // update the global sound state immediately
-        this.computeState();
-        _soundTransform.volume = _globalState.muted ? 0 : _globalState.volume;
-        _soundTransform.pan = _globalState.pan;
+        _sound = sound;
+        _startTime = 0;
 
-        if (!_globalState.paused) {
-            _channel = _sound.play(_startTime, 0, _soundTransform);
-            _channel.addEventListener(Event.SOUND_COMPLETE, handleComplete);
+        return this;
+    }
+
+    public function play () :void
+    {
+        this.stop();
+
+        if (null != _sound) {
+            // update the global sound state immediately
+            this.computeState();
+            _soundTransform.volume = _globalState.muted ? 0 : _globalState.volume;
+            _soundTransform.pan = _globalState.pan;
+
+            if (!_globalState.paused) {
+                _channel = _sound.play(_startTime, 0, _soundTransform);
+                _channel.addEventListener(Event.SOUND_COMPLETE, handleComplete);
+            }
+
+            _isPlaying = true;
         }
-
-        _isPlaying = true;
     }
 
     override public function stop () :void
@@ -98,7 +103,7 @@ public class GameSoundChannel extends AudioControllerBase
                 // stop() sets isPlaying to false, but we still consider the sound to be playing
                 _isPlaying = true;
             } else if (wasPaused && !_globalState.paused) {
-                this.playInternal();
+                this.play();
             } else {
                 // update the sound transform
                 _soundTransform.volume = _globalState.muted ? 0 : _globalState.volume;

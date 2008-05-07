@@ -24,11 +24,14 @@ import flash.media.Sound;
 
 public class Audio
 {
-    public static function play (sound :Sound, parentControls :AudioControllerContainer = null) :GameSoundChannel
+    public static function createChannel (sound :Sound = null, parentControls :AudioControllerContainer = null) :GameSoundChannel
     {
-        var gsm :GameSoundChannel = new GameSoundChannel(null != parentControls ? parentControls : masterControls);
-        gsm.play(sound);
-        return gsm;
+        return new GameSoundChannel(null != parentControls ? parentControls :masterControls).sound(sound);
+    }
+
+    public static function play (sound :Sound, parentControls :AudioControllerContainer = null) :void
+    {
+        createChannel(sound, parentControls).play();
     }
 
     public static function createControls (parentControls :AudioControllerContainer = null) :AudioControllerContainer
