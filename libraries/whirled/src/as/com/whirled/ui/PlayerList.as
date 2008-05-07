@@ -15,6 +15,7 @@ import mx.core.ScrollPolicy;
 import com.threerings.util.Comparable;
 import com.threerings.util.Hashable;
 import com.threerings.util.HashMap;
+import com.threerings.util.Name;
 
 import com.threerings.flex.AmbidextrousList;
 
@@ -125,8 +126,12 @@ public class PlayerList extends VBox
 
         var data1 :Object = (o1 as Array)[1];
         var data2 :Object = (o2 as Array)[1];
-        if (data1 is Comparable && data2 is Comparable) {
-            var compare :int = (data1 as Comparable).compareTo(data2);
+        if (data1 is Name && data2 is Name) {
+            var compare :int = 
+                data1.toString().toLowerCase().localeCompare(data2.toString().toLowerCase());
+            return compare > 0 ? 1 : (compare < 0 ? -1 : 0);
+        } else if (data1 is Comparable && data2 is Comparable) {
+            compare = (data1 as Comparable).compareTo(data2);
             return compare > 0 ? 1 : (compare < 0 ? -1 : 0);
         } else {
             // default to actionscript's magical greater than or less than operators
