@@ -38,7 +38,7 @@ public class PlaySoundTask
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         if (null == _channel) {
-            _channel = Audio.play(sound, parentControls);
+            _channel = Audio.play(_sound, _parentControls);
         }
 
         return (!_waitForComplete || !_channel.isPlaying);
