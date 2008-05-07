@@ -29,9 +29,11 @@ public class Audio
         return new GameSoundChannel(null != parentControls ? parentControls :masterControls).sound(sound);
     }
 
-    public static function play (sound :Sound, parentControls :AudioControllerContainer = null) :void
+    public static function play (sound :Sound, parentControls :AudioControllerContainer = null) :GameSoundChannel
     {
-        createChannel(sound, parentControls).play();
+        var gsm :GameSoundChannel = createChannel(sound, parentControls);
+        gsm.play();
+        return gsm;
     }
 
     public static function createControls (parentControls :AudioControllerContainer = null) :AudioControllerContainer
