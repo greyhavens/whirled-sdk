@@ -377,6 +377,7 @@ public class GameSubControl extends AbstractSubControl
         try {
             if (o["gameInfo"]["type"] == "party") {
                 _seatingCtrl = null;
+                _subControls = null; // since our only subcontrol is the seating
             }
         } catch (er :Error) {
             // ignore
