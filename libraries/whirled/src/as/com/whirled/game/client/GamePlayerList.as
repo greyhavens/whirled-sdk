@@ -14,9 +14,6 @@ import mx.collections.Sort;
 import mx.controls.Label;
 import mx.controls.List;
 
-import com.threerings.flex.NameLabelCreator;
-import com.threerings.flex.PlayerList;
-
 import com.threerings.util.ArrayUtil;
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
@@ -37,6 +34,9 @@ import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.game.data.GameObject;
 
 import com.threerings.parlor.turn.data.TurnGameObject;
+
+import com.whirled.ui.PlayerList;
+import com.whirled.ui.NameLabelCreator;
 
 /**
  * A standard flex players list for use in games.
@@ -312,7 +312,7 @@ import mx.controls.Label;
 import mx.core.ScrollPolicy;
 import mx.core.UIComponent;
 
-import com.threerings.flex.NameLabelCreator;
+import com.whirled.ui.NameLabelCreator;
 
 import com.threerings.util.Comparable;
 import com.threerings.util.Hashable;
