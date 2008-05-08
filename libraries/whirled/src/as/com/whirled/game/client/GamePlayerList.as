@@ -399,7 +399,7 @@ class PlayerRecord
                     // if equal, put people present ahead of those absent
                     var thisLeft :Boolean = (this.status == PlayerList.STATUS_GONE);
                     var thatLeft :Boolean = (that.status == PlayerList.STATUS_GONE);
-                    cmp = (thisLeft == thatLeft) ? 0 : (thisLeft ? 1 : -1);
+                    cmp = compare(thatLeft, thisLeft);
                     if (cmp == 0) {
                         // if equal, compare by name (lowest first)
                         cmp = compare("" + that.name, "" + name);
@@ -439,22 +439,14 @@ class PlayerRecord
      */
     protected static function compare (o1 :Object, o2 :Object) :int
     {
-        if (o1 != null) {
-            if (o2 == null || o1 > o2) {
-                return -1;
-
-            } else if (o1 < o2) {
-                return 1;
-
-            } else {
-                return 0;
-            }
-
-        } else if (o2 != null) {
-            return 1;
-
-        } else {
+        if (o1 == o2) { // both null, or otherwise the same
             return 0;
+
+        } else if (o1 == null || o2 == null) { // sort non-null above null
+            return (o2 == null) ? -1 : 1; 
+
+        } else { // use > operator to figure out the rest
+            return (o1 > o2) ? -1 : 1;
         }
     }
 
