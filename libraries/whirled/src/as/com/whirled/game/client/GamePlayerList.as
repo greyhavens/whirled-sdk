@@ -376,14 +376,20 @@ class PlayerRecord
             // if equal, compare by scoreData
             cmp = compare(this.scoreData, that.scoreData);
             if (cmp == 0) {
-                // if equal, put actual players ahead of watchers
-                cmp = compare(this.isPlayer, that.isPlayer);
+                // if equal, put people present ahead of those absent
+                var thisDis :Boolean = this.status == OccupantInfo.DISCONNECTED;
+                var thatDis :Boolean = that.status == OccupantInfo.DISCONNECTED;
+                cmp = thisDis && !thatDis ? 1 : (thatDis && !thisDis ? -1 : 0);
                 if (cmp == 0) {
-                    // if equal, compare by name (lowest first)
-                    cmp = compare("" + that.name, "" + name);
+                    // if equal, put actual players ahead of watchers
+                    cmp = compare(this.isPlayer, that.isPlayer);
                     if (cmp == 0) {
-                        // if equal, compare by oid
-                        cmp = compare(this.oid, that.oid);
+                        // if equal, compare by name (lowest first)
+                        cmp = compare("" + that.name, "" + name);
+                        if (cmp == 0) {
+                            // if equal, compare by oid
+                            cmp = compare(this.oid, that.oid);
+                        }
                     }
                 }
             }
