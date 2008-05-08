@@ -21,12 +21,12 @@ import com.threerings.flex.AmbidextrousList;
 
 public class PlayerList extends VBox
 {
-    /** Status constant to indicate someone who is anticipated to be here, but hasn't arrived 
-     * yet. */
-    public static const STATUS_ANTICIPATED :String = "statusAnticipated";
+    /** Status constant to indiciate someone who is gone. */
+    public static const STATUS_GONE :String = "statusGone";
 
-    /** Status constant to indiciate someone who was here, but left */
-    public static const STATUS_LEFT :String = "statusLeft";
+    /** Status constant to indicate someone who is still downloading or initializing their
+     * game media. */
+    public static const STATUS_UNINITIALIZED :String = "statusUninitialized";
 
     /** Status constant for normal status. */
     public static const STATUS_NORMAL :String = "statusNormal";
@@ -195,21 +195,10 @@ class NameLabelImpl extends Label
     // from interface NameLabel
     public function setStatus (status :String) :void
     {
-        var fontStyle :String = "normal";
-        switch (status) {
-        case PlayerList.STATUS_ANTICIPATED:
-            fontStyle = "italic";
-            // no break - we want the absent color for anticipated as well
-        case PlayerList.STATUS_LEFT:
-            setStyle("color", ABSENT_NAME_COLOR);
-            break;
-
-        case PlayerList.STATUS_NORMAL:
-        case PlayerList.STATUS_IDLE:
-            setStyle("color", PRESENT_NAME_COLOR);
-            break;
-        }
-        setStyle("fontStyle", fontStyle);
+        setStyle("fontStyle",
+            (status == PlayerList.STATUS_UNINITIALIZED) ? "italic" : "normal");
+        setStyle("color",
+            (status == PlayerList.STATUS_GONE) ? ABSENT_NAME_COLOR : PRESENT_NAME_COLOR);
     }
 
     /** The color of the name label when a player or occupant is present in the room. */
