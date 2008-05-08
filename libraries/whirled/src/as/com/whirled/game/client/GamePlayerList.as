@@ -303,6 +303,8 @@ public class GamePlayerList extends PlayerList
 }
 }
 
+import flash.display.DisplayObject;
+
 import flash.events.MouseEvent;
 
 import mx.containers.HBox;
@@ -312,7 +314,9 @@ import mx.controls.Label;
 import mx.core.ScrollPolicy;
 import mx.core.UIComponent;
 
+import com.whirled.ui.NameLabel;
 import com.whirled.ui.NameLabelCreator;
+import com.whirled.ui.PlayerList;
 
 import com.threerings.util.Comparable;
 import com.threerings.util.Hashable;
@@ -333,6 +337,9 @@ class PlayerRecord
     /** The player's oid, or 0 if the player is not present. */
     public var oid :int;
 
+    /** The player's status, from OccupantInfo. */
+    public var status :int;
+
     /** Is it an actual player in the game's players array? */
     public var isPlayer :Boolean;
 
@@ -350,9 +357,11 @@ class PlayerRecord
         if (occInfo != null) {
             name = occInfo.username;
             oid = occInfo.bodyOid;
+            status = occInfo.status;
 
         } else {
             oid = 0;
+            status = OccupantInfo.DISCONNECTED;
         }
     }
 
@@ -473,19 +482,23 @@ class PlayerRenderer extends HBox
             var dataArray :Array = this.data as Array;
             var creator :NameLabelCreator = dataArray[0] as NameLabelCreator;
             var record :PlayerRecord = dataArray[1] as PlayerRecord;
-            if (_nameLabel != null && contains(_nameLabel)) {
-                removeChild(_nameLabel);
+            if (_nameLabel != null && contains(_nameLabel as DisplayObject)) {
+                removeChild(_nameLabel as DisplayObject);
             }
-            addChildAt(_nameLabel = creator.createLabel(record.name), 0);
+            addChildAt((_nameLabel = creator.createLabel(record.name)) as DisplayObject, 0);
             _nameLabel.percentWidth = 100;
-            _nameLabel.setStyle("color", 
-                (record.oid != 0) ? PRESENT_NAME_COLOR : ABSENT_NAME_COLOR);
+            // TODO: handle player anticipated status different from left status...
+            if (record.status == OccupantInfo.DISCONNECTED) {
+                _nameLabel.setStatus(PlayerList.STATUS_LEFT);
+            } else {
+                _nameLabel.setStatus(PlayerList.STATUS_NORMAL);
+            }
             _scoreLabel.text = (record.scoreData == null) ? "" : String(record.scoreData);
             _scoreLabel.setStyle("textAlign", (record.scoreData is Number) ? "right" : "left");
 
         } else {
-            if (_nameLabel != null && contains(_nameLabel)) {
-                removeChild(_nameLabel);
+            if (_nameLabel != null && contains(_nameLabel as DisplayObject)) {
+                removeChild(_nameLabel as DisplayObject);
             }
             _nameLabel = null;
             _scoreLabel.text = "";
@@ -495,14 +508,8 @@ class PlayerRenderer extends HBox
     private static const log :Log = Log.getLog(PlayerRenderer);
 
     /** The label used to display the player's name. */
-    protected var _nameLabel :UIComponent;
+    protected var _nameLabel :NameLabel;
 
     /** The label used to display score data, if applicable. */
     protected var _scoreLabel :Label;
-
-    /** The color of the name label when a player or occupant is present in the room. */
-    protected static const PRESENT_NAME_COLOR :uint = 0x000000;
-
-    /** The color of the name label when a player is absent. */
-    protected static const ABSENT_NAME_COLOR :uint =0x777777;
 }

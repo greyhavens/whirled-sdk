@@ -10,6 +10,6 @@ import com.threerings.util.Name;
 
 public interface NameLabelCreator 
 {
-    function createLabel (name :Name) :UIComponent;
+    function createLabel (name :Name) :NameLabel;
 }
 }

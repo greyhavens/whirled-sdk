@@ -21,6 +21,19 @@ import com.threerings.flex.AmbidextrousList;
 
 public class PlayerList extends VBox
 {
+    /** Status constant to indicate someone who is anticipated to be here, but hasn't arrived 
+     * yet. */
+    public static const STATUS_ANTICIPATED :String = "statusAnticipated";
+
+    /** Status constant to indiciate someone who was here, but left */
+    public static const STATUS_LEFT :String = "statusLeft";
+
+    /** Status constant for normal status. */
+    public static const STATUS_NORMAL :String = "statusNormal";
+
+    /** Status constant to indicate that the given person is idle. */
+    public static const STATUS_IDLE :String = "statusIdle";
+
     /**
      * Create a new player list. 
      *
@@ -146,6 +159,8 @@ public class PlayerList extends VBox
 }
 }
 
+import flash.display.DisplayObject;
+
 import mx.containers.HBox;
 
 import mx.controls.Label;
@@ -153,18 +168,55 @@ import mx.controls.Label;
 import mx.core.ScrollPolicy;
 import mx.core.UIComponent;
 
+import com.whirled.ui.NameLabel;
 import com.whirled.ui.NameLabelCreator;
+import com.whirled.ui.PlayerList;
 
+import com.threerings.util.Log;
 import com.threerings.util.Name;
 
-class DefaultNameLabelCreator implements NameLabelCreator
+class DefaultNameLabelCreator 
+    implements NameLabelCreator
 {
-    public function createLabel (name :Name) :UIComponent
+    public function createLabel (name :Name) :NameLabel
     {
-        var label :Label = new Label();
-        label.text = "" + name;
-        return label;
+        return new NameLabelImpl(name);
     }
+}
+
+class NameLabelImpl extends Label
+    implements NameLabel
+{
+    public function NameLabelImpl (name :Name) 
+    {
+        text = "" + name;
+    }
+
+    // from interface NameLabel
+    public function setStatus (status :String) :void
+    {
+        var fontStyle :String = "normal";
+        switch (status) {
+        case PlayerList.STATUS_ANTICIPATED:
+            fontStyle = "italic";
+            // no break - we want the absent color for anticipated as well
+        case PlayerList.STATUS_LEFT:
+            setStyle("color", ABSENT_NAME_COLOR);
+            break;
+
+        case PlayerList.STATUS_NORMAL:
+        case PlayerList.STATUS_IDLE:
+            setStyle("color", PRESENT_NAME_COLOR);
+            break;
+        }
+        setStyle("fontStyle", fontStyle);
+    }
+
+    /** The color of the name label when a player or occupant is present in the room. */
+    protected static const PRESENT_NAME_COLOR :uint = 0x000000;
+
+    /** The color of the name label when a player is absent. */
+    protected static const ABSENT_NAME_COLOR :uint =0x777777;
 }
 
 /**
@@ -210,7 +262,9 @@ class PlayerRenderer extends HBox
             var creator :NameLabelCreator = dataArray[0] as NameLabelCreator;
             var name :Name = dataArray[1] as Name;
             if (creator != null && name != null) {
-                addChild(creator.createLabel(name));
+                // anything implementing IUIComponent (which NameLabel extends) should be a safe
+                // cast to DisplayObject
+                addChild(creator.createLabel(name) as DisplayObject);
             }
         }
     }
