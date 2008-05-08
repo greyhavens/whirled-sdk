@@ -75,7 +75,7 @@ public class GamePlayerList extends PlayerList
             var newRecord :Boolean = (record == null);
             if (newRecord) {
                 record = new PlayerRecord();
-                record.name = name;
+                record.setupAbsent(name);
             }
 
             record.isPlayer = true;
@@ -318,6 +318,8 @@ import com.whirled.ui.NameLabel;
 import com.whirled.ui.NameLabelCreator;
 import com.whirled.ui.PlayerList;
 
+import com.whirled.game.data.WhirledGameOccupantInfo;
+
 import com.threerings.util.Comparable;
 import com.threerings.util.Hashable;
 import com.threerings.util.Log;
@@ -337,8 +339,8 @@ class PlayerRecord
     /** The player's oid, or 0 if the player is not present. */
     public var oid :int;
 
-    /** The player's status, from OccupantInfo. */
-    public var status :int;
+    /** The player's status, from PlayerList. */
+    public var status :String;
 
     /** Is it an actual player in the game's players array? */
     public var isPlayer :Boolean;
@@ -357,12 +359,27 @@ class PlayerRecord
         if (occInfo != null) {
             name = occInfo.username;
             oid = occInfo.bodyOid;
-            status = occInfo.status;
+            var winfo :WhirledGameOccupantInfo = occInfo as WhirledGameOccupantInfo;
+            if (winfo != null && !winfo.initialized) {
+                status = PlayerList.STATUS_UNINITIALIZED;
+            } else {
+                status = (occInfo.status == OccupantInfo.IDLE)
+                    ? PlayerList.STATUS_IDLE : PlayerList.STATUS_NORMAL;
+            }
 
         } else {
             oid = 0;
-            status = OccupantInfo.DISCONNECTED;
+            status = PlayerList.STATUS_GONE;
         }
+    }
+
+    /**
+     * Set up an absent player.
+     */
+    public function setupAbsent (occName :Name) :void
+    {
+        name = occName;
+        status = PlayerList.STATUS_GONE;
     }
 
     // from Comparable
@@ -376,13 +393,13 @@ class PlayerRecord
             // if equal, compare by scoreData
             cmp = compare(this.scoreData, that.scoreData);
             if (cmp == 0) {
-                // if equal, put people present ahead of those absent
-                var thisDis :Boolean = this.status == OccupantInfo.DISCONNECTED;
-                var thatDis :Boolean = that.status == OccupantInfo.DISCONNECTED;
-                cmp = thisDis && !thatDis ? 1 : (thatDis && !thisDis ? -1 : 0);
+                // if equal, put actual players ahead of watchers
+                cmp = compare(this.isPlayer, that.isPlayer);
                 if (cmp == 0) {
-                    // if equal, put actual players ahead of watchers
-                    cmp = compare(this.isPlayer, that.isPlayer);
+                    // if equal, put people present ahead of those absent
+                    var thisLeft :Boolean = (this.status == PlayerList.STATUS_GONE);
+                    var thatLeft :Boolean = (that.status == PlayerList.STATUS_GONE);
+                    cmp = (thisLeft == thatLeft) ? 0 : (thisLeft ? 1 : -1);
                     if (cmp == 0) {
                         // if equal, compare by name (lowest first)
                         cmp = compare("" + that.name, "" + name);
@@ -493,12 +510,7 @@ class PlayerRenderer extends HBox
             }
             addChildAt((_nameLabel = creator.createLabel(record.name)) as DisplayObject, 0);
             _nameLabel.percentWidth = 100;
-            // TODO: handle player anticipated status different from left status...
-            if (record.status == OccupantInfo.DISCONNECTED) {
-                _nameLabel.setStatus(PlayerList.STATUS_LEFT);
-            } else {
-                _nameLabel.setStatus(PlayerList.STATUS_NORMAL);
-            }
+            _nameLabel.setStatus(record.status);
             _scoreLabel.text = (record.scoreData == null) ? "" : String(record.scoreData);
             _scoreLabel.setStyle("textAlign", (record.scoreData is Number) ? "right" : "left");
 
