@@ -55,10 +55,12 @@ public class GameSoundChannel extends AudioControllerBase
 
             if (!_globalState.paused) {
                 _channel = _sound.play(_startTime, 0, _soundTransform);
-                _channel.addEventListener(Event.SOUND_COMPLETE, handleComplete);
+                if (null != _channel) {
+                    _channel.addEventListener(Event.SOUND_COMPLETE, handleComplete);
+                }
             }
 
-            _isPlaying = true;
+            _isPlaying = (_globalState.paused || null != _channel);
         }
     }
 
