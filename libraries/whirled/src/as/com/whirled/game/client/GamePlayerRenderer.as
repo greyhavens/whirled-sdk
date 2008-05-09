@@ -78,6 +78,7 @@ public class GamePlayerRenderer extends HBox
                 removeChild(_nameLabel as DisplayObject);
             }
             _nameLabel = null;
+            _currentName = null;
             _scoreLabel.text = "";
         }
     }
