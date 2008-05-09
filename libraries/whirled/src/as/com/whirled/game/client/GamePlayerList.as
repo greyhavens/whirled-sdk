@@ -57,11 +57,11 @@ public class GamePlayerList extends PlayerList
         _gameObj = plobj as GameObject;
         _gameObj.addListener(this);
 
-        var record :PlayerRecord;
+        var record :GamePlayerRecord;
 
         // find all the current occupants and add them to the set
         for each (var occInfo :OccupantInfo in _gameObj.occupantInfo.toArray()) {
-            record = new PlayerRecord();
+            record = new GamePlayerRecord();
             record.setup(occInfo);
 
             _byName.put(occInfo.username, record);
@@ -71,10 +71,10 @@ public class GamePlayerList extends PlayerList
 
         // add all the players specified in the players array, if any
         for each (var name :Name in _gameObj.players) {
-            record = _byName.get(name) as PlayerRecord;
+            record = _byName.get(name) as GamePlayerRecord;
             var newRecord :Boolean = (record == null);
             if (newRecord) {
-                record = new PlayerRecord();
+                record = new GamePlayerRecord();
                 record.setupAbsent(name);
             }
 
@@ -142,9 +142,9 @@ public class GamePlayerList extends PlayerList
                 continue;
             }
 
-            var record :PlayerRecord = entry[1] as PlayerRecord;
+            var record :GamePlayerRecord = entry[1] as GamePlayerRecord;
             if (record == null) {
-                log.warning("data field in _players not a PlayerRecord [ii=" + ii + ", data" + 
+                log.warning("data field in _players not a GamePlayerRecord [ii=" + ii + ", data" + 
                             entry[1] + "]");
                 continue;
             }
@@ -175,7 +175,7 @@ public class GamePlayerList extends PlayerList
         }
 
         for (var ii :int = 0; ii < names.length; ii++) {
-            var record :PlayerRecord = _byName.get(names[ii]) as PlayerRecord;
+            var record :GamePlayerRecord = _byName.get(names[ii]) as GamePlayerRecord;
             if (scores != null) {
                 record.scoreData = scores[ii];
             }
@@ -193,7 +193,7 @@ public class GamePlayerList extends PlayerList
     public function setMappedScores (scores :Object) :void
     {
         for (var playerId :Object in scores) {
-            var record :PlayerRecord = _byOid.get(int(playerId));
+            var record :GamePlayerRecord = _byOid.get(int(playerId));
             if (record != null) {
                 var data :Object = scores[playerId];
                 if (data is Array) {
@@ -214,7 +214,7 @@ public class GamePlayerList extends PlayerList
         // update the displayed turn holder
         if ((_gameObj is TurnGameObject) &&
                 (event.getName() == (_gameObj as TurnGameObject).getTurnHolderFieldName())) {
-            var record :PlayerRecord = _byName.get(event.getValue()) as PlayerRecord;
+            var record :GamePlayerRecord = _byName.get(event.getValue()) as GamePlayerRecord;
             _list.selectedItem = _values.get(record);
         }
     }
@@ -231,10 +231,10 @@ public class GamePlayerList extends PlayerList
         if (event.getName() == PlaceObject.OCCUPANT_INFO) {
             var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo);
             // if the occupant is a player, they may already have a record
-            var record :PlayerRecord = _byName.get(occInfo.username) as PlayerRecord;
+            var record :GamePlayerRecord = _byName.get(occInfo.username) as GamePlayerRecord;
             var newRecord :Boolean = (record == null);
             if (newRecord) {
-                record = new PlayerRecord();
+                record = new GamePlayerRecord();
             }
             record.setup(occInfo);
 
@@ -255,7 +255,7 @@ public class GamePlayerList extends PlayerList
         if (event.getName() == PlaceObject.OCCUPANT_INFO) {
             // I guess we might be updating the name or the headshot
             var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo);
-            var record :PlayerRecord = _byOid.get(occInfo.bodyOid) as PlayerRecord;
+            var record :GamePlayerRecord = _byOid.get(occInfo.bodyOid) as GamePlayerRecord;
             record.setup(occInfo);
             itemUpdated(record);
         }
@@ -266,7 +266,7 @@ public class GamePlayerList extends PlayerList
     {
         if (event.getName() == PlaceObject.OCCUPANT_INFO) {
             var occInfo :OccupantInfo = (event.getOldEntry() as OccupantInfo);
-            var record :PlayerRecord = _byOid.remove(occInfo.bodyOid) as PlayerRecord;
+            var record :GamePlayerRecord = _byOid.remove(occInfo.bodyOid) as GamePlayerRecord;
 
             // if this is a player, strip the oid but leave it in the lists
             if (ArrayUtil.contains(_gameObj.players, occInfo.username)) {
@@ -284,7 +284,7 @@ public class GamePlayerList extends PlayerList
     // we have our own implementation of PlayerRenderer
     override protected function getRenderingClass () :Class
     {
-        return PlayerRenderer;
+        return GamePlayerRenderer;
     }
 
     private static const log :Log = Log.getLog(GamePlayerList);
@@ -301,225 +301,4 @@ public class GamePlayerList extends PlayerList
     /** A mapping of name -> record. */
     protected var _byName :HashMap = new HashMap();
 }
-}
-
-import flash.display.DisplayObject;
-
-import flash.events.MouseEvent;
-
-import mx.containers.HBox;
-
-import mx.controls.Label;
-
-import mx.core.ScrollPolicy;
-import mx.core.UIComponent;
-
-import com.whirled.ui.NameLabel;
-import com.whirled.ui.NameLabelCreator;
-import com.whirled.ui.PlayerList;
-
-import com.whirled.game.data.WhirledGameOccupantInfo;
-
-import com.threerings.util.Comparable;
-import com.threerings.util.Hashable;
-import com.threerings.util.Log;
-import com.threerings.util.Name;
-
-import com.threerings.crowd.data.OccupantInfo;
-
-/**
- * A record for tracking player data.
- */
-class PlayerRecord
-    implements Comparable, Hashable
-{
-    /** The player's name. */
-    public var name :Name;
-
-    /** The player's oid, or 0 if the player is not present. */
-    public var oid :int;
-
-    /** The player's status, from PlayerList. */
-    public var status :String;
-
-    /** Is it an actual player in the game's players array? */
-    public var isPlayer :Boolean;
-
-    /** Optional score data to display. */
-    public var scoreData :Object;
-
-    /** Optional sort ordering for this record. */
-    public var sortData :Object;
-
-    /**
-     * Called to configure this PlayerRecord.
-     */
-    public function setup (occInfo :OccupantInfo) :void
-    {
-        if (occInfo != null) {
-            name = occInfo.username;
-            oid = occInfo.bodyOid;
-            var winfo :WhirledGameOccupantInfo = occInfo as WhirledGameOccupantInfo;
-            if (winfo != null && !winfo.initialized) {
-                status = PlayerList.STATUS_UNINITIALIZED;
-            } else {
-                status = (occInfo.status == OccupantInfo.IDLE)
-                    ? PlayerList.STATUS_IDLE : PlayerList.STATUS_NORMAL;
-            }
-
-        } else {
-            oid = 0;
-            status = PlayerList.STATUS_GONE;
-        }
-    }
-
-    /**
-     * Set up an absent player.
-     */
-    public function setupAbsent (occName :Name) :void
-    {
-        name = occName;
-        status = PlayerList.STATUS_GONE;
-    }
-
-    // from Comparable
-    public function compareTo (other :Object) :int
-    {
-        var that :PlayerRecord = other as PlayerRecord;
-
-        // compare by sortData
-        var cmp :int = compare(this.sortData, that.sortData);
-        if (cmp == 0) {
-            // if equal, compare by scoreData
-            cmp = compare(this.scoreData, that.scoreData);
-            if (cmp == 0) {
-                // if equal, put actual players ahead of watchers
-                cmp = compare(this.isPlayer, that.isPlayer);
-                if (cmp == 0) {
-                    // if equal, put people present ahead of those absent
-                    var thisLeft :Boolean = (this.status == PlayerList.STATUS_GONE);
-                    var thatLeft :Boolean = (that.status == PlayerList.STATUS_GONE);
-                    cmp = compare(thatLeft, thisLeft);
-                    if (cmp == 0) {
-                        // if equal, compare by name (lowest first)
-                        cmp = compare("" + that.name, "" + name);
-                        if (cmp == 0) {
-                            // if equal, compare by oid
-                            cmp = compare(this.oid, that.oid);
-                        }
-                    }
-                }
-            }
-        }
-        return cmp;
-    }
-
-    // from Hashable
-    public function hashCode () :int
-    {
-        if (name == null) {
-            log.warning("Asked for hashCode when we have a null name!");
-            return 0;
-        }
-
-        return name.hashCode();
-    }
-
-    // from Equalable via Hashable
-    public function equals (other :Object) :Boolean
-    {
-        // object equality or deep, strict equals
-        return other == this || (other is PlayerRecord && compareTo(other) == 0);
-    }
-
-    /**
-     * Comparison utility method that sorts non-null over null, and otherwise
-     * uses actionscript's greater than or less than operators to magically compare
-     * most values.
-     */
-    protected static function compare (o1 :Object, o2 :Object) :int
-    {
-        if (o1 == o2) { // both null, or otherwise the same
-            return 0;
-
-        } else if (o1 == null || o2 == null) { // sort non-null above null
-            return (o2 == null) ? -1 : 1; 
-
-        } else { // use > operator to figure out the rest
-            return (o1 > o2) ? -1 : 1;
-        }
-    }
-
-    private static const log :Log = Log.getLog(PlayerRecord);
-}
-
-// We have our own PlayerRenderer implementation. Screw you and the hidden local classes you rode 
-// in on, Actionscript.
-class PlayerRenderer extends HBox
-{
-    /** A command event dispatched when a player name is clicked. */
-    public static const PLAYER_CLICKED :String = "playerClicked";
-
-    public function PlayerRenderer ()
-    {
-        super();
-
-        verticalScrollPolicy = ScrollPolicy.OFF;
-        horizontalScrollPolicy = ScrollPolicy.OFF;
-        // the horizontalGap should be 8...
-    }
-
-    override public function set data (value :Object) :void
-    {
-        super.data = value;
-
-        if (processedDescriptors) {
-            configureUI();
-        }
-    }
-
-    override protected function createChildren () :void
-    {
-        super.createChildren();
-
-        addChild(_scoreLabel = new Label());
-        _scoreLabel.width = 90;
-
-        configureUI();
-    }
-
-    /**
-     * Update the UI elements with the data we're displaying.
-     */
-    protected function configureUI () :void
-    {
-        if (this.data != null && (this.data is Array) && (this.data as Array).length == 2) {
-            var dataArray :Array = this.data as Array;
-            var creator :NameLabelCreator = dataArray[0] as NameLabelCreator;
-            var record :PlayerRecord = dataArray[1] as PlayerRecord;
-            if (_nameLabel != null && contains(_nameLabel as DisplayObject)) {
-                removeChild(_nameLabel as DisplayObject);
-            }
-            addChildAt((_nameLabel = creator.createLabel(record.name)) as DisplayObject, 0);
-            _nameLabel.percentWidth = 100;
-            _nameLabel.setStatus(record.status);
-            _scoreLabel.text = (record.scoreData == null) ? "" : String(record.scoreData);
-            _scoreLabel.setStyle("textAlign", (record.scoreData is Number) ? "right" : "left");
-
-        } else {
-            if (_nameLabel != null && contains(_nameLabel as DisplayObject)) {
-                removeChild(_nameLabel as DisplayObject);
-            }
-            _nameLabel = null;
-            _scoreLabel.text = "";
-        }
-    }
-    
-    private static const log :Log = Log.getLog(PlayerRenderer);
-
-    /** The label used to display the player's name. */
-    protected var _nameLabel :NameLabel;
-
-    /** The label used to display score data, if applicable. */
-    protected var _scoreLabel :Label;
 }
