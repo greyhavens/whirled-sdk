@@ -4,6 +4,7 @@
 package com.whirled.client {
 
 import flash.display.Stage;
+import flash.display.StageQuality;
 
 import flash.system.Security;
 
@@ -49,6 +50,9 @@ public class WhirledClient extends Client
         }
         super(new UsernamePasswordCreds(new Name(username), ""));
         _ctx = createContext(stage);
+
+        // set the quality to MEDIUM, just like it is in whirled.
+        stage.quality = StageQuality.MEDIUM;
 
         // prior to logging on to a server, set up our security policy for that server
         addClientObserver(new ClientAdapter(clientWillLogon)); 
