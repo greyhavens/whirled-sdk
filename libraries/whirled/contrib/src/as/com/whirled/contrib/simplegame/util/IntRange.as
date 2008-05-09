@@ -24,16 +24,23 @@ public class IntRange
 {
     public var min :int;
     public var max :int;
+    public var defaultRandStreamId :uint;
 
-    public function IntRange (min :int = 0, max :int = 0)
+    public function IntRange (min :int, max :int, defaultRandStreamId :uint)
     {
         this.min = min;
         this.max = max;
+        this.defaultRandStreamId = defaultRandStreamId;
     }
 
-    public function next (randStreamId :uint) :int
+    public function next (randStreamId :int = -1) :Number
     {
-        return Rand.nextIntRange(this.min, this.max, randStreamId);
+        return Rand.nextIntRange(min, max, (randStreamId >= 0 ? randStreamId : defaultRandStreamId));
+    }
+
+    public function clone () :IntRange
+    {
+        return new IntRange(min, max, defaultRandStreamId);
     }
 }
 
