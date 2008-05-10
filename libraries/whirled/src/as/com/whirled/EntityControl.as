@@ -355,7 +355,14 @@ public class EntityControl extends AbstractControl
     }
 
     /**
-     * Get the instance id of this instance.
+     * Get the id of the viewer that is viewing this instance.
+     * An instance is the copy of the entity running in a particular user's browser.
+     * If you are in a room with 2 other people, each piece of furniture has three instances:
+     * one on each person's browser.
+     *
+     * @return the memberId of the player viewing this instance. Only ids greater than 0
+     * represent whirled members. Ids less than 0 represent guests, and 0 means that the
+     * instance is being viewed by something other than a player.
      */
     public function getInstanceId () :int
     {
@@ -363,15 +370,17 @@ public class EntityControl extends AbstractControl
     }
 
     /**
-     * Get the non-unique display name of the user viewing a particular instanceId.
+     * Get the non-unique display name of the user viewing a particular instance. Note
+     * that this cannot be used to look up member names of people who are not in the room.
      *
-     * @param instanceId an instanceId or 0 to get this instance's viewer's display name.
+     * @param id a permanent memberId or transient guestId, or 0 to just get this instance's
+     * viewer name without first calling getInstanceId() to get the id.
      *
      * @return a String or null if the viewer is unknown.
      */
-    public function getViewerName (instanceId :int = 0) :String
+    public function getViewerName (id :int = 0) :String
     {
-        return callHostCode("getViewerName_v1", instanceId) as String;
+        return callHostCode("getViewerName_v1", id) as String;
     }
 
     /**
