@@ -30,7 +30,7 @@ public class @project@ extends Sprite
 
         // Uncomment this to export custom avatar actions
         // _control.addEventListener(ControlEvent.ACTION_TRIGGERED, handleAction);
-        // _control.setActions("Test action");
+        // _control.registerActions("Test action");
 
         appearanceChanged();
     }

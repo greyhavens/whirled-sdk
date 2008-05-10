@@ -160,6 +160,15 @@
     </exec>
   </target>
 
+  <target name="test-decor">
+    <!-- TODO: create a decor viewer that emulates the server environ and loads up the
+      decor in two flashplayer instances. -->
+    <echo>NOTE: decor projects do not currently have a test environment.</echo>
+    <exec executable="${player.path}">
+      <arg value="${app.name}.swf"/>
+    </exec>
+  </target>
+
   <target name="test-toy">
     <!-- TODO: create a toy viewer that emulates the server environ and loads up the
       toy in two flashplayer instances. -->

@@ -30,11 +30,11 @@ public class @project@ extends Sprite
         // instantiate and wire up our control
         _control = new FurniControl(this);
 
-        // To listen for trigger events, uncomment this
-        // _control.addEventListener(ControlEvent.EVENT_TRIGGERED, eventTriggered);
+        // To listen for action events, uncomment this
+        // _control.addEventListener(ControlEvent.ACTION_TRIGGERED, handleActionTriggered);
 
         // To listen for memory events, uncomment this
-        // _control.addEventListener(ControlEvent.MEMORY_CHANGED, memoryChanged);
+        // _control.addEventListener(ControlEvent.MEMORY_CHANGED, handleMemoryChanged);
 
         // To set up a periodic tick callback, uncomment this
         // _control.addEventListener(TimerEvent.TIMER, handleTick);
@@ -50,17 +50,17 @@ public class @project@ extends Sprite
     }
 
     /**
-     * This is called when a trigger event is broadcast.
+     * This is called when an action event is triggered.
      */
-    protected function eventTriggered (event :ControlEvent) :void
+    protected function handleActionTriggered (event :ControlEvent) :void
     {
-        trace("event triggered: " + event.name + ", value: " + event.value);
+        trace("action triggered: " + event.name + ", value: " + event.value);
     }
 
     /**
      * This is called when your Furni's memory is updated.
      */
-    protected function memoryChanged (event :ControlEvent) :void
+    protected function handleMemoryChanged (event :ControlEvent) :void
     {
         trace("memory changed: " + event.name + " -> " + event.value);
     }

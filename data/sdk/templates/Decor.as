@@ -1,7 +1,7 @@
 //
 // $Id$
 //
-// @project@ - a pet for Whirled
+// @project@ - room decor for Whirled
 
 package {
 
@@ -10,17 +10,17 @@ import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.TimerEvent;
 
-import com.whirled.PetControl;
+import com.whirled.DecorControl;
 import com.whirled.ControlEvent;
 
 /**
- * @project@ is the coolest Pet ever.
+ * @project@ is the coolest Decor ever.
  */
-[SWF(width="100", height="100")]
+[SWF(width="1000", height="500")]
 public class @project@ extends Sprite
 {
-    public static const WIDTH :int = 100;
-    public static const HEIGHT :int = 100;
+    public static const WIDTH :int = 1000;
+    public static const HEIGHT :int = 500;
 
     public function @project@ ()
     {
@@ -28,25 +28,13 @@ public class @project@ extends Sprite
         root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
 
         // instantiate and wire up our control
-        _control = new PetControl(this);
+        _control = new DecorControl(this);
 
-        // To listen for trigger events, uncomment this
+        // To listen for action events, uncomment this
         // _control.addEventListener(ControlEvent.ACTION_TRIGGERED, handleActionTriggered);
 
         // To listen for memory events, uncomment this
         // _control.addEventListener(ControlEvent.MEMORY_CHANGED, handleMemoryChanged);
-
-        // To set up a periodic tick callback, uncomment this
-        // _control.addEventListener(TimerEvent.TIMER, handleTick);
-        // _control.setTickInterval(1000);
-    }
-
-    /**
-     * This is called if you register a tick callback.
-     */
-    protected function handleTick (event :Object = null) :void
-    {
-        trace("ticked");
     }
 
     /**
@@ -58,7 +46,7 @@ public class @project@ extends Sprite
     }
 
     /**
-     * This is called when your Pet's memory is updated.
+     * This is called when your decor's memory is updated.
      */
     protected function handleMemoryChanged (event :ControlEvent) :void
     {
@@ -66,7 +54,7 @@ public class @project@ extends Sprite
     }
 
     /**
-     * This is called when your pet is unloaded.
+     * This is called when your furni is unloaded.
      */
     protected function handleUnload (event :Event) :void
     {
@@ -74,6 +62,6 @@ public class @project@ extends Sprite
         // unregistering listeners to any events - especially Event.ENTER_FRAME
     }
 
-    protected var _control :PetControl;
+    protected var _control :DecorControl;
 }
 }
