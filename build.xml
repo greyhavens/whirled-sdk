@@ -171,6 +171,8 @@
       <fileset dir="${projects.dir}/whirled" includes="src/as/nochump/**"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
     </copy>
+    <copy file="${projects.dir}/narya/src/as/com/threerings/util/env/Environment.as-fp"
+          tofile="${sdk.build}/src/as/com/threerings/util/env/Environment.as"/>
     <!-- copy contributed files -->
     <mkdir dir="${sdk.build}/contrib"/>
     <copy todir="${sdk.build}/contrib">
