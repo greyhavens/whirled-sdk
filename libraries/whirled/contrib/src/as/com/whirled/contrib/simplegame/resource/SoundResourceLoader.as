@@ -21,14 +21,17 @@
 package com.whirled.contrib.simplegame.resource {
 
 import flash.events.Event;
-import flash.events.EventDispatcher;
 import flash.events.IOErrorEvent;
 import flash.media.Sound;
 import flash.net.URLRequest;
 
-public class SoundResourceLoader extends EventDispatcher
+public class SoundResourceLoader
     implements ResourceLoader
 {
+    public static const TYPE_SFX :int = 0;
+    public static const TYPE_MUSIC :int = 1;
+    public static const TYPE__LIMIT :int = 2;
+
     public function SoundResourceLoader (resourceName :String, loadParams :Object)
     {
         _resourceName = resourceName;
@@ -45,9 +48,28 @@ public class SoundResourceLoader extends EventDispatcher
         return _sound;
     }
 
-    public function load () :void
+    public function get type () :int
     {
+        return _type;
+    }
+
+    public function get priority () :int
+    {
+        return _priority;
+    }
+
+    public function load (completeCallback :Function, errorCallback :Function) :void
+    {
+        _completeCallback = completeCallback;
+        _errorCallback = errorCallback;
+
         // parse loadParams
+        _type = (_loadParams.hasOwnProperty("type") && _loadParams["type"] == "music" ?
+            TYPE_MUSIC :
+            TYPE_SFX);
+
+        _priority = (_loadParams.hasOwnProperty("priority") ? int(_loadParams["priority"]) : 0);
+
         if (_loadParams.hasOwnProperty("url")) {
             _sound = new Sound(new URLRequest(_loadParams["url"]));
             _sound.addEventListener(Event.COMPLETE, onInit);
@@ -78,7 +100,7 @@ public class SoundResourceLoader extends EventDispatcher
 
     protected function onInit (...ignored) :void
     {
-        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.LOADED));
+        _completeCallback(this);
     }
 
     protected function onIOError (e :IOErrorEvent) :void
@@ -88,12 +110,17 @@ public class SoundResourceLoader extends EventDispatcher
 
     protected function onError (errString :String) :void
     {
-        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR, "SoundResourceLoader (" + _resourceName + "): " + errString));
+        _errorCallback(this, "SoundResourceLoader (" + _resourceName + "): " + errString);
     }
 
     protected var _resourceName :String;
     protected var _loadParams :Object;
     protected var _sound :Sound;
+    protected var _type :int;
+    protected var _priority :int;
+
+    protected var _completeCallback :Function;
+    protected var _errorCallback :Function;
 }
 
 }

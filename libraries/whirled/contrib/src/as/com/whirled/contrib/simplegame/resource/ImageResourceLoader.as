@@ -24,12 +24,11 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Loader;
 import flash.events.Event;
-import flash.events.EventDispatcher;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
-public class ImageResourceLoader extends EventDispatcher
+public class ImageResourceLoader
     implements ResourceLoader
 {
     public function ImageResourceLoader (resourceName :String, loadParams :Object)
@@ -57,8 +56,11 @@ public class ImageResourceLoader extends EventDispatcher
         return new Bitmap(this.bitmapData, pixelSnapping, smoothing);
     }
 
-    public function load () :void
+    public function load (completeCallback :Function, errorCallback :Function) :void
     {
+        _completeCallback = completeCallback;
+        _errorCallback = errorCallback;
+
         // parse loadParams
         if (_loadParams.hasOwnProperty("url")) {
             _loader.load(new URLRequest(_loadParams["url"]));
@@ -84,17 +86,19 @@ public class ImageResourceLoader extends EventDispatcher
 
     protected function onInit (e :Event) :void
     {
-        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.LOADED));
+        _completeCallback(this);
     }
 
     protected function onError (e :IOErrorEvent) :void
     {
-        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR, "ImageResourceLoader (" + _resourceName + "): " + e.text));
+        _errorCallback(this, "ImageResourceLoader (" + _resourceName + "): " + e.text);
     }
 
     protected var _resourceName :String;
     protected var _loadParams :Object;
     protected var _loader :Loader;
+    protected var _completeCallback :Function;
+    protected var _errorCallback :Function;
 }
 
 }

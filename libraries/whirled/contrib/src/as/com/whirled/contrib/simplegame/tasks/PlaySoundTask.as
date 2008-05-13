@@ -22,13 +22,12 @@ package com.whirled.contrib.simplegame.tasks {
 
 import com.whirled.contrib.simplegame.*;
 import com.whirled.contrib.simplegame.audio.*;
-
-import flash.media.Sound;
+import com.whirled.contrib.simplegame.resource.SoundResourceLoader;
 
 public class PlaySoundTask
     implements ObjectTask
 {
-    public function PlaySoundTask (sound :Sound, waitForComplete :Boolean, parentControls :AudioControllerContainer = null)
+    public function PlaySoundTask (sound :SoundResourceLoader, waitForComplete :Boolean, parentControls :AudioControls = null)
     {
         _sound = sound;
         _waitForComplete = waitForComplete;
@@ -38,7 +37,7 @@ public class PlaySoundTask
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         if (null == _channel) {
-            _channel = Audio.play(_sound, _parentControls);
+            _channel = AudioManager.instance.playSound(_sound, _parentControls);
         }
 
         return (!_waitForComplete || !_channel.isPlaying);
@@ -54,10 +53,10 @@ public class PlaySoundTask
         return false;
     }
 
-    protected var _sound :Sound;
+    protected var _sound :SoundResourceLoader;
     protected var _waitForComplete :Boolean;
-    protected var _parentControls :AudioControllerContainer;
-    protected var _channel :GameSoundChannel;
+    protected var _parentControls :AudioControls;
+    protected var _channel :AudioChannel;
 }
 
 }

@@ -23,14 +23,13 @@ package com.whirled.contrib.simplegame.resource {
 import flash.display.DisplayObject;
 import flash.display.Loader;
 import flash.events.Event;
-import flash.events.EventDispatcher;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
 import flash.utils.ByteArray;
 
-public class SwfResourceLoader extends EventDispatcher
+public class SwfResourceLoader
     implements ResourceLoader
 {
     public function SwfResourceLoader (resourceName :String, loadParams :Object)
@@ -79,8 +78,11 @@ public class SwfResourceLoader extends EventDispatcher
         return this.getSymbol(name) as Class;
     }
 
-    public function load () :void
+    public function load (completeCallback :Function, errorCallback :Function) :void
     {
+        _completeCallback = completeCallback;
+        _errorCallback = errorCallback;
+
         // parse loadParams
 
         var context :LoaderContext = new LoaderContext();
@@ -113,19 +115,21 @@ public class SwfResourceLoader extends EventDispatcher
         _loader.unload();
     }
 
-    protected function onInit (e :Event) :void
+    protected function onInit (...ignored) :void
     {
-        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.LOADED));
+        _completeCallback(this);
     }
 
     protected function onError (e :IOErrorEvent) :void
     {
-        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR, "SwfResouceLoader (" + _resourceName + "): " + e.text));
+        _errorCallback(this, "SwfResouceLoader (" + _resourceName + "): " + e.text);
     }
 
     protected var _resourceName :String;
     protected var _loadParams :Object;
     protected var _loader :Loader;
+    protected var _completeCallback :Function;
+    protected var _errorCallback :Function;
 }
 
 }

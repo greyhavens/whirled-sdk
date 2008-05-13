@@ -20,15 +20,19 @@
 
 package com.whirled.contrib.simplegame.audio {
 
-public class AudioControllerBase
-    implements AudioController
+public class AudioControls
 {
-    public function AudioControllerBase (parentControls :AudioControllerContainer = null)
+    public function AudioControls (parentControls :AudioControls = null)
     {
         if (null != parentControls) {
-            _parent = parentControls;
-            _parent.attachChild(this);
+            _parentControls = parentControls;
+            _parentControls.attachChild(this);
         }
+    }
+
+    internal function attachChild (child :AudioControls) :void
+    {
+        _children.push(child);
     }
 
     public function retain () :void
@@ -43,14 +47,14 @@ public class AudioControllerBase
         }
     }
 
-    public function volume (val :Number) :AudioController
+    public function volume (val :Number) :AudioControls
     {
         _localState.volume = Math.max(val, 0);
         _localState.volume = Math.min(_localState.volume, 1);
         return this;
     }
 
-    public function volumeTo (targetVal :Number, time :Number) :AudioController
+    public function volumeTo (targetVal :Number, time :Number) :AudioControls
     {
         if (time <= 0) {
             this.volume(targetVal);
@@ -67,24 +71,24 @@ public class AudioControllerBase
         return this;
     }
 
-    public function fadeOut (time :Number) :AudioController
+    public function fadeOut (time :Number) :AudioControls
     {
         return this.volumeTo(0, time);
     }
 
-    public function fadeIn (time :Number) :AudioController
+    public function fadeIn (time :Number) :AudioControls
     {
         return this.volumeTo(1, time);
     }
 
-    public function pan (val :Number) :AudioController
+    public function pan (val :Number) :AudioControls
     {
         _localState.pan = Math.max(val, -1);
         _localState.pan = Math.min(_localState.pan, 1);
         return this;
     }
 
-    public function panTo (targetVal :Number, time :Number) :AudioController
+    public function panTo (targetVal :Number, time :Number) :AudioControls
     {
         if (time <= 0) {
             this.pan(targetVal);
@@ -101,7 +105,7 @@ public class AudioControllerBase
         return this;
     }
 
-    public function pause (val :Boolean) :AudioController
+    public function pause (val :Boolean) :AudioControls
     {
         _localState.paused = val;
         _pauseCountdown = 0;
@@ -109,7 +113,7 @@ public class AudioControllerBase
         return this;
     }
 
-    public function pauseAfter (time :Number) :AudioController
+    public function pauseAfter (time :Number) :AudioControls
     {
         if (time <= 0) {
             this.pause(true);
@@ -120,7 +124,7 @@ public class AudioControllerBase
         return this;
     }
 
-    public function unpauseAfter (time :Number) :AudioController
+    public function unpauseAfter (time :Number) :AudioControls
     {
         if (time <= 0) {
             this.pause(false);
@@ -131,7 +135,7 @@ public class AudioControllerBase
         return this;
     }
 
-    public function mute (val :Boolean) :AudioController
+    public function mute (val :Boolean) :AudioControls
     {
         _localState.muted = val;
         _muteCountdown = 0;
@@ -139,7 +143,7 @@ public class AudioControllerBase
         return this;
     }
 
-    public function muteAfter (time :Number) :AudioController
+    public function muteAfter (time :Number) :AudioControls
     {
         if (time <= 0) {
             this.mute(true);
@@ -150,7 +154,7 @@ public class AudioControllerBase
         return this;
     }
 
-    public function unmuteAfter (time :Number) :AudioController
+    public function unmuteAfter (time :Number) :AudioControls
     {
         if (time <= 0) {
             this.mute(false);
@@ -159,11 +163,6 @@ public class AudioControllerBase
         }
 
         return this;
-    }
-
-    public function stop () :void
-    {
-        // no-op
     }
 
     public function update (dt :Number, parentState :AudioState) :void
@@ -217,24 +216,40 @@ public class AudioControllerBase
         }
 
         _globalState = AudioState.combine(_localState, parentState, _globalState);
+
+        // update children
+        for (var i :int = 0; i < _children.length; ++i) {
+            var childController :AudioControls = _children[i];
+            childController.update(dt, _globalState);
+            if (childController.needsCleanup) {
+                // @TODO - use a linked list?
+                _children.splice(i--, 1);
+            }
+        }
     }
 
-    public function computeState () :AudioState
+    public function updateStateNow () :AudioState
     {
-        if (null != _parent) {
-            _globalState = AudioState.combine(_localState, _parent.computeState(), _globalState);
+        if (null != _parentControls) {
+            _globalState = AudioState.combine(_localState, _parentControls.updateStateNow(), _globalState);
             return _globalState;
         } else {
             return _localState;
         }
     }
 
-    public function get needsCleanup () :Boolean
+    public function get state () :AudioState
     {
-        return (_refCount <= 0);
+        return (null != _parentControls ? _globalState : _localState);
     }
 
-    protected var _parent :AudioControllerContainer;
+    public function get needsCleanup () :Boolean
+    {
+        return (_refCount <= 0 && _children.length == 0);
+    }
+
+    protected var _parentControls :AudioControls;
+    protected var _children :Array = [];
 
     protected var _refCount :int;
 

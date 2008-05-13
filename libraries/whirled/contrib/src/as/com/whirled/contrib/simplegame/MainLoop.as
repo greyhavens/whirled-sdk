@@ -87,10 +87,10 @@ public final class MainLoop
 
         Rand.setup();
 
-        // instantiate singleton
-        if (null == ResourceLoaderRegistry.instance) {
-            new ResourceLoaderRegistry();
-        }
+        // instantiate singletons
+        new ResourceLoaderRegistry();
+        new ResourceManager();
+        new AudioManager();
 
         // add resource factories
         ResourceLoaderRegistry.instance.registerLoaderClass("image", ImageResourceLoader);
@@ -99,6 +99,31 @@ public final class MainLoop
         ResourceLoaderRegistry.instance.registerLoaderClass("sound", SoundResourceLoader);
 
         _hasSetup = true;
+    }
+
+    /**
+     * Call this function before the application shuts down to release
+     * memory and disconnect event handlers.
+     *
+     * Most applications will want to install an Event.REMOVED_FROM_STAGE
+     * handler on the main sprite, and call shutdown from there.
+     */
+    public function shutdown () :void
+    {
+        _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
+
+        this.popAllModes();
+        this.handleModeTransitions();
+
+        if (_hasSetup) {
+            AudioManager.instance.shutdown();
+            ResourceManager.instance.shutdown();
+            ResourceLoaderRegistry.instance.shutdown();
+
+            _hasSetup = false;
+        }
+
+        g_instance = null;
     }
 
     /**
@@ -119,23 +144,6 @@ public final class MainLoop
         _hostSprite.addEventListener(Event.ENTER_FRAME, update);
 
         _lastTime = this.elapsedSeconds;
-    }
-
-    /**
-     * Call this function before the application shuts down to release
-     * memory and disconnect event handlers.
-     *
-     * Most applications will want to install an Event.REMOVED_FROM_STAGE
-     * handler on the main sprite, and call shutdown from there.
-     */
-    public function shutdown () :void
-    {
-        _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
-
-        this.popAllModes();
-        this.handleModeTransitions();
-
-        g_instance = null;
     }
 
     /**
@@ -323,7 +331,7 @@ public final class MainLoop
         }
 
         // update audio
-        Audio.masterControls.update(dt, AudioState.defaultState());
+        AudioManager.instance.update(dt);
 
         _lastTime = newTime;
     }

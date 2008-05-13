@@ -24,14 +24,13 @@ import com.threerings.util.Util;
 
 import flash.events.ErrorEvent;
 import flash.events.Event;
-import flash.events.EventDispatcher;
 import flash.events.IOErrorEvent;
 import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
-public class XmlResourceLoader extends EventDispatcher
+public class XmlResourceLoader
     implements ResourceLoader
 {
     public function XmlResourceLoader (resourceName :String, loadParams :Object, objectGenerator :Function = null)
@@ -56,8 +55,11 @@ public class XmlResourceLoader extends EventDispatcher
         return _generatedObject;
     }
 
-    public function load () :void
+    public function load (completeCallback :Function, errorCallback :Function) :void
     {
+        _completeCallback = completeCallback;
+        _errorCallback = errorCallback;
+
         if (_loadParams.hasOwnProperty("url")) {
             this.loadFromURL(_loadParams["url"]);
         } else if (_loadParams.hasOwnProperty("embeddedClass")) {
@@ -119,7 +121,7 @@ public class XmlResourceLoader extends EventDispatcher
             }
         }
 
-        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.LOADED));
+        _completeCallback(this);
     }
 
     protected function handleLoadError (e :ErrorEvent) :void
@@ -129,7 +131,7 @@ public class XmlResourceLoader extends EventDispatcher
 
     protected function onError (errText :String) :void
     {
-        this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.ERROR, "XmlResourceLoader (" + _resourceName + "): " + errText));
+        _errorCallback(this, "XmlResourceLoader (" + _resourceName + "): " + errText);
     }
 
     protected var _resourceName :String;
@@ -138,6 +140,8 @@ public class XmlResourceLoader extends EventDispatcher
     protected var _xml :XML;
     protected var _generatedObject :*;
     protected var _objectGenerator :Function;
+    protected var _completeCallback :Function;
+    protected var _errorCallback :Function;
 }
 
 }

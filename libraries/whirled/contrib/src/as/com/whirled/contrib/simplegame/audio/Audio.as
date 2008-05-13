@@ -24,34 +24,7 @@ import flash.media.Sound;
 
 public class Audio
 {
-    public static function createChannel (sound :Sound = null, parentControls :AudioControllerContainer = null) :GameSoundChannel
-    {
-        return new GameSoundChannel(null != parentControls ? parentControls :masterControls).sound(sound);
-    }
 
-    public static function play (sound :Sound, parentControls :AudioControllerContainer = null) :GameSoundChannel
-    {
-        var gsm :GameSoundChannel = createChannel(sound, parentControls);
-        gsm.play();
-        return gsm;
-    }
-
-    public static function createControls (parentControls :AudioControllerContainer = null) :AudioControllerContainer
-    {
-        return new AudioControllerContainer(null != parentControls ? parentControls : masterControls);
-    }
-
-    public static function get masterControls () :AudioControllerContainer
-    {
-        if (null == g_masterControls) {
-            g_masterControls = new AudioControllerContainer();
-            g_masterControls.volume(0.5);
-        }
-
-        return g_masterControls;
-    }
-
-    protected static var g_masterControls :AudioControllerContainer;
 }
 
 }

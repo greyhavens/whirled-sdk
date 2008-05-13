@@ -20,36 +20,42 @@
 
 package com.whirled.contrib.simplegame.audio {
 
-public class AudioState
+import com.whirled.contrib.simplegame.resource.SoundResourceLoader;
+
+import flash.media.SoundChannel;
+
+public class AudioChannel
 {
-    public var volume :Number = 1;
-    public var pan :Number = 0;
-    public var paused :Boolean;
-    public var muted :Boolean;
-
-    public function get actualVolume () :Number
+    public function get isPlaying () :Boolean
     {
-        return (muted ? 0 : volume);
+        return (null != controls);
     }
 
-    public static function defaultState () :AudioState
+    public function get isPaused () :Boolean
     {
-        return new AudioState();
+        return (null != controls && null == channel);
     }
 
-    public static function combine (a :AudioState, b :AudioState, into :AudioState = null) :AudioState
+    public function get audioControls () :AudioControls
     {
-        if (null == into) {
-            into = new AudioState();
-        }
-
-        into.volume = a.volume * b.volume;
-        into.pan = (a.pan + b.pan) * 0.5;
-        into.paused = a.paused || b.paused;
-        into.muted = a.muted || b.muted;
-
-        return into;
+        return controls;
     }
+
+    public function get debugDescription () :String
+    {
+        return "sound: '" + sound.resourceName + "' id: " + id;
+    }
+
+    // managed by AudioManager
+
+    internal var id :int = -1;
+    internal var completeHandler :Function;
+    internal var controls :AudioControls;
+    internal var sound :SoundResourceLoader;
+    internal var channel :SoundChannel;
+    internal var playPosition :Number;
+    internal var startTime :Number;
+    internal var loopCount :int;
 }
 
 }

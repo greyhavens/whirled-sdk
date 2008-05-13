@@ -20,13 +20,11 @@
 
 package com.whirled.contrib.simplegame.resource {
 
-import flash.events.IEventDispatcher;
-
-public interface ResourceLoader extends IEventDispatcher
+public interface ResourceLoader
 {
     function get resourceName () :String;
 
-    function load () :void;
+    function load (completeCallback :Function, errorCallback :Function) :void;
     function unload () :void;
 }
 

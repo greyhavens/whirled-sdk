@@ -19,30 +19,35 @@
 // $Id$
 
 package com.whirled.contrib.simplegame.resource {
-    
+
 import com.threerings.util.HashMap;
-    
+
 public class ResourceLoaderRegistry
 {
     public static function get instance () :ResourceLoaderRegistry
     {
         return g_instance;
     }
-    
+
     public function ResourceLoaderRegistry ()
     {
         if (null != g_instance) {
             throw new Error("ResourceLoaderRegistry singleton already instantiated");
         }
-        
+
         g_instance = this;
     }
-    
+
+    public function shutdown () :void
+    {
+        g_instance = null;
+    }
+
     public function registerLoaderClass (resourceType :String, loaderClass :Class) :void
     {
         _loaderClasses.put(resourceType, loaderClass);
     }
-    
+
     public function createLoader (resourceType :String, resourceName :String, loadParams :*) :ResourceLoader
     {
         var loaderClass :Class = _loaderClasses.get(resourceType);
@@ -52,7 +57,7 @@ public class ResourceLoaderRegistry
 
         return null;
     }
-    
+
     protected var _loaderClasses :HashMap = new HashMap();
     protected static var g_instance :ResourceLoaderRegistry;
 

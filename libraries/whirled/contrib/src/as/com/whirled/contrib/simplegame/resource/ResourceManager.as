@@ -22,13 +22,31 @@ package com.whirled.contrib.simplegame.resource {
 
 import com.threerings.util.HashMap;
 
-import flash.events.EventDispatcher;
-
 [Event(name="Loaded", type="com.whirled.contrib.simplegame.resource.ResourceLoadEvent")]
 [Event(name="Error", type="com.whirled.contrib.simplegame.resource.ResourceLoadEvent")]
 
-public class ResourceManager extends EventDispatcher
+public class ResourceManager
 {
+    public static function get instance () :ResourceManager
+    {
+        return g_instance;
+    }
+
+    public function ResourceManager ()
+    {
+        if (null != g_instance) {
+            throw new Error("ResourceManager instance already exists");
+        }
+
+        g_instance = this;
+    }
+
+    public function shutdown () :void
+    {
+        this.unloadAll();
+        g_instance = null;
+    }
+
     public function pendResourceLoad (resourceType :String, resourceName: String, loadParams :*) :void
     {
         if (_loading) {
@@ -46,19 +64,21 @@ public class ResourceManager extends EventDispatcher
         }
 
         _pendingResources.put(resourceName, loader);
-        this.subscribeToResourceLoaderEvents(loader);
     }
 
-    public function load () :void
+    public function load (loadCompleteCallback :Function = null, loadErrorCallback :Function = null) :void
     {
         if (_loading) {
             throw new Error("A load operation is already in progress");
         }
 
+        _completeCallback = loadCompleteCallback;
+        _errorCallback = loadErrorCallback;
+
         _loading = true;
 
         for each (var rsrc :ResourceLoader in _pendingResources.values()) {
-            rsrc.load();
+            rsrc.load(onSingleResourceLoaded, onSingleResourceError);
         }
     }
 
@@ -69,7 +89,6 @@ public class ResourceManager extends EventDispatcher
         }
 
         for each (var rsrc :ResourceLoader in _pendingResources.values()) {
-            this.unsubscribeFromResourceLoaderEvents(rsrc);
             rsrc.unload();
         }
 
@@ -118,57 +137,45 @@ public class ResourceManager extends EventDispatcher
         return _loading;
     }
 
-    protected function subscribeToResourceLoaderEvents (resourceLoader :ResourceLoader) :void
+    protected function onSingleResourceLoaded (rsrc :ResourceLoader) :void
     {
-        resourceLoader.addEventListener(ResourceLoadEvent.ERROR, onSingleResourceError);
-        resourceLoader.addEventListener(ResourceLoadEvent.LOADED, onSingleResourceLoaded);
-    }
-
-    protected function unsubscribeFromResourceLoaderEvents (resourceLoader :ResourceLoader) :void
-    {
-        resourceLoader.removeEventListener(ResourceLoadEvent.ERROR, onSingleResourceError);
-        resourceLoader.removeEventListener(ResourceLoadEvent.LOADED, onSingleResourceLoaded);
-    }
-
-    protected function onSingleResourceLoaded (e :ResourceLoadEvent) :void
-    {
-        var rsrc :ResourceLoader = (e.target as ResourceLoader);
         this.cleanupPendingResource(rsrc.resourceName);
 
         _resources.put(rsrc.resourceName, rsrc);
 
         if (_pendingResources.size() == 0) {
             _loading = false;
-            this.dispatchEvent(new ResourceLoadEvent(ResourceLoadEvent.LOADED));
+            if (null != _completeCallback) {
+                _completeCallback();
+            }
         }
     }
 
-    protected function onSingleResourceError (e :ResourceLoadEvent) :void
+    protected function onSingleResourceError (rsrc :ResourceLoader, err :String) :void
     {
-        var rsrc :ResourceLoader = (e.target as ResourceLoader);
         this.cleanupPendingResource(rsrc.resourceName);
 
         // upon error, cancel all pending loads
         this.cancelLoad();
 
-        // redispatch to all our listeners
-        this.dispatchEvent(e);
+        if (null != _errorCallback) {
+            _errorCallback(err);
+        }
     }
 
     protected function cleanupPendingResource (resourceName :String) :ResourceLoader
     {
-        var rsrc :ResourceLoader = _pendingResources.remove(resourceName);
-        if (null != rsrc) {
-            this.unsubscribeFromResourceLoaderEvents(rsrc);
-        }
-
-        return rsrc;
+        return _pendingResources.remove(resourceName);
     }
 
     protected var _loading :Boolean;
+    protected var _completeCallback :Function;
+    protected var _errorCallback :Function;
 
     protected var _resources :HashMap = new HashMap();
     protected var _pendingResources :HashMap = new HashMap();
+
+    protected static var g_instance :ResourceManager;
 }
 
 }
