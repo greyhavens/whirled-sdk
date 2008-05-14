@@ -98,7 +98,7 @@ public class SimObject extends EventDispatcher
     }
 
     /** Adds a named task to this SimObject. */
-    public function addNamedTask (name :String, task :ObjectTask) :void
+    public function addNamedTask (name :String, task :ObjectTask, removeExistingTasks :Boolean = false) :void
     {
         if (null == task) {
             throw new ArgumentError("task must be non-null");
@@ -112,6 +112,8 @@ public class SimObject extends EventDispatcher
         if (null == namedTaskContainer) {
             namedTaskContainer = new ParallelTask();
             _namedTasks.put(name, namedTaskContainer);
+        } else if (removeExistingTasks) {
+            namedTaskContainer.removeAllTasks();
         }
 
         namedTaskContainer.addTask(task);
