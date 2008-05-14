@@ -37,7 +37,7 @@ public class WhirledGamePanel extends Canvas
     implements PlaceView
 {
     /** The game object backend. */
-    public var backend :GameBackend;
+    public var backend :FlashGameBackend;
 
     public function WhirledGamePanel (ctx :CrowdContext, ctrl :WhirledGameController)
     {
@@ -187,9 +187,9 @@ public class WhirledGamePanel extends Canvas
     /**
      * Creates the backend object that will handle requests from user code.
      */
-    protected function createBackend () :GameBackend
+    protected function createBackend () :FlashGameBackend
     {
-        return new GameBackend(_ctx, _gameObj, _ctrl);
+        return new FlashGameBackend(_ctx, _gameObj, _ctrl);
     }
 
     /**

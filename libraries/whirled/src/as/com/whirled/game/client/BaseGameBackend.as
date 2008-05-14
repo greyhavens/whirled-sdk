@@ -78,12 +78,12 @@ import com.whirled.game.data.WhirledGameOccupantInfo;
 /**
  * Manages the backend of the game.
  */
-public class GameBackend
+public class BaseGameBackend
     implements MessageListener, SetListener, ElementUpdateListener, PropertySetListener, ChatDisplay
 {
     public var log :Log = Log.getLog(this);
 
-    public function GameBackend (
+    public function BaseGameBackend (
         ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :WhirledGameController)
     {
         _ctx = ctx;
@@ -121,11 +121,6 @@ public class GameBackend
         return (_userFuncs != null);
     }
 
-    public function setContainer (container :GameContainer) :void
-    {
-        _container = container;
-    }
-
     public function shutdown () :void
     {
         _gameObj.removeListener(this);
@@ -133,15 +128,6 @@ public class GameBackend
         _ctx.getClient().getClientObject().removeListener(_userListener);
         callUserCode("connectionClosed_v1");
         _userFuncs = null; // disconnect
-    }
-
-    /**
-     * Convenience function to get our name.
-     */
-    public function getUsername () :Name
-    {
-        var body :BodyObject = (_ctx.getClient().getClientObject() as BodyObject);
-        return body.getVisibleName();
     }
 
     /**
@@ -196,14 +182,6 @@ public class GameBackend
     public function roundStateChanged (started :Boolean) :void
     {
         callUserCode("roundStateChanged_v1", started);
-    }
-
-    /**
-     * Called by the WhirledGamePanel when the size of the game area has changed.
-     */
-    public function sizeChanged () :void
-    {
-        callUserCode("sizeChanged_v1", getSize_v1());
     }
 
     // from SetListener
@@ -301,8 +279,10 @@ public class GameBackend
             callUserCode("messageReceived_v1", mname, ObjectMarshaller.decode(args[1]));
 
         } else if (WhirledGameObject.GAME_CHAT == name) {
-            // chat sent by the game, let's route it like localChat, which is also sent by the game
-            localChat_v1(String(event.getArgs()[0]));
+            // chat sent by the game, route to char director
+            var msg :String = String(event.getArgs()[0]);
+            validateChat(msg);
+            _ctx.getChatDirector().displayInfo(null, MessageBundle.taint(msg));
 
         } else if (WhirledGameObject.TICKER == name) {
             var targs :Array = event.getArgs();
@@ -351,15 +331,6 @@ public class GameBackend
             }
         }
         return true;
-    }
-
-    /**
-     * Handle key events on our container and pass them into the game.
-     */
-    protected function handleKeyEvent (evt :KeyboardEvent) :void
-    {
-        // dispatch a cloned copy of the event, so that it's safe
-        _keyDispatcher(evt.clone());
     }
 
     /**
@@ -524,7 +495,6 @@ public class GameBackend
     protected function setUserCodeProperties (o :Object) :void
     {
         // here we would handle adapting old functions to a new version
-        _keyDispatcher = (o["dispatchEvent_v1"] as Function);
         _userFuncs = o;
     }
 
@@ -561,21 +531,7 @@ public class GameBackend
 
         // GameControl
         o["commitTransaction"] = commitTransaction_v1;
-        o["focusContainer_v1"] = focusContainer_v1;
         o["startTransaction"] = startTransaction_v1;
-
-        // .local
-        o["alterKeyEvents_v1"] = alterKeyEvents_v1;
-        o["backToWhirled_v1"] = backToWhirled_v1;
-        o["clearScores_v1"] = clearScores_v1;
-        o["filter_v1"] = filter_v1;
-        o["getHeadShot_v2"] = getHeadShot_v2;
-        o["getSize_v1"] = getSize_v1;
-        o["localChat_v1"] = localChat_v1;
-        o["setMappedScores_v1"] = setMappedScores_v1;
-        o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
-        o["setPlayerScores_v1"] = setPlayerScores_v1;
-        o["setShowButtons_v1"] = setShowButtons_v1;
 
         // .net
         o["sendMessage_v2"] = sendMessage_v2;
@@ -598,20 +554,16 @@ public class GameBackend
         o["getControllerId_v1"] = getControllerId_v1;
         o["getItemPacks_v1"] = getItemPacks_v1;
         o["getLevelPacks_v1"] = getLevelPacks_v1;
-        o["getMyId_v1"] = getMyId_v1;
         o["getOccupants_v1"] = getOccupants_v1;
         o["getOccupantName_v1"] = getOccupantName_v1;
         o["getRound_v1"] = getRound_v1;
         o["getTurnHolder_v1"] = getTurnHolder_v1;
         o["isInPlay_v1"] = isInPlay_v1;
-        o["isMyTurn_v1"] = isMyTurn_v1;
-        o["playerReady_v1"] = playerReady_v1;
         o["restartGameIn_v1"] = restartGameIn_v1;
         o["sendChat_v1"] = sendChat_v1;
         o["startNextTurn_v1"] = startNextTurn_v1;
 
         // .game.seating
-        o["getMyPosition_v1"] = getMyPosition_v1;
         o["getPlayers_v1"] = getPlayers_v1;
         o["getPlayerPosition_v1"] = getPlayerPosition_v1;
 
@@ -632,9 +584,7 @@ public class GameBackend
         o["endTurn_v2"] = startNextTurn_v1; // it's the same!
         o["getAvailableFlow_v1"] = getAvailableFlow_v1;
         o["getDictionaryLetterSet_v1"] = getDictionaryLetterSet_v1;
-        o["getStageBounds_v1"] = getStageBounds_v1;
         o["setProperty_v1"] = setProperty_v1;
-        o["getHeadShot_v1"] = getHeadShot_v1;
     }
 
     /**
@@ -670,12 +620,6 @@ public class GameBackend
 
     //---- GameControl -----------------------------------------------------
 
-    protected function focusContainer_v1 () :void
-    {
-        validateConnected();
-        _container.setFocus();
-    }
-
     /**
      * Starts a transaction that will group all game state changes into a single message.
      */
@@ -691,80 +635,6 @@ public class GameBackend
     protected function commitTransaction_v1 () :void
     {
         _ctx.getClient().getInvocationDirector().commitTransaction();
-    }
-
-    //---- .local ----------------------------------------------------------
-
-    protected function alterKeyEvents_v1 (keyEventType :String, add :Boolean) :void
-    {
-        validateConnected();
-        if (add) {
-            _container.addEventListener(keyEventType, handleKeyEvent);
-        } else {
-            _container.removeEventListener(keyEventType, handleKeyEvent);
-        }
-    }
-
-    protected function backToWhirled_v1 (showLobby :Boolean = false) :void
-    {
-        _ctrl.backToWhirled(showLobby);
-    }
-
-    protected function localChat_v1 (msg :String) :void
-    {
-        validateChat(msg);
-        // The sendChat() messages will end up being routed through this method on each client.
-        // TODO: make this look distinct from other system chat
-        _ctx.getChatDirector().displayInfo(null, MessageBundle.taint(msg));
-    }
-
-    protected function filter_v1 (text :String) :String
-    {
-        return _ctx.getChatDirector().filter(text, null, true);
-    }
-
-    /**
-     * Get the size of the game area.
-     */
-    protected function getSize_v1 () :Point
-    {
-        return new Point(_container.width, _container.height);
-    }
-
-    protected function setShowButtons_v1 (rematch :Boolean, back :Boolean) :void
-    {
-        (_ctrl.getPlaceView() as WhirledGamePanel).setShowButtons(rematch, back, back);
-    }
-
-    protected function setOccupantsLabel_v1 (label :String) :void
-    {
-        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setLabel(label);
-    }
-
-    protected function clearScores_v1 (clearValue :Object = null,
-        sortValuesToo :Boolean = false) :void
-    {
-        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().clearScores(
-            clearValue, sortValuesToo);
-    }
-
-    protected function setPlayerScores_v1 (scores :Array, sortValues :Array = null) :void
-    {
-        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setPlayerScores(
-            scores, sortValues);
-    }
-
-    protected function setMappedScores_v1 (scores :Object) :void
-    {
-        (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setMappedScores(scores);
-    }
-
-    protected function getHeadShot_v2 (occupant :int) :DisplayObject
-    {
-        validateConnected();
-
-        // in here, we just return a dummy value
-        return new HeadSpriteShim();
     }
 
     //---- .net ------------------------------------------------------------
@@ -917,15 +787,6 @@ public class GameBackend
 
     //---- .game -----------------------------------------------------------
 
-    /**
-     * Called by the client code when it is ready for the game to be started (if called before the
-     * game ever starts) or rematched (if called after the game has ended).
-     */
-    protected function playerReady_v1 () :void
-    {
-        _ctrl.playerIsReady();
-    }
-
     protected function sendChat_v1 (msg :String) :void
     {
         validateConnected();
@@ -986,12 +847,6 @@ public class GameBackend
         return isInited(occInfo) ? occInfo.username.toString() : null;
     }
 
-    protected function getMyId_v1 () :int
-    {
-        validateConnected();
-        return _ctx.getClient().getClientObject().getOid();
-    }
-
     protected function getControllerId_v1 () :int
     {
         validateConnected();
@@ -1009,12 +864,6 @@ public class GameBackend
     {
         validateConnected();
         return _gameObj.roundId;
-    }
-
-    protected function isMyTurn_v1 () :Boolean
-    {
-        validateConnected();
-        return getUsername().equals(_gameObj.turnHolder);
     }
 
     protected function isInPlay_v1 () :Boolean
@@ -1101,13 +950,6 @@ public class GameBackend
             return -1;
         }
         return _gameObj.getPlayerIndex(occInfo.username);
-    }
-
-    protected function getMyPosition_v1 () :int
-    {
-        validateConnected();
-        return _gameObj.getPlayerIndex(
-            (_ctx.getClient().getClientObject() as BodyObject).getVisibleName());
     }
 
     protected function getPlayers_v1 () :Array
@@ -1263,17 +1105,6 @@ public class GameBackend
         checkDictionaryWord_v2(locale, null, word, callback);
     }
 
-    /**
-     * Backwards compatability. Added June 18, 2007, removed Oct 24, 2007. There
-     * probably aren't many/any games that used this "in the wild", so we may be able to remove
-     * this at some point.
-     */
-    protected function getStageBounds_v1 () :Rectangle
-    {
-        var size :Point = getSize_v1();
-        return new Rectangle(0, 0, size.x, size.y);
-    }
-
     /** A backwards compatible method. */
     protected function getAvailableFlow_v1 () :int
     {
@@ -1315,18 +1146,6 @@ public class GameBackend
         setProperty_v2(propName, value, key, isArray, immediate);
     }
 
-    /** 
-     * A backwards compatible method.
-     */
-    protected function getHeadShot_v1 (occupant :int, callback :Function) :void
-    {
-        // this callback was defined to return a Sprite, so to preserve
-        // backwards compatibility we wrap the new headshot in a sprite
-        var s :HeadSpriteShim = new HeadSpriteShim();
-        s.addChild(getHeadShot_v2(occupant));
-        callback(s, true);
-    }
-
     // --------------------------
 
     /**
@@ -1358,18 +1177,12 @@ public class GameBackend
 
     protected var _userListener :MessageAdapter = new MessageAdapter(messageReceivedOnUserObject);
 
-    protected var _container :GameContainer;
-
     protected var _gameObj :WhirledGameObject;
 
     /** Handles trusted clientside control. */
     protected var _ctrl :WhirledGameController;
 
     protected var _userFuncs :Object;
-
-    /** The function on the GameControl which we can use to directly dispatch events to the
-     * user's game. */
-    protected var _keyDispatcher :Function;
 
     protected var _gameData :Object;
 
@@ -1380,17 +1193,3 @@ public class GameBackend
 }
 }
 
-import flash.display.Sprite;
-
-class HeadSpriteShim extends Sprite
-{
-    override public function get width () :Number
-    {
-        return 80;
-    }
-
-    override public function get height () :Number
-    {
-        return 60;
-    }
-}
