@@ -34,6 +34,9 @@ import com.whirled.game.data.WhirledGameObject;
 public class WhirledGameController extends GameController
     implements TurnGameController, SetListener
 {
+    /** The game object backend. */
+    public var backend :FlashGameBackend;
+
     public function WhirledGameController ()
     {
         addDelegate(_turnDelegate = new TurnGameControllerDelegate(this));
@@ -82,6 +85,8 @@ public class WhirledGameController extends GameController
     {
         _gameObj = (plobj as WhirledGameObject);
 
+        backend = createBackend();
+
         super.willEnterPlace(plobj);
     }
 
@@ -90,13 +95,23 @@ public class WhirledGameController extends GameController
     {
         super.didLeavePlace(plobj);
 
+        backend.shutdown();
+
         _gameObj = null;
     }
 
     // from TurnGameController
     public function turnDidChange (turnHolder :Name) :void
     {
-        _panel.backend.turnDidChange();
+        backend.turnDidChange();
+    }
+
+    /**
+     * Creates the backend object that will handle requests from user code.
+     */
+    protected function createBackend () :FlashGameBackend
+    {
+        return new FlashGameBackend(_ctx, _gameObj, this);
     }
 
     // from GameController
@@ -112,12 +127,12 @@ public class WhirledGameController extends GameController
     {
         var name :String = event.getName();
         if (WhirledGameObject.CONTROLLER_OID == name) {
-            _panel.backend.controlDidChange();
+            backend.controlDidChange();
         } else if (GameObject.ROUND_ID == name) {
             if ((event.getValue() as int) > 0) {
-                _panel.backend.roundStateChanged(true);
+                backend.roundStateChanged(true);
             } else {
-                _panel.backend.roundStateChanged(false);
+                backend.roundStateChanged(false);
             }
         } else {
             super.attributeChanged(event);
@@ -150,7 +165,7 @@ public class WhirledGameController extends GameController
     override protected function gameDidStart () :void
     {
         super.gameDidStart();
-        _panel.backend.gameStateChanged(true);
+        backend.gameStateChanged(true);
         _panel.checkRematchVisibility();
     }
 
@@ -158,7 +173,7 @@ public class WhirledGameController extends GameController
     override protected function gameDidEnd () :void
     {
         super.gameDidEnd();
-        _panel.backend.gameStateChanged(false);
+        backend.gameStateChanged(false);
         _panel.checkRematchVisibility();
     }
 

@@ -36,9 +36,6 @@ import com.whirled.game.data.WhirledGameObject;
 public class WhirledGamePanel extends Canvas
     implements PlaceView
 {
-    /** The game object backend. */
-    public var backend :FlashGameBackend;
-
     public function WhirledGamePanel (ctx :CrowdContext, ctrl :WhirledGameController)
     {
         _ctx = ctx;
@@ -60,25 +57,24 @@ public class WhirledGamePanel extends Canvas
         _playerList.startup(plobj);
 
         var cfg :WhirledGameConfig = (_ctrl.getPlaceConfig() as WhirledGameConfig);
+        var ctrl :WhirledGameController = _ctrl as WhirledGameController;
 
         _gameObj = (plobj as WhirledGameObject);
-        backend = createBackend();
 
         _gameView = new GameContainer(cfg.getGameDefinition().getMediaPath(cfg.getGameId()));
         configureGameView(_gameView);
-        backend.setSharedEvents(
+        ctrl.backend.setSharedEvents(
             Loader(_gameView.getMediaContainer().getMedia()).contentLoaderInfo.sharedEvents);
-        backend.setContainer(_gameView);
+        ctrl.backend.setContainer(_gameView);
         addChild(_gameView);
-
 
         var labels :Array = getButtonLabels(plobj);
         _backToWhirled.label = labels[0];
         _backToLobby.label = labels[1];
         _rematch.label = labels[2];
 
-        _backToWhirled.setCallback((_ctrl as WhirledGameController).backToWhirled, false);
-        _backToLobby.setCallback((_ctrl as WhirledGameController).backToWhirled, true);
+        _backToWhirled.setCallback(ctrl.backToWhirled, false);
+        _backToLobby.setCallback(ctrl.backToWhirled, true);
         checkRematchVisibility();
     }
 
@@ -89,8 +85,6 @@ public class WhirledGamePanel extends Canvas
 
         _gameView.getMediaContainer().shutdown(true);
         removeChild(_gameView);
-
-        backend.shutdown();
     }
 
     /**
@@ -179,17 +173,10 @@ public class WhirledGamePanel extends Canvas
     {
         super.updateDisplayList(uw, uh);
 
+        var backend :FlashGameBackend = (_ctrl as WhirledGameController).backend;
         if (backend != null) {
             backend.sizeChanged();
         }
-    }
-
-    /**
-     * Creates the backend object that will handle requests from user code.
-     */
-    protected function createBackend () :FlashGameBackend
-    {
-        return new FlashGameBackend(_ctx, _gameObj, _ctrl);
     }
 
     /**
