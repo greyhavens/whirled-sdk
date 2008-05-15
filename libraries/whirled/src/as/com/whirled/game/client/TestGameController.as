@@ -11,7 +11,7 @@ import com.threerings.crowd.util.CrowdContext;
 /**
  * Wires up the necessary backend bits for testing games.
  */
-public class TestGameController extends WhirledGameController
+public class TestGameController extends FlashWhirledGameController
 {
     // from WhirledGameController
     override public function backToWhirled (showLobby :Boolean = false) :void

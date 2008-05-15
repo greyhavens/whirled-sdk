@@ -3,24 +3,16 @@
 
 package com.whirled.game.client {
 
-import flash.events.Event;
-
 import com.threerings.util.Name;
 
 import com.threerings.presents.dobj.AttributeChangedEvent;
-import com.threerings.presents.dobj.SetListener;
-import com.threerings.presents.dobj.EntryAddedEvent;
-import com.threerings.presents.dobj.EntryRemovedEvent;
-import com.threerings.presents.dobj.EntryUpdatedEvent;
 
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.BodyObject;
-import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.util.CrowdContext;
 
 import com.threerings.parlor.game.client.GameController;
-import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.data.GameObject;
 
 import com.threerings.parlor.turn.client.TurnGameController;
@@ -29,13 +21,13 @@ import com.threerings.parlor.turn.client.TurnGameControllerDelegate;
 import com.whirled.game.data.WhirledGameObject;
 
 /**
- * A controller for flash games.
+ * A controller for whirled games.
  */
 public class WhirledGameController extends GameController
-    implements TurnGameController, SetListener
+    implements TurnGameController
 {
     /** The game object backend. */
-    public var backend :FlashGameBackend;
+    public var backend :BaseGameBackend;
 
     public function WhirledGameController ()
     {
@@ -43,25 +35,11 @@ public class WhirledGameController extends GameController
     }
 
     /**
-     * This is called by the GameBackend once it has initialized and made contact with usercode.
+     * This is called by the backend once it has initialized and made contact with usercode.
      */
     public function userCodeIsConnected (autoReady :Boolean) :void
     {
-        // Every occupant should call occupntInRoom, but if we end up calling playerReady()
-        // then that suffices.
-        if (autoReady) {
-            var bobj :BodyObject = (_ctx.getClient().getClientObject() as BodyObject);
-            var isPlayer :Boolean = (_gconfig.getMatchType() == GameConfig.PARTY) || 
-                (_gobj.getPlayerIndex(bobj.getVisibleName()) != -1);
-            if (isPlayer) {
-                playerIsReady();
-                return;
-            }
-            // else, we're not a player, so fall through...
-        }
-
-        // either we're just an observer, or autoReady is false
-        _gobj.manager.invoke("occupantInRoom");
+        // do nothing by default
     }
 
     /**
@@ -72,7 +50,7 @@ public class WhirledGameController extends GameController
     }
 
     /**
-     * Called by the GameBackend when the game is ready to start. If the game has ended, this can
+     * Called by the backend when the game is ready to start. If the game has ended, this can
      * be called by all clients to start the game anew.
      */
     public function playerIsReady () :void
@@ -109,9 +87,9 @@ public class WhirledGameController extends GameController
     /**
      * Creates the backend object that will handle requests from user code.
      */
-    protected function createBackend () :FlashGameBackend
+    protected function createBackend () :BaseGameBackend
     {
-        return new FlashGameBackend(_ctx, _gameObj, this);
+        return new BaseGameBackend(_ctx, _gameObj, this);
     }
 
     // from GameController
@@ -139,34 +117,11 @@ public class WhirledGameController extends GameController
         }
     }
 
-    // from SetListener
-    public function entryAdded (event :EntryAddedEvent) :void
-    {
-        if (event.getName() == PlaceObject.OCCUPANT_INFO) {
-            _panel.checkRematchVisibility();
-        }
-    }
-
-    // from SetListener
-    public function entryRemoved (event :EntryRemovedEvent) :void
-    {
-        if (event.getName() == PlaceObject.OCCUPANT_INFO) {
-            _panel.checkRematchVisibility();
-        }
-    }
-
-    // from SetListener
-    public function entryUpdated (event :EntryUpdatedEvent) :void
-    {
-        // nada
-    }
-
     // from GameController
     override protected function gameDidStart () :void
     {
         super.gameDidStart();
         backend.gameStateChanged(true);
-        _panel.checkRematchVisibility();
     }
 
     // from GameController
@@ -174,26 +129,16 @@ public class WhirledGameController extends GameController
     {
         super.gameDidEnd();
         backend.gameStateChanged(false);
-        _panel.checkRematchVisibility();
     }
 
     // from PlaceController
     override protected function createPlaceView (ctx :CrowdContext) :PlaceView
     {
-        return new WhirledGamePanel(ctx, this);
-    }
-
-    // from PlaceController
-    override protected function didInit () :void
-    {
-        super.didInit();
-
-        // we can't just assign _panel in createPlaceView() for some exciting reason
-        _panel = (_view as WhirledGamePanel);
+        // we are viewless, subclasses need to do something here
+        return super.createPlaceView(ctx);
     }
 
     protected var _gameObj :WhirledGameObject;
     protected var _turnDelegate :TurnGameControllerDelegate;
-    protected var _panel :WhirledGamePanel;
 }
 }

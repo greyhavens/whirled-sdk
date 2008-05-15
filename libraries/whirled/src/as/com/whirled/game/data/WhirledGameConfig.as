@@ -16,7 +16,7 @@ import com.threerings.crowd.client.PlaceController;
 import com.threerings.parlor.game.client.GameConfigurator;
 import com.threerings.parlor.game.data.GameConfig;
 
-import com.whirled.game.client.WhirledGameController;
+import com.whirled.game.client.FlashWhirledGameController;
 
 /**
  * A game config for a simple multiplayer whirled game.
@@ -104,7 +104,7 @@ public class WhirledGameConfig extends GameConfig
      */
     protected function createDefaultController () :PlaceController
     {
-        return new WhirledGameController();
+        return new FlashWhirledGameController();
     }
 
     /** Our game's unique id. */

@@ -3,22 +3,11 @@
 
 package com.whirled.game.client {
 
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
 import flash.display.Loader;
-
-import flash.events.Event;
-
-import flash.utils.Dictionary;
 
 import mx.containers.Canvas;
 
-import mx.core.Container;
-import mx.core.IChildList;
-
 import com.threerings.util.Name;
-
-import com.threerings.flash.MediaContainer;
 
 import com.threerings.flex.CommandButton;
 import com.threerings.flex.CommandLinkButton;
@@ -57,15 +46,14 @@ public class WhirledGamePanel extends Canvas
         _playerList.startup(plobj);
 
         var cfg :WhirledGameConfig = (_ctrl.getPlaceConfig() as WhirledGameConfig);
-        var ctrl :WhirledGameController = _ctrl as WhirledGameController;
 
         _gameObj = (plobj as WhirledGameObject);
 
         _gameView = new GameContainer(cfg.getGameDefinition().getMediaPath(cfg.getGameId()));
         configureGameView(_gameView);
-        ctrl.backend.setSharedEvents(
+        _ctrl.backend.setSharedEvents(
             Loader(_gameView.getMediaContainer().getMedia()).contentLoaderInfo.sharedEvents);
-        ctrl.backend.setContainer(_gameView);
+        (_ctrl.backend as FlashGameBackend).setContainer(_gameView);
         addChild(_gameView);
 
         var labels :Array = getButtonLabels(plobj);
@@ -73,8 +61,8 @@ public class WhirledGamePanel extends Canvas
         _backToLobby.label = labels[1];
         _rematch.label = labels[2];
 
-        _backToWhirled.setCallback(ctrl.backToWhirled, false);
-        _backToLobby.setCallback(ctrl.backToWhirled, true);
+        _backToWhirled.setCallback(_ctrl.backToWhirled, false);
+        _backToLobby.setCallback(_ctrl.backToWhirled, true);
         checkRematchVisibility();
     }
 
@@ -135,7 +123,7 @@ public class WhirledGamePanel extends Canvas
     protected function handleRematchClicked (... ignored) :void
     {
         _rematch.enabled = false;
-        (_ctrl as WhirledGameController).playerIsReady();
+        _ctrl.playerIsReady();
     }
 
     /**
@@ -173,7 +161,7 @@ public class WhirledGamePanel extends Canvas
     {
         super.updateDisplayList(uw, uh);
 
-        var backend :FlashGameBackend = (_ctrl as WhirledGameController).backend;
+        var backend :FlashGameBackend = _ctrl.backend as FlashGameBackend;
         if (backend != null) {
             backend.sizeChanged();
         }
