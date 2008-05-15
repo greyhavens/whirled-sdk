@@ -3,29 +3,15 @@
 
 package com.whirled.game.client {
 
-import flash.display.DisplayObject;
-import flash.display.InteractiveObject;
-
-import flash.errors.IllegalOperationError;
-
 import flash.events.Event;
-import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
-import flash.events.KeyboardEvent;
-import flash.events.MouseEvent;
-
-import flash.geom.Point;
-import flash.geom.Rectangle;
 
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
 import com.threerings.io.TypedArray;
 
-import com.threerings.util.ArrayUtil;
-import com.threerings.util.ClassUtil;
 import com.threerings.util.Integer;
-import com.threerings.util.Iterator;
 import com.threerings.util.Log;
 import com.threerings.util.MessageBundle;
 import com.threerings.util.Name;
@@ -46,9 +32,6 @@ import com.threerings.presents.dobj.EntryUpdatedEvent;
 import com.threerings.presents.dobj.MessageAdapter;
 import com.threerings.presents.dobj.MessageEvent;
 import com.threerings.presents.dobj.MessageListener;
-import com.threerings.presents.dobj.ObjectAddedEvent;
-import com.threerings.presents.dobj.ObjectRemovedEvent;
-import com.threerings.presents.dobj.OidListListener;
 import com.threerings.presents.dobj.SetListener;
 
 import com.threerings.crowd.chat.client.ChatDisplay;
@@ -56,7 +39,6 @@ import com.threerings.crowd.chat.data.ChatCodes;
 import com.threerings.crowd.chat.data.ChatMessage;
 import com.threerings.crowd.chat.data.UserMessage;
 
-import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.util.CrowdContext;
