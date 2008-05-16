@@ -13,7 +13,7 @@ import com.whirled.game.data.WhirledGameObject;
 public class ThaneGameBackend extends BaseGameBackend
 {
     public function ThaneGameBackend (
-        ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :WhirledGameController)
+        ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :ThaneGameController)
     {
         super(ctx, gameObj, ctrl);
     }

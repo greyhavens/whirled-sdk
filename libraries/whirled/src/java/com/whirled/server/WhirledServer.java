@@ -44,7 +44,6 @@ import com.threerings.parlor.server.ParlorManager;
 import com.threerings.parlor.server.ParlorSender;
 
 import com.whirled.game.data.WhirledGameConfig;
-import com.whirled.game.data.FlashWhirledGameConfig;
 import com.whirled.game.data.GameDefinition;
 import com.whirled.game.data.TableMatchConfig;
 import com.whirled.game.data.TestGameDefinition;
@@ -197,8 +196,8 @@ public class WhirledServer extends CrowdServer
         gamedef.match = match;
 
         // set up our game configuration and start up the game clients
-        // !TODO: support some bureau action, create an agent and give it a ThaneWhirledGameConfig
-        _config = new FlashWhirledGameConfig(-1, gamedef);
+        // !TODO: support some bureau action, create an agent and give it a ThaneGameConfig
+        _config = new WhirledGameConfig(-1, gamedef);
         _config.players = new Name[match.isPartyGame ? 0 : playerCount];
         for (int ii = 0; ii < playerCount; ii++) {
             Name name = new Name("tester_" + (ii+1));

@@ -116,9 +116,6 @@ public class WhirledClient
         WhirledGameConfig config;
         try {
             WhirledGameParser parser = new WhirledGameParser();
-            // !TODO: does it matter that WhirledGameConfig is not a most-derived type?
-            // I.e. should this be a FlashWhirledGameConfig or an as-of-yet non-existent 
-            // JavaWhirledGameClient?
             config = new WhirledGameConfig(-1, parser.parseGame(new FileReader(gameId + ".xml")));
         } catch (Exception e) {
             log.warning("Failed to start test game: " + e);

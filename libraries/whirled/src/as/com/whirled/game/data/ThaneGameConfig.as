@@ -4,24 +4,24 @@
 package com.whirled.game.data {
 
 import com.threerings.crowd.client.PlaceController;
-import com.whirled.game.client.ThaneWhirledGameController;
+import com.whirled.game.client.ThaneGameController;
 
 /**
  * A game config for a simple multiplayer thane whirled game.
  */
-public class ThaneWhirledGameConfig extends WhirledGameConfig
+public class ThaneGameConfig extends BaseGameConfig
 {
-    public function ThaneWhirledGameConfig (
+    public function ThaneGameConfig (
         gameId :int = 0, gameDef :GameDefinition = null)
     {
         super(gameId, gameDef);
     }
 
     /** @inheritDocs */
-    // from WhirledGameConfig
+    // from BaseGameConfig
     override protected function createDefaultController () :PlaceController
     {
-        return new ThaneWhirledGameController();
+        return new ThaneGameController();
     }
 }
 }

@@ -53,7 +53,7 @@ public class WhirledGamePanel extends Canvas
         configureGameView(_gameView);
         _ctrl.backend.setSharedEvents(
             Loader(_gameView.getMediaContainer().getMedia()).contentLoaderInfo.sharedEvents);
-        (_ctrl.backend as FlashGameBackend).setContainer(_gameView);
+        (_ctrl.backend as WhirledGameBackend).setContainer(_gameView);
         addChild(_gameView);
 
         var labels :Array = getButtonLabels(plobj);
@@ -161,7 +161,7 @@ public class WhirledGamePanel extends Canvas
     {
         super.updateDisplayList(uw, uh);
 
-        var backend :FlashGameBackend = _ctrl.backend as FlashGameBackend;
+        var backend :WhirledGameBackend = _ctrl.backend as WhirledGameBackend;
         if (backend != null) {
             backend.sizeChanged();
         }

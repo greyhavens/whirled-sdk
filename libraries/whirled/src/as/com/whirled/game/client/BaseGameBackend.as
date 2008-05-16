@@ -53,7 +53,7 @@ import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.data.PropertySetListener;
 import com.whirled.game.data.TrophyData;
 import com.whirled.game.data.UserCookie;
-import com.whirled.game.data.WhirledGameConfig;
+import com.whirled.game.data.BaseGameConfig;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.WhirledGameOccupantInfo;
 
@@ -66,7 +66,7 @@ public class BaseGameBackend
     public var log :Log = Log.getLog(this);
 
     public function BaseGameBackend (
-        ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :WhirledGameController)
+        ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :BaseGameController)
     {
         _ctx = ctx;
         _gameObj = gameObj;
@@ -123,7 +123,7 @@ public class BaseGameBackend
     }
 
     /**
-     * Called by the WhirledGameController when the controller changes.
+     * Called by the BaseGameController when the controller changes.
      */
     public function controlDidChange () :void
     {
@@ -131,7 +131,7 @@ public class BaseGameBackend
     }
 
     /**
-     * Called by the WhirledGameController when the turn changes.
+     * Called by the BaseGameController when the turn changes.
      */
     public function turnDidChange () :void
     {
@@ -139,7 +139,7 @@ public class BaseGameBackend
     }
 
     /**
-     * Called by the WhirledGameController when the game starts or ends.
+     * Called by the BaseGameController when the game starts or ends.
      */
     public function gameStateChanged (started :Boolean) :void
     {
@@ -159,7 +159,7 @@ public class BaseGameBackend
     }
 
     /**
-     * Called by the WhirledGameController when a round starts or ends.
+     * Called by the BaseGameController when a round starts or ends.
      */
     public function roundStateChanged (started :Boolean) :void
     {
@@ -504,7 +504,7 @@ public class BaseGameBackend
 
         // convert our game config from a HashMap to a Dictionary
         var gameConfig :Object = {};
-        var cfg :WhirledGameConfig = (_ctrl.getPlaceConfig() as WhirledGameConfig);
+        var cfg :BaseGameConfig = (_ctrl.getPlaceConfig() as BaseGameConfig);
         cfg.params.forEach(function (key :Object, value :Object) :void {
             gameConfig[key] = (value is Wrapped) ? Wrapped(value).unwrap() : value;
         });
@@ -587,7 +587,7 @@ public class BaseGameBackend
      */
     protected function getGameInfoType () :String
     {
-        var cfg :WhirledGameConfig = _ctrl.getPlaceConfig() as WhirledGameConfig;
+        var cfg :BaseGameConfig = _ctrl.getPlaceConfig() as BaseGameConfig;
         switch (cfg.getMatchType()) {
         case GameConfig.SEATED_GAME:
             return "seated";
@@ -1148,7 +1148,7 @@ public class BaseGameBackend
     // TEMP TODO REMOVE XXX
     protected function provideArrayCompatibility () :Boolean
     {
-        var cfg :WhirledGameConfig = _ctrl.getPlaceConfig() as WhirledGameConfig;
+        var cfg :BaseGameConfig = _ctrl.getPlaceConfig() as BaseGameConfig;
         var url :String = cfg.getGameDefinition().getMediaPath(cfg.getGameId());
 
         // Tree house defense
@@ -1162,7 +1162,7 @@ public class BaseGameBackend
     protected var _gameObj :WhirledGameObject;
 
     /** Handles trusted clientside control. */
-    protected var _ctrl :WhirledGameController;
+    protected var _ctrl :BaseGameController;
 
     protected var _userFuncs :Object;
 

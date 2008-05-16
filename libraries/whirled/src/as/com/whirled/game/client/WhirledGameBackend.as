@@ -14,9 +14,9 @@ import com.whirled.game.data.WhirledGameObject;
 /**
  * Manages the backend of the game on a flash client.
  */
-public class FlashGameBackend extends BaseGameBackend
+public class WhirledGameBackend extends BaseGameBackend
 {
-    public function FlashGameBackend (
+    public function WhirledGameBackend (
         ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :WhirledGameController)
     {
         super(ctx, gameObj, ctrl);
