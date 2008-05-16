@@ -4,8 +4,6 @@
 package com.whirled.game.data {
 
 import com.threerings.util.ClassUtil;
-import com.threerings.util.Hashable;
-import com.threerings.util.MessageBundle;
 import com.threerings.util.StreamableHashMap;
 
 import com.threerings.io.ObjectInputStream;
@@ -15,8 +13,6 @@ import com.threerings.crowd.client.PlaceController;
 
 import com.threerings.parlor.game.client.GameConfigurator;
 import com.threerings.parlor.game.data.GameConfig;
-
-import com.whirled.game.client.FlashWhirledGameController;
 
 /**
  * A game config for a simple multiplayer whirled game.
@@ -90,6 +86,8 @@ public class WhirledGameConfig extends GameConfig
     // from PlaceConfig
     override public function createController () :PlaceController
     {
+        // TODO: for this to really work with server side code, the choice of controller
+        // will need to refer to the type of client (flash or thane) that we are running on
         var controller :String = getGameDefinition().controller;
         if (controller == null) {
             return createDefaultController();
@@ -100,11 +98,12 @@ public class WhirledGameConfig extends GameConfig
 
     /**
      * Creates the controller to be used if the game definition does not specify a custom
-     * controller.
+     * controller. This is abstract since the controller must be specifically a thane
+     * or flash controller.
      */
-    protected function createDefaultController () :PlaceController
+    protected /*abstract*/ function createDefaultController () :PlaceController
     {
-        return new FlashWhirledGameController();
+        throw new Error("abstract");
     }
 
     /** Our game's unique id. */
