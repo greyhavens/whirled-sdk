@@ -5,9 +5,8 @@ package com.whirled.game.server;
 
 import java.util.prefs.Preferences;
 
-import com.samskivert.io.PersistenceException;
 import com.samskivert.jdbc.RepositoryListenerUnit;
-import com.samskivert.util.Invoker;
+import com.samskivert.jdbc.WriteOnlyUnit;
 import com.samskivert.util.ResultListener;
 
 import com.threerings.crowd.data.BodyObject;
@@ -55,8 +54,8 @@ public class GameCookieManager
             return;
         }
 
-        CrowdServer.invoker.postUnit(new RepositoryListenerUnit<byte[]>("getGameCookie", rl) {
-            public byte[] invokePersistResult () throws PersistenceException {
+        CrowdServer.invoker.postUnit(new RepositoryListenerUnit<byte[]>("getCookie", rl) {
+            public byte[] invokePersistResult () throws Exception {
                 return _repo.getCookie(gameId, userId);
             }
         });
@@ -78,14 +77,9 @@ public class GameCookieManager
             return;
         }
 
-        CrowdServer.invoker.postUnit(new Invoker.Unit("setGameCookie") {
-            public boolean invoke () {
-                try {
-                    _repo.setCookie(gameId, userId, cookie);
-                } catch (PersistenceException pe) {
-                    log.warning("Unable to save game cookie [pe=" + pe + "].");
-                }
-                return false;
+        CrowdServer.invoker.postUnit(new WriteOnlyUnit("setCookie(" + gameId + ", " + userId + ")") {
+            public void invokePersist () throws Exception {
+                _repo.setCookie(gameId, userId, cookie);
             }
         });
     }
