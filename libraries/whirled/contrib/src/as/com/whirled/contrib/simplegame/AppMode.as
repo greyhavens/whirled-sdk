@@ -55,6 +55,18 @@ public class AppMode extends ObjectDB
     {
     }
 
+    /** Called when a key is pressed while this mode is active */
+    public function onKeyDown (keyCode :uint) :void
+    {
+
+    }
+
+    /** Called when a key is released while this mode is active */
+    public function onKeyUp (keyCode :uint) :void
+    {
+
+    }
+
     internal function setupInternal () :void
     {
         setup();
@@ -83,7 +95,7 @@ public class AppMode extends ObjectDB
     }
 
     protected var _modeSprite :Sprite = new Sprite();
-    
+
     internal var _hasSetup :Boolean;
 }
 

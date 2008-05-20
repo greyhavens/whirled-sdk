@@ -28,6 +28,8 @@ import com.whirled.contrib.simplegame.util.Rand;
 
 import flash.display.Sprite;
 import flash.events.Event;
+import flash.events.IEventDispatcher;
+import flash.events.KeyboardEvent;
 import flash.utils.getTimer;
 
 public final class MainLoop
@@ -37,7 +39,7 @@ public final class MainLoop
         return g_instance;
     }
 
-    public function MainLoop (hostSprite :Sprite)
+    public function MainLoop (hostSprite :Sprite, keyDispatcher :IEventDispatcher = null)
     {
         if (null == hostSprite) {
             throw new ArgumentError("hostSprite must be non-null");
@@ -50,6 +52,7 @@ public final class MainLoop
         g_instance = this;
 
         _hostSprite = hostSprite;
+        _keyDispatcher = (null != keyDispatcher ? keyDispatcher : _hostSprite);
     }
 
     public function addUpdatable (obj :Updatable) :void
@@ -88,15 +91,14 @@ public final class MainLoop
         Rand.setup();
 
         // instantiate singletons
-        new ResourceLoaderRegistry();
         new ResourceManager();
         new AudioManager();
 
         // add resource factories
-        ResourceLoaderRegistry.instance.registerLoaderClass("image", ImageResourceLoader);
-        ResourceLoaderRegistry.instance.registerLoaderClass("swf", SwfResourceLoader);
-        ResourceLoaderRegistry.instance.registerLoaderClass("xml", XmlResourceLoader);
-        ResourceLoaderRegistry.instance.registerLoaderClass("sound", SoundResourceLoader);
+        ResourceManager.instance.registerResourceType("image", ImageResource);
+        ResourceManager.instance.registerResourceType("swf", SwfResource);
+        ResourceManager.instance.registerResourceType("xml", XmlResource);
+        ResourceManager.instance.registerResourceType("sound", SoundResource);
 
         _hasSetup = true;
     }
@@ -110,7 +112,11 @@ public final class MainLoop
      */
     public function shutdown () :void
     {
-        _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
+        if (_running) {
+            _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
+            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false);
+            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp, false);
+        }
 
         this.popAllModes();
         this.handleModeTransitions();
@@ -118,7 +124,6 @@ public final class MainLoop
         if (_hasSetup) {
             AudioManager.instance.shutdown();
             ResourceManager.instance.shutdown();
-            ResourceLoaderRegistry.instance.shutdown();
 
             _hasSetup = false;
         }
@@ -142,8 +147,26 @@ public final class MainLoop
         _running = true;
 
         _hostSprite.addEventListener(Event.ENTER_FRAME, update);
+        _keyDispatcher.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false);
+        _keyDispatcher.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false);
 
         _lastTime = this.elapsedSeconds;
+    }
+
+    protected function onKeyDown (e :KeyboardEvent) :void
+    {
+        var topMode :AppMode = this.topMode;
+        if (null != topMode) {
+            topMode.onKeyDown(e.keyCode);
+        }
+    }
+
+    protected function onKeyUp (e :KeyboardEvent) :void
+    {
+        var topMode :AppMode = this.topMode;
+        if (null != topMode) {
+            topMode.onKeyUp(e.keyCode);
+        }
     }
 
     /**
@@ -354,6 +377,7 @@ public final class MainLoop
     protected static var g_instance :MainLoop;
 
     protected var _hostSprite :Sprite;
+    protected var _keyDispatcher :IEventDispatcher;
     protected var _hasSetup :Boolean = false;
     protected var _running :Boolean = false;
     protected var _lastTime :Number;
