@@ -25,14 +25,14 @@ import flash.events.IOErrorEvent;
 import flash.media.Sound;
 import flash.net.URLRequest;
 
-public class SoundResourceLoader
-    implements ResourceLoader
+public class SoundResource
+    implements Resource
 {
     public static const TYPE_SFX :int = 0;
     public static const TYPE_MUSIC :int = 1;
     public static const TYPE__LIMIT :int = 2;
 
-    public function SoundResourceLoader (resourceName :String, loadParams :Object)
+    public function SoundResource (resourceName :String, loadParams :Object)
     {
         _resourceName = resourceName;
         _loadParams = loadParams;

@@ -30,10 +30,10 @@ import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
-public class XmlResourceLoader
-    implements ResourceLoader
+public class XmlResource
+    implements Resource
 {
-    public function XmlResourceLoader (resourceName :String, loadParams :Object, objectGenerator :Function = null)
+    public function XmlResource (resourceName :String, loadParams :Object, objectGenerator :Function = null)
     {
         _resourceName = resourceName;
         _loadParams = loadParams;

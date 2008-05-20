@@ -23,9 +23,6 @@ package com.whirled.contrib.simplegame.resource {
 import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
 
-[Event(name="Loaded", type="com.whirled.contrib.simplegame.resource.ResourceLoadEvent")]
-[Event(name="Error", type="com.whirled.contrib.simplegame.resource.ResourceLoadEvent")]
-
 public class ResourceManager
 {
     public static function get instance () :ResourceManager
@@ -48,6 +45,21 @@ public class ResourceManager
         g_instance = null;
     }
 
+    public function registerLoaderClass (resourceType :String, loaderClass :Class) :void
+    {
+        _loaderClasses.put(resourceType, loaderClass);
+    }
+
+    protected function createLoader (resourceType :String, resourceName :String, loadParams :*) :Resource
+    {
+        var loaderClass :Class = _loaderClasses.get(resourceType);
+        if (null != loaderClass) {
+            return (new loaderClass(resourceName, loadParams) as Resource);
+        }
+
+        return null;
+    }
+
     public function pendResourceLoad (resourceType :String, resourceName: String, loadParams :*) :void
     {
         if (_loading) {
@@ -59,7 +71,7 @@ public class ResourceManager
             throw new Error("A resource named '" + resourceName + "' is already loaded");
         }
 
-        var loader :ResourceLoader = ResourceLoaderRegistry.instance.createLoader(resourceType, resourceName, loadParams);
+        var loader :Resource = this.createLoader(resourceType, resourceName, loadParams);
         if (null == loader) {
             throw new Error("No ResourceLoader for '" + resourceType + "' resource type");
         }
@@ -78,7 +90,7 @@ public class ResourceManager
 
         _loading = true;
 
-        for each (var rsrc :ResourceLoader in _pendingResources.values()) {
+        for each (var rsrc :Resource in _pendingResources.values()) {
             rsrc.load(onSingleResourceLoaded, onSingleResourceError);
 
             // don't continue if the load operation has been canceled/errored
@@ -94,7 +106,7 @@ public class ResourceManager
             return;
         }
 
-        for each (var rsrc :ResourceLoader in _pendingResources.values()) {
+        for each (var rsrc :Resource in _pendingResources.values()) {
             rsrc.unload();
         }
 
@@ -102,21 +114,21 @@ public class ResourceManager
         _loading = false;
     }
 
-    public function getResource (resourceName :String) :ResourceLoader
+    public function getResource (resourceName :String) :Resource
     {
-        return (_resources.get(resourceName) as ResourceLoader);
+        return (_resources.get(resourceName) as Resource);
     }
 
     public function unload (name :String) :void
     {
-        var rsrc :ResourceLoader;
+        var rsrc :Resource;
 
         rsrc = _resources.remove(name);
         if (null != rsrc) {
             rsrc.unload();
         }
 
-        rsrc = this.cleanupPendingResource(name);
+        rsrc = _pendingResources.remove(name);
         if (null != rsrc) {
             rsrc.unload();
         }
@@ -124,7 +136,7 @@ public class ResourceManager
 
     public function unloadAll () :void
     {
-        for each (var rsrc :ResourceLoader in _resources.values()) {
+        for each (var rsrc :Resource in _resources.values()) {
             rsrc.unload();
         }
 
@@ -143,9 +155,10 @@ public class ResourceManager
         return _loading;
     }
 
-    protected function onSingleResourceLoaded (rsrc :ResourceLoader) :void
+    protected function onSingleResourceLoaded (rsrc :Resource) :void
     {
-        this.cleanupPendingResource(rsrc.resourceName);
+        var removedObj :Resource = _pendingResources.remove(rsrc.resourceName);
+        Assert.isTrue(removedObj == rsrc);
 
         _resources.put(rsrc.resourceName, rsrc);
 
@@ -157,10 +170,8 @@ public class ResourceManager
         }
     }
 
-    protected function onSingleResourceError (rsrc :ResourceLoader, err :String) :void
+    protected function onSingleResourceError (rsrc :Resource, err :String) :void
     {
-        this.cleanupPendingResource(rsrc.resourceName);
-
         // upon error, cancel all pending loads
         this.cancelLoad();
 
@@ -169,19 +180,14 @@ public class ResourceManager
         }
     }
 
-    protected function cleanupPendingResource (resourceName :String) :ResourceLoader
-    {
-        var returnVal :ResourceLoader = _pendingResources.remove(resourceName);
-        Assert.isTrue(returnVal !== null);
-        return returnVal;
-    }
-
     protected var _loading :Boolean;
     protected var _completeCallback :Function;
     protected var _errorCallback :Function;
 
     protected var _resources :HashMap = new HashMap();
     protected var _pendingResources :HashMap = new HashMap();
+
+    protected var _loaderClasses :HashMap = new HashMap();
 
     protected static var g_instance :ResourceManager;
 }

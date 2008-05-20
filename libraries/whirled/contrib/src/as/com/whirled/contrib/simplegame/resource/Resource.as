@@ -20,27 +20,12 @@
 
 package com.whirled.contrib.simplegame.resource {
 
-import flash.events.Event;
-
-public class ResourceLoadEvent extends Event
+public interface Resource
 {
-    public static const LOADED :String = "Loaded";
-    public static const ERROR :String = "Error";
+    function get resourceName () :String;
 
-    public var data :Object;
-
-    public function ResourceLoadEvent (type :String, data :Object = null)
-    {
-        super(type, false, false);
-
-        this.data = data;
-    }
-
-    // from Event
-    override public function clone () :Event
-    {
-        return new ResourceLoadEvent(type, data);
-    }
+    function load (completeCallback :Function, errorCallback :Function) :void;
+    function unload () :void;
 }
 
 }

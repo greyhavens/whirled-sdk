@@ -20,19 +20,28 @@
 
 package com.whirled.contrib.simplegame.resource {
 
-import flash.display.DisplayObject;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.display.Loader;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
-import flash.system.ApplicationDomain;
-import flash.system.LoaderContext;
 import flash.utils.ByteArray;
 
-public class SwfResourceLoader
-    implements ResourceLoader
+public class ImageResource
+    implements Resource
 {
-    public function SwfResourceLoader (resourceName :String, loadParams :Object)
+    public static function instantiateBitmap (resourceName :String) :Bitmap
+    {
+        var img :ImageResource = ResourceManager.instance.getResource(resourceName) as ImageResource;
+        if (null != img) {
+            return img.createBitmap();
+        }
+
+        return null;
+    }
+
+    public function ImageResource (resourceName :String, loadParams :Object)
     {
         _resourceName = resourceName;
         _loadParams = loadParams;
@@ -47,35 +56,14 @@ public class SwfResourceLoader
         return _resourceName;
     }
 
-    public function get displayRoot () :DisplayObject
+    public function get bitmapData () :BitmapData
     {
-        return _loader.content;
+        return (_loader.content as Bitmap).bitmapData;
     }
 
-    public function getSymbol (name :String) :Object
+    public function createBitmap (pixelSnapping :String = "auto", smoothing :Boolean = false) :Bitmap
     {
-        try {
-            return _loader.contentLoaderInfo.applicationDomain.getDefinition(name);
-        } catch (e :Error) {
-            // swallow the exception and return null
-        }
-
-        return null;
-    }
-
-    public function hasSymbol (name :String) :Boolean
-    {
-        return _loader.contentLoaderInfo.applicationDomain.hasDefinition(name);
-    }
-
-    public function getFunction (name :String) :Function
-    {
-        return this.getSymbol(name) as Function;
-    }
-
-    public function getClass (name :String) :Class
-    {
-        return this.getSymbol(name) as Class;
+        return new Bitmap(this.bitmapData, pixelSnapping, smoothing);
     }
 
     public function load (completeCallback :Function, errorCallback :Function) :void
@@ -84,23 +72,14 @@ public class SwfResourceLoader
         _errorCallback = errorCallback;
 
         // parse loadParams
-
-        var context :LoaderContext = new LoaderContext();
-        if (_loadParams.hasOwnProperty("useSubDomain") && !Boolean(_loadParams["useSubDomain"])) {
-            context.applicationDomain = ApplicationDomain.currentDomain;
-        } else {
-            // default to loading symbols into a subdomain
-            context.applicationDomain = new ApplicationDomain(ApplicationDomain.currentDomain);
-        }
-
         if (_loadParams.hasOwnProperty("url")) {
-            _loader.load(new URLRequest(_loadParams["url"]), context);
+            _loader.load(new URLRequest(_loadParams["url"]));
         } else if (_loadParams.hasOwnProperty("bytes")) {
-            _loader.loadBytes(_loadParams["bytes"], context);
+            _loader.loadBytes(_loadParams["bytes"]);
         } else if (_loadParams.hasOwnProperty("embeddedClass")) {
-            _loader.loadBytes(ByteArray(new _loadParams["embeddedClass"]()), context);
+            _loader.loadBytes(ByteArray(new _loadParams["embeddedClass"]()));
         } else {
-            throw new Error("SwfResourceLoader: one of 'url', 'bytes', or 'embeddedClass' must be specified in loadParams");
+            throw new Error("ImageResourceLoader: one of 'url', 'bytes', or 'embeddedClass' must be specified in loadParams");
         }
     }
 
@@ -115,14 +94,14 @@ public class SwfResourceLoader
         _loader.unload();
     }
 
-    protected function onInit (...ignored) :void
+    protected function onInit (e :Event) :void
     {
         _completeCallback(this);
     }
 
     protected function onError (e :IOErrorEvent) :void
     {
-        _errorCallback(this, "SwfResouceLoader (" + _resourceName + "): " + e.text);
+        _errorCallback(this, "ImageResourceLoader (" + _resourceName + "): " + e.text);
     }
 
     protected var _resourceName :String;
