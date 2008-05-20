@@ -46,6 +46,12 @@ public class SwfResource
         return null;
     }
 
+    public static function getSwfDisplayRoot (resourceName :String) :DisplayObject
+    {
+        var swf :SwfResource = ResourceManager.instance.getResource(resourceName) as SwfResource;
+        return (null != swf ? swf.displayRoot : null);
+    }
+
     public function SwfResource (resourceName :String, loadParams :Object)
     {
         _resourceName = resourceName;
