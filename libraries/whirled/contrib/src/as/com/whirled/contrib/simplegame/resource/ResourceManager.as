@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.simplegame.resource {
 
+import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
 
 [Event(name="Loaded", type="com.whirled.contrib.simplegame.resource.ResourceLoadEvent")]
@@ -79,6 +80,11 @@ public class ResourceManager
 
         for each (var rsrc :ResourceLoader in _pendingResources.values()) {
             rsrc.load(onSingleResourceLoaded, onSingleResourceError);
+
+            // don't continue if the load operation has been canceled/errored
+            if (!_loading) {
+                break;
+            }
         }
     }
 
@@ -165,7 +171,9 @@ public class ResourceManager
 
     protected function cleanupPendingResource (resourceName :String) :ResourceLoader
     {
-        return _pendingResources.remove(resourceName);
+        var returnVal :ResourceLoader = _pendingResources.remove(resourceName);
+        Assert.isTrue(returnVal !== null);
+        return returnVal;
     }
 
     protected var _loading :Boolean;
