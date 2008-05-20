@@ -22,12 +22,12 @@ package com.whirled.contrib.simplegame.tasks {
 
 import com.whirled.contrib.simplegame.*;
 import com.whirled.contrib.simplegame.audio.*;
-import com.whirled.contrib.simplegame.resource.SoundResourceLoader;
+import com.whirled.contrib.simplegame.resource.SoundResource;
 
 public class PlaySoundTask
     implements ObjectTask
 {
-    public function PlaySoundTask (sound :SoundResourceLoader, waitForComplete :Boolean, parentControls :AudioControls = null)
+    public function PlaySoundTask (sound :SoundResource, waitForComplete :Boolean, parentControls :AudioControls = null)
     {
         _sound = sound;
         _waitForComplete = waitForComplete;
@@ -53,7 +53,7 @@ public class PlaySoundTask
         return false;
     }
 
-    protected var _sound :SoundResourceLoader;
+    protected var _sound :SoundResource;
     protected var _waitForComplete :Boolean;
     protected var _parentControls :AudioControls;
     protected var _channel :AudioChannel;

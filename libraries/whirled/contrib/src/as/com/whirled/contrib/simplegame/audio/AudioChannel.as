@@ -20,7 +20,7 @@
 
 package com.whirled.contrib.simplegame.audio {
 
-import com.whirled.contrib.simplegame.resource.SoundResourceLoader;
+import com.whirled.contrib.simplegame.resource.SoundResource;
 
 import flash.media.SoundChannel;
 
@@ -51,7 +51,7 @@ public class AudioChannel
     internal var id :int = -1;
     internal var completeHandler :Function;
     internal var controls :AudioControls;
-    internal var sound :SoundResourceLoader;
+    internal var sound :SoundResource;
     internal var channel :SoundChannel;
     internal var playPosition :Number;
     internal var startTime :Number;

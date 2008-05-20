@@ -58,8 +58,8 @@ public class AudioManager
 
         _masterControls = new AudioControls();
 
-        _soundTypeControls = new Array(SoundResourceLoader.TYPE__LIMIT);
-        for (i = 0; i < SoundResourceLoader.TYPE__LIMIT; ++i) {
+        _soundTypeControls = new Array(SoundResource.TYPE__LIMIT);
+        for (i = 0; i < SoundResource.TYPE__LIMIT; ++i) {
             var subControls :AudioControls = new AudioControls(_masterControls);
             subControls.retain(); // these subcontrols will never be cleaned up
             _soundTypeControls[i] = subControls;
@@ -118,7 +118,7 @@ public class AudioManager
 
     public function playSoundNamed (name :String, parentControls :AudioControls = null, loopCount :int = 0) :AudioChannel
     {
-        var rsrc :SoundResourceLoader = ResourceManager.instance.getResource(name) as SoundResourceLoader;
+        var rsrc :SoundResource = ResourceManager.instance.getResource(name) as SoundResource;
         if (null == rsrc) {
             return new AudioChannel();
         }
@@ -126,7 +126,7 @@ public class AudioManager
         return this.playSound(rsrc, parentControls, loopCount);
     }
 
-    public function playSound (soundResource :SoundResourceLoader, parentControls :AudioControls = null, loopCount :int = 0) :AudioChannel
+    public function playSound (soundResource :SoundResource, parentControls :AudioControls = null, loopCount :int = 0) :AudioChannel
     {
         if (null == soundResource.sound) {
             log.info("Discarding sound '" + soundResource.resourceName + "' (sound is null)");

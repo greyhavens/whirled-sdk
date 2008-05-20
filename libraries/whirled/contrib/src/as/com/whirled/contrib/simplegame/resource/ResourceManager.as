@@ -45,14 +45,14 @@ public class ResourceManager
         g_instance = null;
     }
 
-    public function registerLoaderClass (resourceType :String, loaderClass :Class) :void
+    public function registerResourceType (resourceType :String, theClass :Class) :void
     {
-        _loaderClasses.put(resourceType, loaderClass);
+        _resourceClasses.put(resourceType, theClass);
     }
 
-    protected function createLoader (resourceType :String, resourceName :String, loadParams :*) :Resource
+    protected function createResource (resourceType :String, resourceName :String, loadParams :*) :Resource
     {
-        var loaderClass :Class = _loaderClasses.get(resourceType);
+        var loaderClass :Class = _resourceClasses.get(resourceType);
         if (null != loaderClass) {
             return (new loaderClass(resourceName, loadParams) as Resource);
         }
@@ -71,12 +71,12 @@ public class ResourceManager
             throw new Error("A resource named '" + resourceName + "' is already loaded");
         }
 
-        var loader :Resource = this.createLoader(resourceType, resourceName, loadParams);
-        if (null == loader) {
+        var rsrc :Resource = this.createResource(resourceType, resourceName, loadParams);
+        if (null == rsrc) {
             throw new Error("No ResourceLoader for '" + resourceType + "' resource type");
         }
 
-        _pendingResources.put(resourceName, loader);
+        _pendingResources.put(resourceName, rsrc);
     }
 
     public function load (loadCompleteCallback :Function = null, loadErrorCallback :Function = null) :void
@@ -187,7 +187,7 @@ public class ResourceManager
     protected var _resources :HashMap = new HashMap();
     protected var _pendingResources :HashMap = new HashMap();
 
-    protected var _loaderClasses :HashMap = new HashMap();
+    protected var _resourceClasses :HashMap = new HashMap();
 
     protected static var g_instance :ResourceManager;
 }
