@@ -76,16 +76,31 @@ public class GameSubControl extends AbstractSubControl
 {
     /** Cascading payout skews awards toward the winners by giving 50% of last place's payout to
      * first place, 25% to the next inner pair of opponents (third to second in a four player game,
-     * for example), and so on. */
+     * for example), and so on. It is very similar overall to WINNERS_TAKE_ALL, only it rewards
+     * everyone at least a little bit. */
     public static const CASCADING_PAYOUT :int = 0;
 
     /** Winner takes all splits the total coins available to award to all players in the game among
-     * those identified as winners at the end of the game. */
+     * those identified as winners at the end of the game. When used with endGameWithScores, it
+     * is intended for games where each player's performance is independant of the others and
+     * can be measured against a global standard. The winner(s) will get more coins if they beat
+     * someone else who played well than if they beat someone who played poorly.
+     * Using it with endGameWithWinners() is intended for games in which there is no per-player
+     * score, just some player(s) defeating others. In this case, the game is stating that
+     * it cannot distinguish between an excellent player and a poor player, just one won
+     * over the others.
+     */
     public static const WINNERS_TAKE_ALL :int = 1;
 
-    /** Each player receives a payout based only on their performance during the game and not
-     * influenced by their relative ranking to one another. */
+    /** Each player receives a payout based only on their score and not influenced by the
+     * scores of any other player. */
     public static const TO_EACH_THEIR_OWN :int = 2;
+
+    /** Proportional is used for games where there is no way to measure player's performance
+     * against a global standard, but where the scores are subjective to the particular players
+     * currently playing. Each player vies to get their score the highest, and the coins are split
+     * up according to the relative scores. */
+    public static const PROPORTIONAL :int = 3;
 
     /**
      * @private Constructed via GameControl.
