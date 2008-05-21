@@ -17,6 +17,13 @@ public class WhirledClient extends CrowdClient
     {
         super.sessionConnectionClosed();
 
+        // end our session on disconnect, it's easy enough to get back to where you were with a
+        // browser reload
+        if (_clobj != null) {
+            safeEndSession();
+        }
+
+        // shut down the server when the last person disconnects
         if (_cmgr.getConnectionCount() == 0) {
             WhirledServer.server.shutdown();
         }
