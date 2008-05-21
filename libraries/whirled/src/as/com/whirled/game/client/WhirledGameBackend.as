@@ -1,6 +1,7 @@
 package com.whirled.game.client {
 
 import flash.display.DisplayObject;
+import flash.display.StageQuality;
 import flash.events.KeyboardEvent;
 import flash.geom.Rectangle;
 import flash.geom.Point;
@@ -27,6 +28,16 @@ public class WhirledGameBackend extends BaseGameBackend
         _container = container;
     }
 
+    // from BaseGameBackend
+    override public function shutdown () :void
+    {
+        super.shutdown();
+
+        // once the usercode is incapable of calling setFrameRate, ensure they're reset to defaults
+        _container.stage.frameRate = 30;
+        _container.stage.quality = StageQuality.MEDIUM;
+    }
+
     /**
      * Convenience function to get our name.
      */
@@ -35,7 +46,6 @@ public class WhirledGameBackend extends BaseGameBackend
         var body :BodyObject = (_ctx.getClient().getClientObject() as BodyObject);
         return body.getVisibleName();
     }
-
 
     /**
      * Called by the WhirledGamePanel when the size of the game area has changed.
@@ -83,6 +93,7 @@ public class WhirledGameBackend extends BaseGameBackend
         o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
         o["setPlayerScores_v1"] = setPlayerScores_v1;
         o["setShowButtons_v1"] = setShowButtons_v1;
+        o["setFrameRate_v1"] = setFrameRate_v1;
 
         // .game
         o["getMyId_v1"] = getMyId_v1;
@@ -146,6 +157,15 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function setShowButtons_v1 (rematch :Boolean, back :Boolean) :void
     {
         (_ctrl.getPlaceView() as WhirledGamePanel).setShowButtons(rematch, back, back);
+    }
+
+    protected function setFrameRate_v1 (frameRate :Number, quality :String) :void
+    {
+        validateConnected(); // so that the game can't futz the frame rate after we disconnect it!
+
+        // then, let these throw whatever errors they might. Not our problem.
+        _container.stage.frameRate = Math.max(frameRate, 15);
+        _container.stage.quality = quality;
     }
 
     protected function setOccupantsLabel_v1 (label :String) :void

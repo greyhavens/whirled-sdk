@@ -6,6 +6,7 @@ package com.whirled.game {
 import flash.events.KeyboardEvent;
 
 import flash.display.DisplayObject;
+import flash.display.StageQuality;
 
 import flash.geom.Point;
 
@@ -124,6 +125,17 @@ public class LocalSubControl extends AbstractSubControl
     public function getHeadShot (occupantId :int) :DisplayObject
     {
         return callHostCode("getHeadShot_v2", occupantId) as DisplayObject;
+    }
+
+    /**
+     * Set the frame rate and quality to use in your game. The defaults
+     * are 30fps at MEDIUM quality. The actual frame rate will be bounded on the lower end
+     * so as to not degrade the user experience.
+     */
+    public function setFrameRate (
+        frameRate :Number = 30, quality :String = StageQuality.MEDIUM) :void
+    {
+        callHostCode("setFrameRate_v1", frameRate, quality);
     }
 
     /**
