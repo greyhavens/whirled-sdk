@@ -19,6 +19,11 @@ import flash.filters.ColorMatrixFilter;
 
 public class ColorMatrix
 {
+    public static function create (mat :Object = null) :ColorMatrix
+    {
+        return new ColorMatrix(mat);
+    }
+
     /*
    Function: ColorMatrix
 
@@ -35,8 +40,6 @@ public class ColorMatrix
 
 
     */
-
-
     public function ColorMatrix ( mat:Object = null )
     {
         if (mat is ColorMatrix )
@@ -59,19 +62,12 @@ public class ColorMatrix
     matrix to an image will not make any changes to it.
 
    Parameters:
-
       none
-
-    Returns:
-
-        nothing
-
-
     */
-
-    public function reset():void
+    public function reset() :ColorMatrix;
     {
         matrix = IDENTITY.concat();
+        return this;
     }
 
 
@@ -105,7 +101,7 @@ public class ColorMatrix
 
     */
 
-    public function adjustSaturation ( s:Number ):void
+    public function adjustSaturation ( s:Number ) :ColorMatrix
     {
         var i_s:Number=1-s;
 
@@ -120,9 +116,11 @@ public class ColorMatrix
 
 
         concat(mat);
+
+        return this;
     }
 
-    public function adjustContrast ( r:Number, g:Number, b:Number ):void
+    public function adjustContrast ( r:Number, g:Number, b:Number ) :ColorMatrix
     {
         g = g || r;
         b = b || r;
@@ -138,9 +136,11 @@ public class ColorMatrix
 
 
         concat(mat);
+
+        return this;
     }
 
-    public function adjustBrightness (r:Number, g:Number, b:Number):void
+    public function adjustBrightness (r:Number, g:Number, b:Number) :ColorMatrix
     {
         g = g || r;
         b = b || r;
@@ -153,9 +153,10 @@ public class ColorMatrix
 
         concat(mat);
 
+        return this;
     }
 
-    public function adjustHue( angle:Number ):void
+    public function adjustHue( angle:Number ) :ColorMatrix
     {
         angle *= Math.PI/180;
 
@@ -169,9 +170,11 @@ public class ColorMatrix
         var mat:Array = [(f1 + (c * (1 - f1))) + (s * (-f1)), (f2 + (c * (-f2))) + (s * (-f2)), (f3 + (c * (-f3))) + (s * (1 - f3)), 0, 0, (f1 + (c * (-f1))) + (s * 0.143), (f2 + (c * (1 - f2))) + (s * 0.14), (f3 + (c * (-f3))) + (s * -0.283), 0, 0, (f1 + (c * (-f1))) + (s * (-(1 - f1))), (f2 + (c * (-f2))) + (s * f2), (f3 + (c * (1 - f3))) + (s * f3), 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1];
 
         concat(mat);
+
+        return this;
     }
 
-    public function colorize ( rgb:Number, amount:Number = 1):void
+    public function colorize ( rgb:Number, amount:Number = 1) :ColorMatrix
     {
 
         var r:Number = ( ( rgb >> 16 ) & 0xff ) / 255;
@@ -188,12 +191,14 @@ public class ColorMatrix
 
 
         concat(mat);
+
+        return this;
     }
 
     /**
      * Performs the same transformation as the FAT "Tint" function.
      */
-    public function tint (rgb :Number, amount :Number = 1) :void
+    public function tint (rgb :Number, amount :Number = 1) :ColorMatrix
     {
         var r:Number = ( ( rgb >> 16 ) & 0xff ) * amount;
         var g:Number = ( ( rgb >> 8  ) & 0xff ) * amount;
@@ -207,12 +212,14 @@ public class ColorMatrix
                                  0, 0, 0, 1, 0 ];
 
         concat(mat);
+
+        return this;
     }
 
     /**
      * Converts the target to grayscale.
      */
-    public function makeGrayscale () :void
+    public function makeGrayscale () :ColorMatrix
     {
         const oneThird :Number = 1 / 3;
 
@@ -222,9 +229,11 @@ public class ColorMatrix
                            0, 0, 0, 1, 0 ];
 
         concat(mat);
+
+        return this;
     }
 
-    public function setAlpha( alpha:Number ):void
+    public function setAlpha( alpha:Number ) :ColorMatrix
     {
         var mat:Array =        [ 1, 0, 0, 0, 0,
                                 0, 1, 0, 0, 0,
@@ -232,9 +241,11 @@ public class ColorMatrix
                                 0, 0, 0, alpha, 0 ];
 
         concat(mat);
+
+        return this;
     }
 
-    public function desaturate():void
+    public function desaturate() :ColorMatrix
     {
         var mat:Array =        [ r_lum, g_lum, b_lum, 0, 0,
                                 r_lum, g_lum, b_lum, 0, 0,
@@ -242,9 +253,11 @@ public class ColorMatrix
                                 0    , 0    , 0    , 1, 0 ];
 
         concat(mat);
+
+        return this;
     }
 
-    public function invert():void
+    public function invert() :ColorMatrix
     {
         var mat:Array =        [ -1 ,  0,  0, 0, 255,
                                     0 , -1,  0, 0, 255,
@@ -252,18 +265,22 @@ public class ColorMatrix
                                 0,   0,  0, 1,   0];
 
         concat(mat);
+
+        return this;
     }
 
-    public function threshold( t:Number ):void
+    public function threshold( t:Number ) :ColorMatrix
     {
         var mat:Array =            [r_lum*256, g_lum*256, b_lum*256, 0,  -256*t,
                                     r_lum*256 ,g_lum*256, b_lum*256, 0,  -256*t,
                                     r_lum*256, g_lum*256, b_lum*256, 0,  -256*t,
                                     0, 0, 0, 1, 0];
         concat(mat);
+
+        return this;
     }
 
-    public function randomize( amount :Number = 1 ):void
+    public function randomize( amount :Number = 1 ) :ColorMatrix
     {
         var inv_amount:Number = 1 - amount;
 
@@ -292,10 +309,12 @@ public class ColorMatrix
                                     0 ,  0,  0, 1, 0 ];
 
         concat(mat);
+
+        return this;
     }
 
 
-    public function setChannels (r:Number, g:Number, b:Number, a:Number ):void
+    public function setChannels (r:Number, g:Number, b:Number, a:Number ) :ColorMatrix
     {
         var rf:Number =((r & 1) == 1 ? 1:0) + ((r & 2) == 2 ? 1:0) + ((r & 4) == 4 ? 1:0) + ((r & 8) == 8 ? 1:0);
         if (rf>0) rf=1/rf;
@@ -313,9 +332,10 @@ public class ColorMatrix
 
         concat(mat);
 
+        return this;
     }
 
-    public function blend( m:ColorMatrix, amount:Number ):void
+    public function blend( m:ColorMatrix, amount:Number ) :ColorMatrix
     {
         var inv_amount:Number = 1 - amount;
 
@@ -323,11 +343,12 @@ public class ColorMatrix
         {
             matrix[i] = inv_amount * matrix[i] + amount * m.matrix[i];
         }
+
+        return this;
     }
 
-    public function concat(mat:Array):void
+    public function concat (mat :Array) :ColorMatrix
     {
-
         var temp:Array = [];
         var i:Number = 0;
 
@@ -347,6 +368,7 @@ public class ColorMatrix
 
         matrix = temp;
 
+        return this;
     }
 
     public function createFilter():ColorMatrixFilter
