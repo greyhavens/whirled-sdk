@@ -142,7 +142,7 @@ public class AudioManager
         for each (channel in _channels) {
             if (channel.isPlaying) {
                 if (channel.sound == soundResource && (timeNow - channel.startTime) < SOUND_PLAYED_RECENTLY_DELTA) {
-                    log.info("Discarding sound '" + soundResource.resourceName + "' (recently played)");
+                    //log.info("Discarding sound '" + soundResource.resourceName + "' (recently played)");
                     return new AudioChannel();
                 }
 
