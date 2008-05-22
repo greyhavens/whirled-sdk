@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.simplegame.resource {
 
+import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.Loader;
 import flash.display.MovieClip;
@@ -35,21 +36,31 @@ public class SwfResource
 {
     public static function instantiateMovieClip (resourceName :String, className :String) :MovieClip
     {
-        var swf :SwfResource = ResourceManager.instance.getResource(resourceName) as SwfResource;
-        if (null != swf) {
-            var movieClass :Class = swf.getClass(className);
-            if (null != movieClass) {
-                return new movieClass();
-            }
-        }
+        var theClass :Class = getClass(resourceName, className);
+        return (null != theClass ? new theClass() : null);
+    }
 
-        return null;
+    public static function getBitmapData (resourceName :String, className :String, width :int, height :int) :BitmapData
+    {
+        var theClass :Class = getClass(resourceName, className);
+        return (null != theClass ? new theClass(width, height) : null);
     }
 
     public static function getSwfDisplayRoot (resourceName :String) :DisplayObject
     {
-        var swf :SwfResource = ResourceManager.instance.getResource(resourceName) as SwfResource;
+        var swf :SwfResource = get(resourceName);
         return (null != swf ? swf.displayRoot : null);
+    }
+
+    public static function get (resourceName :String) :SwfResource
+    {
+        return ResourceManager.instance.getResource(resourceName) as SwfResource;
+    }
+
+    protected static function getClass (resourceName :String, className :String) :Class
+    {
+        var swf :SwfResource = get(resourceName);
+        return (null != swf ? swf.getClass(className) : null);
     }
 
     public function SwfResource (resourceName :String, loadParams :Object)
