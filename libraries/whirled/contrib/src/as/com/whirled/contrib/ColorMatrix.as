@@ -64,7 +64,7 @@ public class ColorMatrix
    Parameters:
       none
     */
-    public function reset() :ColorMatrix;
+    public function reset() :ColorMatrix
     {
         matrix = IDENTITY.concat();
         return this;
