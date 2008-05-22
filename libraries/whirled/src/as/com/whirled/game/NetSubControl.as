@@ -32,7 +32,10 @@ import com.whirled.AbstractSubControl;
  * Provides access to 'net' game services. Do not instantiate this class yourself,
  * access it via GameControl.net.
  *
- * The 'net' subcontrol is used to communicate shared state between game clients.
+ * The 'net' subcontrol is used to communicate shared state between game clients. When you set
+ * a property it is immediately distributed to the other clients in the game. Reading a property
+ * is immediate, you are reading the properties that have already been distributed. When a client
+ * connects to an already-running game, any properties already set will be available.
  */
 public class NetSubControl extends AbstractSubControl
 {
@@ -45,7 +48,8 @@ public class NetSubControl extends AbstractSubControl
     }
 
     /**
-     * Get a property value.
+     * Get a property value. Calling this method results in no network traffic, it just
+     * examines values that have already arrived over the network to this client.
      *
      * @param propName the name of the property to retrieve.
      * @return the property value, or null if there is no property with that name.
@@ -171,6 +175,7 @@ public class NetSubControl extends AbstractSubControl
 
     /**
      * Get the names of all currently-set properties that begin with the specified prefix.
+     * Calling this method results in no network traffic.
      */
     public function getPropertyNames (prefix :String = "") :Array
     {
