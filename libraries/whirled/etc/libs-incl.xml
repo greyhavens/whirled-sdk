@@ -3,6 +3,8 @@
   <fileset dir="${libs.dir}" id="whirled.libs">
     <!-- Java dependencies -->
     <include name="ant.jar"/>
+    <include name="asc.jar"/>
+    <include name="flexTasks.jar"/>
     <include name="commons-digester.jar"/>
     <include name="commons-collections.jar"/>
     <include name="commons-io.jar"/>
@@ -25,5 +27,10 @@
     <include name="naryalib.swc"/>
     <include name="nenyalib.swc"/>
     <include name="vilyalib.swc"/>
+    <!-- ABC dependencies -->
+    <include name="narya-abc.abc"/>
+    <include name="vilya-abc.abc"/>
+    <include name="builtin.abc"/>
+    <include name="thane.abc"/>
   </fileset>
 </project>

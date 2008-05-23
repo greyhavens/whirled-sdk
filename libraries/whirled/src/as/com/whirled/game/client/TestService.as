@@ -5,12 +5,8 @@
 
 package com.whirled.game.client {
 
-import flash.utils.ByteArray;
-import com.threerings.io.TypedArray;
 import com.threerings.presents.client.Client;
 import com.threerings.presents.client.InvocationService;
-import com.threerings.presents.client.InvocationService_InvocationListener;
-import com.whirled.game.client.TestService;
 
 /**
  * An ActionScript version of the Java TestService interface.

@@ -1,6 +1,9 @@
 <!-- build configuration -->
 <project name="whirled" default="compile" basedir=".">
 
+  <!-- import overriding properties -->
+  <property file="build.properties"/>
+
   <!-- define some basic project parameters -->
   <property name="lib.name"    value="whirled"/>
   <property name="src.dir"     value="src/java"/>
@@ -125,6 +128,34 @@
     <delete file="${deploy.dir}/aslib-config.xml"/>
   </target>
 
+  <!-- checks whether our thane library needs building -->
+  <target name="checkabclib">
+    <condition property="no_build_abclib"><or>
+      <not><available classname="macromedia.asc.embedding.ScriptCompiler"
+                      classpathref="classpath"/></not>
+      <uptodate targetfile="${deploy.dir}/${lib.name}-abc.abc">
+        <srcfiles dir="src/as" includes="**/*.as"/>
+        <srcfiles dir="etc" includes="asc-files.txt"/>
+        <srcfiles dir="${deploy.dir}/lib" includes="*.abc"/>
+      </uptodate>
+    </or></condition>
+  </target>
+
+  <!-- builds our thane library -->
+  <target name="abclib" unless="no_build_abclib" depends="checkabclib">
+    <taskdef name="asc" classname="flex.ant.AscLibTask" classpathref="classpath"/>
+    <dirname property="abs.deploy.dir" file="${deploy.dir}/somefile.txt"/>
+    <asc as3="true" strict="true" classpathref="classpath"
+            outdir="${abs.deploy.dir}" out="${lib.name}-abc">
+      <import dir="${deploy.dir}/lib">
+        <include name="*.abc"/>
+      </import>
+      <filespec dir="src/as">
+        <excludesfile name="etc/exclude-asc-files.txt"/>
+      </filespec>
+    </asc>
+  </target>
+
   <!-- builds the javadoc documentation -->
   <target name="javadoc" depends="prepare-java">
     <property name="copy.holder"  value="Three Rings Design, Inc."/>
@@ -139,7 +170,7 @@
   </target>
 
   <!-- builds the distribution jar files -->
-  <target name="dist" depends="compile,aslib">
+  <target name="dist" depends="compile,aslib,abclib">
     <!-- stick all our code in one jar file -->
     <jar file="${deploy.dir}/${lib.name}-code.jar" basedir="${classes.dir}">
       <include name="com/**"/>

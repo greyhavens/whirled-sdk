@@ -5,8 +5,6 @@ package com.whirled.game.data {
 
 import com.threerings.io.SimpleStreamableObject;
 
-import com.threerings.parlor.game.data.GameConfig;
-
 /**
  * Used to configure the match-making interface for a game. Particular match-making mechanisms
  * extend this class and specify their own special configuration parameters.
