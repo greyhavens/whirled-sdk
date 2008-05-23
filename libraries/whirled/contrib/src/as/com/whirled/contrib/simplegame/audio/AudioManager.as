@@ -24,6 +24,7 @@ import com.threerings.util.Log;
 import com.whirled.contrib.simplegame.resource.*;
 
 import flash.events.Event;
+import flash.media.Sound;
 import flash.media.SoundTransform;
 
 public class AudioManager
@@ -106,8 +107,8 @@ public class AudioManager
                     var curTransform :SoundTransform = channel.channel.soundTransform;
                     var curVolume :Number = curTransform.volume;
                     var curPan :Number = curTransform.pan;
-                    var newVolume :Number = audioState.actualVolume;
-                    var newPan :Number = audioState.pan;
+                    var newVolume :Number = audioState.actualVolume * channel.sound.volume;
+                    var newPan :Number = audioState.pan * channel.sound.pan;
                     if (newVolume != curVolume || newPan != curPan) {
                         channel.channel.soundTransform = new SoundTransform(newVolume, newPan);
                     }
@@ -177,7 +178,11 @@ public class AudioManager
 
         // start playing
         if (!audioState.paused) {
-            channel.channel = soundResource.sound.play(0, 0, new SoundTransform(audioState.actualVolume, audioState.pan));
+            var sound :Sound = soundResource.sound;
+            var baseVolume :Number = soundResource.volume;
+            var basePan :Number = soundResource.pan;
+            channel.channel = sound.play(
+                0, 0, new SoundTransform(audioState.actualVolume * baseVolume, audioState.pan * basePan));
 
             // Sound.play() will return null if Flash runs out of sound channels
             if (null == channel.channel) {

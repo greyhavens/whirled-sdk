@@ -58,6 +58,16 @@ public class SoundResource
         return _priority;
     }
 
+    public function get volume () :Number
+    {
+        return _volume;
+    }
+
+    public function get pan () :Number
+    {
+        return _pan;
+    }
+
     public function load (completeCallback :Function, errorCallback :Function) :void
     {
         _completeCallback = completeCallback;
@@ -69,6 +79,8 @@ public class SoundResource
             TYPE_SFX);
 
         _priority = (_loadParams.hasOwnProperty("priority") ? int(_loadParams["priority"]) : 0);
+        _volume = (_loadParams.hasOwnProperty("volume") ? Number(_loadParams["volume"]) : 1);
+        _pan = (_loadParams.hasOwnProperty("pan") ? Number(_loadParams["pan"]) : 0);
 
         if (_loadParams.hasOwnProperty("url")) {
             _sound = new Sound(new URLRequest(_loadParams["url"]));
@@ -118,6 +130,8 @@ public class SoundResource
     protected var _sound :Sound;
     protected var _type :int;
     protected var _priority :int;
+    protected var _volume :Number;
+    protected var _pan :Number;
 
     protected var _completeCallback :Function;
     protected var _errorCallback :Function;
