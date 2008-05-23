@@ -6,7 +6,6 @@ package com.whirled.game {
 import flash.events.KeyboardEvent;
 
 import flash.display.DisplayObject;
-import flash.display.StageQuality;
 
 import flash.geom.Point;
 
@@ -133,7 +132,7 @@ public class LocalSubControl extends AbstractSubControl
      * so as to not degrade the user experience.
      */
     public function setFrameRate (
-        frameRate :Number = 30, quality :String = StageQuality.MEDIUM) :void
+        frameRate :Number = 30, quality :String = "medium" /* == StageQuality.MEDIUM */) :void
     {
         callHostCode("setFrameRate_v1", frameRate, quality);
     }
