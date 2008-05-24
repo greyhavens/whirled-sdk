@@ -152,7 +152,7 @@
     <mkdir dir="${sdk.build}"/>
     <copy todir="${sdk.build}">
       <fileset dir="data/sdk" includes="**"/>
-      <fileset dir="." includes="lib/avatarviewer.swf"/>
+      <fileset dir="." includes="lib/viewer.swf"/>
     </copy>
     <mkdir dir="${sdk.build}/dist"/>
     <copy todir="${sdk.build}/dist">
