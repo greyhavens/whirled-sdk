@@ -128,9 +128,13 @@
       <param name="avatar" value="file://${app.name}.${app.suffix}"/>
     </parameters>
     </echoxml>
+    <!-- this is lame, but oh well. We copy the viewer to the current directory so that
+         we can read the parameters out of the same directory on every platform. -->
+    <copy file="${build.root}/lib/viewer.swf" todir="."/>
     <exec executable="${player.path}">
-      <arg value="${build.root}/lib/viewer.swf"/>
+      <arg value="./viewer.swf"/>
     </exec>
+    <!-- <delete file="./viewer.swf"/> -->
   </target>
 
   <target name="test-game">
