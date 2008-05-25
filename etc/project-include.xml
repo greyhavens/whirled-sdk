@@ -125,7 +125,7 @@
   <target name="test-avatar">
     <echoxml file="parameters.xml">
     <parameters>
-      <param name="avatar" value="file://${basedir}/${app.name}.${app.suffix}"/>
+      <param name="avatar" value="file://${basedir}${file.separator}${app.name}.${app.suffix}"/>
     </parameters>
     </echoxml>
     <!-- this is lame, but oh well. We copy the viewer to the current directory so that
