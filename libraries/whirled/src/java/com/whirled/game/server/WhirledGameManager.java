@@ -550,7 +550,7 @@ public abstract class WhirledGameManager extends GameManager
     protected void setAsInitialized (BodyObject body)
     {
         WhirledGameOccupantInfo info = (WhirledGameOccupantInfo) getOccupantInfo(body.getOid());
-        if (!info.initialized) {
+        if (info != null && !info.initialized) {
             info.initialized = true;
             updateOccupantInfo(info);
         }
