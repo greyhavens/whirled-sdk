@@ -83,7 +83,7 @@ public class LocalServer extends CrowdServer
             }
 
             public void resolutionFailed (Name username, Exception cause) {
-                log.log(Level.WARNING, "Failed to resolve client [who=" + username + "].", cause);
+                log.warning("Failed to resolve client [who=" + username + "].", cause);
                 // TODO: display this error
             }
         };

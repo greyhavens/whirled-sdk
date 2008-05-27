@@ -25,7 +25,7 @@ import java.util.zip.GZIPInputStream;
 import com.samskivert.util.CountHashMap;
 import com.samskivert.util.RandomUtil;
 
-import static com.whirled.game.server.Log.log;
+import static com.whirled.game.Log.log;
 
 /**
  * Manages loading and querying word dictionaries in multiple languages.
@@ -140,7 +140,7 @@ public class DictionaryManager
                 InputStream in = getClass().getClassLoader().getResourceAsStream(path);
                 _dictionaries.put(locale, new Dictionary(locale, new GZIPInputStream(in)));
             } catch (Exception e) {
-                log.log(Level.WARNING, "Failed to load dictionary [path=" + path + "].", e);
+                log.warning("Failed to load dictionary [path=" + path + "].", e);
             }
         }
         return _dictionaries.get(locale);
@@ -181,7 +181,7 @@ public class DictionaryManager
 
             initializeLetterCounts(letters);
 
-            log.fine("Loaded dictionary [locale=" + locale + ", words=" + _words.size() +
+            log.debug("Loaded dictionary [locale=" + locale + ", words=" + _words.size() +
                      ", letters=" + letters + "].");
         }
 

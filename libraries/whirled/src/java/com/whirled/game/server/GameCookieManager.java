@@ -14,7 +14,7 @@ import com.threerings.crowd.server.CrowdServer;
 
 import com.whirled.game.server.persist.GameCookieRepository;
 
-import static com.whirled.game.server.Log.log;
+import static com.whirled.game.Log.log;
 
 /**
  * Manages access to game cookies.

@@ -131,7 +131,7 @@ public class FATControlPanel extends JFrame
             FileUtils.copyFile(_swfpath, target);
         } catch (Exception e) {
             _status.setText("Failed to copy SWF (" + _swfpath + "): " + e.getMessage());
-            log.log(Level.WARNING, "Failed to copy " + _swfpath + " to " + target + ".", e);
+            log.warning("Failed to copy " + _swfpath + " to " + target + ".", e);
             return;
         }
 
@@ -141,7 +141,7 @@ public class FATControlPanel extends JFrame
             WhirledServer.server.init();
         } catch (Exception e) {
             WhirledServer.server = null;
-            log.log(Level.WARNING, "Unable to initialize server.", e);
+            log.warning("Unable to initialize server.", e);
             _status.setText("Unable to initialize server: " + e.getMessage());
             return;
         }
@@ -186,7 +186,7 @@ public class FATControlPanel extends JFrame
             return _prefs.getValue("fat.playerpath", "flashplayer");
         }
         protected void reportError (String message, Exception e) {
-            log.log(Level.WARNING, message, e);
+            log.warning(message, e);
             _status.setText(message);
         }
     }

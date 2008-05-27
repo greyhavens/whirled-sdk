@@ -23,8 +23,6 @@ import com.threerings.presents.client.InvocationService;
 import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.util.CrowdContext;
 
-import com.threerings.parlor.Log; // well, fine
-
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.util.ObjectMarshaller;
@@ -38,6 +36,8 @@ import com.whirled.game.PropertyChangedEvent;
 import com.whirled.game.PropertyChangedListener;
 import com.whirled.game.StateChangedEvent;
 import com.whirled.game.StateChangedListener;
+
+import static com.whirled.game.Log.log;
 
 public class GameObjectImpl
     implements WhirledGame
@@ -367,7 +367,7 @@ public class GameObjectImpl
         return new InvocationService.ConfirmListener() {
             public void requestFailed (String cause)
             {
-                Log.warning("Service failure " +
+                log.warning("Service failure " +
                     "[service=" + service + ", cause=" + cause + "].");
             }
 

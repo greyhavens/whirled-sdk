@@ -49,7 +49,7 @@ import com.whirled.game.data.WhirledGameOccupantInfo;
 import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.data.UserCookie;
 
-import static com.whirled.game.server.Log.log;
+import static com.whirled.game.Log.log;
 
 /**
  * A manager for whirled games.
@@ -408,7 +408,7 @@ public abstract class WhirledGameManager extends GameManager
 
         BodyObject body = getOccupantByOid(playerOid);
         if (body == null) {
-            log.fine("getCookie() called with invalid occupant [occupantId=" + playerOid + "].");
+            log.debug("getCookie() called with invalid occupant [occupantId=" + playerOid + "].");
             throw new InvocationException(INTERNAL_ERROR);
         }
 

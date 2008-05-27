@@ -82,7 +82,7 @@ public class WhirledServer extends CrowdServer
             server.init();
             server.run();
         } catch (Exception e) {
-            log.log(Level.WARNING, "Unable to initialize server.", e);
+            log.warning("Unable to initialize server.", e);
         }
     }
 
@@ -237,7 +237,7 @@ public class WhirledServer extends CrowdServer
 
     protected void reportError (String message, Exception e)
     {
-        log.log(Level.WARNING, message, e);
+        log.warning(message, e);
     }
 
     protected String getDocRoot ()
