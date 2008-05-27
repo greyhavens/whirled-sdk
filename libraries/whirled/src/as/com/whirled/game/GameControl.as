@@ -21,7 +21,7 @@ import com.whirled.AbstractSubControl;
  * Used to coordinate game state and control your multiplayer game.
  * <br/><br/>
  * <b>Note:</b> Check out the
- *   <a href="/code/GameControl.html" target="_top">Easy GameControl Index</a>.
+ * <a href="http://www.whirled.com/code/GameControl.html" target="_top">Easy GameControl Index</a>.
  * <br/><br/>
  *
  * @example Typically, you create this in your top-level MovieClip/Sprite:
