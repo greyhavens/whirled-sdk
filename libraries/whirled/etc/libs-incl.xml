@@ -8,6 +8,7 @@
     <include name="commons-digester.jar"/>
     <include name="commons-collections.jar"/>
     <include name="commons-io.jar"/>
+    <include name="commons-lang.jar"/>
     <include name="google-collect.jar"/>
     <include name="jetty-util.jar"/>
     <include name="jetty.jar"/>

@@ -16,6 +16,7 @@ import com.samskivert.util.Interval;
 import com.samskivert.util.IntListUtil;
 import com.samskivert.util.RandomUtil;
 import com.samskivert.util.ResultListener;
+import com.samskivert.util.StringUtil;
 
 import com.threerings.util.Name;
 
@@ -48,6 +49,13 @@ import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.WhirledGameOccupantInfo;
 import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.data.UserCookie;
+import com.whirled.game.data.WhirledGameConfig;
+import com.whirled.game.data.ThaneGameConfig;
+import com.whirled.game.data.GameDefinition;
+
+import com.whirled.server.WhirledServer;
+
+import com.whirled.bureau.data.GameAgentObject;
 
 import static com.whirled.game.Log.log;
 
@@ -57,6 +65,12 @@ import static com.whirled.game.Log.log;
 public abstract class WhirledGameManager extends GameManager
     implements WhirledGameCodes, WhirledGameProvider, TurnGameManager
 {
+    /** Bureau type for launching a thane vm. */
+    public static final String THANE_BUREAU = "thane";
+
+    /** The default class name to use for the game agent. */
+    public static final String DEFAULT_SERVER_CLASS = "Server";
+
     public WhirledGameManager ()
     {
     }
@@ -593,6 +607,43 @@ public abstract class WhirledGameManager extends GameManager
         _gameObj = (WhirledGameObject) _plobj;
         _gameObj.setWhirledGameService((WhirledGameMarshaller)
             CrowdServer.invmgr.registerDispatcher(new WhirledGameDispatcher(this)));
+
+        // register an agent for this game if required
+        _gameAgent = createAgent();
+        if (_gameAgent != null) {
+            WhirledServer.bureauReg.startAgent(_gameAgent);
+        }
+    }
+
+    /**
+     * Creates the agent for this game. An agent is optional server-side code for a 
+     * game and is managed by the {@link#WhirledServer.bureauReg}.
+     * @return the new agent object or null if the game does not require it
+     */
+    protected GameAgentObject createAgent ()
+    {
+        WhirledGameConfig cfg = (WhirledGameConfig)_gameconfig;
+        GameDefinition def = cfg.getGameDefinition();
+        int id = cfg.getGameId();
+        String code = def.getServerMediaPath(id);
+
+        if (StringUtil.isBlank(code)) {
+            return null;
+        }
+
+        GameAgentObject gameAgentObj = new GameAgentObject();
+        gameAgentObj.gameOid = _gameObj.getOid();
+        gameAgentObj.config = new ThaneGameConfig(id, def);
+        gameAgentObj.bureauId = "whirled-game-" + _gameObj.getOid();
+        // We assume this is a thane/tamarin abc pacakage. TODO: do we need to check that?
+        gameAgentObj.bureauType = THANE_BUREAU;
+        gameAgentObj.code = code;
+        if (StringUtil.isBlank(def.server)) {
+            gameAgentObj.className = DEFAULT_SERVER_CLASS;
+        } else {
+            gameAgentObj.className = def.server;
+        }
+        return gameAgentObj;
     }
 
     @Override // from PlaceManager
@@ -664,6 +715,11 @@ public abstract class WhirledGameManager extends GameManager
     {
         CrowdServer.invmgr.clearDispatcher(_gameObj.whirledGameService);
         stopTickers();
+
+        if (_gameAgent != null) {
+            WhirledServer.bureauReg.destroyAgent(_gameAgent);
+            _gameAgent = null;
+        }
 
         super.didShutdown();
     }
@@ -825,6 +881,9 @@ public abstract class WhirledGameManager extends GameManager
     /** Tracks whether or not we've auto-started a non-seated game. Unfortunately there's no way to
      * derive this from existing game state. */
     protected boolean _haveAutoStarted;
+
+    /** The agent for this game or null if the game has no agent. */
+    protected GameAgentObject _gameAgent;
 
     /** The minimum delay a ticker can have. */
     protected static final int MIN_TICKER_DELAY = 50;

@@ -37,6 +37,8 @@ import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.server.CrowdServer;
 import com.threerings.crowd.server.PlaceManagerDelegate;
 
+import com.threerings.bureau.server.BureauRegistry;
+
 import com.threerings.parlor.data.Parameter;
 
 import com.threerings.parlor.game.server.GameManager;
@@ -70,6 +72,10 @@ public class WhirledServer extends CrowdServer
 
     /** Serves up SWF files to avoid annoying file-system-loaded SWF "seurity" problems. */
     public static WhirledHttpServer httpServer;
+
+    /** Keeps track of bureaus launched by this server. It is up to subclasses to register the 
+     *  desired bureau types. Otherwise none will be launched. */
+    public static BureauRegistry bureauReg;
 
     public static void main (String[] args)
     {
@@ -125,6 +131,10 @@ public class WhirledServer extends CrowdServer
 
         // register ourselves as handling the test service
         invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
+
+        // TODO: should the bureau have multiple ports?
+        bureauReg = new BureauRegistry(
+            "localhost:" + getListenPorts()[0], invmgr, omgr, invoker);
 
         // prepare the game and start the clients
         prepareGame();

@@ -39,6 +39,9 @@ public /*abstract*/ class GameDefinition
     /** Parameters used to configure the game itself. */
     public var params :TypedArray;
 
+    /** The class name to use when launching the game's agent on the server. */
+    public var server :String;
+
     public function GameDefinition ()
     {
     }
@@ -55,6 +58,19 @@ public /*abstract*/ class GameDefinition
     }
 
     /**
+     * Provides the path to this game's server media (an abc file). Returns null by default. 
+     * Modules that want to support running game code on the server should override this method.
+     *
+     * @param gameId the unique id of the game provided when this game definition was registered
+     * with the system, or -1 if we're running in test mode.
+     * @return the path or null if no server media is required for this game.
+     */
+    public function getServerMediaPath (gameId :int) :String
+    {
+        return null;
+    }
+
+    /**
      * Returns true if a single player can play this game (possibly against AI opponents), or if
      * opponents are needed.
      */
@@ -67,7 +83,8 @@ public /*abstract*/ class GameDefinition
     public function toString () :String
     {
         return "[ident=" + ident + ", ctrl=" + controller + ", mgr=" + manager +
-            ", match=" + match + ", params=" + params + ", digest=" + digest + "]";
+            ", match=" + match + ", params=" + params + ", digest=" + digest + 
+            ", server=" + server + "]";
     }
 
     // from interface Streamable
@@ -79,6 +96,7 @@ public /*abstract*/ class GameDefinition
         digest = (ins.readField(String) as String);
         match = (ins.readObject() as MatchConfig);
         params = (ins.readObject() as TypedArray);
+        server = (ins.readObject() as String);
     }
 
     // from interface Streamable
@@ -90,6 +108,7 @@ public /*abstract*/ class GameDefinition
         out.writeField(digest);
         out.writeObject(match);
         out.writeObject(params);
+        out.writeObject(server);
     }
 
     /** This function is required to ensure that the compiler includes certain classes. */

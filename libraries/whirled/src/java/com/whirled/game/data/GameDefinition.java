@@ -37,6 +37,10 @@ public abstract class GameDefinition implements Streamable
     /** Parameters used to configure the game itself. */
     public Parameter[] params;
 
+    /** The class name to use when launching the game's agent using 
+     *  {@link#WhirledServer.bureauReg} */
+    public String server;
+
     /**
      * Provides the path to this game's media (a jar file or an SWF).
      *
@@ -44,6 +48,19 @@ public abstract class GameDefinition implements Streamable
      * with the system, or -1 if we're running in test mode.
      */
     public abstract String getMediaPath (int gameId);
+
+    /**
+     * Provides the path to this game's server media (an abc file). Returns null by default. 
+     * Modules that want to support running game code on the server should override this method.
+     *
+     * @param gameId the unique id of the game provided when this game definition was registered
+     * with the system, or -1 if we're running in test mode.
+     * @return the path or null if no server media is required for this game.
+     */
+    public String getServerMediaPath (int gameId)
+    {
+        return null;
+    }
 
     /**
      * Returns true if a single player can play this game (possibly against AI opponents), or if

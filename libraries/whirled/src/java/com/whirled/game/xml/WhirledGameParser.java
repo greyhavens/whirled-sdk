@@ -57,6 +57,7 @@ public class WhirledGameParser
         _digester.addObjectCreate("game", getGameDefinitionClass());
         _digester.addRule("game/ident", new SetFieldRule("ident"));
         _digester.addRule("game/controller", new SetFieldRule("controller"));
+        _digester.addRule("game/serverclass", new SetFieldRule("server"));
         _digester.addRule("game/manager", new SetFieldRule("manager"));
 
         _digester.addRule("game/match", new Rule() {
