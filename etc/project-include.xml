@@ -134,7 +134,7 @@
     <exec executable="${player.path}">
       <arg value="./viewer.swf"/>
     </exec>
-    <!-- <delete file="./viewer.swf"/> -->
+    <delete file="./viewer.swf"/>
   </target>
 
   <target name="test-game">
