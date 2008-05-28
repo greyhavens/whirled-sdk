@@ -108,7 +108,7 @@ public /*abstract*/ class GameDefinition
         out.writeField(digest);
         out.writeObject(match);
         out.writeObject(params);
-        out.writeObject(server);
+        out.writeField(server);
     }
 
     /** This function is required to ensure that the compiler includes certain classes. */
