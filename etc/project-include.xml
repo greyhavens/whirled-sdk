@@ -141,7 +141,7 @@
     <copy file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
 
     <!-- start the server which will start up the clients -->
-    <java classname="com.whirled.server.WhirledServer" fork="true">
+    <java classname="com.whirled.server.WhirledTestServer" fork="true">
       <sysproperty key="whirled.root" value="${build.root}"/>
       <sysproperty key="players" value="${players}"/>
       <sysproperty key="remotePlayers" value="${remotePlayers}"/>
