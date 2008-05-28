@@ -27,8 +27,6 @@ import javax.swing.JTextArea;
 
 import org.apache.commons.io.FileUtils;
 
-import com.samskivert.util.LoggingLogProvider;
-import com.samskivert.util.OneLineLogFormatter;
 import com.samskivert.util.PrefsConfig;
 import com.samskivert.util.StringUtil;
 
@@ -49,10 +47,6 @@ public class FATControlPanel extends JFrame
 {
     public static void main (String[] args)
     {
-        // set up the proper logging services
-        com.samskivert.util.Log.setLogProvider(new LoggingLogProvider());
-        OneLineLogFormatter.configureDefaultHandler();
-
         // create and display our panel
         FATControlPanel panel = new FATControlPanel();
         panel.pack();

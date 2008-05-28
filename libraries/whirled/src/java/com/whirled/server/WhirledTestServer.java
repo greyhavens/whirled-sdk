@@ -19,8 +19,6 @@ import org.apache.mina.common.IoAcceptor;
 import com.google.common.collect.Lists;
 
 import com.samskivert.util.CollectionUtil;
-import com.samskivert.util.LoggingLogProvider;
-import com.samskivert.util.OneLineLogFormatter;
 import com.threerings.util.Name;
 
 import com.threerings.presents.data.ClientObject;
@@ -79,10 +77,6 @@ public class WhirledTestServer extends CrowdServer
 
     public static void main (String[] args)
     {
-        // set up the proper logging services
-        com.samskivert.util.Log.setLogProvider(new LoggingLogProvider());
-        OneLineLogFormatter.configureDefaultHandler();
-
         server = new WhirledTestServer();
         try {
             server.init();

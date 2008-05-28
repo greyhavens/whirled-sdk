@@ -7,8 +7,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import com.samskivert.swing.util.SwingUtil;
-import com.samskivert.util.LoggingLogProvider;
-import com.samskivert.util.OneLineLogFormatter;
 
 import com.threerings.media.FrameManager;
 import com.threerings.media.ManagedJFrame;
@@ -53,9 +51,6 @@ public class WhirledApp
     public static void main (String[] args)
         throws Exception
     {
-        com.samskivert.util.Log.setLogProvider(new LoggingLogProvider());
-        OneLineLogFormatter.configureDefaultHandler();
-
         // start up our local server
         _server = new LocalServer();
         _server.init();
