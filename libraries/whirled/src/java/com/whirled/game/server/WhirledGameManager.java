@@ -35,6 +35,8 @@ import com.threerings.crowd.data.PlaceObject;
 
 import com.threerings.crowd.server.CrowdServer;
 
+import com.threerings.bureau.server.BureauRegistry;
+
 import com.threerings.parlor.game.data.GameConfig;
 
 import com.threerings.parlor.game.server.GameManager;
@@ -52,8 +54,6 @@ import com.whirled.game.data.UserCookie;
 import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.ThaneGameConfig;
 import com.whirled.game.data.GameDefinition;
-
-import com.whirled.server.WhirledTestServer;
 
 import com.whirled.bureau.data.GameAgentObject;
 
@@ -267,21 +267,6 @@ public abstract class WhirledGameManager extends GameManager
         getDictionaryManager().checkWord(locale, dictionary, word, listener);
     }
 
-    /**
-     * Returns the dictionary manager if it has been properly initialized. Throws an INTERNAL_ERROR
-     * exception if it has not.
-     */
-    protected DictionaryManager getDictionaryManager ()
-        throws InvocationException
-    {
-        DictionaryManager dictionary = DictionaryManager.getInstance();
-        if (dictionary == null) {
-            log.warning("DictionaryManager not initialized.");
-            throw new InvocationException(INTERNAL_ERROR);
-        }
-        return dictionary;
-    }
-
     // from WhirledGameProvider
     public void addToCollection (ClientObject caller, String collName, byte[][] data,
                                  boolean clearExisting,
@@ -469,6 +454,21 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
+     * Returns the dictionary manager if it has been properly initialized. Throws an INTERNAL_ERROR
+     * exception if it has not.
+     */
+    protected DictionaryManager getDictionaryManager ()
+        throws InvocationException
+    {
+        DictionaryManager dictionary = DictionaryManager.getInstance();
+        if (dictionary == null) {
+            log.warning("DictionaryManager not initialized.");
+            throw new InvocationException(INTERNAL_ERROR);
+        }
+        return dictionary;
+    }
+
+    /**
      * Helper method to send a private message to the specified player oid (must already be
      * verified).
      */
@@ -611,13 +611,13 @@ public abstract class WhirledGameManager extends GameManager
         // register an agent for this game if required
         _gameAgent = createAgent();
         if (_gameAgent != null) {
-            WhirledTestServer.bureauReg.startAgent(_gameAgent);
+            getBureauRegistry().startAgent(_gameAgent);
         }
     }
 
     /**
      * Creates the agent for this game. An agent is optional server-side code for a 
-     * game and is managed by the {@link#WhirledTestServer.bureauReg}.
+     * game and is managed by the {@link#BureauRegistry}.
      * @return the new agent object or null if the game does not require it
      */
     protected GameAgentObject createAgent ()
@@ -717,7 +717,7 @@ public abstract class WhirledGameManager extends GameManager
         stopTickers();
 
         if (_gameAgent != null) {
-            WhirledTestServer.bureauReg.destroyAgent(_gameAgent);
+            getBureauRegistry().destroyAgent(_gameAgent);
             _gameAgent = null;
         }
 
@@ -809,6 +809,11 @@ public abstract class WhirledGameManager extends GameManager
     {
         return new GameCookieManager();
     }
+
+    /**
+     * Access the bureaus for this game manager, normally returns the server's global instance.
+     */
+    abstract protected BureauRegistry getBureauRegistry ();
 
     /**
      * A timer that fires message events to a game.

@@ -13,9 +13,13 @@ import com.threerings.presents.server.InvocationException;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.server.CrowdServer;
 
+import com.threerings.bureau.server.BureauRegistry;
+
 import com.threerings.parlor.data.Parameter;
 
 import com.whirled.game.client.WhirledGameService;
+
+import com.whirled.server.WhirledTestServer;
 
 import com.whirled.game.data.ContentPackParameter;
 import com.whirled.game.data.GameData;
@@ -111,5 +115,10 @@ public class TestGameManager extends WhirledGameManager
                     10 /*coins*/, 49 /*percentile*/);
             }
         }
+    }
+
+    protected BureauRegistry getBureauRegistry ()
+    {
+        return WhirledTestServer.bureauReg;
     }
 }
