@@ -96,7 +96,7 @@ public /*abstract*/ class GameDefinition
         digest = (ins.readField(String) as String);
         match = (ins.readObject() as MatchConfig);
         params = (ins.readObject() as TypedArray);
-        server = (ins.readObject() as String);
+        server = (ins.readField(String) as String);
     }
 
     // from interface Streamable
