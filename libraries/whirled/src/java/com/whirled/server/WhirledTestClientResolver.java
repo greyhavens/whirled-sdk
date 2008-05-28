@@ -14,7 +14,7 @@ import com.whirled.data.WhirledBodyObject;
 /**
  * Used to configure whirled test server specific client object data.
  */
-public class WhirledClientResolver extends CrowdClientResolver
+public class WhirledTestClientResolver extends CrowdClientResolver
 {
     @Override
     public ClientObject createClientObject ()

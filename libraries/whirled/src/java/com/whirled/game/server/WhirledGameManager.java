@@ -53,7 +53,7 @@ import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.ThaneGameConfig;
 import com.whirled.game.data.GameDefinition;
 
-import com.whirled.server.WhirledServer;
+import com.whirled.server.WhirledTestServer;
 
 import com.whirled.bureau.data.GameAgentObject;
 
@@ -611,13 +611,13 @@ public abstract class WhirledGameManager extends GameManager
         // register an agent for this game if required
         _gameAgent = createAgent();
         if (_gameAgent != null) {
-            WhirledServer.bureauReg.startAgent(_gameAgent);
+            WhirledTestServer.bureauReg.startAgent(_gameAgent);
         }
     }
 
     /**
      * Creates the agent for this game. An agent is optional server-side code for a 
-     * game and is managed by the {@link#WhirledServer.bureauReg}.
+     * game and is managed by the {@link#WhirledTestServer.bureauReg}.
      * @return the new agent object or null if the game does not require it
      */
     protected GameAgentObject createAgent ()
@@ -717,7 +717,7 @@ public abstract class WhirledGameManager extends GameManager
         stopTickers();
 
         if (_gameAgent != null) {
-            WhirledServer.bureauReg.destroyAgent(_gameAgent);
+            WhirledTestServer.bureauReg.destroyAgent(_gameAgent);
             _gameAgent = null;
         }
 

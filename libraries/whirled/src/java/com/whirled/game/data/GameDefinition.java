@@ -38,7 +38,7 @@ public abstract class GameDefinition implements Streamable
     public Parameter[] params;
 
     /** The class name to use when launching the game's agent using 
-     *  {@link#WhirledServer.bureauReg} */
+     *  {@link#BureauRegistry.startAgent} (passed via {@link#AgentObject.server}). */
     public String server;
 
     /**

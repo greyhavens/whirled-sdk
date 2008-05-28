@@ -10,7 +10,7 @@ import com.threerings.crowd.server.CrowdClient;
 /**
  * Handles shutting down the test server when all users have logged off or disconnected.
  */
-public class WhirledClient extends CrowdClient
+public class WhirledTestServerMonitor extends CrowdClient
 {
     // documentation inherited
     protected void sessionConnectionClosed ()
@@ -25,7 +25,7 @@ public class WhirledClient extends CrowdClient
 
         // shut down the server when the last person disconnects
         if (_cmgr.getConnectionCount() == 0) {
-            WhirledServer.server.shutdown();
+            WhirledTestServer.server.shutdown();
         }
     }
 }

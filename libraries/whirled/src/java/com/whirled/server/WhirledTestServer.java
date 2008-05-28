@@ -61,11 +61,11 @@ import static com.whirled.Log.log;
 /**
  * Handles setting up the Whirled standalone test server.
  */
-public class WhirledServer extends CrowdServer
+public class WhirledTestServer extends CrowdServer
     implements TestProvider
 {
     /** The singleton server instance. */
-    public static WhirledServer server;
+    public static WhirledTestServer server;
 
     /** Handles creating and cleaning up after games. */
     public static ParlorManager parMan = new ParlorManager();
@@ -83,7 +83,7 @@ public class WhirledServer extends CrowdServer
         com.samskivert.util.Log.setLogProvider(new LoggingLogProvider());
         OneLineLogFormatter.configureDefaultHandler();
 
-        server = new WhirledServer();
+        server = new WhirledTestServer();
         try {
             server.init();
             server.run();
@@ -102,10 +102,10 @@ public class WhirledServer extends CrowdServer
         // configure the client manager to use the appropriate client class
         clmgr.setClientFactory(new ClientFactory() {
             public PresentsClient createClient (AuthRequest areq) {
-                return new WhirledClient();
+                return new WhirledTestServerMonitor();
             }
             public ClientResolver createClientResolver (Name username) {
-                return new WhirledClientResolver();
+                return new WhirledTestClientResolver();
             }
         });
 

@@ -38,7 +38,7 @@ import com.samskivert.swing.Spacer;
 import com.samskivert.swing.VGroupLayout;
 import com.samskivert.swing.util.SwingUtil;
 
-import com.whirled.server.WhirledServer;
+import com.whirled.server.WhirledTestServer;
 
 import static com.whirled.Log.log;
 
@@ -136,11 +136,11 @@ public class FATControlPanel extends JFrame
         }
 
         // prepare the server
-        WhirledServer.server = new FATServer();
+        WhirledTestServer.server = new FATServer();
         try {
-            WhirledServer.server.init();
+            WhirledTestServer.server.init();
         } catch (Exception e) {
-            WhirledServer.server = null;
+            WhirledTestServer.server = null;
             log.warning("Unable to initialize server.", e);
             _status.setText("Unable to initialize server: " + e.getMessage());
             return;
@@ -151,9 +151,9 @@ public class FATControlPanel extends JFrame
         _status.setText("Server running. Close all clients to end.");
 
         // start up the server which will handle everything else
-        new Thread("WhirledServer") {
+        new Thread("WhirledTestServer") {
             public void run () {
-                WhirledServer.server.run();
+                WhirledTestServer.server.run();
                 EventQueue.invokeLater(new Runnable() {
                     public void run () {
                         serverDidExit();
@@ -165,12 +165,12 @@ public class FATControlPanel extends JFrame
 
     protected void serverDidExit ()
     {
-        WhirledServer.server = null;
+        WhirledTestServer.server = null;
         _startA.setEnabled(true);
         _status.setText("Ready...");
     }
 
-    protected class FATServer extends WhirledServer
+    protected class FATServer extends WhirledTestServer
     {
         protected String getDocRoot () {
             return "dist";

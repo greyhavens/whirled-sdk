@@ -42,7 +42,7 @@ import static com.whirled.Log.log;
 /**
  * Provides the necessary framework and classloading for the Java game test client.
  */
-public class WhirledClient
+public class WhirledTestClient
     implements RunQueue
 {
     /**

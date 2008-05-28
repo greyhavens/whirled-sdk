@@ -26,7 +26,7 @@ import com.threerings.crowd.server.PlaceManagerDelegate;
 import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.server.ParlorManager;
 
-import com.whirled.client.WhirledClient;
+import com.whirled.client.WhirledTestClient;
 
 import static com.whirled.Log.log;
 
@@ -62,7 +62,7 @@ public class LocalServer extends CrowdServer
     /**
      * Called in standalone mode to cause the standalone client to "logon".
      */
-    public void startStandaloneClient (final WhirledClient client, Name username)
+    public void startStandaloneClient (final WhirledTestClient client, Name username)
     {
         // create our client object
         ClientResolutionListener clr = new ClientResolutionListener() {
@@ -93,7 +93,7 @@ public class LocalServer extends CrowdServer
     /**
      * Called in standalone mode to cause the standalone client to "logoff".
      */
-    public void stopStandaloneClient (WhirledClient client)
+    public void stopStandaloneClient (WhirledTestClient client)
     {
         client.getContext().getClient().standaloneLogoff();
     }

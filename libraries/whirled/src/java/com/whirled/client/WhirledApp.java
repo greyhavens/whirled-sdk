@@ -34,7 +34,7 @@ public class WhirledApp
         SwingUtil.centerWindow(_frame);
 
         // create and initialize our client instance
-        _client = new WhirledClient();
+        _client = new WhirledTestClient();
         _client.init(_frame, gameId);
     }
 
@@ -68,7 +68,7 @@ public class WhirledApp
         app.run(username);
     }
 
-    protected WhirledClient _client;
+    protected WhirledTestClient _client;
     protected ManagedJFrame _frame;
     protected FrameManager _framemgr;
 
