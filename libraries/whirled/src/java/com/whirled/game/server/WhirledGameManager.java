@@ -617,7 +617,7 @@ public abstract class WhirledGameManager extends GameManager
 
     /**
      * Creates the agent for this game. An agent is optional server-side code for a 
-     * game and is managed by the {@link#BureauRegistry}.
+     * game and is managed by the {@link BureauRegistry}.
      * @return the new agent object or null if the game does not require it
      */
     protected GameAgentObject createAgent ()
