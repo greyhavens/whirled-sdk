@@ -26,6 +26,7 @@ public class AudioState
     public var pan :Number = 0;
     public var paused :Boolean;
     public var muted :Boolean;
+    public var stopped :Boolean;
 
     public function get actualVolume () :Number
     {
@@ -47,6 +48,7 @@ public class AudioState
         into.pan = (a.pan + b.pan) * 0.5;
         into.paused = a.paused || b.paused;
         into.muted = a.muted || b.muted;
+        into.stopped = a.stopped || b.stopped;
 
         return into;
     }

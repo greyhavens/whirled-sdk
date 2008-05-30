@@ -165,6 +165,36 @@ public class AudioControls
         return this;
     }
 
+    public function stop (val :Boolean) :AudioControls
+    {
+        _localState.stopped = val;
+        _stopCountdown = 0;
+        _playCountdown = 0;
+        return this;
+    }
+
+    public function stopAfter (time :Number) :AudioControls
+    {
+        if (time <= 0) {
+            this.stop(true);
+        } else {
+            _stopCountdown = time;
+        }
+
+        return this;
+    }
+
+    public function playAfter (time :Number) :AudioControls
+    {
+        if (time <= 0) {
+            this.stop(false);
+        } else {
+            _playCountdown = time;
+        }
+
+        return this;
+    }
+
     public function update (dt :Number, parentState :AudioState) :void
     {
         if (_targetVolumeTotalTime > 0) {
@@ -212,6 +242,20 @@ public class AudioControls
             _unmuteCountdown = Math.max(_unmuteCountdown - dt, 0);
             if (_unmuteCountdown == 0) {
                 _localState.muted = false;
+            }
+        }
+
+        if (_stopCountdown > 0) {
+            _stopCountdown = Math.max(_stopCountdown - dt, 0);
+            if (_stopCountdown == 0) {
+                _localState.stopped = true;
+            }
+        }
+
+        if (_playCountdown > 0) {
+            _playCountdown = Math.max(_playCountdown - dt, 0);
+            if (_playCountdown == 0) {
+                _localState.stopped = false;
             }
         }
 
@@ -270,6 +314,8 @@ public class AudioControls
     protected var _unpauseCountdown :Number = 0;
     protected var _muteCountdown :Number = 0;
     protected var _unmuteCountdown :Number = 0;
+    protected var _stopCountdown :Number = 0;
+    protected var _playCountdown :Number = 0;
 }
 
 }

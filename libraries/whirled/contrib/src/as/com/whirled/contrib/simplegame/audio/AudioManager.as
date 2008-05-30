@@ -101,7 +101,9 @@ public class AudioManager
             if (channel.isPlaying) {
                 var audioState :AudioState = channel.controls.state;
                 var channelPaused :Boolean = channel.isPaused;
-                if (audioState.paused && !channelPaused) {
+                if (audioState.stopped) {
+                    this.stop(channel);
+                } else if (audioState.paused && !channelPaused) {
                     this.pause(channel);
                 } else if (!audioState.paused && channelPaused) {
                     this.resume(channel);
@@ -134,6 +136,13 @@ public class AudioManager
         if (null == soundResource.sound) {
             log.info("Discarding sound '" + soundResource.resourceName + "' (sound is null)");
             return null;
+        }
+
+        // don't play the sound if its parent controls are stopped
+        var audioState :AudioState = parentControls.updateStateNow();
+        if (audioState.stopped) {
+            log.info("Discarding sound '" + soundResource.resourceName + "' (parent controls are stopped)");
+            return new AudioChannel();
         }
 
         var timeNow :int = flash.utils.getTimer();
@@ -175,8 +184,6 @@ public class AudioManager
                 parentControls = _masterControls;
             }
         }
-
-        var audioState :AudioState = parentControls.updateStateNow();
 
         // start playing
         if (!audioState.paused) {
