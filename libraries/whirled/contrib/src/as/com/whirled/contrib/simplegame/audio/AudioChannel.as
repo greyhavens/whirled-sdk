@@ -54,7 +54,7 @@ public class AudioChannel
     internal var sound :SoundResource;
     internal var channel :SoundChannel;
     internal var playPosition :Number;
-    internal var startTime :Number;
+    internal var startTime :int;
     internal var loopCount :int;
 }
 

@@ -26,6 +26,7 @@ import com.whirled.contrib.simplegame.resource.*;
 import flash.events.Event;
 import flash.media.Sound;
 import flash.media.SoundTransform;
+import flash.utils.getTimer;
 
 public class AudioManager
 {
@@ -135,7 +136,7 @@ public class AudioManager
             return null;
         }
 
-        var timeNow :Number = new Date().time;
+        var timeNow :int = flash.utils.getTimer();
 
         // Iterate the active channels to determine if this sound has been played recently.
         // Also look for the lowest-priority active channel.
@@ -273,7 +274,7 @@ public class AudioManager
     protected static var g_instance :AudioManager;
     protected static var log :Log = Log.getLog(AudioManager);
 
-    protected static const SOUND_PLAYED_RECENTLY_DELTA :Number = 1000 / 20;
+    protected static const SOUND_PLAYED_RECENTLY_DELTA :int = 1000 / 20;
 }
 
 }
