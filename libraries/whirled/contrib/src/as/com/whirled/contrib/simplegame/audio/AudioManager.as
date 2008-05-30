@@ -99,11 +99,12 @@ public class AudioManager
         for each (var channel :AudioChannel in _channels) {
             if (channel.isPlaying) {
                 var audioState :AudioState = channel.controls.state;
-                if (audioState.paused && !channel.isPaused) {
+                var channelPaused :Boolean = channel.isPaused;
+                if (audioState.paused && !channelPaused) {
                     this.pause(channel);
-                } else if (!audioState.paused && channel.isPaused) {
+                } else if (!audioState.paused && channelPaused) {
                     this.resume(channel);
-                } else {
+                } else if (!channelPaused) {
                     var curTransform :SoundTransform = channel.channel.soundTransform;
                     var curVolume :Number = curTransform.volume;
                     var curPan :Number = curTransform.pan;
