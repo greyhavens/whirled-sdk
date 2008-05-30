@@ -405,12 +405,7 @@ public class BaseGameBackend
     protected function messageReceivedOnUserObject (event :MessageEvent) :void
     {
         var name :String = event.getName();
-        if (name == WhirledGameObject.COINS_AWARDED_MESSAGE) {
-            var amount :int = int(event.getArgs()[0]);
-            var percentile :int = int(event.getArgs()[1]);
-            callUserCode("flowAwarded_v1", amount, percentile); // we still use old name
-
-        } else if (name == (WhirledGameObject.USER_MESSAGE + ":" + _gameObj.getOid())) {
+        if (name == (WhirledGameObject.USER_MESSAGE + ":" + _gameObj.getOid())) {
             var args :Array = event.getArgs();
             var mname :String = (args[0] as String);
             callUserCode("messageReceived_v1", mname, ObjectMarshaller.decode(args[1]));

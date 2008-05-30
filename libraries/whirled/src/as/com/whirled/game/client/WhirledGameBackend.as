@@ -6,10 +6,15 @@ import flash.events.KeyboardEvent;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 
-import com.threerings.util.Name;
-import com.threerings.crowd.data.BodyObject;
 import com.threerings.util.MessageBundle;
+import com.threerings.util.Name;
+
+import com.threerings.presents.dobj.MessageEvent;
+
+import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.util.CrowdContext;
+
+import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
 
 /**
@@ -65,7 +70,30 @@ public class WhirledGameBackend extends BaseGameBackend
     }
 
     // from BaseGameBackend
-    protected override function setUserCodeProperties (o :Object) :void
+    override protected function messageReceivedOnUserObject (event :MessageEvent) :void
+    {
+        var name :String = event.getName();
+        if (name == WhirledGameObject.COINS_AWARDED_MESSAGE) {
+            var amount :int = int(event.getArgs()[0]);
+            var percentile :int = int(event.getArgs()[1]);
+            // we still use old name for the dispatch method, and we must use
+            // the coercive cast to Boolean instead of using "as", because older versions
+            // of the SDK will not return any value, so we must turn those into false.
+            var cancelled :Boolean = Boolean(callUserCode("flowAwarded_v1", amount, percentile));
+            if (!cancelled) {
+                // if the usercode has not indicated that it will handle the event themselves,
+                // we need to do it.
+                _ctx.getChatDirector().displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
+                    MessageBundle.tcompose("m.coins_awarded", amount));
+            }
+
+        } else {
+            super.messageReceivedOnUserObject(event);
+        }
+    }
+
+    // from BaseGameBackend
+    override protected function setUserCodeProperties (o :Object) :void
     {
         super.setUserCodeProperties(o);
 
@@ -74,7 +102,7 @@ public class WhirledGameBackend extends BaseGameBackend
     }
 
     // from BaseGameBackend
-    protected override function populateProperties (o :Object) :void
+    override protected function populateProperties (o :Object) :void
     {
         super.populateProperties(o);
 

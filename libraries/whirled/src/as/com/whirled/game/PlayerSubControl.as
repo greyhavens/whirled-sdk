@@ -125,10 +125,13 @@ public class PlayerSubControl extends AbstractSubControl
 
     /**
      * Private method to post a CoinsAwardedEvent.
+     * @return true if the usercode has prevented the default action.
      */
-    private function flowAwarded_v1 (amount :int, percentile :int) :void
+    private function flowAwarded_v1 (amount :int, percentile :int) :Boolean
     {
-        dispatch(new CoinsAwardedEvent(amount, percentile));
+        var evt :CoinsAwardedEvent = new CoinsAwardedEvent(amount, percentile);
+        dispatch(evt);
+        return evt.isDefaultPrevented();
     }
 }
 }

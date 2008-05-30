@@ -9,6 +9,8 @@ import flash.events.Event;
 
 /**
  * Dispatched to let a game know when the player has been awarded coins.
+ * This event is cancellable. If you would like to print your own coin award message and
+ * suppress the default one, call preventDefault().
  */
 public class CoinsAwardedEvent extends Event
 {
@@ -42,7 +44,7 @@ public class CoinsAwardedEvent extends Event
      */
     public function CoinsAwardedEvent (amount :int, percentile :int)
     {
-        super(COINS_AWARDED);
+        super(COINS_AWARDED, false, true);
         _amount = amount;
         _percentile = percentile;
     }
