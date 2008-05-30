@@ -84,8 +84,7 @@ public class WhirledGameBackend extends BaseGameBackend
             var cancelled :Boolean = Boolean(callUserCode("flowAwarded_v1", amount, percentile));
             if (!cancelled) {
                 // If the usercode has not indicated that it will handle notification, we do it.
-                _ctx.getChatDirector().displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
-                    MessageBundle.tcompose("m.coins_awarded", amount));
+                reportCoinsAwarded(amount);
             }
 
         } else {
@@ -135,6 +134,18 @@ public class WhirledGameBackend extends BaseGameBackend
         // Old methods: backwards compatability
         o["getStageBounds_v1"] = getStageBounds_v1;
         o["getHeadShot_v1"] = getHeadShot_v1;
+    }
+
+    /**
+     * We've already tried notifying usercode, now do a framework-level notification
+     * of the coin awarding.
+     */
+    protected function reportCoinsAwarded (amount :int) :void
+    {
+        if (amount > 0) {
+            _ctx.getChatDirector().displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
+                MessageBundle.tcompose("m.coins_awarded", amount));
+        }
     }
 
     //---- GameControl -----------------------------------------------------
