@@ -76,13 +76,14 @@ public class WhirledGameBackend extends BaseGameBackend
         if (name == WhirledGameObject.COINS_AWARDED_MESSAGE) {
             var amount :int = int(event.getArgs()[0]);
             var percentile :int = int(event.getArgs()[1]);
-            // we still use old name for the dispatch method, and we must use
-            // the coercive cast to Boolean instead of using "as", because older versions
-            // of the SDK will not return any value, so we must turn those into false.
+            // We still use the old name for the dispatch method. Changing it would mean
+            // testing to see if we need to use the new method or the old method and this is
+            // all internal anyway, so I don't care.
+            // Also: we coerce the result to a Boolean because pre-2008-05-29 classes will
+            // return undefined and we want that to become false.
             var cancelled :Boolean = Boolean(callUserCode("flowAwarded_v1", amount, percentile));
             if (!cancelled) {
-                // if the usercode has not indicated that it will handle the event themselves,
-                // we need to do it.
+                // If the usercode has not indicated that it will handle notification, we do it.
                 _ctx.getChatDirector().displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
                     MessageBundle.tcompose("m.coins_awarded", amount));
             }
