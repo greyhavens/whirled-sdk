@@ -349,8 +349,9 @@ public final class MainLoop
         }
 
         // update the top mode
-        if (null != topMode) {
-            topMode.update(dt);
+        var theTopMode :AppMode = this.topMode;
+        if (null != theTopMode) {
+            theTopMode.update(dt);
         }
 
         // update audio
@@ -381,9 +382,9 @@ public final class MainLoop
     protected var _hasSetup :Boolean = false;
     protected var _running :Boolean = false;
     protected var _lastTime :Number;
-    protected var _modeStack :Array = new Array();
-    protected var _pendingModeTransitionQueue :Array = new Array();
-    protected var _updatables :Array = new Array();
+    protected var _modeStack :Array = [];
+    protected var _pendingModeTransitionQueue :Array = [];
+    protected var _updatables :Array = [];
 
     protected var _fps :Number = 0;
 

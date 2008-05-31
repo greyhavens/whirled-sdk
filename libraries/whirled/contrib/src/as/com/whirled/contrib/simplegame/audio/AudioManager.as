@@ -101,7 +101,7 @@ public class AudioManager
 
     public function update (dt :Number) :void
     {
-        _masterControls.update(dt, AudioState.defaultState());
+        _masterControls.update(dt, DEFAULT_AUDIO_STATE);
 
         // update all playing sound channels
         for each (var channel :AudioChannel in _channels) {
@@ -287,6 +287,8 @@ public class AudioManager
 
     protected static var g_instance :AudioManager;
     protected static var log :Log = Log.getLog(AudioManager);
+
+    protected static const DEFAULT_AUDIO_STATE :AudioState = AudioState.defaultState();
 
     protected static const SOUND_PLAYED_RECENTLY_DELTA :int = 1000 / 20;
 }
