@@ -89,6 +89,13 @@ public class AudioManager
 
     public function shutdown () :void
     {
+        // shutdown all sounds
+        for each (var channel :AudioChannel in _channels) {
+            if (channel.isPlaying) {
+                this.stop(channel);
+            }
+        }
+
         g_instance = null;
     }
 
