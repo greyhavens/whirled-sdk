@@ -161,8 +161,8 @@ public class EntityControl extends AbstractControl
      * Triggers an action on this scene object. The action will be properly distributed to the
      * object running in every client in the scene, resulting in a ACTION_TRIGGERED event.
      *
-     * Note: the name must be a String and may be up to 64 characters.
-     * TODO: restriction on size of the argument. It will probably be 1k or something.
+     * Note: the name must be a String and may be up to 64 characters. The argument may be up
+     * to 1024 bytes after being AMF3 encoded.
      *
      * Note: Only the instance "in control" can trigger actions. If you want any instance to be
      * able to communicate, use sendMessage().
@@ -175,9 +175,8 @@ public class EntityControl extends AbstractControl
     /**
      * Send a message to other instances of this entity, resulting in a MESSAGE_RECEIVED event.
      *
-     * Note: the name must be a String and may be up to 64 characters.
-     * TODO: restriction on size of the argument. It will probably be 1k or something.
-     *
+     * Note: the name must be a String and may be up to 64 characters. The argument may be up
+     * to 1024 bytes after being AMF3 encoded.
      * Note: Any instance can send messages. Compare with triggerAction.
      */
     public function sendMessage (name :String, arg :Object = null) :void
@@ -190,8 +189,8 @@ public class EntityControl extends AbstractControl
      * resulting in a SIGNAL_RECEIVED event. All instances of the entity can initiate a
      * signal, so the user must take care to check for control when appropriate.
      *
-     * Note: the name must be a String and may be up to 64 characters.
-     * TODO: restriction on size of the argument. It will probably be 1k or something.
+     * Note: the name must be a String and may be up to 64 characters. The argument may be up
+     * to 1024 bytes after being AMF3 encoded.
      */
     public function sendSignal (name :String, arg :Object = null) :void
     {
