@@ -75,10 +75,13 @@ public class RectMeter extends SceneObject
 
     public function set value (val :Number) :void
     {
-        _value = Math.min(val, _maxValue);
-        _value = Math.max(_value, _minValue);
+        val = Math.min(val, _maxValue);
+        val = Math.max(val, _minValue);
 
-        _dirty = true;
+        if (val != _value) {
+            _value = val;
+            _dirty = true;
+        }
     }
 
     public function get outlineColor () :uint
@@ -171,6 +174,8 @@ public class RectMeter extends SceneObject
 
         _display.graphics.lineStyle(1, _outlineColor);
         _display.graphics.drawRect(0, 0, _width, _height);
+
+        _dirty = false;
     }
 
     protected var _dirty :Boolean;
