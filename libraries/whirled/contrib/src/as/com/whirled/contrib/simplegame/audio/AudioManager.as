@@ -30,6 +30,8 @@ import flash.utils.getTimer;
 
 public class AudioManager
 {
+    public static const LOOP_FOREVER :int = -1;
+
     public static function get instance () :AudioManager
     {
         return g_instance;
@@ -145,6 +147,14 @@ public class AudioManager
             return null;
         }
 
+        // get the appropriate parent controls
+        if (null == parentControls) {
+            parentControls = this.getControlsForSoundType(soundResource.type);
+            if (null == parentControls) {
+                parentControls = _masterControls;
+            }
+        }
+
         // don't play the sound if its parent controls are stopped
         var audioState :AudioState = parentControls.updateStateNow();
         if (audioState.stopped) {
@@ -182,14 +192,6 @@ public class AudioManager
             // we're out of luck.
             log.info("Discarding sound '" + soundResource.resourceName + "' (no free AudioChannels)");
             return new AudioChannel();
-        }
-
-        // get the appropriate parent controls
-        if (null == parentControls) {
-            parentControls = this.getControlsForSoundType(soundResource.type);
-            if (null == parentControls) {
-                parentControls = _masterControls;
-            }
         }
 
         // start playing

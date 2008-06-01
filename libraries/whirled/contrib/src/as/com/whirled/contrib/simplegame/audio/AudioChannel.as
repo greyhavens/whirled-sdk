@@ -28,17 +28,17 @@ public class AudioChannel
 {
     public function get isPlaying () :Boolean
     {
-        return (null != controls);
+        return (null != sound);
     }
 
     public function get isPaused () :Boolean
     {
-        return (null != controls && null == channel);
+        return (null != sound && null == channel);
     }
 
     public function get audioControls () :AudioControls
     {
-        return controls;
+        return (null != controls ? controls : DUMMY_CONTROLS);
     }
 
     public function get debugDescription () :String
@@ -56,6 +56,8 @@ public class AudioChannel
     internal var playPosition :Number;
     internal var startTime :int;
     internal var loopCount :int;
+
+    internal static const DUMMY_CONTROLS :AudioControls = new AudioControls();
 }
 
 }
