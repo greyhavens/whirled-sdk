@@ -149,6 +149,8 @@ public class EditableDataPack extends DataPack
      *    Type: Image|DisplayObject
      *       width: [requiredWidth]:Number
      *       height: [requiredHeight]:Number
+     *       maxWidth: [maxWidth]:Number
+     *       maxHeight: [maxHeight]:Number
      */
     public function getFileEntry (name :String) :Object
     {
@@ -172,6 +174,8 @@ public class EditableDataPack extends DataPack
         case "DisplayObject":
             entry.width = parseValue(datum, "width", "Number");
             entry.height = parseValue(datum, "height", "Number");
+            entry.maxWidth = parseValue(datum, "maxWidth", "Number");
+            entry.maxHeight = parseValue(datum, "maxHeight", "Number");
             break;
         }
 
