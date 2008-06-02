@@ -14,9 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this library.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2008 Keith Irwin.
+// Copyright 2008 Keith Irwin
 //
 // $Id$
+//
+// ClickAnimateFurniture - A class for making animated and/or clickable
+// furniture.
 
 package com.whirled.contrib.display {
 
@@ -355,10 +358,20 @@ public class ClickAnimateFurniture extends Sprite
 	is given as input, errors will appear in the log and
 	the default animation will be used instead. */
     public function setAnimations (anims:Array) : void {
-	if (verifyAnimations(anims)) {
-	    animations = anims;
-	} else {
+	if (!verifyAnimations(anims)) {
 	    trace ("Invalid animation given to setAnimations.")
+	} else {
+	    animations = anims;
+
+	    /* If there's more than one animation, then we set
+	       buttonMode to be true so that the cursor will
+	       turn into a hand to let the user know that things
+	       are clickable. */
+	    if (animations.length > 1) {
+		buttonMode = true;
+	    } else {
+		buttonMode = false;
+	    }
 	}
     }
 
