@@ -8,14 +8,14 @@ package com.whirled.bureau.client {
 import com.threerings.bureau.data.AgentObject;
 import com.threerings.bureau.client.Agent;
 import com.threerings.bureau.client.BureauDirector;
-import com.threerings.bureau.util.BureauContext;
 import com.whirled.bureau.data.GameAgentObject;
+import com.whirled.bureau.util.WhirledBureauContext;
 
 /** Implements the bureau director for whirled. Creates our whirled agent types. */
 public class WhirledBureauDirector extends BureauDirector
 {
     /** Creates a new director. */
-    public function WhirledBureauDirector (ctx :BureauContext)
+    public function WhirledBureauDirector (ctx :WhirledBureauContext)
     {
         super(ctx);
     }
@@ -24,7 +24,7 @@ public class WhirledBureauDirector extends BureauDirector
     protected override function createAgent (agentObj :AgentObject) :Agent
     {
         if (agentObj is GameAgentObject) {
-            return new GameAgent(_ctx as BureauContext);
+            return new GameAgent(_ctx as WhirledBureauContext);
         }
 
         throw new Error("Unknown type");
