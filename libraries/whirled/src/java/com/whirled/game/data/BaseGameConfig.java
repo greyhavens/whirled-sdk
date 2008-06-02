@@ -37,8 +37,10 @@ public class BaseGameConfig extends GameConfig
         _gameDef = gameDef;
 
         // set the default values for our parameters
-        for (int ii = 0; ii < gameDef.params.length; ii++) {
-            params.put(gameDef.params[ii].ident, gameDef.params[ii].getDefaultValue());
+        if (gameDef.params != null) {
+            for (int ii = 0; ii < gameDef.params.length; ii++) {
+                params.put(gameDef.params[ii].ident, gameDef.params[ii].getDefaultValue());
+            }
         }
     }
 
