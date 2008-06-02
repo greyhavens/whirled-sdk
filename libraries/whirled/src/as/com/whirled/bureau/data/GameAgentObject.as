@@ -1,5 +1,6 @@
 package com.whirled.bureau.data {
 
+import com.threerings.io.ObjectInputStream;
 import com.threerings.bureau.data.AgentObject;
 import com.whirled.game.data.ThaneGameConfig;
 
@@ -55,5 +56,13 @@ public class GameAgentObject extends AgentObject
         this.config = value;
     }
     // AUTO-GENERATED: METHODS END
+
+    // from interface Streamable
+    override public function readObject (ins :ObjectInputStream) :void
+    {
+        super.readObject(ins);
+        gameOid = ins.readInt();
+        config = (ins.readObject() as ThaneGameConfig);
+    }
 }
 }
