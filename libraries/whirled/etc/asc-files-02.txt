@@ -44,3 +44,4 @@ com/whirled/game/data/WhirledGameCodes.as
 com/whirled/game/data/WhirledGameMarshaller.as
 com/whirled/game/data/WhirledGameObject.as
 com/whirled/game/data/WhirledGameOccupantInfo.as
+com/whirled/bureau/client/UserCodeLoader.as
