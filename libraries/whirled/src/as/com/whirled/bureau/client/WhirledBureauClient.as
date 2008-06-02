@@ -13,10 +13,11 @@ import com.threerings.bureau.Log;
 public class WhirledBureauClient extends BureauClient
 {
     /**
-     * Launches a new client from command line (String) arguments. Expected arguments are 
-     * (bureauId) (token) (port). The server is always "localhost".
+     * Launches a new client from command line (String) arguments. 
+     * @param argv array of command line arguments: (bureauId) (token) (port)
+     * @param version for authenticaion, the deployment version
      */
-    public static function main (args :Array) :void
+    public static function main (args :Array, version :String="0") :void
     {
         var bureauId :String = args[0];
         var token :String = args[1];
@@ -31,6 +32,7 @@ public class WhirledBureauClient extends BureauClient
 
         // create the client and log on
         var client :WhirledBureauClient = new WhirledBureauClient(token, bureauId);
+        client.setVersion(version);
         client.setServer(server, [port]);
         client.logon();
     }
