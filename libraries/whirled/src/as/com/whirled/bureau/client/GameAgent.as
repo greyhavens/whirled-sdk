@@ -103,8 +103,8 @@ public class GameAgent extends Agent
             return;
         }
 
-        Log.info("Loaded user code " + _userCode.name);
         _userCode = clazz;
+        Log.info("Loaded user code " + _userCode.name);
 
         if (_userCode != null && _gameObj != null) {
             launchUserCode();
