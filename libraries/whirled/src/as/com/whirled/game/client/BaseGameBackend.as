@@ -34,6 +34,8 @@ import com.threerings.presents.dobj.MessageEvent;
 import com.threerings.presents.dobj.MessageListener;
 import com.threerings.presents.dobj.SetListener;
 
+import com.threerings.presents.util.PresentsContext;
+
 import com.threerings.crowd.chat.client.ChatDisplay;
 import com.threerings.crowd.chat.data.ChatCodes;
 import com.threerings.crowd.chat.data.ChatMessage;
@@ -41,7 +43,6 @@ import com.threerings.crowd.chat.data.UserMessage;
 
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
-import com.threerings.crowd.util.CrowdContext;
 
 import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.data.GameObject;
@@ -66,16 +67,14 @@ public class BaseGameBackend
     public var log :Log = Log.getLog(this);
 
     public function BaseGameBackend (
-        ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :BaseGameController)
+        ctx :PresentsContext, gameObj :WhirledGameObject)
     {
         _ctx = ctx;
         _gameObj = gameObj;
-        _ctrl = ctrl;
         _gameData = _gameObj.getUserProps();
 
         _gameObj.addListener(this);
         _ctx.getClient().getClientObject().addListener(_userListener);
-        _ctx.getChatDirector().addChatDisplay(this);
     }
 
     public function forceClassInclusion () :void
@@ -106,7 +105,6 @@ public class BaseGameBackend
     public function shutdown () :void
     {
         _gameObj.removeListener(this);
-        _ctx.getChatDirector().removeChatDisplay(this);
         _ctx.getClient().getClientObject().removeListener(_userListener);
         callUserCode("connectionClosed_v1");
         _userFuncs = null; // disconnect
@@ -261,10 +259,10 @@ public class BaseGameBackend
             callUserCode("messageReceived_v1", mname, ObjectMarshaller.decode(args[1]));
 
         } else if (WhirledGameObject.GAME_CHAT == name) {
-            // chat sent by the game, route to char director
+            // chat sent by the game, route to our displayInfo
             var msg :String = String(event.getArgs()[0]);
             validateChat(msg);
-            _ctx.getChatDirector().displayInfo(null, MessageBundle.taint(msg));
+            displayInfo(null, MessageBundle.taint(msg));
 
         } else if (WhirledGameObject.TICKER == name) {
             var targs :Array = event.getArgs();
@@ -313,6 +311,42 @@ public class BaseGameBackend
             }
         }
         return true;
+    }
+
+    /**
+     * Lets the controller know that our user code is now ready to run. Does nothing by default,
+     * so subclasses should override.
+     */
+    protected function notifyControllerUserCodeIsConnected (
+        autoReady :Boolean) :void
+    {
+    }
+
+    /**
+     * Access the configuration of our game. This is an abstract method and must be provided
+     * by subclasses.
+     */
+    protected function getConfig () :BaseGameConfig
+    {
+        throw new Error("Abstract method");
+    }
+
+    /**
+     * Displays an info message to the player. Default does nothing, so subclasses should 
+     * override.
+     */
+    protected function displayInfo (bundle :String, message :String) :void
+    {
+        // do nothing by default
+    }
+
+    /**
+     * Displays a feedback message to the player. Default does nothing, so subclasses should 
+     * override.
+     */
+    protected function displayFeedback (bundle :String, message :String) :void
+    {
+        // do nothing by default
     }
 
     /**
@@ -466,7 +500,7 @@ public class BaseGameBackend
         var autoReady :Boolean = ("autoReady_v1" in userProps) ? userProps["autoReady_v1"] : true;
 
         // ok, we're now hooked-up with the game code
-        _ctrl.userCodeIsConnected(autoReady);
+        notifyControllerUserCodeIsConnected(autoReady);
     }
 
     protected function setUserCodeProperties (o :Object) :void
@@ -499,7 +533,7 @@ public class BaseGameBackend
 
         // convert our game config from a HashMap to a Dictionary
         var gameConfig :Object = {};
-        var cfg :BaseGameConfig = (_ctrl.getPlaceConfig() as BaseGameConfig);
+        var cfg :BaseGameConfig = getConfig();
         cfg.params.forEach(function (key :Object, value :Object) :void {
             gameConfig[key] = (value is Wrapped) ? Wrapped(value).unwrap() : value;
         });
@@ -582,7 +616,7 @@ public class BaseGameBackend
      */
     protected function getGameInfoType () :String
     {
-        var cfg :BaseGameConfig = _ctrl.getPlaceConfig() as BaseGameConfig;
+        var cfg :BaseGameConfig = getConfig();
         switch (cfg.getMatchType()) {
         case GameConfig.SEATED_GAME:
             return "seated";
@@ -742,7 +776,7 @@ public class BaseGameBackend
         _gameObj.whirledGameService.awardTrophy(
             _ctx.getClient(), ident, new ConfirmAdapter(function (cause :String) :void {
                 // TODO: change GameCodes.GAME_MSGS to "game" and use that
-                _ctx.getChatDirector().displayFeedback("game", cause);
+                displayFeedback("game", cause);
             }));
         return true;
     }
@@ -1143,21 +1177,18 @@ public class BaseGameBackend
     // TEMP TODO REMOVE XXX
     protected function provideArrayCompatibility () :Boolean
     {
-        var cfg :BaseGameConfig = _ctrl.getPlaceConfig() as BaseGameConfig;
+        var cfg :BaseGameConfig = getConfig();
         var url :String = cfg.getGameDefinition().getMediaPath(cfg.getGameId());
 
         // Tree house defense
         return (url === "http://media.whirled.com/6c7fa832bd422899ffea685adadbf55c184edb2e.swf");
     }
 
-    protected var _ctx :CrowdContext;
+    protected var _ctx :PresentsContext;
 
     protected var _userListener :MessageAdapter = new MessageAdapter(messageReceivedOnUserObject);
 
     protected var _gameObj :WhirledGameObject;
-
-    /** Handles trusted clientside control. */
-    protected var _ctrl :BaseGameController;
 
     protected var _userFuncs :Object;
 

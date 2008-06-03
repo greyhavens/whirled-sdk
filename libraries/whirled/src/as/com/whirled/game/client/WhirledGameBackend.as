@@ -16,6 +16,7 @@ import com.threerings.crowd.util.CrowdContext;
 
 import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
+import com.whirled.game.data.BaseGameConfig;
 
 /**
  * Manages the backend of the game on a flash client.
@@ -25,7 +26,10 @@ public class WhirledGameBackend extends BaseGameBackend
     public function WhirledGameBackend (
         ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :WhirledGameController)
     {
-        super(ctx, gameObj, ctrl);
+        super(ctx, gameObj);
+        _ctrl = ctrl;
+        
+        (_ctx as CrowdContext).getChatDirector().addChatDisplay(this);
     }
 
     public function setContainer (container :GameContainer) :void
@@ -37,6 +41,8 @@ public class WhirledGameBackend extends BaseGameBackend
     override public function shutdown () :void
     {
         super.shutdown();
+
+        (_ctx as CrowdContext).getChatDirector().removeChatDisplay(this);
 
         // once the usercode is incapable of calling setFrameRate, ensure they're reset to defaults
         _container.stage.frameRate = 30;
@@ -58,6 +64,36 @@ public class WhirledGameBackend extends BaseGameBackend
     public function sizeChanged () :void
     {
         callUserCode("sizeChanged_v1", getSize_v1());
+    }
+
+    /** @inheritDocs */
+    // from BaseGameBackend
+    override protected function notifyControllerUserCodeIsConnected (
+        autoReady :Boolean) :void
+    {
+        _ctrl.userCodeIsConnected(autoReady);
+    }
+
+    /** @inheritDocs */
+    // from BaseGameBackend
+    override protected function getConfig () :BaseGameConfig
+    {
+        return _ctrl.getPlaceConfig() as BaseGameConfig;
+    }
+
+    /** @inheritDocs */
+    // from BaseGameBackend
+    override protected function displayInfo (bundle :String, msg :String) :void
+    {
+        (_ctx as CrowdContext).getChatDirector().displayInfo(bundle, msg);
+    }
+
+
+    /** @inheritDocs */
+    // from BaseGameBackend
+    override protected function displayFeedback (bundle :String, msg :String) :void
+    {
+        (_ctx as CrowdContext).getChatDirector().displayFeedback(bundle, msg);
     }
 
     /**
@@ -143,7 +179,7 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function reportCoinsAwarded (amount :int) :void
     {
         if (amount > 0) {
-            _ctx.getChatDirector().displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
+            displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
                 MessageBundle.tcompose("m.coins_awarded", amount));
         }
     }
@@ -178,12 +214,12 @@ public class WhirledGameBackend extends BaseGameBackend
         validateChat(msg);
         // The sendChat() messages will end up being routed through this method on each client.
         // TODO: make this look distinct from other system chat
-        _ctx.getChatDirector().displayInfo(null, MessageBundle.taint(msg));
+        displayInfo(null, MessageBundle.taint(msg));
     }
 
     protected function filter_v1 (text :String) :String
     {
-        return _ctx.getChatDirector().filter(text, null, true);
+        return (_ctx as CrowdContext).getChatDirector().filter(text, null, true);
     }
 
     /**
@@ -296,12 +332,13 @@ public class WhirledGameBackend extends BaseGameBackend
         callback(s, true);
     }
 
+    protected var _ctrl :WhirledGameController;
+
     protected var _container :GameContainer;
 
     /** The function on the GameControl which we can use to directly dispatch events to the
      * user's game. */
     protected var _keyDispatcher :Function;
-
 }
 
 }
