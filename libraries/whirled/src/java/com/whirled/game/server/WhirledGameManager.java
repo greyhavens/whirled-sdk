@@ -454,6 +454,15 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
+     * Called privately by the ThaneGameController when an agent's code is all set to go
+     * and the game can startup.
+     */
+    public void agentReady (ClientObject caller)
+    {
+        log.info("Agent ready for " + caller);
+    }
+
+    /**
      * Returns the dictionary manager if it has been properly initialized. Throws an INTERNAL_ERROR
      * exception if it has not.
      */

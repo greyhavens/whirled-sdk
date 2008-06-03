@@ -126,7 +126,7 @@ public class GameAgent extends Agent
     protected function launchUserCode () :void
     {
         _userInstance = new _userCode();
-        //_controller.agentReady();
+        _controller.agentReady();
     }
 
     protected var _subscriber :SafeSubscriber;
