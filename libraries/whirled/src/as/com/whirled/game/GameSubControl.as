@@ -173,7 +173,8 @@ public class GameSubControl extends AbstractSubControl
     }
 
     /**
-     * If the game was not configured to auto-start, all clients must call this function to let the
+     * If the game was not configured to auto-start, which is determined by the 2nd parameter
+     * to the GameControl constructor, then all player clients must call this function to let the
      * server know that they are ready, at which point the game will be started. Once a game is
      * over, all clients can call this function again to start a new game.
      */
