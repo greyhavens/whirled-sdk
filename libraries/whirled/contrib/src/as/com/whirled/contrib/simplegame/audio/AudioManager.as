@@ -24,7 +24,6 @@ import com.threerings.util.Log;
 import com.whirled.contrib.simplegame.resource.*;
 
 import flash.events.Event;
-import flash.media.Sound;
 import flash.media.SoundTransform;
 import flash.utils.getTimer;
 
@@ -194,23 +193,6 @@ public class AudioManager
             return new AudioChannel();
         }
 
-        // start playing
-        if (!audioState.paused) {
-            var sound :Sound = soundResource.sound;
-            var baseVolume :Number = soundResource.volume;
-            var basePan :Number = soundResource.pan;
-            channel.channel = sound.play(
-                0, 0, new SoundTransform(audioState.actualVolume * baseVolume, audioState.pan * basePan));
-
-            // Sound.play() will return null if Flash runs out of sound channels
-            if (null == channel.channel) {
-                log.info("Discarding sound '" + soundResource.resourceName + "' (Flash is out of channels)");
-                return new AudioChannel();
-            }
-
-            channel.channel.addEventListener(Event.SOUND_COMPLETE, channel.completeHandler);
-        }
-
         // finish initialization of channel
         channel.controls = new AudioControls(parentControls);
         channel.controls.retain();
@@ -218,6 +200,17 @@ public class AudioManager
         channel.playPosition = 0;
         channel.startTime = timeNow;
         channel.loopCount = loopCount;
+
+        // start playing
+        if (!audioState.paused) {
+            this.playChannel(channel, audioState, 0);
+
+            // Flash must've run out of sound channels
+            if (null == channel.channel) {
+                log.info("Discarding sound '" + soundResource.resourceName + "' (Flash is out of channels)");
+                return new AudioChannel();
+            }
+        }
 
         return channel;
     }
@@ -257,11 +250,7 @@ public class AudioManager
     public function resume (channel :AudioChannel) :void
     {
         if (channel.isPlaying && channel.isPaused) {
-            var audioState :AudioState = channel.controls.state;
-            channel.channel = channel.sound.sound.play(channel.playPosition, 0, new SoundTransform(audioState.actualVolume, audioState.pan));
-            if (null == channel.channel) {
-                this.stop(channel);
-            }
+            this.playChannel(channel, channel.controls.state, channel.playPosition);
         }
     }
 
@@ -270,15 +259,22 @@ public class AudioManager
         // does the sound need to loop?
         if (channel.loopCount == 0) {
             this.stop(channel);
+        } else if (this.playChannel(channel, channel.controls.state, 0)) {
+            channel.loopCount--;
+        }
+    }
+
+    protected function playChannel (channel :AudioChannel, audioState :AudioState, playPosition :Number) :Boolean
+    {
+        var volume :Number = audioState.actualVolume * channel.sound.volume;
+        var pan :Number = audioState.pan * channel.sound.pan;
+        channel.channel = channel.sound.sound.play(playPosition, 0, new SoundTransform(volume, pan));
+        if (null != channel.channel) {
+            channel.channel.addEventListener(Event.SOUND_COMPLETE, channel.completeHandler);
+            return true;
         } else {
-            // try to play again
-            var audioState :AudioState = channel.controls.state;
-            channel.channel = channel.sound.sound.play(0, 0, new SoundTransform(audioState.actualVolume, audioState.pan));
-            if (null == channel.channel) {
-                this.stop(channel);
-            } else if (channel.loopCount > 0) {
-                channel.loopCount--;
-            }
+            this.stop(channel);
+            return false;
         }
     }
 
