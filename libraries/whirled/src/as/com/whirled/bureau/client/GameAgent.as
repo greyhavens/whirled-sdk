@@ -14,6 +14,7 @@ import com.threerings.presents.dobj.SubscriberAdapter;
 import com.threerings.presents.util.SafeSubscriber;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.bureau.util.WhirledBureauContext;
+import com.whirled.game.client.ThaneGameController;
 
 /** The container for a user's game control code. */
 public class GameAgent extends Agent
@@ -53,6 +54,11 @@ public class GameAgent extends Agent
         _gameObj = null;
         _agentObj = null;
 
+        if (_controller != null) {
+            _controller.shutdown();
+            _controller = null;
+        }
+
         if (_userCode != null) {
             _ctx.getUserCodeLoader().unload(_userCode);
             _userCode = null;
@@ -78,6 +84,9 @@ public class GameAgent extends Agent
     {
         Log.info("Subscribed to game object " + gameObj);
         _gameObj = gameObj;
+
+        _controller = new ThaneGameController();
+        _controller.init(_ctx, _gameObj, gameAgentObj.config);
 
         if (_userCode != null && _gameObj != null) {
             launchUserCode();
@@ -117,6 +126,7 @@ public class GameAgent extends Agent
     protected function launchUserCode () :void
     {
         _userInstance = new _userCode();
+        //_controller.agentReady();
     }
 
     protected var _subscriber :SafeSubscriber;
@@ -124,6 +134,7 @@ public class GameAgent extends Agent
     protected var _gameObj :WhirledGameObject;
     protected var _userCode :Class;
     protected var _userInstance :Object;
+    protected var _controller :ThaneGameController;
 }
 
 }

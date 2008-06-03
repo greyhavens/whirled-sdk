@@ -3,7 +3,7 @@
 
 package com.whirled.game.client {
 
-import com.threerings.crowd.util.CrowdContext;
+import com.threerings.presents.util.PresentsContext;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.BaseGameConfig;
 
@@ -14,7 +14,7 @@ import com.whirled.game.data.BaseGameConfig;
 public class ThaneGameBackend extends BaseGameBackend
 {
     public function ThaneGameBackend (
-        ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :ThaneGameController)
+        ctx :PresentsContext, gameObj :WhirledGameObject, ctrl :ThaneGameController)
     {
         super(ctx, gameObj);
         _ctrl = ctrl;
@@ -22,7 +22,7 @@ public class ThaneGameBackend extends BaseGameBackend
 
     override protected function getConfig () :BaseGameConfig
     {
-        return _ctrl.getPlaceConfig() as BaseGameConfig;
+        return _ctrl.getConfig();
     }
 
     protected var _ctrl :ThaneGameController;

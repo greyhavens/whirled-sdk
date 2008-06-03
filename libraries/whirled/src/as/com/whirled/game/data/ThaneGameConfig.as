@@ -21,7 +21,7 @@ public class ThaneGameConfig extends BaseGameConfig
     // from BaseGameConfig
     override protected function createDefaultController () :PlaceController
     {
-        return new ThaneGameController();
+        return null; //new ThaneGameController();
     }
 }
 }
