@@ -22,12 +22,14 @@
   <filelist dir="." id="dist.libs">
     <file name="lib/ant.jar"/>
     <file name="lib/ant-launcher.jar"/>
+    <file name="lib/asc.jar"/>
     <file name="lib/commons-beanutils.jar"/>
     <file name="lib/commons-collections.jar"/>
     <file name="lib/commons-digester.jar"/>
     <file name="lib/commons-io.jar"/>
     <file name="lib/commons-lang.jar"/>
     <file name="lib/commons-logging.jar"/>
+    <file name="lib/flexTasks.jar"/>
     <file name="lib/google-collect.jar"/>
     <file name="lib/getdown.jar"/>
     <file name="lib/javassist.jar"/>
@@ -84,7 +86,7 @@
   </target>
 
   <!-- builds our Flash game test client -->
-  <target name="asclient">
+  <target name="asclient" depends="prepare">
     <copy file="etc/whirled-config.xml.in" tofile="etc/whirled-config.xml">
       <filterset>
         <filter token="flex_path" value="${flex.path}"/>
