@@ -199,6 +199,7 @@
     <copy todir="${sdk.build}/examples/avatars">
       <fileset dir="projects/avatars" includes="uravatar/**"/>
       <fileset dir="projects/avatars" includes="imageflipper/**"/>
+      <fileset dir="projects/avatars" includes="imageflipper-remix/**"/>
       <fileset dir="projects/avatars" includes="FATexample/**"/>
     </copy>
     <!-- finally zip it all up -->
