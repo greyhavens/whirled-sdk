@@ -37,6 +37,8 @@ import com.whirled.game.PropertyChangedListener;
 import com.whirled.game.StateChangedEvent;
 import com.whirled.game.StateChangedListener;
 
+import com.whirled.game.data.WhirledGameCodes;
+
 import static com.whirled.game.Log.log;
 
 public class GameObjectImpl
@@ -220,10 +222,9 @@ public class GameObjectImpl
     public void localChat (String msg)
     {
         validateChat(msg);
-        // The sendChat() messages will end up being routed
-        // through this method on each client.
-        // TODO: make this look distinct from other system chat
-        _ctx.getChatDirector().displayInfo(null, MessageBundle.taint(msg));
+        // messages displayed with sendChat will end up 
+        _ctx.getChatDirector().displayInfo(
+            null, MessageBundle.taint(msg), WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
 
     // from WhirledGame
