@@ -55,6 +55,7 @@ import com.whirled.game.data.PropertySetListener;
 import com.whirled.game.data.TrophyData;
 import com.whirled.game.data.UserCookie;
 import com.whirled.game.data.BaseGameConfig;
+import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.WhirledGameOccupantInfo;
 
@@ -775,8 +776,7 @@ public class BaseGameBackend
         }
         _gameObj.whirledGameService.awardTrophy(
             _ctx.getClient(), ident, new ConfirmAdapter(function (cause :String) :void {
-                // TODO: change GameCodes.GAME_MSGS to "game" and use that
-                displayFeedback("game", cause);
+                displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE, cause);
             }));
         return true;
     }
