@@ -23,6 +23,7 @@ com/whirled/game/ServicesSubControl.as
 com/whirled/game/SizeChangedEvent.as
 com/whirled/game/StateChangedEvent.as
 com/whirled/game/UserChatEvent.as
+com/whirled/game/client/BaseGameController.as
 com/whirled/game/client/TestService.as
 com/whirled/game/client/ThaneGameBackend.as
 com/whirled/game/client/ThaneGameController.as
@@ -46,3 +47,4 @@ com/whirled/game/data/WhirledGameObject.as
 com/whirled/game/data/WhirledGameOccupantInfo.as
 com/whirled/bureau/client/UserCodeLoader.as
 com/whirled/bureau/util/WhirledBureauContext.as
+com/whirled/bureau/client/UserCode.as

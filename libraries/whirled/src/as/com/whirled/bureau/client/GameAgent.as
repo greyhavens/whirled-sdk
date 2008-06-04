@@ -59,14 +59,14 @@ public class GameAgent extends Agent
             _controller = null;
         }
 
-        if (_userCode != null) {
-            _ctx.getUserCodeLoader().unload(_userCode);
-            _userCode = null;
-        }
-
         if (_userInstance != null) {
             // TODO: call some userProps function to terminate the agent?
             _userInstance = null;
+        }
+
+        if (_userCode != null) {
+            _userCode.release();
+            _userCode = null;
         }
     }
 
@@ -105,15 +105,15 @@ public class GameAgent extends Agent
     /**
      * Callback for when the user code is available.
      */
-    protected function gotUserCode (clazz: Class) :void
+    protected function gotUserCode (userCode :UserCode) :void
     {
-        if (clazz == null) {
+        if (userCode == null) {
             Log.warning("Unable to load user code [agent: " + _agentObj + "]");
             return;
         }
 
-        _userCode = clazz;
-        Log.info("Loaded user code " + _userCode.name);
+        _userCode = userCode;
+        Log.info("Loaded user code " + _userCode);
 
         if (_userCode != null && _gameObj != null) {
             launchUserCode();
@@ -125,14 +125,14 @@ public class GameAgent extends Agent
      */
     protected function launchUserCode () :void
     {
-        _userInstance = new _userCode();
+        _userInstance = _userCode.createNewInstance();
         _controller.agentReady();
     }
 
     protected var _subscriber :SafeSubscriber;
     protected var _ctx :WhirledBureauContext;
     protected var _gameObj :WhirledGameObject;
-    protected var _userCode :Class;
+    protected var _userCode :UserCode;
     protected var _userInstance :Object;
     protected var _controller :ThaneGameController;
 }

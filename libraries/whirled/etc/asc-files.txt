@@ -57,3 +57,4 @@ com/whirled/game/data/WhirledGameObject.as
 com/whirled/game/data/WhirledGameOccupantInfo.as
 com/whirled/bureau/client/UserCodeLoader.as
 com/whirled/bureau/util/WhirledBureauContext.as
+com/whirled/bureau/client/UserCode.as

@@ -6,25 +6,19 @@ public interface UserCodeLoader
     /** 
      * Load the code media (abc file) from the given url, find the given class name inside it and 
      * invoke the callback when the code is ready. The callback must take a single argument of type 
-     * <code>Class</code>:
+     * {@link UserCode}:
      * 
      * <p><code>
-     * function callback (clazz :Class) :void
+     * function callback (code :UserCode) :void
      * </code></p>
      *
-     * <p>If the class could not be loaded, the callback will be invoked with null.</p>
+     * <p>If the media could not be loaded or the class could not be found, the callback will be 
+     * invoked with null.</p>
      * 
-     * <p>Successful calls to <code>load</code> must be paired with a corresponding 
-     * <code>unload</code> call.</p>
+     * <p>Each uccessful call to <code>load</code> must be paired with a corresponding 
+     * {@link UserCode#release} call.</p>
      */
     function load (url :String, name :String, callback :Function) :void;
-
-    /**
-     * Unload the given class. The instance must have been provided by the <code>load</code> 
-     * function. Once the unmber of loaded instances goes to zero, the domain is fair game
-     * to be destroyed.
-     */
-    function unload (clazz :Class) :void;
 }
 
 }

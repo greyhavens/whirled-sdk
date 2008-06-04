@@ -2,7 +2,6 @@ com/whirled/ControlEvent.as
 com/whirled/AbstractSubControl.as
 com/whirled/game/PropertyChangedEvent.as
 com/whirled/game/client/BaseGameBackend.as
-com/whirled/game/client/BaseGameController.as
 com/whirled/game/data/BaseGameConfig.as
 com/whirled/game/data/ContentPackParameter.as
 com/whirled/game/data/GameData.as
