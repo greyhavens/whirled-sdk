@@ -192,35 +192,71 @@
     <!-- TODO: create a furni viewer that emulates the server environ and loads up the
       furni in two flashplayer instances. -->
     <echo>NOTE: furni projects do not currently have a test environment.</echo>
+    <echoxml file="parameters.xml">
+    <parameters>
+      <param name="media" value="file://${basedir}${file.separator}${app.name}.${app.suffix}"/>
+    </parameters>
+    </echoxml>
+    <!-- this is lame, but oh well. We copy the viewer to the current directory so that
+         we can read the parameters out of the same directory on every platform. -->
+    <copy file="${build.root}/lib/viewer.swf" todir="."/>
     <exec executable="${player.path}">
-      <arg value="${app.name}.swf"/>
+      <arg value="./viewer.swf"/>
     </exec>
+    <!-- <delete file="./viewer.swf"/> -->
   </target>
 
   <target name="test-decor">
     <!-- TODO: create a decor viewer that emulates the server environ and loads up the
       decor in two flashplayer instances. -->
     <echo>NOTE: decor projects do not currently have a test environment.</echo>
+    <echoxml file="parameters.xml">
+    <parameters>
+      <param name="media" value="file://${basedir}${file.separator}${app.name}.${app.suffix}"/>
+    </parameters>
+    </echoxml>
+    <!-- this is lame, but oh well. We copy the viewer to the current directory so that
+         we can read the parameters out of the same directory on every platform. -->
+    <copy file="${build.root}/lib/viewer.swf" todir="."/>
     <exec executable="${player.path}">
-      <arg value="${app.name}.swf"/>
+      <arg value="./viewer.swf"/>
     </exec>
+    <!-- <delete file="./viewer.swf"/> -->
   </target>
 
   <target name="test-toy">
     <!-- TODO: create a toy viewer that emulates the server environ and loads up the
       toy in two flashplayer instances. -->
     <echo>NOTE: toy projects do not currently have a test environment.</echo>
+    <echoxml file="parameters.xml">
+    <parameters>
+      <param name="media" value="file://${basedir}${file.separator}${app.name}.${app.suffix}"/>
+    </parameters>
+    </echoxml>
+    <!-- this is lame, but oh well. We copy the viewer to the current directory so that
+         we can read the parameters out of the same directory on every platform. -->
+    <copy file="${build.root}/lib/viewer.swf" todir="."/>
     <exec executable="${player.path}">
-      <arg value="${app.name}.swf"/>
+      <arg value="./viewer.swf"/>
     </exec>
+    <!-- <delete file="./viewer.swf"/> -->
   </target>
 
   <target name="test-pet">
     <!-- TODO: create a pet viewer that emulates the server environ and loads up the
       pet in two flashplayer instances. -->
     <echo>NOTE: pet projects do not currently have a test environment.</echo>
+    <echoxml file="parameters.xml">
+    <parameters>
+      <param name="media" value="file://${basedir}${file.separator}${app.name}.${app.suffix}"/>
+    </parameters>
+    </echoxml>
+    <!-- this is lame, but oh well. We copy the viewer to the current directory so that
+         we can read the parameters out of the same directory on every platform. -->
+    <copy file="${build.root}/lib/viewer.swf" todir="."/>
     <exec executable="${player.path}">
-      <arg value="${app.name}.swf"/>
+      <arg value="./viewer.swf"/>
     </exec>
+    <!-- <delete file="./viewer.swf"/> -->
   </target>
 </project>
