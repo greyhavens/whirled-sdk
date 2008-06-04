@@ -6,7 +6,6 @@ package com.whirled.game.client {
 import flash.events.Event;
 import flash.events.IEventDispatcher;
 
-import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
 import com.threerings.io.TypedArray;
@@ -259,12 +258,6 @@ public class BaseGameBackend
             var mname :String = (args[0] as String);
             callUserCode("messageReceived_v1", mname, ObjectMarshaller.decode(args[1]));
 
-        } else if (WhirledGameObject.GAME_CHAT == name) {
-            // chat sent by the game, route to our displayInfo
-            var msg :String = String(event.getArgs()[0]);
-            validateChat(msg);
-            displayInfo(null, MessageBundle.taint(msg));
-
         } else if (WhirledGameObject.TICKER == name) {
             var targs :Array = event.getArgs();
             callUserCode("messageReceived_v1", (targs[0] as String), (targs[1] as int));
@@ -330,24 +323,6 @@ public class BaseGameBackend
     protected function getConfig () :BaseGameConfig
     {
         throw new Error("Abstract method");
-    }
-
-    /**
-     * Displays an info message to the player. Default does nothing, so subclasses should 
-     * override.
-     */
-    protected function displayInfo (bundle :String, message :String) :void
-    {
-        // do nothing by default
-    }
-
-    /**
-     * Displays a feedback message to the player. Default does nothing, so subclasses should 
-     * override.
-     */
-    protected function displayFeedback (bundle :String, message :String) :void
-    {
-        // do nothing by default
     }
 
     /**
@@ -551,12 +526,7 @@ public class BaseGameBackend
         o["testAndSetProperty_v1"] = testAndSetProperty_v1;
 
         // .player
-        o["awardPrize_v1"] = awardPrize_v1;
-        o["awardTrophy_v1"] = awardTrophy_v1;
-        o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
         o["getUserCookie_v2"] = getUserCookie_v2;
-        o["holdsTrophy_v1"] = holdsTrophy_v1;
-        o["setUserCookie_v1"] = setUserCookie_v1;
 
         // .game
         o["endGame_v2"] = endGame_v2;
@@ -747,53 +717,6 @@ public class BaseGameBackend
         // request it to be made so by the server
         _gameObj.whirledGameService.getCookie(
             _ctx.getClient(), playerId, createLoggingConfirmListener("getUserCookie"));
-    }
-
-    protected function setUserCookie_v1 (cookie :Object) :Boolean
-    {
-        validateConnected();
-        validateValue(cookie);
-        var ba :ByteArray = (ObjectMarshaller.encode(cookie, false) as ByteArray);
-        if (ba.length > MAX_USER_COOKIE) {
-            // not saved!
-            return false;
-        }
-
-        _gameObj.whirledGameService.setCookie(
-            _ctx.getClient(), ba, createLoggingConfirmListener("setUserCookie"));
-        return true;
-    }
-
-    protected function holdsTrophy_v1 (ident :String) :Boolean
-    {
-        return playerOwnsData(GameData.TROPHY_DATA, ident);
-    }
-
-    protected function awardTrophy_v1 (ident :String) :Boolean
-    {
-        if (playerOwnsData(GameData.TROPHY_DATA, ident)) {
-            return false;
-        }
-        _gameObj.whirledGameService.awardTrophy(
-            _ctx.getClient(), ident, new ConfirmAdapter(function (cause :String) :void {
-                displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE, cause);
-            }));
-        return true;
-    }
-
-    protected function awardPrize_v1 (ident :String) :void
-    {
-        if (!playerOwnsData(GameData.PRIZE_MARKER, ident)) {
-            _gameObj.whirledGameService.awardPrize(
-                _ctx.getClient(), ident, createLoggingConfirmListener("awardPrize"));
-        }
-    }
-
-    protected function getPlayerItemPacks_v1 () :Array
-    {
-        return getItemPacks_v1().filter(function (data :GameData, idx :int, array :Array) :Boolean {
-            return playerOwnsData(data.getType(), data.ident);
-        });
     }
 
     //---- .game -----------------------------------------------------------

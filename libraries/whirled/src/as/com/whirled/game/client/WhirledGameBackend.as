@@ -5,18 +5,22 @@ import flash.display.StageQuality;
 import flash.events.KeyboardEvent;
 import flash.geom.Rectangle;
 import flash.geom.Point;
+import flash.utils.ByteArray;
 
 import com.threerings.util.MessageBundle;
 import com.threerings.util.Name;
+import com.threerings.util.ObjectMarshaller;
 
+import com.threerings.presents.client.ConfirmAdapter;
 import com.threerings.presents.dobj.MessageEvent;
 
 import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.util.CrowdContext;
 
+import com.whirled.game.data.BaseGameConfig;
+import com.whirled.game.data.GameData;
 import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
-import com.whirled.game.data.BaseGameConfig;
 
 /**
  * Manages the backend of the game on a flash client.
@@ -66,7 +70,21 @@ public class WhirledGameBackend extends BaseGameBackend
         callUserCode("sizeChanged_v1", getSize_v1());
     }
 
-    /** @inheritDocs */
+    /** @inheritDoc */
+    // from BaseGameBackend
+    override public function messageReceived (event :MessageEvent) :void
+    {
+        var name :String = event.getName();
+        if (WhirledGameObject.GAME_CHAT == name) {
+            // chat sent by the game, route to our displayInfo
+            localChat_v1(String(event.getArgs()[0]));
+
+        } else {
+            super.messageReceived(event);
+        }
+    }
+
+    /** @inheritDoc */
     // from BaseGameBackend
     override protected function notifyControllerUserCodeIsConnected (
         autoReady :Boolean) :void
@@ -74,24 +92,27 @@ public class WhirledGameBackend extends BaseGameBackend
         _ctrl.userCodeIsConnected(autoReady);
     }
 
-    /** @inheritDocs */
+    /** @inheritDoc */
     // from BaseGameBackend
     override protected function getConfig () :BaseGameConfig
     {
         return _ctrl.getPlaceConfig() as BaseGameConfig;
     }
 
-    /** @inheritDocs */
-    // from BaseGameBackend
-    override protected function displayInfo (bundle :String, msg :String) :void
+    /**
+     * Displays an info message to the player. Default does nothing, so subclasses should 
+     * override.
+     */
+    protected function displayInfo (bundle :String, msg :String, localType :String = null) :void
     {
-        (_ctx as CrowdContext).getChatDirector().displayInfo(bundle, msg);
+        (_ctx as CrowdContext).getChatDirector().displayInfo(bundle, msg, localType);
     }
 
-
-    /** @inheritDocs */
-    // from BaseGameBackend
-    override protected function displayFeedback (bundle :String, msg :String) :void
+    /**
+     * Displays a feedback message to the player. Default does nothing, so subclasses should 
+     * override.
+     */
+    protected function displayFeedback (bundle :String, msg :String) :void
     {
         (_ctx as CrowdContext).getChatDirector().displayFeedback(bundle, msg);
     }
@@ -159,6 +180,13 @@ public class WhirledGameBackend extends BaseGameBackend
         o["setShowButtons_v1"] = setShowButtons_v1;
         o["setFrameRate_v1"] = setFrameRate_v1;
 
+        // .player
+        o["awardPrize_v1"] = awardPrize_v1;
+        o["awardTrophy_v1"] = awardTrophy_v1; 
+        o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
+        o["holdsTrophy_v1"] = holdsTrophy_v1;
+        o["setUserCookie_v1"] = setUserCookie_v1;
+
         // .game
         o["getMyId_v1"] = getMyId_v1;
         o["isMyTurn_v1"] = isMyTurn_v1;
@@ -213,8 +241,7 @@ public class WhirledGameBackend extends BaseGameBackend
     {
         validateChat(msg);
         // The sendChat() messages will end up being routed through this method on each client.
-        // TODO: make this look distinct from other system chat
-        displayInfo(null, MessageBundle.taint(msg));
+        displayInfo(null, MessageBundle.taint(msg), WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
 
     protected function filter_v1 (text :String) :String
@@ -273,6 +300,55 @@ public class WhirledGameBackend extends BaseGameBackend
 
         // in here, we just return a dummy value
         return new HeadSpriteShim();
+    }
+
+    //---- .player -----------------------------------------------------------
+
+    protected function setUserCookie_v1 (cookie :Object) :Boolean
+    {
+        validateConnected();
+        validateValue(cookie);
+        var ba :ByteArray = (ObjectMarshaller.encode(cookie, false) as ByteArray);
+        if (ba.length > MAX_USER_COOKIE) {
+            // not saved!
+            return false;
+        }
+
+        _gameObj.whirledGameService.setCookie(
+            _ctx.getClient(), ba, createLoggingConfirmListener("setUserCookie"));
+        return true;
+    }
+
+    protected function holdsTrophy_v1 (ident :String) :Boolean
+    {
+        return playerOwnsData(GameData.TROPHY_DATA, ident);
+    }
+
+    protected function awardTrophy_v1 (ident :String) :Boolean
+    {
+        if (playerOwnsData(GameData.TROPHY_DATA, ident)) {
+            return false;
+        }
+        _gameObj.whirledGameService.awardTrophy(
+            _ctx.getClient(), ident, new ConfirmAdapter(function (cause :String) :void {
+                displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE, cause);
+            }));
+        return true;
+    }
+
+    protected function awardPrize_v1 (ident :String) :void
+    {
+        if (!playerOwnsData(GameData.PRIZE_MARKER, ident)) {
+            _gameObj.whirledGameService.awardPrize(
+                _ctx.getClient(), ident, createLoggingConfirmListener("awardPrize"));
+        }
+    }
+
+    protected function getPlayerItemPacks_v1 () :Array
+    {
+        return getItemPacks_v1().filter(function (data :GameData, idx :int, array :Array) :Boolean {
+            return playerOwnsData(data.getType(), data.ident);
+        });
     }
 
     //---- .game -----------------------------------------------------------
