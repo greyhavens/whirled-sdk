@@ -10,6 +10,7 @@
   <property name="app.source-dir" value="."/>
   <property name="app.package-dir" value="."/>
   <property name="app.library-dir" value="."/>
+  <property name="app.server-files" value="server-files.txt"/>
 
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
   <!-- out of it. otherwise just use a dummy value (can't easily skip it, alas). -->
@@ -61,6 +62,38 @@
       <arg value="-output"/>
       <arg value="${app.name}.swf"/>
     </java>
+  </target>
+
+  <target name="check-build-server">
+    <condition property="enable-build-server"><and>
+      <isset property="thane.path"/>
+      <available file="${thane.path}"/>
+      <available file="${app.server-files}"/>
+    </and></condition>
+  </target>
+
+  <target name="buildserver" if="enable-build-server" depends="check-build-server">
+    <path id="build-server-classes">
+      <fileset dir="${build.root}/dist/lib">
+        <include name="asc.jar"/>
+        <include name="flexTasks.jar"/>
+      </fileset>
+    </path>
+    <property name="sdk.src.dir" location="${build.root}/libraries/whirled/src/as"/>
+    <echo>Building server</echo>
+    <taskdef name="asc" classname="flex.ant.AscTask" classpathref="build-server-classes"/>
+    <asc as3="true" strict="true" classpathref="build-server-classes" use="AS3">
+      <import dir="${build.root}/dist/lib">
+        <include name="builtin.abc"/>
+        <include name="thane.abc"/>
+      </import>
+      <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-00.txt"/></in>
+      <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-01.txt"/></in>
+      <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-02.txt"/></in>
+      <in dir="${app.source-dir}"><includesfile name="${app.server-files}"/></in>
+      <filespec dir="${etc.dir}" includes="empty.as"/>
+    </asc>
+    <move overwrite="true" file="${etc.dir}/empty.abc" tofile="${app.name}.abc"/>
   </target>
 
   <!-- zip things up for remixables -->
