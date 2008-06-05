@@ -39,23 +39,18 @@ public class ThaneGameController extends Controller
         _gameObj = gameObj;
         _config = config;
 
-        // from BaseGameController.willEnterPlace
         backend = new ThaneGameBackend(_ctx, _gameObj, this);
 
-        // from GameController.willEnterPlace
         _gameObj.addListener(this);
 
-        // from TurnGameControllerDelegate.willEnterPlace
         _thfield = _gameObj.getTurnHolderFieldName();
     }
 
     /** Shuts down the game controller. */
     public function shutdown () :void
     {
-        // from GameController.didLeavePlace
         _gameObj.removeListener(this);
 
-        // from BaseGameController.didLeavePlace
         backend.shutdown();
 
         _gameObj = null;
@@ -83,28 +78,24 @@ public class ThaneGameController extends Controller
     {
         var name :String = event.getName();
 
-        // from BaseGameController.attributeChanged
         if (WhirledGameObject.CONTROLLER_OID == name) {
             backend.controlDidChange();
+
         } else if (GameObject.ROUND_ID == name) {
             if ((event.getValue() as int) > 0) {
                 backend.roundStateChanged(true);
             } else {
                 backend.roundStateChanged(false);
             }
-        }
 
-        // from GameController.attributeChanged
-        else if (GameObject.STATE == name) {
+        } else if (GameObject.STATE == name) {
             var newState :int = int(event.getValue());
             if (!stateDidChange(newState)) {
                 _log.warning("Game transitioned to unknown state " +
                              "[gameObj=" + _gameObj + ", state=" + newState + "].");
             }
-        }
 
-        // from TurnGameControllerDelegate.attributeChanged
-        else if (name == _thfield) {
+        } else if (name == _thfield) {
             var thname :Name = (event.getValue() as Name);
             var othname :Name = (event.getOldValue() as Name);
             if (TurnGameControllerDelegate.TURN_HOLDER_REPLACED.equals(thname) ||
@@ -124,7 +115,6 @@ public class ThaneGameController extends Controller
     /** Called when the turn holder field changes. */
     protected function turnDidChange (turnHolder :Name) :void
     {
-        // from BaseGameController.turnDidChange
         backend.turnDidChange();
     }
 
@@ -154,19 +144,14 @@ public class ThaneGameController extends Controller
      */
     protected function gameDidStart () :void
     {
-        // from GameController.gamedidStart
-        do {
-            if (_gameObj == null) {
-                _log.info("Received gameDidStart() after ending game.");
-                break;
-            }
+        if (_gameObj == null) {
+            _log.info("Received gameDidStart() after ending game.");
 
+        } else {
             // clear out our game over flag
             setGameOver(false);
+        }
 
-        } while (false);
-
-        // from BaseGameController.gameDidStart
         backend.gameStateChanged(true);
     }
 
@@ -177,7 +162,6 @@ public class ThaneGameController extends Controller
      */
     protected function gameDidEnd () :void
     {
-        // from BaseGameController.gameDidEnd
         backend.gameStateChanged(false);
     }
 
