@@ -460,6 +460,25 @@ public abstract class WhirledGameManager extends GameManager
     public void agentReady (ClientObject caller)
     {
         log.info("Agent ready for " + caller);
+        _gameAgentReady = true;
+        
+        if (allPlayersReady()) {
+            playersAllHere();
+        }
+    }
+
+    @Override // from GameManager
+    public boolean allPlayersReady ()
+    {
+        if (!super.allPlayersReady()) {
+            return false;
+        }
+
+        if (requiresAgent()) {
+            return _gameAgent != null && _gameAgentReady;
+        }
+
+        return true;
     }
 
     /**
@@ -484,7 +503,15 @@ public abstract class WhirledGameManager extends GameManager
     protected void sendPrivateMessage (int playerOid, String msg, Object data)
         throws InvocationException
     {
-        BodyObject target = getPlayerByOid(playerOid);
+        ClientObject target = null;
+
+        if (playerOid == -1 && _gameAgent != null) {
+            target = (ClientObject)CrowdServer.omgr.getObject(_gameAgent.clientOid);
+        }
+        else {
+            target = getPlayerByOid(playerOid);
+        }
+
         if (target == null) {
             // TODO: this code has no corresponding translation
             throw new InvocationException("m.player_not_around");
@@ -520,17 +547,23 @@ public abstract class WhirledGameManager extends GameManager
             return;
         }
 
-        switch (getMatchType()) {
-        case GameConfig.PARTY:
-            return; // always validate.
+        // party games allow anyone to do things
+        if (getMatchType() == GameConfig.PARTY) {
+            return;
+        }
 
-        default: {
+        // regular players can do things only if seated
+        if (caller instanceof BodyObject) {
             BodyObject body = (BodyObject)caller;
             if (getPlayerIndex(body.getVisibleName()) == -1) {
                 throw new InvocationException(InvocationCodes.ACCESS_DENIED);
             }
             return;
         }
+
+        // otherwise... this must be the agent
+        if (_gameAgent == null || _gameAgent.clientOid != caller.getOid()) {
+            throw new InvocationException(InvocationCodes.ACCESS_DENIED);
         }
     }
 
@@ -625,6 +658,16 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
+     * Check if this game requires an agent.
+     */
+    protected boolean requiresAgent ()
+    {
+        WhirledGameConfig cfg = (WhirledGameConfig)_gameconfig;
+        String code = cfg.getGameDefinition().getServerMediaPath(cfg.getGameId());
+        return !StringUtil.isBlank(code);
+    }
+
+    /**
      * Creates the agent for this game. An agent is optional server-side code for a 
      * game and is managed by the {@link BureauRegistry}.
      * @return the new agent object or null if the game does not require it
@@ -698,7 +741,7 @@ public abstract class WhirledGameManager extends GameManager
         }
     }
 
-    @Override // from PlaceManager
+    @Override // from GameManager
     protected void playersAllHere ()
     {
         switch (getMatchType()) {
@@ -898,6 +941,9 @@ public abstract class WhirledGameManager extends GameManager
 
     /** The agent for this game or null if the game has no agent. */
     protected GameAgentObject _gameAgent;
+
+    /** Set by <code>agentReady</code>. */
+    protected boolean _gameAgentReady;
 
     /** The minimum delay a ticker can have. */
     protected static final int MIN_TICKER_DELAY = 50;
