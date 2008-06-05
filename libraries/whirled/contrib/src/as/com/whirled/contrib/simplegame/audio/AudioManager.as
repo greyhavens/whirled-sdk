@@ -133,6 +133,7 @@ public class AudioManager
     {
         var rsrc :SoundResource = ResourceManager.instance.getResource(name) as SoundResource;
         if (null == rsrc) {
+            log.info("Discarding sound '" + name + "' (sound does not exist)");
             return new AudioChannel();
         }
 
