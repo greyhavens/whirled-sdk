@@ -59,11 +59,6 @@ public class GameAgent extends Agent
             _controller = null;
         }
 
-        if (_userInstance != null) {
-            // TODO: call some userProps function to terminate the agent?
-            _userInstance = null;
-        }
-
         if (_userCode != null) {
             _userCode.release();
             _userCode = null;
@@ -121,11 +116,17 @@ public class GameAgent extends Agent
     }
 
     /**
-     * Called once the game object and the user code are available.
+     * Called once the game object and the user code (domain) are available.
      */
     protected function launchUserCode () :void
     {
-        _userInstance = _userCode.createNewInstance();
+        _userCode.connect(_controller.backend.getConnectListener());
+        
+        if (!_controller.backend.isConnected()) {
+            Log.info("Could not connect to user code");
+            return;
+        }
+
         _controller.agentReady();
     }
 
@@ -133,7 +134,6 @@ public class GameAgent extends Agent
     protected var _ctx :WhirledBureauContext;
     protected var _gameObj :WhirledGameObject;
     protected var _userCode :UserCode;
-    protected var _userInstance :Object;
     protected var _controller :ThaneGameController;
 }
 
