@@ -28,7 +28,7 @@ import flash.display.MovieClip;
 
 public class WaitForFrameTask implements ObjectTask
 {
-    public function WaitForFrameTask (frameLabelOrNumber :*)
+    public function WaitForFrameTask (frameLabelOrNumber :*, movie :MovieClip = null)
     {
         if (frameLabelOrNumber is int) {
             _frameNumber = frameLabelOrNumber as int;
@@ -37,15 +37,22 @@ public class WaitForFrameTask implements ObjectTask
         } else {
             throw new Error("frameLabelOrNumber must be a String or an int");
         }
+
+        _movie = movie;
     }
 
     public function update (dt :Number, obj :SimObject) :Boolean
     {
-        var sc :SceneComponent = obj as SceneComponent;
-        var movieClip :MovieClip = (null != sc ? sc.displayObject as MovieClip : null);
+        var movieClip :MovieClip = _movie;
 
+        // if we don't have a default movie,
         if (null == movieClip) {
-            throw new Error("WaitForFrameTask can only operate on SceneComponents with MovieClip DisplayObjects");
+            var sc :SceneComponent = obj as SceneComponent;
+            movieClip = (null != sc ? sc.displayObject as MovieClip : null);
+
+            if (null == movieClip) {
+                throw new Error("WaitForFrameTask can only operate on SceneComponents with MovieClip DisplayObjects");
+            }
         }
 
         return (null != _frameLabel ? movieClip.currentLabel == _frameLabel : movieClip.currentFrame == _frameNumber);
@@ -53,7 +60,7 @@ public class WaitForFrameTask implements ObjectTask
 
     public function clone () :ObjectTask
     {
-        return new WaitForFrameTask(null != _frameLabel ? _frameLabel : _frameNumber);
+        return new WaitForFrameTask(null != _frameLabel ? _frameLabel : _frameNumber, _movie);
     }
 
     public function receiveMessage (msg :ObjectMessage) :Boolean
@@ -63,6 +70,7 @@ public class WaitForFrameTask implements ObjectTask
 
     protected var _frameLabel :String;
     protected var _frameNumber :int;
+    protected var _movie :MovieClip;
 
 }
 
