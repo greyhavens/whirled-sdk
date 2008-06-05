@@ -113,17 +113,8 @@ public class AvatarControl extends ActorControl
         callHostCode("setPreferredY_v1", pixels);
     }
 
-    /**
-     * @inheritDoc
-     */
-    override public function setState (state :String) :void
-    {
-        // translate to null if setting to the default state
-        if (_states.length > 0 && state == _states[0]) {
-            state = null;
-        }
-        super.setState(state);
-    }
+    //public function setState (state :String) :void
+    // NOTE: we no longer translate any set states to null
 
     /**
      * @inheritDoc
