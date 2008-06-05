@@ -17,7 +17,7 @@ public class ThaneGameConfig extends BaseGameConfig
         super(gameId, gameDef);
     }
 
-    /** @inheritDocs */
+    /** @inheritDoc */
     // from BaseGameConfig
     override protected function createDefaultController () :PlaceController
     {

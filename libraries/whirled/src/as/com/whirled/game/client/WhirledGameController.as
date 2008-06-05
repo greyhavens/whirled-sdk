@@ -45,7 +45,7 @@ public class WhirledGameController extends BaseGameController
         // nada
     }
 
-    /** @inheritDocs */
+    /** @inheritDoc */
     // from BaseGameController
     override public function userCodeIsConnected (autoReady :Boolean) :void
     {

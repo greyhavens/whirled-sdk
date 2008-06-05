@@ -42,7 +42,7 @@ public class HttpUserCode
         client.request(new URI(_url), new Get());
     }
 
-    /** @inheritDocs */
+    /** @inheritDoc */
     // from UserCode
     public function connect (listener :Function) :void
     {
@@ -56,7 +56,7 @@ public class HttpUserCode
         }
     }
 
-    /** @inheritDocs */
+    /** @inheritDoc */
     // from UserCode
     public function release () :void
     {
@@ -146,7 +146,7 @@ public class HttpUserCode
 public class HttpUserCodeLoader 
     implements UserCodeLoader
 {
-    /** @inheritDocs */
+    /** @inheritDoc */
     // from UserCodeLoader
     public function load (url :String, className :String, callback :Function) :void
     {
