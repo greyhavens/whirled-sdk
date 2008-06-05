@@ -29,9 +29,10 @@
     <include name="nenyalib.swc"/>
     <include name="vilyalib.swc"/>
     <!-- ABC dependencies -->
-    <include name="narya-abc.abc"/>
-    <include name="vilya-abc.abc"/>
-    <include name="builtin.abc"/>
-    <include name="thane.abc"/>
+    <include name="narya-abc*.abc"/>
+    <include name="vilya-abc*.abc"/>
+    <include name="tamarin-builtin*.abc"/>
+    <include name="thane*.abc"/>
+    <include name="http*.abc"/>
   </fileset>
 </project>
