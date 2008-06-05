@@ -65,6 +65,15 @@ public class HttpUserCode
         releaseReferences();
     }
 
+    /** @inheritDoc */
+    // from Object
+    public function toString () :String
+    {
+        return "HttpUserCode [url: " + _url + ", className: " + _className + 
+            ", domain: " + _domain + ", class " + _class + 
+            ", instance: " + _instance + "]";
+    }
+
     /** Generically report an event. */
     protected function event (evt :Event)
     {
