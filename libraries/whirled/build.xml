@@ -135,6 +135,7 @@
                       classpathref="classpath"/></not>
       <uptodate targetfile="${deploy.dir}/${lib.name}-abc.abc">
         <srcfiles dir="src/as" includes="**/*.as"/>
+        <srcfiles dir="src/thane" includes="**/*.as"/>
         <srcfiles dir="etc" includes="asc-files-*.txt"/>
         <srcfiles dir="${deploy.dir}/lib" includes="*.abc"/>
       </uptodate>
@@ -151,6 +152,7 @@
       <in dir="src/as"><includesfile name="etc/asc-files-00.txt"/></in>
       <in dir="src/as"><includesfile name="etc/asc-files-01.txt"/></in>
       <in dir="src/as"><includesfile name="etc/asc-files-02.txt"/></in>
+      <in dir="src/thane"><include name="com/whirled/thane/HttpUserCodeLoader.as"/></in>
       <filespec dir="etc" includes="empty.as"/>
     </asc>
     <move overwrite="true" file="etc/empty.abc" tofile="${deploy.dir}/${lib.name}-abc.abc"/>

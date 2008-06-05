@@ -4,9 +4,9 @@ package com.whirled.bureau.client {
  *  {@link UserCodeLoader}. */
 public interface UserCode
 {
-    /** Create a new instance of the user's main object. The instance is of the class whose name 
-     *  was provided to {@link UserCodeLoader#load}. */
-    function createNewInstance () :Object;
+    /** Connects to the user code, assigning it the given host props and returning the user 
+     *  props. */
+    function connect (listener :Function) :void;
 
     /** Releases this code. Once released, <code>createNewInstance</code> may no longer be used and 
      *  all references to the instance should be cleared. */
