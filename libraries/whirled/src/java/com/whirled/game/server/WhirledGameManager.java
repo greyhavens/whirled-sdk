@@ -482,6 +482,14 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
+     * Test whether the privded client is the agent for this game.
+     */
+    public boolean isAgent (ClientObject caller)
+    {
+        return _gameAgent != null && _gameAgent.clientOid == caller.getOid();
+    }
+
+    /**
      * Returns the dictionary manager if it has been properly initialized. Throws an INTERNAL_ERROR
      * exception if it has not.
      */
@@ -562,7 +570,7 @@ public abstract class WhirledGameManager extends GameManager
         }
 
         // otherwise... this must be the agent
-        if (_gameAgent == null || _gameAgent.clientOid != caller.getOid()) {
+        if (!isAgent(caller)) {
             throw new InvocationException(InvocationCodes.ACCESS_DENIED);
         }
     }
