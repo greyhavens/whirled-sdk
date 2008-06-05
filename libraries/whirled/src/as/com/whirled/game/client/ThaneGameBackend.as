@@ -20,6 +20,11 @@ public class ThaneGameBackend extends BaseGameBackend
         _ctrl = ctrl;
     }
 
+    public function getConnectListener () :Function
+    {
+        return handleUserCodeConnect;
+    }
+
     override protected function getConfig () :BaseGameConfig
     {
         return _ctrl.getConfig();
