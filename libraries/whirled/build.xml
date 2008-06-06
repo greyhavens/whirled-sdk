@@ -44,7 +44,7 @@
   </target>
 
   <!-- generates additional methods for distributed object classes -->
-  <target name="gendobj" depends="prepare"> 
+  <target name="gendobj" depends="prepare-java"> 
     <taskdef name="dobj" classpathref="classpath"
              classname="com.threerings.presents.tools.GenDObjectTask"/>
     <!-- make sure the dobject class files are all compiled -->
