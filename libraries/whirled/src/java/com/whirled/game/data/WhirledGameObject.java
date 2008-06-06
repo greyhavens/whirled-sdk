@@ -83,6 +83,9 @@ public class WhirledGameObject extends GameObject
     public static final int PROPORTIONAL = 3;
 
     // AUTO-GENERATED: FIELDS START
+    /** The field name of the <code>roundId</code> field. */
+    public static final String ROUND_ID = "roundId";
+
     /** The field name of the <code>controllerOid</code> field. */
     public static final String CONTROLLER_OID = "controllerOid";
 
@@ -98,6 +101,10 @@ public class WhirledGameObject extends GameObject
     /** The field name of the <code>whirledGameService</code> field. */
     public static final String WHIRLED_GAME_SERVICE = "whirledGameService";
     // AUTO-GENERATED: FIELDS END
+
+    /** The current round id for this game. Rounds divide a single gameplay session into smaller
+     * units. */
+    public int roundId;
 
     /** The client that is in control of this game. The first client to enter will be assigned
      * control and control will subsequently be reassigned if that client disconnects or leaves. */
@@ -224,6 +231,22 @@ public class WhirledGameObject extends GameObject
 
     // AUTO-GENERATED: METHODS START
     /**
+     * Requests that the <code>roundId</code> field be set to the
+     * specified value. The local value will be updated immediately and an
+     * event will be propagated through the system to notify all listeners
+     * that the attribute did change. Proxied copies of this object (on
+     * clients) will apply the value change when they received the
+     * attribute changed notification.
+     */
+    public void setRoundId (int value)
+    {
+        int ovalue = this.roundId;
+        requestAttributeChange(
+            ROUND_ID, Integer.valueOf(value), Integer.valueOf(ovalue));
+        this.roundId = value;
+    }
+
+    /**
      * Requests that the <code>controllerOid</code> field be set to the
      * specified value. The local value will be updated immediately and an
      * event will be propagated through the system to notify all listeners
@@ -295,11 +318,11 @@ public class WhirledGameObject extends GameObject
      * change. Proxied copies of this object (on clients) will apply the
      * value change when they received the attribute changed notification.
      */
-    public void setUserCookies (DSet<UserCookie> value)
+    public void setUserCookies (DSet<com.whirled.game.data.UserCookie> value)
     {
         requestAttributeChange(USER_COOKIES, value, this.userCookies);
-        @SuppressWarnings("unchecked")
-        DSet<UserCookie> clone = (value == null) ? null : value.typedClone();
+        @SuppressWarnings("unchecked") DSet<com.whirled.game.data.UserCookie> clone =
+            (value == null) ? null : value.typedClone();
         this.userCookies = clone;
     }
 

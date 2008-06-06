@@ -787,14 +787,19 @@ public abstract class WhirledGameManager extends GameManager
     @Override 
     protected void gameWillStart ()
     {
-        // reset the round id to an initial value. note that we don't distribute the initial value,
-        // because the super's version of this function will immediately increment it, and then
-        // distribute the new incremented value.
-        _gameObj.roundId = 0;
         // clear out the turn holder in case we're restarting
         _gameObj.setTurnHolder(null);
 
         super.gameWillStart();
+    }
+
+    @Override 
+    protected void gameDidStart ()
+    {
+        super.gameDidStart();
+
+        // set our round id to 1 which will trigger the start of the first round
+        _gameObj.setRoundId(1);
     }
 
     @Override

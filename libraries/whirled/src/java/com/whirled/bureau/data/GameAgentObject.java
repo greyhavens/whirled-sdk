@@ -35,7 +35,7 @@ public class GameAgentObject extends AgentObject
     {
         int ovalue = this.gameOid;
         requestAttributeChange(
-            GAME_OID, value, ovalue);
+            GAME_OID, Integer.valueOf(value), Integer.valueOf(ovalue));
         this.gameOid = value;
     }
 

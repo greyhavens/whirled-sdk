@@ -81,7 +81,7 @@ public class ThaneGameController extends Controller
         if (WhirledGameObject.CONTROLLER_OID == name) {
             backend.controlDidChange();
 
-        } else if (GameObject.ROUND_ID == name) {
+        } else if (WhirledGameObject.ROUND_ID == name) {
             if ((event.getValue() as int) > 0) {
                 backend.roundStateChanged(true);
             } else {

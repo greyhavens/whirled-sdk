@@ -58,6 +58,9 @@ public class WhirledGameObject extends GameObject
     public static const COINS_AWARDED_MESSAGE :String = "CoinsAwarded";
 
     // AUTO-GENERATED: FIELDS START
+    /** The field name of the <code>roundId</code> field. */
+    public static const ROUND_ID :String = "roundId";
+
     /** The field name of the <code>controllerOid</code> field. */
     public static const CONTROLLER_OID :String = "controllerOid";
 
@@ -70,6 +73,10 @@ public class WhirledGameObject extends GameObject
     /** The field name of the <code>whirledGameService</code> field. */
     public static const WHIRLED_GAME_SERVICE :String = "whirledGameService";
     // AUTO-GENERATED: FIELDS END
+
+    /** The current round id for this game. Rounds divide a single gameplay session into smaller
+     * units. */
+    public var roundId :int;
 
     /** The client that is in control of this game. The first client to enter will be assigned
      * control and control will subsequently be reassigned if that client disconnects or leaves. */
@@ -182,6 +189,7 @@ public class WhirledGameObject extends GameObject
      */
     protected function readDefaultFields (ins :ObjectInputStream) :void
     {
+        roundId = ins.readInt();
         controllerOid = ins.readInt();
         turnHolder = (ins.readObject() as Name);
         userCookies = (ins.readObject() as DSet);
