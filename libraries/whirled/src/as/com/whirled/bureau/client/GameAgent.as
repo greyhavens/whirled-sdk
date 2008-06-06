@@ -120,7 +120,7 @@ public class GameAgent extends Agent
      */
     protected function launchUserCode () :void
     {
-        _userCode.connect(_controller.backend.getConnectListener());
+        _userCode.connect(_controller.backend.getConnectListener(), relayTrace);
         
         if (!_controller.backend.isConnected()) {
             Log.info("Could not connect to user code");
@@ -128,6 +128,15 @@ public class GameAgent extends Agent
         }
 
         _controller.agentReady();
+    }
+
+    /**
+     * Called whenever a trace() is sent back to us from a usercode Domain; we relay
+     * it back to the server.
+     */
+    protected function relayTrace (trace :String) :void
+    {
+        _gameObj.manager.invoke("agentTrace", trace);
     }
 
     protected var _subscriber :SafeSubscriber;

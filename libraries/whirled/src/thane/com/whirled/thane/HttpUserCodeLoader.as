@@ -44,10 +44,17 @@ public class HttpUserCode
 
     /** @inheritDoc */
     // from UserCode
-    public function connect (listener :Function) :void
+    public function connect (connectListener :Function, traceListener :Function) :void
     {
         try {
-            _bridge.addEventListener("controlConnect", listener);
+            _bridge.addEventListener("controlConnect", connectListener);
+            if (traceListener != null) {
+                _bridge.addEventListener(TraceEvent.TRACE, function (evt :TraceEvent) :void {
+                    if (evt.trace != null) {
+                        traceListener(evt.trace.join(" "));
+                    }
+                });
+            }
             _instance = new _class();
             trace("New server instantiated!");
         }
@@ -98,7 +105,7 @@ public class HttpUserCode
             _bridge = new EventDispatcher();
             // TODO: is there a less cheesy way to make a unique domain id?
             var domainId :String = "UserCode-" + (++_lastId);
-            _domain = Domain.spawnDomain(domainId, _bridge);
+            _domain = Thane.spawnDomain(domainId, _bridge);
             // TODO: do we still need _bytes after this
             _domain.loadBytes(_bytes);
             trace("Successfully loaded! Testing...");

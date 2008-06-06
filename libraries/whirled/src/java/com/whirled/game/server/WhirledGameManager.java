@@ -466,6 +466,15 @@ public abstract class WhirledGameManager extends GameManager
             playersAllHere();
         }
     }
+    
+    /**
+     * Called privately by the ThaneGameController when anything in the agent's code domain
+     * causes a line of debug or error tracing.
+     */
+    public void agentTrace (ClientObject caller, String trace)
+    {
+        log.info("Debug trace from usercode: " + trace);
+    }
 
     @Override // from GameManager
     public boolean allPlayersReady ()
