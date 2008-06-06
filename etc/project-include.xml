@@ -84,8 +84,8 @@
     <taskdef name="asc" classname="flex.ant.AscTask" classpathref="build-server-classes"/>
     <asc as3="true" strict="true" classpathref="build-server-classes" use="AS3">
       <import dir="${build.root}/dist/lib">
-        <include name="builtin.abc"/>
-        <include name="thane.abc"/>
+        <include name="tamarin-builtin-0.0-SNAPSHOT.abc"/>
+        <include name="thane-0.0-SNAPSHOT.abc"/>
       </import>
       <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-00.txt"/></in>
       <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-01.txt"/></in>
