@@ -473,7 +473,7 @@ public abstract class WhirledGameManager extends GameManager
      */
     public void agentTrace (ClientObject caller, String trace)
     {
-        log.info("Debug trace from usercode: " + trace);
+        // do nothing, subclasses may implement something interesting here
     }
 
     @Override // from GameManager
