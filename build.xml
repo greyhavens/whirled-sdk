@@ -22,14 +22,12 @@
   <filelist dir="." id="dist.libs">
     <file name="lib/ant.jar"/>
     <file name="lib/ant-launcher.jar"/>
-    <file name="lib/asc.jar"/>
     <file name="lib/commons-beanutils.jar"/>
     <file name="lib/commons-collections.jar"/>
     <file name="lib/commons-digester.jar"/>
     <file name="lib/commons-io.jar"/>
     <file name="lib/commons-lang.jar"/>
     <file name="lib/commons-logging.jar"/>
-    <file name="lib/flexTasks.jar"/>
     <file name="lib/google-collect.jar"/>
     <file name="lib/getdown.jar"/>
     <file name="lib/javassist.jar"/>
@@ -63,23 +61,6 @@
     <copyfilelist dest="${deploy.dir}/lib">
       <filelist refid="dist.libs"/>
     </copyfilelist>
-  </target>
-
-  <!-- fetches our library dependencies -->
-  <target name="mavendeps" depends="prepare">
-    <artifact:dependencies filesetId="dependency.fileset">
-      <remoteRepository refid="ooo.maven.depends.repo"/>
-      <dependency groupId="com.threerings.thane" artifactId="thane" 
-        version="0.0-SNAPSHOT" type="abc"/>
-      <dependency groupId="com.threerings.thane" artifactId="tamarin-builtin" 
-        version="0.0-SNAPSHOT" type="abc"/>
-      <dependency groupId="com.threerings.thane" artifactId="http" 
-        version="0.0-SNAPSHOT" type="abc"/>
-    </artifact:dependencies>
-    <copy todir="${deploy.dir}/lib">
-      <fileset refid="dependency.fileset"/>
-      <mapper type="flatten"/>
-    </copy>
   </target>
 
   <!-- prepares the java bits -->
@@ -244,7 +225,7 @@
   </target>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
-  <target name="distall" depends="prepare,mavendeps,distprojects,dist,asclient,sdk">
+  <target name="distall" depends="prepare,distprojects,dist,asclient,sdk">
   </target>
 
   <!-- fully cleans out the application -->
