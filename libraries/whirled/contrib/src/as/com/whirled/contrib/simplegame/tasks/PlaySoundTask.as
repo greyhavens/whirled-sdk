@@ -27,9 +27,9 @@ import com.whirled.contrib.simplegame.resource.SoundResource;
 public class PlaySoundTask
     implements ObjectTask
 {
-    public function PlaySoundTask (sound :SoundResource, waitForComplete :Boolean, parentControls :AudioControls = null)
+    public function PlaySoundTask (soundName :String, waitForComplete :Boolean = false, parentControls :AudioControls = null)
     {
-        _sound = sound;
+        _soundName = soundName;
         _waitForComplete = waitForComplete;
         _parentControls = parentControls;
     }
@@ -37,7 +37,7 @@ public class PlaySoundTask
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         if (null == _channel) {
-            _channel = AudioManager.instance.playSound(_sound, _parentControls);
+            _channel = AudioManager.instance.playSoundNamed(_soundName, _parentControls);
         }
 
         return (!_waitForComplete || !_channel.isPlaying);
@@ -45,7 +45,7 @@ public class PlaySoundTask
 
     public function clone () :ObjectTask
     {
-        return new PlaySoundTask(_sound, _waitForComplete, _parentControls);
+        return new PlaySoundTask(_soundName, _waitForComplete, _parentControls);
     }
 
     public function receiveMessage (msg :ObjectMessage) :Boolean
@@ -53,7 +53,7 @@ public class PlaySoundTask
         return false;
     }
 
-    protected var _sound :SoundResource;
+    protected var _soundName :String;
     protected var _waitForComplete :Boolean;
     protected var _parentControls :AudioControls;
     protected var _channel :AudioChannel;
