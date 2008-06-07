@@ -20,14 +20,7 @@
 
 package com.whirled.contrib.simplegame {
 
-import com.threerings.util.ArrayUtil;
-import com.threerings.util.Assert;
-import com.threerings.util.HashMap;
-import com.whirled.contrib.simplegame.components.SceneComponent;
 import com.whirled.contrib.simplegame.tasks.*;
-
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
 
 public class ObjectDB
 {
@@ -217,8 +210,9 @@ public class ObjectDB
 
         var ref :SimObjectRef = _listHead;
         while (null != ref) {
-            if (!ref.isNull) {
-                ref.object.updateInternal(dt);
+            var obj :SimObject = ref._obj;
+            if (null != obj) {
+                obj.updateInternal(dt);
             }
 
             ref = ref._next;
