@@ -6,6 +6,9 @@ package com.whirled.client;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import com.samskivert.swing.util.SwingUtil;
 
 import com.threerings.media.FrameManager;
@@ -52,8 +55,9 @@ public class WhirledApp
         throws Exception
     {
         // start up our local server
-        _server = new LocalServer();
-        _server.init();
+        Injector injector = Guice.createInjector(new LocalServer.Module());
+        _server = injector.getInstance(LocalServer.class);
+        _server.init(injector);
 
         String gameId = (args.length > 0) ? args[0] : "unknown";
         String username = (args.length > 1) ? args[1] : "unknown";

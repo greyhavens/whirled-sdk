@@ -10,6 +10,7 @@
     <include name="commons-io.jar"/>
     <include name="commons-lang.jar"/>
     <include name="google-collect.jar"/>
+    <include name="guice.jar"/>
     <include name="jetty-util.jar"/>
     <include name="jetty.jar"/>
     <include name="mina-core.jar"/>

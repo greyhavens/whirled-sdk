@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import org.apache.mina.common.IoAcceptor;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 import com.samskivert.util.CollectionUtil;
 import com.threerings.util.Name;
@@ -78,23 +80,26 @@ public class WhirledTestServer extends CrowdServer
      *  desired bureau types. Otherwise none will be launched. */
     public static BureauRegistry bureauReg;
 
+    /**
+     * The main entry point for the test server.
+     */
     public static void main (String[] args)
     {
-        server = new WhirledTestServer();
+        Injector injector = Guice.createInjector(new Module());
+        server = injector.getInstance(WhirledTestServer.class);
         try {
-            server.init();
+            server.init(injector);
             server.run();
         } catch (Exception e) {
             log.warning("Unable to initialize server.", e);
         }
     }
 
-    @Override // from PresentsServer
-    public void init ()
+    @Override // from CrowdServer
+    public void init (Injector injector)
         throws Exception
     {
-        // do the base server initialization
-        super.init();
+        super.init(injector);
 
         // configure the client manager to use the appropriate client class
         clmgr.setClientFactory(new ClientFactory() {

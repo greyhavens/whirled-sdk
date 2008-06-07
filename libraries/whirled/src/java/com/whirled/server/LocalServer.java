@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Injector;
 
 import com.threerings.util.Name;
 
@@ -35,6 +36,15 @@ import static com.whirled.Log.log;
  */
 public class LocalServer extends CrowdServer
 {
+    /** Configures dependencies needed by the local Whirled server. */
+    public static class Module extends CrowdServer.Module
+    {
+        @Override protected void configure () {
+            super.configure();
+            bind(PresentsDObjectMgr.class).to(LocalDObjectMgr.class);
+        }
+    }
+
     /** The parlor manager in operation on this server. */
     public static ParlorManager parmgr = new ParlorManager() {
         @Override protected void createGameManager (GameConfig config)
@@ -44,14 +54,11 @@ public class LocalServer extends CrowdServer
         }
     };
 
-    /**
-     * Initializes all of the server services and prepares for operation.
-     */
-    public void init ()
+    @Override // from CrowdServer
+    public void init (Injector injector)
         throws Exception
     {
-        // do the base server initialization
-        super.init();
+        super.init(injector);
 
         // initialize our managers
         parmgr.init(invmgr, plreg);
@@ -96,11 +103,5 @@ public class LocalServer extends CrowdServer
     public void stopStandaloneClient (WhirledTestClient client)
     {
         client.getContext().getClient().standaloneLogoff();
-    }
-
-    @Override // documentation inherited
-    protected PresentsDObjectMgr createDObjectManager ()
-    {
-        return new LocalDObjectMgr();
     }
 }

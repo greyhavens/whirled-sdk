@@ -27,6 +27,9 @@ import javax.swing.JTextArea;
 
 import org.apache.commons.io.FileUtils;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import com.samskivert.util.PrefsConfig;
 import com.samskivert.util.StringUtil;
 
@@ -130,9 +133,9 @@ public class FATControlPanel extends JFrame
         }
 
         // prepare the server
-        WhirledTestServer.server = new FATServer();
+        WhirledTestServer.server = _injector.getInstance(FATServer.class);
         try {
-            WhirledTestServer.server.init();
+            WhirledTestServer.server.init(_injector);
         } catch (Exception e) {
             WhirledTestServer.server = null;
             log.warning("Unable to initialize server.", e);
@@ -224,4 +227,6 @@ public class FATControlPanel extends JFrame
     protected JSlider _players;
 
     protected File _swfpath = new File("");
+
+    protected Injector _injector = Guice.createInjector(new WhirledTestServer.Module());
 }
