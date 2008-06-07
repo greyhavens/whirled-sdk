@@ -11,6 +11,7 @@
   <property name="app.package-dir" value="."/>
   <property name="app.library-dir" value="."/>
   <property name="app.server-files" value="server-files.txt"/>
+  <property name="thane.path" value=""/>
 
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
   <!-- out of it. otherwise just use a dummy value (can't easily skip it, alas). -->
@@ -64,15 +65,15 @@
     </java>
   </target>
 
-  <target name="check-build-server">
-    <condition property="enable-build-server"><and>
-      <isset property="thane.path"/>
+  <target name="check-has-server-code">
+    <condition property="has-server-code"><and>
       <available file="${thane.path}"/>
       <available file="${app.server-files}"/>
     </and></condition>
   </target>
 
-  <target name="buildserver" if="enable-build-server" depends="check-build-server">
+  <!-- Use asc to build the server-side code TODO: wire into main build -->
+  <target name="build-server" if="has-server-code" depends="check-has-server-code">
     <path id="build-server-classes">
       <fileset dir="${build.root}/dist/lib">
         <include name="asc.jar"/>
@@ -170,7 +171,15 @@
     <!-- <delete file="./viewer.swf"/> -->
   </target>
 
-  <target name="test-game">
+  <target name="delete-abc" unless="has-server-code" depends="check-has-server-code">
+    <delete file="${build.root}/dist/game.abc"/>
+  </target>
+
+  <target name="copy-abc" if="has-server-code" depends="check-has-server-code">
+    <copy overwrite="true" file="${app.name}.abc" tofile="${build.root}/dist/game.abc"/>
+  </target>
+
+  <target name="test-game" depends="delete-abc,copy-abc">
     <copy file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
 
     <!-- start the server which will start up the clients -->
@@ -180,6 +189,7 @@
       <sysproperty key="remotePlayers" value="${remotePlayers}"/>
       <sysproperty key="party" value="${party}"/>
       <sysproperty key="flash.player" value="${player.path}"/>
+      <sysproperty key="thane.path" value="${thane.path}"/>
       <classpath>
         <fileset dir="${build.root}/dist" includes="whirled-code.jar"/>
         <fileset dir="${build.root}/dist" includes="whirled-data.jar"/>
