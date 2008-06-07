@@ -32,6 +32,7 @@ import com.threerings.presents.server.ClientFactory;
 import com.threerings.presents.server.ClientResolver;
 import com.threerings.presents.server.InvocationManager;
 import com.threerings.presents.server.PresentsClient;
+import com.threerings.presents.server.ShutdownManager;
 
 import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.PlaceConfig;
@@ -65,7 +66,7 @@ import static com.whirled.Log.log;
  * Handles setting up the Whirled standalone test server.
  */
 public class WhirledTestServer extends CrowdServer
-    implements TestProvider, BureauRegistry.CommandGenerator
+    implements TestProvider, BureauRegistry.CommandGenerator, ShutdownManager.Shutdowner
 {
     /** The singleton server instance. */
     public static WhirledTestServer server;
@@ -100,6 +101,9 @@ public class WhirledTestServer extends CrowdServer
         throws Exception
     {
         super.init(injector);
+
+        // we need to register with the shutdowner
+        _shutmgr.registerShutdowner(this);
 
         // configure the client manager to use the appropriate client class
         clmgr.setClientFactory(new ClientFactory() {
@@ -150,11 +154,9 @@ public class WhirledTestServer extends CrowdServer
         prepareGame();
     }
 
-    @Override // from PresentsServer
+    // from interface ShutdownManager.Shutdowner
     public void shutdown ()
     {
-        super.shutdown();
-
         // shut down our http server
         try {
             httpServer.stop();
