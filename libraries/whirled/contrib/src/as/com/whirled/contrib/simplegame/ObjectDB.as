@@ -20,6 +20,13 @@
 
 package com.whirled.contrib.simplegame {
 
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
+
+import com.threerings.util.ArrayUtil;
+import com.threerings.util.Assert;
+import com.threerings.util.HashMap;
+import com.whirled.contrib.simplegame.components.SceneComponent;
 import com.whirled.contrib.simplegame.tasks.*;
 
 public class ObjectDB
