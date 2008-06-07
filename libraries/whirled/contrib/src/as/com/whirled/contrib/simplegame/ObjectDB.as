@@ -53,12 +53,12 @@ public class ObjectDB
         obj._ref = ref;
 
         // does the object have a name?
-        if (null != obj.objectName) {
-            if (_namedObjects.get(obj.objectName) != null) {
-                throw new Error("can't add two objects with the same name to the same ObjectDB");
+        var objectName :String = obj.objectName;
+        if (null != objectName) {
+            var oldObj :* = _namedObjects.put(objectName, obj);
+            if (undefined !== oldObj) {
+                throw new Error("two objects with the same name ('" + objectName + "') added to the ObjectDB");
             }
-
-            _namedObjects.put(obj.objectName, obj);
         }
 
         // iterate over the object's groups
@@ -129,14 +129,20 @@ public class ObjectDB
         // DisplayObject is in a display list, remove it from the display list
         // so that it will no longer be drawn to the screen
         var sc :SceneComponent = (obj as SceneComponent);
-        if (null != sc && null != sc.displayObject && null != sc.displayObject.parent) {
-            sc.displayObject.parent.removeChild(sc.displayObject);
+        if (null != sc) {
+            var displayObj :DisplayObject = sc.displayObject;
+            if (null != displayObj) {
+                var parent :DisplayObjectContainer = displayObj.parent;
+                if (null != parent) {
+                    parent.removeChild(displayObj);
+                }
+            }
         }
 
         // does the object have a name?
-        if (null != obj.objectName) {
-            Assert.isTrue(_namedObjects.get(obj.objectName) == obj);
-            _namedObjects.put(obj.objectName, null);
+        var objectName :String = obj.objectName;
+        if (null != objectName) {
+            _namedObjects.remove(objectName);
         }
 
         obj.removedFromDBInternal();
