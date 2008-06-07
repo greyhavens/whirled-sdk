@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 
 import com.samskivert.util.CollectionUtil;
 import com.threerings.util.Name;
+import com.samskivert.util.StringUtil;
 
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationCodes;
@@ -34,6 +35,8 @@ import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.server.CrowdServer;
 import com.threerings.crowd.server.PlaceManagerDelegate;
+
+import com.threerings.bureau.data.BureauCredentials;
 
 import com.threerings.bureau.server.BureauRegistry;
 
@@ -60,7 +63,7 @@ import static com.whirled.Log.log;
  * Handles setting up the Whirled standalone test server.
  */
 public class WhirledTestServer extends CrowdServer
-    implements TestProvider
+    implements TestProvider, BureauRegistry.CommandGenerator
 {
     /** The singleton server instance. */
     public static WhirledTestServer server;
@@ -96,9 +99,15 @@ public class WhirledTestServer extends CrowdServer
         // configure the client manager to use the appropriate client class
         clmgr.setClientFactory(new ClientFactory() {
             public PresentsClient createClient (AuthRequest areq) {
+                if (areq.getCredentials() instanceof BureauCredentials) {
+                    return new PresentsClient();
+                }
                 return new WhirledTestServerMonitor();
             }
             public ClientResolver createClientResolver (Name username) {
+                if (BureauCredentials.isBureau(username)) {
+                    return new ClientResolver();
+                }
                 return new WhirledTestClientResolver();
             }
         });
@@ -129,6 +138,8 @@ public class WhirledTestServer extends CrowdServer
         // TODO: should the bureau have multiple ports?
         bureauReg = new BureauRegistry(
             "localhost:" + getListenPorts()[0], invmgr, omgr, invoker);
+
+        bureauReg.setCommandGenerator(WhirledGameManager.THANE_BUREAU, this);
 
         // prepare the game and start the clients
         prepareGame();
@@ -168,6 +179,31 @@ public class WhirledTestServer extends CrowdServer
         }
     }
 
+    public String[] createCommand (
+        String serverNameAndPort,
+        String bureauId,
+        String token)
+    {
+        String localhostPrefix = "localhost:";
+        if (!serverNameAndPort.startsWith(localhostPrefix)) {
+            log.warning("Cannot connect to " + 
+                serverNameAndPort);
+        }
+
+        ABCLibs abcLibs = new ABCLibs();
+        List<String> args = Lists.newArrayList();
+        args.add(System.getProperty("thane.path"));
+        args.addAll(abcLibs.getLibs(
+            "http", "narya-abc", "vilya-abc", "whirled-abc", 
+            "WhirledThaneTestClient"));
+        args.add("--");
+        args.add(bureauId);
+        args.add(token);
+        args.add(serverNameAndPort.substring(localhostPrefix.length()));
+        log.info("Bureau arguments: " + StringUtil.toString(args));
+        return args.toArray(new String[args.size()]);
+    }
+
     protected void prepareGame ()
     {
         // parse the game configuration
@@ -189,6 +225,11 @@ public class WhirledTestServer extends CrowdServer
         gamedef.ident = "game";
         gamedef.controller = "com.whirled.game.client.TestGameController";
         gamedef.manager = "com.whirled.game.server.TestGameManager";
+
+        if (hasServerSideCode()) {
+            log.info("Server side code detected, setting game definition");
+            ((TestGameDefinition)gamedef).hasServer = true;
+        }
 
         // figure out how many players will be involved in the test game
         int pcount = getIntProperty("players", 1);
@@ -226,6 +267,15 @@ public class WhirledTestServer extends CrowdServer
         if (match.isPartyGame) {
             _gameMgr = createGameManager(_config);
         }
+    }
+
+    protected boolean hasServerSideCode ()
+    {
+        File thanePath = new File(System.getProperty("thane.path"));
+        File serverCodePath = new File(
+            getDocRoot() + File.separator + "game.abc");
+        return thanePath.length() != 0 && serverCodePath.exists() && 
+            thanePath.exists();
     }
 
     protected WhirledGameManager createGameManager (WhirledGameConfig config)
@@ -300,6 +350,67 @@ public class WhirledTestServer extends CrowdServer
 
         protected InputStream _stream;
     } // END: static class StreamEater
+
+    /** Local class to help us fish out abc files from our http root. */
+    protected class ABCLibs
+    {
+        /** Creates a new instance. */
+        public ABCLibs ()
+        {
+            // add libraries in "dist"
+            addLibs(new File(getDocRoot(), ""));
+
+            // add libraries in "dist/lib"
+            addLibs(new File(getDocRoot(), "lib"));
+        }
+
+        /** Returns a list of strings consisting of the absolute paths of abc files that start 
+         *  with each of the given prefixes, in order. */
+        public List<String> getLibs (String ... prefixes)
+        {
+            List<String> libs = Lists.newArrayList();
+            for (String prefix : prefixes) {
+                String lib = getLib(prefix);
+                if (lib != null) {
+                    libs.add(lib);
+                }
+            }
+            return libs;
+        }
+
+        /** Finds an abc file with the given prefix in our set of libs and return its 
+         *  absolute path. */
+        protected String getLib (String prefix)
+        {
+            for (File lib : _libs) {
+                if (lib.getName().startsWith(prefix)) {
+                    return lib.getAbsolutePath();
+                }
+            }
+            log.warning("Could not find libary '" + prefix + "*.abc'");
+            return null;
+        }
+        
+        /* Scans the given directory for abc files and adds each one to our collection. */
+        protected void addLibs (File dir)
+        {
+            File[] contents = dir.listFiles();
+            if (contents == null) {
+                log.warning("Could not open dist/lib directory in " + 
+                    dir.getAbsolutePath());
+                return;
+            }
+            
+            for (File file : contents) {
+                if (file.getName().endsWith(".abc")) {
+                    _libs.add(file);
+                }
+            }
+        }
+
+        /** Our collection of abc files. */
+        protected List<File> _libs = Lists.newArrayList();
+    }
 
     /** The configuration for the game we'll start when everyone is ready. */
     protected WhirledGameConfig _config;

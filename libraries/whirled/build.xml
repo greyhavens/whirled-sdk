@@ -158,6 +158,33 @@
     <move overwrite="true" file="etc/empty.abc" tofile="${deploy.dir}/${lib.name}-abc.abc"/>
   </target>
 
+  <target name="checkthanetestclient">
+    <condition property="no_build_thanetestclient"><or>
+      <not><available classname="macromedia.asc.embedding.ScriptCompiler"
+                      classpathref="classpath"/></not>
+      <uptodate targetfile="${deploy.dir}/WhirledThaneTestClient.abc">
+        <srcfiles dir="${deploy.dir}" includes="${lib.name}-abc.abc"/>
+      </uptodate>
+    </or></condition>
+  </target>
+
+  <target name="thanetestclient" unless="no_build_thanetestclient" depends="checkthanetestclient">
+     <taskdef name="asc" classname="flex.ant.AscTask" classpathref="classpath"/>
+     <asc as3="true" strict="true" classpathref="classpath" use="AS3">
+       <import dir="${deploy.dir}/lib">
+         <include name="*.abc"/>
+       </import>
+       <import dir="${deploy.dir}">
+         <include name="${lib.name}-abc.abc"/>
+       </import>
+       <filespec dir="src/thane">
+         <include name="com/whirled/thane/WhirledThaneTestClient.as"/>
+       </filespec>
+     </asc>
+     <move overwrite="true" file="src/thane/com/whirled/thane/WhirledThaneTestClient.abc" 
+                            todir="${deploy.dir}"/>
+  </target>
+
   <!-- builds the javadoc documentation -->
   <target name="javadoc" depends="prepare-java">
     <property name="copy.holder"  value="Three Rings Design, Inc."/>
@@ -172,7 +199,7 @@
   </target>
 
   <!-- builds the distribution jar files -->
-  <target name="dist" depends="compile,aslib,abclib">
+  <target name="dist" depends="compile,aslib,abclib,thanetestclient">
     <!-- stick all our code in one jar file -->
     <jar file="${deploy.dir}/${lib.name}-code.jar" basedir="${classes.dir}">
       <include name="com/**"/>

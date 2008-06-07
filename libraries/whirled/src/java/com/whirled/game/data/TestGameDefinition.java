@@ -17,10 +17,19 @@ public class TestGameDefinition extends GameDefinition
     /** Definitions of content packs on the test server. */
     public Parameter[] packs;
 
+    /** True if game has server side code. */
+    public transient boolean hasServer;
+
     @Override // from GameDefinition
     public String getMediaPath (int gameId)
     {
         return "dist" + File.separator + ident + ".jar";
+    }
+
+    @Override
+    public String getServerMediaPath (int gameId)
+    {
+        return hasServer ? "http://localhost:8080/" + ident + ".abc" : null;
     }
 
     /** Called when parsing pack definitions from XML. */
