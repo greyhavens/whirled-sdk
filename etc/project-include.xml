@@ -11,7 +11,7 @@
   <property name="app.package-dir" value="."/>
   <property name="app.library-dir" value="."/>
   <property name="app.server-files" value="server-files.txt"/>
-  <property name="thane.path" value=""/>
+  <property name="thane.path" value="${etc.dir}/../libraries/thane/tamarin-central/dist/thane/avmthane"/>
 
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
   <!-- out of it. otherwise just use a dummy value (can't easily skip it, alas). -->
@@ -85,8 +85,8 @@
     <taskdef name="asc" classname="flex.ant.AscTask" classpathref="build-server-classes"/>
     <asc as3="true" strict="true" classpathref="build-server-classes" use="AS3">
       <import dir="${build.root}/dist/lib">
-        <include name="tamarin-builtin-0.0-SNAPSHOT.abc"/>
-        <include name="thane-0.0-SNAPSHOT.abc"/>
+        <include name="tamarin-builtin*.abc"/>
+        <include name="thane*.abc"/>
       </import>
       <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-00.txt"/></in>
       <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-01.txt"/></in>
