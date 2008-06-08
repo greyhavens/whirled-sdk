@@ -13,8 +13,8 @@ import com.samskivert.util.RandomUtil;
 import com.threerings.util.Name;
 
 import com.threerings.crowd.data.BodyObject;
+import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.data.PlaceObject;
-import com.threerings.crowd.server.PlaceManager;
 
 import com.threerings.parlor.game.server.GameManagerDelegate;
 
@@ -28,10 +28,10 @@ public class WhirledPartyTurnDelegate extends GameManagerDelegate
     implements WhirledGameTurnDelegate
 {
     @Override
-    public void setPlaceManager (PlaceManager plmgr)
+    public void didInit (PlaceConfig config)
     {
-        super.setPlaceManager(plmgr);
-        _tgmgr = (TurnGameManager) plmgr;
+        super.didInit(config);
+        _tgmgr = (TurnGameManager) _plmgr;
     }
 
     @Override

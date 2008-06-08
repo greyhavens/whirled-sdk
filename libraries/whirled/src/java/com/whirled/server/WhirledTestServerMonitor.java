@@ -24,7 +24,7 @@ public class WhirledTestServerMonitor extends CrowdClient
         }
 
         // shut down the server when the last person disconnects
-        if (_cmgr.getConnectionCount() == 0) {
+        if (_clmgr.getConnectionCount() == 0) {
             WhirledTestServer.server.shutdown();
         }
     }

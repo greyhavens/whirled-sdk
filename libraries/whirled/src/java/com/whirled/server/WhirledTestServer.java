@@ -107,17 +107,17 @@ public class WhirledTestServer extends CrowdServer
 
         // configure the client manager to use the appropriate client class
         clmgr.setClientFactory(new ClientFactory() {
-            public PresentsClient createClient (AuthRequest areq) {
+            public Class<? extends PresentsClient> getClientClass (AuthRequest areq) {
                 if (areq.getCredentials() instanceof BureauCredentials) {
-                    return new PresentsClient();
+                    return PresentsClient.class;
                 }
-                return new WhirledTestServerMonitor();
+                return WhirledTestServerMonitor.class;
             }
-            public ClientResolver createClientResolver (Name username) {
+            public Class<? extends ClientResolver> getClientResolverClass (Name username) {
                 if (BureauCredentials.isBureau(username)) {
-                    return new ClientResolver();
+                    return ClientResolver.class;
                 }
-                return new WhirledTestClientResolver();
+                return WhirledTestClientResolver.class;
             }
         });
 
