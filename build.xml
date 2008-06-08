@@ -11,7 +11,7 @@
 
   <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"  value="libraries"/>
-  <property name="projects" value="samskivert,narya,nenya,vilya,whirled"/>
+  <property name="projects" value="samskivert,thane,narya,nenya,vilya,whirled"/>
   <import file="build/etc/build-support.xml"/>
 
   <!-- include bits to do the necessary Flex SDK path jockeying -->
@@ -22,14 +22,18 @@
   <filelist dir="." id="dist.libs">
     <file name="lib/ant.jar"/>
     <file name="lib/ant-launcher.jar"/>
+    <file name="lib/asc.jar"/>
+    <file name="lib/atunit.jar"/>
     <file name="lib/commons-beanutils.jar"/>
     <file name="lib/commons-collections.jar"/>
     <file name="lib/commons-digester.jar"/>
     <file name="lib/commons-io.jar"/>
     <file name="lib/commons-lang.jar"/>
     <file name="lib/commons-logging.jar"/>
+    <file name="lib/flexTasks.jar"/>
     <file name="lib/google-collect.jar"/>
     <file name="lib/getdown.jar"/>
+    <file name="lib/guice.jar"/>
     <file name="lib/javassist.jar"/>
     <file name="lib/jetty.jar"/>
     <file name="lib/jetty-util.jar"/>
