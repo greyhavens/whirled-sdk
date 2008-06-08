@@ -5,6 +5,9 @@ package com.whirled.game.server.persist;
 
 import java.util.Set;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import com.samskivert.io.PersistenceException;
 import com.samskivert.jdbc.depot.DepotRepository;
 import com.samskivert.jdbc.depot.PersistenceContext;
@@ -13,9 +16,10 @@ import com.samskivert.jdbc.depot.PersistentRecord;
 /**
  * Provides storage services for user cookies used in games.
  */
+@Singleton
 public class GameCookieRepository extends DepotRepository
 {
-    public GameCookieRepository (PersistenceContext ctx)
+    @Inject public GameCookieRepository (PersistenceContext ctx)
         throws PersistenceException
     {
         super(ctx);
