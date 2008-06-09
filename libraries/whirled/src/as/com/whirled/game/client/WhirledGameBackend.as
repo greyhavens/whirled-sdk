@@ -206,10 +206,8 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function reportCoinsAwarded (amount :int) :void
     {
-        if (amount > 0) {
-            displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
-                MessageBundle.tcompose("m.coins_awarded", amount));
-        }
+        displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
+            MessageBundle.tcompose("m.coins_awarded", amount));
     }
 
     //---- GameControl -----------------------------------------------------
