@@ -256,11 +256,21 @@ public class BaseGameBackend
         if (WhirledGameObject.USER_MESSAGE == name) {
             var args :Array = event.getArgs();
             var mname :String = (args[0] as String);
-            callUserCode("messageReceived_v1", mname, ObjectMarshaller.decode(args[1]));
-
+            var data :Object = ObjectMarshaller.decode(args[1]);
+            var sender :int = (args[2] as int);
+            if (_userFuncs["messageReceived_v2"] != null) {
+                callUserCode("messageReceived_v2", mname, data, sender);
+            } else {
+                callUserCode("messageReceived_v1", mname, data);
+            }
         } else if (WhirledGameObject.TICKER == name) {
             var targs :Array = event.getArgs();
-            callUserCode("messageReceived_v1", (targs[0] as String), (targs[1] as int));
+            if (_userFuncs["messageReceived_v2"] != null) {
+                callUserCode("messageReceived_v2", (targs[0] as String), (targs[1] as int), 0);
+            }
+            else {
+                callUserCode("messageReceived_v1", (targs[0] as String), (targs[1] as int));
+            }
         }
     }
 
@@ -418,7 +428,13 @@ public class BaseGameBackend
         if (name == (WhirledGameObject.USER_MESSAGE + ":" + _gameObj.getOid())) {
             var args :Array = event.getArgs();
             var mname :String = (args[0] as String);
-            callUserCode("messageReceived_v1", mname, ObjectMarshaller.decode(args[1]));
+            var data :Object = ObjectMarshaller.decode(args[1]);
+            var sender :int = (args[2] as int);
+            if (_userFuncs["messageReceived_v2"]) {
+                callUserCode("messageReceived_v2", mname, data, sender);
+            } else {
+                callUserCode("messageReceived_v1", mname, data);
+            }
         }
     }
 

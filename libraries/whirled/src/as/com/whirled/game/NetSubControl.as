@@ -196,7 +196,8 @@ public class NetSubControl extends AbstractSubControl
      * @param messageName The message to send.
      * @param value The value to attach to the message.
      * @param playerId if 0 (or unset), sends to all players, otherwise the message will be private
-     * to just one player
+     * to just one player; if the game uses server-side code, id -1 may be used to send a message 
+     * only to the server.
      */
     public function sendMessage (messageName :String, value :Object, playerId :int = 0) :void
     {
@@ -211,7 +212,7 @@ public class NetSubControl extends AbstractSubControl
         super.setUserProps(o);
 
         o["propertyWasSet_v2"] = propertyWasSet_v2;
-        o["messageReceived_v1"] = messageReceived_v1;
+        o["messageReceived_v2"] = messageReceived_v2;
     }
 
     /**
@@ -242,9 +243,9 @@ public class NetSubControl extends AbstractSubControl
     /**
      * Private method to post a MessageReceivedEvent.
      */
-    private function messageReceived_v1 (name :String, value :Object) :void
+    private function messageReceived_v2 (name :String, value :Object, sender :int) :void
     {
-        dispatch(new MessageReceivedEvent(name, value));
+        dispatch(new MessageReceivedEvent(name, value, sender));
     }
 
     /** Game properties. @private */

@@ -230,9 +230,10 @@ public abstract class WhirledGameManager extends GameManager
         validateUser(caller);
 
         if (playerId == 0) {
-            _gameObj.postMessage(WhirledGameObject.USER_MESSAGE, msg, data);
+            _gameObj.postMessage(WhirledGameObject.USER_MESSAGE, msg, data, 
+                getPlayerId(caller));
         } else {
-            sendPrivateMessage(playerId, msg, data);
+            sendPrivateMessage(caller, playerId, msg, data);
         }
     }
 
@@ -319,7 +320,7 @@ public abstract class WhirledGameManager extends GameManager
                 if (playerId == 0) {
                     setProperty(msgOrPropName, result, null, false);
                 } else {
-                    sendPrivateMessage(playerId, msgOrPropName, result);
+                    sendPrivateMessage(caller, playerId, msgOrPropName, result);
                 }
                 listener.requestProcessed(); // SUCCESS!
                 return;
@@ -517,7 +518,8 @@ public abstract class WhirledGameManager extends GameManager
      * Helper method to send a private message to the specified player oid (must already be
      * verified).
      */
-    protected void sendPrivateMessage (int playerOid, String msg, Object data)
+    protected void sendPrivateMessage (
+        ClientObject caller, int playerOid, String msg, Object data)
         throws InvocationException
     {
         ClientObject target = null;
@@ -535,7 +537,7 @@ public abstract class WhirledGameManager extends GameManager
         }
 
         target.postMessage(WhirledGameObject.USER_MESSAGE + ":" + _gameObj.getOid(),
-                           new Object[] { msg, data });
+                           new Object[] { msg, data, getPlayerId(caller) });
     }
 
     /**
@@ -582,6 +584,28 @@ public abstract class WhirledGameManager extends GameManager
         if (!isAgent(caller)) {
             throw new InvocationException(InvocationCodes.ACCESS_DENIED);
         }
+    }
+
+    /**
+     * Get the player id of a client object. Returns -1 for the agent,
+     * or 0 if the caller is not found.
+     */
+    protected int getPlayerId (ClientObject caller)
+    {
+        if (caller == null) {
+            return 0;
+        }
+
+        if (caller instanceof BodyObject) {
+            BodyObject body = (BodyObject)caller;
+            if (getMatchType() == GameConfig.PARTY ||
+                getPlayerIndex(body.getVisibleName()) >= 0) {
+                return caller.getOid();
+            }
+            return 0;
+        }
+
+        return isAgent(caller) ? -1 : 0;
     }
 
     /**
