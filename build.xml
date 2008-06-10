@@ -168,7 +168,17 @@
     </copy>
     <mkdir dir="${sdk.build}/lib"/>
     <copy todir="${sdk.build}">
-      <fileset dir="${projects.dir}/narya" includes="src/as/com/threerings/util/**" excludes="**/MessageBundle.as **/MessageManager.as **/HashObjectMap.as"/>
+      <fileset dir="${projects.dir}/narya">
+        <include name="src/as/com/threerings/util/**"/>
+        <exclude name="**/MessageBundle.as"/>
+        <exclude name="**/MessageManager.as"/>
+        <exclude name="**/HashObjectMap.as"/>
+        <exclude name="**/Streamable*.as"/>
+        <exclude name="**/Name.as"/>
+        <exclude name="**/langBoolean.as"/>
+        <exclude name="**/ObjectMarshaller.as"/>
+        <exclude name="**/TimeUtil.as"/>
+      </fileset>
       <fileset dir="${projects.dir}/nenya" includes="src/as/com/threerings/flash/**" excludes="src/as/com/threerings/flash/path/**"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/game/*.as"/>
