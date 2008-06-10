@@ -10,7 +10,18 @@
   <property name="app.source-dir" value="."/>
   <property name="app.package-dir" value="."/>
   <property name="app.library-dir" value="."/>
-  <property name="app.server-files" value="server-files.txt"/>
+  <property name="app.server-files-00" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-files-01" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-files-02" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-files-03" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-contrib-files-00" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-contrib-files-01" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-contrib-files-02" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-contrib-files-03" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-contrib-files-04" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-contrib-files-05" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-contrib-files-06" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-contrib-files-07" value="${etc.dir}/no-files.txt"/>
   <property name="thane.path" value="${etc.dir}/../libraries/thane/tamarin-central/dist/thane/avmthane"/>
 
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
@@ -36,7 +47,7 @@
   </target>
 
   <!-- builds our SWF file -->
-  <target name="compile" depends="build,zip"/>
+  <target name="compile" depends="build,build-server,zip"/>
 
   <!-- builds our SWF file in debug mode -->
   <target name="debug">
@@ -68,7 +79,8 @@
   <target name="check-has-server-code">
     <condition property="has-server-code"><and>
       <available file="${thane.path}"/>
-      <available file="${app.server-files}"/>
+      <not><equals arg1="${app.server-files-00}" 
+          arg2="${etc.dir}/no-files.txt"/></not>
     </and></condition>
   </target>
 
@@ -81,6 +93,8 @@
       </fileset>
     </path>
     <property name="sdk.src.dir" location="${build.root}/libraries/whirled/src/as"/>
+    <property name="narya.sdk.src.dir" location="${build.root}/libraries/narya/src/as"/>
+    <property name="contrib.sdk.src.dir" location="${build.root}/contrib/src/as"/>
     <echo>Building server</echo>
     <taskdef name="asc" classname="flex.ant.AscTask" classpathref="build-server-classes"/>
     <asc as3="true" strict="true" classpathref="build-server-classes" use="AS3">
@@ -88,10 +102,23 @@
         <include name="tamarin-builtin*.abc"/>
         <include name="thane*.abc"/>
       </import>
+      <in dir="${narya.sdk.src.dir}"><includesfile name="${etc.dir}/narya-asc-files-00.txt"/></in>
+      <in dir="${narya.sdk.src.dir}"><includesfile name="${etc.dir}/narya-asc-files-01.txt"/></in>
       <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-00.txt"/></in>
       <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-01.txt"/></in>
       <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-02.txt"/></in>
-      <in dir="${app.source-dir}"><includesfile name="${app.server-files}"/></in>
+      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-00}"/></in>
+      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-01}"/></in>
+      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-02}"/></in>
+      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-03}"/></in>
+      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-04}"/></in>
+      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-05}"/></in>
+      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-06}"/></in>
+      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-07}"/></in>
+      <in dir="${app.source-dir}"><includesfile name="${app.server-files-00}"/></in>
+      <in dir="${app.source-dir}"><includesfile name="${app.server-files-01}"/></in>
+      <in dir="${app.source-dir}"><includesfile name="${app.server-files-02}"/></in>
+      <in dir="${app.source-dir}"><includesfile name="${app.server-files-03}"/></in>
       <filespec dir="${etc.dir}" includes="empty.as"/>
     </asc>
     <move overwrite="true" file="${etc.dir}/empty.abc" tofile="${app.name}.abc"/>
