@@ -13,7 +13,6 @@ import mx.resources.ResourceBundle;
 import com.threerings.util.Log;
 import com.threerings.util.Name;
 
-import com.threerings.presents.client.Client;
 import com.threerings.presents.client.ClientAdapter;
 import com.threerings.presents.client.ClientEvent;
 import com.threerings.presents.data.ClientObject;
@@ -22,6 +21,7 @@ import com.threerings.presents.net.Credentials;
 import com.threerings.presents.net.UsernamePasswordCreds;
 
 import com.threerings.crowd.chat.data.ChatMarshaller;
+import com.threerings.crowd.client.CrowdClient;
 import com.threerings.crowd.data.BodyMarshaller;
 import com.threerings.crowd.data.LocationMarshaller;
 
@@ -38,7 +38,7 @@ import com.whirled.game.data.WhirledGameConfig;
 /**
  * A client used for testing games.
  */
-public class WhirledClient extends Client
+public class WhirledClient extends CrowdClient
 {
     public static const log :Log = Log.getLog(WhirledClient);
 
