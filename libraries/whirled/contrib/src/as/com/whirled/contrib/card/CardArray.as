@@ -31,9 +31,6 @@ import flash.events.EventDispatcher;
  */
 public class CardArray extends EventDispatcher
 {
-    /** A full deck of cards. Users promise not to modify the deck. */
-    public static const FULL_DECK :CardArray = makeDeck();
-
     /** Create a new full deck. Users may modify the result. */
     public static function makeDeck () :CardArray
     {

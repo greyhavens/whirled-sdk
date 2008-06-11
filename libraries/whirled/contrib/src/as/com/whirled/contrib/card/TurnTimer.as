@@ -41,10 +41,13 @@ public class TurnTimer extends EventDispatcher
      *  @param bids the bids (needed because more time is allowed for bidding) */
     public function TurnTimer (
         gameCtrl :GameControl, 
-        table :Table)
+        table :Table,
+        useServerAgent :Boolean = false)
     {
         _gameCtrl = gameCtrl;
         _table = table;
+        _amInControl = useServerAgent ? 
+            _gameCtrl.game.amServerAgent : _gameCtrl.game.amInControl;
         
         var tracker :Array = new Array(table.numPlayers);
         for (var i :int = 0; i < tracker.length; ++i) {
@@ -99,7 +102,7 @@ public class TurnTimer extends EventDispatcher
      *  the turn holder does not change. */
     public function restart () :void
     {
-        if (!_gameCtrl.game.amInControl()) {
+        if (!_amInControl()) {
             if (_debug != null) {
                 _debug("TurnTimer.restart called with no effect");
             }
@@ -134,7 +137,7 @@ public class TurnTimer extends EventDispatcher
 
     protected function handleTurnChanged (event :StateChangedEvent) :void
     {
-        if (!_gameCtrl.game.amInControl() || !_enabled) {
+        if (!_amInControl() || !_enabled) {
             return;
         }
 
@@ -156,7 +159,7 @@ public class TurnTimer extends EventDispatcher
             var time :Number = (event.value as Array)[1] as Number;
 
             if (turnHolder == player) {
-                if (_gameCtrl.game.amInControl()) {
+                if (_amInControl()) {
                     _timer.delay = time * 1000;
                     _timer.reset();
                     _timer.start();
@@ -172,7 +175,7 @@ public class TurnTimer extends EventDispatcher
         else if (event.name == MSG_EXPIRED) {
             player = event.value as int;
             if (turnHolder == player) {
-                if (_gameCtrl.game.amInControl()) {
+                if (_amInControl()) {
                     addHistory(player, true, 1);
                     _lastTurnHolder = 0;
                 }
@@ -193,7 +196,7 @@ public class TurnTimer extends EventDispatcher
 
     protected function timerListener (event :TimerEvent) :void
     {
-        if (_gameCtrl.game.amInControl()) {
+        if (_amInControl()) {
             if (_lastTurnHolder == turnHolder) {
                 _gameCtrl.net.sendMessage(MSG_EXPIRED, _lastTurnHolder);
             }
@@ -244,6 +247,7 @@ public class TurnTimer extends EventDispatcher
     }
 
     protected var _gameCtrl :GameControl;
+    protected var _amInControl :Function;
     protected var _table :Table;
     protected var _timer :Timer = new Timer(0, 1);
     protected var _playTime :Number = 10;

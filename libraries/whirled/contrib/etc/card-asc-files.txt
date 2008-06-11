@@ -1,5 +1,6 @@
 com/whirled/contrib/card/HandEvent.as
 com/whirled/contrib/card/CardArrayEvent.as
+com/whirled/contrib/card/Card.as
 com/whirled/contrib/card/CardArray.as
 com/whirled/contrib/card/CardException.as
 com/whirled/contrib/card/NetArray.as
@@ -7,7 +8,6 @@ com/whirled/contrib/card/Sorter.as
 com/whirled/contrib/card/Table.as
 com/whirled/contrib/card/Team.as
 com/whirled/contrib/card/Hand.as
-com/whirled/contrib/card/Card.as
 com/whirled/contrib/card/TurnTimer.as
 com/whirled/contrib/card/Debug.as
 com/whirled/contrib/card/TurnTimerEvent.as

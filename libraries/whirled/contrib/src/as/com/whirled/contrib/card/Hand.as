@@ -51,8 +51,8 @@ public class Hand extends EventDispatcher
     }
 
     /** Reset the deck on the server to the given deck. Note that this method should only be 
-     *  called by one of the players in the game, presumably the one for which 
-     *  GameSubControl.amInControl returns true. */
+     *  called by one of the players in the game (the one for which GameSubControl.amInControl
+     *  returns true) or the server agent. */
     public function prepare (deck :CardArray) :void
     {
         Debug.debug("Uploading deck: " + deck);
@@ -65,9 +65,9 @@ public class Hand extends EventDispatcher
 
     /** Deal the given deck to all players, giving each player the same number of cards. Leftover
      *  cards will be held on the server. Note that this method should only be called by one of 
-     *  the players in the game, presumably the one for which GameSubControl.amInControl returns 
-     *  true. When the cards arrive to the player, each local hand will dispatch a HandEvent.DEALT
-     *  message.
+     *  the players in the game (the one for which GameSubControl.amInControl returns true) or the 
+     *  server agent. When the cards arrive to the player, each local hand will dispatch a 
+     *  HandEvent.DEALT message.
      *  @param deck the full deck of cards to store on the server
      *  @param numCards optional number of cards to deal to each player. If 0, cards are dealt 
      *  evenly

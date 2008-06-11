@@ -33,9 +33,10 @@ public class TrickTurnTimer extends TurnTimer
         gameCtrl :GameControl, 
         table :Table,
         bids :Bids,
-        trick :Trick)
+        trick :Trick,
+        useServerAgent :Boolean = false)
     {
-        super(gameCtrl, table);
+        super(gameCtrl, table, useServerAgent);
         _bids = bids;
         _trick = trick;
     }
