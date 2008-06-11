@@ -547,6 +547,7 @@ public class BaseGameBackend
         o["restartGameIn_v1"] = restartGameIn_v1;
         o["sendChat_v1"] = sendChat_v1;
         o["startNextTurn_v1"] = startNextTurn_v1;
+        o["getMyId_v1"] = getMyId_v1;
 
         // .game.seating
         o["getPlayers_v1"] = getPlayers_v1;
@@ -888,6 +889,13 @@ public class BaseGameBackend
         validateConnected();
         _gameObj.whirledGameService.restartGameIn(
             _ctx.getClient(), seconds, createLoggingConfirmListener("restartGameIn"));
+    }
+
+    protected function getMyId_v1 () :int
+    {
+        // Note: this is overridden in the thane backend
+        validateConnected();
+        return _ctx.getClient().getClientObject().getOid();
     }
 
     //---- .game.seating ---------------------------------------------------

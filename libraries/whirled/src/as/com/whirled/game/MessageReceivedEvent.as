@@ -35,7 +35,7 @@ public class MessageReceivedEvent extends Event
 
     /**
      * Access the id of the occupant that sent the message. The value may not correspond to a real 
-     * occupant id if {@link #isFromServerAgent} or {@link #isFromServer} return true. 
+     * occupant id if {@link #isFromServer} returns true.
      */
     public function get senderId () :int
     {
@@ -43,19 +43,12 @@ public class MessageReceivedEvent extends Event
     }
 
     /**
-     * Returns true if the message was sent by the game's server agent.
-     */
-    public function isFromServerAgent () :Boolean
-    {
-        return _senderId == SERVER_AGENT_ID;
-    }
-
-    /**
-     * Returns true if the message was sent by the whirled game server.
+     * Returns true if the message was sent by the whirled game server or by the game's server 
+     * agent.
      */
     public function isFromServer () :Boolean
     {
-        return _senderId == SERVER_ID;
+        return _senderId == SERVER_ID || _senderId == SERVER_AGENT_ID;
     }
 
     public function MessageReceivedEvent (messageName :String, value :Object, senderId :int)

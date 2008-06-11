@@ -102,6 +102,10 @@ public class GameSubControl extends AbstractSubControl
      * up according to the relative scores. */
     public static const PROPORTIONAL :int = 3;
 
+
+    /** ID constant returned by {@link #getMyId} when called by a game's server agent. */
+    public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
+
     /**
      * @private Constructed via GameControl.
      */
@@ -203,16 +207,12 @@ public class GameSubControl extends AbstractSubControl
 
     /**
      * Returns this client's player id. If this method is called from the game's server agent,
-     * the result is undefined. The method {@link #amServerAgent} can be used to explicitly test
-     * for this case.
-     * 
+     * the result is {@link #SERVER_AGENT_ID}. The method {@link #amServerAgent} can be used to 
+     * explicitly test for this case.
      */
     public function getMyId () :int
     {
-        if ("getMyId_v1" in _funcs) {
-            return int(callHostCode("getMyId_v1"));
-        }
-        return undefined;
+        return int(callHostCode("getMyId_v1"));
     }
     
     /**
@@ -229,7 +229,7 @@ public class GameSubControl extends AbstractSubControl
      */
     public function amServerAgent () :Boolean
     {
-        return !("getMyId_v1" in _funcs);
+        return getMyId() == SERVER_AGENT_ID;
     }
     
     /**

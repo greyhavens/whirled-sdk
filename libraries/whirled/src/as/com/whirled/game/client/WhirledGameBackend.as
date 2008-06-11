@@ -200,7 +200,6 @@ public class WhirledGameBackend extends BaseGameBackend
         o["setUserCookie_v1"] = setUserCookie_v1;
 
         // .game
-        o["getMyId_v1"] = getMyId_v1;
         o["isMyTurn_v1"] = isMyTurn_v1;
         o["playerReady_v1"] = playerReady_v1;
 
@@ -370,12 +369,6 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function playerReady_v1 () :void
     {
         _ctrl.playerIsReady();
-    }
-
-    protected function getMyId_v1 () :int
-    {
-        validateConnected();
-        return _ctx.getClient().getClientObject().getOid();
     }
 
     protected function isMyTurn_v1 () :Boolean

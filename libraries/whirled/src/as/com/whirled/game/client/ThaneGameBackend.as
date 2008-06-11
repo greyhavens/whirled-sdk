@@ -13,6 +13,9 @@ import com.whirled.game.data.BaseGameConfig;
  */
 public class ThaneGameBackend extends BaseGameBackend
 {
+    /** Magic number for {@link #getMyId} to return. */
+    public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
+
     public function ThaneGameBackend (
         ctx :PresentsContext, gameObj :WhirledGameObject, ctrl :ThaneGameController)
     {
@@ -29,6 +32,19 @@ public class ThaneGameBackend extends BaseGameBackend
     {
         return _ctrl.getConfig();
     }
+
+    //---- GameControl -----------------------------------------------------
+
+    //---- .game -----------------------------------------------------------
+
+    /** @inheritDoc */
+    override protected function getMyId_v1 () :int
+    {
+        validateConnected();
+        return SERVER_AGENT_ID;
+    }
+
+    // --------------------------
 
     protected var _ctrl :ThaneGameController;
 }
