@@ -71,6 +71,18 @@ public abstract class WhirledGameManager extends GameManager
     /** The default class name to use for the game agent. */
     public static final String DEFAULT_SERVER_CLASS = "Server";
 
+    /** The magic player id constant for sending a message to all players. */
+    public static final int TO_ALL = 0;
+
+    /** The magic player id constant for sending a message to the server agent. */
+    public static final int TO_SERVER_AGENT = Integer.MIN_VALUE;
+
+    /** The magic player id constant to indicate a message is from the server. */
+    public static final int FROM_SERVER = 0;
+
+    /** The magic player id constant to indicate a message is from the server agent. */
+    public static final int FROM_SERVER_AGENT = Integer.MIN_VALUE;
+
     public WhirledGameManager ()
     {
     }
@@ -229,9 +241,9 @@ public abstract class WhirledGameManager extends GameManager
     {
         validateUser(caller);
 
-        if (playerId == 0) {
+        if (playerId == TO_ALL) {
             _gameObj.postMessage(WhirledGameObject.USER_MESSAGE, msg, data, 
-                getPlayerId(caller));
+                getMessageSenderId(caller));
         } else {
             sendPrivateMessage(caller, playerId, msg, data);
         }
@@ -317,7 +329,7 @@ public abstract class WhirledGameManager extends GameManager
                     }
                 }
 
-                if (playerId == 0) {
+                if (playerId == TO_ALL) {
                     setProperty(msgOrPropName, result, null, false);
                 } else {
                     sendPrivateMessage(caller, playerId, msgOrPropName, result);
@@ -524,7 +536,7 @@ public abstract class WhirledGameManager extends GameManager
     {
         ClientObject target = null;
 
-        if (playerOid == -1 && _gameAgent != null) {
+        if (playerOid == TO_SERVER_AGENT && _gameAgent != null) {
             target = (ClientObject)CrowdServer.omgr.getObject(_gameAgent.clientOid);
         }
         else {
@@ -537,7 +549,7 @@ public abstract class WhirledGameManager extends GameManager
         }
 
         target.postMessage(WhirledGameObject.USER_MESSAGE + ":" + _gameObj.getOid(),
-                           new Object[] { msg, data, getPlayerId(caller) });
+                           new Object[] { msg, data, getMessageSenderId(caller) });
     }
 
     /**
@@ -587,25 +599,19 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
-     * Get the player id of a client object. Returns -1 for the agent,
-     * or 0 if the caller is not found.
+     * Get the id of a client object sending a message. Returns {@link #FROM_SERVER} 
+     * if the caller is our server and {@link #FROM_SERVER_AGENT} if the caller is the server 
+     * agent of this game (the game's server-side code). Otherwise returns the client's object id.
      */
-    protected int getPlayerId (ClientObject caller)
+    protected int getMessageSenderId (ClientObject caller)
     {
         if (caller == null) {
-            return 0;
+            return FROM_SERVER;
         }
-
-        if (caller instanceof BodyObject) {
-            BodyObject body = (BodyObject)caller;
-            if (getMatchType() == GameConfig.PARTY ||
-                getPlayerIndex(body.getVisibleName()) >= 0) {
-                return caller.getOid();
-            }
-            return 0;
+        if (isAgent(caller)) {
+            return FROM_SERVER_AGENT;
         }
-
-        return isAgent(caller) ? -1 : 0;
+        return caller.getOid();
     }
 
     /**

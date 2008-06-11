@@ -257,20 +257,11 @@ public class BaseGameBackend
             var args :Array = event.getArgs();
             var mname :String = (args[0] as String);
             var data :Object = ObjectMarshaller.decode(args[1]);
-            var sender :int = (args[2] as int);
-            if (_userFuncs["messageReceived_v2"] != null) {
-                callUserCode("messageReceived_v2", mname, data, sender);
-            } else {
-                callUserCode("messageReceived_v1", mname, data);
-            }
+            var senderId :int = (args[2] as int);
+            dispatchMessageReceived(mname, data, senderId);
         } else if (WhirledGameObject.TICKER == name) {
             var targs :Array = event.getArgs();
-            if (_userFuncs["messageReceived_v2"] != null) {
-                callUserCode("messageReceived_v2", (targs[0] as String), (targs[1] as int), 0);
-            }
-            else {
-                callUserCode("messageReceived_v1", (targs[0] as String), (targs[1] as int));
-            }
+            dispatchMessageReceived((targs[0] as String), (targs[1] as int), 0);
         }
     }
 
@@ -429,12 +420,8 @@ public class BaseGameBackend
             var args :Array = event.getArgs();
             var mname :String = (args[0] as String);
             var data :Object = ObjectMarshaller.decode(args[1]);
-            var sender :int = (args[2] as int);
-            if (_userFuncs["messageReceived_v2"]) {
-                callUserCode("messageReceived_v2", mname, data, sender);
-            } else {
-                callUserCode("messageReceived_v1", mname, data);
-            }
+            var senderId :int = (args[2] as int);
+            dispatchMessageReceived(mname, data, senderId);
         }
     }
 
@@ -613,6 +600,19 @@ public class BaseGameBackend
             return "party";
         default:
             return "unknown";
+        }
+    }
+
+    /**
+     * Disatpch a message to the right version of the messageReceived function.
+     */
+    protected function dispatchMessageReceived (
+        mname :String, data :Object, senderId :int) :void
+    {
+        if ("messageReceived_v2" in _userFuncs) {
+            callUserCode("messageReceived_v2", mname, data, senderId);
+        } else {
+            callUserCode("messageReceived_v1", mname, data);
         }
     }
 

@@ -202,19 +202,34 @@ public class GameSubControl extends AbstractSubControl
     }
 
     /**
-     * Returns this client's player id.
+     * Returns this client's player id. If this method is called from the game's server agent,
+     * the result is undefined. The method {@link #amServerAgent} can be used to explicitly test
+     * for this case.
+     * 
      */
     public function getMyId () :int
     {
-        return int(callHostCode("getMyId_v1"));
+        if ("getMyId_v1" in _funcs) {
+            return int(callHostCode("getMyId_v1"));
+        }
+        return undefined;
     }
     
     /**
      * Returns true if we are in control of this game. False if another client is in control.
+     * Always returns false when called from the game's server agent.
      */
     public function amInControl () :Boolean
     {
         return getControllerId() == getMyId();
+    }
+
+    /**
+     * Returns true if this control is connected to a server agent.
+     */
+    public function amServerAgent () :Boolean
+    {
+        return !("getMyId_v1" in _funcs);
     }
     
     /**

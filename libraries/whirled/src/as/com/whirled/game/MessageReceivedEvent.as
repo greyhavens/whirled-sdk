@@ -34,30 +34,46 @@ public class MessageReceivedEvent extends Event
     }
 
     /**
-     * Access the id of the player that sent the message. For games with server-side code, a value 
-     * of -1 means that the message was sent by the server.
+     * Access the id of the occupant that sent the message. The value may not correspond to a real 
+     * occupant id if {@link #isFromServerAgent} or {@link #isFromServer} return true. 
      */
-    public function get sender () :int
+    public function get senderId () :int
     {
-        return _sender;
+        return _senderId;
     }
 
-    public function MessageReceivedEvent (messageName :String, value :Object, sender :int)
+    /**
+     * Returns true if the message was sent by the game's server agent.
+     */
+    public function isFromServerAgent () :Boolean
+    {
+        return _senderId == SERVER_AGENT_ID;
+    }
+
+    /**
+     * Returns true if the message was sent by the whirled game server.
+     */
+    public function isFromServer () :Boolean
+    {
+        return _senderId == SERVER_ID;
+    }
+
+    public function MessageReceivedEvent (messageName :String, value :Object, senderId :int)
     {
         super(MESSAGE_RECEIVED);
         _name = messageName;
         _value = value;
-        _sender = sender;
+        _senderId = senderId;
     }
 
     override public function toString () :String
     {
-        return "[MessageReceivedEvent name=" + _name + ", value=" + _value + ", sender=" + _sender + "]";
+        return "[MessageReceivedEvent name=" + _name + ", value=" + _value + ", sender=" + _senderId + "]";
     }
 
     override public function clone () :Event
     {
-        return new MessageReceivedEvent(_name, _value, _sender);
+        return new MessageReceivedEvent(_name, _value, _senderId);
     }
 
     /** @private */
@@ -67,6 +83,19 @@ public class MessageReceivedEvent extends Event
     protected var _value :Object;
 
     /** @private */
-    protected var _sender :int;
+    protected var _senderId :int;
+
+    /** 
+     * Sender id indicating that the message is from the whirled game server.
+     * TODO: does this need to be public?
+     */
+    protected static const SERVER_ID :int = 0;
+
+    /** 
+     * Sender id indicating that the message is from the game's server agent. 
+     * TODO: does this need to be public?
+     */
+    protected static const SERVER_AGENT_ID :int = int.MIN_VALUE;
+    
 }
 }

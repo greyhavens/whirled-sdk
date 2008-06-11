@@ -19,6 +19,12 @@ import com.whirled.AbstractSubControl;
  */
 public class BagsSubControl extends AbstractSubControl
 {
+    /** 
+     * Player id constant used by {@link #pick} and {@link #deal} indicating that elements 
+     * should be picked or dealt publicly to all players.
+     */
+    public static const SHOW_TO_ALL :int = 0;
+
     /**
      * @private Constructed via GameControl.
      */
@@ -65,7 +71,7 @@ public class BagsSubControl extends AbstractSubControl
      * @param count the number of elements to pick
      * @param msgOrPropName the name of the message or property
      *        that will contain the picked elements.
-     * @param playerId if 0 (or unset), the picked elements should be
+     * @param playerId if {@link #SHOW_TO_ALL} (or unset), the picked elements should be 
      *        set on the gameObject as a property for all to see.
      *        If a playerId is specified, only that player will receive
      *        the elements as a message.
@@ -73,7 +79,7 @@ public class BagsSubControl extends AbstractSubControl
     // TODO: a way to specify exclusive picks vs. duplicate-OK picks?
     public function pick (
         bagName :String, count :int, msgOrPropName :String,
-        playerId :int = 0) :void
+        playerId :int = SHOW_TO_ALL) :void
     {
         getFrom(bagName, count, msgOrPropName, playerId, false, null);
     }
@@ -87,7 +93,7 @@ public class BagsSubControl extends AbstractSubControl
      * @param count the number of elements to pick
      * @param msgOrPropName the name of the message or property
      *        that will contain the picked elements.
-     * @param playerId if 0 (or unset), the picked elements should be
+     * @param playerId if {@link #SHOW_TO_ALL} (or unset), the picked elements should be 
      *        set on the gameObject as a property for all to see.
      *        If a playerId is specified, only that player will receive
      *        the elements as a message.
@@ -95,7 +101,7 @@ public class BagsSubControl extends AbstractSubControl
     // TODO: figure out the method signature of the callback
     public function deal (
         bagName :String, count :int, msgOrPropName :String,
-        callback :Function = null, playerId :int = 0) :void
+        callback :Function = null, playerId :int = SHOW_TO_ALL) :void
     {
         getFrom(bagName, count, msgOrPropName, playerId, true, callback);
     }

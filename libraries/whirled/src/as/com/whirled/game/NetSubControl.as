@@ -40,6 +40,17 @@ import com.whirled.AbstractSubControl;
 public class NetSubControl extends AbstractSubControl
 {
     /**
+     * Constant provided to {@link #sendMessage} that will send a message to all subscribers.
+     */
+    public static const TO_ALL :int = 0;
+
+    /**
+     * Constant provided to {@link #sendMessage} that will send a message to the game's server
+     * agent, if there is one.
+     */
+    public static const TO_SERVER_AGENT :int = int.MIN_VALUE;
+
+    /**
      * @private Constructed via GameControl.
      */
     public function NetSubControl (parent :GameControl)
@@ -195,13 +206,25 @@ public class NetSubControl extends AbstractSubControl
      *
      * @param messageName The message to send.
      * @param value The value to attach to the message.
-     * @param playerId if 0 (or unset), sends to all players, otherwise the message will be private
-     * to just one player; if the game uses server-side code, id -1 may be used to send a message 
-     * only to the server.
+     * @param playerId if {@link #TO_ALL} (or unset), sends to all players, 
+     * otherwise the message will be private to just one player; if the game employs a server agent, 
+     * {@link #TO_SERVER_AGENT} may be used to send a message only to the server.
      */
-    public function sendMessage (messageName :String, value :Object, playerId :int = 0) :void
+    public function sendMessage (messageName :String, value :Object, playerId :int = TO_ALL) :void
     {
         callHostCode("sendMessage_v2", messageName, value, playerId);
+    }
+
+    /**
+     * Send a message privately to the game's server agent, if there is one. This is a shortcut 
+     * for calling {@link #sendMessage} with playerId set to {@link #TO_SERVER_AGENT}.
+     *
+     * @param messageName The message to send.
+     * @param value The value to attach to the message.
+     */
+    public function sendMessageToAgent (messageName :String, value :Object) :void
+    {
+        sendMessage(messageName, value, TO_SERVER_AGENT);
     }
 
     /**
