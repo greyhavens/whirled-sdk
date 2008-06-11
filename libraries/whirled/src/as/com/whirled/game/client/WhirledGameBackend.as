@@ -1,7 +1,9 @@
 package com.whirled.game.client {
 
 import flash.display.DisplayObject;
+import flash.display.Stage;
 import flash.display.StageQuality;
+import flash.events.Event;
 import flash.events.KeyboardEvent;
 import flash.geom.Rectangle;
 import flash.geom.Point;
@@ -39,6 +41,10 @@ public class WhirledGameBackend extends BaseGameBackend
     public function setContainer (container :GameContainer) :void
     {
         _container = container;
+        _stage = container.stage;
+        if (_stage == null) {
+            _container.addEventListener(Event.ADDED_TO_STAGE, handleGrabStage);
+        }
     }
 
     // from BaseGameBackend
@@ -49,8 +55,8 @@ public class WhirledGameBackend extends BaseGameBackend
         (_ctx as CrowdContext).getChatDirector().removeChatDisplay(this);
 
         // once the usercode is incapable of calling setFrameRate, ensure they're reset to defaults
-        _container.stage.frameRate = 30;
-        _container.stage.quality = StageQuality.MEDIUM;
+        _stage.frameRate = 30;
+        _stage.quality = StageQuality.MEDIUM;
     }
 
     /**
@@ -86,8 +92,7 @@ public class WhirledGameBackend extends BaseGameBackend
 
     /** @inheritDoc */
     // from BaseGameBackend
-    override protected function notifyControllerUserCodeIsConnected (
-        autoReady :Boolean) :void
+    override protected function notifyControllerUserCodeIsConnected (autoReady :Boolean) :void
     {
         _ctrl.userCodeIsConnected(autoReady);
     }
@@ -115,6 +120,13 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function displayFeedback (bundle :String, msg :String) :void
     {
         (_ctx as CrowdContext).getChatDirector().displayFeedback(bundle, msg);
+    }
+
+    protected function handleGrabStage (event :Event) :void
+    {
+        var target :DisplayObject = event.currentTarget as DisplayObject;
+        target.removeEventListener(Event.ADDED_TO_STAGE, handleGrabStage);
+        _stage = target.stage;
     }
 
     /**
@@ -265,8 +277,8 @@ public class WhirledGameBackend extends BaseGameBackend
         validateConnected(); // so that the game can't futz the frame rate after we disconnect it!
 
         // then, let these throw whatever errors they might. Not our problem.
-        _container.stage.frameRate = Math.max(frameRate, 15);
-        _container.stage.quality = quality;
+        _stage.frameRate = Math.max(frameRate, 15);
+        _stage.quality = quality;
     }
 
     protected function setOccupantsLabel_v1 (label :String) :void
@@ -409,6 +421,8 @@ public class WhirledGameBackend extends BaseGameBackend
     protected var _ctrl :WhirledGameController;
 
     protected var _container :GameContainer;
+
+    protected var _stage :Stage;
 
     /** The function on the GameControl which we can use to directly dispatch events to the
      * user's game. */
