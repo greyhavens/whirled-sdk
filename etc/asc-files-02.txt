@@ -13,3 +13,4 @@ com/whirled/game/OccupantChangedEvent.as
 com/whirled/game/StateChangedEvent.as
 com/whirled/game/BagsSubControl.as
 com/whirled/game/GameSubControl.as
+com/whirled/ServerObject.as
