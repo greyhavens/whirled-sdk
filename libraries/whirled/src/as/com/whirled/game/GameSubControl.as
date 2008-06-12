@@ -115,11 +115,11 @@ public class GameSubControl extends AbstractSubControl
     }
 
     /**
-     * Access the 'seating' subcontrol.
+     * Access the 'seating' subcontrol. Note that this will be null in "party" games,
+     * because there's no such thing as seats.
      */
     public function get seating () :SeatingSubControl
     {
-        // TODO: this should return null for PARTY games
         return _seatingCtrl;
     }
 
@@ -355,8 +355,8 @@ public class GameSubControl extends AbstractSubControl
      * that the players in question abandoned the game and no coins will be paid out, nor will
      * their ratings be updated. </p>
      */
-    public function endGameWithScores (playerIds :Array, scores :Array /* of int */,
-        payoutType :int) :void
+    public function endGameWithScores (
+        playerIds :Array, scores :Array /* of int */, payoutType :int) :void
     {
         callHostCode("endGameWithScores_v1", playerIds, scores, payoutType);
     }
