@@ -17,6 +17,7 @@
     <include name="slf4j-api.jar"/>
     <include name="slf4j-jdk14.jar"/>
     <include name="servlet-*.jar"/>
+    <include name="swfutils-ooo.jar"/>
     <include name="velocity-1.5-dev.jar"/>
     <!-- these might be named lib-SNAPSHOT-0.0.jar or lib.jar -->
     <include name="samskivert*.jar"/>

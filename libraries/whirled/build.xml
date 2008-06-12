@@ -128,61 +128,63 @@
     <delete file="${deploy.dir}/aslib-config.xml"/>
   </target>
 
-  <!-- checks whether our thane library needs building -->
-  <target name="checkabclib">
-    <condition property="no_build_abclib"><or>
-      <not><available classname="macromedia.asc.embedding.ScriptCompiler"
-                      classpathref="classpath"/></not>
-      <uptodate targetfile="${deploy.dir}/${lib.name}-abc.abc">
-        <srcfiles dir="src/as" includes="**/*.as"/>
-        <srcfiles dir="src/thane" includes="**/*.as"/>
-        <srcfiles dir="etc" includes="asc-files-*.txt"/>
-        <srcfiles dir="${deploy.dir}/lib" includes="*.abc"/>
-      </uptodate>
-    </or></condition>
-  </target>
-
-  <!-- builds our thane library -->
-  <target name="abclib" unless="no_build_abclib" depends="checkabclib">
-    <taskdef name="asc" classname="flex.ant.AscTask" classpathref="classpath"/>
-    <asc as3="true" strict="true" classpathref="classpath" use="AS3">
-      <import dir="${deploy.dir}/lib">
-        <include name="*.abc"/>
-      </import>
-      <in dir="src/as"><includesfile name="etc/asc-files-00.txt"/></in>
-      <in dir="src/as"><includesfile name="etc/asc-files-01.txt"/></in>
-      <in dir="src/as"><includesfile name="etc/asc-files-02.txt"/></in>
-      <in dir="src/thane"><include name="com/whirled/thane/HttpUserCodeLoader.as"/></in>
-      <filespec dir="etc" includes="empty.as"/>
-    </asc>
-    <move overwrite="true" file="etc/empty.abc" tofile="${deploy.dir}/${lib.name}-abc.abc"/>
-  </target>
-
   <target name="checkthanetestclient">
-    <condition property="no_build_thanetestclient"><or>
-      <not><available classname="macromedia.asc.embedding.ScriptCompiler"
-                      classpathref="classpath"/></not>
+    <condition property="no_build_thanetestclient">
       <uptodate targetfile="${deploy.dir}/WhirledThaneTestClient.abc">
-        <srcfiles dir="${deploy.dir}" includes="${lib.name}-abc.abc"/>
+        <srcfiles dir="${deploy.dir}/lib" includes="*.swc"/>
+        <srcfiles dir="src/thane" includes="**/*.as"/>
       </uptodate>
-    </or></condition>
+    </condition>
   </target>
 
-  <target name="thanetestclient" unless="no_build_thanetestclient" depends="checkthanetestclient">
-     <taskdef name="asc" classname="flex.ant.AscTask" classpathref="classpath"/>
-     <asc as3="true" strict="true" classpathref="classpath" use="AS3">
-       <import dir="${deploy.dir}/lib">
-         <include name="*.abc"/>
-       </import>
-       <import dir="${deploy.dir}">
-         <include name="${lib.name}-abc.abc"/>
-       </import>
-       <filespec dir="src/thane">
-         <include name="com/whirled/thane/WhirledThaneTestClient.as"/>
-       </filespec>
-     </asc>
-     <move overwrite="true" file="src/thane/com/whirled/thane/WhirledThaneTestClient.abc" 
-                            todir="${deploy.dir}"/>
+  <target name="thanetestclient" unless="no_build_thanetestclient"
+          depends="checkthanetestclient,aslib">
+    <java jar="${flexsdk.dir}/lib/compc.jar" fork="true" failonerror="true">
+      <arg value="-load-config"/>
+      <arg value="dist/thane-config.xml"/>
+      <arg value="-compiler.external-library-path"/>
+      <arg value="${deploy.dir}/lib/thane.swc"/>
+      <arg value="${deploy.dir}/lib/http.swc"/>
+      <arg value="-compiler.library-path"/>
+      <arg value="${deploy.dir}/lib/naryalib.swc"/>
+      <arg value="${deploy.dir}/lib/nenyalib.swc"/>
+      <arg value="${deploy.dir}/lib/vilyalib.swc"/>
+      <arg value="${deploy.dir}/whirledlib.swc"/>
+      <arg value="-compiler.source-path=src/thane"/>
+      <arg value="-include-classes"/>
+      <arg value="com.whirled.thane.HttpUserCode"/>
+      <arg value="com.whirled.thane.HttpUserCodeLoader"/>
+      <arg value="-output"/>
+      <arg value="${deploy.dir}/whirledthanelib.swc"/>
+    </java>
+
+    <java jar="${flexsdk.dir}/lib/mxmlc.jar" fork="true" failonerror="true">
+      <arg value="-load-config"/>
+      <arg value="dist/thane-config.xml"/>
+      <arg value="-compiler.external-library-path"/>
+      <arg value="${deploy.dir}/lib/thane.swc"/>
+      <arg value="${deploy.dir}/lib/http.swc"/>
+      <arg value="${deploy.dir}/whirledthanelib.swc"/>
+      <arg value="-compiler.source-path=src/thane"/>
+      <arg value="-output"/>
+      <arg value="${deploy.dir}/WhirledThaneTestClient.swf"/>
+      <arg value="src/thane/com/whirled/thane/WhirledThaneTestClient.as"/>
+    </java>
+
+    <echo message="Turning .swfs into .abcs..."/>
+
+    <java outputproperty="dump" classpathref="classpath"
+          classname="flash.swf.tools.SwfxPrinter" fork="true" failonerror="true">
+      <arg value="-dump"/>
+      <arg value="${deploy.dir}/whirledthanelib.abc"/>
+      <arg value="${deploy.dir}/whirledthanelib.swc"/>
+    </java>
+    <java outputproperty="dump" classpathref="classpath"
+          classname="flash.swf.tools.SwfxPrinter" fork="true" failonerror="true">
+      <arg value="-dump"/>
+      <arg value="${deploy.dir}/WhirledThaneTestClient.abc"/>
+      <arg value="${deploy.dir}/WhirledThaneTestClient.swf"/>
+    </java>
   </target>
 
   <!-- builds the javadoc documentation -->
@@ -199,7 +201,7 @@
   </target>
 
   <!-- builds the distribution jar files -->
-  <target name="dist" depends="compile,aslib,abclib,thanetestclient">
+  <target name="dist" depends="compile,aslib,thanetestclient">
     <!-- stick all our code in one jar file -->
     <jar file="${deploy.dir}/${lib.name}-code.jar" basedir="${classes.dir}">
       <include name="com/**"/>
