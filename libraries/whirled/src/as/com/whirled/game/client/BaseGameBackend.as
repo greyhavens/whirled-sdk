@@ -312,8 +312,7 @@ public class BaseGameBackend
      * Lets the controller know that our user code is now ready to run. Does nothing by default,
      * so subclasses should override.
      */
-    protected function notifyControllerUserCodeIsConnected (
-        autoReady :Boolean) :void
+    protected function notifyControllerUserCodeIsConnected (autoReady :Boolean) :void
     {
     }
 
@@ -333,8 +332,7 @@ public class BaseGameBackend
         service :String) :InvocationService_ConfirmListener
     {
         return new ConfirmAdapter(function (cause :String) :void {
-            Log.getLog(this).warning(
-                "Service failure [service=" + service + ", cause=" + cause + "].");
+            logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
         });
     }
 
@@ -345,9 +343,20 @@ public class BaseGameBackend
         service :String) :InvocationService_ResultListener
     {
         return new ResultWrapper(function (cause :String) :void {
-            Log.getLog(this).warning(
-                "Service failure [service=" + service + ", cause=" + cause + "].");
+            logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
         });
+    }
+
+    /**
+     * Log the specified game error message.
+     */
+    protected function logGameError (msg :String, err :Error = null) :void
+    {
+        // here, we just shoot this to the logs
+        log.warning(msg);
+        if (err != null) {
+            log.logStackTrace(err);
+        }
     }
 
     /**
@@ -440,8 +449,7 @@ public class BaseGameBackend
                     try {
                         fn(decodedValue);
                     } catch (err :Error) {
-                        log.warning("Error in user-code: " + err);
-                        log.logStackTrace(err);
+                        logGameError("Error in user-code: " + err, err);
                     }
                 }
             }
@@ -498,8 +506,7 @@ public class BaseGameBackend
                 }
 
             } catch (err :Error) {
-                log.warning("Error in user-code: " + err);
-                log.logStackTrace(err);
+                logGameError("Error in user-code: " + err, err);
             }
         }
         return undefined;

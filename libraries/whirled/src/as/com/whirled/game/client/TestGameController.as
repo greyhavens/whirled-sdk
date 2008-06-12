@@ -20,6 +20,12 @@ public class TestGameController extends WhirledGameController
         _ctx.getClient().logoff(false);
     }
 
+    // from WhirledGameController
+    override protected function createBackend () :BaseGameBackend
+    {
+        return new TestGameBackend(_ctx, _gameObj, this);
+    }
+
     // from PlaceController
     override protected function createPlaceView (ctx :CrowdContext) :PlaceView
     {
