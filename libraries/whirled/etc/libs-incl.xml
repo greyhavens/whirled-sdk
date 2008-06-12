@@ -30,11 +30,8 @@
     <include name="naryalib.swc"/>
     <include name="nenyalib.swc"/>
     <include name="vilyalib.swc"/>
-    <!-- ABC dependencies -->
-    <include name="narya-abc*.abc"/>
-    <include name="vilya-abc*.abc"/>
-    <include name="tamarin-builtin*.abc"/>
-    <include name="thane*.abc"/>
-    <include name="http*.abc"/>
+    <!-- Thane dependencies -->
+    <include name="thane*.swc"/>
+    <include name="http*.swc"/>
   </fileset>
 </project>
