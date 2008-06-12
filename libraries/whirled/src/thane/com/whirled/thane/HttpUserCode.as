@@ -12,7 +12,6 @@ import org.httpclient.events.HttpErrorEvent;
 import org.httpclient.events.HttpStatusEvent;
 import com.whirled.bureau.client.UserCodeLoader;
 import com.whirled.bureau.client.UserCode;
-import com.whirled.bureau.client.WhirledBureauClient;
 
 /** Thane implementation of <code>UserCode</code>. */
 public class HttpUserCode

@@ -2,6 +2,7 @@ package com.whirled.thane {
 
 import com.whirled.bureau.client.UserCodeLoader;
 import com.whirled.bureau.client.UserCode;
+import com.whirled.bureau.client.WhirledBureauClient;
 
 /** Thane implemenation of <code>UserCodeLoader</code>. */
 public class HttpUserCodeLoader 
