@@ -920,10 +920,6 @@ public class BaseGameBackend
     protected function getPlayers_v1 () :Array
     {
         validateConnected();
-        if (_gameObj.players.length == 0) {
-            // party game
-            return getOccupants_v1();
-        }
         var playerIds :Array = [];
         for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
             var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
