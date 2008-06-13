@@ -46,6 +46,7 @@
     <file name="lib/servlet-api.jar"/>
     <file name="lib/slf4j-api.jar"/>
     <file name="lib/slf4j-jdk14.jar"/>
+    <file name="lib/swfutils-ooo.jar"/>
     <file name="lib/velocity-1.5-dev.jar"/>
     <file name="lib/flexlib.swc"/>
     <file name="lib/tweener.swc"/>
@@ -113,6 +114,40 @@
       <arg value="-file-specs"/>
       <arg value="${asrc.dir}/game.mxml"/>
     </exec>
+  </target>
+
+  <target name="asserver" depends="prepare">
+    <copy file="etc/thane-config.xml.in" tofile="etc/thane-config.xml">
+      <filterset>
+        <filter token="flex_path" value="${flex.path}"/>
+      </filterset>
+    </copy>
+    <java jar="${flexsdk.dir}/lib/mxmlc.jar" fork="true" failonerror="true">
+      <arg value="-load-config"/>
+      <arg value="etc/thane-config.xml"/>
+      <arg value="-compiler.external-library-path"/>
+      <arg value="${deploy.dir}/lib/thane.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/http.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/naryalib.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/player-env.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/nenyalib.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/vilyalib.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/whirledlib.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/whirledthanelib.swc"/>
+      <arg value="-compiler.source-path=src/thane"/>
+      <arg value="-output"/>
+      <arg value="${deploy.dir}/game-server.swf"/>
+      <arg value="src/thane/com/whirled/thane/WhirledThaneTestClient.as"/>
+    </java>
+
+    <echo message="Turning .swfs into .abcs..."/>
+
+    <java outputproperty="dump" classpathref="classpath"
+          classname="flash.swf.tools.SwfxPrinter" fork="true" failonerror="true">
+      <arg value="-dump"/>
+      <arg value="${deploy.dir}/game-server.abc"/>
+      <arg value="${deploy.dir}/game-server.swf"/>
+    </java>
   </target>
 
   <!-- generate docus for our whirled stuff -->
@@ -252,7 +287,7 @@
   </target>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
-  <target name="distall" depends="prepare,distprojects,dist,asclient,sdk">
+  <target name="distall" depends="prepare,distprojects,dist,asclient,asserver,sdk">
   </target>
 
   <!-- fully cleans out the application -->
