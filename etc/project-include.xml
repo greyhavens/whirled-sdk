@@ -10,18 +10,8 @@
   <property name="app.source-dir" value="."/>
   <property name="app.package-dir" value="."/>
   <property name="app.library-dir" value="."/>
-  <property name="app.server-files-00" value="${etc.dir}/no-files.txt"/>
-  <property name="app.server-files-01" value="${etc.dir}/no-files.txt"/>
-  <property name="app.server-files-02" value="${etc.dir}/no-files.txt"/>
-  <property name="app.server-files-03" value="${etc.dir}/no-files.txt"/>
-  <property name="app.server-contrib-files-00" value="${etc.dir}/no-files.txt"/>
-  <property name="app.server-contrib-files-01" value="${etc.dir}/no-files.txt"/>
-  <property name="app.server-contrib-files-02" value="${etc.dir}/no-files.txt"/>
-  <property name="app.server-contrib-files-03" value="${etc.dir}/no-files.txt"/>
-  <property name="app.server-contrib-files-04" value="${etc.dir}/no-files.txt"/>
-  <property name="app.server-contrib-files-05" value="${etc.dir}/no-files.txt"/>
-  <property name="app.server-contrib-files-06" value="${etc.dir}/no-files.txt"/>
-  <property name="app.server-contrib-files-07" value="${etc.dir}/no-files.txt"/>
+  <property name="app.server-agent" value="Server"/>
+  <property name="app.enabled-server-agent" value="false"/>
   <property name="thane.path" value="${etc.dir}/../libraries/thane/tamarin-central/dist/thane/avmthane"/>
 
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
@@ -61,7 +51,13 @@
     <java jar="${flex.path}/lib/mxmlc.jar" fork="true" failonerror="true">
       <arg value="-load-config"/>
       <arg value="${etc.dir}/whirled-config.xml"/>
-      <arg value="-library-path+=${build.root}/dist/lib"/>
+      <arg value="-library-path+=${build.root}/dist/lib/flexlib.swc"/>
+      <arg value="-library-path+=${build.root}/dist/lib/tweener.swc"/>
+      <arg value="-library-path+=${build.root}/dist/lib/player-env.swc"/>
+      <arg value="-library-path+=${build.root}/dist/lib/naryalib.swc"/>
+      <arg value="-library-path+=${build.root}/dist/lib/nenyalib.swc"/>
+      <arg value="-library-path+=${build.root}/dist/lib/vilyalib.swc"/>
+      <arg value="-library-path+=${build.root}/dist/lib/whirledlib.swc"/>
       <arg value="-library-path+=${app.library-dir}"/>
       <arg value="${flex.debug-arg}"/>
       <arg value="-compiler.source-path=${app.source-dir}"/>
@@ -76,52 +72,42 @@
     </java>
   </target>
 
-  <target name="check-has-server-code">
-    <condition property="has-server-code"><and>
-      <available file="${thane.path}"/>
-      <not><equals arg1="${app.server-files-00}" 
-          arg2="${etc.dir}/no-files.txt"/></not>
-    </and></condition>
-  </target>
+  <!-- Build our server-side abc file -->
+  <target name="build-server" if="app.enable-server-agent">
+    <property name="flex.debug-arg" value="-externs=DummyValueIgnore"/>
+    <java jar="${flex.path}/lib/mxmlc.jar" fork="true" failonerror="true">
+      <arg value="-load-config"/>
+      <arg value="${etc.dir}/thane-config.xml"/>
+      <arg value="-external-library-path"/>
+      <arg value="${build.root}/dist/lib/thane.swc"/>
+      <arg value="-library-path+=${build.root}/dist/lib/whirledlib.swc"/>
+      <arg value="-library-path+=${app.library-dir}"/>
+      <arg value="${flex.debug-arg}"/>
+      <arg value="-compiler.source-path=${app.source-dir}"/>
+      <arg value="-use-network=${flex.use-network}"/>
+      <arg value="-compiler.source-path=${build.root}/contrib/src/as"/>
+      <arg value="${app.source-extras.arg}"/>
+      <arg value="${app.lib-extras.arg}"/>
+      <arg value="-file-specs"/>
+      <arg value="${app.source-dir}/${app.package-dir}/${app.server-agent}.${app.source-suffix}"/>
+      <arg value="-output"/>
+      <arg value="${app.name}.server.swf"/>
+    </java>
 
-  <!-- Use asc to build the server-side code TODO: wire into main build -->
-  <target name="build-server" if="has-server-code" depends="check-has-server-code">
-    <path id="build-server-classes">
-      <fileset dir="${build.root}/dist/lib">
-        <include name="asc.jar"/>
-        <include name="flexTasks.jar"/>
-      </fileset>
-    </path>
-    <property name="sdk.src.dir" location="${build.root}/libraries/whirled/src/as"/>
-    <property name="narya.sdk.src.dir" location="${build.root}/libraries/narya/src/as"/>
-    <property name="contrib.sdk.src.dir" location="${build.root}/contrib/src/as"/>
-    <echo>Building server</echo>
-    <taskdef name="asc" classname="flex.ant.AscTask" classpathref="build-server-classes"/>
-    <asc as3="true" strict="true" classpathref="build-server-classes" use="AS3">
-      <import dir="${build.root}/dist/lib">
-        <include name="tamarin-builtin*.abc"/>
-        <include name="thane*.abc"/>
-      </import>
-      <in dir="${narya.sdk.src.dir}"><includesfile name="${etc.dir}/narya-asc-files-00.txt"/></in>
-      <in dir="${narya.sdk.src.dir}"><includesfile name="${etc.dir}/narya-asc-files-01.txt"/></in>
-      <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-00.txt"/></in>
-      <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-01.txt"/></in>
-      <in dir="${sdk.src.dir}"><includesfile name="${etc.dir}/asc-files-02.txt"/></in>
-      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-00}"/></in>
-      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-01}"/></in>
-      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-02}"/></in>
-      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-03}"/></in>
-      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-04}"/></in>
-      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-05}"/></in>
-      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-06}"/></in>
-      <in dir="${contrib.sdk.src.dir}"><includesfile name="${app.server-contrib-files-07}"/></in>
-      <in dir="${app.source-dir}"><includesfile name="${app.server-files-00}"/></in>
-      <in dir="${app.source-dir}"><includesfile name="${app.server-files-01}"/></in>
-      <in dir="${app.source-dir}"><includesfile name="${app.server-files-02}"/></in>
-      <in dir="${app.source-dir}"><includesfile name="${app.server-files-03}"/></in>
-      <filespec dir="${etc.dir}" includes="empty.as"/>
-    </asc>
-    <move overwrite="true" file="${etc.dir}/empty.abc" tofile="${app.name}.abc"/>
+    <echo message="Turning .swfs into .abcs..."/>
+
+    <java outputproperty="dump" classname="flash.swf.tools.SwfxPrinter" fork="true" failonerror="true">
+      <classpath>
+        <fileset dir="${build.root}/dist/lib">
+          <include name="swfutils-ooo.jar"/>
+          <include name="asc.jar"/>
+        </fileset>
+      </classpath>
+      <arg value="-dump"/>
+      <arg value="${app.name}.abc"/>
+      <arg value="${app.name}.server.swf"/>
+    </java>
+    <delete file="${app.name}.server.swf"/>
   </target>
 
   <!-- zip things up for remixables -->
@@ -198,11 +184,11 @@
     <!-- <delete file="./viewer.swf"/> -->
   </target>
 
-  <target name="delete-abc" unless="has-server-code" depends="check-has-server-code">
+  <target name="delete-abc" unless="app.enable-server-agent">
     <delete file="${build.root}/dist/game.abc"/>
   </target>
 
-  <target name="copy-abc" if="has-server-code" depends="check-has-server-code">
+  <target name="copy-abc" if="app.enable-server-agent">
     <copy overwrite="true" file="${app.name}.abc" tofile="${build.root}/dist/game.abc"/>
   </target>
 

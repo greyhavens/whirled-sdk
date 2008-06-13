@@ -201,8 +201,7 @@ public class WhirledTestServer extends CrowdServer
         List<String> args = Lists.newArrayList();
         args.add(System.getProperty("thane.path"));
         args.addAll(abcLibs.getLibs(
-            "http", "narya-abc", "vilya-abc", "whirled-abc", 
-            "WhirledThaneTestClient"));
+            "game-server"));
         args.add("--");
         args.add(bureauId);
         args.add(token);

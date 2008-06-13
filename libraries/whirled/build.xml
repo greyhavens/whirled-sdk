@@ -165,41 +165,6 @@
     </java>
   </target>
 
-  <target name="thanetestclient" unless="no_build_thanetestclient"
-          depends="whirledthanelib,aslib">
-    <java jar="${flexsdk.dir}/lib/mxmlc.jar" fork="true" failonerror="true">
-      <arg value="-load-config"/>
-      <arg value="dist/thane-config.xml"/>
-      <arg value="-compiler.external-library-path"/>
-      <arg value="${deploy.dir}/lib/thane${extdep.suffix}.swc"/>
-      <arg value="${deploy.dir}/lib/http${extdep.suffix}.swc"/>
-      <arg value="${deploy.dir}/lib/naryalib.swc"/>
-      <arg value="${deploy.dir}/lib/nenyalib.swc"/>
-      <arg value="${deploy.dir}/lib/vilyalib.swc"/>
-      <arg value="${deploy.dir}/whirledlib.swc"/>
-      <arg value="${deploy.dir}/whirledthanelib.swc"/>
-      <arg value="-compiler.source-path=src/thane"/>
-      <arg value="-output"/>
-      <arg value="${deploy.dir}/WhirledThaneTestClient.swf"/>
-      <arg value="src/thane/com/whirled/thane/WhirledThaneTestClient.as"/>
-    </java>
-
-    <echo message="Turning .swfs into .abcs..."/>
-
-    <java outputproperty="dump" classpathref="classpath"
-          classname="flash.swf.tools.SwfxPrinter" fork="true" failonerror="true">
-      <arg value="-dump"/>
-      <arg value="${deploy.dir}/whirledthanelib.abc"/>
-      <arg value="${deploy.dir}/whirledthanelib.swc"/>
-    </java>
-    <java outputproperty="dump" classpathref="classpath"
-          classname="flash.swf.tools.SwfxPrinter" fork="true" failonerror="true">
-      <arg value="-dump"/>
-      <arg value="${deploy.dir}/WhirledThaneTestClient.abc"/>
-      <arg value="${deploy.dir}/WhirledThaneTestClient.swf"/>
-    </java>
-  </target>
-
   <!-- builds the javadoc documentation -->
   <target name="javadoc" depends="prepare-java">
     <property name="copy.holder"  value="Three Rings Design, Inc."/>
