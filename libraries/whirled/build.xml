@@ -149,8 +149,8 @@
       <arg value="-load-config"/>
       <arg value="dist/thane-config.xml"/>
       <arg value="-compiler.external-library-path"/>
-      <arg value="${deploy.dir}/lib/thane-0.0-SNAPSHOT.swc"/>
-      <arg value="${deploy.dir}/lib/http-0.0-SNAPSHOT.swc"/>
+      <arg value="${deploy.dir}/lib/thane${extdep.suffix}.swc"/>
+      <arg value="${deploy.dir}/lib/http${extdep.suffix}.swc"/>
       <arg value="${deploy.dir}/lib/naryalib.swc"/>
       <arg value="${deploy.dir}/lib/nenyalib.swc"/>
       <arg value="${deploy.dir}/lib/vilyalib.swc"/>
@@ -170,8 +170,8 @@
       <arg value="-load-config"/>
       <arg value="dist/thane-config.xml"/>
       <arg value="-compiler.external-library-path"/>
-      <arg value="${deploy.dir}/lib/thane-0.0-SNAPSHOT.swc"/>
-      <arg value="${deploy.dir}/lib/http-0.0-SNAPSHOT.swc"/>
+      <arg value="${deploy.dir}/lib/thane${extdep.suffix}.swc"/>
+      <arg value="${deploy.dir}/lib/http${extdep.suffix}.swc"/>
       <arg value="${deploy.dir}/lib/naryalib.swc"/>
       <arg value="${deploy.dir}/lib/nenyalib.swc"/>
       <arg value="${deploy.dir}/lib/vilyalib.swc"/>
