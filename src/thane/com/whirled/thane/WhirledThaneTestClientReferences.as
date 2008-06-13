@@ -5,6 +5,7 @@ import com.threerings.bureau.data.BureauMarshaller;
 import com.whirled.bureau.client.WhirledBureauClient;
 import com.whirled.thane.HttpUserCodeLoader;
 import com.whirled.game.data.TestMarshaller;
+import com.whirled.game.data.TestGameDefinition;
 
 public class WhirledThaneTestClientReferences
 {
@@ -12,6 +13,7 @@ public class WhirledThaneTestClientReferences
     HttpUserCodeLoader;
     TestMarshaller;
     BureauMarshaller;
+    TestGameDefinition;
 }
 
 }
