@@ -128,17 +128,18 @@
     <delete file="${deploy.dir}/aslib-config.xml"/>
   </target>
 
-  <target name="checkthanetestclient">
-    <condition property="no_build_thanetestclient">
-      <uptodate targetfile="${deploy.dir}/WhirledThaneTestClient.abc">
+  <target name="checkwhirledthanelib">
+    <condition property="no_build_whirledthanelib">
+      <uptodate targetfile="${deploy.dir}/whirledthanelib.swc">
         <srcfiles dir="${deploy.dir}/lib" includes="*.swc"/>
+        <srcfiles dir="${deploy.dir}" includes="*.swc"/>
         <srcfiles dir="src/thane" includes="**/*.as"/>
       </uptodate>
     </condition>
   </target>
 
-  <target name="thanetestclient" unless="no_build_thanetestclient"
-          depends="checkthanetestclient,aslib">
+  <target name="whirledthanelib" unless="no_build_whirledthanelib"
+          depends="checkwhirledthanelib,aslib">
     <copy file="etc/thane-config.xml.in" tofile="${deploy.dir}/thane-config.xml">
       <filterset>
         <filter token="flex_sdk_dir" value="${flexsdk.dir}"/>
@@ -150,7 +151,6 @@
       <arg value="-compiler.external-library-path"/>
       <arg value="${deploy.dir}/lib/thane-0.0-SNAPSHOT.swc"/>
       <arg value="${deploy.dir}/lib/http-0.0-SNAPSHOT.swc"/>
-      <arg value="-compiler.library-path"/>
       <arg value="${deploy.dir}/lib/naryalib.swc"/>
       <arg value="${deploy.dir}/lib/nenyalib.swc"/>
       <arg value="${deploy.dir}/lib/vilyalib.swc"/>
@@ -162,13 +162,20 @@
       <arg value="-output"/>
       <arg value="${deploy.dir}/whirledthanelib.swc"/>
     </java>
+  </target>
 
+  <target name="thanetestclient" unless="no_build_thanetestclient"
+          depends="checkthanetestclient,whirledthanelib,aslib">
     <java jar="${flexsdk.dir}/lib/mxmlc.jar" fork="true" failonerror="true">
       <arg value="-load-config"/>
       <arg value="dist/thane-config.xml"/>
       <arg value="-compiler.external-library-path"/>
       <arg value="${deploy.dir}/lib/thane-0.0-SNAPSHOT.swc"/>
       <arg value="${deploy.dir}/lib/http-0.0-SNAPSHOT.swc"/>
+      <arg value="${deploy.dir}/lib/naryalib.swc"/>
+      <arg value="${deploy.dir}/lib/nenyalib.swc"/>
+      <arg value="${deploy.dir}/lib/vilyalib.swc"/>
+      <arg value="${deploy.dir}/whirledlib.swc"/>
       <arg value="${deploy.dir}/whirledthanelib.swc"/>
       <arg value="-compiler.source-path=src/thane"/>
       <arg value="-output"/>
@@ -206,7 +213,7 @@
   </target>
 
   <!-- builds the distribution jar files -->
-  <target name="dist" depends="compile,aslib,thanetestclient">
+  <target name="dist" depends="compile,aslib,whirledthanelib">
     <!-- stick all our code in one jar file -->
     <jar file="${deploy.dir}/${lib.name}-code.jar" basedir="${classes.dir}">
       <include name="com/**"/>
