@@ -17,6 +17,8 @@
   <!-- include bits to do the necessary Flex SDK path jockeying -->
   <import file="etc/flex-include.xml"/>
   <property name="flexsdk.dir" value="${flex.path}"/>
+  <property name="extdep.suffix" value=""/>
+  <echo message="External library suffix (whirled/build): ${extdep.suffix}"/>
 
   <!-- declares the libraries needed by the Whirled runtime (or for compiling whirled swfs) -->
   <filelist dir="." id="dist.libs">
@@ -98,7 +100,11 @@
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
       <arg value="-compiler.optimize"/>
-      <arg value="-library-path+=${deploy.dir}/lib"/>
+      <arg value="-library-path+=${deploy.dir}/lib/naryalib.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/player-env.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/nenyalib.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/vilyalib.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/whirledlib.swc"/>
       <arg value="-compiler.source-path=${asrc.dir}/"/>
       <arg value="-compiler.source-path=rsrc/{locale}/i18n"/>
       <arg value="-incremental=true"/>
@@ -120,7 +126,10 @@
     </copy>
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
-      <arg line="-library-path ${deploy.dir}/lib"/>
+      <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/player-env.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
       <arg line="-load-config+=etc/asdoc-config.xml"/>
@@ -137,7 +146,11 @@
     </copy>
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
-      <arg line="-library-path ${deploy.dir}/lib"/>
+      <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/player-env.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/tweener.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
       <arg line="-load-config+=etc/asdoc-contrib-config.xml"/>
@@ -185,7 +198,7 @@
       <fileset dir="${projects.dir}/whirled" includes="src/as/nochump/**"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
     </copy>
-    <copy file="${projects.dir}/narya/src/as/com/threerings/util/env/Environment.as-fp"
+    <copy file="${projects.dir}/narya/src/player/com/threerings/util/env/Environment.as"
           tofile="${sdk.build}/src/as/com/threerings/util/env/Environment.as"/>
     <!-- copy contributed files -->
     <mkdir dir="${sdk.build}/contrib"/>
