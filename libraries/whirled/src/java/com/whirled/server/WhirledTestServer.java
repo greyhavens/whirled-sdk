@@ -201,7 +201,7 @@ public class WhirledTestServer extends CrowdServer
         List<String> args = Lists.newArrayList();
         args.add(System.getProperty("thane.path"));
         args.addAll(abcLibs.getLibs(
-            "game-server"));
+            "game-server-lib.", "game-server."));
         args.add("--");
         args.add(bureauId);
         args.add(token);
@@ -247,7 +247,6 @@ public class WhirledTestServer extends CrowdServer
         gamedef.match = match;
 
         // set up our game configuration and start up the game clients
-        // !TODO: support some bureau action, create an agent and give it a ThaneGameConfig
         _config = new WhirledGameConfig(-1, gamedef);
         _config.players = new Name[match.isPartyGame ? 0 : playerCount];
         for (int ii = 0; ii < playerCount; ii++) {
