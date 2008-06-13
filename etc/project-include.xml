@@ -169,27 +169,24 @@
     <antcall target="test-${app.type}"/>
   </target>
 
-  <target name="test-avatar">
-    <echoxml file="parameters.xml">
-    <parameters>
-      <param name="avatar" value="file://${basedir}${file.separator}${app.name}.${app.suffix}"/>
-    </parameters>
-    </echoxml>
-    <!-- this is lame, but oh well. We copy the viewer to the current directory so that
-         we can read the parameters out of the same directory on every platform. -->
-    <copy file="${build.root}/lib/viewer.swf" todir="."/>
-    <exec executable="${player.path}">
-      <arg value="./viewer.swf"/>
-    </exec>
-    <!-- <delete file="./viewer.swf"/> -->
-  </target>
-
   <target name="delete-abc" unless="app.enable-server-agent">
     <delete file="${build.root}/dist/game.abc"/>
   </target>
 
   <target name="copy-abc" if="app.enable-server-agent">
     <copy overwrite="true" file="${app.name}.abc" tofile="${build.root}/dist/game.abc"/>
+  </target>
+
+  <target name="test-avatar">
+    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/avatar.${app.suffix}"/>
+    <echoxml file="${build.root}/dist/parameters.xml">
+    <parameters>
+      <param name="avatar" value="file://${build.root}/dist/avatar.${app.suffix}"/>
+    </parameters>
+    </echoxml>
+    <exec executable="${player.path}">
+      <arg value="${build.root}/dist/viewer.swf"/>
+    </exec>
   </target>
 
   <target name="test-game" depends="delete-abc,copy-abc">
@@ -212,74 +209,61 @@
   </target>
 
   <target name="test-furni">
-    <!-- TODO: create a furni viewer that emulates the server environ and loads up the
-      furni in two flashplayer instances. -->
     <echo>NOTE: furni projects do not currently have a test environment.</echo>
-    <echoxml file="parameters.xml">
+    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/furni.${app.suffix}"/>
+    <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
-      <param name="media" value="file://${basedir}${file.separator}${app.name}.${app.suffix}"/>
+      <param name="media" value="file://${build.root}/dist/furni.${app.suffix}"/>
     </parameters>
     </echoxml>
-    <!-- this is lame, but oh well. We copy the viewer to the current directory so that
-         we can read the parameters out of the same directory on every platform. -->
-    <copy file="${build.root}/lib/viewer.swf" todir="."/>
+    <!-- TODO: create a furni viewer that emulates the server environ and loads up the
+      furni in two flashplayer instances. -->
     <exec executable="${player.path}">
-      <arg value="./viewer.swf"/>
+      <arg value="${build.root}/dist/viewer.swf"/>
     </exec>
-    <!-- <delete file="./viewer.swf"/> -->
   </target>
 
   <target name="test-decor">
-    <!-- TODO: create a decor viewer that emulates the server environ and loads up the
-      decor in two flashplayer instances. -->
     <echo>NOTE: decor projects do not currently have a test environment.</echo>
-    <echoxml file="parameters.xml">
+    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/decor.${app.suffix}"/>
+    <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
-      <param name="media" value="file://${basedir}${file.separator}${app.name}.${app.suffix}"/>
+      <param name="media" value="file://${build.root}/dist/decor.${app.suffix}"/>
     </parameters>
     </echoxml>
-    <!-- this is lame, but oh well. We copy the viewer to the current directory so that
-         we can read the parameters out of the same directory on every platform. -->
-    <copy file="${build.root}/lib/viewer.swf" todir="."/>
     <exec executable="${player.path}">
-      <arg value="./viewer.swf"/>
+      <arg value="${build.root}/dist/viewer.swf"/>
     </exec>
-    <!-- <delete file="./viewer.swf"/> -->
   </target>
 
   <target name="test-toy">
-    <!-- TODO: create a toy viewer that emulates the server environ and loads up the
-      toy in two flashplayer instances. -->
     <echo>NOTE: toy projects do not currently have a test environment.</echo>
-    <echoxml file="parameters.xml">
+    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/toy.${app.suffix}"/>
+    <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
-      <param name="media" value="file://${basedir}${file.separator}${app.name}.${app.suffix}"/>
+      <param name="media" value="file://${build.root}/dist/toy.${app.suffix}"/>
     </parameters>
     </echoxml>
-    <!-- this is lame, but oh well. We copy the viewer to the current directory so that
-         we can read the parameters out of the same directory on every platform. -->
-    <copy file="${build.root}/lib/viewer.swf" todir="."/>
+    <!-- TODO: create a toy viewer that emulates the server environ and loads up the
+      toy in two flashplayer instances. -->
     <exec executable="${player.path}">
-      <arg value="./viewer.swf"/>
+      <arg value="${build.root}/dist/viewer.swf"/>
     </exec>
-    <!-- <delete file="./viewer.swf"/> -->
   </target>
 
   <target name="test-pet">
-    <!-- TODO: create a pet viewer that emulates the server environ and loads up the
-      pet in two flashplayer instances. -->
     <echo>NOTE: pet projects do not currently have a test environment.</echo>
-    <echoxml file="parameters.xml">
+    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/pet.${app.suffix}"/>
+    <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
-      <param name="media" value="file://${basedir}${file.separator}${app.name}.${app.suffix}"/>
+      <param name="media" value="file://${build.root}/dist/pet.${app.suffix}"/>
     </parameters>
     </echoxml>
-    <!-- this is lame, but oh well. We copy the viewer to the current directory so that
-         we can read the parameters out of the same directory on every platform. -->
-    <copy file="${build.root}/lib/viewer.swf" todir="."/>
+    <!-- TODO: create a pet viewer that emulates the server environ and loads up the
+      pet in two flashplayer instances. -->
     <exec executable="${player.path}">
-      <arg value="./viewer.swf"/>
+      <arg value="${build.root}/dist/viewer.swf"/>
     </exec>
-    <!-- <delete file="./viewer.swf"/> -->
   </target>
+
 </project>

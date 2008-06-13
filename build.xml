@@ -224,7 +224,6 @@
     <mkdir dir="${sdk.build}"/>
     <copy todir="${sdk.build}">
       <fileset dir="data/sdk" includes="**"/>
-      <fileset dir="." includes="lib/viewer.swf"/>
     </copy>
     <mkdir dir="${sdk.build}/dist"/>
     <copy todir="${sdk.build}/dist">
@@ -232,6 +231,9 @@
        <include name="game-client.swf"/>
        <include name="whirled-tools.jar"/>
        <include name="lib/**"/>
+     </fileset>
+     <fileset dir="lib">
+       <include name="viewer.swf"/>
      </fileset>
     </copy>
     <mkdir dir="${sdk.build}/lib"/>
@@ -304,6 +306,7 @@
   <!-- builds the distribution jar files -->
   <target name="dist" depends="compile">
     <jar file="${deploy.dir}/${app.name}-tools.jar" basedir="${classes.dir}" includes="com/**"/>
+    <copy file="lib/viewer.swf" todir="${deploy.dir}"/>
   </target>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
