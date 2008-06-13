@@ -165,7 +165,7 @@
   </target>
 
   <target name="thanetestclient" unless="no_build_thanetestclient"
-          depends="checkthanetestclient,whirledthanelib,aslib">
+          depends="whirledthanelib,aslib">
     <java jar="${flexsdk.dir}/lib/mxmlc.jar" fork="true" failonerror="true">
       <arg value="-load-config"/>
       <arg value="dist/thane-config.xml"/>
