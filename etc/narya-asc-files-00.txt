@@ -1,3 +1,0 @@
-com/threerings/util/Log.as
-com/threerings/util/Equalable.as
-com/threerings/util/HashMap.as
