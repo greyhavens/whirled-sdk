@@ -28,7 +28,7 @@ public class ServicesSubControl extends AbstractSubControl
     }
 
     /**
-     * Requests a set of random letters from the dictionary service.  The letters will arrive in a
+     * Requests a set of random letters from the dictionary service. The letters will arrive in a
      * separate message with the specified key, as an array of strings.
      *
      * @param locale RFC 3066 string that represents language settings
@@ -46,7 +46,19 @@ public class ServicesSubControl extends AbstractSubControl
         callHostCode("getDictionaryLetterSet_v2", locale, dictionary, count, callback);
     }
 
-    /** TODO: Doc. */
+    /**
+     * Requests a list of random words from the dictionary service.
+     *
+     * @param locale RFC 3066 string that represents language settings
+     * @param dictionary the dictionary to use, or null for the default.
+     *                   TODO: document possible parameters.
+     * @param count the number of words to be produced
+     * @param callback the function that will process the results, of the form:
+     * <pre>function (words :Array) :void</pre>
+     * where words is an array of strings. This array may contain repeated elements.
+     * If an error occured, this array will be empty.
+     */
+
     public function getDictionaryWords (
         locale :String, dictionary :String, count :int, callback :Function) :void
     {
