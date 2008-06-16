@@ -47,7 +47,7 @@ public class ServicesSubControl extends AbstractSubControl
     }
 
     /**
-     * Requests a list of random words from the dictionary service.
+     * Requests a set of random words from the dictionary service.
      *
      * @param locale RFC 3066 string that represents language settings
      * @param dictionary the dictionary to use, or null for the default.
@@ -55,7 +55,7 @@ public class ServicesSubControl extends AbstractSubControl
      * @param count the number of words to be produced
      * @param callback the function that will process the results, of the form:
      * <pre>function (words :Array) :void</pre>
-     * where words is an array of strings. This array may contain repeated elements.
+     * where words is an array of strings. This array will not contain repeated elements.
      * If an error occured, this array will be empty.
      */
 

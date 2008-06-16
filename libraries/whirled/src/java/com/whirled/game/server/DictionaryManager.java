@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 
+import com.samskivert.util.CollectionUtil;
 import com.samskivert.util.CountHashMap;
 import com.samskivert.util.RandomUtil;
 import com.samskivert.util.StringUtil;
@@ -229,13 +230,7 @@ public class DictionaryManager
 
         public String[] randomWords (int count)
         {
-            String[] results = new String[count];
-            for (int i = 0; i < count; i++) {
-                results[i] = RandomUtil.pickRandom(_words.iterator(), _words.size());
-            }
-
-            return results;
-
+            return CollectionUtil.selectRandomSubset(_words, count).toArray(new String[count]);
         }
 
 
