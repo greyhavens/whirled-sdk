@@ -189,6 +189,8 @@ public class GameSubControl extends AbstractSubControl
 
     /**
      * Returns the player ids of all occupants in the game room: players and watchers.
+     * The occupants will be returned in no particular order, and unlike getPlayerIds() there
+     * will never be any zeros in the array.
      */
     public function getOccupantIds () :Array /* of playerId */
     {
