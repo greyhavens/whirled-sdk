@@ -81,7 +81,21 @@ public interface WhirledGameService extends InvocationService
      */
     public void getDictionaryLetterSet (
         Client client, String locale, String dictionary, int count, ResultListener listener);
-    
+ 
+    /**
+     * Ask the dictionary service for a set of random words appropriate for the given
+     * language/culture settings. These will be returned via a message back to the caller.
+     *
+     * @param client stores information about the caller
+     * @param locale is an RFC 3066 string specifying language settings, for example, "en" or
+     * "en-us".
+     * @param dictionary is a String specifier of the dictionary to use, or null for the default.
+     * @param count is the number of words to be returned.
+     * @param listener is the callback function
+     */
+    public void getDictionaryWords (
+        Client client, String locale, String dictionary, int count, ResultListener listener);
+
     /**
      * Ask the dictionary service whether the specified word is valid with the given
      * language/culture settings. The result will be returned via a message back to the caller.

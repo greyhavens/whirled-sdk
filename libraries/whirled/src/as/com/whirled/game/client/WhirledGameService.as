@@ -5,17 +5,14 @@
 
 package com.whirled.game.client {
 
-import flash.utils.ByteArray;
-import com.threerings.io.TypedArray;
 import com.threerings.util.Integer;
+import com.threerings.io.TypedArray;
 import com.threerings.presents.client.Client;
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.client.InvocationService_ConfirmListener;
 import com.threerings.presents.client.InvocationService_InvocationListener;
 import com.threerings.presents.client.InvocationService_ResultListener;
-import com.threerings.presents.data.InvocationMarshaller_ConfirmMarshaller;
-import com.threerings.presents.data.InvocationMarshaller_ResultMarshaller;
-import com.whirled.game.client.WhirledGameService;
+import flash.utils.ByteArray;
 
 /**
  * An ActionScript version of the Java WhirledGameService interface.
@@ -54,6 +51,9 @@ public interface WhirledGameService extends InvocationService
 
     // from Java interface WhirledGameService
     function getDictionaryLetterSet (arg1 :Client, arg2 :String, arg3 :String, arg4 :int, arg5 :InvocationService_ResultListener) :void;
+
+    // from Java interface WhirledGameService
+    function getDictionaryWords (arg1 :Client, arg2 :String, arg3 :String, arg4 :int, arg5 :InvocationService_ResultListener) :void;
 
     // from Java interface WhirledGameService
     function getFromCollection (arg1 :Client, arg2 :String, arg3 :Boolean, arg4 :int, arg5 :String, arg6 :int, arg7 :InvocationService_ConfirmListener) :void;

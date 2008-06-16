@@ -5,13 +5,11 @@
 
 package com.whirled.game.server;
 
-import com.threerings.presents.client.Client;
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationMarshaller;
 import com.threerings.presents.server.InvocationDispatcher;
 import com.threerings.presents.server.InvocationException;
-import com.whirled.game.client.WhirledGameService;
 import com.whirled.game.data.WhirledGameMarshaller;
 
 /**
@@ -113,6 +111,13 @@ public class WhirledGameDispatcher extends InvocationDispatcher
 
         case WhirledGameMarshaller.GET_DICTIONARY_LETTER_SET:
             ((WhirledGameProvider)provider).getDictionaryLetterSet(
+                source,
+                (String)args[0], (String)args[1], ((Integer)args[2]).intValue(), (InvocationService.ResultListener)args[3]
+            );
+            return;
+
+        case WhirledGameMarshaller.GET_DICTIONARY_WORDS:
+            ((WhirledGameProvider)provider).getDictionaryWords(
                 source,
                 (String)args[0], (String)args[1], ((Integer)args[2]).intValue(), (InvocationService.ResultListener)args[3]
             );

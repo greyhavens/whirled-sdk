@@ -5,12 +5,10 @@
 
 package com.whirled.game.server;
 
-import com.threerings.presents.client.Client;
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.server.InvocationException;
 import com.threerings.presents.server.InvocationProvider;
-import com.whirled.game.client.WhirledGameService;
 
 /**
  * Defines the server-side of the {@link WhirledGameService}.
@@ -81,6 +79,12 @@ public interface WhirledGameProvider extends InvocationProvider
      * Handles a {@link WhirledGameService#getDictionaryLetterSet} request.
      */
     public void getDictionaryLetterSet (ClientObject caller, String arg1, String arg2, int arg3, InvocationService.ResultListener arg4)
+        throws InvocationException;
+
+    /**
+     * Handles a {@link WhirledGameService#getDictionaryWords} request.
+     */
+    public void getDictionaryWords (ClientObject caller, String arg1, String arg2, int arg3, InvocationService.ResultListener arg4)
         throws InvocationException;
 
     /**

@@ -329,22 +329,24 @@ public class BaseGameBackend
      * Create a logging confirm listener for service requests.
      */
     protected function createLoggingConfirmListener (
-        service :String) :InvocationService_ConfirmListener
+        service :String, failure :Function = null, success :Function = null) :InvocationService_ConfirmListener
     {
         return new ConfirmAdapter(function (cause :String) :void {
             logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
-        });
+            failure();
+        }, success);
     }
 
     /**
      * Create a logging result listener for service requests.
      */
     protected function createLoggingResultListener (
-        service :String) :InvocationService_ResultListener
+        service :String, failure :Function = null, success :Function = null) :InvocationService_ResultListener
     {
         return new ResultWrapper(function (cause :String) :void {
             logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
-        });
+            failure();
+        }, success);
     }
 
     /**
@@ -563,6 +565,7 @@ public class BaseGameBackend
         // .services
         o["checkDictionaryWord_v2"] = checkDictionaryWord_v2;
         o["getDictionaryLetterSet_v2"] = getDictionaryLetterSet_v2;
+        o["getDictionaryWords_v1"] = getDictionaryWords_v1;
         o["setTicker_v1"] = setTicker_v1;
 
         // .services.bags
@@ -943,23 +946,40 @@ public class BaseGameBackend
     {
         validateConnected();
         var listener :InvocationService_ResultListener;
-        if (callback != null) {
-            var failure :Function = function (cause :String = null) :void {
-                // ignore the cause, return an empty array
-                callback ([]);
-            }
-            var success :Function = function (result :String = null) :void {
-                // splice the resulting string, and return as array
-                var r : Array = result.split(",");
-                callback (r);
-            };
-            listener = new ResultWrapper(failure, success);
-        } else {
-            listener = createLoggingResultListener("checkDictionaryWord");
-        }
+        var failure :Function = function (cause :String) :void {
+            // ignore the cause, return an empty array
+            callback([]);
+        };
+        var success :Function = function (result :String) :void {
+            // splice the resulting string, and return as array
+            var r : Array = result.split(",");
+            callback(r);
+        };
+        listener = createLoggingResultListener("checkDictionaryWord", failure, success);
 
         // just relay the data over to the server
         _gameObj.whirledGameService.getDictionaryLetterSet(
+            _ctx.getClient(), locale, dictionary, count, listener);
+    }
+
+    protected function getDictionaryWords_v1 (
+        locale :String, dictionary :String, count :int, callback :Function) :void
+    {
+        validateConnected();
+        var listener :InvocationService_ResultListener;
+        var failure :Function = function (cause :String) :void {
+            // ignore the cause, return an empty array
+            callback([]);
+        };
+        var success :Function = function (result :String) :void {
+            // splice the resulting string, and return as array
+            var r : Array = result.split(",");
+            callback(r);
+        };
+        listener = createLoggingResultListener("checkDictionaryWord", failure, success);
+
+        // just relay the data over to the server
+        _gameObj.whirledGameService.getDictionaryWords(
             _ctx.getClient(), locale, dictionary, count, listener);
     }
 
@@ -968,20 +988,16 @@ public class BaseGameBackend
     {
         validateConnected();
         var listener :InvocationService_ResultListener;
-        if (callback != null) {
-            var failure :Function = function (cause :String = null) :void {
-                // ignore the cause, return failure
-                callback (word, false);
-            }
-            var success :Function = function (result :Object = null) :void {
-                // server returns a boolean, so convert it and send it over
-                var r : Boolean = Boolean(result);
-                callback (word, r);
-            };
-            listener = new ResultWrapper(failure, success);
-        } else {
-            listener = createLoggingResultListener("checkDictionaryWord");
-        }
+        var failure :Function = function (cause :String) :void {
+            // ignore the cause, return failure
+            callback(word, false);
+        };
+        var success :Function = function (result :Object) :void {
+            // server returns a boolean, so convert it and send it over
+            var r : Boolean = result as Boolean;
+            callback(word, r);
+        };
+        listener = createLoggingResultListener("checkDictionaryWord", failure, success);
 
         // just relay the data over to the server
         _gameObj.whirledGameService.checkDictionaryWord(

@@ -8,7 +8,7 @@ package com.whirled.game.data;
 import com.threerings.presents.client.Client;
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.InvocationMarshaller;
-import com.threerings.presents.dobj.InvocationResponseEvent;
+import com.threerings.presents.net.Transport;
 import com.whirled.game.client.WhirledGameService;
 
 /**
@@ -164,8 +164,21 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         });
     }
 
+    /** The method id used to dispatch {@link #getDictionaryWords} requests. */
+    public static final int GET_DICTIONARY_WORDS = 12;
+
+    // from interface WhirledGameService
+    public void getDictionaryWords (Client arg1, String arg2, String arg3, int arg4, InvocationService.ResultListener arg5)
+    {
+        InvocationMarshaller.ResultMarshaller listener5 = new InvocationMarshaller.ResultMarshaller();
+        listener5.listener = arg5;
+        sendRequest(arg1, GET_DICTIONARY_WORDS, new Object[] {
+            arg2, arg3, Integer.valueOf(arg4), listener5
+        });
+    }
+
     /** The method id used to dispatch {@link #getFromCollection} requests. */
-    public static final int GET_FROM_COLLECTION = 12;
+    public static final int GET_FROM_COLLECTION = 13;
 
     // from interface WhirledGameService
     public void getFromCollection (Client arg1, String arg2, boolean arg3, int arg4, String arg5, int arg6, InvocationService.ConfirmListener arg7)
@@ -178,7 +191,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #mergeCollection} requests. */
-    public static final int MERGE_COLLECTION = 13;
+    public static final int MERGE_COLLECTION = 14;
 
     // from interface WhirledGameService
     public void mergeCollection (Client arg1, String arg2, String arg3, InvocationService.InvocationListener arg4)
@@ -191,7 +204,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #restartGameIn} requests. */
-    public static final int RESTART_GAME_IN = 14;
+    public static final int RESTART_GAME_IN = 15;
 
     // from interface WhirledGameService
     public void restartGameIn (Client arg1, int arg2, InvocationService.InvocationListener arg3)
@@ -204,7 +217,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #sendMessage} requests. */
-    public static final int SEND_MESSAGE = 15;
+    public static final int SEND_MESSAGE = 16;
 
     // from interface WhirledGameService
     public void sendMessage (Client arg1, String arg2, Object arg3, int arg4, InvocationService.InvocationListener arg5)
@@ -217,7 +230,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #setCookie} requests. */
-    public static final int SET_COOKIE = 16;
+    public static final int SET_COOKIE = 17;
 
     // from interface WhirledGameService
     public void setCookie (Client arg1, byte[] arg2, InvocationService.InvocationListener arg3)
@@ -230,7 +243,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #setProperty} requests. */
-    public static final int SET_PROPERTY = 17;
+    public static final int SET_PROPERTY = 18;
 
     // from interface WhirledGameService
     public void setProperty (Client arg1, String arg2, Object arg3, Integer arg4, boolean arg5, boolean arg6, Object arg7, InvocationService.InvocationListener arg8)
@@ -243,7 +256,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #setTicker} requests. */
-    public static final int SET_TICKER = 18;
+    public static final int SET_TICKER = 19;
 
     // from interface WhirledGameService
     public void setTicker (Client arg1, String arg2, int arg3, InvocationService.InvocationListener arg4)

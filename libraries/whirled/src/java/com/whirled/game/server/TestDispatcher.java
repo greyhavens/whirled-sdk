@@ -5,12 +5,10 @@
 
 package com.whirled.game.server;
 
-import com.threerings.presents.client.Client;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationMarshaller;
 import com.threerings.presents.server.InvocationDispatcher;
 import com.threerings.presents.server.InvocationException;
-import com.whirled.game.client.TestService;
 import com.whirled.game.data.TestMarshaller;
 
 /**

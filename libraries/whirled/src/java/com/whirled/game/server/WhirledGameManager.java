@@ -270,6 +270,16 @@ public abstract class WhirledGameManager extends GameManager
     {
         getDictionaryManager().getLetterSet(locale, dictionary, count, listener);
     }
+
+    // from WhirledGameProvider
+    public void getDictionaryWords (
+        ClientObject caller, String locale, String dictionary, int count, 
+        InvocationService.ResultListener listener)
+        throws InvocationException
+    {
+        // TODO: Implement me
+        listener.requestProcessed("foo,bar");
+    }
     
     // from WhirledGameProvider
     public void checkDictionaryWord (

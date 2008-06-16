@@ -7,7 +7,7 @@ package com.whirled.game.data;
 
 import com.threerings.presents.client.Client;
 import com.threerings.presents.data.InvocationMarshaller;
-import com.threerings.presents.dobj.InvocationResponseEvent;
+import com.threerings.presents.net.Transport;
 import com.whirled.game.client.TestService;
 
 /**

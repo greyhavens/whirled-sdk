@@ -46,6 +46,13 @@ public class ServicesSubControl extends AbstractSubControl
         callHostCode("getDictionaryLetterSet_v2", locale, dictionary, count, callback);
     }
 
+    /** TODO: Doc. */
+    public function getDictionaryWords (
+        locale :String, dictionary :String, count :int, callback :Function) :void
+    {
+        callHostCode("getDictionaryWords_v1", locale, dictionary, count, callback);
+    }
+
     /**
      * Checks to see if the dictionary for the given locale contains the given word.
      *

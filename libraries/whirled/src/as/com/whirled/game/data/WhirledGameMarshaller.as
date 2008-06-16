@@ -5,10 +5,7 @@
 
 package com.whirled.game.data {
 
-import flash.utils.ByteArray;
-import com.threerings.util.*; // for Float, Integer, etc.
 import com.threerings.io.TypedArray;
-
 import com.threerings.presents.client.Client;
 import com.threerings.presents.client.InvocationService_ConfirmListener;
 import com.threerings.presents.client.InvocationService_InvocationListener;
@@ -17,7 +14,10 @@ import com.threerings.presents.data.InvocationMarshaller;
 import com.threerings.presents.data.InvocationMarshaller_ConfirmMarshaller;
 import com.threerings.presents.data.InvocationMarshaller_ListenerMarshaller;
 import com.threerings.presents.data.InvocationMarshaller_ResultMarshaller;
+import com.threerings.util.Integer;
+import com.threerings.util.langBoolean;
 import com.whirled.game.client.WhirledGameService;
+import flash.utils.ByteArray;
 
 /**
  * Provides the implementation of the {@link WhirledGameService} interface
@@ -172,8 +172,21 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
+    /** The method id used to dispatch {@link #getDictionaryWords} requests. */
+    public static const GET_DICTIONARY_WORDS :int = 12;
+
+    // from interface WhirledGameService
+    public function getDictionaryWords (arg1 :Client, arg2 :String, arg3 :String, arg4 :int, arg5 :InvocationService_ResultListener) :void
+    {
+        var listener5 :InvocationMarshaller_ResultMarshaller = new InvocationMarshaller_ResultMarshaller();
+        listener5.listener = arg5;
+        sendRequest(arg1, GET_DICTIONARY_WORDS, [
+            arg2, arg3, Integer.valueOf(arg4), listener5
+        ]);
+    }
+
     /** The method id used to dispatch {@link #getFromCollection} requests. */
-    public static const GET_FROM_COLLECTION :int = 12;
+    public static const GET_FROM_COLLECTION :int = 13;
 
     // from interface WhirledGameService
     public function getFromCollection (arg1 :Client, arg2 :String, arg3 :Boolean, arg4 :int, arg5 :String, arg6 :int, arg7 :InvocationService_ConfirmListener) :void
@@ -186,7 +199,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #mergeCollection} requests. */
-    public static const MERGE_COLLECTION :int = 13;
+    public static const MERGE_COLLECTION :int = 14;
 
     // from interface WhirledGameService
     public function mergeCollection (arg1 :Client, arg2 :String, arg3 :String, arg4 :InvocationService_InvocationListener) :void
@@ -199,7 +212,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #restartGameIn} requests. */
-    public static const RESTART_GAME_IN :int = 14;
+    public static const RESTART_GAME_IN :int = 15;
 
     // from interface WhirledGameService
     public function restartGameIn (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void
@@ -212,7 +225,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #sendMessage} requests. */
-    public static const SEND_MESSAGE :int = 15;
+    public static const SEND_MESSAGE :int = 16;
 
     // from interface WhirledGameService
     public function sendMessage (arg1 :Client, arg2 :String, arg3 :Object, arg4 :int, arg5 :InvocationService_InvocationListener) :void
@@ -225,7 +238,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #setCookie} requests. */
-    public static const SET_COOKIE :int = 16;
+    public static const SET_COOKIE :int = 17;
 
     // from interface WhirledGameService
     public function setCookie (arg1 :Client, arg2 :ByteArray, arg3 :InvocationService_InvocationListener) :void
@@ -238,7 +251,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #setProperty} requests. */
-    public static const SET_PROPERTY :int = 17;
+    public static const SET_PROPERTY :int = 18;
 
     // from interface WhirledGameService
     public function setProperty (arg1 :Client, arg2 :String, arg3 :Object, arg4 :Integer, arg5 :Boolean, arg6 :Boolean, arg7 :Object, arg8 :InvocationService_InvocationListener) :void
@@ -251,7 +264,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #setTicker} requests. */
-    public static const SET_TICKER :int = 18;
+    public static const SET_TICKER :int = 19;
 
     // from interface WhirledGameService
     public function setTicker (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void
