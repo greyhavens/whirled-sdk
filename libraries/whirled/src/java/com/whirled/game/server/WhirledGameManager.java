@@ -277,6 +277,9 @@ public abstract class WhirledGameManager extends GameManager
         InvocationService.ResultListener listener)
         throws InvocationException
     {
+        // Restrict the words count to at most 100
+        count = Math.min(count, 100);
+
         getDictionaryManager().getWords(locale, dictionary, count, listener);
     }
     

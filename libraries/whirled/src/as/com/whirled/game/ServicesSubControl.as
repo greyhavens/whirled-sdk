@@ -52,7 +52,7 @@ public class ServicesSubControl extends AbstractSubControl
      * @param locale RFC 3066 string that represents language settings
      * @param dictionary the dictionary to use, or null for the default.
      *                   TODO: document possible parameters.
-     * @param count the number of words to be produced
+     * @param count the number of words to be produced, to a maximum of 100.
      * @param callback the function that will process the results, of the form:
      * <pre>function (words :Array) :void</pre>
      * where words is an array of strings. This array will not contain repeated elements.
