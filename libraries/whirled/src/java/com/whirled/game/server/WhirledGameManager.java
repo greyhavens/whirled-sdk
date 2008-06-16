@@ -277,8 +277,7 @@ public abstract class WhirledGameManager extends GameManager
         InvocationService.ResultListener listener)
         throws InvocationException
     {
-        // TODO: Implement me
-        listener.requestProcessed("foo,bar");
+        getDictionaryManager().getWords(locale, dictionary, count, listener);
     }
     
     // from WhirledGameProvider

@@ -24,6 +24,7 @@ import java.util.zip.GZIPInputStream;
 
 import com.samskivert.util.CountHashMap;
 import com.samskivert.util.RandomUtil;
+import com.samskivert.util.StringUtil;
 
 import static com.whirled.game.Log.log;
 
@@ -86,6 +87,28 @@ public class DictionaryManager
                 }
                 sb.deleteCharAt(sb.length() - 1);
                 _set = sb.toString();
+                return true;
+            }
+            public void handleResult () {
+                listener.requestProcessed(_set);
+            }
+            protected String _set;
+        });
+    }
+
+    /**
+     * Retrieves a list of words from a language definition file, and returns a random sampling of
+     * /count/ elements.
+     */
+    public void getWords (final String locale, final String dictionary, final int count,
+                          final InvocationService.ResultListener listener)
+    {
+        CrowdServer.invoker.postUnit(new Invoker.Unit("DictionaryManager.getWords") {
+            public boolean invoke () {
+                Dictionary dict = getDictionary(locale, dictionary);
+                String[] words = dict.randomWords(count);
+
+                _set = StringUtil.join(words);
                 return true;
             }
             public void handleResult () {
@@ -202,6 +225,17 @@ public class DictionaryManager
             }
 
             return results;
+        }
+
+        public String[] randomWords (int count)
+        {
+            String[] results = new String[count];
+            for (int i = 0; i < count; i++) {
+                results[i] = RandomUtil.pickRandom(_words.iterator(), _words.size());
+            }
+
+            return results;
+
         }
 
 
