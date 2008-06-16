@@ -127,14 +127,23 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
-     * Set the frame rate and quality to use in your game. The defaults
-     * are 30fps at MEDIUM quality. The actual frame rate will be bounded on the lower end
-     * so as to not degrade the user experience.
+     * Set the frame rate to use in your game. The default is 30fps, the
+     * same frame rate used in whirled rooms. The actual frame rate may be bounded on the lower
+     * end (for example, we may not let it go lower than 15fps) so that the rest of the user
+     * interface doesn't become annoying or unusable.
      */
-    public function setFrameRate (
-        frameRate :Number = 30, quality :String = "medium" /* == StageQuality.MEDIUM */) :void
+    public function setFrameRate (frameRate :Number = 30) :void
     {
-        callHostCode("setFrameRate_v1", frameRate, quality);
+        callHostCode("setFrameRate_v1", frameRate);
+    }
+
+    /**
+     * Set the stage quality to use in your game. The default is MEDIUM, the same quality
+     * used in whirled rooms.
+     */
+    public function setStageQuality (quality :String = "medium" /* == StageQuality.MEDIUM */) :void
+    {
+        callHostCode("setStageQuality_v1", quality);
     }
 
     /**

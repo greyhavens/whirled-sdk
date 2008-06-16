@@ -54,7 +54,8 @@ public class WhirledGameBackend extends BaseGameBackend
 
         (_ctx as CrowdContext).getChatDirector().removeChatDisplay(this);
 
-        // once the usercode is incapable of calling setFrameRate, ensure they're reset to defaults
+        // once the usercode is incapable of calling setFrameRate and setStageQuality
+        // ensure they're reset to defaults
         _stage.frameRate = 30;
         _stage.quality = StageQuality.MEDIUM;
     }
@@ -191,6 +192,7 @@ public class WhirledGameBackend extends BaseGameBackend
         o["setPlayerScores_v1"] = setPlayerScores_v1;
         o["setShowButtons_v1"] = setShowButtons_v1;
         o["setFrameRate_v1"] = setFrameRate_v1;
+        o["setStageQuality_v1"] = setStageQuality_v1;
 
         // .player
         o["awardPrize_v1"] = awardPrize_v1;
@@ -271,12 +273,27 @@ public class WhirledGameBackend extends BaseGameBackend
         (_ctrl.getPlaceView() as WhirledGamePanel).setShowButtons(rematch, back, back);
     }
 
-    protected function setFrameRate_v1 (frameRate :Number, quality :String) :void
+    protected function setFrameRate_v1 (frameRate :Number, quality :String = null) :void
     {
         validateConnected(); // so that the game can't futz the frame rate after we disconnect it!
 
-        // then, let these throw whatever errors they might. Not our problem.
+        // then, let this throw whatever errors they might. Not our problem.
         _stage.frameRate = Math.max(frameRate, 15);
+
+        // NOTE: originally the quality was specified as the second argument to setFrameRate.
+        // To preserve backwards compatibility, the quality arg is now optional, but if specified
+        // we must still let it work.
+        if (quality != null) {
+            setStageQuality_v1(quality);
+        }
+    }
+
+    protected function setStageQuality_v1 (quality :String) :void
+    {
+        validateConnected(); // it's important not to let any still-running game code
+        // alter the frame rate after we've "shut it off" and restored the whirled default quality
+
+        // if quality is an invalid string, this might throw an error. Not our problem.
         _stage.quality = quality;
     }
 
