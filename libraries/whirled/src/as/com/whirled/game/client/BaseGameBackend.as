@@ -463,10 +463,8 @@ public class BaseGameBackend
      */
     protected function isPlayer (occupantName :Name) :Boolean
     {
-        if (_gameObj.players.length == 0) {
-            return true; // party game: all occupants are players
-        }
-        return (-1 != _gameObj.getPlayerIndex(occupantName));
+        // in party games, everyone's a player
+        return isParty() || (-1 != _gameObj.getPlayerIndex(occupantName));
     }
 
     protected function handleUserCodeConnect (evt :Event) :void
@@ -612,6 +610,14 @@ public class BaseGameBackend
         default:
             return "unknown";
         }
+    }
+
+    /**
+     * Convenient method to see if we're in a party game.
+     */
+    protected function isParty () :Boolean
+    {
+        return (getConfig().getMatchType() == GameConfig.PARTY);
     }
 
     /**
@@ -897,6 +903,9 @@ public class BaseGameBackend
     protected function restartGameIn_v1 (seconds :int) :void
     {
         validateConnected();
+        if (!isParty()) {
+            throw new Error("restartGameIn() is only applicable to party games.");
+        }
         _gameObj.whirledGameService.restartGameIn(
             _ctx.getClient(), seconds, createLoggingConfirmListener("restartGameIn"));
     }
