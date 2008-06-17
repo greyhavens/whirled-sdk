@@ -268,6 +268,9 @@ public abstract class WhirledGameManager extends GameManager
         InvocationService.ResultListener listener)
         throws InvocationException
     {
+        // No negative counts please
+        count = Math.max(0, count);
+
         getDictionaryManager().getLetterSet(locale, dictionary, count, listener);
     }
 
@@ -277,8 +280,8 @@ public abstract class WhirledGameManager extends GameManager
         InvocationService.ResultListener listener)
         throws InvocationException
     {
-        // Restrict the words count to at most 100
-        count = Math.min(count, 100);
+        // Clamp the words count to 0..100
+        count = Math.max(0, Math.min(count, 100));
 
         getDictionaryManager().getWords(locale, dictionary, count, listener);
     }

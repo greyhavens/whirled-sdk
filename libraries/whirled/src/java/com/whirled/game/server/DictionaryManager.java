@@ -80,7 +80,7 @@ public class DictionaryManager
         CrowdServer.invoker.postUnit(new Invoker.Unit("DictionaryManager.getLetterSet") {
             public boolean invoke () {
                 Dictionary dict = getDictionary(locale, dictionary);
-                char[] chars = dict.randomLetters(count);
+                char[] chars = dict.pickRandomLetters(count);
                 StringBuilder sb = new StringBuilder();
                 for (char c : chars) {
                     sb.append(c);
@@ -91,6 +91,8 @@ public class DictionaryManager
                 return true;
             }
             public void handleResult () {
+                // TODO: This should just return a char[]
+                // Still this way for backwards compatability
                 listener.requestProcessed(_set);
             }
             protected String _set;
@@ -107,15 +109,14 @@ public class DictionaryManager
         CrowdServer.invoker.postUnit(new Invoker.Unit("DictionaryManager.getWords") {
             public boolean invoke () {
                 Dictionary dict = getDictionary(locale, dictionary);
-                String[] words = dict.randomWords(count);
 
-                _set = StringUtil.join(words);
+                _set = dict.pickRandomWords(count);
                 return true;
             }
             public void handleResult () {
                 listener.requestProcessed(_set);
             }
-            protected String _set;
+            protected String[] _set;
         });
     }
 
@@ -216,7 +217,7 @@ public class DictionaryManager
         }
 
         /** Gets an array of random letters for the language, with uniform distribution. */
-        public char[] randomLetters (int count)
+        public char[] pickRandomLetters (int count)
         {
             char[] results = new char[count];
             for (int i = 0; i < count; i++) {
@@ -228,7 +229,7 @@ public class DictionaryManager
             return results;
         }
 
-        public String[] randomWords (int count)
+        public String[] pickRandomWords (int count)
         {
             return CollectionUtil.selectRandomSubset(_words, count).toArray(new String[count]);
         }
