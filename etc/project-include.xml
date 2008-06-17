@@ -12,7 +12,7 @@
   <property name="app.library-dir" value="."/>
   <property name="app.server-agent" value="Server"/>
   <property name="app.enabled-server-agent" value="false"/>
-  <property name="thane.path" value="${etc.dir}/../libraries/thane/tamarin-central/dist/thane/avmthane"/>
+  <property name="thane.path" value="${build.root}/dist/lib/avmthane"/>
 
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
   <!-- out of it. otherwise just use a dummy value (can't easily skip it, alas). -->

@@ -307,6 +307,12 @@
   <target name="dist" depends="compile">
     <jar file="${deploy.dir}/${app.name}-tools.jar" basedir="${classes.dir}" includes="com/**"/>
     <copy file="lib/viewer.swf" todir="${deploy.dir}"/>
+
+    <!-- this is not copied automatically :( -->
+    <copy file="libraries/thane/dist/avmthane" todir="dist/lib"/>
+
+    <!-- executable permission must be set manually :( -->
+    <chmod perm="oug+x" file="dist/lib/avmthane"/>
   </target>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
