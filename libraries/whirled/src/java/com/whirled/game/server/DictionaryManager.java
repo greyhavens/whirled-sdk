@@ -184,7 +184,7 @@ public class DictionaryManager
         public Dictionary (String locale, InputStream words)
             throws IOException
         {
-            CountHashMap <Character> letters = new CountHashMap <Character>();
+            CountHashMap<Character> letters = new CountHashMap<Character>();
 
             if (words != null) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(words));
@@ -239,7 +239,7 @@ public class DictionaryManager
 
         /** Given a CountHashMap of letters, initializes the internal letter and count arrays, used
          * by RandomUtil. */
-        protected void initializeLetterCounts (CountHashMap <Character> letters)
+        protected void initializeLetterCounts (CountHashMap<Character> letters)
         {
             Set<Character> keys = letters.keySet();
             int keycount = keys.size();
@@ -251,8 +251,7 @@ public class DictionaryManager
             _counts = new float[keycount];
 
             // Copy letters and normalize counts
-            for (Character key : keys)
-            {
+            for (Character key : keys) {
                 keycount--;
                 _letters[keycount] = key;
                 _counts[keycount] = ((float) letters.getCount(key)) / total; // normalize
@@ -263,17 +262,17 @@ public class DictionaryManager
         protected HashSet<String> _words = new HashSet<String>();
 
         /** Letter array. */
-        protected char[] _letters = new char[] { };
+        protected char[] _letters;
 
         /** Letter count array. */
-        protected float[] _counts = new float[] { };
+        protected float[] _counts;
     }
 
     /** Used to locate dictionaries in the classpath. */
     protected String _prefix;
 
     /** Map from locale name to Dictionary object. */
-    protected HashMap <String, Dictionary> _dictionaries = new HashMap <String, Dictionary>();
+    protected HashMap<String, Dictionary> _dictionaries = new HashMap<String, Dictionary>();
 
     /** Singleton instance pointer. */
     protected static DictionaryManager _singleton;
