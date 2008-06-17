@@ -185,6 +185,7 @@
     <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/avatar.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
+      <param name="mode" value="100"/>
       <param name="avatar" value="file://${build.root}/dist/avatar.${app.suffix}"/>
     </parameters>
     </echoxml>
@@ -217,6 +218,7 @@
     <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/furni.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
+      <param name="mode" value="102"/>
       <param name="media" value="file://${build.root}/dist/furni.${app.suffix}"/>
     </parameters>
     </echoxml>
@@ -232,6 +234,7 @@
     <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/decor.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
+      <param name="mode" value="104"/>
       <param name="media" value="file://${build.root}/dist/decor.${app.suffix}"/>
     </parameters>
     </echoxml>
@@ -245,6 +248,7 @@
     <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/toy.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
+      <param name="mode" value="103"/>
       <param name="media" value="file://${build.root}/dist/toy.${app.suffix}"/>
     </parameters>
     </echoxml>
@@ -260,6 +264,7 @@
     <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/pet.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
+      <param name="mode" value="101"/>
       <param name="media" value="file://${build.root}/dist/pet.${app.suffix}"/>
     </parameters>
     </echoxml>
