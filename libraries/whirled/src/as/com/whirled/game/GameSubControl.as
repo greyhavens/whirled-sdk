@@ -184,6 +184,9 @@ public class GameSubControl extends AbstractSubControl
      */
     public function playerReady () :void
     {
+        if (_seating == null) {
+            throw new Error("playerReady() only applicable to seated games.");
+        }
         callHostCode("playerReady_v1");
     }
 
@@ -383,6 +386,9 @@ public class GameSubControl extends AbstractSubControl
      */
     public function restartGameIn (seconds :int) :void
     {
+        if (_seating != null) {
+            throw new Error("restartGameIn() only applicable to party games.");
+        }
         callHostCode("restartGameIn_v1", seconds);
     }
 
