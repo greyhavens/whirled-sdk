@@ -73,7 +73,7 @@ public class NetSubControl extends AbstractSubControl
 
     /**
      * Set a property value to be distributed to the other clients in this game.
-     * Property values can be any of the primitive types: int, Number, Boolean, String,
+     * Property values can be any of the primitive types: int, uint, Number, Boolean, String,
      * ByteArray; or you may set Arrays, Dictionarys, or plain old Objects, as long as
      * the values within them are primitive types or other Arrays, Dictionarys and Objects.
      *
