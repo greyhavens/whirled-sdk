@@ -32,6 +32,13 @@ import static com.whirled.game.Log.log;
 /**
  * Manages loading and querying word dictionaries in multiple languages.
  *
+ * NOTE: This should probably be changed so that the loading of a dictionary occurs on
+ * another thread (the invoker is perhaps not the best), but once loaded, everything should
+ * probably be done on the dobj thread, unless I'm missing something.
+ *
+ * TODO: This shouldn't take InvocationListeners, it should take ResultListeners and users
+ * of this service can adapt into InvocationListeners.
+ *
  * NOTE: the service supports lazy loading of language files, but does not _unload_ them from
  * memory, leading to increasing memory usage.
  *
@@ -80,6 +87,8 @@ public class DictionaryManager
         CrowdServer.invoker.postUnit(new Invoker.Unit("DictionaryManager.getLetterSet") {
             public boolean invoke () {
                 Dictionary dict = getDictionary(locale, dictionary);
+                // TODO: see note in header. We should return a char[] directly, and
+                // users of this class can take care of transforming it into flash-land.
                 char[] chars = dict.pickRandomLetters(count);
                 StringBuilder sb = new StringBuilder();
                 for (char c : chars) {
@@ -91,8 +100,6 @@ public class DictionaryManager
                 return true;
             }
             public void handleResult () {
-                // TODO: This should just return a char[]
-                // Still this way for backwards compatability
                 listener.requestProcessed(_set);
             }
             protected String _set;
