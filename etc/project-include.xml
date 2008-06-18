@@ -229,13 +229,13 @@
     </exec>
   </target>
 
-  <target name="test-decor">
-    <echo>NOTE: decor projects do not currently have a test environment.</echo>
-    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/decor.${app.suffix}"/>
+  <target name="test-backdrop">
+    <echo>NOTE: backdrop projects do not currently have a test environment.</echo>
+    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/backdrop.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
       <param name="mode" value="104"/>
-      <param name="media" value="file://${build.root}/dist/decor.${app.suffix}"/>
+      <param name="media" value="file://${build.root}/dist/backdrop.${app.suffix}"/>
     </parameters>
     </echoxml>
     <exec executable="${player.path}">
