@@ -923,12 +923,7 @@ public class BaseGameBackend
     protected function getPlayers_v1 () :Array
     {
         validateConnected();
-        var playerIds :Array = [];
-        for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
-            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
-            playerIds.push(isInited(occInfo) ? occInfo.bodyOid : 0);
-        }
-        return playerIds;
+        return getPlayersArray();
     }
 
     //---- .services -------------------------------------------------------
@@ -1159,6 +1154,9 @@ public class BaseGameBackend
             isPlayer(occInfo.username), false);
     }
 
+    /**
+     * Called when the players of the game are updated.
+     */
     protected function occupantRoleChanged (
         occInfo :OccupantInfo, 
         isPlayerNow :Boolean) :void
@@ -1167,6 +1165,19 @@ public class BaseGameBackend
         // an "entered" message 
         callUserCode("occupantChanged_v1", occInfo.bodyOid, !isPlayerNow, false);
         callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayerNow, true);
+    }
+
+    /**
+     * Retrieve an array of player ids, translated from OccupantInfo.
+     */
+    protected function getPlayersArray () :Array
+    {
+        var playerIds :Array = [];
+        for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
+            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
+            playerIds.push(isInited(occInfo) ? occInfo.bodyOid : 0);
+        }
+        return playerIds;
     }
 
     // TEMP TODO REMOVE XXX
