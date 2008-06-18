@@ -159,6 +159,9 @@ public class DictionaryManager
 
         String key = locale;
 
+        // No funny business with the client supplied path
+        key.replace(".", "");
+
         if (dictionary != null) {
             key += "_";
             key += dictionary;
