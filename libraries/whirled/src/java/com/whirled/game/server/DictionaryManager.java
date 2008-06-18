@@ -157,18 +157,24 @@ public class DictionaryManager
             return null;
         }
 
-        // TODO: honor the dictionary parameter
-        locale = locale.toLowerCase();
-        if (!_dictionaries.containsKey(locale)) {
-            String path = _prefix + "/" + locale + ".wordlist.gz";
+        String key = locale;
+
+        if (dictionary != null) {
+            key += "_";
+            key += dictionary;
+        }
+        key = key.toLowerCase();
+
+        if (!_dictionaries.containsKey(key)) {
+            String path = _prefix + "/" + key + ".wordlist.gz";
             try {
                 InputStream in = getClass().getClassLoader().getResourceAsStream(path);
-                _dictionaries.put(locale, new Dictionary(locale, new GZIPInputStream(in)));
+                _dictionaries.put(key, new Dictionary(locale, dictionary, new GZIPInputStream(in)));
             } catch (Exception e) {
                 log.warning("Failed to load dictionary [path=" + path + "].", e);
             }
         }
-        return _dictionaries.get(locale);
+        return _dictionaries.get(key);
     }
 
     /**
@@ -181,7 +187,7 @@ public class DictionaryManager
          * Constructor, loads up the word list and initializes storage.  This naive version assumes
          * language files are simple list of words, with one word per line.
          */
-        public Dictionary (String locale, InputStream words)
+        public Dictionary (String locale, String dictionary, InputStream words)
             throws IOException
         {
             CountHashMap<Character> letters = new CountHashMap<Character>();
@@ -201,13 +207,14 @@ public class DictionaryManager
                 }
 
             } else {
-                log.warning("Missing dictionary file [locale=" + locale + "].");
+                log.warning("Missing dictionary file [locale=" + locale +
+                        ", dictionary=" + dictionary + "].");
             }
 
             initializeLetterCounts(letters);
 
-            log.debug("Loaded dictionary [locale=" + locale + ", words=" + _words.size() +
-                     ", letters=" + letters + "].");
+            log.debug("Loaded dictionary [locale=" + locale + ", dictionary=" + dictionary +
+                        ", words=" + _words.size() + ", letters=" + letters + "].");
         }
 
         /** Checks if the specified word exists in the word list */
