@@ -6,16 +6,16 @@ package com.whirled {
 import flash.display.DisplayObject;
 
 /**
- * Used to create Decor: room backgrounds
+ * Used to create room backdrops.
  */
-public class DecorControl extends FurniControl
+public class BackdropControl extends FurniControl
 {
     /**
-     * Create a DecorControl.
+     * Create a BackdropControl.
      *
      * @param disp a display object on the stage
      */
-    public function DecorControl (disp :DisplayObject)
+    public function BackdropControl (disp :DisplayObject)
     {
         super(disp);
     }
