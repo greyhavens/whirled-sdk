@@ -895,7 +895,11 @@ public class BaseGameBackend
     {
         validateConnected();
         if (!isParty()) {
-            throw new Error("restartGameIn() is only applicable to party games.");
+            // I'd like to throw an error, but some old games incorrectly call this
+            // and we don't want to break them, so just log it here, but we throw an Error
+            // in newer versions of GameSubControl.
+            logGameError("restartGameIn() is only applicable to party games.");
+            return;
         }
         _gameObj.whirledGameService.restartGameIn(
             _ctx.getClient(), seconds, createLoggingConfirmListener("restartGameIn"));

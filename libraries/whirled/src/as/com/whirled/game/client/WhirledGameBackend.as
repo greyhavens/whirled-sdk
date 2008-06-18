@@ -386,7 +386,11 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function playerReady_v1 () :void
     {
         if (isParty()) {
-            throw new Error("playerReady() is not applicable in party games.");
+            // I'd like to throw an error, but some old games incorrectly call this
+            // and we don't want to break them, so just log it here, but we throw an Error
+            // in newer versions of GameSubControl.
+            logGameError("playerReady() is only applicable to seated games.");
+            return;
         }
         _ctrl.playerIsReady();
     }
