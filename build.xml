@@ -2,16 +2,17 @@
 <project name="whirled" default="compile" basedir="." xmlns:artifact="urn:maven-artifact-ant">
 
   <!-- define some basic project parameters -->
-  <property name="app.name"    value="whirled"/>
-  <property name="src.dir"     value="src/java"/>
-  <property name="asrc.dir"    value="src/as"/>
-  <property name="deploy.dir"  value="dist"/>
-  <property name="classes.dir" value="${deploy.dir}/classes"/>
-  <property name="sdk.build"   value="${deploy.dir}/sdk/whirled"/>
+  <property name="app.name"       value="whirled"/>
+  <property name="src.dir"        value="src/java"/>
+  <property name="asrc.dir"       value="src/as"/>
+  <property name="deploy.dir"     value="dist"/>
+  <property name="classes.dir"    value="${deploy.dir}/classes"/>
+  <property name="sdk.build"      value="${deploy.dir}/sdk/whirled"/>
+  <property name="platforms.list" value="lin32,mac"/>
 
   <!-- define our subprojects and include the standard build system -->
-  <property name="projects.dir"  value="libraries"/>
-  <property name="projects" value="samskivert,thane,narya,nenya,vilya,whirled"/>
+  <property name="projects.dir"   value="libraries"/>
+  <property name="projects"       value="samskivert,thane,narya,nenya,vilya,whirled"/>
   <import file="build/etc/build-support.xml"/>
 
   <!-- include bits to do the necessary Flex SDK path jockeying -->
@@ -286,9 +287,29 @@
       <fileset dir="projects/avatars" includes="imageflipper-remix/**"/>
       <fileset dir="projects/avatars" includes="FATexample/**"/>
     </copy>
-    <!-- finally zip it all up -->
-    <zip destfile="${deploy.dir}/whirled_sdk.zip"
-         basedir="${deploy.dir}/sdk" includes="whirled/**"/>
+
+    <!-- finally zip it up a SDK for each of our explicitly supported platforms -->
+    <for list="${platforms.list}" param="platform"><sequential>
+      <antcall target="zip-sdk" inheritall="false">
+        <param name="platform" value="@{platform}"/>
+      </antcall>
+    </sequential></for>
+  </target>
+
+  <target name="zip-sdk">
+      <!-- expand e.g. lin32 to Linux-32 -->
+      <switch value="${platform}">
+        <case value="lin32"><property name="binId" value="Linux-32"/></case>
+        <case value="mac"><property name="binId" value="Mac OS X-32"/></case>
+        <default><echo message="Eek, unknown platform: ${platform}..."/></default>
+      </switch>
+      <delete dir="${sdk.build}/dist/lib" includes="avmthane*"/>
+      <echo message="For platform ${platform}, copying libraries/thane/bin/${binId}..."/>
+      <copy todir="${sdk.build}/dist/lib" overwrite="true">
+        <fileset dir="libraries/thane/bin/${binId}" includes="avmthane*"/>
+      </copy>
+      <zip destfile="${deploy.dir}/whirled_sdk_${platform}.zip"
+           basedir="${deploy.dir}/sdk" includes="whirled/**"/>
   </target>
 
   <!-- runs the FAT test server -->
