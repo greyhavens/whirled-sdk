@@ -385,7 +385,7 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function playerReady_v1 () :void
     {
-        if (isPartyGame()) {
+        if (isParty()) {
             throw new Error("playerReady() is not applicable in party games.");
         }
         _ctrl.playerIsReady();
