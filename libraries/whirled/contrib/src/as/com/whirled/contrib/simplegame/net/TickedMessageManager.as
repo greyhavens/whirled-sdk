@@ -28,7 +28,6 @@ public interface TickedMessageManager extends Updatable
     function shutdown () :void;
 
     function get isReady () :Boolean;
-    function get randomSeed () :uint;
 
     function get unprocessedTickCount () :uint;
     function getNextTick () :Array;

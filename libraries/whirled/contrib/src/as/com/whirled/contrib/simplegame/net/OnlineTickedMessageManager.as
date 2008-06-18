@@ -20,7 +20,6 @@
 
 package com.whirled.contrib.simplegame.net {
 
-import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 import com.whirled.game.GameControl;
@@ -66,27 +65,19 @@ public class OnlineTickedMessageManager
 
         _gameCtrl.services.stopTicker("tick");
         _gameCtrl.net.removeEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, msgReceived);
-        _receivedRandomSeed = false;
+        _receivedFirstTick = false;
     }
 
     public function get isReady () :Boolean
     {
-        return _receivedRandomSeed;
-    }
-
-    public function get randomSeed () :uint
-    {
-        Assert.isTrue(_receivedRandomSeed);
-        return _randomSeed;
+        return _receivedFirstTick;
     }
 
     protected function handleGameStarted (...ignored) :void
     {
-        // When the game starts, send the random seed to everyone.
-        // When that is received, start the ticker
-
+        // When the game starts, start the ticker
         if (_isFirstPlayer) {
-            _gameCtrl.net.sendMessage("randSeed", uint(Math.random() * uint.MAX_VALUE));
+            _gameCtrl.services.startTicker("tick", _tickIntervalMS);
         }
     }
 
@@ -94,38 +85,18 @@ public class OnlineTickedMessageManager
     {
         var name :String = event.name;
 
-        if (name == "randSeed") {
-            if (_receivedRandomSeed) {
-                log.warning("Error: TickedMessageManager received multiple randSeed messages.");
-                return;
-            }
-
-            _randomSeed = uint(event.value);
-            _receivedRandomSeed = true;
-
-            if (_isFirstPlayer) {
-                _gameCtrl.services.startTicker("tick", _tickIntervalMS);
-            }
-
+        if (name == "tick") {
+            _ticks.push(new Array());
+            _receivedFirstTick = true;
         } else {
+            // add any actions received during this tick
+            var array :Array = (_ticks[_ticks.length - 1] as Array);
+            var msg :Message = deserializeMessage(event.name, event.value);
 
-            if (!_receivedRandomSeed) {
-                log.warning("Error: TickedMessageManager is receiving game messages prematurely.");
-                return;
+            if (null != msg) {
+                array.push(msg);
             }
-
-            if (name == "tick") {
-                _ticks.push(new Array());
-            } else {
-                // add any actions received during this tick
-                var array :Array = (_ticks[_ticks.length - 1] as Array);
-                var msg :Message = deserializeMessage(event.name, event.value);
-
-                if (null != msg) {
-                    array.push(msg);
-                }
-            }
-       }
+        }
     }
 
     public function get unprocessedTickCount () :uint
@@ -235,15 +206,13 @@ public class OnlineTickedMessageManager
     protected var _tickIntervalMS :uint;
 
     protected var _gameCtrl :GameControl;
+    protected var _receivedFirstTick :Boolean;
     protected var _ticks :Array = [];
     protected var _pendingSends :Array = [];
     protected var _maxPendingSends :uint = 10;
     protected var _minSendDelayMS :uint = 105;  // default to 10 sends/second
     protected var _lastSendTime :int;
     protected var _messageFactories :HashMap = new HashMap();
-
-    protected var _receivedRandomSeed :Boolean;
-    protected var _randomSeed :uint;
 
     protected static const log :Log = Log.getLog(OnlineTickedMessageManager);
 }
