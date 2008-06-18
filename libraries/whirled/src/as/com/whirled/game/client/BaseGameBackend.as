@@ -176,8 +176,7 @@ public class BaseGameBackend
         case PlaceObject.OCCUPANT_INFO:
             var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo)
             if (isInited(occInfo)) {
-                callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username),
-                    true);
+                occupantAdded(occInfo);
             }
             break;
         }
@@ -198,8 +197,7 @@ public class BaseGameBackend
             // Only report someone else if they transitioned from uninitialized to initialized
             // Note that our own occupantInfo will never pass this test, that is correct.
             if (!isInited(oldInfo) && isInited(occInfo)) {
-                callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username),
-                    true);
+                occupantAdded(occInfo);
             }
             break;
         }
@@ -213,8 +211,7 @@ public class BaseGameBackend
         case PlaceObject.OCCUPANT_INFO:
             var occInfo :OccupantInfo = (event.getOldEntry() as OccupantInfo)
             if (isInited(occInfo)) {
-                callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username),
-                    false);
+                occupantRemoved(occInfo);
             }
             break;
         }
@@ -231,19 +228,13 @@ public class BaseGameBackend
             if (oldPlayer != null) {
                 occInfo = _gameObj.getOccupantInfo(oldPlayer);
                 if (isInited(occInfo)) {
-                    // old player became a watcher
-                    // send player-left, then occupant-added
-                    callUserCode("occupantChanged_v1", occInfo.bodyOid, true, false);
-                    callUserCode("occupantChanged_v1", occInfo.bodyOid, false, true);
+                    occupantRoleChanged(occInfo, false);
                 }
             }
             if (newPlayer != null) {
                 occInfo = _gameObj.getOccupantInfo(newPlayer);
                 if (isInited(occInfo)) {
-                    // watcher became a player
-                    // send occupant-left, then player-added
-                    callUserCode("occupantChanged_v1", occInfo.bodyOid, false, false);
-                    callUserCode("occupantChanged_v1", occInfo.bodyOid, true, true);
+                    occupantRoleChanged(occInfo, true);
                 }
             }
         }
@@ -1147,6 +1138,35 @@ public class BaseGameBackend
     protected function playerOwnsData (type :int, ident :String) :Boolean
     {
         return false; // this information is provided by the containing system
+    }
+
+    /**
+     * Called when the occupant set gets a new initialized entry (or an exisiting entry gets 
+     * initialized)
+     */
+    protected function occupantAdded (occInfo :OccupantInfo) :void
+    {
+        callUserCode("occupantChanged_v1", occInfo.bodyOid, 
+            isPlayer(occInfo.username), true);
+    }
+
+    /**
+     * Called when the occupant set loses an entry.
+     */
+    protected function occupantRemoved (occInfo :OccupantInfo) :void
+    {
+        callUserCode("occupantChanged_v1", occInfo.bodyOid, 
+            isPlayer(occInfo.username), false);
+    }
+
+    protected function occupantRoleChanged (
+        occInfo :OccupantInfo, 
+        isPlayerNow :Boolean) :void
+    {
+        // let the user code know about this by sending a "left" message followed by
+        // an "entered" message 
+        callUserCode("occupantChanged_v1", occInfo.bodyOid, !isPlayerNow, false);
+        callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayerNow, true);
     }
 
     // TEMP TODO REMOVE XXX
