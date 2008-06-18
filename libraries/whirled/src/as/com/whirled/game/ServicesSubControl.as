@@ -31,7 +31,7 @@ public class ServicesSubControl extends AbstractSubControl
      * Requests a set of random letters from the dictionary service. The letters will arrive in a
      * separate message with the specified key, as an array of strings.
      *
-     * @param locale RFC 3066 string that represents language settings
+     * @param locale RFC 3066 string that represents language settings, such as en-US.
      * @param dictionary the dictionary to use, or null for the default.
      *                   TODO: document possible parameters.
      * @param count the number of letters to be produced
@@ -49,7 +49,7 @@ public class ServicesSubControl extends AbstractSubControl
     /**
      * Requests a set of random words from the dictionary service.
      *
-     * @param locale RFC 3066 string that represents language settings
+     * @param locale RFC 3066 string that represents language settings, such as en-US.
      * @param dictionary the dictionary to use, or null for the default.
      *                   TODO: document possible parameters.
      * @param count the number of words to be produced, to a maximum of 100.
@@ -68,7 +68,7 @@ public class ServicesSubControl extends AbstractSubControl
     /**
      * Checks to see if the dictionary for the given locale contains the given word.
      *
-     * @param locale RFC 3066 string that represents language settings
+     * @param locale RFC 3066 string that represents language settings, such as en-US.
      * @param dictionary the dictionary to use, or null for the default.
      *                   TODO: document possible parameters.
      * @param word the string contains the word to be checked
