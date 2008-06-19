@@ -161,19 +161,19 @@ public class DictionaryManager
     protected Dictionary getDictionary (String locale, String dictionary)
     {
         if (locale == null) {
-            return null;
+            locale = "en-US";
         }
 
         String key = locale;
-
-        // No funny business with the client supplied path
-        key.replace(".", "");
 
         if (dictionary != null) {
             key += "_";
             key += dictionary;
         }
+
         key = key.toLowerCase();
+        // No funny business with the client supplied path
+        key.replace(".", "");
 
         if (!_dictionaries.containsKey(key)) {
             String path = _prefix + "/" + key + ".wordlist.gz";
