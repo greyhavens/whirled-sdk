@@ -115,9 +115,10 @@ public class LocalSubControl extends AbstractSubControl
     /**
      * Return the headshot for the given occupant in the form of a DisplayObject.
      *
-     * The objects are cached in the client backend so the user should not worry too much
-     * about multiple requests for the same occupant, but be aware that you'll get the same
-     * instance back. (TODO?)
+     * The objects are now *not* cached in the backend, so each request will return a brand
+     * new headshot. You should save a reference to these in your game if you will be
+     * re-using headshots, but now you may also get two headshots for the same player if you
+     * want to display them in two places.
      *
      * The DisplayObject returned is always 80x60 pixels large. If the player's actual headshot
      * is smaller than 80x60, it will be centered inside the 80x60 area.
