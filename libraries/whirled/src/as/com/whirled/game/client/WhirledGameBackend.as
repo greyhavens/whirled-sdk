@@ -141,8 +141,10 @@ public class WhirledGameBackend extends BaseGameBackend
     {
         var name :String = event.getName();
         if (name == WhirledGameObject.COINS_AWARDED_MESSAGE) {
-            var amount :int = int(event.getArgs()[0]);
-            var percentile :int = int(event.getArgs()[1]);
+            const args :Array = event.getArgs();
+            var amount :int = int(args[0]);
+            var percentile :int = int(args[1]);
+            var forReal :Boolean = Boolean(args[2]);
             // We still use the old name for the dispatch method. Changing it would mean
             // testing to see if we need to use the new method or the old method and this is
             // all internal anyway, so I don't care.
@@ -151,7 +153,12 @@ public class WhirledGameBackend extends BaseGameBackend
             var cancelled :Boolean = Boolean(callUserCode("flowAwarded_v1", amount, percentile));
             if (!cancelled) {
                 // If the usercode has not indicated that it will handle notification, we do it.
-                reportCoinsAwarded(amount);
+                reportCoinsAwarded(amount, forReal);
+            }
+            // and add a little note if the coins aren't going to "stick" (never happen when
+            // testing, but may happen in whirled).
+            if (!forReal) {
+                displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE, "m.no_coins_dev");
             }
 
         } else {

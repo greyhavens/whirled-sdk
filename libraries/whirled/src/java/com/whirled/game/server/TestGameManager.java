@@ -112,7 +112,7 @@ public class TestGameManager extends WhirledGameManager
             ClientObject cliObj = (ClientObject) CrowdServer.omgr.getObject(playerOid);
             if (cliObj != null) {
                 cliObj.postMessage(WhirledGameObject.COINS_AWARDED_MESSAGE,
-                    10 /*coins*/, 49 /*percentile*/);
+                    10 /*coins*/, 49 /*percentile*/, Boolean.TRUE /*for real?*/);
             }
         }
     }
