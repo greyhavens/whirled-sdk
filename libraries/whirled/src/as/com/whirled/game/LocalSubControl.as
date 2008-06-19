@@ -54,7 +54,7 @@ public class LocalSubControl extends AbstractSubControl
         priority :int = 0, useWeakReference :Boolean = false) :void
     {
         super.addEventListener(type, listener, useCapture, priority, useWeakReference);
-    
+
         switch (type) {
         case KeyboardEvent.KEY_UP:
         case KeyboardEvent.KEY_DOWN:
@@ -72,7 +72,7 @@ public class LocalSubControl extends AbstractSubControl
         type :String, listener :Function, useCapture :Boolean = false) :void
     {
         super.removeEventListener(type, listener, useCapture);
-    
+
         switch (type) {
         case KeyboardEvent.KEY_UP:
         case KeyboardEvent.KEY_DOWN:
@@ -118,6 +118,9 @@ public class LocalSubControl extends AbstractSubControl
      * The objects are cached in the client backend so the user should not worry too much
      * about multiple requests for the same occupant, but be aware that you'll get the same
      * instance back. (TODO?)
+     *
+     * The DisplayObject returned is always 80x60 pixels large. If the player's actual headshot
+     * is smaller than 80x60, it will be centered inside the 80x60 area.
      *
      * @param occupantId the player for which to get a headshot.
      */
@@ -175,7 +178,7 @@ public class LocalSubControl extends AbstractSubControl
     /**
      * Clear all the scores displayed in the occupants list.
      *
-     * <b>Note:</b> this function changes local display only; other clients will not be affected.  
+     * <b>Note:</b> this function changes local display only; other clients will not be affected.
      *
      * @param clearValue a value to set all the scores to, or null to not show anything.
      * @param sortValuesToo if true, also clear the sort values, returning the list
