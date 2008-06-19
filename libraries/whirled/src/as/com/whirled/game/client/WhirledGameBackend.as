@@ -214,10 +214,12 @@ public class WhirledGameBackend extends BaseGameBackend
      * We've already tried notifying usercode, now do a framework-level notification
      * of the coin awarding.
      */
-    protected function reportCoinsAwarded (amount :int) :void
+    protected function reportCoinsAwarded (amount :int, forReal :Boolean) :void
     {
         displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
             MessageBundle.tcompose("m.coins_awarded", amount));
+        // we do nothing with forReal here, because this method only gets called if the
+        // usercode didn't report the coin award itself. The forReal is handled elsewhere.
     }
 
     //---- GameControl -----------------------------------------------------
