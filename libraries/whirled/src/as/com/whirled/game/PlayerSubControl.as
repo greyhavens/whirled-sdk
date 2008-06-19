@@ -18,6 +18,15 @@ import com.whirled.AbstractSubControl;
  */
 public class PlayerSubControl extends AbstractSubControl
 {
+    /** ID constant passed to cookie, prize and trophy functions to refer to the current player. 
+     * On normal flash clients, this is used as a default value and should not be changed. On 
+     * server agents, a valid playerId must be provided since there is no current player. 
+     * @see #awardTrophy()
+     * @see #holdsTrophy()
+     * @see #setUserCookie()
+     * @see #awardPrize() */
+    public static const CURRENT_PLAYER :int = 0;
+
     /**
      * @private Constructed via GameControl
      */
@@ -38,54 +47,74 @@ public class PlayerSubControl extends AbstractSubControl
     
     /**
      * Store persistent data that can later be retrieved by an instance of this game. The maximum
-     * size of this data is 4096 bytes AFTER AMF3 encoding.  Note: there is no playerId parameter
-     * because a cookie may only be stored for the current player.
+     * size of this data is 4096 bytes AFTER AMF3 encoding.
+     *
+     * <p>Note: Clients may only set the cookie of the current player. Server agents do not
+     * have a current player and therefore must pass in a valid player id.</p>
+     *
+     * @param playerId the id of the player whose cookie to get
      *
      * @return false if the cookie could not be encoded to 4096 bytes or less; true if the cookie
      * is going to try to be saved. There is no guarantee it will be saved and no way to find out
      * if it failed, but if it fails it will be because the shit hit the fan so hard that there's
      * nothing you can do anyway.
      */
-    public function setUserCookie (cookie :Object) :Boolean
+    public function setUserCookie (cookie :Object, playerId :int = CURRENT_PLAYER) :Boolean
     {
-        return Boolean(callHostCode("setUserCookie_v1", cookie));
+        return Boolean(callHostCode("setUserCookie_v2", cookie, playerId));
     }
 
     /**
-     * Returns all item packs owned by this client's player.
-     */
-    public function getPlayerItemPacks () :Array
-    {
-        return (callHostCode("getPlayerItemPacks_v1") as Array);
-    }
-
-    /**
-     * Returns true if this client's player has the trophy with the specified identifier.
-     */
-    public function holdsTrophy (ident :String) :Boolean
-    {
-        return (callHostCode("holdsTrophy_v1", ident) as Boolean);
-    }
-
-    /**
-     * Awards the specified trophy to this client's player. If the supplied trophy identifier is
-     * not valid, this will not be known until the request is processed on the server, so the
-     * method will return succcessfully but no trophy will have been awarded. Thus, you should be
-     * careful not to misspell your trophy identifier in your code or in the associated trophy
-     * source item.
+     * Returns all item packs owned by this client's player (the default) or a specified player.
      *
+     * <p>Note: Clients may only get the item packs of the current player. Server agents do not
+     * have a current player and therefore must pass in a valid player id.</p>
+     *
+     * @param playerId the id of the player whose item packs to get
+     */
+    public function getPlayerItemPacks (playerId :int = CURRENT_PLAYER) :Array
+    {
+        return (callHostCode("getPlayerItemPacks_v2", playerId) as Array);
+    }
+
+    /**
+     * Returns true if this client's player (the default) or a specified player has the trophy 
+     * with the specified identifier.
+     *
+     * <p>Note: Clients may only test the trophies of the current player. Server agents do not
+     * have a current player and therefore must pass in a valid player id.</p>
+     *
+     * @param playerId the id of the player whose trophies to test
+     */
+    public function holdsTrophy (ident :String, playerId :int = CURRENT_PLAYER) :Boolean
+    {
+        return (callHostCode("holdsTrophy_v2", ident, playerId) as Boolean);
+    }
+
+    /**
+     * Awards the specified trophy to this client's player (the default) or a specified player. 
+     * If the supplied trophy identifier is not valid, this will not be known until the request is 
+     * processed on the server, so the method will return succcessfully but no trophy will have 
+     * been awarded. Thus, you should be careful not to misspell your trophy identifier in your 
+     * code or in the associated trophy source item.
+     *
+     * <p>Note: Clients may award trophies to the current player. Server agents do not
+     * have a current player and therefore must pass in a valid player id.</p>
+     *
+     * @param playerId the id of the player to award the trophy to
      * @return true if the trophy was awarded, false if the player already has that trophy.
      */
-    public function awardTrophy (ident :String) :Boolean
+    public function awardTrophy (ident :String, playerId :int = CURRENT_PLAYER) :Boolean
     {
-        return (callHostCode("awardTrophy_v1", ident) as Boolean);
+        return (callHostCode("awardTrophy_v2", ident, playerId) as Boolean);
     }
 
     /**
-     * Awards the specified prize item to this client's player. If the supplied prize identifier is
-     * not valid, this will not be known until the request is processed on the server, so the
-     * method will return successfully but no prize will have been awarded. Thus you should be
-     * careful not to misspell your prize identifier in your code or in the associated prize item.
+     * Awards the specified prize item to this client's player (the default) or a specified player. 
+     * If the supplied prize identifier is not valid, this will not be known until the request is 
+     * processed on the server, so the method will return successfully but no prize will have been 
+     * awarded. Thus you should be careful not to misspell your prize identifier in your code or in 
+     * the associated prize item.
      *
      * <p> Note: a game is only allowed to award a prize once per game session. This is to guard
      * against bugs that might try to award many hundreds of the same prize to a user while playing
@@ -107,10 +136,15 @@ public class PlayerSubControl extends AbstractSubControl
      * trophy and the prize. Subsequently, awardTrophy() will return false indicating that the
      * player already has the trophy in question and the prize will not be awarded. Alternatively
      * the game could store whether or not the player has earned the prize in a user cookie. </p>
+     *
+     * <p>Note thirdly: Clients may only award prized to the current player. Server agents do not
+     * have a current player and therefore must pass in a valid player id.</p>
+     *
+     * @param playerId the id of the player to award the prize to
      */
-    public function awardPrize (ident :String) :void
+    public function awardPrize (ident :String, playerId :int = CURRENT_PLAYER) :void
     {
-        callHostCode("awardPrize_v1", ident);
+        callHostCode("awardPrize_v2", ident, playerId);
     }
 
     /**

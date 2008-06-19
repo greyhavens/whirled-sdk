@@ -24,13 +24,13 @@ public interface WhirledGameProvider extends InvocationProvider
     /**
      * Handles a {@link WhirledGameService#awardPrize} request.
      */
-    public void awardPrize (ClientObject caller, String arg1, InvocationService.InvocationListener arg2)
+    public void awardPrize (ClientObject caller, String arg1, int arg2, InvocationService.InvocationListener arg3)
         throws InvocationException;
 
     /**
      * Handles a {@link WhirledGameService#awardTrophy} request.
      */
-    public void awardTrophy (ClientObject caller, String arg1, InvocationService.InvocationListener arg2)
+    public void awardTrophy (ClientObject caller, String arg1, int arg2, InvocationService.InvocationListener arg3)
         throws InvocationException;
 
     /**
@@ -114,7 +114,7 @@ public interface WhirledGameProvider extends InvocationProvider
     /**
      * Handles a {@link WhirledGameService#setCookie} request.
      */
-    public void setCookie (ClientObject caller, byte[] arg1, InvocationService.InvocationListener arg2)
+    public void setCookie (ClientObject caller, byte[] arg1, int arg2, InvocationService.InvocationListener arg3)
         throws InvocationException;
 
     /**

@@ -149,15 +149,15 @@ public interface WhirledGameService extends InvocationService
     /**
      * Request to set our cookie.
      */
-    public void setCookie (Client client, byte[] cookie, InvocationListener listener);
+    public void setCookie (Client client, byte[] cookie, int playerId, InvocationListener listener);
 
     /**
      * Awards the specified trophy to the requesting player.
      */
-    public void awardTrophy (Client client, String ident, InvocationListener listener);
+    public void awardTrophy (Client client, String ident, int playerId, InvocationListener listener);
 
     /**
      * Awards the specified prize to the requesting player.
      */
-    public void awardPrize (Client client, String ident, InvocationListener listener);
+    public void awardPrize (Client client, String ident, int playerId, InvocationListener listener);
 }

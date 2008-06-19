@@ -46,12 +46,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const AWARD_PRIZE :int = 2;
 
     // from interface WhirledGameService
-    public function awardPrize (arg1 :Client, arg2 :String, arg3 :InvocationService_InvocationListener) :void
+    public function awardPrize (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void
     {
-        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener3.listener = arg3;
+        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener4.listener = arg4;
         sendRequest(arg1, AWARD_PRIZE, [
-            arg2, listener3
+            arg2, Integer.valueOf(arg3), listener4
         ]);
     }
 
@@ -59,12 +59,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const AWARD_TROPHY :int = 3;
 
     // from interface WhirledGameService
-    public function awardTrophy (arg1 :Client, arg2 :String, arg3 :InvocationService_InvocationListener) :void
+    public function awardTrophy (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void
     {
-        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener3.listener = arg3;
+        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener4.listener = arg4;
         sendRequest(arg1, AWARD_TROPHY, [
-            arg2, listener3
+            arg2, Integer.valueOf(arg3), listener4
         ]);
     }
 
@@ -241,12 +241,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const SET_COOKIE :int = 17;
 
     // from interface WhirledGameService
-    public function setCookie (arg1 :Client, arg2 :ByteArray, arg3 :InvocationService_InvocationListener) :void
+    public function setCookie (arg1 :Client, arg2 :ByteArray, arg3 :int, arg4 :InvocationService_InvocationListener) :void
     {
-        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener3.listener = arg3;
+        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener4.listener = arg4;
         sendRequest(arg1, SET_COOKIE, [
-            arg2, listener3
+            arg2, Integer.valueOf(arg3), listener4
         ]);
     }
 

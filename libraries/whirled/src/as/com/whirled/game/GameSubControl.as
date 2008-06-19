@@ -106,6 +106,9 @@ public class GameSubControl extends AbstractSubControl
     /** ID constant returned by {@link #getMyId} when called by a game's server agent. */
     public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
 
+    /** ID constant passed into {@link #getLevelPacks} to indicate the current player. */
+    public static const CURRENT_PLAYER :int = int.MIN_VALUE;
+
     /**
      * @private Constructed via GameControl.
      */
@@ -145,11 +148,16 @@ public class GameSubControl extends AbstractSubControl
      * </pre>
      *
      * This will contain all free level packs that are registered for this game as well as the
-     * premium level packs owned by this client's player.
+     * premium level packs owned by this client's player (the default) or a specified player. 
+     *
+     * <p>Note: Clients may only access the level packs of the current player. Server agents do not
+     * have a current player and therefore must pass in a valid player id.</p>
+     *
+     * @param playerId the player whose level packs to get
      */
-    public function getLevelPacks () :Array
+    public function getLevelPacks (playerId :int = CURRENT_PLAYER) :Array
     {
-        return (callHostCode("getLevelPacks_v1") as Array);
+        return (callHostCode("getLevelPacks_v2", playerId) as Array);
     }
 
     /**

@@ -5,13 +5,13 @@
 
 package com.whirled.game.client {
 
-import com.threerings.util.Integer;
 import com.threerings.io.TypedArray;
 import com.threerings.presents.client.Client;
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.client.InvocationService_ConfirmListener;
 import com.threerings.presents.client.InvocationService_InvocationListener;
 import com.threerings.presents.client.InvocationService_ResultListener;
+import com.threerings.util.Integer;
 import flash.utils.ByteArray;
 
 /**
@@ -23,10 +23,10 @@ public interface WhirledGameService extends InvocationService
     function addToCollection (arg1 :Client, arg2 :String, arg3 :TypedArray /* of class [B */, arg4 :Boolean, arg5 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function awardPrize (arg1 :Client, arg2 :String, arg3 :InvocationService_InvocationListener) :void;
+    function awardPrize (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function awardTrophy (arg1 :Client, arg2 :String, arg3 :InvocationService_InvocationListener) :void;
+    function awardTrophy (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
     function checkDictionaryWord (arg1 :Client, arg2 :String, arg3 :String, arg4 :String, arg5 :InvocationService_ResultListener) :void;
@@ -68,7 +68,7 @@ public interface WhirledGameService extends InvocationService
     function sendMessage (arg1 :Client, arg2 :String, arg3 :Object, arg4 :int, arg5 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function setCookie (arg1 :Client, arg2 :ByteArray, arg3 :InvocationService_InvocationListener) :void;
+    function setCookie (arg1 :Client, arg2 :ByteArray, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
     function setProperty (arg1 :Client, arg2 :String, arg3 :Object, arg4 :Integer, arg5 :Boolean, arg6 :Boolean, arg7 :Object, arg8 :InvocationService_InvocationListener) :void;

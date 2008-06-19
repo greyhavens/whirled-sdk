@@ -38,12 +38,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static final int AWARD_PRIZE = 2;
 
     // from interface WhirledGameService
-    public void awardPrize (Client arg1, String arg2, InvocationService.InvocationListener arg3)
+    public void awardPrize (Client arg1, String arg2, int arg3, InvocationService.InvocationListener arg4)
     {
-        ListenerMarshaller listener3 = new ListenerMarshaller();
-        listener3.listener = arg3;
+        ListenerMarshaller listener4 = new ListenerMarshaller();
+        listener4.listener = arg4;
         sendRequest(arg1, AWARD_PRIZE, new Object[] {
-            arg2, listener3
+            arg2, Integer.valueOf(arg3), listener4
         });
     }
 
@@ -51,12 +51,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static final int AWARD_TROPHY = 3;
 
     // from interface WhirledGameService
-    public void awardTrophy (Client arg1, String arg2, InvocationService.InvocationListener arg3)
+    public void awardTrophy (Client arg1, String arg2, int arg3, InvocationService.InvocationListener arg4)
     {
-        ListenerMarshaller listener3 = new ListenerMarshaller();
-        listener3.listener = arg3;
+        ListenerMarshaller listener4 = new ListenerMarshaller();
+        listener4.listener = arg4;
         sendRequest(arg1, AWARD_TROPHY, new Object[] {
-            arg2, listener3
+            arg2, Integer.valueOf(arg3), listener4
         });
     }
 
@@ -233,12 +233,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static final int SET_COOKIE = 17;
 
     // from interface WhirledGameService
-    public void setCookie (Client arg1, byte[] arg2, InvocationService.InvocationListener arg3)
+    public void setCookie (Client arg1, byte[] arg2, int arg3, InvocationService.InvocationListener arg4)
     {
-        ListenerMarshaller listener3 = new ListenerMarshaller();
-        listener3.listener = arg3;
+        ListenerMarshaller listener4 = new ListenerMarshaller();
+        listener4.listener = arg4;
         sendRequest(arg1, SET_COOKIE, new Object[] {
-            arg2, listener3
+            arg2, Integer.valueOf(arg3), listener4
         });
     }
 

@@ -13,7 +13,6 @@ import com.threerings.util.MessageBundle;
 import com.threerings.util.Name;
 import com.threerings.util.ObjectMarshaller;
 
-import com.threerings.presents.client.ConfirmAdapter;
 import com.threerings.presents.dobj.MessageEvent;
 
 import com.threerings.crowd.data.BodyObject;
@@ -29,6 +28,8 @@ import com.whirled.game.data.WhirledGameObject;
  */
 public class WhirledGameBackend extends BaseGameBackend
 {
+    public static const CURRENT_PLAYER :int = 0;
+
     public function WhirledGameBackend (
         ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :WhirledGameController)
     {
@@ -332,49 +333,27 @@ public class WhirledGameBackend extends BaseGameBackend
 
     protected function setUserCookie_v1 (cookie :Object) :Boolean
     {
-        validateConnected();
-        validateValue(cookie);
-        var ba :ByteArray = (ObjectMarshaller.encode(cookie, false) as ByteArray);
-        if (ba.length > MAX_USER_COOKIE) {
-            // not saved!
-            return false;
-        }
-
-        _gameObj.whirledGameService.setCookie(
-            _ctx.getClient(), ba, createLoggingConfirmListener("setUserCookie"));
-        return true;
+        return setUserCookie_v2(cookie, CURRENT_PLAYER);
     }
 
     protected function holdsTrophy_v1 (ident :String) :Boolean
     {
-        return playerOwnsData(GameData.TROPHY_DATA, ident);
+        return holdsTrophy_v2(ident, CURRENT_PLAYER);
     }
 
     protected function awardTrophy_v1 (ident :String) :Boolean
     {
-        if (playerOwnsData(GameData.TROPHY_DATA, ident)) {
-            return false;
-        }
-        _gameObj.whirledGameService.awardTrophy(
-            _ctx.getClient(), ident, new ConfirmAdapter(function (cause :String) :void {
-                displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE, cause);
-            }));
-        return true;
+        return awardTrophy_v2(ident, CURRENT_PLAYER);
     }
 
     protected function awardPrize_v1 (ident :String) :void
     {
-        if (!playerOwnsData(GameData.PRIZE_MARKER, ident)) {
-            _gameObj.whirledGameService.awardPrize(
-                _ctx.getClient(), ident, createLoggingConfirmListener("awardPrize"));
-        }
+        return awardPrize_v2(ident, CURRENT_PLAYER);
     }
 
     protected function getPlayerItemPacks_v1 () :Array
     {
-        return getItemPacks_v1().filter(function (data :GameData, idx :int, array :Array) :Boolean {
-            return playerOwnsData(data.getType(), data.ident);
-        });
+        return getPlayerItemPacks_v2(CURRENT_PLAYER);
     }
 
     //---- .game -----------------------------------------------------------

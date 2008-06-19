@@ -463,7 +463,7 @@ public abstract class WhirledGameManager extends GameManager
 
     // from WhirledGameProvider
     public void setCookie (ClientObject caller, byte[] value,
-                           InvocationService.InvocationListener listener)
+                           int playerId, InvocationService.InvocationListener listener)
         throws InvocationException
     {
         validateUser(caller);

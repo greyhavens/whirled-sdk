@@ -6,6 +6,7 @@ package com.whirled.game.client {
 import flash.events.Event;
 import flash.events.IEventDispatcher;
 
+import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
 import com.threerings.io.TypedArray;
@@ -528,6 +529,11 @@ public class BaseGameBackend
 
         // .player
         o["getUserCookie_v2"] = getUserCookie_v2;
+        o["setUserCookie_v2"] = setUserCookie_v2;
+        o["holdsTrophy_v2"] = holdsTrophy_v2;
+        o["awardTrophy_v2"] = awardTrophy_v2;
+        o["awardPrize_v2"] = awardPrize_v2;
+        o["getPlayerItemPacks_v2"] = getPlayerItemPacks_v2;
 
         // .game
         o["endGame_v2"] = endGame_v2;
@@ -537,6 +543,7 @@ public class BaseGameBackend
         o["getControllerId_v1"] = getControllerId_v1;
         o["getItemPacks_v1"] = getItemPacks_v1;
         o["getLevelPacks_v1"] = getLevelPacks_v1;
+        o["getLevelPacks_v2"] = getLevelPacks_v2;
         o["getOccupants_v1"] = getOccupants_v1;
         o["getOccupantName_v1"] = getOccupantName_v1;
         o["getRound_v1"] = getRound_v1;
@@ -743,6 +750,58 @@ public class BaseGameBackend
             _ctx.getClient(), playerId, createLoggingConfirmListener("getUserCookie"));
     }
 
+    protected function setUserCookie_v2 (cookie :Object, playerId :int) :Boolean
+    {
+        validateConnected();
+        validateValue(cookie);
+        var ba :ByteArray = (ObjectMarshaller.encode(cookie, false) as ByteArray);
+        if (ba.length > MAX_USER_COOKIE) {
+            // not saved!
+            return false;
+        }
+
+        _gameObj.whirledGameService.setCookie(
+            _ctx.getClient(), ba, playerId, 
+            createLoggingConfirmListener("setUserCookie"));
+        return true;
+    }
+
+    protected function holdsTrophy_v2 (ident :String, playerId :int) :Boolean
+    {
+        return playerOwnsData(GameData.TROPHY_DATA, ident, playerId);
+    }
+
+    protected function awardTrophy_v2 (ident :String, playerId :int) :Boolean
+    {
+        if (playerOwnsData(GameData.TROPHY_DATA, ident, playerId)) {
+            return false;
+        }
+
+        // TODO: instead of just logging the failure, dispatch a message to the appropriate 
+        // player(s) and call displayInfo on each client.
+        _gameObj.whirledGameService.awardTrophy(
+            _ctx.getClient(), ident, playerId, 
+            createLoggingConfirmListener("awardTrophy"));
+
+        return true;
+    }
+
+    protected function awardPrize_v2 (ident :String, playerId :int) :void
+    {
+        if (!playerOwnsData(GameData.PRIZE_MARKER, ident, playerId)) {
+            _gameObj.whirledGameService.awardPrize(
+                _ctx.getClient(), ident, playerId, 
+                createLoggingConfirmListener("awardPrize"));
+        }
+    }
+
+    protected function getPlayerItemPacks_v2 (playerId :int) :Array
+    {
+        return getItemPacks_v1().filter(function (data :GameData, idx :int, array :Array) :Boolean {
+            return playerOwnsData(data.getType(), data.ident, playerId);
+        });
+    }
+
     //---- .game -----------------------------------------------------------
 
     protected function sendChat_v1 (msg :String) :void
@@ -755,13 +814,19 @@ public class BaseGameBackend
 
     protected function getLevelPacks_v1 () :Array
     {
+        return getLevelPacks_v2(CURRENT_PLAYER);
+    }
+
+    protected function getLevelPacks_v2 (playerId :int) :Array
+    {
         var packs :Array = [];
         for each (var data :GameData in _gameObj.gameData) {
             if (data.getType() != GameData.LEVEL_DATA) {
                 continue;
             }
             // if the level pack is premium, only add it if we own it
-            if ((data as LevelData).premium && !playerOwnsData(data.getType(), data.ident)) {
+            if ((data as LevelData).premium && 
+                !playerOwnsData(data.getType(), data.ident, playerId)) {
                 continue;
             }
             packs.unshift({ ident: data.ident,
@@ -1134,7 +1199,7 @@ public class BaseGameBackend
         return tarray;
     }
 
-    protected function playerOwnsData (type :int, ident :String) :Boolean
+    protected function playerOwnsData (type :int, ident :String, playerId :int) :Boolean
     {
         return false; // this information is provided by the containing system
     }
@@ -1208,6 +1273,8 @@ public class BaseGameBackend
     protected var _cookieCallbacks :Dictionary;
 
     protected static const MAX_USER_COOKIE :int = 4096;
+
+    protected static const CURRENT_PLAYER :int = 0;
 }
 }
 
