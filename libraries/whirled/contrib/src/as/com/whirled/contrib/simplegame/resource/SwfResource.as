@@ -138,17 +138,21 @@ public class SwfResource
     public function unload () :void
     {
         try {
-            _loader.close();
+            if (!_loaded) {
+                _loader.close();
+            }
+            _loader.unload();
         } catch (e :Error) {
-            // swallow the exception
+            // swallow any exceptions
         }
 
-        _loader.unload();
+        _loaded = false;
     }
 
     protected function onInit (...ignored) :void
     {
         _completeCallback(this);
+        _loaded = true;
     }
 
     protected function onError (e :IOErrorEvent) :void
@@ -156,6 +160,7 @@ public class SwfResource
         _errorCallback(this, "SwfResouceLoader (" + _resourceName + "): " + e.text);
     }
 
+    protected var _loaded :Boolean;
     protected var _resourceName :String;
     protected var _loadParams :Object;
     protected var _loader :Loader;
