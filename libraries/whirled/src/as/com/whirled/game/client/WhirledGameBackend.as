@@ -11,7 +11,6 @@ import flash.utils.ByteArray;
 
 import com.threerings.util.MessageBundle;
 import com.threerings.util.Name;
-import com.threerings.util.ObjectMarshaller;
 
 import com.threerings.presents.dobj.MessageEvent;
 
@@ -19,7 +18,6 @@ import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.util.CrowdContext;
 
 import com.whirled.game.data.BaseGameConfig;
-import com.whirled.game.data.GameData;
 import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
 
@@ -28,8 +26,6 @@ import com.whirled.game.data.WhirledGameObject;
  */
 public class WhirledGameBackend extends BaseGameBackend
 {
-    public static const CURRENT_PLAYER :int = 0;
-
     public function WhirledGameBackend (
         ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :WhirledGameController)
     {
@@ -195,13 +191,6 @@ public class WhirledGameBackend extends BaseGameBackend
         o["setFrameRate_v1"] = setFrameRate_v1;
         o["setStageQuality_v1"] = setStageQuality_v1;
 
-        // .player
-        o["awardPrize_v1"] = awardPrize_v1;
-        o["awardTrophy_v1"] = awardTrophy_v1; 
-        o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
-        o["holdsTrophy_v1"] = holdsTrophy_v1;
-        o["setUserCookie_v1"] = setUserCookie_v1;
-
         // .game
         o["isMyTurn_v1"] = isMyTurn_v1;
         o["playerReady_v1"] = playerReady_v1;
@@ -327,33 +316,6 @@ public class WhirledGameBackend extends BaseGameBackend
 
         // in here, we just return a dummy value
         return new HeadSpriteShim();
-    }
-
-    //---- .player -----------------------------------------------------------
-
-    protected function setUserCookie_v1 (cookie :Object) :Boolean
-    {
-        return setUserCookie_v2(cookie, CURRENT_PLAYER);
-    }
-
-    protected function holdsTrophy_v1 (ident :String) :Boolean
-    {
-        return holdsTrophy_v2(ident, CURRENT_PLAYER);
-    }
-
-    protected function awardTrophy_v1 (ident :String) :Boolean
-    {
-        return awardTrophy_v2(ident, CURRENT_PLAYER);
-    }
-
-    protected function awardPrize_v1 (ident :String) :void
-    {
-        return awardPrize_v2(ident, CURRENT_PLAYER);
-    }
-
-    protected function getPlayerItemPacks_v1 () :Array
-    {
-        return getPlayerItemPacks_v2(CURRENT_PLAYER);
     }
 
     //---- .game -----------------------------------------------------------

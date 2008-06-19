@@ -61,7 +61,7 @@ public class PlayerSubControl extends AbstractSubControl
      */
     public function setUserCookie (cookie :Object, playerId :int = CURRENT_PLAYER) :Boolean
     {
-        return Boolean(callHostCode("setUserCookie_v2", cookie, playerId));
+        return Boolean(callHostCode("setUserCookie_v1", cookie, playerId));
     }
 
     /**
@@ -74,7 +74,7 @@ public class PlayerSubControl extends AbstractSubControl
      */
     public function getPlayerItemPacks (playerId :int = CURRENT_PLAYER) :Array
     {
-        return (callHostCode("getPlayerItemPacks_v2", playerId) as Array);
+        return (callHostCode("getPlayerItemPacks_v1", playerId) as Array);
     }
 
     /**
@@ -88,7 +88,7 @@ public class PlayerSubControl extends AbstractSubControl
      */
     public function holdsTrophy (ident :String, playerId :int = CURRENT_PLAYER) :Boolean
     {
-        return (callHostCode("holdsTrophy_v2", ident, playerId) as Boolean);
+        return (callHostCode("holdsTrophy_v1", ident, playerId) as Boolean);
     }
 
     /**
@@ -106,7 +106,7 @@ public class PlayerSubControl extends AbstractSubControl
      */
     public function awardTrophy (ident :String, playerId :int = CURRENT_PLAYER) :Boolean
     {
-        return (callHostCode("awardTrophy_v2", ident, playerId) as Boolean);
+        return (callHostCode("awardTrophy_v1", ident, playerId) as Boolean);
     }
 
     /**
@@ -144,7 +144,7 @@ public class PlayerSubControl extends AbstractSubControl
      */
     public function awardPrize (ident :String, playerId :int = CURRENT_PLAYER) :void
     {
-        callHostCode("awardPrize_v2", ident, playerId);
+        callHostCode("awardPrize_v1", ident, playerId);
     }
 
     /**

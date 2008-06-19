@@ -107,7 +107,7 @@ public class GameSubControl extends AbstractSubControl
     public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
 
     /** ID constant passed into {@link #getLevelPacks} to indicate the current player. */
-    public static const CURRENT_PLAYER :int = int.MIN_VALUE;
+    public static const CURRENT_PLAYER :int = 0;
 
     /**
      * @private Constructed via GameControl.
@@ -157,7 +157,7 @@ public class GameSubControl extends AbstractSubControl
      */
     public function getLevelPacks (playerId :int = CURRENT_PLAYER) :Array
     {
-        return (callHostCode("getLevelPacks_v2", playerId) as Array);
+        return (callHostCode("getLevelPacks_v1", playerId) as Array);
     }
 
     /**

@@ -529,11 +529,11 @@ public class BaseGameBackend
 
         // .player
         o["getUserCookie_v2"] = getUserCookie_v2;
-        o["setUserCookie_v2"] = setUserCookie_v2;
-        o["holdsTrophy_v2"] = holdsTrophy_v2;
-        o["awardTrophy_v2"] = awardTrophy_v2;
-        o["awardPrize_v2"] = awardPrize_v2;
-        o["getPlayerItemPacks_v2"] = getPlayerItemPacks_v2;
+        o["setUserCookie_v1"] = setUserCookie_v1;
+        o["holdsTrophy_v1"] = holdsTrophy_v1;
+        o["awardTrophy_v1"] = awardTrophy_v1;
+        o["awardPrize_v1"] = awardPrize_v1;
+        o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
 
         // .game
         o["endGame_v2"] = endGame_v2;
@@ -543,7 +543,6 @@ public class BaseGameBackend
         o["getControllerId_v1"] = getControllerId_v1;
         o["getItemPacks_v1"] = getItemPacks_v1;
         o["getLevelPacks_v1"] = getLevelPacks_v1;
-        o["getLevelPacks_v2"] = getLevelPacks_v2;
         o["getOccupants_v1"] = getOccupants_v1;
         o["getOccupantName_v1"] = getOccupantName_v1;
         o["getRound_v1"] = getRound_v1;
@@ -750,7 +749,8 @@ public class BaseGameBackend
             _ctx.getClient(), playerId, createLoggingConfirmListener("getUserCookie"));
     }
 
-    protected function setUserCookie_v2 (cookie :Object, playerId :int) :Boolean
+    protected function setUserCookie_v1 (
+        cookie :Object, playerId :int = CURRENT_PLAYER) :Boolean
     {
         validateConnected();
         validateValue(cookie);
@@ -766,12 +766,14 @@ public class BaseGameBackend
         return true;
     }
 
-    protected function holdsTrophy_v2 (ident :String, playerId :int) :Boolean
+    protected function holdsTrophy_v1 (
+        ident :String, playerId :int = CURRENT_PLAYER) :Boolean
     {
         return playerOwnsData(GameData.TROPHY_DATA, ident, playerId);
     }
 
-    protected function awardTrophy_v2 (ident :String, playerId :int) :Boolean
+    protected function awardTrophy_v1 (
+        ident :String, playerId :int = CURRENT_PLAYER) :Boolean
     {
         if (playerOwnsData(GameData.TROPHY_DATA, ident, playerId)) {
             return false;
@@ -786,7 +788,8 @@ public class BaseGameBackend
         return true;
     }
 
-    protected function awardPrize_v2 (ident :String, playerId :int) :void
+    protected function awardPrize_v1 (
+        ident :String, playerId :int = CURRENT_PLAYER) :void
     {
         if (!playerOwnsData(GameData.PRIZE_MARKER, ident, playerId)) {
             _gameObj.whirledGameService.awardPrize(
@@ -795,7 +798,8 @@ public class BaseGameBackend
         }
     }
 
-    protected function getPlayerItemPacks_v2 (playerId :int) :Array
+    protected function getPlayerItemPacks_v1 (
+        playerId :int = CURRENT_PLAYER) :Array
     {
         return getItemPacks_v1().filter(function (data :GameData, idx :int, array :Array) :Boolean {
             return playerOwnsData(data.getType(), data.ident, playerId);
@@ -812,12 +816,7 @@ public class BaseGameBackend
         _gameObj.postMessage(WhirledGameObject.GAME_CHAT, [ msg ]);
     }
 
-    protected function getLevelPacks_v1 () :Array
-    {
-        return getLevelPacks_v2(CURRENT_PLAYER);
-    }
-
-    protected function getLevelPacks_v2 (playerId :int) :Array
+    protected function getLevelPacks_v1 (playerId :int = CURRENT_PLAYER) :Array
     {
         var packs :Array = [];
         for each (var data :GameData in _gameObj.gameData) {
