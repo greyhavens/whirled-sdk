@@ -80,7 +80,7 @@ public class GameAgent extends Agent
         Log.info("Subscribed to game object " + gameObj);
         _gameObj = gameObj;
 
-        _controller = new ThaneGameController();
+        _controller = createController();
         _controller.init(_ctx, _gameObj, gameAgentObj.config);
 
         if (_userCode != null && _gameObj != null) {
@@ -137,6 +137,14 @@ public class GameAgent extends Agent
     protected function relayTrace (trace :String) :void
     {
         _gameObj.manager.invoke("agentTrace", trace);
+    }
+
+    /**
+     * Creates the controller for this agent. 
+     */
+    protected function createController () :ThaneGameController
+    {
+        return new ThaneGameController();
     }
 
     protected var _subscriber :SafeSubscriber;

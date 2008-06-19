@@ -39,7 +39,7 @@ public class ThaneGameController extends Controller
         _gameObj = gameObj;
         _config = config;
 
-        backend = new ThaneGameBackend(_ctx, _gameObj, this);
+        backend = createBackend();
 
         _gameObj.addListener(this);
 
@@ -170,6 +170,14 @@ public class ThaneGameController extends Controller
      */
     protected function gameWasCancelled () :void
     {
+    }
+
+    /**
+     * Creates the backend for this controller.
+     */
+    protected function createBackend () :ThaneGameBackend
+    {
+        return new ThaneGameBackend(_ctx, _gameObj, this);
     }
 
     /**

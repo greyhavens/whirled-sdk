@@ -22,7 +22,7 @@ public class WhirledBureauClient extends BureauClient
     public static function main (
         args :Array, 
         version :String, 
-        userCodeLoader :UserCodeLoader=null) :void
+        userCodeLoader :UserCodeLoader) :void
     {
         var bureauId :String = args[0];
         var token :String = args[1];
