@@ -141,9 +141,14 @@ public class SwfResource
             if (!_loaded) {
                 _loader.close();
             }
+        } catch (e :Error) {
+            // swallow exceptions
+        }
+
+        try {
             _loader.unload();
         } catch (e :Error) {
-            // swallow any exceptions
+            // swallow exceptions
         }
 
         _loaded = false;
