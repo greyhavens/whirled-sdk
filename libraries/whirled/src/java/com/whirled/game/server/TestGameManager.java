@@ -33,7 +33,7 @@ import static com.whirled.Log.log;
 public class TestGameManager extends WhirledGameManager
 {
     // from interface WhirledGameProvider
-    public void awardTrophy (ClientObject caller, String ident,
+    public void awardTrophy (ClientObject caller, String ident, int playerId,
                              WhirledGameService.InvocationListener listener)
         throws InvocationException
     {
@@ -43,7 +43,7 @@ public class TestGameManager extends WhirledGameManager
     }
 
     // from interface WhirledGameProvider
-    public void awardPrize (ClientObject caller, String ident,
+    public void awardPrize (ClientObject caller, String ident, int playerId,
                             WhirledGameService.InvocationListener listener)
         throws InvocationException
     {
