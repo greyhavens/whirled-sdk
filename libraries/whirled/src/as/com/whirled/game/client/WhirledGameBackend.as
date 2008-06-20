@@ -404,11 +404,24 @@ class HeadSpriteShim extends Sprite
 {
     override public function get width () :Number
     {
-        return 80;
+        return WIDTH * scaleX;
+    }
+
+    override public function set width (newVal :Number) :void
+    {
+        scaleX = newVal / WIDTH;
     }
 
     override public function get height () :Number
     {
-        return 60;
+        return HEIGHT * scaleY;
     }
+
+    override public function set height (newVal :Number) :void
+    {
+        scaleY = newVal / HEIGHT;
+    }
+
+    protected static const WIDTH :int = 80;
+    protected static const HEIGHT :int = 60;
 }
