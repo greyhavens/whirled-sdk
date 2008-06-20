@@ -7,7 +7,7 @@ import com.whirled.AbstractSubControl;
 
 /**
  * Dispatched when this player has been awarded coins.
- * 
+ *
  * @eventType com.whirled.game.CoinsAwardedEvent.COINS_AWARDED
  */
 [Event(name="CoinsAwarded", type="com.whirled.game.CoinsAwardedEvent")]
@@ -18,9 +18,9 @@ import com.whirled.AbstractSubControl;
  */
 public class PlayerSubControl extends AbstractSubControl
 {
-    /** ID constant passed to cookie, prize and trophy functions to refer to the current player. 
-     * On normal flash clients, this is used as a default value and should not be changed. On 
-     * server agents, a valid playerId must be provided since there is no current player. 
+    /** ID constant passed to cookie, prize and trophy functions to refer to the current player.
+     * On normal flash clients, this is used as a default value and should not be changed. On
+     * server agents, a valid playerId must be provided since there is no current player.
      * @see #awardTrophy()
      * @see #holdsTrophy()
      * @see #setUserCookie()
@@ -38,13 +38,22 @@ public class PlayerSubControl extends AbstractSubControl
     /**
      * Get the user-specific game data for the specified user. The first time this is requested per
      * game instance it will be retrieved from the database. After that, it will be returned from
-     * memory. 
+     * memory.
+     *
+     * @param callback the function that will be called when the cookie has loaded.
+     * The callback should be of the form:
+     * <listing version="3.0">
+     *  function onGotUserCookie (cookie :Object) :void
+     *  {
+     *      // read cookie
+     *  }
+     * </listing>
      */
     public function getUserCookie (occupantId :int, callback :Function) :void
     {
         callHostCode("getUserCookie_v2", occupantId, callback);
     }
-    
+
     /**
      * Store persistent data that can later be retrieved by an instance of this game. The maximum
      * size of this data is 4096 bytes AFTER AMF3 encoding.
@@ -78,7 +87,7 @@ public class PlayerSubControl extends AbstractSubControl
     }
 
     /**
-     * Returns true if this client's player (the default) or a specified player has the trophy 
+     * Returns true if this client's player (the default) or a specified player has the trophy
      * with the specified identifier.
      *
      * <p>Note: Clients may only test the trophies of the current player. Server agents do not
@@ -92,10 +101,10 @@ public class PlayerSubControl extends AbstractSubControl
     }
 
     /**
-     * Awards the specified trophy to this client's player (the default) or a specified player. 
-     * If the supplied trophy identifier is not valid, this will not be known until the request is 
-     * processed on the server, so the method will return succcessfully but no trophy will have 
-     * been awarded. Thus, you should be careful not to misspell your trophy identifier in your 
+     * Awards the specified trophy to this client's player (the default) or a specified player.
+     * If the supplied trophy identifier is not valid, this will not be known until the request is
+     * processed on the server, so the method will return succcessfully but no trophy will have
+     * been awarded. Thus, you should be careful not to misspell your trophy identifier in your
      * code or in the associated trophy source item.
      *
      * <p>Note: Clients may award trophies to the current player. Server agents do not
@@ -110,10 +119,10 @@ public class PlayerSubControl extends AbstractSubControl
     }
 
     /**
-     * Awards the specified prize item to this client's player (the default) or a specified player. 
-     * If the supplied prize identifier is not valid, this will not be known until the request is 
-     * processed on the server, so the method will return successfully but no prize will have been 
-     * awarded. Thus you should be careful not to misspell your prize identifier in your code or in 
+     * Awards the specified prize item to this client's player (the default) or a specified player.
+     * If the supplied prize identifier is not valid, this will not be known until the request is
+     * processed on the server, so the method will return successfully but no prize will have been
+     * awarded. Thus you should be careful not to misspell your prize identifier in your code or in
      * the associated prize item.
      *
      * <p> Note: a game is only allowed to award a prize once per game session. This is to guard
