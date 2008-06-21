@@ -36,22 +36,22 @@ public class PlayerSubControl extends AbstractSubControl
     }
 
     /**
-     * Get the user-specific game data for the specified user. The first time this is requested per
-     * game instance it will be retrieved from the database. After that, it will be returned from
-     * memory.
+     * Get the user-specific game data for the specified occupant. The first time this is requested 
+     * per game instance it will be retrieved from the database. After that, it will be returned 
+     * from memory.
      *
      * @param callback the function that will be called when the cookie has loaded.
      * The callback should be of the form:
      * <listing version="3.0">
-     *  function onGotUserCookie (cookie :Object) :void
+     *  function onGotUserCookie (cookie :Object, playerId :int) :void
      *  {
      *      // read cookie
      *  }
      * </listing>
      */
-    public function getUserCookie (occupantId :int, callback :Function) :void
+    public function getOccupantCookie (callback :Function, occupantId :int = CURRENT_PLAYER) :void
     {
-        callHostCode("getUserCookie_v2", occupantId, callback);
+        callHostCode("getOccupantCookie_v1", callback, occupantId);
     }
 
     /**

@@ -467,13 +467,14 @@ public abstract class WhirledGameManager extends GameManager
         throws InvocationException
     {
         validateUser(caller);
+        BodyObject player = validateWritePermission(caller, playerId);
 
         // persist this new cookie
         getCookieManager().setCookie(
-            _gameconfig.getGameId(), getPlayerPersistentId((BodyObject)caller), value);
+            _gameconfig.getGameId(), getPlayerPersistentId(player), value);
 
         // and update the distributed object
-        UserCookie cookie = new UserCookie(caller.getOid(), value);
+        UserCookie cookie = new UserCookie(player.getOid(), value);
         if (_gameObj.userCookies.containsKey(cookie.getKey())) {
             _gameObj.updateUserCookies(cookie);
         } else {
@@ -611,6 +612,35 @@ public abstract class WhirledGameManager extends GameManager
         if (!isAgent(caller)) {
             throw new InvocationException(InvocationCodes.ACCESS_DENIED);
         }
+    }
+
+    /** 
+     *  Make sure that the given caller can write to the data of the given player and resolve
+     *  the playerId into a BodyObject. The player id may be 0, indicating the current
+     *  player. Server agents may not use this value and clients may only use this value.
+     **/
+    protected BodyObject validateWritePermission(ClientObject caller, int playerId)
+        throws InvocationException
+    {
+        BodyObject player;
+        if (isAgent(caller)) {
+            if (playerId == 0) {
+                throw new InvocationException(InvocationCodes.ACCESS_DENIED);
+            }
+            player = getPlayerByOid(playerId);
+
+        } else {
+            if (playerId != 0) {
+                throw new InvocationException(InvocationCodes.ACCESS_DENIED);
+            }
+            player = (BodyObject)caller;
+        }
+
+        if (player == null) {
+            throw new InvocationException(InvocationCodes.ACCESS_DENIED);
+        }
+
+        return player;
     }
 
     /**
