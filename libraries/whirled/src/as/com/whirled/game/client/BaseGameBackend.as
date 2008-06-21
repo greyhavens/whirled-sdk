@@ -65,9 +65,6 @@ import com.whirled.game.data.WhirledGameOccupantInfo;
 public class BaseGameBackend
     implements MessageListener, SetListener, ElementUpdateListener, PropertySetListener, ChatDisplay
 {
-    /** Magic number for {@link #getMyId} to return if this is the server agent's backend. */
-    public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
-
     public var log :Log = Log.getLog(this);
 
     public function BaseGameBackend (
@@ -328,9 +325,7 @@ public class BaseGameBackend
     {
         return new ConfirmAdapter(function (cause :String) :void {
             logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
-            if (failure != null) {
-                failure();
-            }
+            failure();
         }, success);
     }
 
@@ -446,7 +441,7 @@ public class BaseGameBackend
                     // we want to decode every time, in case usercode mangles the value
                     var decodedValue :Object = ObjectMarshaller.decode(cookie.cookie);
                     try {
-                        fn(decodedValue, cookie.playerId);
+                        fn(decodedValue);
                     } catch (err :Error) {
                         logGameError("Error in user-code: " + err, err);
                     }
@@ -534,7 +529,6 @@ public class BaseGameBackend
 
         // .player
         o["getUserCookie_v2"] = getUserCookie_v2;
-        o["getOccupantCookie_v1"] = getOccupantCookie_v1;
         o["setUserCookie_v1"] = setUserCookie_v1;
         o["holdsTrophy_v1"] = holdsTrophy_v1;
         o["awardTrophy_v1"] = awardTrophy_v1;
@@ -730,27 +724,12 @@ public class BaseGameBackend
 
     protected function getUserCookie_v2 (playerId :int, callback :Function) :void
     {
-        getOccupantCookie_v1(function (cookie :Object, ...unused) :void {
-            callback(cookie);
-        }, playerId);
-    }
-
-    protected function getOccupantCookie_v1 (callback :Function, playerId :int) :void
-    {
         validateConnected();
-
-        if (playerId == CURRENT_PLAYER) {
-            playerId = getMyId_v1();
-            if (playerId == SERVER_AGENT_ID) {
-                throw new Error("Server agent must provide a player id here");
-            }
-        }
-
         // see if that cookie is already published
         if (_gameObj.userCookies != null) {
             var uc :UserCookie = (_gameObj.userCookies.get(playerId) as UserCookie);
             if (uc != null) {
-                callback(ObjectMarshaller.decode(uc.cookie), playerId);
+                callback(ObjectMarshaller.decode(uc.cookie));
                 return;
             }
         }
@@ -767,8 +746,7 @@ public class BaseGameBackend
 
         // request it to be made so by the server
         _gameObj.whirledGameService.getCookie(
-            _ctx.getClient(), playerId, 
-            createLoggingConfirmListener("getOccupantCookie"));
+            _ctx.getClient(), playerId, createLoggingConfirmListener("getUserCookie"));
     }
 
     protected function setUserCookie_v1 (
