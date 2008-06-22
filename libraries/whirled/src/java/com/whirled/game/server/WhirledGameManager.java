@@ -527,6 +527,35 @@ public abstract class WhirledGameManager extends GameManager
         return _gameAgent != null && _gameAgent.clientOid == caller.getOid();
     }
 
+    /** 
+     *  Make sure that the given caller can write to the data of the given player and resolve
+     *  the playerId into a BodyObject. The player id may be 0, indicating the current
+     *  player. Server agents may not use this value and clients may only use this value.
+     **/
+    public BodyObject validateWritePermission(ClientObject caller, int playerId)
+        throws InvocationException
+    {
+        BodyObject player;
+        if (isAgent(caller)) {
+            if (playerId == 0) {
+                throw new InvocationException(InvocationCodes.ACCESS_DENIED);
+            }
+            player = getOccupantByOid(playerId);
+
+        } else {
+            if (playerId != 0) {
+                throw new InvocationException(InvocationCodes.ACCESS_DENIED);
+            }
+            player = (BodyObject)caller;
+        }
+
+        if (player == null) {
+            throw new InvocationException(InvocationCodes.ACCESS_DENIED);
+        }
+
+        return player;
+    }
+
     /**
      * Returns the dictionary manager if it has been properly initialized. Throws an INTERNAL_ERROR
      * exception if it has not.
@@ -612,35 +641,6 @@ public abstract class WhirledGameManager extends GameManager
         if (!isAgent(caller)) {
             throw new InvocationException(InvocationCodes.ACCESS_DENIED);
         }
-    }
-
-    /** 
-     *  Make sure that the given caller can write to the data of the given player and resolve
-     *  the playerId into a BodyObject. The player id may be 0, indicating the current
-     *  player. Server agents may not use this value and clients may only use this value.
-     **/
-    protected BodyObject validateWritePermission(ClientObject caller, int playerId)
-        throws InvocationException
-    {
-        BodyObject player;
-        if (isAgent(caller)) {
-            if (playerId == 0) {
-                throw new InvocationException(InvocationCodes.ACCESS_DENIED);
-            }
-            player = getOccupantByOid(playerId);
-
-        } else {
-            if (playerId != 0) {
-                throw new InvocationException(InvocationCodes.ACCESS_DENIED);
-            }
-            player = (BodyObject)caller;
-        }
-
-        if (player == null) {
-            throw new InvocationException(InvocationCodes.ACCESS_DENIED);
-        }
-
-        return player;
     }
 
     /**
