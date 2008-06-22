@@ -23,9 +23,10 @@ public class PlayerSubControl extends AbstractSubControl
      * server agents, a valid playerId must be provided since there is no current player.
      * @see #awardTrophy()
      * @see #holdsTrophy()
-     * @see #setUserCookie()
+     * @see #setCookie()
+     * @see #getCookie()
      * @see #awardPrize() */
-    public static const CURRENT_PLAYER :int = 0;
+    public static const CURRENT_USER :int = 0;
 
     /**
      * @private Constructed via GameControl
@@ -36,22 +37,22 @@ public class PlayerSubControl extends AbstractSubControl
     }
 
     /**
-     * Get the user-specific game data for the specified user. The first time this is requested per
-     * game instance it will be retrieved from the database. After that, it will be returned from
-     * memory.
+     * Get the user-specific game data for the specified occupant. The first time this is requested 
+     * per game instance it will be retrieved from the database. After that, it will be returned 
+     * from memory.
      *
      * @param callback the function that will be called when the cookie has loaded.
      * The callback should be of the form:
      * <listing version="3.0">
-     *  function onGotUserCookie (cookie :Object) :void
+     *  function onGotUserCookie (cookie :Object, occupantId :int) :void
      *  {
      *      // read cookie
      *  }
      * </listing>
      */
-    public function getUserCookie (occupantId :int, callback :Function) :void
+    public function getCookie (callback :Function, occupantId :int = CURRENT_USER) :void
     {
-        callHostCode("getUserCookie_v2", occupantId, callback);
+        callHostCode("getCookie_v1", callback, occupantId);
     }
 
     /**
@@ -68,9 +69,9 @@ public class PlayerSubControl extends AbstractSubControl
      * if it failed, but if it fails it will be because the shit hit the fan so hard that there's
      * nothing you can do anyway.
      */
-    public function setUserCookie (cookie :Object, playerId :int = CURRENT_PLAYER) :Boolean
+    public function setCookie (cookie :Object, occupantId :int = CURRENT_USER) :Boolean
     {
-        return Boolean(callHostCode("setUserCookie_v1", cookie, playerId));
+        return Boolean(callHostCode("setCookie_v1", cookie, occupantId));
     }
 
     /**
@@ -81,7 +82,7 @@ public class PlayerSubControl extends AbstractSubControl
      *
      * @param playerId the id of the player whose item packs to get
      */
-    public function getPlayerItemPacks (playerId :int = CURRENT_PLAYER) :Array
+    public function getPlayerItemPacks (playerId :int = CURRENT_USER) :Array
     {
         return (callHostCode("getPlayerItemPacks_v1", playerId) as Array);
     }
@@ -95,7 +96,7 @@ public class PlayerSubControl extends AbstractSubControl
      *
      * @param playerId the id of the player whose trophies to test
      */
-    public function holdsTrophy (ident :String, playerId :int = CURRENT_PLAYER) :Boolean
+    public function holdsTrophy (ident :String, playerId :int = CURRENT_USER) :Boolean
     {
         return (callHostCode("holdsTrophy_v1", ident, playerId) as Boolean);
     }
@@ -113,7 +114,7 @@ public class PlayerSubControl extends AbstractSubControl
      * @param playerId the id of the player to award the trophy to
      * @return true if the trophy was awarded, false if the player already has that trophy.
      */
-    public function awardTrophy (ident :String, playerId :int = CURRENT_PLAYER) :Boolean
+    public function awardTrophy (ident :String, playerId :int = CURRENT_USER) :Boolean
     {
         return (callHostCode("awardTrophy_v1", ident, playerId) as Boolean);
     }
@@ -151,7 +152,7 @@ public class PlayerSubControl extends AbstractSubControl
      *
      * @param playerId the id of the player to award the prize to
      */
-    public function awardPrize (ident :String, playerId :int = CURRENT_PLAYER) :void
+    public function awardPrize (ident :String, playerId :int = CURRENT_USER) :void
     {
         callHostCode("awardPrize_v1", ident, playerId);
     }

@@ -65,6 +65,9 @@ import com.whirled.game.data.WhirledGameOccupantInfo;
 public class BaseGameBackend
     implements MessageListener, SetListener, ElementUpdateListener, PropertySetListener, ChatDisplay
 {
+    /** Magic number for {@link #getMyId} to return if this is the server agent's backend. */
+    public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
+
     public var log :Log = Log.getLog(this);
 
     public function BaseGameBackend (
@@ -325,7 +328,9 @@ public class BaseGameBackend
     {
         return new ConfirmAdapter(function (cause :String) :void {
             logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
-            failure();
+            if (failure != null) {
+                failure();
+            }
         }, success);
     }
 
@@ -441,7 +446,7 @@ public class BaseGameBackend
                     // we want to decode every time, in case usercode mangles the value
                     var decodedValue :Object = ObjectMarshaller.decode(cookie.cookie);
                     try {
-                        fn(decodedValue);
+                        fn(decodedValue, cookie.playerId);
                     } catch (err :Error) {
                         logGameError("Error in user-code: " + err, err);
                     }
@@ -529,7 +534,9 @@ public class BaseGameBackend
 
         // .player
         o["getUserCookie_v2"] = getUserCookie_v2;
+        o["getCookie_v1"] = getCookie_v1;
         o["setUserCookie_v1"] = setUserCookie_v1;
+        o["setCookie_v1"] = setCookie_v1;
         o["holdsTrophy_v1"] = holdsTrophy_v1;
         o["awardTrophy_v1"] = awardTrophy_v1;
         o["awardPrize_v1"] = awardPrize_v1;
@@ -724,12 +731,27 @@ public class BaseGameBackend
 
     protected function getUserCookie_v2 (playerId :int, callback :Function) :void
     {
+        getCookie_v1(function (cookie :Object, ...unused) :void {
+            callback(cookie);
+        }, playerId);
+    }
+
+    protected function getCookie_v1 (callback :Function, occupantId :int) :void
+    {
         validateConnected();
+
+        if (occupantId == CURRENT_USER) {
+            occupantId = getMyId_v1();
+            if (occupantId == SERVER_AGENT_ID) {
+                throw new Error("Server agent must provide a player id here");
+            }
+        }
+
         // see if that cookie is already published
         if (_gameObj.userCookies != null) {
-            var uc :UserCookie = (_gameObj.userCookies.get(playerId) as UserCookie);
+            var uc :UserCookie = (_gameObj.userCookies.get(occupantId) as UserCookie);
             if (uc != null) {
-                callback(ObjectMarshaller.decode(uc.cookie));
+                callback(ObjectMarshaller.decode(uc.cookie), occupantId);
                 return;
             }
         }
@@ -737,20 +759,27 @@ public class BaseGameBackend
         if (_cookieCallbacks == null) {
             _cookieCallbacks = new Dictionary();
         }
-        var arr :Array = (_cookieCallbacks[playerId] as Array);
+        var arr :Array = (_cookieCallbacks[occupantId] as Array);
         if (arr == null) {
             arr = [];
-            _cookieCallbacks[playerId] = arr;
+            _cookieCallbacks[occupantId] = arr;
         }
         arr.push(callback);
 
         // request it to be made so by the server
         _gameObj.whirledGameService.getCookie(
-            _ctx.getClient(), playerId, createLoggingConfirmListener("getUserCookie"));
+            _ctx.getClient(), occupantId, 
+            createLoggingConfirmListener("getCookie"));
     }
 
     protected function setUserCookie_v1 (
-        cookie :Object, playerId :int = CURRENT_PLAYER) :Boolean
+        cookie :Object, playerId :int = CURRENT_USER) :Boolean
+    {
+        return setCookie_v1(cookie, playerId);
+    }
+
+    protected function setCookie_v1 (
+        cookie :Object, occupantId :int = CURRENT_USER) :Boolean
     {
         validateConnected();
         validateValue(cookie);
@@ -761,19 +790,19 @@ public class BaseGameBackend
         }
 
         _gameObj.whirledGameService.setCookie(
-            _ctx.getClient(), ba, playerId, 
-            createLoggingConfirmListener("setUserCookie"));
+            _ctx.getClient(), ba, occupantId, 
+            createLoggingConfirmListener("setCookie"));
         return true;
     }
 
     protected function holdsTrophy_v1 (
-        ident :String, playerId :int = CURRENT_PLAYER) :Boolean
+        ident :String, playerId :int = CURRENT_USER) :Boolean
     {
         return playerOwnsData(GameData.TROPHY_DATA, ident, playerId);
     }
 
     protected function awardTrophy_v1 (
-        ident :String, playerId :int = CURRENT_PLAYER) :Boolean
+        ident :String, playerId :int = CURRENT_USER) :Boolean
     {
         if (playerOwnsData(GameData.TROPHY_DATA, ident, playerId)) {
             return false;
@@ -789,7 +818,7 @@ public class BaseGameBackend
     }
 
     protected function awardPrize_v1 (
-        ident :String, playerId :int = CURRENT_PLAYER) :void
+        ident :String, playerId :int = CURRENT_USER) :void
     {
         if (!playerOwnsData(GameData.PRIZE_MARKER, ident, playerId)) {
             _gameObj.whirledGameService.awardPrize(
@@ -799,7 +828,7 @@ public class BaseGameBackend
     }
 
     protected function getPlayerItemPacks_v1 (
-        playerId :int = CURRENT_PLAYER) :Array
+        playerId :int = CURRENT_USER) :Array
     {
         return getItemPacks_v1().filter(function (data :GameData, idx :int, array :Array) :Boolean {
             return playerOwnsData(data.getType(), data.ident, playerId);
@@ -816,7 +845,7 @@ public class BaseGameBackend
         _gameObj.postMessage(WhirledGameObject.GAME_CHAT, [ msg ]);
     }
 
-    protected function getLevelPacks_v1 (playerId :int = CURRENT_PLAYER) :Array
+    protected function getLevelPacks_v1 (playerId :int = CURRENT_USER) :Array
     {
         var packs :Array = [];
         for each (var data :GameData in _gameObj.gameData) {
@@ -1273,7 +1302,7 @@ public class BaseGameBackend
 
     protected static const MAX_USER_COOKIE :int = 4096;
 
-    protected static const CURRENT_PLAYER :int = 0;
+    protected static const CURRENT_USER :int = 0;
 }
 }
 

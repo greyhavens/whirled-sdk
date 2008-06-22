@@ -128,16 +128,23 @@ public class UserCookie
         cookie._cookieDef = cookieDef;
         cookie._readOnly = occId != -1 && occId != wgc.game.getMyId();
         cookie._logDebug = enableDebugLogging;
-        wgc.player.getUserCookie(occId == -1 ? wgc.game.getMyId() : occId,
-        function (obj :Object) :void {
-            if (obj is ByteArray) {
-                cookie.read(obj as ByteArray);
-            } else {
-                log.warning("Unknown cookie object type or cookie not found, using defaults");
-                cookie.read(null);
-            }
-            validCallback(cookie);
-        });
+        var callback :Function = 
+            function (obj :Object, occupantId :int) :void {
+                if (obj is ByteArray) {
+                    cookie.read(obj as ByteArray);
+                } else {
+                    log.warning("Unknown cookie object type or cookie not found, using defaults");
+                    cookie.read(null);
+                }
+                validCallback(cookie);
+            };
+
+        if (occId == -1) {
+            wgc.player.getCookie(callback);
+
+        } else {
+            wgc.player.getCookie(callback, occId);
+        }
     }
 
     /**
@@ -301,7 +308,7 @@ public class UserCookie
     protected function flush (... ignored) :void
     {
         if (_dirty) {
-            _control.player.setUserCookie(write());
+            _control.player.setCookie(write());
             _dirty = false;
         }
     }

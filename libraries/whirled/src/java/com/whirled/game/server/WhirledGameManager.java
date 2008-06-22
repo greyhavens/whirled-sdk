@@ -627,7 +627,7 @@ public abstract class WhirledGameManager extends GameManager
             if (playerId == 0) {
                 throw new InvocationException(InvocationCodes.ACCESS_DENIED);
             }
-            player = getPlayerByOid(playerId);
+            player = getOccupantByOid(playerId);
 
         } else {
             if (playerId != 0) {

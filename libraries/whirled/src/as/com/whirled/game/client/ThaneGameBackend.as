@@ -18,9 +18,6 @@ import com.whirled.game.data.BaseGameConfig;
  */
 public class ThaneGameBackend extends BaseGameBackend
 {
-    /** Magic number for {@link #getMyId} to return. */
-    public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
-
     public function ThaneGameBackend (
         ctx :PresentsContext, gameObj :WhirledGameObject, ctrl :ThaneGameController)
     {
