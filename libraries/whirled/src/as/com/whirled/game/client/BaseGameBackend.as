@@ -11,13 +11,13 @@ import flash.utils.Dictionary;
 
 import com.threerings.io.TypedArray;
 
+import com.threerings.util.Boxed;
 import com.threerings.util.Integer;
 import com.threerings.util.Log;
 import com.threerings.util.MessageBundle;
 import com.threerings.util.Name;
 import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringUtil;
-import com.threerings.util.Wrapped;
 
 import com.threerings.presents.client.ConfirmAdapter;
 import com.threerings.presents.client.ResultWrapper;
@@ -518,7 +518,7 @@ public class BaseGameBackend
         var gameConfig :Object = {};
         var cfg :BaseGameConfig = getConfig();
         cfg.params.forEach(function (key :Object, value :Object) :void {
-            gameConfig[key] = (value is Wrapped) ? Wrapped(value).unwrap() : value;
+            gameConfig[key] = (value is Boxed) ? Boxed(value).unbox() : value;
         });
         o["gameConfig"] = gameConfig;
         o["gameInfo"] = createGameInfo();
