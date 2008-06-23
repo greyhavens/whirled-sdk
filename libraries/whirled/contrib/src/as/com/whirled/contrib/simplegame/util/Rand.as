@@ -20,8 +20,8 @@
 
 package com.whirled.contrib.simplegame.util {
 
-import com.threerings.util.Random;
 import com.threerings.util.Assert;
+import com.threerings.util.Random;
 
 public class Rand
 {
@@ -56,6 +56,12 @@ public class Rand
     public static function seedStream (streamId :uint, seed :uint) :void
     {
         getStream(streamId).setSeed(seed);
+    }
+
+    /** Returns a random element from the given Array. */
+    public static function nextElement (arr :Array, streamId :uint) :*
+    {
+        return (arr.length > 0 ? arr[nextIntRange(0, arr.length, streamId)] : undefined);
     }
 
     /** Returns an integer in the range [0, MAX) */
