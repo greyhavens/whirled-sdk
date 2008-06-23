@@ -29,6 +29,11 @@ public class Scoreboard
         initScores();
     }
 
+    public function get propName () :String
+    {
+        return _propName;
+    }
+
     public function setScore (playerId :int, score :Number) :void
     {
         _gameCtrl.net.setIn(_propName, playerId, score);
@@ -138,12 +143,17 @@ public class Scoreboard
         _gameCtrl.local.setMappedScores(_gameCtrl.net.get(_propName));
     }
 
+    protected function scoreDidUpdate (playerId :int, old :Number, current :Number) :void
+    {
+        var o :Object = {};
+        o[playerId] = current
+        _gameCtrl.local.setMappedScores(o);
+    }
+
     protected function handleScoreUpdate (e :ElementChangedEvent) :void
     {
         if (e.name == _propName) {
-            var o :Object = {};
-            o[e.key] = e.newValue;
-            _gameCtrl.local.setMappedScores(o);
+            scoreDidUpdate(e.key, Number(e.oldValue), Number(e.newValue));
         }
     }
 
