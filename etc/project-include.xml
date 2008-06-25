@@ -181,19 +181,6 @@
     <copy overwrite="true" file="${app.name}.abc" tofile="${build.root}/dist/game.abc"/>
   </target>
 
-  <target name="test-avatar">
-    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/avatar.${app.suffix}"/>
-    <echoxml file="${build.root}/dist/parameters.xml">
-    <parameters>
-      <param name="mode" value="100"/>
-      <param name="avatar" value="file://${build.root}/dist/avatar.${app.suffix}"/>
-    </parameters>
-    </echoxml>
-    <exec executable="${player.path}">
-      <arg value="${build.root}/dist/viewer.swf"/>
-    </exec>
-  </target>
-
   <target name="test-game" depends="delete-abc,copy-abc">
     <copy file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
 
@@ -211,6 +198,20 @@
         <fileset dir="${build.root}/dist/lib" includes="*.jar"/>
       </classpath>
     </java>
+  </target>
+
+  <target name="test-avatar">
+    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/avatar.${app.suffix}"/>
+    <echoxml file="${build.root}/dist/parameters.xml">
+    <parameters>
+      <param name="mode" value="100"/>
+      <param name="name" value="${app.name}"/>
+      <param name="media" value="file://${build.root}/dist/avatar.${app.suffix}"/>
+    </parameters>
+    </echoxml>
+    <exec executable="${player.path}">
+      <arg value="${build.root}/dist/viewer.swf"/>
+    </exec>
   </target>
 
   <target name="test-furni">
@@ -260,11 +261,11 @@
   </target>
 
   <target name="test-pet">
-    <echo>NOTE: pet projects do not currently have a test environment.</echo>
     <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/pet.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
       <param name="mode" value="101"/>
+      <param name="name" value="${app.name}"/>
       <param name="media" value="file://${build.root}/dist/pet.${app.suffix}"/>
     </parameters>
     </echoxml>
