@@ -22,6 +22,7 @@ package com.whirled.contrib.simplegame {
 
 import com.threerings.util.SortedHashMap;
 import com.whirled.contrib.simplegame.tasks.ParallelTask;
+import com.whirled.contrib.simplegame.tasks.TaskContainer;
 
 import flash.events.EventDispatcher;
 
@@ -90,9 +91,7 @@ public class SimObject extends EventDispatcher
     /** Adds an unnamed task to this SimObject. */
     public function addTask (task :ObjectTask) :void
     {
-        if (_updatingTasks) {
-            throw new Error("Can't alter object's Tasks from within a Task");
-        } else if (null == task) {
+        if (null == task) {
             throw new ArgumentError("task must be non-null");
         }
 
@@ -102,11 +101,11 @@ public class SimObject extends EventDispatcher
     /** Adds a named task to this SimObject. */
     public function addNamedTask (name :String, task :ObjectTask, removeExistingTasks :Boolean = false) :void
     {
-        if (_updatingTasks) {
-            throw new Error("Can't alter object's Tasks from within a Task");
-        } else if (null == task) {
+        if (null == task) {
             throw new ArgumentError("task must be non-null");
-        } else if (null == name || name.length == 0) {
+        }
+
+        if (null == name || name.length == 0) {
             throw new ArgumentError("name must be at least 1 character long");
         }
 
@@ -125,7 +124,11 @@ public class SimObject extends EventDispatcher
     public function removeAllTasks () :void
     {
         if (_updatingTasks) {
-            throw new Error("Can't alter object's Tasks from within a Task");
+            // if we're updating tasks, invalidate all named task containers so that
+            // they stop iterating their children
+            for each (var taskContainer :TaskContainer in _namedTasks.values()) {
+                taskContainer.removeAllTasks();
+            }
         }
 
         _anonymousTasks.removeAllTasks();
@@ -135,13 +138,17 @@ public class SimObject extends EventDispatcher
     /** Removes all tasks with the given name from the SimObject. */
     public function removeNamedTasks (name :String) :void
     {
-        if (_updatingTasks) {
-            throw new Error("Can't alter object's Tasks from within a Task");
-        } else if (null == name || name.length == 0) {
+        if (null == name || name.length == 0) {
             throw new ArgumentError("name must be at least 1 character long");
         }
 
-        _namedTasks.remove(name);
+        var taskContainer :TaskContainer = _namedTasks.remove(name);
+
+        // if we're updating tasks, invalidate this task container so that
+        // it stops iterating its children
+        if (null != taskContainer && _updatingTasks) {
+            taskContainer.removeAllTasks();
+        }
     }
 
     /** Returns true if the SimObject has any tasks. */
@@ -210,14 +217,11 @@ public class SimObject extends EventDispatcher
     internal function updateInternal (dt :Number) :void
     {
         _updatingTasks = true;
-
         _anonymousTasks.update(dt, this);
-
         if (!_namedTasks.isEmpty()) {
             var thisSimObject :SimObject = this;
             _namedTasks.forEach(updateNamedTaskContainer);
         }
-
         _updatingTasks = false;
 
         update(dt);

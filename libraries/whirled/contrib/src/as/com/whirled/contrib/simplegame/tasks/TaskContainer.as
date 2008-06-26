@@ -21,9 +21,9 @@
 package com.whirled.contrib.simplegame.tasks {
 
 import com.threerings.util.Assert;
-import com.whirled.contrib.simplegame.SimObject;
 import com.whirled.contrib.simplegame.ObjectMessage;
 import com.whirled.contrib.simplegame.ObjectTask;
+import com.whirled.contrib.simplegame.SimObject;
 
 public class TaskContainer
     implements ObjectTask
@@ -31,7 +31,7 @@ public class TaskContainer
     public static const TYPE_PARALLEL :uint = 0;
     public static const TYPE_SERIAL :uint = 1;
     public static const TYPE_REPEATING :uint = 2;
-    
+
     public static const TYPE__LIMIT :uint = 3;
 
     public function TaskContainer (type :uint, task1 :ObjectTask = null, task2 :ObjectTask = null)
@@ -39,7 +39,7 @@ public class TaskContainer
         if (type >= TYPE__LIMIT) {
             throw new ArgumentError("invalid 'type' parameter");
         }
-        
+
         _type = type;
 
         if (null != task1) {
@@ -56,7 +56,7 @@ public class TaskContainer
         if (null == task) {
             throw new ArgumentError("task must be non-null");
         }
-        
+
         _tasks.push(task);
         _completedTasks.push(null);
         _activeTaskCount += 1;
@@ -65,6 +65,7 @@ public class TaskContainer
     /** Removes all tasks from the TaskContainer. */
     public function removeAllTasks () :void
     {
+        _invalidated = true;
         _tasks = new Array();
         _completedTasks = new Array();
         _activeTaskCount = 0;
@@ -78,11 +79,12 @@ public class TaskContainer
 
     public function update (dt :Number, obj :SimObject) :Boolean
     {
-        return this.applyFunction(
+        var result :Boolean = this.applyFunction(
             function (task :ObjectTask) :Boolean {
                 return task.update(dt, obj);
-            }
-        );
+            });
+
+        return result;
     }
 
     protected function cloneSubtasks () :Array
@@ -130,8 +132,11 @@ public class TaskContainer
      */
     protected function applyFunction (f :Function) :Boolean
     {
+        _invalidated = false;
+
         var n :int = _tasks.length;
         for (var i :int = 0; i < n; ++i) {
+
             var task :ObjectTask = (_tasks[i] as ObjectTask);
 
             // we can have holes in the array
@@ -140,6 +145,12 @@ public class TaskContainer
             }
 
             var complete :Boolean = f(task);
+
+            if (_invalidated) {
+                // The TaskContainer was destroyed by its containing
+                // SimObject during task iteration. Stop processing immediately.
+                return false;
+            }
 
             if (!complete && TYPE_PARALLEL != _type) {
                 // Serial and Repeating tasks proceed one task at a time
@@ -173,6 +184,7 @@ public class TaskContainer
     protected var _tasks :Array = new Array();
     protected var _completedTasks :Array = new Array();
     protected var _activeTaskCount :uint;
+    protected var _invalidated :Boolean;
 }
 
 }
