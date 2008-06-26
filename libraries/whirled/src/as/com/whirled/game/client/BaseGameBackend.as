@@ -329,7 +329,7 @@ public class BaseGameBackend
         return new ConfirmAdapter(function (cause :String) :void {
             logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
             if (failure != null) {
-                failure(cause);
+                failure();
             }
         }, success);
     }
@@ -808,15 +808,11 @@ public class BaseGameBackend
             return false;
         }
 
-        function failure (cause :String) :void {
-            handleTrophyAwardFailure(playerId, cause);
-        }
-
         // TODO: instead of just logging the failure, dispatch a message to the appropriate 
         // player(s) and call displayInfo on each client.
         _gameObj.whirledGameService.awardTrophy(
             _ctx.getClient(), ident, playerId, 
-            createLoggingConfirmListener("awardTrophy", failure));
+            createLoggingConfirmListener("awardTrophy"));
 
         return true;
     }
@@ -1289,17 +1285,6 @@ public class BaseGameBackend
 
         // Tree house defense
         return (url === "http://media.whirled.com/6c7fa832bd422899ffea685adadbf55c184edb2e.swf");
-    }
-
-    /** 
-     * Given the user some indication that a trophy could not be awarded. The default does nothing
-     * so subclasses should override. This is only called if the request was actually made by this
-     * backend, not for all failures.
-     * @param playerId player who should have been awarded the trophy
-     * @param cause the error message given by the server
-     */
-    protected function handleTrophyAwardFailure (playerId :int, cause :String) :void
-    {
     }
 
     protected var _ctx :PresentsContext;

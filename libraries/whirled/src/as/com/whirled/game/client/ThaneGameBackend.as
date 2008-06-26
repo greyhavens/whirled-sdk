@@ -103,43 +103,6 @@ public class ThaneGameBackend extends BaseGameBackend
         }
     }
 
-    /**
-     * Display an info message to one client.
-     * @param occupantId id of client to send the message to
-     * @param message untranslated message key
-     * @param args the fields to substitute into the message value
-     */
-    protected function displayInfo (
-        occupantId :int,
-        message :String,
-        ...args) :void
-    {
-        // TODO: implement
-        log.info("Sending info message to client " + occupantId + ": " + message);
-    }
-
-    /**
-     * Display an info message to all clients.
-     * @param message untranslated message key
-     * @param args the fields to substitute into the message value
-     */
-    protected function displayInfoToAll (
-        message :String,
-        ...args) :void
-    {
-        // TODO: implement
-        log.info("Sending info message to all clients: " + message);
-    }
-
-    /** @inheritDoc */
-    // from BaseGameBackend
-    override protected function handleTrophyAwardFailure (
-        playerId :int, cause :String) :void
-    {
-        // display in the player's chat as an informational message
-        displayInfo(playerId, cause);
-    }
-
     protected var _ctrl :ThaneGameController;
 
     protected var _somgr :SafeObjectManager;
