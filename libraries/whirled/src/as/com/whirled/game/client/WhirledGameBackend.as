@@ -385,6 +385,15 @@ public class WhirledGameBackend extends BaseGameBackend
         callback(s, true);
     }
 
+    /** @inheritDoc */
+    // from BaseGameBackend
+    override protected function handleTrophyAwardFailure (
+        playerId :int, cause :String) :void
+    {
+        // display in chat as an informational message
+        displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE, cause);
+    }
+
     protected var _ctrl :WhirledGameController;
 
     protected var _container :GameContainer;
