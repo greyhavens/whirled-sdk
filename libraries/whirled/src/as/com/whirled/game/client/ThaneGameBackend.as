@@ -85,7 +85,7 @@ public class ThaneGameBackend extends BaseGameBackend
             _somgr.unsubscribe(occInfo.bodyOid);
         }
 
-        super.occupantAdded(occInfo);
+        super.occupantRemoved(occInfo);
     }
 
     override protected function occupantRoleChanged (
