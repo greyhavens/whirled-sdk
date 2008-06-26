@@ -235,7 +235,7 @@
     <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/backdrop.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
-      <param name="mode" value="104"/>
+      <param name="mode" value="199"/> <!-- TODO: to test a decor, we need decor params.. -->
       <param name="media" value="file://${build.root}/dist/backdrop.${app.suffix}"/>
     </parameters>
     </echoxml>
