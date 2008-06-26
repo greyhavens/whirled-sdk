@@ -24,6 +24,7 @@ import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.Loader;
 import flash.display.MovieClip;
+import flash.display.SimpleButton;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
@@ -35,6 +36,12 @@ public class SwfResource
     implements Resource
 {
     public static function instantiateMovieClip (resourceName :String, className :String) :MovieClip
+    {
+        var theClass :Class = getClass(resourceName, className);
+        return (null != theClass ? new theClass() : null);
+    }
+
+    public static function instantiateButton (resourceName :String, className :String) :SimpleButton
     {
         var theClass :Class = getClass(resourceName, className);
         return (null != theClass ? new theClass() : null);

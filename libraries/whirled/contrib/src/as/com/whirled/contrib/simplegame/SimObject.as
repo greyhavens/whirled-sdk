@@ -90,7 +90,9 @@ public class SimObject extends EventDispatcher
     /** Adds an unnamed task to this SimObject. */
     public function addTask (task :ObjectTask) :void
     {
-        if (null == task) {
+        if (_updatingTasks) {
+            throw new Error("Can't alter object's Tasks from within a Task");
+        } else if (null == task) {
             throw new ArgumentError("task must be non-null");
         }
 
@@ -100,11 +102,11 @@ public class SimObject extends EventDispatcher
     /** Adds a named task to this SimObject. */
     public function addNamedTask (name :String, task :ObjectTask, removeExistingTasks :Boolean = false) :void
     {
-        if (null == task) {
+        if (_updatingTasks) {
+            throw new Error("Can't alter object's Tasks from within a Task");
+        } else if (null == task) {
             throw new ArgumentError("task must be non-null");
-        }
-
-        if (null == name || name.length == 0) {
+        } else if (null == name || name.length == 0) {
             throw new ArgumentError("name must be at least 1 character long");
         }
 
@@ -122,6 +124,10 @@ public class SimObject extends EventDispatcher
     /** Removes all tasks from the SimObject. */
     public function removeAllTasks () :void
     {
+        if (_updatingTasks) {
+            throw new Error("Can't alter object's Tasks from within a Task");
+        }
+
         _anonymousTasks.removeAllTasks();
         _namedTasks.clear();
     }
@@ -129,7 +135,9 @@ public class SimObject extends EventDispatcher
     /** Removes all tasks with the given name from the SimObject. */
     public function removeNamedTasks (name :String) :void
     {
-        if (null == name || name.length == 0) {
+        if (_updatingTasks) {
+            throw new Error("Can't alter object's Tasks from within a Task");
+        } else if (null == name || name.length == 0) {
             throw new ArgumentError("name must be at least 1 character long");
         }
 
@@ -201,12 +209,16 @@ public class SimObject extends EventDispatcher
 
     internal function updateInternal (dt :Number) :void
     {
+        _updatingTasks = true;
+
         _anonymousTasks.update(dt, this);
 
         if (!_namedTasks.isEmpty()) {
             var thisSimObject :SimObject = this;
             _namedTasks.forEach(updateNamedTaskContainer);
         }
+
+        _updatingTasks = false;
 
         update(dt);
 
@@ -239,6 +251,8 @@ public class SimObject extends EventDispatcher
 
     // stores a mapping from String to ParallelTask
     protected var _namedTasks :SortedHashMap = new SortedHashMap(SortedHashMap.STRING_KEYS);
+
+    protected var _updatingTasks :Boolean;
 
     // managed by ObjectDB
     internal var _ref :SimObjectRef;
