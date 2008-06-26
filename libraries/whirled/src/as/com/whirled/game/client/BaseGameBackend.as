@@ -808,8 +808,6 @@ public class BaseGameBackend
             return false;
         }
 
-        // TODO: instead of just logging the failure, dispatch a message to the appropriate 
-        // player(s) and call displayInfo on each client.
         _gameObj.whirledGameService.awardTrophy(
             _ctx.getClient(), ident, playerId, 
             createLoggingConfirmListener("awardTrophy"));
