@@ -16,11 +16,11 @@ import com.whirled.ControlEvent;
 /**
  * @project@ is the coolest Decor ever.
  */
-[SWF(width="1000", height="500")] // or, whatever size you want!
+[SWF(width="800", height="494")] // or, whatever size you want!
 public class @project@ extends Sprite
 {
-    public static const WIDTH :int = 1000;
-    public static const HEIGHT :int = 500;
+    public static const WIDTH :int = 800;
+    public static const HEIGHT :int = 494;
 
     public function @project@ ()
     {

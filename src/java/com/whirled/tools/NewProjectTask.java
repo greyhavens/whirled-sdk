@@ -57,7 +57,7 @@ public class NewProjectTask extends Task
                 System.out.println(entry.getKey() + " - " + entry.getValue());
             }
             do {
-                _type = _choiceMap.get(readInput(input, "Enter the number [1-4]?"));
+                _type = _choiceMap.get(readInput(input, "Enter the number [1-6]?"));
             } while (_type == null);
         }
 
@@ -83,6 +83,12 @@ public class NewProjectTask extends Task
         copyFile(input, new File(_templates, "build.xml"), new File(pdir, "build.xml"), subs);
         copyFile(input, new File(_templates, "build.bat"), new File(pdir, "build.bat"), subs);
         copyFile(input, new File(_templates, _type + ".as"), new File(pdir, project + ".as"), subs);
+
+        if ("Backdrop".equals(_type)) {
+            String propFile = "backdrop-properties.xml";
+            copyFile(input, new File(_templates, propFile), new File(pdir, propFile),
+                new HashMap<String, String>());
+        }
 
         System.out.println("Done! Your new project has been created in '" + pdir + "'.");
     }
@@ -184,6 +190,8 @@ public class NewProjectTask extends Task
         _choiceMap.put("2", "Game");
         _choiceMap.put("3", "Pet");
         _choiceMap.put("4", "Furni");
+        _choiceMap.put("5", "Toy");
+        _choiceMap.put("6", "Backdrop");
     }
     protected static final String LINE_SEP = System.getProperty("line.separator");
 }

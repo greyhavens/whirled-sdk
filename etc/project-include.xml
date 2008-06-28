@@ -231,12 +231,20 @@
   </target>
 
   <target name="test-backdrop">
-    <echo>NOTE: backdrop projects do not currently have a test environment.</echo>
     <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/backdrop.${app.suffix}"/>
+    <xmlproperty file="backdrop-properties.xml" keepRoot="false" prefix="backdrop"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
-      <param name="mode" value="199"/> <!-- TODO: to test a decor, we need decor params.. -->
+      <param name="mode" value="104"/>
       <param name="media" value="file://${build.root}/dist/backdrop.${app.suffix}"/>
+      <param name="decorType" value="${backdrop.type}"/>
+      <param name="decorWidth" value="${backdrop.width}"/>
+      <param name="decorHeight" value="${backdrop.height}"/>
+      <param name="decorDepth" value="${backdrop.depth}"/>
+      <param name="decorHorizon" value="${backdrop.horizon}"/>
+      <param name="decorOffsetX" value="${backdrop.offsetX}"/>
+      <param name="decorOffsetY" value="${backdrop.offsetY}"/>
+      <param name="decorHideWalls" value="${backdrop.hideWalls}"/>
     </parameters>
     </echoxml>
     <exec executable="${player.path}">
