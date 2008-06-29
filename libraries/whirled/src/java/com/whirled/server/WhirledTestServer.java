@@ -12,12 +12,15 @@ import java.io.Reader;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.apache.mina.common.IoAcceptor;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import com.samskivert.util.CollectionUtil;
@@ -40,11 +43,9 @@ import com.threerings.crowd.server.CrowdServer;
 import com.threerings.crowd.server.PlaceManagerDelegate;
 
 import com.threerings.bureau.data.BureauCredentials;
-
 import com.threerings.bureau.server.BureauRegistry;
 
 import com.threerings.parlor.data.Parameter;
-
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.server.ParlorManager;
 import com.threerings.parlor.server.ParlorSender;
@@ -68,18 +69,17 @@ import static com.whirled.Log.log;
 public class WhirledTestServer extends CrowdServer
     implements TestProvider, BureauRegistry.CommandGenerator, ShutdownManager.Shutdowner
 {
-    /** The singleton server instance. */
-    public static WhirledTestServer server;
+    /** Configures dependencies needed by the Whirled test services. */
+    public static class Module extends CrowdServer.Module
+    {
+        @Override protected void configure () {
+            super.configure();
+            // nada (yet)
+        }
+    }
 
-    /** Handles creating and cleaning up after games. */
-    public static ParlorManager parMan = new ParlorManager();
-
-    /** Serves up SWF files to avoid annoying file-system-loaded SWF "seurity" problems. */
-    public static WhirledHttpServer httpServer;
-
-    /** Keeps track of bureaus launched by this server. It is up to subclasses to register the 
-     *  desired bureau types. Otherwise none will be launched. */
-    public static BureauRegistry bureauReg;
+//     /** The singleton server instance. */
+//     public static WhirledTestServer server;
 
     /**
      * The main entry point for the test server.
@@ -87,7 +87,7 @@ public class WhirledTestServer extends CrowdServer
     public static void main (String[] args)
     {
         Injector injector = Guice.createInjector(new Module());
-        server = injector.getInstance(WhirledTestServer.class);
+        WhirledTestServer server = injector.getInstance(WhirledTestServer.class);
         try {
             server.init(injector);
             server.run();
@@ -106,12 +106,12 @@ public class WhirledTestServer extends CrowdServer
         _shutmgr.registerShutdowner(this);
 
         // configure the client manager to use the appropriate client class
-        clmgr.setClientFactory(new ClientFactory() {
+        _clmgr.setClientFactory(new ClientFactory() {
             public Class<? extends PresentsClient> getClientClass (AuthRequest areq) {
                 if (areq.getCredentials() instanceof BureauCredentials) {
                     return PresentsClient.class;
                 }
-                return WhirledTestServerMonitor.class;
+                return WhirledTestClient.class;
             }
             public Class<? extends ClientResolver> getClientResolverClass (Name username) {
                 if (BureauCredentials.isBureau(username)) {
@@ -122,8 +122,7 @@ public class WhirledTestServer extends CrowdServer
         });
 
         // initialize our managers
-        parMan.init(invmgr, plreg);
-        DictionaryManager.init("data/dictionary");
+        // DictionaryManager.init("data/dictionary");
         GameManager.setUserIdentifier(new GameManager.UserIdentifier() {
             public int getUserId (BodyObject bobj) {
                 String username = bobj.username.toString();
@@ -136,19 +135,17 @@ public class WhirledTestServer extends CrowdServer
         });
 
         // create and start up our HTTP server
-        httpServer = new WhirledHttpServer(getDocRoot());
-        httpServer.start();
+        _httpServer = new WhirledHttpServer(getDocRoot());
+        _httpServer.start();
 
         _policyServer = PolicyServer.init(47623, "localhost", getListenPorts(), 99999);
 
         // register ourselves as handling the test service
-        invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
+        _invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
 
         // TODO: should the bureau have multiple ports?
-        bureauReg = new BureauRegistry(
-            "localhost:" + getListenPorts()[0], invmgr, omgr, invoker);
-
-        bureauReg.setCommandGenerator(WhirledGameManager.THANE_BUREAU, this);
+        _bureauReg.init("localhost:" + getListenPorts()[0]);
+        _bureauReg.setCommandGenerator(WhirledGameManager.THANE_BUREAU, this);
 
         // prepare the game and start the clients
         prepareGame();
@@ -159,7 +156,7 @@ public class WhirledTestServer extends CrowdServer
     {
         // shut down our http server
         try {
-            httpServer.stop();
+            _httpServer.stop();
         } catch (Exception e) {
             reportError("Failed to stop http server.", e);
         }
@@ -178,7 +175,7 @@ public class WhirledTestServer extends CrowdServer
 
         // otherwise add them to the ready set and start the game when everyone is logged on
         _ready.add(((BodyObject)caller).username);
-        HashSet<Name> ready = CollectionUtil.addAll(new HashSet<Name>(), _config.players);
+        Set<Name> ready = CollectionUtil.addAll(new HashSet<Name>(), _config.players);
         ready.retainAll(_ready);
         if (ready.size() == _config.players.length) {
             createGameManager(_config);
@@ -263,7 +260,8 @@ public class WhirledTestServer extends CrowdServer
                     Process proc = Runtime.getRuntime().exec(new String[] { player, url });
                     new StreamEater(proc.getErrorStream());
                 } catch (Exception e) {
-                    reportError("Failed to start client [player=" + player + ", url=" + url + "].", e);
+                    reportError("Failed to start client [player=" + player +
+                                ", url=" + url + "].", e);
                 }
             }
         }
@@ -286,7 +284,7 @@ public class WhirledTestServer extends CrowdServer
     protected WhirledGameManager createGameManager (WhirledGameConfig config)
     {
         try {
-            return (WhirledGameManager)plreg.createPlace(config);
+            return (WhirledGameManager)_plreg.createPlace(config);
 
         } catch (Exception e) {
             reportError("Failed to start game " + config + ".", e);
@@ -420,12 +418,21 @@ public class WhirledTestServer extends CrowdServer
     /** The configuration for the game we'll start when everyone is ready. */
     protected WhirledGameConfig _config;
 
+    /** Serves up SWF files to avoid annoying file-system-loaded SWF "seurity" problems. */
+    protected WhirledHttpServer _httpServer;
+
     /** The manager for our test game. */
     protected WhirledGameManager _gameMgr;
 
     /** Contains a mapping of all clients that are ready to play. */
-    protected HashSet<Name> _ready = new HashSet<Name>();
+    protected Set<Name> _ready = Sets.newHashSet();
 
     /** A policy server. */
     protected IoAcceptor _policyServer;
+
+    /** Handles parlor game services. */
+    @Inject protected ParlorManager _parmgr;
+
+    /** Handles bureau services. */
+    @Inject protected BureauRegistry _bureauReg;
 }
