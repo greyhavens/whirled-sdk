@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import com.threerings.util.Name;
@@ -45,27 +46,6 @@ public class LocalServer extends CrowdServer
         }
     }
 
-    /** The parlor manager in operation on this server. */
-    public static ParlorManager parmgr = new ParlorManager() {
-        @Override protected void createGameManager (GameConfig config)
-            throws InstantiationException, InvocationException
-        {
-            _plreg.createPlace(config);
-        }
-    };
-
-    @Override // from CrowdServer
-    public void init (Injector injector)
-        throws Exception
-    {
-        super.init(injector);
-
-        // initialize our managers
-        parmgr.init(invmgr, plreg);
-
-        log.info("Local server initialized.");
-    }
-
     /**
      * Called in standalone mode to cause the standalone client to "logon".
      */
@@ -82,11 +62,11 @@ public class LocalServer extends CrowdServer
                 // in a network environment
                 BootstrapData data = new BootstrapData();
                 data.clientOid = clobj.getOid();
-                data.services = invmgr.getBootstrapServices(groups);
+                data.services = _invmgr.getBootstrapServices(groups);
 
                 // and configure the client to use the server's distributed object manager
                 pclient.standaloneLogon(
-                    data, ((LocalDObjectMgr)omgr).getClientDObjectMgr(clobj.getOid()));
+                    data, ((LocalDObjectMgr)_omgr).getClientDObjectMgr(clobj.getOid()));
             }
 
             public void resolutionFailed (Name username, Exception cause) {
@@ -94,7 +74,7 @@ public class LocalServer extends CrowdServer
                 // TODO: display this error
             }
         };
-        clmgr.resolveClientObject(username, clr);
+        _clmgr.resolveClientObject(username, clr);
     }
 
     /**
@@ -104,4 +84,6 @@ public class LocalServer extends CrowdServer
     {
         client.getContext().getClient().standaloneLogoff();
     }
+
+    @Inject protected ParlorManager _parmgr;
 }
