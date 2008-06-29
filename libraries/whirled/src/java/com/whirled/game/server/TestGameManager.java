@@ -11,16 +11,9 @@ import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.server.InvocationException;
 
 import com.threerings.crowd.data.PlaceObject;
-import com.threerings.crowd.server.CrowdServer;
-
-import com.threerings.bureau.server.BureauRegistry;
-
 import com.threerings.parlor.data.Parameter;
 
 import com.whirled.game.client.WhirledGameService;
-
-import com.whirled.server.WhirledTestServer;
-
 import com.whirled.game.data.ContentPackParameter;
 import com.whirled.game.data.GameData;
 import com.whirled.game.data.GameDefinition;
@@ -109,16 +102,11 @@ public class TestGameManager extends WhirledGameManager
     protected void awardFakeCoins (int[] playerOids)
     {
         for (int playerOid : playerOids) {
-            ClientObject cliObj = (ClientObject) CrowdServer.omgr.getObject(playerOid);
+            ClientObject cliObj = (ClientObject)_omgr.getObject(playerOid);
             if (cliObj != null) {
                 cliObj.postMessage(WhirledGameObject.COINS_AWARDED_MESSAGE,
                     10 /*coins*/, 49 /*percentile*/, Boolean.TRUE /*for real?*/);
             }
         }
-    }
-
-    protected BureauRegistry getBureauRegistry ()
-    {
-        return WhirledTestServer.bureauReg;
     }
 }

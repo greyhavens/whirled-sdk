@@ -3,10 +3,13 @@
 
 package com.whirled.game.server;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 import com.samskivert.util.ArrayIntSet;
 import com.samskivert.util.ArrayUtil;
@@ -33,14 +36,10 @@ import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 
-import com.threerings.crowd.server.CrowdServer;
-
 import com.threerings.bureau.server.BureauRegistry;
 
 import com.threerings.parlor.game.data.GameConfig;
-
 import com.threerings.parlor.game.server.GameManager;
-
 import com.threerings.parlor.turn.server.TurnGameManager;
 
 import com.threerings.util.MessageBundle;
@@ -189,7 +188,7 @@ public abstract class WhirledGameManager extends GameManager
 
         // queue up the start of the next round if requested
         if (nextRoundDelay > 0) {
-            new Interval(CrowdServer.omgr) {
+            new Interval(_omgr) {
                 public void expired () {
                     if (_gameObj.isInPlay()) {
                         _gameObj.setRoundId(-_gameObj.roundId + 1);
@@ -218,7 +217,7 @@ public abstract class WhirledGameManager extends GameManager
 
         // queue up the start of the next game
         if (seconds > 0) {
-            new Interval(CrowdServer.omgr) {
+            new Interval(_omgr) {
                 public void expired () {
                     if (_gameObj.isActive() && !_gameObj.isInPlay()) {
                         startGame();
@@ -242,7 +241,7 @@ public abstract class WhirledGameManager extends GameManager
         validateUser(caller);
 
         if (playerId == TO_ALL) {
-            _gameObj.postMessage(WhirledGameObject.USER_MESSAGE, msg, data, 
+            _gameObj.postMessage(WhirledGameObject.USER_MESSAGE, msg, data,
                 getMessageSenderId(caller));
         } else {
             sendPrivateMessage(caller, playerId, msg, data);
@@ -263,15 +262,14 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     // from WhirledGameProvider
-    public void getDictionaryLetterSet (
-        ClientObject caller, String locale, String dictionary, int count, 
-        InvocationService.ResultListener listener)
+    public void getDictionaryLetterSet (ClientObject caller, String locale, String dictionary,
+                                        int count, InvocationService.ResultListener listener)
         throws InvocationException
     {
         // No negative counts please
         count = Math.max(0, count);
 
-        getDictionaryManager().getLetterSet(locale, dictionary, count, listener);
+        _dictMgr.getLetterSet(locale, dictionary, count, listener);
     }
 
     // from WhirledGameProvider
@@ -283,16 +281,15 @@ public abstract class WhirledGameManager extends GameManager
         // Clamp the words count to 0..100
         count = Math.max(0, Math.min(count, 100));
 
-        getDictionaryManager().getWords(locale, dictionary, count, listener);
+        _dictMgr.getWords(locale, dictionary, count, listener);
     }
     
     // from WhirledGameProvider
-    public void checkDictionaryWord (
-        ClientObject caller, String locale, String dictionary, String word, 
-        InvocationService.ResultListener listener)
+    public void checkDictionaryWord (ClientObject caller, String locale, String dictionary,
+                                     String word, InvocationService.ResultListener listener)
         throws InvocationException
     {
-        getDictionaryManager().checkWord(locale, dictionary, word, listener);
+        _dictMgr.checkWord(locale, dictionary, word, listener);
     }
 
     // from WhirledGameProvider
@@ -303,17 +300,16 @@ public abstract class WhirledGameManager extends GameManager
     {
         validateUser(caller);
         if (_collections == null) {
-            _collections = new HashMap<String, ArrayList<byte[]>>();
+            _collections = Maps.newHashMap();
         }
 
         // figure out if we're adding to an existing collection or creating a new one
-        ArrayList<byte[]> list = null;
+        List<byte[]> list = null;
         if (!clearExisting) {
             list = _collections.get(collName);
         }
         if (list == null) {
-            list = new ArrayList<byte[]>();
-            _collections.put(collName, list);
+            _collections.put(collName, list = Lists.newArrayList());
         }
 
         CollectionUtil.addAll(list, data);
@@ -329,7 +325,7 @@ public abstract class WhirledGameManager extends GameManager
 
         int srcSize = 0;
         if (_collections != null) {
-            ArrayList<byte[]> src = _collections.get(collName);
+            List<byte[]> src = _collections.get(collName);
             srcSize = (src == null) ? 0 : src.size();
             if (srcSize >= count) {
                 byte[][] result = new byte[count][];
@@ -353,11 +349,11 @@ public abstract class WhirledGameManager extends GameManager
                 return;
             }
         }
-        
+
         // TODO: decide what we want to return here
         throw new InvocationException(String.valueOf(srcSize));
     }
-    
+
     // from WhirledGameProvider
     public void mergeCollection (ClientObject caller, String srcColl, String intoColl,
                                  InvocationService.InvocationListener listener)
@@ -368,9 +364,9 @@ public abstract class WhirledGameManager extends GameManager
         // non-existent collections are treated as empty, so if the source doesn't exist, we
         // silently accept it
         if (_collections != null) {
-            ArrayList<byte[]> src = _collections.remove(srcColl);
+            List<byte[]> src = _collections.remove(srcColl);
             if (src != null) {
-                ArrayList<byte[]> dest = _collections.get(intoColl);
+                List<byte[]> dest = _collections.get(intoColl);
                 if (dest == null) {
                     _collections.put(intoColl, src);
                 } else {
@@ -392,7 +388,7 @@ public abstract class WhirledGameManager extends GameManager
             if (_tickers != null) {
                 t = _tickers.get(tickerName);
             } else {
-                _tickers = new HashMap<String, Ticker>();
+                _tickers = Maps.newHashMap();
                 t = null;
             }
 
@@ -443,7 +439,7 @@ public abstract class WhirledGameManager extends GameManager
         _cookieLookups.add(playerOid);
 
         int ppId = getPlayerPersistentId(body);
-        getCookieManager().getCookie(_gameconfig.getGameId(), ppId, new ResultListener<byte[]>() {
+        _cookMgr.getCookie(_gameconfig.getGameId(), ppId, new ResultListener<byte[]>() {
             public void requestCompleted (byte[] result) {
                 // note that we're done with this lookup
                 _cookieLookups.remove(playerOid);
@@ -470,8 +466,8 @@ public abstract class WhirledGameManager extends GameManager
         BodyObject player = validateWritePermission(caller, playerId);
 
         // persist this new cookie
-        getCookieManager().setCookie(
-            _gameconfig.getGameId(), getPlayerPersistentId(player), value);
+        _cookMgr.setCookie(
+            _gameconfig.getGameId(), getPlayerPersistentId((BodyObject)caller), value);
 
         // and update the distributed object
         UserCookie cookie = new UserCookie(player.getOid(), value);
@@ -490,12 +486,12 @@ public abstract class WhirledGameManager extends GameManager
     {
         log.info("Agent ready for " + caller);
         _gameAgentReady = true;
-        
+
         if (allPlayersReady()) {
             playersAllHere();
         }
     }
-    
+
     /**
      * Called privately by the ThaneGameController when anything in the agent's code domain
      * causes a line of debug or error tracing.
@@ -557,32 +553,15 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
-     * Returns the dictionary manager if it has been properly initialized. Throws an INTERNAL_ERROR
-     * exception if it has not.
+     * Sends a private message to the specified player oid (must already be verified).
      */
-    protected DictionaryManager getDictionaryManager ()
-        throws InvocationException
-    {
-        DictionaryManager dictionary = DictionaryManager.getInstance();
-        if (dictionary == null) {
-            log.warning("DictionaryManager not initialized.");
-            throw new InvocationException(INTERNAL_ERROR);
-        }
-        return dictionary;
-    }
-
-    /**
-     * Helper method to send a private message to the specified player oid (must already be
-     * verified).
-     */
-    protected void sendPrivateMessage (
-        ClientObject caller, int playerOid, String msg, Object data)
+    protected void sendPrivateMessage (ClientObject caller, int playerOid, String msg, Object data)
         throws InvocationException
     {
         ClientObject target = null;
 
         if (playerOid == TO_SERVER_AGENT && _gameAgent != null) {
-            target = (ClientObject)CrowdServer.omgr.getObject(_gameAgent.clientOid);
+            target = (ClientObject)_omgr.getObject(_gameAgent.clientOid);
         }
         else {
             target = getPlayerByOid(playerOid);
@@ -644,8 +623,8 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
-     * Get the id of a client object sending a message. Returns {@link #FROM_SERVER} 
-     * if the caller is our server and {@link #FROM_SERVER_AGENT} if the caller is the server 
+     * Get the id of a client object sending a message. Returns {@link #FROM_SERVER}
+     * if the caller is our server and {@link #FROM_SERVER_AGENT} if the caller is the server
      * agent of this game (the game's server-side code). Otherwise returns the client's object id.
      */
     protected int getMessageSenderId (ClientObject caller)
@@ -688,8 +667,7 @@ public abstract class WhirledGameManager extends GameManager
         if (!_gameObj.occupants.contains(oid)) {
             return null;
         }
-        // return the body
-        return (BodyObject) CrowdServer.omgr.getObject(oid);
+        return (BodyObject)_omgr.getObject(oid);
     }
 
     /**
@@ -739,13 +717,13 @@ public abstract class WhirledGameManager extends GameManager
         super.didStartup();
 
         _gameObj = (WhirledGameObject) _plobj;
-        _gameObj.setWhirledGameService((WhirledGameMarshaller)
-            CrowdServer.invmgr.registerDispatcher(new WhirledGameDispatcher(this)));
+        _gameObj.setWhirledGameService(_invmgr.registerDispatcher(new WhirledGameDispatcher(this)));
+        _gameObj.setUserCookies(new DSet<UserCookie>());
 
         // register an agent for this game if required
         _gameAgent = createAgent();
         if (_gameAgent != null) {
-            getBureauRegistry().startAgent(_gameAgent);
+            _bureauReg.startAgent(_gameAgent);
         }
     }
 
@@ -760,7 +738,7 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
-     * Creates the agent for this game. An agent is optional server-side code for a 
+     * Creates the agent for this game. An agent is optional server-side code for a
      * game and is managed by the {@link BureauRegistry}.
      * @return the new agent object or null if the game does not require it
      */
@@ -857,18 +835,18 @@ public abstract class WhirledGameManager extends GameManager
     @Override
     protected void didShutdown ()
     {
-        CrowdServer.invmgr.clearDispatcher(_gameObj.whirledGameService);
+        _invmgr.clearDispatcher(_gameObj.whirledGameService);
         stopTickers();
 
         if (_gameAgent != null) {
-            getBureauRegistry().destroyAgent(_gameAgent);
+            _bureauReg.destroyAgent(_gameAgent);
             _gameAgent = null;
         }
 
         super.didShutdown();
     }
 
-    @Override 
+    @Override
     protected void gameWillStart ()
     {
         // clear out the turn holder in case we're restarting
@@ -877,7 +855,7 @@ public abstract class WhirledGameManager extends GameManager
         super.gameWillStart();
     }
 
-    @Override 
+    @Override
     protected void gameDidStart ()
     {
         super.gameDidStart();
@@ -940,31 +918,6 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
-     * Get the cookie manager, and do a bit of other setup.
-     */
-    protected GameCookieManager getCookieManager ()
-    {
-        if (_cookMgr == null) {
-            _cookMgr = createCookieManager();
-            _gameObj.setUserCookies(new DSet<UserCookie>());
-        }
-        return _cookMgr;
-    }
-
-    /**
-     * Creates the cookie manager we'll use to store user cookies.
-     */
-    protected GameCookieManager createCookieManager ()
-    {
-        return new GameCookieManager();
-    }
-
-    /**
-     * Access the bureaus for this game manager, normally returns the server's global instance.
-     */
-    abstract protected BureauRegistry getBureauRegistry ();
-
-    /**
      * A timer that fires message events to a game.
      */
     protected static class Ticker
@@ -1018,19 +971,16 @@ public abstract class WhirledGameManager extends GameManager
     protected WhirledGameTurnDelegate _turnDelegate;
 
     /** The map of collections, lazy-initialized. */
-    protected HashMap<String, ArrayList<byte[]>> _collections;
+    protected Map<String, List<byte[]>> _collections;
 
     /** The map of tickers, lazy-initialized. */
-    protected HashMap<String, Ticker> _tickers;
+    protected Map<String, Ticker> _tickers;
 
     /** Tracks which cookies are currently being retrieved from the db. */
     protected ArrayIntSet _cookieLookups = new ArrayIntSet();
 
     /** The array of winner oids, after the user has filled it in. */
     protected int[] _winnerOids;
-
-    /** Handles the storage of our user cookies; lazily initialized. */
-    protected GameCookieManager _cookMgr;
 
     /** Tracks whether or not we've auto-started a non-seated game. Unfortunately there's no way to
      * derive this from existing game state. */
@@ -1041,6 +991,15 @@ public abstract class WhirledGameManager extends GameManager
 
     /** Set by <code>agentReady</code>. */
     protected boolean _gameAgentReady;
+
+    /** Handles the storage of our user cookies. */
+    @Inject protected GameCookieManager _cookMgr;
+
+    /** Provides dictionary services. */
+    @Inject protected DictionaryManager _dictMgr;
+
+    /** Provides bureau services. */
+    @Inject protected BureauRegistry _bureauReg;
 
     /** The minimum delay a ticker can have. */
     protected static final int MIN_TICKER_DELAY = 50;

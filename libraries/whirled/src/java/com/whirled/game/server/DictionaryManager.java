@@ -3,29 +3,30 @@
 
 package com.whirled.game.server;
 
-import com.samskivert.util.Invoker;
-import com.samskivert.util.ResultListener;
-
-import com.threerings.crowd.server.CrowdServer;
-
-import com.threerings.presents.client.InvocationService;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import com.samskivert.util.CollectionUtil;
 import com.samskivert.util.CountHashMap;
+import com.samskivert.util.Invoker;
 import com.samskivert.util.RandomUtil;
-import com.samskivert.util.StringUtil;
+import com.samskivert.util.ResultListener;
+
+import com.threerings.presents.annotation.MainInvoker;
+import com.threerings.presents.client.InvocationService;
 
 import static com.whirled.game.Log.log;
 
@@ -45,25 +46,18 @@ import static com.whirled.game.Log.log;
  * NOTE: the dictionary service has not yet been tested with language files written in non-default
  * character encodings.
  */
+@Singleton
 public class DictionaryManager
 {
     /**
-     * Creates the singleton instance of the dictionary service.
+     * Initializes the singleton dictionary manager.
      *
-     * @param prefix used to locate dictionary files in the classpath. A dictionary for "en_US" for
-     * example, would be searched for as "prefix/en_US.wordlist.gz".
+     * @param prefix used to resolve dictionary word files like so:
+     * <code>prefix/locale/wordlist.gz</code>
      */
-    public static void init (String prefix)
+    public void init (String prefix)
     {
-        _singleton = new DictionaryManager(prefix);
-    }
-
-    /**
-     * Get an instance of the dictionary service.
-     */
-    public static DictionaryManager getInstance ()
-    {
-        return _singleton;
+        _prefix = prefix;
     }
 
     /**
@@ -84,7 +78,7 @@ public class DictionaryManager
     public void getLetterSet (final String locale, final String dictionary, final int count,
                               final InvocationService.ResultListener listener)
     {
-        CrowdServer.invoker.postUnit(new Invoker.Unit("DictionaryManager.getLetterSet") {
+        _invoker.postUnit(new Invoker.Unit("DictionaryManager.getLetterSet") {
             public boolean invoke () {
                 Dictionary dict = getDictionary(locale, dictionary);
                 // TODO: see note in header. We should return a char[] directly, and
@@ -113,10 +107,9 @@ public class DictionaryManager
     public void getWords (final String locale, final String dictionary, final int count,
                           final InvocationService.ResultListener listener)
     {
-        CrowdServer.invoker.postUnit(new Invoker.Unit("DictionaryManager.getWords") {
+        _invoker.postUnit(new Invoker.Unit("DictionaryManager.getWords") {
             public boolean invoke () {
                 Dictionary dict = getDictionary(locale, dictionary);
-
                 _set = dict.pickRandomWords(count);
                 return true;
             }
@@ -133,7 +126,7 @@ public class DictionaryManager
     public void checkWord (final String locale, final String dictionary, final String word,
                            final InvocationService.ResultListener listener)
     {
-        CrowdServer.invoker.postUnit(new Invoker.Unit("DictionaryManager.checkWord") {
+        _invoker.postUnit(new Invoker.Unit("DictionaryManager.checkWord") {
             public boolean invoke () {
                 Dictionary dict = getDictionary(locale, dictionary);
                 _result = (dict != null && dict.contains(word));
@@ -144,14 +137,6 @@ public class DictionaryManager
             }
             protected boolean _result;
         });
-    }
-
-    /**
-     * Protected constructor.
-     */
-    protected DictionaryManager (String prefix)
-    {
-        _prefix = prefix;
     }
 
     /**
@@ -276,7 +261,7 @@ public class DictionaryManager
         }
 
         /** The words. */
-        protected HashSet<String> _words = new HashSet<String>();
+        protected Set<String> _words = Sets.newHashSet();
 
         /** Letter array. */
         protected char[] _letters;
@@ -289,8 +274,8 @@ public class DictionaryManager
     protected String _prefix;
 
     /** Map from locale name to Dictionary object. */
-    protected HashMap<String, Dictionary> _dictionaries = new HashMap<String, Dictionary>();
+    protected Map<String, Dictionary> _dictionaries = Maps.newHashMap();
 
-    /** Singleton instance pointer. */
-    protected static DictionaryManager _singleton;
+    /** The invoker on which we load our dictionary files. */
+    @Inject protected @MainInvoker Invoker _invoker;
 }

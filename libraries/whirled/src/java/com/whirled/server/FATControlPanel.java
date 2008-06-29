@@ -133,11 +133,10 @@ public class FATControlPanel extends JFrame
         }
 
         // prepare the server
-        WhirledTestServer.server = _injector.getInstance(FATServer.class);
+        final FATServer server = _injector.getInstance(FATServer.class);
         try {
-            WhirledTestServer.server.init(_injector);
+            server.init(_injector);
         } catch (Exception e) {
-            WhirledTestServer.server = null;
             log.warning("Unable to initialize server.", e);
             _status.setText("Unable to initialize server: " + e.getMessage());
             return;
@@ -150,7 +149,7 @@ public class FATControlPanel extends JFrame
         // start up the server which will handle everything else
         new Thread("WhirledTestServer") {
             public void run () {
-                WhirledTestServer.server.run();
+                server.run();
                 EventQueue.invokeLater(new Runnable() {
                     public void run () {
                         serverDidExit();
@@ -162,7 +161,6 @@ public class FATControlPanel extends JFrame
 
     protected void serverDidExit ()
     {
-        WhirledTestServer.server = null;
         _startA.setEnabled(true);
         _status.setText("Ready...");
     }

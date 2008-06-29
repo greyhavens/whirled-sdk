@@ -5,14 +5,17 @@
 
 package com.whirled.server;
 
+import com.google.inject.Inject;
+
+import com.threerings.presents.server.ShutdownManager;
 import com.threerings.crowd.server.CrowdClient;
 
 /**
  * Handles shutting down the test server when all users have logged off or disconnected.
  */
-public class WhirledTestServerMonitor extends CrowdClient
+public class WhirledTestClient extends CrowdClient
 {
-    // documentation inherited
+    @Override // from CrowdClient
     protected void sessionConnectionClosed ()
     {
         super.sessionConnectionClosed();
@@ -25,7 +28,9 @@ public class WhirledTestServerMonitor extends CrowdClient
 
         // shut down the server when the last person disconnects
         if (_clmgr.getConnectionCount() == 0) {
-            WhirledTestServer.server.shutdown();
+            _shutmgr.shutdown();
         }
     }
+
+    @Inject protected ShutdownManager _shutmgr;
 }
