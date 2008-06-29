@@ -15,7 +15,7 @@ import com.whirled.game.data.WhirledGameMarshaller;
 /**
  * Dispatches requests to the {@link WhirledGameProvider}.
  */
-public class WhirledGameDispatcher extends InvocationDispatcher
+public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarshaller>
 {
     /**
      * Creates a dispatcher that may be registered to dispatch invocation
@@ -27,7 +27,7 @@ public class WhirledGameDispatcher extends InvocationDispatcher
     }
 
     @Override // documentation inherited
-    public InvocationMarshaller createMarshaller ()
+    public WhirledGameMarshaller createMarshaller ()
     {
         return new WhirledGameMarshaller();
     }

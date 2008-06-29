@@ -14,7 +14,7 @@ import com.whirled.game.data.TestMarshaller;
 /**
  * Dispatches requests to the {@link TestProvider}.
  */
-public class TestDispatcher extends InvocationDispatcher
+public class TestDispatcher extends InvocationDispatcher<TestMarshaller>
 {
     /**
      * Creates a dispatcher that may be registered to dispatch invocation
@@ -26,7 +26,7 @@ public class TestDispatcher extends InvocationDispatcher
     }
 
     @Override // documentation inherited
-    public InvocationMarshaller createMarshaller ()
+    public TestMarshaller createMarshaller ()
     {
         return new TestMarshaller();
     }
