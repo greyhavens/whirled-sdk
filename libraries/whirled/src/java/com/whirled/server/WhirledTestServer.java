@@ -50,11 +50,13 @@ import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.server.ParlorManager;
 import com.threerings.parlor.server.ParlorSender;
 
-import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.GameDefinition;
 import com.whirled.game.data.TableMatchConfig;
 import com.whirled.game.data.TestGameDefinition;
+import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.server.DictionaryManager;
+import com.whirled.game.server.GameCookieManager;
+import com.whirled.game.server.PrefsCookieManager;
 import com.whirled.game.server.TestDispatcher;
 import com.whirled.game.server.TestProvider;
 import com.whirled.game.server.WhirledGameManager;
@@ -74,12 +76,9 @@ public class WhirledTestServer extends CrowdServer
     {
         @Override protected void configure () {
             super.configure();
-            // nada (yet)
+            bind(GameCookieManager.class).to(PrefsCookieManager.class);
         }
     }
-
-//     /** The singleton server instance. */
-//     public static WhirledTestServer server;
 
     /**
      * The main entry point for the test server.
@@ -122,7 +121,6 @@ public class WhirledTestServer extends CrowdServer
         });
 
         // initialize our managers
-        // DictionaryManager.init("data/dictionary");
         GameManager.setUserIdentifier(new GameManager.UserIdentifier() {
             public int getUserId (BodyObject bobj) {
                 String username = bobj.username.toString();
@@ -133,6 +131,7 @@ public class WhirledTestServer extends CrowdServer
                 }
             }
         });
+        _dictmgr.init("data/dictionary");
 
         // create and start up our HTTP server
         _httpServer = new WhirledHttpServer(getDocRoot());
@@ -435,4 +434,7 @@ public class WhirledTestServer extends CrowdServer
 
     /** Handles bureau services. */
     @Inject protected BureauRegistry _bureauReg;
+
+    /** Handles dictionary services. */
+    @Inject protected DictionaryManager _dictmgr;
 }
