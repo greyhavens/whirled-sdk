@@ -19,12 +19,16 @@
 // $Id$
 
 package com.whirled.contrib.simplegame.net {
+    import com.whirled.game.GameControl;
+
 
 public class OfflineTickedMessageManager
     implements TickedMessageManager
 {
-    public function OfflineTickedMessageManager (tickIntervalMS :int)
+    public function OfflineTickedMessageManager (gameCtrl :GameControl, tickIntervalMS :int)
     {
+        _gameCtrl = gameCtrl;
+
         _randSeed = uint(Math.random() * uint.MAX_VALUE);
         _tickIntervalMS = tickIntervalMS;
         _msTillNextTick = tickIntervalMS;
@@ -35,7 +39,11 @@ public class OfflineTickedMessageManager
 
     public function setup () :void
     {
-        // no-op
+        // report that we're ready even in offline games, so that
+        // coins can be awarded at the end
+        if (_gameCtrl.isConnected()) {
+            _gameCtrl.game.playerReady();
+        }
     }
 
     public function shutdown () :void
@@ -102,6 +110,7 @@ public class OfflineTickedMessageManager
         return true;
     }
 
+    protected var _gameCtrl :GameControl;
     protected var _tickIntervalMS :int;
     protected var _randSeed :uint;
     protected var _ticks :Array = [];
