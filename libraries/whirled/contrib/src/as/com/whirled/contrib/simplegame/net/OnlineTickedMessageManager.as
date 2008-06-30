@@ -36,11 +36,12 @@ import flash.utils.getTimer;
 public class OnlineTickedMessageManager
     implements TickedMessageManager
 {
-    public function OnlineTickedMessageManager (gameCtrl :GameControl, isFirstPlayer :Boolean, tickIntervalMS :int)
+    public function OnlineTickedMessageManager (gameCtrl :GameControl, isFirstPlayer :Boolean, tickIntervalMS :int, tickMessageName = "t")
     {
         _gameCtrl = gameCtrl;
         _isFirstPlayer = isFirstPlayer;
         _tickIntervalMS = tickIntervalMS;
+        _tickName = tickMessageName;
     }
 
     public function addMessageFactory (messageName :String, factory :MessageFactory) :void
@@ -63,7 +64,7 @@ public class OnlineTickedMessageManager
     {
         _gameCtrl.game.removeEventListener(StateChangedEvent.GAME_STARTED, handleGameStarted);
 
-        _gameCtrl.services.stopTicker("tick");
+        _gameCtrl.services.stopTicker(_tickName);
         _gameCtrl.net.removeEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, msgReceived);
         _receivedFirstTick = false;
     }
@@ -77,7 +78,7 @@ public class OnlineTickedMessageManager
     {
         // When the game starts, start the ticker
         if (_isFirstPlayer) {
-            _gameCtrl.services.startTicker("tick", _tickIntervalMS);
+            _gameCtrl.services.startTicker(_tickName, _tickIntervalMS);
         }
     }
 
@@ -85,7 +86,7 @@ public class OnlineTickedMessageManager
     {
         var name :String = event.name;
 
-        if (name == "tick") {
+        if (name == _tickName) {
             _ticks.push(new Array());
             _receivedFirstTick = true;
         } else {
@@ -206,6 +207,7 @@ public class OnlineTickedMessageManager
     protected var _tickIntervalMS :uint;
 
     protected var _gameCtrl :GameControl;
+    protected var _tickName :String;
     protected var _receivedFirstTick :Boolean;
     protected var _ticks :Array = [];
     protected var _pendingSends :Array = [];
