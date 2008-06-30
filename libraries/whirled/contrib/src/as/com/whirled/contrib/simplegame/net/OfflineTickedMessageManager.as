@@ -19,8 +19,8 @@
 // $Id$
 
 package com.whirled.contrib.simplegame.net {
-    import com.whirled.game.GameControl;
 
+import com.whirled.game.GameControl;
 
 public class OfflineTickedMessageManager
     implements TickedMessageManager
