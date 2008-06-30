@@ -193,8 +193,7 @@
       <sysproperty key="flash.player" value="${player.path}"/>
       <sysproperty key="thane.path" value="${thane.path}"/>
       <classpath>
-        <fileset dir="${build.root}/dist" includes="whirled-code.jar"/>
-        <fileset dir="${build.root}/dist" includes="whirled-data.jar"/>
+        <fileset dir="${build.root}/dist" includes="whirled-tools.jar"/>
         <fileset dir="${build.root}/dist/lib" includes="*.jar"/>
       </classpath>
     </java>

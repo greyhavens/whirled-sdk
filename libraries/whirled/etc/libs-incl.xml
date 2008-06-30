@@ -4,21 +4,12 @@
     <!-- Java dependencies -->
     <include name="ant.jar"/>
     <include name="asc.jar"/>
-    <include name="flexTasks.jar"/>
     <include name="commons-digester.jar"/>
     <include name="commons-collections.jar"/>
     <include name="commons-io.jar"/>
     <include name="commons-lang.jar"/>
     <include name="google-collect.jar"/>
     <include name="guice.jar"/>
-    <include name="jetty-util.jar"/>
-    <include name="jetty.jar"/>
-    <include name="mina-core.jar"/>
-    <include name="slf4j-api.jar"/>
-    <include name="slf4j-jdk14.jar"/>
-    <include name="servlet-*.jar"/>
-    <include name="swfutils-ooo.jar"/>
-    <include name="velocity-1.5-dev.jar"/>
     <!-- these might be named lib-SNAPSHOT-0.0.jar or lib.jar -->
     <include name="samskivert*.jar"/>
     <include name="narya-base*.jar"/>

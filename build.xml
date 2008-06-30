@@ -175,7 +175,8 @@
   <target name="asdoc-whirled" depends="prepare">
     <mkdir dir="${sdk.build}/docs"/>
     <copy todir="${deploy.dir}/tmp/pubas">
-      <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/**" excludes="**/MessageBundle.as **/MessageManager.as **/HashObjectMap.as"/>
+      <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/**"
+               excludes="**/MessageBundle.as **/MessageManager.as **/HashObjectMap.as"/>
       <fileset dir="${projects.dir}/nenya/src/as" includes="com/threerings/flash/**"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/*.as"/>
@@ -338,6 +339,11 @@
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
   <target name="distall" depends="prepare,distprojects,dist,asclient,asserver,sdk">
+  </target>
+
+  <!-- cleans out the compilation results -->
+  <target name="clean">
+    <delete dir="${deploy.dir}/classes"/>
   </target>
 
   <!-- fully cleans out the application -->
