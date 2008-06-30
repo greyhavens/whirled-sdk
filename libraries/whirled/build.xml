@@ -97,7 +97,7 @@
   </target>
 
   <!-- build the java class files -->
-  <target name="compile" depends="check-available,prepare-java">
+  <target name="compile" depends="prepare-java,check-available">
     <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
            debug="on" optimize="off" deprecation="on" target="1.5">
       <classpath refid="classpath"/>
