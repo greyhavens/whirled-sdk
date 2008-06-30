@@ -10,6 +10,7 @@
     <include name="commons-lang.jar"/>
     <include name="google-collect.jar"/>
     <include name="guice.jar"/>
+    <include name="mina-core.jar"/>
     <!-- these might be named lib-SNAPSHOT-0.0.jar or lib.jar -->
     <include name="samskivert*.jar"/>
     <include name="narya-base*.jar"/>

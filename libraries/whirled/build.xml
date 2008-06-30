@@ -12,7 +12,8 @@
   <property name="classes.dir" value="${deploy.dir}/classes"/>
   <property name="javadoc.dir" value="${deploy.dir}/docs"/>
 
-  <property name="libs.dir"     value="lib"/>
+  <!-- import some targets to enumerate library dependencies -->
+  <property name="libs.dir" value="lib"/>
   <import file="etc/libs-incl.xml"/>
 
   <!-- declare our classpath -->
@@ -20,6 +21,13 @@
     <pathelement location="${classes.dir}"/>
     <fileset dir="${deploy.dir}/lib" includes="*.jar"/>
   </path>
+
+  <!-- checks the availability of certain libraries -->
+  <target name="check-available">
+    <available property="mina.present"
+     classname="org.apache.mina.common.IoSession" classpathref="classpath"/>
+    <echo level="info" message="Have MINA: ${mina.present}"/>
+  </target>
 
   <!-- prepares the build directories -->
   <target name="prepare">
@@ -89,12 +97,13 @@
   </target>
 
   <!-- build the java class files -->
-  <target name="compile" depends="prepare-java">
+  <target name="compile" depends="check-available,prepare-java">
     <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
            debug="on" optimize="off" deprecation="on" target="1.5">
       <classpath refid="classpath"/>
       <compilerarg value="-Xlint"/>
       <compilerarg value="-Xlint:-serial"/>
+      <exclude name="com/whirled/server/PolicyServer*" unless="mina.present"/>
     </javac>
   </target>
 
