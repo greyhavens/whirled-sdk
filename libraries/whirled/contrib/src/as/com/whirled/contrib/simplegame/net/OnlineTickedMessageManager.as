@@ -36,7 +36,7 @@ import flash.utils.getTimer;
 public class OnlineTickedMessageManager
     implements TickedMessageManager
 {
-    public function OnlineTickedMessageManager (gameCtrl :GameControl, isFirstPlayer :Boolean, tickIntervalMS :int, tickMessageName = "t")
+    public function OnlineTickedMessageManager (gameCtrl :GameControl, isFirstPlayer :Boolean, tickIntervalMS :int, tickMessageName :String = "t")
     {
         _gameCtrl = gameCtrl;
         _isFirstPlayer = isFirstPlayer;
