@@ -74,6 +74,12 @@ import flash.utils.Timer;
  */
 public class EntityControl extends AbstractControl
 {
+    // special entity type used with getEntityIds()
+    public static const ALL :String = null;
+
+    // special entity id used with getEntityProperty()
+    public static const ME :String = null;
+
     /**
      * @private
      */
@@ -303,6 +309,47 @@ public class EntityControl extends AbstractControl
     }
 
     /**
+     * Enumerates the ids of all entities in this room.
+     *
+     * @param type an optional filter to restrict the results to a particular type of entity.
+     */
+    public function getEntityIds (type :String = ALL) :Array
+    {
+        return callHostCode("getEntityIds_v1", type);
+    }
+
+    /**
+     * Returns the type of the entity with the supplied id.
+     */
+    public function getEntityType (entityId :String = ME) :String
+    {
+        return callHostCode("getEntityType_v1", entityId);
+    }
+
+    /**
+     * Looks up and returns the specified property for the specified entity. Returns null if the entity
+     * does not exist or the entity has no such property.
+     */
+    public function getEntityProperty (key :String, entityId :String = ME) :Object
+    {
+        return callHostCode("getEntityProperty_v1", entityId, key);
+    }
+
+    /**
+     * Registers a function that provides custom entity properties. This should be done immediately
+     * after creating your EntityControl, for example:
+     *
+     * var ctrl :FurniControl = new FurniControl(this);
+     * ctrl.registerPropertyProvider(getEntityProperty);
+     *
+     * @param func signature: function (key :String) :Object
+     */
+    public function registerPropertyProvider (func :Function) :void
+    {
+        _propertyProvider = func;
+    }
+
+    /**
      * Is this client in control?
      *
      * <p>Control is a mutually exclusive lock across all instances of the entity (i.e. running in
@@ -464,6 +511,7 @@ public class EntityControl extends AbstractControl
         o["gotControl_v1"] = gotControl_v1;
         o["messageReceived_v1"] = messageReceived_v1;
         o["signalReceived_v1"] = signalReceived_v1;
+        o["lookupEntityProperty_v1"] = lookupEntityProperty_v1;
     }
 
     /** @private */
@@ -560,6 +608,11 @@ public class EntityControl extends AbstractControl
         recheckTicker();
     }
 
+    protected function lookupEntityProperty_v1 (key :String) :Object
+    {
+        return (_propertyProvider == null ? null : _propertyProvider(key));
+    }
+
     /**
      * Check the status of the ticker, starting or stopping it as necessary.
      * @private
@@ -621,5 +674,8 @@ public class EntityControl extends AbstractControl
 
     /** The default datapack, if any. @private */
     protected var _datapack :ByteArray;
+
+    /** User specified callback to publish properties. */
+    protected var _propertyProvider :Function;
 }
 }
