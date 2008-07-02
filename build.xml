@@ -232,6 +232,8 @@
      <fileset dir="${deploy.dir}">
        <include name="game-client.swf"/>
        <include name="whirled-tools.jar"/>
+       <include name="game-server.abc"/>
+       <include name="game-server-lib.abc"/>
        <include name="lib/**"/>
      </fileset>
      <fileset dir="lib">
@@ -309,6 +311,8 @@
       <copy todir="${sdk.build}/dist/lib" overwrite="true">
         <fileset dir="libraries/thane/bin/${binId}" includes="avmthane*"/>
       </copy>
+      <!-- executable permission must be set manually :( -->
+      <chmod perm="oug+x" file="${sdk.build}/dist/lib/avmthane*"/>
       <zip destfile="${deploy.dir}/whirled_sdk_${platform}.zip"
            basedir="${deploy.dir}/sdk" includes="whirled/**"/>
   </target>
