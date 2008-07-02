@@ -44,6 +44,14 @@ public class NewProjectTask extends Task
         _type = type;
     }
 
+    /**
+     * Sets the url to display for server agent information.
+     */
+    public void setServerAgentInfoUrl (String url)
+    {
+        _serverAgentInfoUrl = url;
+    }
+
     @Override // documentation inherited
     public void execute () throws BuildException
     {
@@ -59,6 +67,22 @@ public class NewProjectTask extends Task
             do {
                 _type = _choiceMap.get(readInput(input, "Enter the number [1-6]?"));
             } while (_type == null);
+        }
+
+        Boolean makeServerAgent = false;
+        if ("Game".equals(_type) && _serverAgentInfoUrl != null) {
+            System.out.println("Whirled games can optionally employ a server agent. This is");
+            System.out.println("recommended for multi-player games, but is more complicated to ");
+            System.out.println("write. For more information, see:");
+            System.out.println();
+            System.out.println("   " + _serverAgentInfoUrl);
+            System.out.println();
+            System.out.println("Do you want your game to employ a server agent?");
+
+            do {
+                String answer = readInput(input, "Enter [y/n]:");
+                makeServerAgent = _boolMap.get(answer.toLowerCase());
+            } while (makeServerAgent == null);
         }
 
         String project;
@@ -79,10 +103,16 @@ public class NewProjectTask extends Task
         HashMap<String, String> subs = new HashMap<String, String>();
         subs.put("project", project);
         subs.put("type", _type.toLowerCase());
+        subs.put("serveragentpropprefix", makeServerAgent ? "" : "<!--");
+        subs.put("serveragentpropsuffix", makeServerAgent ? "" : "-->");
 
         copyFile(input, new File(_templates, "build.xml"), new File(pdir, "build.xml"), subs);
         copyFile(input, new File(_templates, "build.bat"), new File(pdir, "build.bat"), subs);
         copyFile(input, new File(_templates, _type + ".as"), new File(pdir, project + ".as"), subs);
+
+        if (makeServerAgent) {
+            copyFile(input, new File(_templates, "Server.as"), new File(pdir, "Server.as"), subs);
+        }
 
         if ("Backdrop".equals(_type)) {
             String propFile = "backdrop-properties.xml";
@@ -183,6 +213,7 @@ public class NewProjectTask extends Task
     protected File _templates;
     protected boolean _overwriteAll;
     protected Pattern _subre = Pattern.compile("@([A-Za-z0-9]+)@");
+    protected String _serverAgentInfoUrl;
 
     protected static TreeMap<String,String> _choiceMap = new TreeMap<String,String>();
     static {
@@ -192,6 +223,12 @@ public class NewProjectTask extends Task
         _choiceMap.put("4", "Furni");
         _choiceMap.put("5", "Toy");
         _choiceMap.put("6", "Backdrop");
+    }
+
+    protected static TreeMap<String,Boolean> _boolMap = new TreeMap<String,Boolean>();
+    static {
+        _boolMap.put("y", true);
+        _boolMap.put("n", false);
     }
     protected static final String LINE_SEP = System.getProperty("line.separator");
 }

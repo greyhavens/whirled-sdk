@@ -5,6 +5,9 @@
   <property name="app.name" value="@project@"/>
   <property name="app.type" value="@type@"/>
 
+  <!-- set flag for employing a server agent -->
+  @serveragentpropprefix@<property name="app.enable-server-agent" value=""/>@serveragentpropsuffix@
+
   <!-- if you wish to put your source in a subdirectory, uncomment this line -->
   <!--<property name="app.source-dir" value="src"/>-->
 
@@ -16,6 +19,9 @@
 
   <!-- if you need to compile with extra .SWC files, uncomment and edit this line -->
   <!--<property name="app.lib-extras" value="../../../lib/fl-components.swc,../../../lib/tweener.swc"/>-->
+
+  <!-- if you wish to name your server agent class something besides "Server", uncomment and edit this line -->
+  <!--<property name="app.server-agent" value="Server"/>-->
 
   <!-- include the standard build script -->
   <import file="../etc/project-include.xml"/>
