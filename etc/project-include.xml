@@ -224,7 +224,7 @@
     </parameters>
     </echoxml>
     <!-- TODO: create a furni viewer that emulates the server environ and loads up the
-      furni in two flashplayer instances. -->
+      furni in two flashplayer instances? -->
     <exec executable="${player.path}">
       <arg value="${build.root}/dist/viewer.swf"/>
     </exec>
@@ -262,7 +262,7 @@
     </parameters>
     </echoxml>
     <!-- TODO: create a toy viewer that emulates the server environ and loads up the
-      toy in two flashplayer instances. -->
+      toy in two flashplayer instances? -->
     <exec executable="${player.path}">
       <arg value="${build.root}/dist/viewer.swf"/>
     </exec>
@@ -274,11 +274,12 @@
     <parameters>
       <param name="mode" value="101"/>
       <param name="name" value="${app.name}"/>
+      <param name="username" value="Fester Bestertester"/>
       <param name="media" value="file://${build.root}/dist/pet.${app.suffix}"/>
     </parameters>
     </echoxml>
     <!-- TODO: create a pet viewer that emulates the server environ and loads up the
-      pet in two flashplayer instances. -->
+      pet in two flashplayer instances? -->
     <exec executable="${player.path}">
       <arg value="${build.root}/dist/viewer.swf"/>
     </exec>
