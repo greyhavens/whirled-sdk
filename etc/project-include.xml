@@ -182,6 +182,7 @@
   </target>
 
   <target name="test-game" depends="delete-abc,copy-abc">
+    <chmod file="${build.root}/dist/lib/avmthane" perm="ugo+rx"/>
     <copy file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
 
     <!-- start the server which will start up the clients -->
