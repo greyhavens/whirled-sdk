@@ -537,6 +537,10 @@ public class EntityControl extends AbstractControl
         o["gotControl_v1"] = gotControl_v1;
         o["messageReceived_v1"] = messageReceived_v1;
         o["signalReceived_v1"] = signalReceived_v1;
+
+        o["entityEntered_v1"] = entityEntered_v1;
+        o["entityLeft_v1"] = entityLeft_v1;
+        o["entityMoved_v1"] = entityMoved_v1;
         o["lookupEntityProperty_v1"] = lookupEntityProperty_v1;
     }
 
@@ -616,6 +620,29 @@ public class EntityControl extends AbstractControl
         dispatchCtrlEvent(ControlEvent.ROOM_PROPERTY_CHANGED, key, value);
     }
 
+    protected function entityEntered_v1 (entityId :String) :void
+    {
+        dispatchCtrlEvent(ControlEvent.ENTITY_ENTERED, entityId);
+    }
+
+    protected function entityLeft_v1 (entityId :String) :void
+    {
+        dispatchCtrlEvent(ControlEvent.ENTITY_LEFT, entityId);
+    }
+
+    protected function entityMoved_v1 (entityId :String) :void
+    {
+        dispatchCtrlEvent(ControlEvent.ENTITY_MOVED, entityId);
+    }
+
+    /**
+     * Called when some other entity is requesting a property from this sprite.
+     */
+    protected function lookupEntityProperty_v1 (key :String) :Object
+    {
+        return (_propertyProvider == null ? null : _propertyProvider(key));
+    }
+
     /**
      * Called when this client has been assigned control of this object.
      * @private
@@ -632,11 +659,6 @@ public class EntityControl extends AbstractControl
 
         // possibly set up a ticker now
         recheckTicker();
-    }
-
-    protected function lookupEntityProperty_v1 (key :String) :Object
-    {
-        return (_propertyProvider == null ? null : _propertyProvider(key));
     }
 
     /**
