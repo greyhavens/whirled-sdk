@@ -120,6 +120,33 @@ public class ControlEvent extends Event
     public static const HOVER_OUT :String = "hoverOut";
 
     /**
+     * An event dispatched when a new entity has been added to the room.
+     * name: The new entity ID
+     * value: unused
+     *
+     * @eventType entityEntered
+     */
+    public static const ENTITY_ENTERED :String = "entityEntered";
+
+    /**
+     * An event dispatched when an entity has moved around within the room.
+     * name: The moving entity's ID
+     * value: unused
+     *
+     * @eventType entityMoved
+     */
+    public static const ENTITY_MOVED :String = "entityMoved";
+
+    /**
+     * An event dispatched when an entity has been removed from the room.
+     * name: The entity ID. Note that this will no longer exist in the room.
+     * value: unused
+     *
+     * @eventType entityLeft
+     */
+    public static const ENTITY_LEFT :String = "entityLeft";
+
+    /**
      * Retrieve the event target, which will be the Control instance that
      * dispatched this event.
      */

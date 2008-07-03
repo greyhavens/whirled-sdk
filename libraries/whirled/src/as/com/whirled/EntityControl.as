@@ -69,6 +69,27 @@ import flash.utils.Timer;
 [Event(name="timer", type="flash.events.TimerEvent")]
 
 /**
+ * Dispatched when an entity enters the room.
+ *
+ * @eventType com.whirled.ControlEvent.ENTITY_ENTERED
+ */
+[Event(name="entityEntered", type="com.whirled.ControlEvent")]
+
+/**
+ * Dispatched when an entity leaves the room.
+ *
+ * @eventType com.whirled.ControlEvent.ENTITY_LEFT
+ */
+[Event(name="entityLeft", type="com.whirled.ControlEvent")]
+
+/**
+ * Dispatched when an entity in the room (other than the listening entity) changes location.
+ *
+ * @eventType com.whirled.ControlEvent.ENTITY_MOVED
+ */
+[Event(name="entityMoved", type="com.whirled.ControlEvent")]
+
+/**
  * Handles services that are available to all entities in a room.  This includes dispatching
  * trigger events and maintaining memory.
  */
@@ -76,6 +97,11 @@ public class EntityControl extends AbstractControl
 {
     // special entity type used with getEntityIds()
     public static const ALL :String = null;
+
+    // entity types
+    public static const FURNI :String = "furni"; // encompasses furni, decor and toys
+    public static const AVATAR :String = "avatar";
+    public static const PET :String = "pet";
 
     // special entity id used with getEntityProperty()
     public static const ME :String = null;
