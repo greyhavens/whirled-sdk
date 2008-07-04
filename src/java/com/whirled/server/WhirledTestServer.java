@@ -107,15 +107,9 @@ public class WhirledTestServer extends CrowdServer
         // configure the client manager to use the appropriate client class
         _clmgr.setClientFactory(new ClientFactory() {
             public Class<? extends PresentsClient> getClientClass (AuthRequest areq) {
-                if (areq.getCredentials() instanceof BureauCredentials) {
-                    return PresentsClient.class;
-                }
                 return WhirledTestClient.class;
             }
             public Class<? extends ClientResolver> getClientResolverClass (Name username) {
-                if (BureauCredentials.isBureau(username)) {
-                    return ClientResolver.class;
-                }
                 return WhirledTestClientResolver.class;
             }
         });
@@ -142,8 +136,8 @@ public class WhirledTestServer extends CrowdServer
         // register ourselves as handling the test service
         _invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
 
-        // TODO: should the bureau have multiple ports?
-        _bureauReg.init("localhost:" + getListenPorts()[0]);
+        _bureauReg.init();
+        _bureauReg.addClientFactory(_clmgr);
         _bureauReg.setCommandGenerator(WhirledGameManager.THANE_BUREAU, this);
 
         // prepare the game and start the clients
@@ -183,16 +177,9 @@ public class WhirledTestServer extends CrowdServer
     }
 
     public String[] createCommand (
-        String serverNameAndPort,
         String bureauId,
         String token)
     {
-        String localhostPrefix = "localhost:";
-        if (!serverNameAndPort.startsWith(localhostPrefix)) {
-            log.warning("Cannot connect to " + 
-                serverNameAndPort);
-        }
-
         ABCLibs abcLibs = new ABCLibs();
         List<String> args = Lists.newArrayList();
         args.add(System.getProperty("thane.path"));
@@ -201,7 +188,7 @@ public class WhirledTestServer extends CrowdServer
         args.add("--");
         args.add(bureauId);
         args.add(token);
-        args.add(serverNameAndPort.substring(localhostPrefix.length()));
+        args.add(String.valueOf(getListenPorts()[0]));
         log.info("Bureau arguments: " + StringUtil.toString(args));
         return args.toArray(new String[args.size()]);
     }
