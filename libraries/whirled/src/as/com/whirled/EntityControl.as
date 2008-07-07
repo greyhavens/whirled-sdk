@@ -376,6 +376,14 @@ public class EntityControl extends AbstractControl
     }
 
     /**
+     * Deletes this entity from the player's inventory and removed it from the room.
+     */
+    public function selfDestruct () :void
+    {
+        callHostCode("selfDestruct_v1");
+    }
+
+    /**
      * Is this client in control?
      *
      * <p>Control is a mutually exclusive lock across all instances of the entity (i.e. running in
