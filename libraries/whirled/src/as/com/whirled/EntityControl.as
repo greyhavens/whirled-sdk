@@ -341,7 +341,8 @@ public class EntityControl extends AbstractControl
      */
     public function getEntityIds (type :String = ALL) :Array
     {
-        return callHostCode("getEntityIds_v1", type);
+        var entities :Array = callHostCode("getEntityIds_v1", type);
+        return (entities == null) ? [] : entities;
     }
 
     /**
