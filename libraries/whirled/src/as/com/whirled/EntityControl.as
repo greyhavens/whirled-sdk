@@ -136,7 +136,7 @@ public class EntityControl extends AbstractControl
         super(disp);
 
         if (Object(this).constructor == EntityControl) {
-            throw new Error("Do not directly use EntityContrl. " +
+            throw new Error("Do not directly use EntityControl. " +
                 "Use the appropriate subclass: AvatarControl, FurniControl, etc.");
         }
     }
