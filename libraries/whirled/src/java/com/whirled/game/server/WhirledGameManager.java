@@ -54,6 +54,7 @@ import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.ThaneGameConfig;
 import com.whirled.game.data.GameDefinition;
 
+import com.whirled.bureau.data.BureauTypes;
 import com.whirled.bureau.data.GameAgentObject;
 
 import static com.whirled.game.Log.log;
@@ -64,9 +65,6 @@ import static com.whirled.game.Log.log;
 public abstract class WhirledGameManager extends GameManager
     implements WhirledGameCodes, WhirledGameProvider, TurnGameManager
 {
-    /** Bureau type for launching a thane vm. */
-    public static final String THANE_BUREAU = "thane";
-
     /** The default class name to use for the game agent. */
     public static final String DEFAULT_SERVER_CLASS = "Server";
 
@@ -561,7 +559,9 @@ public abstract class WhirledGameManager extends GameManager
         ClientObject target = null;
 
         if (playerOid == TO_SERVER_AGENT && _gameAgent != null) {
-            target = (ClientObject)_omgr.getObject(_gameAgent.clientOid);
+            com.threerings.presents.dobj.DObject dobj = _omgr.getObject(_gameAgent.clientOid);
+            log.info("Agent object", "dobj", dobj);
+            target = (ClientObject)dobj;
         }
         else {
             target = getPlayerByOid(playerOid);
@@ -758,7 +758,7 @@ public abstract class WhirledGameManager extends GameManager
         gameAgentObj.config = new ThaneGameConfig(id, def);
         gameAgentObj.bureauId = "whirled-game-" + def.getBureauId(id);
         // We assume this is a thane/tamarin abc pacakage. TODO: do we need to check that?
-        gameAgentObj.bureauType = THANE_BUREAU;
+        gameAgentObj.bureauType = BureauTypes.THANE;
         gameAgentObj.code = code;
         if (StringUtil.isBlank(def.server)) {
             gameAgentObj.className = DEFAULT_SERVER_CLASS;

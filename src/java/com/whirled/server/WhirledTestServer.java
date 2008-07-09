@@ -50,6 +50,7 @@ import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.server.ParlorManager;
 import com.threerings.parlor.server.ParlorSender;
 
+import com.whirled.bureau.data.BureauTypes;
 import com.whirled.game.data.GameDefinition;
 import com.whirled.game.data.TableMatchConfig;
 import com.whirled.game.data.TestGameDefinition;
@@ -138,7 +139,7 @@ public class WhirledTestServer extends CrowdServer
 
         _bureauReg.init();
         _bureauReg.addClientFactory(_clmgr);
-        _bureauReg.setCommandGenerator(WhirledGameManager.THANE_BUREAU, this);
+        _bureauReg.setCommandGenerator(BureauTypes.THANE, this);
 
         // prepare the game and start the clients
         prepareGame();
