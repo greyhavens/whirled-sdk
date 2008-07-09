@@ -107,6 +107,28 @@ public class EntityControl extends AbstractControl
     public static const ME :String = null;
 
     /**
+     * The entity's location in logical coordinates (an Array [ x, y, z ]). x, y, and z are Numbers
+     * between 0 and 1 or null if our location is unknown. Use with getEntityProperty().
+     */
+    public static const LOCATION_LOGICAL :String = "std:location_logical";
+
+    /**
+     * The entity's location in pixel coordinates (an Array [ x, y, z ]). Obviously there is not a
+     * real Z coordinate, but the value will coorrespond to real Z distance in proportion to the
+     * distance in X and Y. Use with getEntityProperty().
+     */
+    public static const LOCATION_PIXEL :String = "std:location_pixel";
+
+    /** The entity's hot spot (an Array [x, y]). Use with getEntityProperty(). */
+    public static const HOTSPOT :String = "std:hotspot";
+
+    /** The entity pixel dimensions (an Array [width, height]). Use with getEntityProperty(). */
+    public static const DIMENSIONS :String = "std:dimensions";
+
+    /** The entity facing direction (a Number). Use with getEntityProperty(). */
+    public static const ORIENTATION :String = "std:orientation";
+
+    /**
      * @private
      */
     public function EntityControl (disp :DisplayObject)
