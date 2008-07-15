@@ -129,6 +129,18 @@ public class EntityControl extends AbstractControl
     public static const ORIENTATION :String = "std:orientation";
 
     /**
+     * The display name of the entity for avatars and pets. Invalid entity types will return null.
+     * Use with getEntityProperty().
+     */
+    public static const NAME :String = "std:name";
+
+    /**
+     * The Whirled player ID of the owner on an avatar. Querying this on non-avatars returns null.
+     * Use with getEntityProperty().
+     */
+    public static const MEMBER_ID :String = "std:member_id";
+
+    /**
      * @private
      */
     public function EntityControl (disp :DisplayObject)
@@ -359,7 +371,7 @@ public class EntityControl extends AbstractControl
     /**
      * Enumerates the ids of all entities in this room.
      *
-     * @param type an optional filter to restrict the results to a particular type of entity.
+     * @param type an optional filter to restrict the results to a particular type of entity. @default ALL
      */
     public function getEntityIds (type :String = ALL) :Array
     {
@@ -369,6 +381,7 @@ public class EntityControl extends AbstractControl
 
     /**
      * Returns the type of the entity with the supplied id.
+     * @param entityId the type of entity to query @default ME
      */
     public function getEntityType (entityId :String = ME) :String
     {
@@ -754,7 +767,7 @@ public class EntityControl extends AbstractControl
     /** The default datapack, if any. @private */
     protected var _datapack :ByteArray;
 
-    /** User specified callback to publish properties. */
+    /** User specified callback to publish properties. @private */
     protected var _propertyProvider :Function;
 }
 }

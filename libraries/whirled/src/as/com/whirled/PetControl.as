@@ -52,7 +52,7 @@ public class PetControl extends ActorControl
     {
         super.setUserProps(o);
 
-        o["receivedChat_v1"] = receivedChat_v1;
+        o["receivedChat_v2"] = receivedChat_v2;
     }
 
     /**
@@ -61,10 +61,10 @@ public class PetControl extends ActorControl
      * otherwise the line will be ignored.
      * @private
      */
-    protected function receivedChat_v1 (speaker :String, message :String) :void
+    protected function receivedChat_v2 (entityId :String, message :String) :void
     {
         if (_hasControl) {
-            dispatchCtrlEvent(ControlEvent.RECEIVED_CHAT, speaker, message);
+            dispatchCtrlEvent(ControlEvent.RECEIVED_CHAT, entityId, message);
         }
     }
 }

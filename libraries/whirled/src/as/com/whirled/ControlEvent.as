@@ -92,7 +92,7 @@ public class ControlEvent extends Event
     public static const ROOM_PROPERTY_CHANGED :String = "roomPropertyChanged";
 
     /** An event type dispatched to pets, when they overhear chatter in the room.
-     * name: speaker name
+     * name: the speaker's entity ID
      * value: chat message
      *
      * @eventType receivedChat
