@@ -129,14 +129,14 @@ public class EntityControl extends AbstractControl
     public static const ORIENTATION :String = "std:orientation";
 
     /**
-     * The display name of the entity for avatars and pets. Invalid entity types will return null.
-     * Use with getEntityProperty().
+     * The non-unique display name of the entity for avatars and pets.
+     * Invalid entity types will return null. Use with getEntityProperty().
      */
     public static const NAME :String = "std:name";
 
     /**
-     * The Whirled player ID of the owner on an avatar. Querying this on non-avatars returns null.
-     * Use with getEntityProperty().
+     * The unique Whirled player ID of the owner on an avatar.
+     * Querying this on non-avatars returns null. Use with getEntityProperty().
      */
     public static const MEMBER_ID :String = "std:member_id";
 
@@ -395,6 +395,15 @@ public class EntityControl extends AbstractControl
     public function getEntityProperty (key :String, entityId :String = ME) :Object
     {
         return callHostCode("getEntityProperty_v1", entityId, key);
+    }
+
+    /**
+     * Returns the Whirled-wide unique ID of this copy of the entity. Multiple copies of the same
+     * avatar in a room, for example, each have different entity IDs.
+     */
+    public function getMyEntityId () :String
+    {
+        return callHostCode("getMyEntityId_v1");
     }
 
     /**
@@ -664,16 +673,19 @@ public class EntityControl extends AbstractControl
         dispatchCtrlEvent(ControlEvent.ROOM_PROPERTY_CHANGED, key, value);
     }
 
+    /** @private */
     protected function entityEntered_v1 (entityId :String) :void
     {
         dispatchCtrlEvent(ControlEvent.ENTITY_ENTERED, entityId);
     }
 
+    /** @private */
     protected function entityLeft_v1 (entityId :String) :void
     {
         dispatchCtrlEvent(ControlEvent.ENTITY_LEFT, entityId);
     }
 
+    /** @private */
     protected function entityMoved_v1 (entityId :String) :void
     {
         dispatchCtrlEvent(ControlEvent.ENTITY_MOVED, entityId);
