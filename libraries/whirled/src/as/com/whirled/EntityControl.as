@@ -95,51 +95,6 @@ import flash.utils.Timer;
  */
 public class EntityControl extends AbstractControl
 {
-    // special entity type used with getEntityIds()
-    public static const ALL :String = null;
-
-    // entity types
-    public static const FURNI :String = "furni"; // encompasses furni, decor and toys
-    public static const AVATAR :String = "avatar";
-    public static const PET :String = "pet";
-
-    // special entity id used with getEntityProperty()
-    public static const ME :String = null;
-
-    /**
-     * The entity's location in logical coordinates (an Array [ x, y, z ]). x, y, and z are Numbers
-     * between 0 and 1 or null if our location is unknown. Use with getEntityProperty().
-     */
-    public static const LOCATION_LOGICAL :String = "std:location_logical";
-
-    /**
-     * The entity's location in pixel coordinates (an Array [ x, y, z ]). Obviously there is not a
-     * real Z coordinate, but the value will coorrespond to real Z distance in proportion to the
-     * distance in X and Y. Use with getEntityProperty().
-     */
-    public static const LOCATION_PIXEL :String = "std:location_pixel";
-
-    /** The entity's hot spot (an Array [x, y]). Use with getEntityProperty(). */
-    public static const HOTSPOT :String = "std:hotspot";
-
-    /** The entity pixel dimensions (an Array [width, height]). Use with getEntityProperty(). */
-    public static const DIMENSIONS :String = "std:dimensions";
-
-    /** The entity facing direction (a Number). Use with getEntityProperty(). */
-    public static const ORIENTATION :String = "std:orientation";
-
-    /**
-     * The non-unique display name of the entity for avatars and pets.
-     * Invalid entity types will return null. Use with getEntityProperty().
-     */
-    public static const NAME :String = "std:name";
-
-    /**
-     * The unique Whirled player ID of the owner on an avatar.
-     * Querying this on non-avatars returns null. Use with getEntityProperty().
-     */
-    public static const MEMBER_ID :String = "std:member_id";
-
     /**
      * @private
      */
@@ -371,9 +326,9 @@ public class EntityControl extends AbstractControl
     /**
      * Enumerates the ids of all entities in this room.
      *
-     * @param type an optional filter to restrict the results to a particular type of entity. @default ALL
+     * @param type an optional filter to restrict the results to a particular type of entity.
      */
-    public function getEntityIds (type :String = ALL) :Array
+    public function getEntityIds (type :String = null) :Array
     {
         var entities :Array = callHostCode("getEntityIds_v1", type);
         return (entities == null) ? [] : entities;
@@ -381,9 +336,9 @@ public class EntityControl extends AbstractControl
 
     /**
      * Returns the type of the entity with the supplied id.
-     * @param entityId the type of entity to query @default ME
+     * @param entityId the type of entity to query
      */
-    public function getEntityType (entityId :String = ME) :String
+    public function getEntityType (entityId :String = null) :String
     {
         return callHostCode("getEntityType_v1", entityId);
     }
@@ -392,7 +347,7 @@ public class EntityControl extends AbstractControl
      * Looks up and returns the specified property for the specified entity. Returns null if the entity
      * does not exist or the entity has no such property.
      */
-    public function getEntityProperty (key :String, entityId :String = ME) :Object
+    public function getEntityProperty (key :String, entityId :String = null) :Object
     {
         return callHostCode("getEntityProperty_v1", entityId, key);
     }
