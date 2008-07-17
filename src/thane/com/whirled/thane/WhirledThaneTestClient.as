@@ -12,6 +12,6 @@ trace("Hello world from WhirledThaneTestClient!");
 public class WhirledThaneTestClient
 {
     WhirledBureauClient.main(
-        System.argv, "0", new HttpUserCodeLoader());
+        System.argv, "0", new HttpUserCodeLoader(), null);
 }
 }
