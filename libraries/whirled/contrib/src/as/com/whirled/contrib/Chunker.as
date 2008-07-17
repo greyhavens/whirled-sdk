@@ -28,7 +28,7 @@ import com.whirled.EntityControl;
  */
 public class Chunker extends EventDispatcher
 {
-    public function Chunker (ctrl :EntityControl, msgName :String)
+    public function Chunker (ctrl :EntityControl, msgName :String = "data")
     {
         _ctrl = ctrl;
         _msgName = msgName;
@@ -40,7 +40,6 @@ public class Chunker extends EventDispatcher
     /**
      * Send this data to all instances of this entity. The message will be chunked
      * and sent very nicely.
-     * TODO: accept arbitrary args?
      */
     public function send (data :ByteArray) :void
     {
@@ -48,8 +47,23 @@ public class Chunker extends EventDispatcher
         _outData = new ByteArray();
         _outData.writeBytes(data);
         _outData.position = 0;
+        _isObject = false;
 
         // send the first chunk now
+        checkSendChunk();
+    }
+
+    /**
+     * Send the specified object, which must be AMF3 encodeable, to all
+     * instances of this entity.
+     */
+    public function sendObject (object :Object) :void
+    {
+        _outData = new ByteArray();
+        _outData.writeObject(object);
+        _outData.position = 0;
+        _isObject = true;
+
         checkSendChunk();
     }
 
@@ -87,6 +101,9 @@ public class Chunker extends EventDispatcher
         }
         if (newPosition == _outData.length) {
             tokens |= END_TOKEN;
+            if (_isObject) {
+                tokens |= OBJECT_TOKEN;
+            }
         }
 
         var outBytes :ByteArray = new ByteArray();
@@ -120,13 +137,17 @@ public class Chunker extends EventDispatcher
         _inData.position += inBytes.length - 1;
 
         if ((tokens & END_TOKEN) != NO_TOKENS) {
-            var finalValue :ByteArray = _inData;
+            // We're done!
+            _inData.position = 0;
+            var isObject :Boolean = ((tokens & OBJECT_TOKEN) != NO_TOKENS);
+            var value :Object = isObject ? _inData.readObject() : _inData;
             _inData = null;
-            finalValue.position = 0;
-            dispatchEvent(new ValueEvent(Event.COMPLETE, finalValue));
-        }
+            dispatchEvent(new ValueEvent(Event.COMPLETE, value));
 
-        checkSendChunk();
+        } else {
+            // We're not done, so check now to see if we want to send the next piece.
+            checkSendChunk();
+        }
     }
 
     /**
@@ -164,6 +185,9 @@ public class Chunker extends EventDispatcher
     /** The data we're currently sending. */
     protected var _outData :ByteArray;
 
+    /** Whether the _outData is an object and should be decoded on the other end. */
+    protected var _isObject :Boolean;
+
     /** The data we're currently receiving. */
     protected var _inData :ByteArray;
 
@@ -171,10 +195,14 @@ public class Chunker extends EventDispatcher
     protected static const NO_TOKENS :int = 0;
     protected static const START_TOKEN :int = 1 << 0;
     protected static const END_TOKEN :int = 1 << 1;
+    protected static const OBJECT_TOKEN :int = 1 << 2;
 
-    /** The maximum size of our chunks. Whirled enforces a 1024 byte limit, after
-     * it encodes into AMF3. So we lop off 10 bytes just to be safe. */
-    protected static const MAX_CHUNK_DATA :int = 1014;
+    /** The maximum size of our chunks. Whirled enforces a post-AMF3 1024 byte limit,
+     * so we want to use all of that. In AMF3, one byte is used to encode "ByteArray", followed
+     * by the length, which will be two bytes because 1024-ish is larger than 2^7 but less
+     * than 2^14. So the AMF3 encoding takes 3 bytes, plus there's our 1 byte header for each
+     * chunk, leaving us 1020 bytes for our chunk size. */
+    protected static const MAX_CHUNK_DATA :int = 1020;
 
     /** The minimum time between sends. This is even fairly aggressive. Using
      * other values may "work" but then certain times they may not work, so you're
