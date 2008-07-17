@@ -687,6 +687,7 @@ public class EntityControl extends AbstractControl
 
     /**
      * Called when some other entity is requesting a property from this sprite.
+     * @private
      */
     protected function lookupEntityProperty_v1 (key :String) :Object
     {
