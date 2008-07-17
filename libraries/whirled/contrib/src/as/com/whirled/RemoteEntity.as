@@ -1,4 +1,4 @@
-package com.whirled {
+package com.whirled.contrib {
 
 import com.whirled.EntityControl;
 
