@@ -4,6 +4,15 @@ import com.whirled.EntityControl;
 
 /**
  * A helper proxy for accessing properties of another entity in the room.
+ *
+ * @example
+ * <listing version="3.0">
+ * var remote :RemoteEntity = new RemoteEntity(_ctrl, someTargetId);
+ * if (remote.get("apples") < remote.get("oranges")) {
+ *     trace("Giving a couple dozen apples to " + remote.getName());
+ *     remote.call("bobForApples", 24);
+ * }
+ * </listing>
  */
 public class RemoteEntity
 {
@@ -71,10 +80,10 @@ public class RemoteEntity
         return get(EntityControl.PROP_MEMBER_ID) as int;
     }
 
-    /** @private */
+    /** Your code's EntityControl. */
     protected var _ctrl :EntityControl;
 
-    /** @private */
+    /** The unique identifier of this entity. */
     protected var _entityId :String;
 }
 
