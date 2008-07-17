@@ -145,18 +145,17 @@ public class WhirledTestServer extends CrowdServer
         _clmgr.addClientObserver(new ClientManager.ClientObserver () {
             public void clientSessionDidEnd (PresentsClient client) {
                 // shut down the server when the last non-buraeu disconnects
-                if (_clmgr.getConnectionCount() == 0 || 
-                    (_clmgr.getConnectionCount() == 1 && _hasBureau)) {
+                if (_clmgr.getConnectionCount() == _bureauClients) {
                     _shutmgr.shutdown();
                 }
             }
             public void clientSessionDidStart (PresentsClient client) {
-                // set the bureau flag if not a test client
+                // increment our bureau counter if not a test client
                 if (!(client instanceof WhirledTestClient)) {
-                    _hasBureau = true;
+                    _bureauClients++;
                 }
             }
-            protected boolean _hasBureau;
+            protected int _bureauClients;
         });
 
         // prepare the game and start the clients
