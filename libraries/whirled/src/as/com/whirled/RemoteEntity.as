@@ -71,7 +71,10 @@ public class RemoteEntity
         return get(EntityControl.PROP_MEMBER_ID) as int;
     }
 
+    /** @private */
     protected var _ctrl :EntityControl;
+
+    /** @private */
     protected var _entityId :String;
 }
 
