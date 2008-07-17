@@ -25,12 +25,5 @@ public class WhirledTestClient extends CrowdClient
         if (_clobj != null) {
             safeEndSession();
         }
-
-        // shut down the server when the last person disconnects
-        if (_clmgr.getConnectionCount() == 0) {
-            _shutmgr.shutdown();
-        }
     }
-
-    @Inject protected ShutdownManager _shutmgr;
 }

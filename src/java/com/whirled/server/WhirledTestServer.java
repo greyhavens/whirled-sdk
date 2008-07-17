@@ -32,6 +32,7 @@ import com.threerings.presents.data.InvocationCodes;
 import com.threerings.presents.dobj.RootDObjectManager;
 import com.threerings.presents.net.AuthRequest;
 import com.threerings.presents.server.ClientFactory;
+import com.threerings.presents.server.ClientManager;
 import com.threerings.presents.server.ClientResolver;
 import com.threerings.presents.server.InvocationManager;
 import com.threerings.presents.server.PresentsClient;
@@ -140,6 +141,23 @@ public class WhirledTestServer extends CrowdServer
         _bureauReg.init();
         _bureauReg.addClientFactory(_clmgr);
         _bureauReg.setCommandGenerator(BureauTypes.THANE, this);
+
+        _clmgr.addClientObserver(new ClientManager.ClientObserver () {
+            public void clientSessionDidEnd (PresentsClient client) {
+                // shut down the server when the last non-buraeu disconnects
+                if (_clmgr.getConnectionCount() == 0 || 
+                    (_clmgr.getConnectionCount() == 1 && _hasBureau)) {
+                    _shutmgr.shutdown();
+                }
+            }
+            public void clientSessionDidStart (PresentsClient client) {
+                // set the bureau flag if not a test client
+                if (!(client instanceof WhirledTestClient)) {
+                    _hasBureau = true;
+                }
+            }
+            protected boolean _hasBureau;
+        });
 
         // prepare the game and start the clients
         prepareGame();
