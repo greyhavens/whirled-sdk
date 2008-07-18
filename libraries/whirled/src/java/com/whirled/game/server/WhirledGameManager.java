@@ -756,9 +756,9 @@ public abstract class WhirledGameManager extends GameManager
         GameAgentObject gameAgentObj = new GameAgentObject();
         gameAgentObj.gameOid = _gameObj.getOid();
         gameAgentObj.config = new ThaneGameConfig(id, def);
-        gameAgentObj.bureauId = "whirled-game-" + def.getBureauId(id);
+        gameAgentObj.bureauId = BureauTypes.GAME_BUREAU_ID_PREFIX + def.getBureauId(id);
         // We assume this is a thane/tamarin abc pacakage. TODO: do we need to check that?
-        gameAgentObj.bureauType = BureauTypes.THANE;
+        gameAgentObj.bureauType = BureauTypes.THANE_BUREAU_TYPE;
         gameAgentObj.code = code;
         if (StringUtil.isBlank(def.server)) {
             gameAgentObj.className = DEFAULT_SERVER_CLASS;

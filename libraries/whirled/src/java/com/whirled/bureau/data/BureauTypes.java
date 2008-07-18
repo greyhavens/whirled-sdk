@@ -4,5 +4,11 @@ package com.whirled.bureau.data;
 public interface BureauTypes
 {
     /** Bureau type for launching a thane vm. */
-    public static final String THANE = "thane";
+    @Deprecated public static final String THANE = "thane";
+
+    /** Bureau type for launching a thane vm. */
+    public static final String THANE_BUREAU_TYPE = "thane";
+
+    /** Prefix for game bureau ids. */
+    public static final String GAME_BUREAU_ID_PREFIX = "whirled-game-";
 }
