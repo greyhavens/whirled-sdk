@@ -18,6 +18,7 @@ import com.whirled.EntityControl;
 
 /**
  * Dispatched when the chunks are reconstituted and ready to use.
+ * The 'value' property will contain the received data.
  *
  * @eventType Event.COMPLETE
  */
@@ -25,45 +26,69 @@ import com.whirled.EntityControl;
 
 /**
  * Chunks data to other instances of the entity being used.
+ *
+ * Author: Ray Greenwell <ray@threerings.net>
  */
 public class Chunker extends EventDispatcher
 {
-    public function Chunker (ctrl :EntityControl, msgName :String = "data")
+    /**
+     * Construct a Chunker.
+     *
+     * @param ctrl your AvatarControl or ToyControl, etc.
+     * @param msgName the name of the message to use for data sent using this chunker.
+     * @param receivedCallback may be specified instead of listening for the complete event,
+     * this function will be invoked when the data is received.
+     * Signature: function (data :Object) :void;
+     */
+    public function Chunker (
+        ctrl :EntityControl, msgName :String = "chunk", receivedCallback :Function = null)
     {
         _ctrl = ctrl;
         _msgName = msgName;
 
         _ctrl.addEventListener(ControlEvent.MESSAGE_RECEIVED, handleMessage);
         _ctrl.addEventListener(Event.UNLOAD, handleUnload);
+
+        if (receivedCallback != null) {
+            addEventListener(Event.COMPLETE, function (event :ValueEvent) :void {
+                receivedCallback(event.value);
+            });
+        }
     }
 
     /**
-     * Send this data to all instances of this entity. The message will be chunked
-     * and sent very nicely.
+     * Send this data to all instances of this entity in chunked and throttled messages.
+     *
+     * @param data a ByteArray or any other object graph that can be serialized to AMF3.
+     * @param tryCompress whether to try to compress. Pass false if the data you're sending
+     * is already compressed and you don't want to waste CPU trying.
      */
-    public function send (data :ByteArray) :void
+    public function send (data :Object, tryCompress :Boolean = true) :void
     {
         // don't trust the specified array to be unmolested
         _outData = new ByteArray();
-        _outData.writeBytes(data);
+        _outTokens = NO_TOKENS;
+        if (data is ByteArray) {
+            _outData.writeBytes(data as ByteArray);
+
+        } else {
+            _outData.writeObject(data);
+            _outTokens |= OBJECT_TOKEN;
+        }
+        var length :int = _outData.length;
+        if (tryCompress) {
+            _outData.compress();
+            if (length > _outData.length) {
+                _outTokens |= COMPRESSED_TOKEN;
+
+            } else {
+                // rollback!
+                _outData.uncompress();
+            }
+        }
         _outData.position = 0;
-        _isObject = false;
 
         // send the first chunk now
-        checkSendChunk();
-    }
-
-    /**
-     * Send the specified object, which must be AMF3 encodeable, to all
-     * instances of this entity.
-     */
-    public function sendObject (object :Object) :void
-    {
-        _outData = new ByteArray();
-        _outData.writeObject(object);
-        _outData.position = 0;
-        _isObject = true;
-
         checkSendChunk();
     }
 
@@ -95,15 +120,12 @@ public class Chunker extends EventDispatcher
         const toSend :int = Math.min(MAX_CHUNK_DATA, _outData.bytesAvailable);
         const newPosition :int = _outData.position + toSend;
 
-        var tokens :int = NO_TOKENS;
+        var tokens :int = _outTokens;
         if (_outData.position == 0) {
             tokens |= START_TOKEN;
         }
         if (newPosition == _outData.length) {
             tokens |= END_TOKEN;
-            if (_isObject) {
-                tokens |= OBJECT_TOKEN;
-            }
         }
 
         var outBytes :ByteArray = new ByteArray();
@@ -136,18 +158,21 @@ public class Chunker extends EventDispatcher
         inBytes.readBytes(_inData, _inData.position);
         _inData.position += inBytes.length - 1;
 
-        if ((tokens & END_TOKEN) != NO_TOKENS) {
-            // We're done!
-            _inData.position = 0;
-            var isObject :Boolean = ((tokens & OBJECT_TOKEN) != NO_TOKENS);
-            var value :Object = isObject ? _inData.readObject() : _inData;
-            _inData = null;
-            dispatchEvent(new ValueEvent(Event.COMPLETE, value));
-
-        } else {
+        if ((tokens & END_TOKEN) == NO_TOKENS) {
             // We're not done, so check now to see if we want to send the next piece.
             checkSendChunk();
+            return;
         }
+
+        // We're all done!
+        if ((tokens & COMPRESSED_TOKEN) != NO_TOKENS) {
+            _inData.uncompress();
+        }
+        _inData.position = 0;
+        var isObject :Boolean = ((tokens & OBJECT_TOKEN) != NO_TOKENS);
+        var value :Object = isObject ? _inData.readObject() : _inData;
+        _inData = null;
+        dispatchEvent(new ValueEvent(Event.COMPLETE, value));
     }
 
     /**
@@ -185,8 +210,8 @@ public class Chunker extends EventDispatcher
     /** The data we're currently sending. */
     protected var _outData :ByteArray;
 
-    /** Whether the _outData is an object and should be decoded on the other end. */
-    protected var _isObject :Boolean;
+    /** Some tokens describing the format of the _outData. */
+    protected var _outTokens :int;
 
     /** The data we're currently receiving. */
     protected var _inData :ByteArray;
@@ -196,6 +221,7 @@ public class Chunker extends EventDispatcher
     protected static const START_TOKEN :int = 1 << 0;
     protected static const END_TOKEN :int = 1 << 1;
     protected static const OBJECT_TOKEN :int = 1 << 2;
+    protected static const COMPRESSED_TOKEN :int = 1 << 3;
 
     /** The maximum size of our chunks. Whirled enforces a post-AMF3 1024 byte limit,
      * so we want to use all of that. In AMF3, one byte is used to encode "ByteArray", followed
