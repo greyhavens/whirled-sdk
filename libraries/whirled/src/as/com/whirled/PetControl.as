@@ -28,14 +28,6 @@ public class PetControl extends ActorControl
     }
 
     /**
-     * Get this pet's name.
-     */
-    public function getName () :String
-    {
-        return callHostCode("getName_v1") as String;
-    }
-
-    /**
      * Send a chat message to the entire room. The chat message will be treated as if it
      * were typed in at the chat message box - it will be filtered, and any action commands
      * (e.g. /emote) will be handled appropriately.
