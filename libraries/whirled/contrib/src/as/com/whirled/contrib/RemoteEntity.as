@@ -18,7 +18,7 @@ import com.whirled.AvatarControl;
  */
 public class RemoteEntity
 {
-    public function RemoteEntity (ctrl :EntityControl, entityId :String)
+    public function RemoteEntity (ctrl :EntityControl, entityId :String = null)
     {
         _ctrl = ctrl;
         _entityId = entityId;
@@ -91,7 +91,7 @@ public class RemoteEntity
     /** Your code's EntityControl. */
     protected var _ctrl :EntityControl;
 
-    /** The unique identifier of this entity. */
+    /** The unique identifier of this entity, or null if referring to the self. */
     protected var _entityId :String;
 }
 
