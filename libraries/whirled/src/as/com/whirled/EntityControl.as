@@ -122,6 +122,9 @@ public class EntityControl extends AbstractControl
     /** The entity facing direction (a Number). Use with getEntityProperty(). */
     public static const PROP_ORIENTATION :String = "std:orientation";
 
+    /** The type of the entity, AVATAR, PET or FURNI. Use with getEntityProperty(). */
+    public static const PROP_TYPE :String = "std:type";
+
     /**
      * The non-unique display name of the entity for avatars and pets.
      * Invalid entity types will return null. Use with getEntityProperty().
@@ -371,15 +374,6 @@ public class EntityControl extends AbstractControl
     {
         var entities :Array = callHostCode("getEntityIds_v1", type);
         return (entities == null) ? [] : entities;
-    }
-
-    /**
-     * Returns the type of the entity with the supplied id.
-     * @param entityId the type of entity to query
-     */
-    public function getEntityType (entityId :String = null) :String
-    {
-        return callHostCode("getEntityType_v1", entityId);
     }
 
     /**
