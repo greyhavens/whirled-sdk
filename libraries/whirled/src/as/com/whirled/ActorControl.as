@@ -28,6 +28,15 @@ import flash.display.DisplayObject;
  */
 public class ActorControl extends EntityControl
 {
+    /** The entity facing direction (a Number). Use with getEntityProperty(). */
+    public static const PROP_ORIENTATION :String = "std:orientation";
+
+    /**
+     * The non-unique display name of the entity for avatars and pets.
+     * Invalid entity types will return null. Use with getEntityProperty().
+     */
+    public static const PROP_NAME :String = "std:name";
+
     /**
      * Creates a controller for a mobile. The display object is the mobile's visualization.
      */

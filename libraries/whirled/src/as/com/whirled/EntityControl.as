@@ -119,23 +119,8 @@ public class EntityControl extends AbstractControl
     /** The entity pixel dimensions (an Array [width, height]). Use with getEntityProperty(). */
     public static const PROP_DIMENSIONS :String = "std:dimensions";
 
-    /** The entity facing direction (a Number). Use with getEntityProperty(). */
-    public static const PROP_ORIENTATION :String = "std:orientation";
-
     /** The type of the entity, AVATAR, PET or FURNI. Use with getEntityProperty(). */
     public static const PROP_TYPE :String = "std:type";
-
-    /**
-     * The non-unique display name of the entity for avatars and pets.
-     * Invalid entity types will return null. Use with getEntityProperty().
-     */
-    public static const PROP_NAME :String = "std:name";
-
-    /**
-     * The unique Whirled player ID of the owner on an avatar.
-     * Querying this on non-avatars returns null. Use with getEntityProperty().
-     */
-    public static const PROP_MEMBER_ID :String = "std:member_id";
 
     /**
      * @private
