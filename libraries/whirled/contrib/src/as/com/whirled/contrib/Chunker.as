@@ -20,14 +20,14 @@ import com.whirled.EntityControl;
  * Dispatched when the chunks are reconstituted and ready to use.
  * The 'value' property will contain the received data.
  *
- * @eventType Event.COMPLETE
+ * @eventType flash.events.Event.COMPLETE
  */
 [Event(name="complete", type="com.threerings.util.ValueEvent")]
 
 /**
  * Chunks data to other instances of the entity being used.
  *
- * Author: Ray Greenwell <ray@threerings.net>
+ * Author: Ray Greenwell <ray "at" threerings.net>
  */
 public class Chunker extends EventDispatcher
 {
