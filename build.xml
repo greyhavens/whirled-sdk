@@ -8,7 +8,6 @@
   <property name="deploy.dir"     value="dist"/>
   <property name="classes.dir"    value="${deploy.dir}/classes"/>
   <property name="sdk.build"      value="${deploy.dir}/sdk/whirled"/>
-  <property name="platforms.list" value="lin32,mac"/>
 
   <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"   value="libraries"/>
@@ -293,30 +292,16 @@
       <fileset dir="projects/avatars" includes="FATexample/**"/>
     </copy>
 
-    <!-- finally zip it up a SDK for each of our explicitly supported platforms -->
-    <for list="${platforms.list}" param="platform"><sequential>
-      <antcall target="zip-sdk" inheritall="false">
-        <param name="platform" value="@{platform}"/>
-      </antcall>
-    </sequential></for>
-  </target>
-
-  <target name="zip-sdk">
-      <!-- expand e.g. lin32 to Linux-32 -->
-      <switch value="${platform}">
-        <case value="lin32"><property name="binId" value="Linux-32"/></case>
-        <case value="mac"><property name="binId" value="Mac OS X-32"/></case>
-        <default><echo message="Eek, unknown platform: ${platform}..."/></default>
-      </switch>
-      <delete dir="${sdk.build}/dist/lib" includes="avmthane*"/>
-      <echo message="For platform ${platform}, copying libraries/thane/bin/${binId}..."/>
-      <copy todir="${sdk.build}/dist/lib" overwrite="true">
-        <fileset dir="libraries/thane/bin/${binId}" includes="avmthane*"/>
-      </copy>
-      <!-- executable permission must be set manually :( -->
-      <chmod perm="oug+x" file="${sdk.build}/dist/lib/avmthane*"/>
-      <zip destfile="${deploy.dir}/whirled_sdk_${platform}.zip"
-           basedir="${deploy.dir}/sdk" includes="whirled/**"/>
+    <!-- put our thane binaries into a tar file -->
+    <tar destfile="${sdk.build}/dist/thanes.tar">
+      <TarFileSet dir="libraries/thane/bin">
+        <include name="Windows-32/avmthane.exe"/>
+        <include name="Mac OS X-32/avmthane"/>
+        <include name="Linux-32/avmthane"/>
+      </TarFileSet>
+    </tar>
+    <zip destfile="${deploy.dir}/whirled_sdk.zip"
+         basedir="${deploy.dir}/sdk" includes="whirled/**"/>
   </target>
 
   <!-- runs the FAT test server -->
@@ -337,11 +322,10 @@
     <copy file="lib/viewer.swf" todir="${deploy.dir}"/>
     <copy file="lib/default-avatar.swf" todir="${deploy.dir}"/>
 
-    <!-- this is not copied automatically :( -->
-    <copy file="libraries/thane/dist/avmthane" todir="dist/lib"/>
-
-    <!-- executable permission must be set manually :( -->
-    <chmod perm="oug+x" file="dist/lib/avmthane"/>
+    <mkdir dir="${deploy.dir}/bin"/>
+    <copy todir="${deploy.dir}/bin" overwrite="true">
+      <fileset dir="libraries/thane/bin" includes="**/avmthane*"/>
+    </copy>
   </target>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->

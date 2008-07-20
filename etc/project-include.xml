@@ -12,7 +12,15 @@
   <property name="app.library-dir" value="."/>
   <property name="app.server-agent" value="Server"/>
   <property name="app.enabled-server-agent" value="false"/>
-  <property name="thane.path" value="${build.root}/dist/lib/avmthane"/>
+
+  <!-- TODO: stop unpacking these files every time we do anything. -->
+  <untar src="${build.root}/dist/thanes.tar" dest="${build.root}/dist/bin"/>
+
+  <condition property="thane.path"
+             value="${build.root}/dist/bin/Windows-32/avmthane.exe"
+             else="${build.root}/dist/bin/${os.name}-32/avmthane">
+    <os family="Windows"/>
+  </condition>
 
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
   <!-- out of it. otherwise just use a dummy value (can't easily skip it, alas). -->
@@ -182,7 +190,6 @@
   </target>
 
   <target name="test-game" depends="delete-abc,copy-abc">
-    <chmod file="${build.root}/dist/lib/avmthane" perm="ugo+rx"/>
     <copy file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
 
     <!-- start the server which will start up the clients -->
