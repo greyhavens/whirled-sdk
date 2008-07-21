@@ -1,8 +1,6 @@
 package com.whirled.contrib {
 
 import com.whirled.EntityControl;
-import com.whirled.ActorControl;
-import com.whirled.AvatarControl;
 
 /**
  * A helper proxy for accessing properties of another entity in the room.
@@ -67,19 +65,19 @@ public class RemoteEntity
     /** @see EntityControl#PROP_ORIENTATION */
     public function getOrientation () :Number
     {
-        return get(ActorControl.PROP_ORIENTATION) as Number;
+        return get(EntityControl.PROP_ORIENTATION) as Number;
     }
 
-    /** @see ActorControl#PROP_NAME */
+    /** @see EntityControl#PROP_NAME */
     public function getName () :String
     {
-        return get(ActorControl.PROP_NAME) as String;
+        return get(EntityControl.PROP_NAME) as String;
     }
 
-    /** @see AvatarControl#PROP_MEMBER_ID */
+    /** @see EntityControl#PROP_MEMBER_ID */
     public function getMemberId () :int
     {
-        return get(AvatarControl.PROP_MEMBER_ID) as int;
+        return get(EntityControl.PROP_MEMBER_ID) as int;
     }
 
     /** @see EntityControl#PROP_TYPE */
