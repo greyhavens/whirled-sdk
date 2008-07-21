@@ -13,9 +13,6 @@
   <property name="app.server-agent" value="Server"/>
   <property name="app.enabled-server-agent" value="false"/>
 
-  <!-- TODO: stop unpacking these files every time we do anything. -->
-  <untar src="${build.root}/dist/thanes.tar" dest="${build.root}/dist/bin"/>
-
   <condition property="thane.path"
              value="${build.root}/dist/bin/Windows-32/avmthane.exe"
              else="${build.root}/dist/bin/${os.name}-32/avmthane">
@@ -162,7 +159,21 @@
   <target name="test-debug" depends="debug,test-only"
     description="Recompiles your project (with debugging) and runs it within the test environment."/>
 
-  <target name="test-only">
+  <!-- The Thane binaries have already been unpacked if thanes.tar has not been renamed. -->
+  <target name="check-thanes-unpacked">
+    <condition property="thanes.unpacked">
+      <not><available file="${build.root}/dist/thanes.tar"/></not>
+    </condition>
+  </target>
+
+  <target name="unpack-thanes" unless="thanes.unpacked" depends="check-thanes-unpacked">
+    <!-- unpack the files -->
+    <untar src="${build.root}/dist/thanes.tar" dest="${build.root}/dist/bin"/>
+    <!-- then mark the fact by renaming the tar file -->
+    <move file="${build.root}/dist/thanes.tar" tofile="${build.root}/dist/thanes-unpacked.tar"/>
+  </target>
+
+  <target name="test-only" depends="unpack-thanes">
     <!-- No description. You should use "test" or "test-debug". -->
 
     <!-- make sure the build.properties file exists -->
