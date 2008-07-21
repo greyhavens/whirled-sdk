@@ -404,13 +404,13 @@ public class EntityControl extends AbstractControl
         _propertyProvider = func;
     }
 
-    /**
-     * Deletes this entity from the player's inventory and removed it from the room.
-     */
-    /*public function selfDestruct () :void
-    {
-        callHostCode("selfDestruct_v1");
-    }*/
+    ///**
+    // * Deletes this entity from the player's inventory and removed it from the room.
+    // */
+    //public function selfDestruct () :void
+    //{
+    //    callHostCode("selfDestruct_v1");
+    //}
 
     /**
      * Is this client in control?
