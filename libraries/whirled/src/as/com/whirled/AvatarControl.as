@@ -31,12 +31,6 @@ import com.threerings.util.Util;
 public class AvatarControl extends ActorControl
 {
     /**
-     * The unique Whirled player ID of the owner on an avatar.
-     * Querying this on non-avatars returns null. Use with getEntityProperty().
-     */
-    public static const PROP_MEMBER_ID :String = "std:member_id";
-
-    /**
      * Create an AvatarControl.
      *
      * @param disp A display object from your hierarchy. Must be on the stage.

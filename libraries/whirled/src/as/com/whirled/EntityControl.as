@@ -102,15 +102,13 @@ public class EntityControl extends AbstractControl
 
     /**
      * The entity's location in logical coordinates (an Array [ x, y, z ]). x, y, and z are Numbers
-     * between 0 and 1 or null if our location is unknown. Use with getEntityProperty().
-     */
+     * between 0 and 1 or null if our location is unknown. Use with getEntityProperty(). */
     public static const PROP_LOCATION_LOGICAL :String = "std:location_logical";
 
     /**
      * The entity's location in pixel coordinates (an Array [ x, y, z ]). Obviously there is not a
      * real Z coordinate, but the value will coorrespond to real Z distance in proportion to the
-     * distance in X and Y. Use with getEntityProperty().
-     */
+     * distance in X and Y. Use with getEntityProperty(). */
     public static const PROP_LOCATION_PIXEL :String = "std:location_pixel";
 
     /** The entity's hot spot (an Array [x, y]). Use with getEntityProperty(). */
@@ -119,8 +117,21 @@ public class EntityControl extends AbstractControl
     /** The entity pixel dimensions (an Array [width, height]). Use with getEntityProperty(). */
     public static const PROP_DIMENSIONS :String = "std:dimensions";
 
-    /** The type of the entity, AVATAR, PET or FURNI. Use with getEntityProperty(). */
+    /** The type of the entity, TYPE_AVATAR, TYPE_PET or TYPE_FURNI.
+     * Use with getEntityProperty(). */
     public static const PROP_TYPE :String = "std:type";
+
+    /** The entity facing direction (a Number). Use with getEntityProperty().
+     * Valid only for "avatar" and "pet" entity types. */
+    public static const PROP_ORIENTATION :String = "std:orientation";
+
+    /** The non-unique display name of the entity (a String). Use with getEntityProperty().
+     * Valid only for "avatar" and "pet" entity types. Invalid entity types will return null. */
+    public static const PROP_NAME :String = "std:name";
+
+    /** The unique Whirled player ID of the owner on an avatar (int).
+     * Querying this on non-avatars returns null. Use with getEntityProperty(). */
+    public static const PROP_MEMBER_ID :String = "std:member_id";
 
     /**
      * @private
