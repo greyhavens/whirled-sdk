@@ -86,18 +86,29 @@ public class PolicyServer extends IoHandlerAdapter
     }
 
     @Override
-    public void sessionIdle(IoSession session, IdleStatus status)
+    public void sessionIdle (IoSession session, IdleStatus status)
         throws Exception
     {
         session.close();
     }
 
     @Override
-    public void sessionCreated(IoSession session)
+    public void sessionCreated (IoSession session)
         throws Exception
     {
         session.write(_policy);
         session.setIdleTime(IdleStatus.WRITER_IDLE, 1);
+    }
+
+    @Override
+    public void exceptionCaught (IoSession session, Throwable cause)
+    {
+        if (cause instanceof IOException) {
+            log.info("PolicyServer session hiccup",
+                     "addr", session.getRemoteAddress(), "cause", cause);
+        } else {
+            log.warning("PolicyServer session failure", "addr", session.getRemoteAddress(), cause);
+        }
     }
 
     protected String _policy;
