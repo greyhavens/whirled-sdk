@@ -102,6 +102,8 @@ public class EditableDataPack extends DataPack
      *    optional: [isOptional]:Boolean
      *    value: [objectValue]:*
      *    defaultValue: [objectValue]:*
+     *    toString: [function] () :String // returns the latest value always!
+     *    fromString: [function] (str :String) :Object // parses the value
      *
      * Additional optional fields:
      *    Type: Number
@@ -117,13 +119,20 @@ public class EditableDataPack extends DataPack
             return null;
         }
 
+        var theType :String = parseValue(datum, "type", "String");
         var entry :Object = {
             name: parseValue(datum, "name", "String"),
-            type: parseValue(datum, "type", "String"),
+            type: theType,
             info: parseValue(datum, "info", "String"),
             optional: Boolean(parseValue(datum, "optional", "Boolean")),
             value: parseValue(datum),
-            defaultValue: parseValue(datum, "defaultValue")
+            defaultValue: parseValue(datum, "defaultValue"),
+            toString: function () :String {
+                return extractStringValue(datum) as String;
+            },
+            fromString :function (str :String) :Object {
+                return parseValueFromString(str, theType);
+            }
         };
 
         switch (entry.type) {
@@ -268,10 +277,10 @@ public class EditableDataPack extends DataPack
         }
 
         var type :String = (typeOverride != null) ? typeOverride : String(datum.@type);
-        datum.@[valueField] = formatValueString(value, type);
+        datum.@[valueField] = formatValueToString(value, type);
     }
 
-    protected function formatValueString (value :*, type :String) :String
+    protected function formatValueToString (value :*, type :String) :String
     {
         switch (type) {
 //        case "bareString":

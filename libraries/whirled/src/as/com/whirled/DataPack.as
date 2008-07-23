@@ -351,48 +351,69 @@ public class DataPack extends EventDispatcher
     protected function parseValue (
         datum :XML, valueField :String = "value", typeOverride :String = null) :*
     {
+        var str :* = extractStringValue(datum, valueField);
+        if (str === undefined) {
+            return str;
+        }
+        var type :String = (typeOverride != null) ? typeOverride : String(datum.@type);
+        return parseValueFromString(str, type);
+    }
+
+    /**
+     * Extract from the datum either a String, null, or undefined.
+     */
+    protected function extractStringValue (datum :XML, valueField :String = "value") :*
+    {
         var val :XMLList = datum.@[valueField];
         if (val.length == 0 || val[0] === undefined) {
             return undefined;
         }
 
+        // TODO: is this extra null check necessary?
         var value :String = String(val[0]);
 //        trace("Raw " + valueField + " for data '" + name + "' is '" + value + "'");
         if (value == null) {
             return undefined;
         }
+        return value;
+    }
+
+    // TODO: detect errors and throw? Maybe only if a validation flag is passed in, and
+    // then pass that flag optionally from the remixer... through entry.fromString()
+    // from EditableDataPack.
+    protected function parseValueFromString (string :String, type :String) :Object
+    {
         var bits :Array;
-        var type :String = (typeOverride != null) ? typeOverride : String(datum.@type);
         switch (type) {
         case "String":
-            return unescape(value);
+            return unescape(string);
 
         case "Number":
-            return parseFloat(value);
+            return parseFloat(string);
 
         case "Boolean":
-            return "true" == value.toLowerCase();
+            return "true" == string.toLowerCase();
 
         case "Color":
-            return parseInt(value, 16);
+            return parseInt(string, 16);
 
         case "Array":
-            return value.split(",").map(function (item :String, ... rest) :String {
+            return string.split(",").map(function (item :String, ... rest) :String {
                 return unescape(item);
             });
 
         case "Point":
-            bits = value.split(",");
+            bits = string.split(",");
             return new Point(parseFloat(bits[0]), parseFloat(bits[1]));
 
         case "Rectangle":
-            bits = value.split(",");
+            bits = string.split(",");
             return new Rectangle(parseFloat(bits[0]), parseFloat(bits[1]),
                 parseFloat(bits[2]), parseFloat(bits[3]));
 
         default:
             trace("Unknown resource type: " + type);
-            return value;
+            return string;
         }
     }
     /**
