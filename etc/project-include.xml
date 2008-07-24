@@ -13,12 +13,6 @@
   <property name="app.server-agent" value="Server"/>
   <property name="app.enabled-server-agent" value="false"/>
 
-  <condition property="thane.path"
-             value="${build.root}/dist/bin/Windows-32/avmthane.exe"
-             else="${build.root}/dist/bin/${os.name}-32/avmthane">
-    <os family="Windows"/>
-  </condition>
-
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
   <!-- out of it. otherwise just use a dummy value (can't easily skip it, alas). -->
   <condition property="app.source-extras.arg"
@@ -201,6 +195,22 @@
   </target>
 
   <target name="test-game" depends="delete-abc,copy-abc">
+    <!-- First, detect the CPU architecture; apparently Java uses both amd64 and x86_64 -->
+    <condition property="arch" value="64" else="32">
+      <or><os arch="amd64"/><os arch="x86_64"/></or>
+    </condition>
+    <property name="arch.id" value="${os.name}-${arch}"/>
+
+    <!-- then let Windows machines get away with their silly .exe thing -->
+    <condition property="thane.path"
+               value="${build.root}/dist/bin/${arch.id}/avmthane.exe"
+               else="${build.root}/dist/bin/${arch.id}/avmthane">
+      <os family="Windows"/>
+    </condition>
+
+    <!-- if we're not using the SDK we have to chmod here, this only works in Unix -->
+    <chmod file="${thane.path}" perm="ugo+x"/>
+
     <copy file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
 
     <!-- start the server which will start up the clients -->
