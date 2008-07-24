@@ -171,7 +171,7 @@ public final class MainLoop
 
     /**
      * Pushes a mode to the mode stack.
-     * Mode changes take effect before game updates.
+     * (Mode changes take effect between game updates.)
      */
     public function pushMode (mode :AppMode) :void
     {
@@ -184,7 +184,7 @@ public final class MainLoop
 
     /**
      * Pops the top mode from the mode stack.
-     * Mode changes take effect before game updates.
+     * (Mode changes take effect between game updates.)
      */
     public function popMode () :void
     {
@@ -194,7 +194,7 @@ public final class MainLoop
     /**
      * Pops the top mode from the stack, and pushes
      * a new mode in its place.
-     * Mode changes take effect before game updates.
+     * (Mode changes take effect between game updates.)
      */
     public function changeMode (mode :AppMode) :void
     {
@@ -204,6 +204,27 @@ public final class MainLoop
 
         createModeTransition(mode, TRANSITION_CHANGE);
     }
+
+    /**
+     * Inserts a mode into the stack at the given index.
+     * (Mode changes take effect between game updates.)
+     *
+     * @param mode the AppMode to insert
+     * @param index the stack position to insert the mode into.
+     * Positive index values count up from the bottom of the stack,
+     * and negative values count down from the top.
+     * 0 is the bottom of the stack, -1 is the top.
+     *
+     * (This function is commented out until it gets tested.)
+     */
+    /*public function insertMode (mode :AppMode, index :int) :void
+    {
+        if (null == mode) {
+            throw new ArgumentError("mode must be non-null");
+        }
+
+        createModeTransition(mode, TRANSITION_INSERT, index);
+    }*/
 
     /**
      * Pops all modes from the mode stack.
@@ -229,12 +250,13 @@ public final class MainLoop
         createModeTransition(mode, TRANSITION_UNWIND);
     }
 
-    protected function createModeTransition (mode :AppMode, transitionType :uint) :void
+    protected function createModeTransition (mode :AppMode, transitionType :uint, index :int = 0) :void
     {
-        var modeTransition :Object = new Object();
-        modeTransition.mode = mode;
-        modeTransition.transitionType = transitionType;
-        _pendingModeTransitionQueue.push(modeTransition);
+        var transition :ModeTransition = new ModeTransition();
+        transition.mode = mode;
+        transition.type = transitionType;
+        transition.index = index;
+        _pendingModeTransitionQueue.push(transition);
     }
 
     protected function handleModeTransitions () :void
@@ -275,17 +297,36 @@ public final class MainLoop
             _hostSprite.addChild(newMode.modeSprite);
         }
 
+        function doInsertMode (newMode :AppMode, index :int) :void {
+            if (null == newMode) {
+                throw new Error("Can't insert a null mode in the mode stack");
+            }
+
+            if (index < 0) {
+                index = _modeStack.length - index + 1;
+            }
+
+            index = Math.max(index, 0);
+            index = Math.min(index, _modeStack.length);
+
+            if (index == _modeStack.length) {
+                doPushMode(newMode);
+            } else {
+                _modeStack.splice(index, 0, newMode);
+                _hostSprite.addChildAt(newMode.modeSprite, index);
+            }
+        }
+
         // create a new _pendingModeTransitionQueue right now
         // so that we can properly handle mode transition requests
         // that occur during the processing of the current queue
         var transitionQueue :Array = _pendingModeTransitionQueue;
         _pendingModeTransitionQueue = [];
 
-        for each (var transition :* in transitionQueue) {
-            var type :uint = transition.transitionType as uint;
-            var mode :AppMode = transition.mode as AppMode;
+        for each (var transition :ModeTransition in transitionQueue) {
+            var mode :AppMode = transition.mode;
 
-            switch (type) {
+            switch (transition.type) {
             case TRANSITION_PUSH:
                 doPushMode(mode);
                 break;
@@ -313,6 +354,10 @@ public final class MainLoop
                 if (_modeStack.length == 0 && null != mode) {
                     doPushMode(mode);
                 }
+                break;
+
+            case TRANSITION_INSERT:
+                doInsertMode(mode, transition.index);
                 break;
             }
         }
@@ -389,10 +434,20 @@ public final class MainLoop
     protected var _fps :Number = 0;
 
     // mode transition constants
-    internal static const TRANSITION_PUSH :uint = 0;
-    internal static const TRANSITION_POP :uint = 1;
-    internal static const TRANSITION_CHANGE :uint = 2;
-    internal static const TRANSITION_UNWIND :uint = 3;
+    internal static const TRANSITION_PUSH :int = 0;
+    internal static const TRANSITION_POP :int = 1;
+    internal static const TRANSITION_CHANGE :int = 2;
+    internal static const TRANSITION_UNWIND :int = 3;
+    internal static const TRANSITION_INSERT :int = 4;
 }
 
+}
+
+import com.whirled.contrib.simplegame.AppMode;
+
+class ModeTransition
+{
+    public var mode :AppMode;
+    public var type :int;
+    public var index :int;  // for TRANSITION_INSERT transitions
 }
