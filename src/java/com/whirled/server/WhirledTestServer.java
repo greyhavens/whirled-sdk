@@ -139,8 +139,7 @@ public class WhirledTestServer extends CrowdServer
         _invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
 
         _bureauReg.init();
-        _bureauReg.addClientFactory(_clmgr);
-        _bureauReg.setCommandGenerator(BureauTypes.THANE, this);
+        _bureauReg.setCommandGenerator(BureauTypes.THANE_BUREAU_TYPE, this);
 
         _clmgr.addClientObserver(new ClientManager.ClientObserver () {
             public void clientSessionDidEnd (PresentsClient client) {
