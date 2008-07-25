@@ -24,11 +24,13 @@ public class @project@ extends Sprite
 
     public function @project@ ()
     {
-        // listen for an unload event
-        root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
 
         // instantiate and wire up our control
         _control = new PetControl(this);
+
+        // listen for an unload event
+        _control.addEventListener(Event.UNLOAD, handleUnload);
+ 
 
         // To listen for trigger events, uncomment this
         // _control.addEventListener(ControlEvent.ACTION_TRIGGERED, handleActionTriggered);

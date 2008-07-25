@@ -16,10 +16,10 @@ public class @project@ extends Sprite
 {
     public function @project@ ()
     {
-        // listen for an unload event
-        root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
-
         _control = new GameControl(this);
+
+        // listen for an unload event
+        _control.addEventListener(Event.UNLOAD, handleUnload);
     }
 
     /**

@@ -24,11 +24,12 @@ public class @project@ extends Sprite
 
     public function @project@ ()
     {
-        // listen for an unload event
-        root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
-
         // instantiate and wire up our control
         _control = new BackdropControl(this);
+
+        // listen for an unload event
+        _control.addEventListener(Event.UNLOAD, handleUnload);
+ 
 
         // To listen for action events, uncomment this
         // _control.addEventListener(ControlEvent.ACTION_TRIGGERED, handleActionTriggered);

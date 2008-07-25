@@ -25,6 +25,8 @@ public class @project@ extends Sprite
     {
         // instantiate and wire up our control
         _control = new ToyControl(this);
+
+	//listen for an unload event
         _control.addEventListener(Event.UNLOAD, handleUnload);
 
         // To listen for memory events, uncomment this
