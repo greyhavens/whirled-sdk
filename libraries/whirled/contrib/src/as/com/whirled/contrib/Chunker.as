@@ -97,6 +97,9 @@ public class Chunker extends EventDispatcher
      */
     protected function checkSendChunk () :void
     {
+        if (_outData == null) {
+            return;
+        }
         const now :int = getTimer();
         const wait :int = _nextSend - now;
         if (wait <= 0) {
