@@ -31,6 +31,17 @@ import com.whirled.EntityControl;
  */
 public class Chunker extends EventDispatcher
 {
+    /** A compression strategy that always compresses the data, regardless of whether it
+     * saved any space. */
+    public static const ALWAYS_COMPRESS :int = 0;
+
+    /** A compression stragegy that tries to compress the data, but only sends the compressed
+     * form if it would actually result in sending less chunks. */
+    public static const TRY_COMPRESS :int = 1;
+
+    /** A compression strategy that says: don't ever even waste time trying to compress. */
+    public static const NEVER_COMPRESS :int = 2;
+
     /**
      * Construct a Chunker.
      *
@@ -60,10 +71,9 @@ public class Chunker extends EventDispatcher
      * Send this data to all instances of this entity in chunked and throttled messages.
      *
      * @param data a ByteArray or any other object graph that can be serialized to AMF3.
-     * @param tryCompress whether to try to compress. Pass false if the data you're sending
-     * is already compressed and you don't want to waste CPU trying.
+     * @param compressStrategy the strategy to take when deciding whether to compress the data.
      */
-    public function send (data :Object, tryCompress :Boolean = true) :void
+    public function send (data :Object, compressStrategy :int = TRY_COMPRESS) :void
     {
         // don't trust the specified array to be unmolested
         _outData = new ByteArray();
@@ -75,20 +85,25 @@ public class Chunker extends EventDispatcher
             _outData.writeObject(data);
             _outTokens |= OBJECT_TOKEN;
         }
-        var length :int = _outData.length;
-        if (tryCompress) {
-            _outData.compress();
-            if (length > _outData.length) {
-                _outTokens |= COMPRESSED_TOKEN;
 
-            } else {
-                // rollback!
-                _outData.uncompress();
-            }
+        if (compressStrategy == ALWAYS_COMPRESS) {
+            _outData.compress();
+            _outTokens |= COMPRESSED_TOKEN;
+
+        } else if (compressStrategy == TRY_COMPRESS) {
+            // only keep it compressed if we'd actually save a chunk
+            var cData :ByteArray = new ByteArray();
+            cData.writeBytes(_outData);
+            var now :int = getTimer();
+            cData.compress();
+            if (countChunks(cData.length) < countChunks(_outData.length)) {
+                _outData = cData;
+                _outTokens |= COMPRESSED_TOKEN;
+            } // else: don't compress
         }
-        _outData.position = 0;
 
         // send the first chunk now
+        _outData.position = 0;
         checkSendChunk();
     }
 
@@ -196,6 +211,14 @@ public class Chunker extends EventDispatcher
         if (_timer != null) {
             _timer.stop();
         }
+    }
+
+    /**
+     * Counts the number of chunks to send data of the specified length.
+     */
+    protected static function countChunks (dataLength :int) :int
+    {
+        return int(dataLength / MAX_CHUNK_DATA) + ((0 == (dataLength % MAX_CHUNK_DATA)) ? 0 : 1);
     }
 
     /** The entity control we're using. */
