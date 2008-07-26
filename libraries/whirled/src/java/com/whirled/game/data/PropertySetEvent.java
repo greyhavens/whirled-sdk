@@ -3,12 +3,6 @@
 
 package com.whirled.game.data;
 
-import java.io.IOException;
-
-import com.threerings.io.ObjectInputStream;
-import com.threerings.io.ObjectOutputStream;
-import com.threerings.io.Streamable;
-import com.threerings.io.Streamer;
 import com.threerings.util.ActionScript;
  
 import com.threerings.presents.dobj.DObject;

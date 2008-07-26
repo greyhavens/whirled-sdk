@@ -3,7 +3,6 @@
 
 package com.whirled.game.server;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +11,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 import com.samskivert.util.ArrayIntSet;
-import com.samskivert.util.ArrayUtil;
 import com.samskivert.util.CollectionUtil;
-import com.samskivert.util.HashIntMap;
 import com.samskivert.util.Interval;
 import com.samskivert.util.IntListUtil;
 import com.samskivert.util.RandomUtil;
@@ -25,7 +22,6 @@ import com.threerings.util.Name;
 
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationCodes;
-import com.threerings.presents.dobj.AccessController;
 import com.threerings.presents.dobj.DObjectManager;
 import com.threerings.presents.dobj.DSet;
 import com.threerings.presents.dobj.MessageEvent;
@@ -45,7 +41,6 @@ import com.threerings.parlor.turn.server.TurnGameManager;
 import com.threerings.util.MessageBundle;
 
 import com.whirled.game.data.WhirledGameCodes;
-import com.whirled.game.data.WhirledGameMarshaller;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.WhirledGameOccupantInfo;
 import com.whirled.game.data.PropertySetEvent;

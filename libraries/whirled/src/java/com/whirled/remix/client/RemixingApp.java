@@ -3,7 +3,6 @@
 
 package com.whirled.remix.client;
 
-
 import javax.swing.JFrame;
 
 import com.samskivert.util.ResultListener;

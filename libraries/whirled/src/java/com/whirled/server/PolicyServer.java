@@ -5,7 +5,6 @@ package com.whirled.server;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.apache.mina.common.ByteBuffer;

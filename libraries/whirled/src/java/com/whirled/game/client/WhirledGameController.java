@@ -9,7 +9,6 @@ import com.threerings.presents.dobj.MessageListener;
 import com.threerings.presents.dobj.MessageEvent;
 
 import com.threerings.crowd.client.PlaceView;
-import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.util.CrowdContext;
 

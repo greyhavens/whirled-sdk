@@ -3,32 +3,17 @@
 
 package com.whirled.remix.data;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import java.util.zip.CRC32;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
-import com.samskivert.util.ObserverList;
 import com.samskivert.util.ResultListener;
-import com.samskivert.util.StringUtil;
 
 import com.whirled.DataPack;
 

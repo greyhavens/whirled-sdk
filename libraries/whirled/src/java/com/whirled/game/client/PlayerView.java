@@ -16,8 +16,6 @@ import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.RoundRectangle2D;
 
-import javax.swing.ImageIcon;
-
 import com.samskivert.swing.Label;
 import com.samskivert.swing.util.SwingUtil;
 

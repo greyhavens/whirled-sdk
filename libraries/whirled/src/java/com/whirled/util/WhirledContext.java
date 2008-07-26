@@ -5,12 +5,9 @@ package com.whirled.util;
 
 import java.awt.image.BufferedImage;
 
-import java.io.IOException;
-
 import com.threerings.crowd.data.BodyObject;
 
 import com.threerings.media.FrameManager;
-import com.threerings.media.image.ImageUtil;
 import com.threerings.media.image.ImageManager;
 import com.threerings.media.sound.SoundManager;
 import com.threerings.media.tile.TileManager;

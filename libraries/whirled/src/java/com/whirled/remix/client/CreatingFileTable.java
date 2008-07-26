@@ -3,8 +3,6 @@
 
 package com.whirled.remix.client;
 
-import javax.swing.table.TableModel;
-
 import com.whirled.remix.data.CreatingDataPack;
 
 public class CreatingFileTable extends RemixingFileTable

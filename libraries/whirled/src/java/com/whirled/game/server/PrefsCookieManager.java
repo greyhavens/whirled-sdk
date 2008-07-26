@@ -7,12 +7,9 @@ package com.whirled.game.server;
 
 import java.util.prefs.Preferences;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import com.samskivert.util.ResultListener;
-
-import com.threerings.presents.annotation.MainInvoker;
 
 /**
  * A manager that stores cookies in Java preferences on the local machine.  This should only be

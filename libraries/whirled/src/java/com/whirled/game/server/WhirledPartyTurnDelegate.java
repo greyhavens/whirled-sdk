@@ -5,12 +5,9 @@ package com.whirled.game.server;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 import com.samskivert.util.RandomUtil;
-
-import com.threerings.util.Name;
 
 import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.PlaceConfig;

@@ -4,7 +4,6 @@
 package com.whirled.game.client;
 
 import java.awt.Component;
-import java.awt.Container;
 
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;

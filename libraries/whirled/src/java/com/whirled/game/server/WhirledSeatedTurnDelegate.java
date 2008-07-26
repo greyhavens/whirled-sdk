@@ -4,9 +4,6 @@
 package com.whirled.game.server;
 
 import com.samskivert.util.ListUtil;
-import com.samskivert.util.RandomUtil;
-
-import com.threerings.util.Name;
 
 import com.threerings.crowd.data.BodyObject;
 

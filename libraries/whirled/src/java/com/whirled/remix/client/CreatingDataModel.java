@@ -3,8 +3,6 @@
 
 package com.whirled.remix.client;
 
-import java.util.List;
-
 import com.whirled.remix.data.CreatingDataPack;
 
 /**

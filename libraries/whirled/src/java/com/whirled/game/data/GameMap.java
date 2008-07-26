@@ -3,8 +3,6 @@
 
 package com.whirled.game.data;
 
-import java.io.IOException;
-
 import java.util.Arrays;
 
 import com.samskivert.util.IntMap;

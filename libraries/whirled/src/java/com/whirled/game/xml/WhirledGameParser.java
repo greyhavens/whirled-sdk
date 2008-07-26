@@ -20,7 +20,6 @@ import org.apache.commons.digester.Rule;
 
 import com.samskivert.util.StringUtil;
 import com.samskivert.xml.SetFieldRule;
-import com.samskivert.xml.SetNextFieldRule;
 import com.samskivert.xml.SetPropertyFieldsRule;
 
 import com.threerings.parlor.data.ChoiceParameter;

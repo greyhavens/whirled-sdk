@@ -5,15 +5,9 @@ package com.whirled.remix.client;
 
 import java.awt.Color;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
 import javax.swing.Action;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import com.samskivert.util.StringUtil;
 

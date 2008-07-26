@@ -15,8 +15,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 
-import javax.swing.table.TableModel;
-
 import com.samskivert.swing.GroupLayout;
 import com.samskivert.swing.VGroupLayout;
 

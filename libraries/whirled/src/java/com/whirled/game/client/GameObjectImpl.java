@@ -8,7 +8,6 @@ import java.io.Serializable;
 
 import java.lang.reflect.Array;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.samskivert.util.CompactIntListUtil;
@@ -24,7 +23,6 @@ import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.util.CrowdContext;
 
 import com.whirled.game.data.WhirledGameObject;
-import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.util.ObjectMarshaller;
 
 import com.whirled.game.WhirledGame;

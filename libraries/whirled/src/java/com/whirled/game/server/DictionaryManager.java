@@ -7,11 +7,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 
 import com.google.common.collect.Maps;
@@ -235,7 +233,6 @@ public class DictionaryManager
         {
             return CollectionUtil.selectRandomSubset(_words, count).toArray(new String[count]);
         }
-
 
         // PROTECTED HELPERS
 
