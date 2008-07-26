@@ -21,7 +21,6 @@ import com.samskivert.util.CollectionUtil;
 import com.samskivert.util.CountHashMap;
 import com.samskivert.util.Invoker;
 import com.samskivert.util.RandomUtil;
-import com.samskivert.util.ResultListener;
 
 import com.threerings.presents.annotation.MainInvoker;
 import com.threerings.presents.client.InvocationService;

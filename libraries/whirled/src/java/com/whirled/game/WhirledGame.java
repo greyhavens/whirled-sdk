@@ -3,8 +3,6 @@
 
 package com.whirled.game;
 
-import java.util.Collection;
-
 /**
  * The game object that you'll be using to manage your game.
  */

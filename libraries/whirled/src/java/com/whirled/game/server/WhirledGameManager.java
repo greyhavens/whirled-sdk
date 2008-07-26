@@ -18,8 +18,6 @@ import com.samskivert.util.RandomUtil;
 import com.samskivert.util.ResultListener;
 import com.samskivert.util.StringUtil;
 
-import com.threerings.util.Name;
-
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationCodes;
 import com.threerings.presents.dobj.DObjectManager;
