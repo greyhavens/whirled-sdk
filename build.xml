@@ -221,7 +221,7 @@
   <target name="asdoc" depends="asdoc-contrib,asdoc-whirled"/>
 
   <!-- builds the SDK -->
-  <target name="sdk" depends="distprojects,asclient,asdoc">
+  <target name="sdk" depends="distprojects,asclient,asserver,asdoc">
     <mkdir dir="${sdk.build}"/>
     <copy todir="${sdk.build}">
       <fileset dir="data/sdk" includes="**"/>
@@ -274,6 +274,7 @@
       <fileset dir="projects/games" includes="fat_reversi/**"/>
       <fileset dir="projects/games" includes="clickfest/**"/>
       <fileset dir="projects/games" includes="quickclick/**"/>
+      <fileset dir="projects/games" includes="tictactoe/**"/>
     </copy>
     <!-- copy some example pets and the urpet -->
     <mkdir dir="${sdk.build}/examples/pets"/>
