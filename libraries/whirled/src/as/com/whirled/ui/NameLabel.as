@@ -14,7 +14,8 @@ public interface NameLabel extends IUIComponent
 {
     /**
      * Status to indicate in the rendering of this NameLabel.  Base status constants are indicated
-     * in {@link PlayerList}.
+     * in <code>PlayerList</code>
+     * @see PlayerList
      */
     function setStatus (status :String) :void
 }

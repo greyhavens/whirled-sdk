@@ -6,7 +6,7 @@ public interface UserCodeLoader
     /** 
      * Load the code media (abc file) from the given url, find the given class name inside it and 
      * invoke the callback when the code is ready. The callback must take a single argument of type 
-     * {@link UserCode}:
+     * <code>UserCode</code>:
      * 
      * <p><code>
      * function callback (code :UserCode) :void
@@ -16,7 +16,8 @@ public interface UserCodeLoader
      * invoked with null.</p>
      * 
      * <p>Each uccessful call to <code>load</code> must be paired with a corresponding 
-     * {@link UserCode#release} call.</p>
+     * <code>UserCode.release()</code> call.</p>
+     * @see UserCode
      */
     function load (url :String, name :String, callback :Function) :void;
 }

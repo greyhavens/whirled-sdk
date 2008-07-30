@@ -103,10 +103,12 @@ public class GameSubControl extends AbstractSubControl
     public static const PROPORTIONAL :int = 3;
 
 
-    /** ID constant returned by {@link #getMyId} when called by a game's server agent. */
+    /** ID constant returned by <code>getMyId</code> when called by a game's server agent. 
+     * @see #getMyId() */
     public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
 
-    /** ID constant passed into {@link #getLevelPacks} to indicate the current player. */
+    /** ID constant passed into <code>getLevelPacks</code> to indicate the current player. 
+     * @see #getLevelPacks() */
     public static const CURRENT_USER :int = 0;
 
     /**
@@ -220,8 +222,10 @@ public class GameSubControl extends AbstractSubControl
 
     /**
      * Returns this client's player id. If this method is called from the game's server agent,
-     * the result is {@link #SERVER_AGENT_ID}. The method {@link #amServerAgent} can be used to 
+     * the result is <code>SERVER_AGENT_ID</code>. The method <code>amServerAgent</code> can be used to 
      * explicitly test for this case.
+     * @see #SERVER_AGENT_ID
+     * @see #amServerAgent()
      */
     public function getMyId () :int
     {

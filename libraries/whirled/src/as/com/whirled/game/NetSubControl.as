@@ -40,13 +40,15 @@ import com.whirled.AbstractSubControl;
 public class NetSubControl extends AbstractSubControl
 {
     /**
-     * Constant provided to {@link #sendMessage} that will send a message to all subscribers.
+     * Constant provided to <code>sendMessage</code> that will send a message to all subscribers.
+     * @see #sendMessage()
      */
     public static const TO_ALL :int = 0;
 
     /**
-     * Constant provided to {@link #sendMessage} that will send a message to the game's server
+     * Constant provided to <code>sendMessage</code> that will send a message to the game's server
      * agent, if there is one.
+     * @see #sendMessage()
      */
     public static const TO_SERVER_AGENT :int = int.MIN_VALUE;
 
@@ -206,9 +208,11 @@ public class NetSubControl extends AbstractSubControl
      *
      * @param messageName The message to send.
      * @param value The value to attach to the message.
-     * @param playerId if {@link #TO_ALL} (or unset), sends to all players, 
+     * @param playerId if <code>TO_ALL</code> (or unset), sends to all players, 
      * otherwise the message will be private to just one player; if the game employs a server agent, 
-     * {@link #TO_SERVER_AGENT} may be used to send a message only to the server.
+     * <code>TO_SERVER_AGENT</code> may be used to send a message only to the server.
+     * @see #TO_ALL
+     * @see #TO_SERVER_AGENT
      */
     public function sendMessage (messageName :String, value :Object, playerId :int = TO_ALL) :void
     {
@@ -217,10 +221,12 @@ public class NetSubControl extends AbstractSubControl
 
     /**
      * Send a message privately to the game's server agent, if there is one. This is a shortcut 
-     * for calling {@link #sendMessage} with playerId set to {@link #TO_SERVER_AGENT}.
+     * for calling <code>sendMessage</code> with playerId set to <code>TO_SERVER_AGENT</code>.
      *
      * @param messageName The message to send.
      * @param value The value to attach to the message.
+     * @see #sendMessage()
+     * @see #TO_SERVER_AGENT
      */
     public function sendMessageToAgent (messageName :String, value :Object) :void
     {

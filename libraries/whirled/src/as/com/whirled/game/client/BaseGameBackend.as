@@ -65,7 +65,10 @@ import com.whirled.game.data.WhirledGameOccupantInfo;
 public class BaseGameBackend
     implements MessageListener, SetListener, ElementUpdateListener, PropertySetListener, ChatDisplay
 {
-    /** Magic number for {@link #getMyId} to return if this is the server agent's backend. */
+    /** 
+     * Magic number for <code>getMyId</code> to return if this is the server agent's backend. 
+     * @see #getMyId() 
+     */
     public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
 
     public var log :Log = Log.getLog(this);
@@ -649,7 +652,7 @@ public class BaseGameBackend
     }
 
     /**
-     * Commits a transaction started with {@link #startTransaction_v1}.
+     * Commits a transaction started with <code>startTransaction_v1</code>.
      */
     protected function commitTransaction_v1 () :void
     {

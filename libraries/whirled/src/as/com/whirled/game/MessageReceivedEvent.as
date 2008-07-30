@@ -35,7 +35,8 @@ public class MessageReceivedEvent extends Event
 
     /**
      * Access the id of the occupant that sent the message. The value may not correspond to a real 
-     * occupant id if {@link #isFromServer} returns true.
+     * occupant id if <code>isFromServer</code> returns true.
+     * @see #isFromServer()
      */
     public function get senderId () :int
     {

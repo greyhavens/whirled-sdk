@@ -15,7 +15,7 @@ public /*abstract*/ class MatchConfig extends SimpleStreamableObject
     {
     }
 
-    /** Returns the matchmaking type to use for this game, e.g. {@link GameConfig.SEATED_GAME}. */
+    /** Returns the matchmaking type to use for this game, e.g. <code>GameConfig.SEATED_GAME</code>. */
     public function getMatchType () :int
     {
         throw new Error("Abstract");

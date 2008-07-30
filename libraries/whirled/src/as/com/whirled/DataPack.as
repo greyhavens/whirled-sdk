@@ -469,7 +469,7 @@ public class DataPack extends EventDispatcher
     }
 
     /**
-     * Helper method for @link getDisplaObjects and @link getLoaders. Turns the sources into
+     * Helper method for getDisplayObjects and getLoaders. Turns the sources into
      * the ByteArrays they address, have MultiLoader coordinate the loading.
      *
      * @private

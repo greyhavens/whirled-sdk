@@ -9,7 +9,7 @@ import com.threerings.io.ObjectOutputStream;
 import com.threerings.parlor.game.data.GameConfig;
 
 /**
- * Extends {@link MatchConfig} with information about match-making in the table style.
+ * Extends <code>MatchConfig</code> with information about match-making in the table style.
  */
 public class TableMatchConfig extends MatchConfig
 {

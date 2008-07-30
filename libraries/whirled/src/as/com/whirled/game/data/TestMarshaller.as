@@ -10,7 +10,7 @@ import com.threerings.presents.data.InvocationMarshaller;
 import com.whirled.game.client.TestService;
 
 /**
- * Provides the implementation of the {@link TestService} interface
+ * Provides the implementation of the <code>TestService</code> interface
  * that marshalls the arguments and delivers the request to the provider
  * on the server. Also provides an implementation of the response listener
  * interfaces that marshall the response arguments and deliver them back
@@ -19,7 +19,7 @@ import com.whirled.game.client.TestService;
 public class TestMarshaller extends InvocationMarshaller
     implements TestService
 {
-    /** The method id used to dispatch {@link #clientReady} requests. */
+    /** The method id used to dispatch <code>clientReady</code> requests. */
     public static const CLIENT_READY :int = 1;
 
     // from interface TestService

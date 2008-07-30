@@ -20,8 +20,10 @@ import com.whirled.AbstractSubControl;
 public class BagsSubControl extends AbstractSubControl
 {
     /** 
-     * Player id constant used by {@link #pick} and {@link #deal} indicating that elements 
+     * Player id constant used by <code>pick</code> and <code>deal</code> indicating that elements 
      * should be picked or dealt publicly to all players.
+     * @see #pick()
+     * @see #deal()
      */
     public static const SHOW_TO_ALL :int = 0;
 
@@ -71,10 +73,11 @@ public class BagsSubControl extends AbstractSubControl
      * @param count the number of elements to pick
      * @param msgOrPropName the name of the message or property
      *        that will contain the picked elements.
-     * @param playerId if {@link #SHOW_TO_ALL} (or unset), the picked elements should be 
+     * @param playerId if <code>SHOW_TO_ALL</code> (or unset), the picked elements should be 
      *        set on the gameObject as a property for all to see.
      *        If a playerId is specified, only that player will receive
      *        the elements as a message.
+     * @see #SHOW_TO_ALL
      */
     // TODO: a way to specify exclusive picks vs. duplicate-OK picks?
     public function pick (
@@ -93,10 +96,11 @@ public class BagsSubControl extends AbstractSubControl
      * @param count the number of elements to pick
      * @param msgOrPropName the name of the message or property
      *        that will contain the picked elements.
-     * @param playerId if {@link #SHOW_TO_ALL} (or unset), the picked elements should be 
+     * @param playerId if <code>SHOW_TO_ALL</code> (or unset), the picked elements should be 
      *        set on the gameObject as a property for all to see.
      *        If a playerId is specified, only that player will receive
      *        the elements as a message.
+     * @see #SHOW_TO_ALL
      */
     // TODO: figure out the method signature of the callback
     public function deal (
