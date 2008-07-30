@@ -20,7 +20,7 @@ import com.whirled.game.client.WhirledGameService;
 import flash.utils.ByteArray;
 
 /**
- * Provides the implementation of the {@link WhirledGameService} interface
+ * Provides the implementation of the <code>WhirledGameService</code> interface
  * that marshalls the arguments and delivers the request to the provider
  * on the server. Also provides an implementation of the response listener
  * interfaces that marshall the response arguments and deliver them back
@@ -29,7 +29,7 @@ import flash.utils.ByteArray;
 public class WhirledGameMarshaller extends InvocationMarshaller
     implements WhirledGameService
 {
-    /** The method id used to dispatch {@link #addToCollection} requests. */
+    /** The method id used to dispatch <code>addToCollection</code> requests. */
     public static const ADD_TO_COLLECTION :int = 1;
 
     // from interface WhirledGameService
@@ -42,7 +42,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #awardPrize} requests. */
+    /** The method id used to dispatch <code>awardPrize</code> requests. */
     public static const AWARD_PRIZE :int = 2;
 
     // from interface WhirledGameService
@@ -55,7 +55,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #awardTrophy} requests. */
+    /** The method id used to dispatch <code>awardTrophy</code> requests. */
     public static const AWARD_TROPHY :int = 3;
 
     // from interface WhirledGameService
@@ -68,7 +68,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #checkDictionaryWord} requests. */
+    /** The method id used to dispatch <code>checkDictionaryWord</code> requests. */
     public static const CHECK_DICTIONARY_WORD :int = 4;
 
     // from interface WhirledGameService
@@ -81,7 +81,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #endGame} requests. */
+    /** The method id used to dispatch <code>endGame</code> requests. */
     public static const END_GAME :int = 5;
 
     // from interface WhirledGameService
@@ -94,7 +94,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #endGameWithScores} requests. */
+    /** The method id used to dispatch <code>endGameWithScores</code> requests. */
     public static const END_GAME_WITH_SCORES :int = 6;
 
     // from interface WhirledGameService
@@ -107,7 +107,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #endGameWithWinners} requests. */
+    /** The method id used to dispatch <code>endGameWithWinners</code> requests. */
     public static const END_GAME_WITH_WINNERS :int = 7;
 
     // from interface WhirledGameService
@@ -120,7 +120,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #endRound} requests. */
+    /** The method id used to dispatch <code>endRound</code> requests. */
     public static const END_ROUND :int = 8;
 
     // from interface WhirledGameService
@@ -133,7 +133,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #endTurn} requests. */
+    /** The method id used to dispatch <code>endTurn</code> requests. */
     public static const END_TURN :int = 9;
 
     // from interface WhirledGameService
@@ -146,7 +146,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #getCookie} requests. */
+    /** The method id used to dispatch <code>getCookie</code> requests. */
     public static const GET_COOKIE :int = 10;
 
     // from interface WhirledGameService
@@ -159,7 +159,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #getDictionaryLetterSet} requests. */
+    /** The method id used to dispatch <code>getDictionaryLetterSet</code> requests. */
     public static const GET_DICTIONARY_LETTER_SET :int = 11;
 
     // from interface WhirledGameService
@@ -172,7 +172,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #getDictionaryWords} requests. */
+    /** The method id used to dispatch <code>getDictionaryWords</code> requests. */
     public static const GET_DICTIONARY_WORDS :int = 12;
 
     // from interface WhirledGameService
@@ -185,7 +185,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #getFromCollection} requests. */
+    /** The method id used to dispatch <code>getFromCollection</code> requests. */
     public static const GET_FROM_COLLECTION :int = 13;
 
     // from interface WhirledGameService
@@ -198,7 +198,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #mergeCollection} requests. */
+    /** The method id used to dispatch <code>mergeCollection</code> requests. */
     public static const MERGE_COLLECTION :int = 14;
 
     // from interface WhirledGameService
@@ -211,7 +211,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #restartGameIn} requests. */
+    /** The method id used to dispatch <code>restartGameIn</code> requests. */
     public static const RESTART_GAME_IN :int = 15;
 
     // from interface WhirledGameService
@@ -224,7 +224,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #sendMessage} requests. */
+    /** The method id used to dispatch <code>sendMessage</code> requests. */
     public static const SEND_MESSAGE :int = 16;
 
     // from interface WhirledGameService
@@ -237,7 +237,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #setCookie} requests. */
+    /** The method id used to dispatch <code>setCookie</code> requests. */
     public static const SET_COOKIE :int = 17;
 
     // from interface WhirledGameService
@@ -250,7 +250,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #setProperty} requests. */
+    /** The method id used to dispatch <code>setProperty</code> requests. */
     public static const SET_PROPERTY :int = 18;
 
     // from interface WhirledGameService
@@ -263,7 +263,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch {@link #setTicker} requests. */
+    /** The method id used to dispatch <code>setTicker</code> requests. */
     public static const SET_TICKER :int = 19;
 
     // from interface WhirledGameService
