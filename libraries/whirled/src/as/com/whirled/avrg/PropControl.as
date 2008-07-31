@@ -3,9 +3,11 @@
 //
 // Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
 
-package com.whirled {
+package com.whirled.avrg {
 
 import flash.display.DisplayObject;
+
+import com.whirled.FurniControl;
 
 /**
  * Defines actions, accessors and callbacks available to all Props.

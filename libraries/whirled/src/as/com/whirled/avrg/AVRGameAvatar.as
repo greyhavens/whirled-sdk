@@ -3,7 +3,7 @@
 //
 // Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
 
-package com.whirled {
+package com.whirled.avrg {
 
 import flash.geom.Rectangle;
 

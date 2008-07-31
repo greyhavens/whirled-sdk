@@ -3,11 +3,14 @@
 //
 // Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
 
-package com.whirled {
+package com.whirled.avrg {
 
 import flash.display.DisplayObject;
 
 import com.threerings.util.Log;
+
+import com.whirled.AbstractSubControl;
+import com.whirled.ControlEvent;
 
 /**
  * Defines actions, accessors and callbacks available to all MOBs.

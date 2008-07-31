@@ -3,28 +3,31 @@
 //
 // Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
 
-package com.whirled {
+package com.whirled.avrg {
+
+import com.whirled.AbstractControl;
+import com.whirled.AbstractSubControl;
 
 /**
  * Dispatched when a game-global state property has changed.
  * 
- * @eventType com.whirled.AVRGameControlEvent.PROPERTY_CHANGED
+ * @eventType com.whirled.avrg.AVRGameControlEvent.PROPERTY_CHANGED
  */
-[Event(name="propertyChanged", type="com.whirled.AVRGameControlEvent")]
+[Event(name="propertyChanged", type="com.whirled.avrg.AVRGameControlEvent")]
 
 /**
  * Dispatched when a player-local state property has changed.
  * 
- * @eventType com.whirled.AVRGameControlEvent.PLAYER_PROPERTY_CHANGED
+ * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_PROPERTY_CHANGED
  */
-[Event(name="playerPropertyChanged", type="com.whirled.AVRGameControlEvent")]
+[Event(name="playerPropertyChanged", type="com.whirled.avrg.AVRGameControlEvent")]
 
 /**
  * Dispatched when a message has been received.
  * 
- * @eventType com.whirled.AVRGameControlEvent.MESSAGE_RECEIVED
+ * @eventType com.whirled.avrg.AVRGameControlEvent.MESSAGE_RECEIVED
  */
-[Event(name="messageReceived", type="com.whirled.AVRGameControlEvent")]
+[Event(name="messageReceived", type="com.whirled.avrg.AVRGameControlEvent")]
 
 public class StateControl extends AbstractSubControl
 {

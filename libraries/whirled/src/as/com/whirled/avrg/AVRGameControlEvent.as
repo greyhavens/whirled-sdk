@@ -3,21 +3,14 @@
 //
 // Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
 
-package com.whirled {
+package com.whirled.avrg {
 
 import flash.events.Event;
 
+import com.whirled.ControlEvent;
+
 public class AVRGameControlEvent extends ControlEvent
 {
-    /** An event type dispatched when this client-side instance of the AVRG
-     * has gained "control" over the other client-side instances.
-     * name: unused
-     * value: unused
-     *
-     * @eventType gotControl
-     */
-    public static const GOT_CONTROL :String = "gotControl";
-
     /** An event type dispatched when the player receives some coins.
      * name: unused
      * value: the amount of coins awarded

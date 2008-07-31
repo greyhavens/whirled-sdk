@@ -3,16 +3,19 @@
 //
 // Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
 
-package com.whirled {
+package com.whirled.avrg {
 
 import flash.display.DisplayObject;
+
+import com.whirled.AbstractControl;
+import com.whirled.AbstractSubControl;
 
 /**
  * Dispatched when a quest is added or removed from a player's set of active quests.
  * 
- * @eventType com.whirled.AVRGameControlEvent.QUEST_STATE_CHANGED
+ * @eventType com.whirled.avrg.AVRGameControlEvent.QUEST_STATE_CHANGED
  */
-[Event(name="questStateChanged", type="com.whirled.AVRGameControlEvent")]
+[Event(name="questStateChanged", type="com.whirled.avrg.AVRGameControlEvent")]
 
 /**
  * Defines actions, accessors and callbacks available to all Quests.
