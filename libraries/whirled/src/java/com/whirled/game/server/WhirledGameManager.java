@@ -553,9 +553,12 @@ public abstract class WhirledGameManager extends GameManager
         ClientObject target = null;
 
         if (playerOid == TO_SERVER_AGENT && _gameAgent != null) {
-            com.threerings.presents.dobj.DObject dobj = _omgr.getObject(_gameAgent.clientOid);
-            log.info("Agent object", "dobj", dobj);
-            target = (ClientObject)dobj;
+            // TODO: clients should be guaranteed access to their agent
+            // In the meantime, raise an exception if the agent is not online
+            if (_gameAgent.clientOid == 0) {
+                throw new InvocationException("m.player_not_around");
+            }
+            target = (ClientObject)_omgr.getObject(_gameAgent.clientOid);
         }
         else {
             target = getPlayerByOid(playerOid);
