@@ -265,7 +265,7 @@ public abstract class WhirledGameManager extends GameManager
 
     // from WhirledGameProvider
     public void getDictionaryWords (
-        ClientObject caller, String locale, String dictionary, int count, 
+        ClientObject caller, String locale, String dictionary, int count,
         InvocationService.ResultListener listener)
         throws InvocationException
     {
@@ -274,7 +274,7 @@ public abstract class WhirledGameManager extends GameManager
 
         _dictMgr.getWords(locale, dictionary, count, listener);
     }
-    
+
     // from WhirledGameProvider
     public void checkDictionaryWord (ClientObject caller, String locale, String dictionary,
                                      String word, InvocationService.ResultListener listener)
@@ -507,40 +507,41 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
-     * Test whether the privded client is the agent for this game.
+     * Test whether the provided client is the agent for this game.
      */
+    @Override // from GameManager
     public boolean isAgent (ClientObject caller)
     {
         return _gameAgent != null && _gameAgent.clientOid == caller.getOid();
     }
 
-    /** 
+    /**
      *  Make sure that the given caller can write to the data of the given player and resolve
      *  the playerId into a BodyObject. The player id may be 0, indicating the current
      *  player. Server agents may not use this value and clients may only use this value.
      **/
-    public BodyObject validateWritePermission(ClientObject caller, int playerId)
+    public BodyObject validateWritePermission (ClientObject caller, int playerId)
         throws InvocationException
     {
-        BodyObject player;
+        BodyObject body = checkWritePermission(caller, playerId);
+        if (body != null) {
+            return body;
+        }
+        throw new InvocationException(InvocationCodes.ACCESS_DENIED);
+    }
+
+    /**
+     *  Make sure that the given caller can write to the data of the given player and resolve
+     *  the playerId into a BodyObject. The player id may be 0, indicating the current
+     *  player. Server agents may not use this value and clients may only use this value.
+     **/
+    @Override // from GameManager
+    public BodyObject checkWritePermission (ClientObject caller, int playerId)
+    {
         if (isAgent(caller)) {
-            if (playerId == 0) {
-                throw new InvocationException(InvocationCodes.ACCESS_DENIED);
-            }
-            player = getOccupantByOid(playerId);
-
-        } else {
-            if (playerId != 0) {
-                throw new InvocationException(InvocationCodes.ACCESS_DENIED);
-            }
-            player = (BodyObject)caller;
+            return (playerId != 0) ? getOccupantByOid(playerId) : null;
         }
-
-        if (player == null) {
-            throw new InvocationException(InvocationCodes.ACCESS_DENIED);
-        }
-
-        return player;
+        return (playerId == 0) ? (BodyObject) caller : null;
     }
 
     /**
