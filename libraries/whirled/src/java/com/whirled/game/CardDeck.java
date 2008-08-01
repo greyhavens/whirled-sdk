@@ -3,7 +3,9 @@
 
 package com.whirled.game;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 /**
  * A simple card deck that encodes cards as a string like "Ac" for the
@@ -21,7 +23,7 @@ public class CardDeck
         _gameObj = gameObj;
         _deckName = deckName;
 
-        ArrayList<String> deck = new ArrayList<String>();
+        List<String> deck = Lists.newArrayList();
         for (String rank : new String[] { "2", "3", "4", "5", "6", "7", "8",
                 "9", "T", "J", "Q", "K", "A" }) {
             for (String suit : new String[] { "c", "d", "h", "s" }) {

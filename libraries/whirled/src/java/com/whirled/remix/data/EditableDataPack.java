@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -17,6 +16,8 @@ import java.util.zip.ZipOutputStream;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import com.google.common.collect.Lists;
 
 import com.samskivert.util.ObserverList;
 import com.samskivert.util.ResultListener;
@@ -77,8 +78,7 @@ public class EditableDataPack extends DataPack
     public List<String> getDataFields ()
     {
         validateComplete();
-
-        return new ArrayList<String>(_metadata.datas.keySet());
+        return Lists.newArrayList(_metadata.datas.keySet());
     }
 
     /**
@@ -96,7 +96,7 @@ public class EditableDataPack extends DataPack
     {
         validateComplete();
 
-        ArrayList<String> result = new ArrayList<String>(_metadata.files.keySet());
+        List<String> result = Lists.newArrayList(_metadata.files.keySet());
         if (!includeContent) {
             result.remove(CONTENT_DATANAME);
         }

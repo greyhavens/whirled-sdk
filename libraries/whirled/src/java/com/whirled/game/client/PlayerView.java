@@ -34,6 +34,7 @@ import com.threerings.util.Name;
 
 import com.threerings.media.HourglassView;
 import com.threerings.media.MediaPanel;
+import com.threerings.media.TimerView;
 import com.threerings.media.image.Mirage;
 import com.threerings.media.tile.TileMultiFrameImage;
 import com.threerings.media.tile.UniformTileSet;
@@ -301,7 +302,7 @@ public class PlayerView
                 long dur = getTurnDuration();
                 if (dur > 0) {
                     _timerView.setEnabled(true);
-                    _timerView.start(0, dur, new ResultListener.NOOP());
+                    _timerView.start(0, dur, new ResultListener.NOOP<TimerView>());
                 }
 
             } else {
@@ -448,7 +449,7 @@ public class PlayerView
 
     /** Listens to the game object in order to update the view. */
     protected class GameListener
-        implements AttributeChangeListener, ElementUpdateListener, SetListener
+        implements AttributeChangeListener, ElementUpdateListener, SetListener<OccupantInfo>
     {
         // Documentation inherited.
         public void attributeChanged (AttributeChangedEvent ace)
@@ -472,10 +473,10 @@ public class PlayerView
         }
 
         // Documentation inherited.
-        public void entryAdded (EntryAddedEvent eae)
+        public void entryAdded (EntryAddedEvent<OccupantInfo> eae)
         {
             if (eae.getName().equals(PlaceObject.OCCUPANT_INFO)) {
-                OccupantInfo yoi = (OccupantInfo)eae.getEntry();
+                OccupantInfo yoi = eae.getEntry();
                 if (yoi.username.equals(_username)) {
                     updateOccupantInfo();
                 }
@@ -483,10 +484,10 @@ public class PlayerView
         }
 
         // Documentation inherited.
-        public void entryRemoved (EntryRemovedEvent ere)
+        public void entryRemoved (EntryRemovedEvent<OccupantInfo> ere)
         {
             if (ere.getName().equals(PlaceObject.OCCUPANT_INFO)) {
-                OccupantInfo yoi = (OccupantInfo)ere.getOldEntry();
+                OccupantInfo yoi = ere.getOldEntry();
                 if (yoi.username.equals(_username)) {
                     updateOccupantInfo();
                 }
@@ -494,10 +495,10 @@ public class PlayerView
         }
 
         // Documentation inherited.
-        public void entryUpdated (EntryUpdatedEvent eue)
+        public void entryUpdated (EntryUpdatedEvent<OccupantInfo> eue)
         {
             if (eue.getName().equals(PlaceObject.OCCUPANT_INFO)) {
-                OccupantInfo yoi = (OccupantInfo)eue.getEntry();
+                OccupantInfo yoi = eue.getEntry();
                 if (yoi.username.equals(_username)) {
                     updateOccupantInfo();
                 }

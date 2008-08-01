@@ -11,7 +11,9 @@ import java.io.ObjectOutputStream;
 
 import java.lang.reflect.Array;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 /**
  * Utility methods for transferring flash properties via
@@ -39,9 +41,9 @@ public class ObjectMarshaller
             return null;
         }
         if (encodeArrayElements) {
-            if (obj instanceof Iterable) {
-                ArrayList<byte[]> list = new ArrayList<byte[]>();
-                for (Object o : (Iterable) obj) {
+            if (obj instanceof Iterable<?>) {
+                List<byte[]> list = Lists.newArrayList();
+                for (Object o : (Iterable<?>) obj) {
                     list.add((byte[]) encode(o, false));
                 }
                 byte[][] retval = new byte[list.size()][];

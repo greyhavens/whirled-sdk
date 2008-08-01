@@ -26,7 +26,7 @@ public class UserCookie
     }
 
     // from DSet.Entry
-    public Comparable getKey ()
+    public Comparable<?> getKey ()
     {
         return playerId;
     }

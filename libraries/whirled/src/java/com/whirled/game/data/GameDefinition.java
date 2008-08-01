@@ -3,7 +3,7 @@
 
 package com.whirled.game.data;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.samskivert.util.StringUtil;
 
@@ -107,7 +107,7 @@ public abstract class GameDefinition implements Streamable
 
     /** Called when parsing a game definition from XML. */
     @ActionScript(omit=true)
-    public void setParams (ArrayList<Parameter> list)
+    public void setParams (List<Parameter> list)
     {
         params = list.toArray(new Parameter[list.size()]);
     }

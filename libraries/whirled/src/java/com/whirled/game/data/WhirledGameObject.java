@@ -292,7 +292,7 @@ public class WhirledGameObject extends GameObject
      * the <code>userCookies</code> set. The set will not change until the
      * event is actually propagated through the system.
      */
-    public void removeFromUserCookies (Comparable key)
+    public void removeFromUserCookies (Comparable<?> key)
     {
         requestEntryRemove(USER_COOKIES, userCookies, key);
     }
@@ -317,11 +317,10 @@ public class WhirledGameObject extends GameObject
      * change. Proxied copies of this object (on clients) will apply the
      * value change when they received the attribute changed notification.
      */
-    public void setUserCookies (DSet<com.whirled.game.data.UserCookie> value)
+    public void setUserCookies (DSet<UserCookie> value)
     {
         requestAttributeChange(USER_COOKIES, value, this.userCookies);
-        @SuppressWarnings("unchecked") DSet<com.whirled.game.data.UserCookie> clone =
-            (value == null) ? null : value.typedClone();
+        DSet<UserCookie> clone = (value == null) ? null : value.typedClone();
         this.userCookies = clone;
     }
 

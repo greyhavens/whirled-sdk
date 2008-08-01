@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -18,6 +19,7 @@ import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.ObjectCreateRule;
 import org.apache.commons.digester.Rule;
 
+import com.google.common.collect.Lists;
 import com.samskivert.util.StringUtil;
 import com.samskivert.xml.SetFieldRule;
 import com.samskivert.xml.SetPropertyFieldsRule;
@@ -76,7 +78,7 @@ public class WhirledGameParser
 
         // these rules handle customization parameters
         _digester.addRule("game/params", new ObjectCreateRule(ArrayList.class));
-        _digester.addSetNext("game/params", "setParams", ArrayList.class.getName());
+        _digester.addSetNext("game/params", "setParams", List.class.getName());
         addParameter("game/params/ai", AIParameter.class);
         addParameter("game/params/range", RangeParameter.class);
         addParameter("game/params/choice", ChoiceParameter.class);
@@ -111,10 +113,10 @@ public class WhirledGameParser
         // make sure nothing is lingering on the stack from a previous failure
         _digester.clear();
         // push an array list on the digester which will receive the parsed game definition
-        ArrayList list = new ArrayList();
+        List<GameDefinition> list = Lists.newArrayList();
         _digester.push(list);
         _digester.parse(source);
-        return (list.size() > 0) ? (GameDefinition)list.get(0) : null;
+        return (list.size() > 0) ? list.get(0) : null;
     }
 
     /**
@@ -126,7 +128,7 @@ public class WhirledGameParser
         return GameDefinition.class.getName();
     }
 
-    protected void addParameter (String path, Class pclass)
+    protected void addParameter (String path, Class<?> pclass)
     {
         _digester.addRule(path, new ObjectCreateRule(pclass));
         _digester.addRule(path, new SetPropertyFieldsRule(false));

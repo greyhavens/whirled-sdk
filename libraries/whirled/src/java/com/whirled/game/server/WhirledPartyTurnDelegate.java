@@ -3,10 +3,11 @@
 
 package com.whirled.game.server;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.samskivert.util.RandomUtil;
 
 import com.threerings.crowd.data.BodyObject;
@@ -125,7 +126,7 @@ public class WhirledPartyTurnDelegate extends GameManagerDelegate
      */
     protected void createOrdering ()
     {
-        ArrayList<Integer> list = new ArrayList<Integer>(_plobj.occupants.size());
+        List<Integer> list = Lists.newArrayListWithExpectedSize(_plobj.occupants.size());
         for (int ii = _plobj.occupants.size() - 1; ii >= 0; ii--) {
             list.add(_plobj.occupants.get(ii));
         }

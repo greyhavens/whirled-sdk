@@ -31,7 +31,6 @@ public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarsh
         return new WhirledGameMarshaller();
     }
 
-    @SuppressWarnings("unchecked")
     @Override // documentation inherited
     public void dispatchRequest (
         ClientObject source, int methodId, Object[] args)

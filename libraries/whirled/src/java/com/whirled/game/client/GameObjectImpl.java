@@ -495,8 +495,8 @@ public class GameObjectImpl
                 validateValue(Array.get(value, ii));
             }
 
-        } else if (value instanceof Iterable) {
-            for (Object o : (Iterable) value) {
+        } else if (value instanceof Iterable<?>) {
+            for (Object o : (Iterable<?>) value) {
                 validateValue(o);
             }
 
