@@ -23,19 +23,19 @@ public class PropControl extends FurniControl
     }
 
     /**
-     * Get the QuestControl, which contains methods for enumerating, offering, advancing,
+     * Get the QuestSubControl, which contains methods for enumerating, offering, advancing,
      * cancelling and completing quests.
      */
-    public function get quests () :QuestControl
+    public function get quests () :QuestSubControl
     {
         return _quests;
     }
 
     /**
-     * Get the StateControl, which contains methods for getting and setting properties
+     * Get the StateSubControl, which contains methods for getting and setting properties
      * on AVRG's, both game-global and player-centric.
      */
-    public function get state () :StateControl
+    public function get state () :StateSubControl
     {
         return _state;
     }
@@ -54,14 +54,14 @@ public class PropControl extends FurniControl
     override protected function createSubControls () :Array
     {
         return [
-            _state = new StateControl(this),
-            _quests = new QuestControl(this)
+            _state = new StateSubControl(this),
+            _quests = new QuestSubControl(this)
         ];
     }
 
     /** @private */
-    protected var _state :StateControl;
+    protected var _state :StateSubControl;
     /** @private */
-    protected var _quests :QuestControl;
+    protected var _quests :QuestSubControl;
 }
 }

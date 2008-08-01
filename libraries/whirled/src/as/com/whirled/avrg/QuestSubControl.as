@@ -20,10 +20,10 @@ import com.whirled.AbstractSubControl;
 /**
  * Defines actions, accessors and callbacks available to all Quests.
  */
-public class QuestControl extends AbstractSubControl
+public class QuestSubControl extends AbstractSubControl
 {
     /** @private */
-    public function QuestControl (ctrl :AbstractControl)
+    public function QuestSubControl (ctrl :AbstractControl)
     {
         super(ctrl);
     }

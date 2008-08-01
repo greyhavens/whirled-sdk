@@ -29,10 +29,10 @@ import com.whirled.AbstractSubControl;
  */
 [Event(name="messageReceived", type="com.whirled.avrg.AVRGameControlEvent")]
 
-public class StateControl extends AbstractSubControl
+public class StateSubControl extends AbstractSubControl
 {
     /** @private */
-    public function StateControl (ctrl :AbstractControl)
+    public function StateSubControl (ctrl :AbstractControl)
     {
         super(ctrl)
     }
