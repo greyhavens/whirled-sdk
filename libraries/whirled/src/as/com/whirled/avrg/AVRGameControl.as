@@ -107,6 +107,11 @@ public class AVRGameControl extends AbstractControl
         return callHostCode("getPlayerIds_v1") as Array;
     }
 
+    public function deactivateGame () :Boolean
+    {
+        return callHostCode("deactivateGame_v1");
+    }
+
     /** @private */
     override protected function setUserProps (o :Object) :void
     {

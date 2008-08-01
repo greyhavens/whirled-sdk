@@ -56,11 +56,6 @@ public class AVRServerGameControl extends AbstractControl
         startTicker(tickerName, 0);
     }
 
-    public function deactivateGame () :Boolean
-    {
-        return callHostCode("deactivateGame_v1");
-    }
-
     /** @private */
     override protected function setUserProps (o :Object) :void
     {
