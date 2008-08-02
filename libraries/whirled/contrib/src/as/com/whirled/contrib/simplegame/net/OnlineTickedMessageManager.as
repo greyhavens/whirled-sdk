@@ -64,7 +64,7 @@ public class OnlineTickedMessageManager
     {
         _gameCtrl.game.removeEventListener(StateChangedEvent.GAME_STARTED, handleGameStarted);
 
-        _gameCtrl.services.stopTicker(_tickName);
+//        _gameCtrl.services.stopTicker(_tickName);
         _gameCtrl.net.removeEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, msgReceived);
         _receivedFirstTick = false;
     }
