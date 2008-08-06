@@ -96,6 +96,7 @@ public class BagsSubControl extends AbstractSubControl
      * @param count the number of elements to pick
      * @param msgOrPropName the name of the message or property
      *        that will contain the picked elements.
+     * @param callback
      * @param playerId if <code>SHOW_TO_ALL</code> (or unset), the picked elements should be 
      *        set on the gameObject as a property for all to see.
      *        If a playerId is specified, only that player will receive
