@@ -337,12 +337,14 @@ public abstract class WhirledGameManager extends GameManager
                     sendPrivateMessage(caller, playerId, msgOrPropName, result);
                 }
                 listener.requestProcessed(); // SUCCESS!
-                return;
-            }
-        }
 
-        // TODO: decide what we want to return here
-        throw new InvocationException(String.valueOf(srcSize));
+            } else {
+                throw new InvocationException("Not enough elements");
+            }
+
+        } else {
+            throw new InvocationException("Collection not found");
+        }
     }
 
     // from WhirledGameProvider

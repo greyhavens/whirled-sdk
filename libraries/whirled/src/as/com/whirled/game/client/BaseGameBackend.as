@@ -1143,15 +1143,14 @@ public class BaseGameBackend
 
         var listener :InvocationService_ConfirmListener;
         if (callback != null) {
-            // TODO: Figure out the method sig of the callback, and what it means
-            var fn :Function = function (cause :String = null) :void {
-                if (cause == null) {
+            listener = createLoggingConfirmListener("getFromCollection",
+                function (cause :String) :void {
+                    callback(0);
+                },
+                function () :void {
                     callback(count);
-                } else {
-                    callback(parseInt(cause));
                 }
-            };
-            listener = new ConfirmAdapter(fn, fn);
+            );
 
         } else {
             listener = createLoggingConfirmListener("getFromCollection");

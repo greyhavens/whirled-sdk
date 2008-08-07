@@ -418,7 +418,7 @@ public class GameObjectImpl
             listener = new InvocationService.ConfirmListener() {
                 public void requestFailed (String cause) {
                     try {
-                        dealy.dealt(Integer.parseInt(cause));
+                        dealy.dealt(0);
                     } catch (NumberFormatException nfe) {
                         // nada
                     }

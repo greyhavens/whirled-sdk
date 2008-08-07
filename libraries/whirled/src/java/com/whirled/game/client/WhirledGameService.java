@@ -126,8 +126,9 @@ public interface WhirledGameService extends InvocationService
 
     /**
      * Pick or deal some number of elements from the specified collection, and either set a
-     * property in the flash object, or delivery the picks to the specified player index via a game
-     * message.
+     * property in the flash object, or deliver the picks to the specified player id via a game
+     * message. The call will only succeed if the named collection exists and has enough members 
+     * to deal the requested amount.
      */
     public void getFromCollection (Client client, String collName, boolean consume, int count,
                                    String msgOrPropName, int playerId, ConfirmListener listener);
