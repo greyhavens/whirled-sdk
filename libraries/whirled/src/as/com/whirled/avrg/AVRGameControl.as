@@ -35,78 +35,34 @@ public class AVRGameControl extends AbstractControl
         super(disp);
 
         // set up the default hitPointTester
-        _hitPointTester = disp.root.hitTestPoint;
+        _client.setHitPointTester(disp.root.hitTestPoint);
+    }
+
+    public function get game () :GameSubControl
+    {
+        return _game;
+    }
+
+    public function get room () :RoomSubControl
+    {
+        return _room;
+    }
+
+    public function get player () :PlayerSubControl
+    {
+        return _player;
     }
 
     /**
      * Get the ClientSubControl which contains methods that are only relevant on the
      * client, as they deal with e.g. on-screen pixels rather than logical positioning.
      */
-
-    /**
-     * Get the QuestSubControl, which contains methods for enumerating, offering, advancing,
-     * cancelling and completing quests.
-     */
-    public function get quests () :QuestSubControl
+    public function get client () :ClientSubControl
     {
-        return _quests;
+        return _client;
     }
 
-    /**
-     * Get the StateSubControl, which contains methods for getting and setting properties
-     * on AVRG's, both game-global and player-centric.
-     */
-    public function get state () :StateSubControl
-    {
-        return _state;
-    }
-
-    /**
-     * Configures the AVRG with a function to call to determine which pixels are alive
-     * for mouse purposes and which are not. By default, all non-transparent pixels will
-     * capture the mouse. The prototype for this method is identical to what the Flash
-     * API establishes in DisplayObject:
-     * <code>
-     *    testHitPoint(x :Number, y :Number, shapeFlag :Boolean) :Boolean
-     * </code>
-     *
-     * @see flash.display.DisplayObject#testHitPoint()
-     */
-    public function setHitPointTester (tester :Function) :void
-    {
-        _hitPointTester = tester;
-    }
-
-    /**
-     * Returns the AVRG's currently configured hit point tester.
-     *
-     * @see #setHitPointTester()
-     */
-    public function get hitPointTester () :Function
-    {
-        return _hitPointTester;
-    }
-
-    public function setMobSpriteExporter (exporter :Function) :void
-    {
-        _mobSpriteExporter = exporter;
-    }
-
-    public function get mobSpriteExporter () :Function
-    {
-        return _mobSpriteExporter;
-    }
-
-    public function getPlayerId () :int
-    {
-        return callHostCode("getPlayerId_v1") as int;
-    }
-
-    public function getPlayerIds () :Array
-    {
-        return callHostCode("getPlayerIds_v1") as Array;
-    }
-
+    // TODO: Move to server
     public function deactivateGame () :Boolean
     {
         return callHostCode("deactivateGame_v1");
@@ -116,106 +72,27 @@ public class AVRGameControl extends AbstractControl
     override protected function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
-
-        o["hitTestPoint_v1"] = hitTestPoint_v1;
-        o["coinsAwarded_v1"] = coinsAwarded_v1;
-
-        o["requestMobSprite_v1"] = requestMobSprite_v1;
-        o["mobRemoved_v1"] = mobRemoved_v1;
-        o["mobAppearanceChanged_v1"] = mobAppearanceChanged_v1;
-    }
-
-    /** @private */
-    protected function requestMobSprite_v1 (id :String) :DisplayObject
-    {
-        var info :MobEntry = _mobs[id];
-        if (info) {
-            Log.getLog(this).warning(
-                "Sprite requested for previously known mob [id=" + id + "]");
-            return info.sprite;
-        }
-        if (_mobSpriteExporter == null) {
-            Log.getLog(this).warning(
-                "Sprite requested but control has no exporter [id=" + id + "]");
-            return null;
-        }
-        var ctrl :MobControl = new MobControl(this, id);
-        var sprite :DisplayObject = _mobSpriteExporter(id, ctrl) as DisplayObject;
-        Log.getLog(this).debug("Requested sprite [id=" + id + ", sprite=" + sprite + "]");
-        if (sprite) {
-            _mobs[id] = new MobEntry(ctrl, sprite);
-        }
-        return sprite;
-    }
-
-    /** @private */
-    protected function mobRemoved_v1 (id :String) :void
-    {
-        Log.getLog(this).debug("Nuking control [id=" + id + "]");
-        delete _mobs[id];
-    }
-
-    /** @private */
-    protected function mobAppearanceChanged_v1 (
-        id :String, locArray :Array, orient :Number, moving :Boolean, idle :Boolean) :void
-    {
-        var entry :MobEntry = _mobs[id];
-        if (entry) {
-            entry.control.appearanceChanged(locArray, orient, moving, idle);
-        }
-    }
-
-    /** @private */
-    protected function hitTestPoint_v1 (x :Number, y :Number, shapeFlag :Boolean) :Boolean
-    {
-        return _hitPointTester != null && _hitPointTester(x, y, shapeFlag);
-    }
-
-    /** @private */
-    protected function coinsAwarded_v1 (amount :int) :void
-    {
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.COINS_AWARDED, null, amount));
     }
 
     /** @private */
     override protected function createSubControls () :Array
     {
         return [
+            _game = new GameSubControl(this),
+            _room = new RoomSubControl(this),
+            _player = new PlayerSubControl(this),
             _client = new ClientSubControl(this),
-            _state = new StateSubControl(this),
-            _quests = new QuestSubControl(this)
         ];
     }
 
     /** @private */
+    protected var _game :GameSubControl;
+    /** @private */
+    protected var _room :RoomSubControl;
+    /** @private */
+    protected var _player :PlayerSubControl;
+    /** @private */
     protected var _client :ClientSubControl;
-    /** @private */
-    protected var _quests :QuestSubControl;
-    /** @private */
-    protected var _state :StateSubControl;
-
-    /** @private */
-    protected var _mobSpriteExporter :Function;
-    /** @private */
-    protected var _hitPointTester :Function;
-
-    /** @private */
-    protected var _mobs :Dictionary = new Dictionary();
 }
 }
 
-import flash.display.DisplayObject;
-
-import com.whirled.avrg.MobControl;
-
-class MobEntry
-{
-    public var control :MobControl;
-    public var sprite :DisplayObject;
-
-    public function MobEntry (control :MobControl, sprite :DisplayObject)
-    {
-        this.control = control;
-        this.sprite = sprite;
-    }
-}

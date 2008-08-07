@@ -7,6 +7,8 @@ package com.whirled.avrg {
 
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
+import com.whirled.game.PropertyGetSubControlImpl;
+import com.whirled.game.PropertyGetSubControl;
 
 /**
  * Dispatched either when somebody in our room entered our current game,
@@ -64,9 +66,19 @@ public class RoomSubControl extends AbstractSubControl
         super(ctrl);
     }
 
+    public function get props () :PropertyGetSubControl
+    {
+        return _props;
+    }
+
     public function getRoomId () :int
     {
         return callHostCode("getRoomId_v1") as int;
+    }
+
+    public function getPlayerIds () :Array
+    {
+        return callHostCode("getRoomPlayerIds_v1") as Array;
     }
 
     public function isPlayerHere (id :int) :Boolean
@@ -176,5 +188,14 @@ public class RoomSubControl extends AbstractSubControl
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
     }
 
+    /** @private */
+    override protected function createSubControls () :Array
+    {
+        return [
+            _props = new PropertyGetSubControlImpl(_parent, "P")
+            ];
+    }
+
+    protected var _props :PropertyGetSubControl;
 }
 }

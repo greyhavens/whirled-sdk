@@ -9,6 +9,7 @@ import flash.display.DisplayObject;
 
 import com.threerings.util.Log;
 
+import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 import com.whirled.ControlEvent;
 
@@ -17,7 +18,7 @@ import com.whirled.ControlEvent;
  */
 public class MobControl extends AbstractSubControl
 {
-    public function MobControl (ctrl :AVRGameControl, id :String)
+    public function MobControl (ctrl :AbstractControl, id :String)
     {
         super(ctrl);
         _id = id;
