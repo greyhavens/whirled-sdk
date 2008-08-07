@@ -4,10 +4,12 @@
 package com.whirled.game.data;
 
 import com.threerings.util.ActionScript;
- 
+
+import com.threerings.crowd.data.PlaceObject;
 import com.threerings.presents.dobj.DObject;
 import com.threerings.presents.dobj.NamedEvent;
 
+import com.whirled.game.server.PropertySpaceHelper;
 import com.whirled.game.util.ObjectMarshaller;
 
 /**
@@ -69,20 +71,24 @@ public class PropertySetEvent extends NamedEvent
     // from abstract DEvent
     public boolean applyToObject (DObject target)
     {
-        WhirledGameObject gameObj = (WhirledGameObject) target;
-        if (!gameObj.isOnServer()) {
-            // TODO: this won't handle GameMaps
-            _data = ObjectMarshaller.decode(_data);
-        }
-        if (_oldValue == UNSET_OLD_VALUE) {
-            // only apply the property change if we haven't already
-            try {
-                _oldValue = gameObj.applyPropertySet(_name, _data, _key, _isArray);
-            } catch (WhirledGameObject.ArrayRangeException are) {
-                return false;
+        if (target instanceof PlaceObject && target instanceof PropertySpaceObject) {
+            PropertySpaceObject psObj = (PropertySpaceObject) target;
+            if (!PropertySpaceHelper.isOnServer(psObj)) {
+                // TODO: this won't handle GameMaps
+                _data = ObjectMarshaller.decode(_data);
             }
+            if (_oldValue == UNSET_OLD_VALUE) {
+                // only apply the property change if we haven't already
+                try {
+                    _oldValue = PropertySpaceHelper.applyPropertySet(
+                        psObj, _name, _data, _key, _isArray);
+                } catch (WhirledGameObject.ArrayRangeException are) {
+                    return false;
+                }
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override

@@ -5,11 +5,9 @@ package com.whirled.game.data;
 
 import java.io.IOException;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
-
-import com.samskivert.util.ObjectUtil;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.threerings.util.Name;
 
@@ -21,13 +19,13 @@ import com.threerings.presents.dobj.DSet;
 import com.threerings.parlor.game.data.GameObject;
 import com.threerings.parlor.turn.data.TurnGameObject;
 
-import com.whirled.game.util.ObjectMarshaller;
+import com.whirled.game.server.PropertySpaceHelper;
 
 /**
  * Contains the data for a whirled game.
  */
 public class WhirledGameObject extends GameObject
-    implements TurnGameObject
+    implements TurnGameObject, PropertySpaceObject
 {
     /**
      * A checked exception thrown by applyPropertySet to indicate when
@@ -121,12 +119,16 @@ public class WhirledGameObject extends GameObject
     /** The service interface for requesting special things from the server. */
     public WhirledGameMarshaller whirledGameService;
 
-    /**
-     * Access the underlying user properties
-     */
+    // from PropertySpaceObject
     public HashMap<String, Object> getUserProps ()
     {
         return _props;
+    }
+
+    // from PropertySpaceObject
+    public Set<String> getDirtyProps ()
+    {
+        return _dirty;
     }
 
     // from TurnGameObject
@@ -145,87 +147,6 @@ public class WhirledGameObject extends GameObject
     public Name[] getPlayers ()
     {
         return players;
-    }
-
-    /**
-     * Called by PropertySetEvent to effect the property update.
-     * 
-     * @return the old value.
-     *
-     * @throws ArrayIndexOutOfBoundsException if an array update is out of bounds.
-     */
-    public Object applyPropertySet (String propName, Object data, Integer key, boolean isArray)
-        throws ArrayRangeException
-    {
-        Object oldValue;
-        if (key != null) {
-            Object curValue = _props.get(propName);
-            if (isArray) {
-                if (!(curValue instanceof Object[])) {
-                    throw new ArrayRangeException("Current value is not an Array.");
-                }
-                // this is actually a byte[][] on the server..
-                Object[] arr = (Object[]) curValue;
-                int index = key.intValue();
-                if (index < 0 || index >= arr.length) {
-                    throw new ArrayRangeException("Array index out of range.");
-                }
-                oldValue = arr[index];
-                arr[index] = data;
-
-            } else {
-                GameMap map;
-                if (curValue instanceof GameMap) {
-                    map = (GameMap) curValue;
-                } else {
-                    map = new GameMap(); // force anything else to be a map
-                    _props.put(propName, map);
-                }
-                if (data == null) {
-                    oldValue = map.remove(key);
-                } else {
-                    oldValue = map.put(key, (byte[]) data);
-                }
-            }
-            
-        } else if (data != null) {
-            // normal property set
-            oldValue = _props.put(propName, data);
-
-        } else {
-            // remove a property
-            oldValue = _props.remove(propName);
-        }
-    
-        return oldValue;
-    }
-
-    /**
-     * Test the specified property against the specified value. This is
-     * called on the server to validate testAndSet events.
-     *
-     * @return true if the property contains the value specified.
-     */
-    public boolean testProperty (String propName, Object testValue)
-    {
-        Object curValue = _props.get(propName);
-
-        // let's test the values!
-        if ((testValue instanceof Object[]) && (curValue instanceof Object[])) {
-            // testing an array against another array
-            return Arrays.deepEquals((Object[]) testValue, (Object[]) curValue);
-
-        } else if ((testValue instanceof byte[]) && (curValue instanceof byte[])) {
-            // testing a property against another property (may have
-            // been from inside an array)
-            return Arrays.equals((byte[]) testValue, (byte[]) curValue);
-
-        // TODO: other array types must be tested if we're on the client
-        // ??
-        } else {
-            // will catch null == null...
-            return ObjectUtil.equals(testValue, curValue);
-        }
     }
 
     // AUTO-GENERATED: METHODS START
@@ -382,16 +303,7 @@ public class WhirledGameObject extends GameObject
     {
         out.defaultWriteObject();
 
-        if (isOnServer()) {
-            // write the number of properties, followed by each one
-            out.writeInt(_props.size());
-            for (Map.Entry<String, Object> entry : _props.entrySet()) {
-                out.writeUTF(entry.getKey());
-                out.writeObject(entry.getValue());
-            }
-        } else {
-            throw new IllegalStateException();
-        }
+        PropertySpaceHelper.writeProperties(this, out);
     }
 
     /**
@@ -402,32 +314,18 @@ public class WhirledGameObject extends GameObject
     {
         ins.defaultReadObject();
 
-        _props.clear();
-        int count = ins.readInt();
-        boolean onClient = !isOnServer();
-        while (count-- > 0) {
-            String key = ins.readUTF();
-            Object o = ins.readObject();
-            if (onClient) {
-                o = ObjectMarshaller.decode(o);
-            }
-            _props.put(key, o);
-        }
+        PropertySpaceHelper.readProperties(this, ins);
     }
 
     /**
-     * Called internally and by PropertySetEvent to determine if we're
-     * on the server or on the client.
-     */
-    boolean isOnServer ()
-    {
-        return (_omgr != null) && _omgr.isManager(this);
-    }
-
-    /** The current state of game data.
-     * On the server, this will be a byte[] for normal properties
-     * and a byte[][] for array properties.
-     * On the client, the actual values are kept whole.
+     * The current state of game data.
+     * On the server, this will be a byte[] for normal properties and a byte[][] for array
+     * properties. On the client, the actual values are kept whole.
      */
     protected transient HashMap<String, Object> _props = new HashMap<String, Object>();
+
+    /**
+     * The persistent properties that have been written to since startup.
+     */
+    protected transient Set<String> _dirty = new HashSet<String>();
 }

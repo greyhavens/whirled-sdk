@@ -246,7 +246,7 @@ public abstract class WhirledGameManager extends GameManager
         throws InvocationException
     {
         validateUser(caller);
-        if (testAndSet && !_gameObj.testProperty(propName, testValue)) {
+        if (testAndSet && !PropertySpaceHelper.testProperty(_gameObj, propName, testValue)) {
             return; // the test failed: do not set the property
         }
         setProperty(propName, data, key, isArray);
@@ -508,10 +508,7 @@ public abstract class WhirledGameManager extends GameManager
         return true;
     }
 
-    /**
-     * Test whether the provided client is the agent for this game.
-     */
-    @Override // from GameManager
+    @Override // from PlayManager
     public boolean isAgent (ClientObject caller)
     {
         return _gameAgent != null && _gameAgent.clientOid == caller.getOid();
@@ -537,7 +534,7 @@ public abstract class WhirledGameManager extends GameManager
      *  the playerId into a BodyObject. The player id may be 0, indicating the current
      *  player. Server agents may not use this value and clients may only use this value.
      **/
-    @Override // from GameManager
+    @Override // from PlayManager
     public BodyObject checkWritePermission (ClientObject caller, int playerId)
     {
         if (isAgent(caller)) {
@@ -582,7 +579,8 @@ public abstract class WhirledGameManager extends GameManager
     {
         // apply the property set immediately
         try {
-            Object oldValue = _gameObj.applyPropertySet(propName, value, key, isArray);
+            Object oldValue = PropertySpaceHelper.applyPropertySet(
+                _gameObj, propName, value, key, isArray);
             _gameObj.postEvent(
                 new PropertySetEvent(_gameObj.getOid(), propName, value, key, isArray, oldValue));
         } catch (WhirledGameObject.ArrayRangeException are) {

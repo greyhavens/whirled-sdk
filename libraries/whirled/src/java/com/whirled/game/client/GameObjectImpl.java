@@ -23,6 +23,7 @@ import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.util.CrowdContext;
 
 import com.whirled.game.data.WhirledGameObject;
+import com.whirled.game.server.PropertySpaceHelper;
 import com.whirled.game.util.ObjectMarshaller;
 
 import com.whirled.game.WhirledGame;
@@ -80,12 +81,12 @@ public class GameObjectImpl
 
         // set it immediately in the game object
         try {
-            _gameObj.applyPropertySet(propName, reconstituted, index, false);
+            PropertySpaceHelper.applyPropertySet(_gameObj, propName, reconstituted, index, false);
         } catch (WhirledGameObject.ArrayRangeException are) {
             throw new RuntimeException(are);
         }
     }
-    
+
     // from WhirledGame
     public void testAndSet (String propName, Object value, Object testValue)
     {
@@ -220,7 +221,7 @@ public class GameObjectImpl
     public void localChat (String msg)
     {
         validateChat(msg);
-        // messages displayed with sendChat will end up 
+        // messages displayed with sendChat will end up
         _ctx.getChatDirector().displayInfo(
             null, MessageBundle.taint(msg), WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
