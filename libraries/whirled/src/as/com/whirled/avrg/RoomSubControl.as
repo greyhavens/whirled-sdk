@@ -7,8 +7,9 @@ package com.whirled.avrg {
 
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
-import com.whirled.game.PropertyGetSubControlImpl;
-import com.whirled.game.PropertyGetSubControl;
+
+import com.whirled.net.PropertyGetSubControl;
+import com.whirled.net.impl.PropertyGetSubControlImpl;
 
 /**
  * Dispatched either when somebody in our room entered our current game,

@@ -8,8 +8,8 @@ package com.whirled.avrg {
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 
-import com.whirled.game.PropertyGetSubControl;
-import com.whirled.game.PropertyGetSubControlImpl;
+import com.whirled.net.PropertyGetSubControl;
+import com.whirled.net.impl.PropertyGetSubControlImpl;
 
 /**
  */
