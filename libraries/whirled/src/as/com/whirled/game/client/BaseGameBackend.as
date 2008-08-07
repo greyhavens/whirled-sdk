@@ -566,6 +566,7 @@ public class BaseGameBackend
         // .game.seating
         o["getPlayers_v1"] = getPlayers_v1;
         o["getPlayerPosition_v1"] = getPlayerPosition_v1;
+        o["getMyPosition_v1"] = getMyPosition_v1;
 
         // .services
         o["checkDictionaryWord_v2"] = checkDictionaryWord_v2;
@@ -1022,6 +1023,12 @@ public class BaseGameBackend
     {
         validateConnected();
         return getPlayersArray();
+    }
+
+    protected function getMyPosition_v1 () :int
+    {
+        // Note: this is overridden in the whirled backend
+        return -1;
     }
 
     //---- .services -------------------------------------------------------

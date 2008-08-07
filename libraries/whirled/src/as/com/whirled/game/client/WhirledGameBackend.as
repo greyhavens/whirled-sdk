@@ -202,9 +202,6 @@ public class WhirledGameBackend extends BaseGameBackend
         o["isMyTurn_v1"] = isMyTurn_v1;
         o["playerReady_v1"] = playerReady_v1;
 
-        // .game.seating
-        o["getMyPosition_v1"] = getMyPosition_v1;
-
         // Old methods: backwards compatability
         o["getStageBounds_v1"] = getStageBounds_v1;
         o["getHeadShot_v1"] = getHeadShot_v1;
@@ -353,7 +350,7 @@ public class WhirledGameBackend extends BaseGameBackend
 
     //---- .game.seating ---------------------------------------------------
 
-    protected function getMyPosition_v1 () :int
+    override protected function getMyPosition_v1 () :int
     {
         validateConnected();
         return _gameObj.getPlayerIndex(
