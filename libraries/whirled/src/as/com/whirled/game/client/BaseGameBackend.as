@@ -47,6 +47,7 @@ import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.data.GameObject;
 
+import com.whirled.game.client.PropertySpaceHelper;
 import com.whirled.game.data.GameData;
 import com.whirled.game.data.ItemData;
 import com.whirled.game.data.LevelData;
@@ -687,7 +688,7 @@ public class BaseGameBackend
         validateConnected();
         validatePropertyChange(propName, value, isArray, int(key));
 
-        var encoded :Object = WhirledGameObject.encodeProperty(value, (key == null));
+        var encoded :Object = PropertySpaceHelper.encodeProperty(value, (key == null));
         var ikey :Integer = (key == null) ? null : new Integer(int(key));
         _gameObj.whirledGameService.setProperty(
             _ctx.getClient(), propName, encoded, ikey, isArray,
@@ -695,7 +696,8 @@ public class BaseGameBackend
         if (immediate) {
             // we re-decode so that it looks like it came off the net
             try {
-                _gameObj.applyPropertySet(propName, WhirledGameObject.decodeProperty(encoded),
+                PropertySpaceHelper.applyPropertySet(
+                    _gameObj, propName, PropertySpaceHelper.decodeProperty(encoded),
                     key, isArray);
             } catch (re :RangeError) {
                 trace("Error setting property (immediate): " + re);
@@ -724,8 +726,8 @@ public class BaseGameBackend
         validateConnected();
         validatePropertyChange(propName, value, false, 0);
 
-        var encodedValue :Object = WhirledGameObject.encodeProperty(value, true);
-        var encodedTestValue :Object = WhirledGameObject.encodeProperty(testValue, true);
+        var encodedValue :Object = PropertySpaceHelper.encodeProperty(value, true);
+        var encodedTestValue :Object = PropertySpaceHelper.encodeProperty(testValue, true);
         _gameObj.whirledGameService.setProperty(
             _ctx.getClient(), propName, encodedValue, null, false, true, encodedTestValue,
             createLoggingConfirmListener("testAndSetProperty"));

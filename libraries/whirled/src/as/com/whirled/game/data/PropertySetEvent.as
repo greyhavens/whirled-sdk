@@ -17,9 +17,10 @@ import com.threerings.util.StringBuilder;
 import com.threerings.presents.dobj.DObject;
 import com.threerings.presents.dobj.NamedEvent;
 
+import com.whirled.game.client.PropertySpaceHelper;
+
 /**
- * Represents a property change on the actionscript object we
- * use in WhirledGameObject.
+ * Represents a property change on the actionscript object we use in PropertySpaceObjects.
  */
 public class PropertySetEvent extends NamedEvent
 {
@@ -35,7 +36,8 @@ public class PropertySetEvent extends NamedEvent
     override public function applyToObject (target :DObject) :Boolean
     {
         try {
-            _oldValue = WhirledGameObject(target).applyPropertySet(_name, _data, _key, _isArray);
+            _oldValue = PropertySpaceHelper.applyPropertySet(
+                PropertySpaceObject(target), _name, _data, _key, _isArray);
         } catch (re :RangeError) {
             trace("Error setting property: " + re);
             return false;
@@ -79,7 +81,7 @@ public class PropertySetEvent extends NamedEvent
     override public function readObject (ins :ObjectInputStream) :void
     {
         super.readObject(ins);
-        _data = WhirledGameObject.decodeProperty(ins.readObject());
+        _data = PropertySpaceHelper.decodeProperty(ins.readObject());
         _key = ins.readField(Integer) as Integer;
         _isArray = ins.readBoolean();
     }
