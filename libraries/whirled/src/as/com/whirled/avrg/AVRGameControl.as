@@ -62,6 +62,11 @@ public class AVRGameControl extends AbstractControl
         return _client;
     }
 
+    public function get agent () :AgentSubControl
+    {
+        return _agent;
+    }
+
     // TODO: Move to server
     public function deactivateGame () :Boolean
     {
@@ -82,6 +87,7 @@ public class AVRGameControl extends AbstractControl
             _room = new RoomSubControl(this),
             _player = new PlayerSubControl(this),
             _client = new ClientSubControl(this),
+            _agent = new AgentSubControl(this),
         ];
     }
 
@@ -93,6 +99,8 @@ public class AVRGameControl extends AbstractControl
     protected var _player :PlayerSubControl;
     /** @private */
     protected var _client :ClientSubControl;
+    /** @private */
+    protected var _agent :AgentSubControl;
 }
 }
 
