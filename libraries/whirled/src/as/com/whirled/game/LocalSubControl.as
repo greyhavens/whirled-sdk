@@ -151,18 +151,14 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
-     * Set whether control bar buttons are shown.
+     * Set whether the rematch/replay button is shown at the end of the game. It is shown
+     * by default, but some games may not support rematching and so should hide the button.
      *
      * <b>Note:</b> this function changes local display only; other clients will not be affected.
-     *
-     * @param rematch sets whether the rematch button should be displayed automatically when
-     *        the game is over.
-     * @param backButtons sets whether the 'back to whirled' and 'back to lobby' buttons are
-     *        showing.
      */
-    public function setShowButtons (rematch :Boolean = true, backButtons :Boolean = true) :void
+    public function setShowReplay (show :Boolean) :void
     {
-        callHostCode("setShowButtons_v1", rematch, backButtons);
+        callHostCode("setShowReplay_v1", show);
     }
 
     /**
@@ -220,14 +216,6 @@ public class LocalSubControl extends AbstractSubControl
     public function setMappedScores (scores :Object) :void
     {
         callHostCode("setMappedScores_v1", scores);
-    }
-
-    /**
-     * Instructs the game client to return to Whirled.
-     */
-    public function backToWhirled (showLobby :Boolean = false) :void
-    {
-        callHostCode("backToWhirled_v1", showLobby);
     }
 
     /**
