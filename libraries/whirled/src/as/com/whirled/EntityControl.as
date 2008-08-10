@@ -302,66 +302,6 @@ public class EntityControl extends AbstractControl
     }
 
     /**
-     * Return an associative hash of all the room properties. This is not a cheap operation.
-     * Use getRoomProperty if you know what you want.
-     *
-     * <p><b>Note</b>: Room properties are an experimental feature and may be removed or
-     * incompatibly changed in the future. Use at your own risk. If you want to create something
-     * that depends on this, tell us about it and we'll try to account for that 
-     * in any changes we make.</p>
-     */
-    public function getRoomProperties () :Object
-    {
-        var mems :Object = callHostCode("getRoomProperties_v1");
-        // return an empty object if the host somereason returns null
-        return (mems == null) ? {} : mems;
-    }
-
-    /**
-     * Returns the value associated with the supplied key in thie room's shared property space.
-     * If no value is mapped in the room, the supplied default value will be returned.
-     *
-     * @return the value for the specified key from this room's property space or the
-     * supplied default.
-     *
-     * <p><b>Note</b>: Room properties are an experimental feature and may be removed or
-     * incompatibly changed in the future. Use at your own risk. If you want to create something
-     * that depends on this, tell us about it and we'll try to account for that 
-     * in any changes we make.</p>
-     */
-    public function getRoomProperty (key :String, defval :Object = null) :Object
-    {
-        var value :Object = callHostCode("getRoomProperty_v1", key);
-        return (value == null) ? defval : value;
-    }
-
-    /**
-     * Requests that the room's shared property space be updated with the supplied key/value
-     * pair. The supplied value must be a simple object (Integer, Number, String) or an Array
-     * of simple objects. The key must be no more than 64 bytes long and the value no more
-     * than 256 when encoded. There can be no more than 16 entries in a room's property space
-     * so be frugal.
-     *
-     * Please note that these properties are not persisted through server reboots. They are
-     * meant for state coordination, not long-term storage. Use item memory for persistence.
-     *
-     * Setting the value for a key to null clears that property; subsequent lookups will return
-     * the default value.
-     *
-     * @return true if the memory was updated, false if the memory update could not be completed
-     * due to size restrictions.
-     *
-     * <p><b>Note</b>: Room properties are an experimental feature and may be removed or
-     * incompatibly changed in the future. Use at your own risk. If you want to create something
-     * that depends on this, tell us about it and we'll try to account for that 
-     * in any changes we make.</p>
-     */
-    public function setRoomProperty (key :String, value :Object) :Boolean
-    {
-        return callHostCode("setRoomProperty_v1", key, value);
-    }
-
-    /**
      * Enumerates the ids of all entities in this room.
      *
      * @param type an optional filter to restrict the results to a particular type of entity.
