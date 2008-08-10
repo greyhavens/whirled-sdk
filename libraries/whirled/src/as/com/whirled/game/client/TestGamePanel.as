@@ -30,9 +30,6 @@ public class TestGamePanel extends WhirledGamePanel
     {
         super(ctx, ctrl);
 
-        styleLinkButton(_backToLobby);
-        styleLinkButton(_backToWhirled);
-
         // have us take up the entire size of our parent
         percentWidth = 100;
         percentHeight = 100;
@@ -61,24 +58,19 @@ public class TestGamePanel extends WhirledGamePanel
         super.willEnterPlace(plobj);
 
         _ctrlBar.addChild(_rematch);
-        _ctrlBar.addChild(_backToLobby);
-        _ctrlBar.addChild(_backToWhirled);
     }
 
     override public function didLeavePlace (plobj :PlaceObject) :void
     {
-        _ctrlBar.removeChild(_backToLobby);
-        _ctrlBar.removeChild(_backToWhirled);
         _ctrlBar.removeChild(_rematch);
 
         super.didLeavePlace(plobj);
     }
 
-    override protected function getButtonLabels (plobj :PlaceObject) :Array
+    override protected function getRematchLabel (plobj :PlaceObject) :String
     {
         var gameObj :GameObject = plobj as GameObject;
-        return [ "Leave game", "Game lobby",
-            ((gameObj.players.length == 1) ? "Play again" : "Request a rematch") ];
+        return (gameObj.players.length == 1) ? "Play again" : "Request a rematch";
     }
 
     override protected function configureGameView (view :GameContainer) :void
@@ -119,18 +111,6 @@ public class TestGamePanel extends WhirledGamePanel
         _chatBox.height = unscaledHeight - _chatBox.y;
 
         super.updateDisplayList(unscaledWidth, unscaledHeight);
-    }
-
-    /**
-     * Style the link buttons so they don't look like ass.
-     */
-    protected function styleLinkButton (btn :CommandLinkButton) :void
-    {
-        btn.setStyle("overSkin", null);
-        btn.setStyle("downSkin", null);
-        btn.setStyle("color", 0xAAB5B9);
-        btn.setStyle("textRollOverColor", 0xAAB5B9);
-        btn.setStyle("textSelectedColor", 0xAAB5B9);
     }
 
     protected var _chatBox :VBox;

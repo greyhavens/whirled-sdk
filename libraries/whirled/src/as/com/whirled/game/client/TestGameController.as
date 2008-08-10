@@ -13,13 +13,6 @@ import com.threerings.crowd.util.CrowdContext;
  */
 public class TestGameController extends WhirledGameController
 {
-    // from BaseGameController
-    override public function backToWhirled (showLobby :Boolean = false) :void
-    {
-        // just log-off, either way
-        _ctx.getClient().logoff(false);
-    }
-
     // from WhirledGameController
     override protected function createBackend () :BaseGameBackend
     {

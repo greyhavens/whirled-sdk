@@ -43,13 +43,6 @@ public class BaseGameController extends GameController
     }
 
     /**
-     */
-    public function backToWhirled (showLobby :Boolean = false) :void
-    {
-        // do nothing by default
-    }
-
-    /**
      * Called by the backend when the game is ready to start. If the game has ended, this can
      * be called by all clients to start the game anew.
      */

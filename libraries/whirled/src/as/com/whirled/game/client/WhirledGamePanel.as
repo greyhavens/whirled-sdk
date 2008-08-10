@@ -10,7 +10,6 @@ import mx.containers.Canvas;
 import com.threerings.util.Name;
 
 import com.threerings.flex.CommandButton;
-import com.threerings.flex.CommandLinkButton;
 import com.threerings.flex.FlexUtil;
 
 import com.threerings.crowd.client.PlaceView;
@@ -31,11 +30,8 @@ public class WhirledGamePanel extends Canvas
         _ctx = ctx;
         _ctrl = ctrl;
 
-        _backToLobby = new CommandLinkButton();
-        _backToWhirled = new CommandLinkButton();
-        _rematch = new CommandButton();
+        _rematch = new CommandButton(null, handleRematchClicked);
         _rematch.toggle = true;
-        _rematch.setCallback(handleRematchClicked);
 
         _playerList = createPlayerList();
     }
@@ -57,13 +53,7 @@ public class WhirledGamePanel extends Canvas
         (_ctrl.backend as WhirledGameBackend).setContainer(_gameView);
         addChild(_gameView);
 
-        var labels :Array = getButtonLabels(plobj);
-        _backToWhirled.label = labels[0];
-        _backToLobby.label = labels[1];
-        _rematch.label = labels[2];
-
-        _backToWhirled.setCallback(_ctrl.backToWhirled, false);
-        _backToLobby.setCallback(_ctrl.backToWhirled, true);
+        _rematch.label = getRematchLabel(plobj);
         checkRematchVisibility();
     }
 
@@ -85,15 +75,12 @@ public class WhirledGamePanel extends Canvas
     }
 
     /**
-     * Set whether or not we show some of the standard buttons.
+     * Set whether or not we show the replay button.
      */
-    public function setShowButtons (
-        rematch :Boolean, backToLobby :Boolean, backToWhirled :Boolean) :void
+    public function setShowReplay (show :Boolean) :void
     {
-        _showRematch = rematch;
+        _showRematch = show;
         checkRematchVisibility();
-        FlexUtil.setVisible(_backToLobby, backToLobby);
-        FlexUtil.setVisible(_backToWhirled, backToWhirled);
     }
 
     /**
@@ -148,9 +135,9 @@ public class WhirledGamePanel extends Canvas
     }
 
     /**
-     * Get the labels for leave game, game lobby, rematch.
+     * Get the button labels for the rematch button.
      */
-    protected function getButtonLabels (plobj :PlaceObject) :Array /* of String */
+    protected function getRematchLabel (plobj :PlaceObject) :String
     {
         throw new Error("abstract");
     }
@@ -189,8 +176,6 @@ public class WhirledGamePanel extends Canvas
 
     /** Some buttons. */
     protected var _rematch :CommandButton;
-    protected var _backToLobby :CommandLinkButton;
-    protected var _backToWhirled :CommandLinkButton;
 
     /** Would we want to show the rematch button, if the game was over? */
     protected var _showRematch :Boolean = true;

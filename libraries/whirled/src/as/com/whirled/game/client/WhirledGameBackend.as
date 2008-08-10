@@ -185,7 +185,6 @@ public class WhirledGameBackend extends BaseGameBackend
 
         // .local
         o["alterKeyEvents_v1"] = alterKeyEvents_v1;
-        o["backToWhirled_v1"] = backToWhirled_v1;
         o["clearScores_v1"] = clearScores_v1;
         o["filter_v1"] = filter_v1;
         o["getHeadShot_v2"] = getHeadShot_v2;
@@ -194,8 +193,8 @@ public class WhirledGameBackend extends BaseGameBackend
         o["setMappedScores_v1"] = setMappedScores_v1;
         o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
         o["setPlayerScores_v1"] = setPlayerScores_v1;
-        o["setShowButtons_v1"] = setShowButtons_v1;
         o["setFrameRate_v1"] = setFrameRate_v1;
+        o["setShowReplay_v1"] = setShowReplay_v1;
         o["setStageQuality_v1"] = setStageQuality_v1;
 
         // .game
@@ -203,8 +202,10 @@ public class WhirledGameBackend extends BaseGameBackend
         o["playerReady_v1"] = playerReady_v1;
 
         // Old methods: backwards compatability
+        o["backToWhirled_v1"] = backToWhirled_v1;
         o["getStageBounds_v1"] = getStageBounds_v1;
         o["getHeadShot_v1"] = getHeadShot_v1;
+        o["setShowButtons_v1"] = setShowButtons_v1;
     }
 
     /**
@@ -239,11 +240,6 @@ public class WhirledGameBackend extends BaseGameBackend
         }
     }
 
-    protected function backToWhirled_v1 (showLobby :Boolean = false) :void
-    {
-        _ctrl.backToWhirled(showLobby);
-    }
-
     protected function localChat_v1 (msg :String) :void
     {
         validateChat(msg);
@@ -264,9 +260,9 @@ public class WhirledGameBackend extends BaseGameBackend
         return new Point(_container.width, _container.height);
     }
 
-    protected function setShowButtons_v1 (rematch :Boolean, back :Boolean) :void
+    protected function setShowReplay_v1 (show :Boolean) :void
     {
-        (_ctrl.getPlaceView() as WhirledGamePanel).setShowButtons(rematch, back, back);
+        (_ctrl.getPlaceView() as WhirledGamePanel).setShowReplay(show);
     }
 
     protected function setFrameRate_v1 (frameRate :Number, quality :String = null) :void
@@ -380,6 +376,23 @@ public class WhirledGameBackend extends BaseGameBackend
         var s :HeadSpriteShim = new HeadSpriteShim();
         s.addChild(getHeadShot_v2(occupant));
         callback(s, true);
+    }
+
+    /**
+     * Backwards compatibility. setShowButtons() was removed Aug 9, 2008.
+     */
+    protected function setShowButtons_v1 (rematch :Boolean, back :Boolean) :void
+    {
+        setShowReplay_v1(rematch);
+        // and discard the 'back' button preference.
+    }
+
+    /**
+     * Backwards compatibility. backToWhirled() was removed Aug 9, 2008.
+     */
+    protected function backToWhirled_v1 (showLobby :Boolean = false) :void
+    {
+        // don't do anything. Games can't do this anymore.
     }
 
     protected var _ctrl :WhirledGameController;
