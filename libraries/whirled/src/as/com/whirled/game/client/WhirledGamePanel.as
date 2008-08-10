@@ -11,6 +11,7 @@ import com.threerings.util.Name;
 
 import com.threerings.flex.CommandButton;
 import com.threerings.flex.CommandLinkButton;
+import com.threerings.flex.FlexUtil;
 
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.OccupantInfo;
@@ -91,10 +92,8 @@ public class WhirledGamePanel extends Canvas
     {
         _showRematch = rematch;
         checkRematchVisibility();
-        _backToLobby.visible = backToLobby;
-        _backToLobby.includeInLayout = backToLobby;
-        _backToWhirled.visible = backToWhirled;
-        _backToWhirled.includeInLayout = backToWhirled;
+        FlexUtil.setVisible(_backToLobby, backToLobby);
+        FlexUtil.setVisible(_backToWhirled, backToWhirled);
     }
 
     /**
@@ -107,8 +106,7 @@ public class WhirledGamePanel extends Canvas
         var canRematch :Boolean = _showRematch && !_gameObj.isInPlay() && (_gameObj.roundId != 0) &&
             ((_ctrl.getPlaceConfig() as WhirledGameConfig).getMatchType() != GameConfig.PARTY) &&
             playersAllHere();
-        _rematch.visible = canRematch;
-        _rematch.includeInLayout = canRematch;
+        FlexUtil.setVisible(_rematch, canRematch);
 
         if (_gameObj.isInPlay()) {
             // reset state

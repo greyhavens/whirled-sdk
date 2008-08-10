@@ -12,7 +12,6 @@ import mx.collections.ArrayCollection;
 import mx.collections.Sort;
 
 import mx.controls.Label;
-import mx.controls.List;
 
 import com.threerings.util.ArrayUtil;
 import com.threerings.util.HashMap;
