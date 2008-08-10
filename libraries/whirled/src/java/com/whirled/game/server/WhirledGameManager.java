@@ -459,8 +459,7 @@ public abstract class WhirledGameManager extends GameManager
         BodyObject player = validateWritePermission(caller, playerId);
 
         // persist this new cookie
-        _cookMgr.setCookie(
-            _gameconfig.getGameId(), getPlayerPersistentId(player), value);
+        _cookMgr.setCookie(_gameconfig.getGameId(), getPlayerPersistentId(player), value);
 
         // and update the distributed object
         UserCookie cookie = new UserCookie(player.getOid(), value);
