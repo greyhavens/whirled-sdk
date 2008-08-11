@@ -67,6 +67,14 @@ public class WhirledGamePanel extends Canvas
     }
 
     /**
+     * Get the controller.
+     */
+    public function getController () :WhirledGameController
+    {
+        return _ctrl;
+    }
+
+    /**
      * Get a handle on the player list.
      */
     public function getPlayerList () :GamePlayerList
