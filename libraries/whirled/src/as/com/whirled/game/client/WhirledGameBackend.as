@@ -151,10 +151,7 @@ public class WhirledGameBackend extends BaseGameBackend
             // Also: we coerce the result to a Boolean because pre-2008-05-29 classes will
             // return undefined and we want that to become false.
             var cancelled :Boolean = Boolean(callUserCode("flowAwarded_v1", amount, percentile));
-            if (!cancelled) {
-                // If the usercode has not indicated that it will handle notification, we do it.
-                reportCoinsAwarded(amount, forReal);
-            }
+            reportCoinsAwarded(amount, forReal, cancelled);
             // and add a little note if the coins aren't going to "stick" (never happen when
             // testing, but may happen in whirled).
             if (!forReal) {
@@ -212,12 +209,15 @@ public class WhirledGameBackend extends BaseGameBackend
      * We've already tried notifying usercode, now do a framework-level notification
      * of the coin awarding.
      */
-    protected function reportCoinsAwarded (amount :int, forReal :Boolean) :void
+    protected function reportCoinsAwarded (
+        amount :int, forReal :Boolean, gameWantsMessageSuppressed :Boolean) :void
     {
-        displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
-            MessageBundle.tcompose("m.coins_awarded", amount));
         // we do nothing with forReal here, because this method only gets called if the
         // usercode didn't report the coin award itself. The forReal is handled elsewhere.
+        if (!gameWantsMessageSuppressed) {
+            displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
+                MessageBundle.tcompose("m.coins_awarded", amount));
+        }
     }
 
     //---- GameControl -----------------------------------------------------

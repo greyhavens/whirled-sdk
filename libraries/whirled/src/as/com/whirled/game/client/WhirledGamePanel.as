@@ -54,7 +54,7 @@ public class WhirledGamePanel extends Canvas
         addChild(_gameView);
 
         _rematch.label = getRematchLabel(plobj);
-        checkRematchVisibility();
+        checkGameOverDisplay();
     }
 
     // from PlaceView
@@ -75,31 +75,39 @@ public class WhirledGamePanel extends Canvas
     }
 
     /**
-     * Set whether or not we show the replay button.
+     * Set whether or not we would show the replay button, if it were time to show it.
      */
     public function setShowReplay (show :Boolean) :void
     {
         _showRematch = show;
-        checkRematchVisibility();
+        checkGameOverDisplay();
     }
 
     /**
-     * Called by the controller and internally to update the visibility of the rematch button.
+     * Called by the controller and internally to update the visibility of the rematch button
+     * and any game-over display that might be hosting it.
      */
-    public function checkRematchVisibility () :void
+    public function checkGameOverDisplay () :void
     {
-        // only show the rematch button if it's been configured to be on, the game is over,
-        // has been in a round before, and we're NOT a party game
-        var canRematch :Boolean = _showRematch && !_gameObj.isInPlay() && (_gameObj.roundId != 0) &&
-            ((_ctrl.getPlaceConfig() as WhirledGameConfig).getMatchType() != GameConfig.PARTY) &&
-            playersAllHere();
-        FlexUtil.setVisible(_rematch, canRematch);
+        const gameOver :Boolean = !_gameObj.isInPlay() && (_gameObj.roundId != 0);
+        if (gameOver) {
+            const canRematch :Boolean = _showRematch && !_ctrl.isParty() && playersAllHere();
+            FlexUtil.setVisible(_rematch, canRematch);
 
-        if (_gameObj.isInPlay()) {
-            // reset state
+        } else {
+            // reset the button
             _rematch.selected = false;
             _rematch.enabled = true;
         }
+        displayGameOver(gameOver);
+    }
+
+    /**
+     * Show or hide some sort of game-over display.
+     */
+    protected function displayGameOver (gameOver :Boolean) :void
+    {
+        // nothing in the base class
     }
 
     /**

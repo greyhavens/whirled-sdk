@@ -23,11 +23,19 @@ public class WhirledGameController extends BaseGameController
     {
     }
 
+    /**
+     * Is this game a party game?
+     */
+    public function isParty () :Boolean
+    {
+        return (_gconfig.getMatchType() == GameConfig.PARTY);
+    }
+
     // from SetListener
     public function entryAdded (event :EntryAddedEvent) :void
     {
         if (event.getName() == PlaceObject.OCCUPANT_INFO) {
-            _panel.checkRematchVisibility();
+            _panel.checkGameOverDisplay();
         }
     }
 
@@ -35,7 +43,7 @@ public class WhirledGameController extends BaseGameController
     public function entryRemoved (event :EntryRemovedEvent) :void
     {
         if (event.getName() == PlaceObject.OCCUPANT_INFO) {
-            _panel.checkRematchVisibility();
+            _panel.checkGameOverDisplay();
         }
     }
 
@@ -55,7 +63,7 @@ public class WhirledGameController extends BaseGameController
         // then that suffices.
         if (autoReady) {
             var bobj :BodyObject = (_ctx.getClient().getClientObject() as BodyObject);
-            var isPlayer :Boolean = (_gconfig.getMatchType() == GameConfig.PARTY) || 
+            const isPlayer :Boolean = isParty() ||
                 (_gobj.getPlayerIndex(bobj.getVisibleName()) != -1);
             if (isPlayer) {
                 playerIsReady();
@@ -69,7 +77,7 @@ public class WhirledGameController extends BaseGameController
     }
 
     // from BaseGameController
-    protected override function createBackend () :BaseGameBackend
+    override protected function createBackend () :BaseGameBackend
     {
         return new WhirledGameBackend(_ctx, _gameObj, this);
     }
@@ -78,14 +86,14 @@ public class WhirledGameController extends BaseGameController
     override protected function gameDidStart () :void
     {
         super.gameDidStart();
-        _panel.checkRematchVisibility();
+        _panel.checkGameOverDisplay();
     }
 
     // from GameController
     override protected function gameDidEnd () :void
     {
         super.gameDidEnd();
-        _panel.checkRematchVisibility();
+        _panel.checkGameOverDisplay();
     }
 
     // from PlaceController
