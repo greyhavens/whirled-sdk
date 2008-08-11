@@ -77,12 +77,12 @@ public class TestGamePanel extends WhirledGamePanel
     {
         // we don't call super because super sets percentWidth and percentHeight which fucks things
         // right on up; force games to 700x500 as that's what we want for whirled
-        view.width = 700;
-        view.height = 500;
+        view.width = GAME_WIDTH;
+        view.height = GAME_HEIGHT;
 
         var mask :Sprite = new Sprite();
         mask.graphics.beginFill(0xFFFFFF);
-        mask.graphics.drawRect(0, 0, 700, 500);
+        mask.graphics.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         mask.graphics.endFill();
         view.mask = mask;
     }

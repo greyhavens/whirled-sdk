@@ -25,6 +25,12 @@ import com.whirled.game.data.WhirledGameObject;
 public class WhirledGamePanel extends Canvas
     implements PlaceView
 {
+    /** The minimum guaranteed width for a game. */
+    public static const GAME_WIDTH :int = 700;
+
+    /** The minimum guaranteed height for a game. */
+    public static const GAME_HEIGHT :int = 500;
+
     public function WhirledGamePanel (ctx :CrowdContext, ctrl :WhirledGameController)
     {
         _ctx = ctx;
