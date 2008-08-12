@@ -26,7 +26,7 @@ import flash.utils.Timer;
 
 import com.whirled.game.GameControl;
 import com.whirled.game.StateChangedEvent;
-import com.whirled.game.MessageReceivedEvent;
+import com.whirled.net.MessageReceivedEvent;
 
 /** Regulates the length of time consumed by a player making a move. Basically just listens for 
  *  turn changes and dispatches events when a certain amount of time has passed. Reduces the amount

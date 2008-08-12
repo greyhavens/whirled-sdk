@@ -3,8 +3,8 @@ package com.whirled.contrib {
 import flash.utils.Dictionary;
 
 import com.whirled.game.GameControl;
-import com.whirled.game.PropertyChangedEvent;
-import com.whirled.game.ElementChangedEvent;
+import com.whirled.net.PropertyChangedEvent;
+import com.whirled.net.ElementChangedEvent;
 import com.whirled.game.NetSubControl;
 
 /**

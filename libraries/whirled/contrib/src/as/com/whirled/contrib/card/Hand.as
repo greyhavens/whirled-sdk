@@ -22,7 +22,7 @@ package com.whirled.contrib.card {
 
 import flash.events.EventDispatcher;
 import com.whirled.game.GameControl;
-import com.whirled.game.MessageReceivedEvent;
+import com.whirled.net.MessageReceivedEvent;
 
 /** Represents the local player's hand in a card game. Provides facilities for dealing, playing
  *  and passing cards. Currently oriented mostly towards trick taking games.

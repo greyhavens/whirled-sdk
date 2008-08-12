@@ -21,7 +21,7 @@
 package com.whirled.contrib.card.trick {
 
 import com.whirled.game.GameControl;
-import com.whirled.game.PropertyChangedEvent;
+import com.whirled.net.PropertyChangedEvent;
 import flash.events.EventDispatcher;
 import com.whirled.contrib.card.Card;
 import com.whirled.contrib.card.CardArray;

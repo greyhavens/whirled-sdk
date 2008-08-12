@@ -23,7 +23,7 @@ package com.whirled.contrib.simplegame.net {
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 import com.whirled.game.GameControl;
-import com.whirled.game.MessageReceivedEvent;
+import com.whirled.net.MessageReceivedEvent;
 import com.whirled.game.StateChangedEvent;
 
 import flash.utils.getTimer;
