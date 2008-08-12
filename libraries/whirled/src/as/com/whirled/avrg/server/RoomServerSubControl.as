@@ -7,21 +7,14 @@ package com.whirled.avrg.server {
 
 import com.whirled.AbstractControl;
 
-import com.whirled.avrg.RoomSubControl;
+import com.whirled.avrg.RoomBaseSubControl;
 
 import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.MessageSubControl;
+import com.whirled.net.PropertySubControl;
+import com.whirled.net.impl.PropertySubControlImpl;
 
-/**
- * Dispatched when a message arrives for this room with information that is not part
- * of the shared game state.
- *
- * @eventType com.whirled.net.MessageReceivedEvent.MESSAGE_RECEIVED
- */
-[Event(name="MsgReceived", type="com.whirled.net.MessageReceivedEvent")]
-
-/** TODO: props needs to be PropertySubControl here, not PropertyGetSubControl */
-public class RoomServerSubControl extends RoomSubControl
+public class RoomServerSubControl extends RoomBaseSubControl
     implements MessageSubControl
 {
     /** @private */
@@ -33,6 +26,11 @@ public class RoomServerSubControl extends RoomSubControl
             throw new Error("Internal error [targetId=" + targetId + ", roomId=" +
                             getRoomId() + "]");
         }
+    }
+
+    public function get props () :PropertySubControl
+    {
+        return _props;
     }
 
     public function spawnMob (id :String, name :String) :Boolean
@@ -48,23 +46,17 @@ public class RoomServerSubControl extends RoomSubControl
     /** Sends a message to all the players that are in the room. */
     public function sendMessage (name :String, value :Object) :void
     {
-        callHostCode("room_srv_sendMessage_v1", name, value);
+        callHostCode("room_sendMessage_v1", name, value);
     }
 
     /** @private */
-    override protected function setUserProps (o :Object) :void
+    override protected function createSubControls () :Array
     {
-        super.setUserProps(o);
-
-        o["room_srv_messageReceived_v1"] = messageReceived;
+        _props = new PropertySubControlImpl(
+            _parent, _targetId, "room_propertyWasSet", "room_getGameData", "room_setProperty");
+        return [ _props ];
     }
 
-    /**
-     * Private method to post a MessageReceivedEvent.
-     */
-    private function messageReceived (name :String, value :Object, sender :int) :void
-    {
-        dispatch(new MessageReceivedEvent(_targetId, name, value, sender));
-    }
+    protected var _props :PropertySubControl;
 }
 }
