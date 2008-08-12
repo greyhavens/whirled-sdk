@@ -40,7 +40,7 @@ public class AVRGameControl extends AbstractControl
         }
 
         // set up the default hitPointTester
-        _client.setHitPointTester(disp.root.hitTestPoint);
+        _local.setHitPointTester(disp.root.hitTestPoint);
     }
 
     public function get game () :GameSubControl
@@ -59,12 +59,12 @@ public class AVRGameControl extends AbstractControl
     }
 
     /**
-     * Get the ClientSubControl which contains methods that are only relevant on the
+     * Get the LocalSubControl which contains methods that are only relevant on the
      * client, as they deal with e.g. on-screen pixels rather than logical positioning.
      */
-    public function get client () :ClientSubControl
+    public function get local () :LocalSubControl
     {
-        return _client;
+        return _local;
     }
 
     public function get agent () :AgentSubControl
@@ -91,7 +91,7 @@ public class AVRGameControl extends AbstractControl
             _game = new GameSubControl(this),
             _room = new RoomSubControl(this),
             _player = new PlayerSubControl(this),
-            _client = new ClientSubControl(this),
+            _local = new LocalSubControl(this),
             _agent = new AgentSubControl(this),
         ];
     }
@@ -103,7 +103,7 @@ public class AVRGameControl extends AbstractControl
     /** @private */
     protected var _player :PlayerSubControl;
     /** @private */
-    protected var _client :ClientSubControl;
+    protected var _local :LocalSubControl;
     /** @private */
     protected var _agent :AgentSubControl;
 }

@@ -25,12 +25,21 @@ import com.whirled.AbstractSubControl;
 /**
  * Defines actions, accessors and callbacks available on the client only.
  */
-public class ClientSubControl extends AbstractSubControl
+public class LocalSubControl extends AbstractSubControl
 {
     /** @private */
-    public function ClientSubControl (ctrl :AbstractControl)
+    public function LocalSubControl (ctrl :AbstractControl)
     {
         super(ctrl);
+    }
+
+    /**
+     * Display a feedback chat message for the local player only, no other players
+     * or observers will see it.
+     */
+    public function feedback (msg :String) :void
+    {
+        callHostCode("localChat_v1", msg);
     }
 
     /**
