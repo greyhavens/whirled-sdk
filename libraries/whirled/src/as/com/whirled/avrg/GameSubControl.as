@@ -42,9 +42,9 @@ public class GameSubControl extends AbstractSubControl
     /** @private */
     override protected function createSubControls () :Array
     {
-        return [
-            _props = new PropertyGetSubControlImpl(_parent, "G")
-            ];
+        _props = new PropertyGetSubControlImpl(
+            _parent, 0, "game_propertyWasSet", "game_getGameData");
+        return [ _props ];
     }
 
     /** @private */

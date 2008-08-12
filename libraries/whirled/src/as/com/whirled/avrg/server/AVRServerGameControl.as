@@ -41,16 +41,22 @@ public class AVRServerGameControl extends AbstractControl
         return _game;
     }
 
-    public function getRoom (id :int) :RoomServerSubControl
+    public function getRoom (roomId :int) :RoomServerSubControl
     {
-        // TODO
-        return null;
+        var ctrl :RoomServerSubControl = _roomControls[roomId];
+        if (ctrl == null) {
+            ctrl = _roomControls[roomId] = new RoomServerSubControl(this, roomId);
+        }
+        return ctrl;
     }
 
-    public function getPlayer (id :int) :PlayerServerSubControl
+    public function getPlayer (playerId :int) :PlayerServerSubControl
     {
-        // TODO
-        return null;
+        var ctrl :PlayerServerSubControl = _playerControls[playerId];
+        if (ctrl == null) {
+            ctrl = _playerControls[playerId] = new PlayerServerSubControl(this, playerId);
+        }
+        return ctrl;
     }
 
     /** @private */
@@ -69,6 +75,10 @@ public class AVRServerGameControl extends AbstractControl
 
     /** @private */
     protected var _game :GameServerSubControl;
+
+    protected var _roomControls :Dictionary = new Dictionary();
+
+    protected var _playerControls :Dictionary = new Dictionary();
 }
 }
 

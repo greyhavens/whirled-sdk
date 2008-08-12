@@ -8,6 +8,7 @@ package com.whirled.avrg {
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 
+import com.whirled.TargetedSubControl;
 import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
 
@@ -59,12 +60,12 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
 /**
  * Defines actions, accessors and callbacks available on the client only.
  */
-public class RoomSubControl extends AbstractSubControl
+public class RoomSubControl extends TargetedSubControl
 {
     /** @private */
-    public function RoomSubControl (ctrl :AbstractControl)
+    public function RoomSubControl (ctrl :AbstractControl, targetId :int = 0)
     {
-        super(ctrl);
+        super(ctrl, targetId);
     }
 
     public function get props () :PropertyGetSubControl
@@ -148,6 +149,14 @@ public class RoomSubControl extends AbstractSubControl
     }
 
     /** @private */
+    override protected function createSubControls () :Array
+    {
+        _props = new PropertyGetSubControlImpl(
+            _parent, _targetId, "room_propertyWasSet", "room_getGameData");
+        return [ _props ];
+    }
+
+    /** @private */
     protected function playerLeft_v1 (id :int) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_LEFT, null, id));
@@ -187,14 +196,6 @@ public class RoomSubControl extends AbstractSubControl
     protected function actorStateSet_v1 (playerId :int, state :String) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
-    }
-
-    /** @private */
-    override protected function createSubControls () :Array
-    {
-        return [
-            _props = new PropertyGetSubControlImpl(_parent, "P")
-            ];
     }
 
     protected var _props :PropertyGetSubControl;

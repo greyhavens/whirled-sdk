@@ -8,9 +8,11 @@ package com.whirled.avrg {
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 
+import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.MessageSubControl;
 
 /**
+ * This subcontrol is used by an AVRG on the client to send messages to the server agent.
  */
 public class AgentSubControl extends AbstractSubControl
     implements MessageSubControl
@@ -21,22 +23,28 @@ public class AgentSubControl extends AbstractSubControl
         super(ctrl);
     }
 
-   public function sendMessage (name :String, value :Object) :void
+    /**
+     * Sends a message to the agent.
+     */
+    public function sendMessage (name :String, value :Object) :void
     {
-        // TODO
+        callHostCode("agent_sendMessage_v1", name, value);
     }
 
     /** @private */
     override protected function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
+
+        o["agent_messageReceived_v1"] = messageReceived;
     }
 
-    /** @private */
-    override protected function createSubControls () :Array
+    /**
+     * Private method to post a MessageReceivedEvent.
+     */
+    private function messageReceived (name :String, value :Object, sender :int) :void
     {
-        return [
-            ];
+        dispatch(new MessageReceivedEvent(0, name, value, sender));
     }
 }
 }

@@ -8,17 +8,18 @@ package com.whirled.avrg {
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 
+import com.whirled.TargetedSubControl;
 import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
 
 /**
  */
-public class PlayerSubControl extends AbstractSubControl
+public class PlayerSubControl extends TargetedSubControl
 {
     /** @private */
-    public function PlayerSubControl (ctrl :AbstractControl)
+    public function PlayerSubControl (ctrl :AbstractControl, targetId :int = 0)
     {
-        super(ctrl);
+        super(ctrl, targetId);
     }
 
     public function get props () :PropertyGetSubControl
@@ -45,9 +46,9 @@ public class PlayerSubControl extends AbstractSubControl
     /** @private */
     override protected function createSubControls () :Array
     {
-        return [
-            _props = new PropertyGetSubControlImpl(_parent, "P")
-            ];
+        _props = new PropertyGetSubControlImpl(
+            _parent, _targetId, "player_propertyWasSet", "player_getGameData");
+        return [ _props ];
     }
 
     protected var _props :PropertyGetSubControl;

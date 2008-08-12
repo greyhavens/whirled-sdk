@@ -13,6 +13,7 @@ import flash.utils.Dictionary;
 import com.threerings.util.Log;
 
 import com.whirled.AbstractControl;
+import com.whirled.ServerObject;
 
 /**
  * This file should be included by AVR games so that they can communicate
@@ -33,6 +34,10 @@ public class AVRGameControl extends AbstractControl
     public function AVRGameControl (disp :DisplayObject)
     {
         super(disp);
+
+        if (disp is ServerObject) {
+            throw new Error("AVRGameControl should not be instantiated with a ServerObject");
+        }
 
         // set up the default hitPointTester
         _client.setHitPointTester(disp.root.hitTestPoint);
