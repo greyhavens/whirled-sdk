@@ -1,7 +1,14 @@
+//
+// $Id$
+//
+// Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
+
 package com.whirled.net {
 
-[Event(name="PropChanged", type="com.whirled.game.PropertyChangedEvent")]
-[Event(name="ElemChanged", type="com.whirled.game.ElementChangedEvent")]
+/**
+ * Provides the ability to read game state in the form of named properties which are
+ * automatically shared between players and, potentially, the server agent.
+ */
 public interface PropertyGetSubControl
 {
     /**
