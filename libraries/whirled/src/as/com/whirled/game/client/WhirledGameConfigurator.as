@@ -44,6 +44,7 @@ public class WhirledGameConfigurator extends FlexGameConfigurator
         // add an interface for checking ratedness
         if (_ratedParam != null) {
             _ratedCheck = new CheckBox();
+            _ratedCheck.styleName = "gconfCheckBox";
             _ratedCheck.selected = _ratedParam.start;
             addLabeledControl(_ratedParam, _ratedCheck);
         }
@@ -58,6 +59,7 @@ public class WhirledGameConfigurator extends FlexGameConfigurator
                 var range :RangeParameter = (param as RangeParameter);
                 if ((range.maximum - range.minimum) < 16) {
                     var rcombo :ComboBox = new ComboBox();
+                    rcombo.styleName = "gconfComboBox";
                     var values :Array = [];
                     var rstartDex :int = 0;
                     for (var ii :int = range.minimum; ii <= range.maximum; ii++) {
@@ -72,6 +74,7 @@ public class WhirledGameConfigurator extends FlexGameConfigurator
 
                 } else {
                     var slider :HSlider = new HSlider();
+                    slider.styleName = "gconfHSlider";
                     slider.minimum = range.minimum;
                     slider.maximum = range.maximum;
                     slider.value = range.start;
@@ -88,6 +91,7 @@ public class WhirledGameConfigurator extends FlexGameConfigurator
                         "Start value does not appear in list of choices [param=" + choice + "].");
                 } else {
                     var combo :ComboBox = new ComboBox();
+                    combo.styleName = "gconfComboBox";
                     combo.dataProvider = choice.choices;
                     combo.selectedIndex = startDex;
                     addLabeledControl(param, combo);
@@ -95,6 +99,7 @@ public class WhirledGameConfigurator extends FlexGameConfigurator
 
             } else if (param is ToggleParameter) {
                 var check :CheckBox = new CheckBox();
+                check.styleName = "gconfCheckBox";
                 check.selected = (param as ToggleParameter).start;
                 addLabeledControl(param, check);
 
