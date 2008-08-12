@@ -1,3 +1,8 @@
+//
+// $Id$
+//
+// Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
+
 package com.whirled.net {
 
 public class NetConstants
@@ -11,8 +16,10 @@ public class NetConstants
      */
     public static function makePersistent (name :String) :String
     {
-        // TODO;
-        return name;
+        if (PERSISTENT == name.substring(0, PERSISTENT.length)) {
+            return name;
+        }
+        return PERSISTENT + name;
     }
 }
 }
