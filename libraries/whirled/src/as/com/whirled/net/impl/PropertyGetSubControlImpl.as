@@ -1,44 +1,36 @@
+//
+// $Id$
+//
+// Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
+
 package com.whirled.net.impl {
 
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
+
+import com.whirled.TargetedSubControl;
+import com.whirled.net.ElementChangedEvent;
 import com.whirled.net.PropertyGetSubControl;
-import com.whirled.net.impl.HookSubControl;
+import com.whirled.net.PropertyChangedEvent;
 
-import com.whirled.game.ElementChangedEvent;
-import com.whirled.game.PropertyChangedEvent;
-
-/**
- * Dispatched when a property has changed in the shared game state. This event is a result
- * of calling set() or testAndSet().
- *
- * @eventType com.whirled.game.PropertyChangedEvent.PROPERTY_CHANGED
- */
-[Event(name="PropChanged", type="com.whirled.game.PropertyChangedEvent")]
-
-/**
- * Dispatched when an element inside a property has changed in the shared game state.
- * This event is a result of calling setIn() or setAt().
- *
- * @eventType com.whirled.game.ElementChangedEvent.ELEMENT_CHANGED
- */
-[Event(name="ElemChanged", type="com.whirled.game.ElementChangedEvent")]
-
-public class PropertyGetSubControlImpl extends HookSubControl
+public class PropertyGetSubControlImpl extends TargetedSubControl
     implements PropertyGetSubControl
 {
-    public function PropertyGetSubControlImpl (ctrl :AbstractControl, hookPrefix :String)
+    public function PropertyGetSubControlImpl (
+        ctrl :AbstractControl, targetId :int, fn_propertyWasSet :String, fn_getGameData :String)
     {
-        super(ctrl, hookPrefix);
+        _fn_propertyWasSet = fn_propertyWasSet;
+        _fn_getGameData = fn_getGameData;
+        super(ctrl, targetId);
     }
 
-    // from PropertyGetSubControl
+    /** @inheritDoc */
     public function get (propName :String) :Object
     {
         return _gameData[propName];
     }
 
-    // from PropertyGetSubControl
+    /** @inheritDoc */
     public function getPropertyNames (prefix :String = "") :Array
     {
         var props :Array = [];
@@ -50,33 +42,45 @@ public class PropertyGetSubControlImpl extends HookSubControl
         return props;
     }
 
-
     /** @private */
     override protected function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
 
-        o[_hookPrefix + "_propertyWasSet_v2"] = propertyWasSet_v2;
+        if (_fn_propertyWasSet != null) {
+            o[_fn_propertyWasSet] = propertyWasSet;
+        }
+    }
 
-        _gameData = o[_hookPrefix + "_gameData"];
+    /** @private */
+    override protected function gotHostProps (o :Object) :void
+    {
+        super.gotHostProps(o);
+
+        _gameData = o[_fn_getGameData].apply(null, _targetId);
     }
 
     /**
      * Private method to post a PropertyChangedEvent.
      */
-    private function propertyWasSet_v2 (
+    private function propertyWasSet (
         name :String, newValue :Object, oldValue :Object, key :Object) :void
     {
         if (key == null) {
             dispatch(new PropertyChangedEvent(PropertyChangedEvent.PROPERTY_CHANGED,
-                name, newValue, oldValue));
+                                              _targetId, name, newValue, oldValue));
         } else {
             dispatch(new ElementChangedEvent(ElementChangedEvent.ELEMENT_CHANGED,
-                name, newValue, oldValue, int(key)));
+                                             _targetId, name, newValue, oldValue, int(key)));
         }
     }
 
     /** Game properties. @private */
     protected var _gameData :Object;
+
+    /** @private */
+    protected var _fn_propertyWasSet :String;
+    /** @private */
+    protected var _fn_getGameData :String;
 }
 }

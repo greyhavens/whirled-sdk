@@ -1,3 +1,8 @@
+//
+// $Id$
+//
+// Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
+
 package com.whirled.net.impl {
 
 import com.whirled.AbstractControl;
@@ -7,41 +12,35 @@ import com.whirled.net.PropertySubControl;
 public class PropertySubControlImpl extends PropertyGetSubControlImpl
     implements PropertySubControl
 {
-    public function PropertySubControlImpl (ctrl :AbstractControl, hookPrefix :String)
+    public function PropertySubControlImpl (
+        ctrl :AbstractControl, targetId :int, fn_propertyWasSet :String, fn_getGameData :String,
+        fn_setProperty :String)
     {
-        super(ctrl, hookPrefix);
+        _fn_setProperty = fn_setProperty;
+        super(ctrl, targetId, fn_propertyWasSet, fn_getGameData);
     }
 
-    // from PropertyGetSubControl
+    /** @inheritDoc */
     public function set (propName :String, value :Object, immediate :Boolean = false) :void
     {
-        callHostCode(_hookPrefix + "_setProperty_v2", propName, value, null, false, immediate);
+        callHostCode(_fn_setProperty, propName, value, null, false, immediate);
     }
 
-    // from PropertyGetSubControl
+    /** @inheritDoc */
     public function setAt (
         propName :String, index :int, value :Object, immediate :Boolean = false) :void
     {
-        callHostCode(_hookPrefix + "_setProperty_v2", propName, value, index, true, immediate);
+        callHostCode(_fn_setProperty, propName, value, index, true, immediate);
     }
 
-    // from PropertyGetSubControl
+    /** @inheritDoc */
     public function setIn (
         propName :String, key :int, value :Object, immediate :Boolean = false) :void
     {
-        callHostCode(_hookPrefix + "_setProperty_v2", propName, value, key, false, immediate);
-    }
-
-    // from PropertyGetSubControl
-    public function testAndSet (propName :String, newValue :Object, testValue :Object) :void
-    {
-        callHostCode(_hookPrefix + "_testAndSetProperty_v1", propName, newValue, testValue);
+        callHostCode(_fn_setProperty, propName, value, key, false, immediate);
     }
 
     /** @private */
-    override protected function setUserProps (o :Object) :void
-    {
-        super.setUserProps(o);
-    }
+    protected var _fn_setProperty :String;
 }
 }
