@@ -101,6 +101,7 @@ public class AVRServerGameControl extends AbstractControl
     protected function relayToRoom (fun :Function) :Function
     {
         return function (targetId :int, ... args) :* {
+            args.unshift(targetId);
             return fun.apply(getRoom(targetId), args);
         };
     }
@@ -109,6 +110,7 @@ public class AVRServerGameControl extends AbstractControl
     protected function relayToPlayer (fun :Function) :Function
     {
         return function (targetId :int, ... args) :* {
+            args.unshift(targetId);
             return fun.apply(getPlayer(targetId), args);
         };
     }
