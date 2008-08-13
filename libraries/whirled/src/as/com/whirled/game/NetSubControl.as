@@ -196,12 +196,12 @@ public class NetSubControl extends AbstractSubControl
     /** @private */
     override protected function createSubControls () :Array
     {
-        _agentMsgCtrl = new MessageSubControlAdapter(
+        _agentMsgCtrl = new MessageSubControlAdapter(_parent,
             function (name :String, value :Object) :void {
                 sendMessage(name, value, TO_SERVER_AGENT);
             });
 
-        _playersMsgCtrl = new MessageSubControlAdapter(
+        _playersMsgCtrl = new MessageSubControlAdapter(_parent,
             function (name :String, value :Object) :void {
                 sendMessage(name, value, TO_ALL);
             });
@@ -219,7 +219,7 @@ public class NetSubControl extends AbstractSubControl
     {
         var ctrl :MessageSubControl = _playerCtrls[playerId];
         if (ctrl == null) {
-            ctrl = _playerCtrls[playerId] = new MessageSubControlAdapter(
+            ctrl = _playerCtrls[playerId] = new MessageSubControlAdapter(_parent,
                 function (name :String, value :Object) :void {
                     sendMessage(name, value, playerId);
                 });
