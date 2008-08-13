@@ -71,7 +71,7 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
 public class RoomBaseSubControl extends TargetedSubControl
 {
     /** @private */
-    public function RoomBaseSubControl (ctrl :AbstractControl, targetId :int = 0)
+    public function RoomBaseSubControl (ctrl :AbstractControl, targetId :int)
     {
         super(ctrl, targetId);
     }
@@ -140,48 +140,55 @@ public class RoomBaseSubControl extends TargetedSubControl
     /** @private */
     internal function playerLeft_v1 (id :int) :void
     {
+        // TODO: targetId
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_LEFT, null, id));
     }
 
     /** @private */
     internal function playerEntered_v1 (id :int) :void
     {
+        // TODO: targetId
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_ENTERED, null, id));
     }
 
     /** @private */
     internal function playerMoved_v1 (id :int) :void
     {
+        // TODO: targetId
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_MOVED, null, id));
     }
 
     /** @private */
     internal function leftRoom_v1 () :void
     {
+        // TODO: targetId
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.LEFT_ROOM));
     }
 
     /** @private */
     internal function enteredRoom_v1 (newScene :int) :void
     {
+        // TODO: targetId
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.ENTERED_ROOM, null, newScene));
     }
 
     /** @private */
     internal function actorAppearanceChanged_v1 (playerId :int) :void
     {
+        // TODO: targetId
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
     }
 
     /** @private */
     internal function actorStateSet_v1 (playerId :int, state :String) :void
     {
+        // TODO: targetId
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
     }
-
     /** @private */
     internal function messageReceived_v1 (name :String, value :Object, sender :int) :void
     {
+        // TODO: targetId
         dispatch(new MessageReceivedEvent(_targetId, name, value, sender));
     }
 }

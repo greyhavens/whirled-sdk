@@ -80,6 +80,12 @@ public class AVRServerGameControl extends AbstractControl
         o["actorAppearanceChanged_v1"] =
             relayToRoom(RoomBaseSubControl.prototype.actorAppearanceChanged_v1);
 
+// TODO: not sure how mobs on the server are going to work quite yet
+//         o["mobRemoved_v1"] =
+//             relayToRoom(RoomBaseSubControl.prototype.mobRemoved_v1);
+//         o["mobAppearanceChanged_v1"] =
+//             relayToRoom(RoomBaseSubControl.mobAppearanceChanged_v1);
+
         o["room_messageReceived_v1"] =
             relayToRoom(RoomBaseSubControl.prototype.messageReceived);
 
