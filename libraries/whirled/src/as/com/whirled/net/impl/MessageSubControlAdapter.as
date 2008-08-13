@@ -5,14 +5,15 @@
 
 package com.whirled.net.impl {
 
+import com.whirled.AbstractSubControl;
 import com.whirled.net.MessageSubControl;
 
-public class MessageSubControlAdapter
+public class MessageSubControlAdapter extends AbstractSubControl
     implements MessageSubControl
 {
     public function MessageSubControlAdapter (sendMessage :Function)
     {
-        _sendMessage = sendMessage();
+        _sendMessage = sendMessage;
     }
 
     /** @inheritDoc */
