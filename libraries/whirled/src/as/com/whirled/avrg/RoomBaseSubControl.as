@@ -14,6 +14,13 @@ import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
 
 /**
+ * Dispatched when a message arrives with information that is not part of the shared game state.
+ *
+ * @eventType com.whirled.net.MessageReceivedEvent.MESSAGE_RECEIVED
+ */
+[Event(name="MsgReceived", type="com.whirled.net.MessageReceivedEvent")]
+
+/**
  * Dispatched either when somebody in our room entered our current game,
  * or somebody playing the game entered our current room.
  *
@@ -131,67 +138,49 @@ public class RoomBaseSubControl extends TargetedSubControl
     }
 
     /** @private */
-    override protected function setUserProps (o :Object) :void
-    {
-        super.setUserProps(o);
-
-        o["playerLeft_v1"] = playerLeft_v1;
-        o["playerEntered_v1"] = playerEntered_v1;
-        o["leftRoom_v1"] = leftRoom_v1;
-        o["enteredRoom_v1"] = enteredRoom_v1;
-
-        o["actorStateSet_v1"] = actorStateSet_v1;
-        o["actorAppearanceChanged_v1"] = actorAppearanceChanged_v1;
-
-        o["room_messageReceived_v1"] = messageReceived;
-    }
-
-    /** @private */
-    protected function playerLeft_v1 (id :int) :void
+    internal function playerLeft_v1 (id :int) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_LEFT, null, id));
     }
 
     /** @private */
-    protected function playerEntered_v1 (id :int) :void
+    internal function playerEntered_v1 (id :int) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_ENTERED, null, id));
     }
 
     /** @private */
-    protected function playerMoved_v1 (id :int) :void
+    internal function playerMoved_v1 (id :int) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_MOVED, null, id));
     }
 
     /** @private */
-    protected function leftRoom_v1 () :void
+    internal function leftRoom_v1 () :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.LEFT_ROOM));
     }
 
     /** @private */
-    protected function enteredRoom_v1 (newScene :int) :void
+    internal function enteredRoom_v1 (newScene :int) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.ENTERED_ROOM, null, newScene));
     }
 
     /** @private */
-    protected function actorAppearanceChanged_v1 (playerId :int) :void
+    internal function actorAppearanceChanged_v1 (playerId :int) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
     }
 
     /** @private */
-    protected function actorStateSet_v1 (playerId :int, state :String) :void
+    internal function actorStateSet_v1 (playerId :int, state :String) :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
     }
 
-    /**
-     * Private method to post a MessageReceivedEvent.
-     */
-    private function messageReceived (name :String, value :Object, sender :int) :void
+    /** @private */
+    internal function messageReceived_v1 (name :String, value :Object, sender :int) :void
     {
         dispatch(new MessageReceivedEvent(_targetId, name, value, sender));
     }

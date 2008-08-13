@@ -35,6 +35,14 @@ public class PlayerSubControl extends PlayerBaseSubControl
         return [ _props ];
     }
 
+    /** @private */
+    override protected function setUserProps (o :Object) :void
+    {
+        super.setUserProps(o);
+
+        o["coinsAwarded_v1"] = coinsAwarded_v1;
+    }
+
     protected var _props :PropertyGetSubControl;
 }
 }

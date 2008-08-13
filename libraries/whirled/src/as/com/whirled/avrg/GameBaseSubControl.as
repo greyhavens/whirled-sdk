@@ -36,20 +36,11 @@ public class GameBaseSubControl extends AbstractSubControl
     {
         super.setUserProps(o);
 
-        o["coinsAwarded_v1"] = coinsAwarded_v1;
         o["game_messageReceived_v1"] = messageReceived;
     }
 
     /** @private */
-    protected function coinsAwarded_v1 (amount :int) :void
-    {
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.COINS_AWARDED, null, amount));
-    }
-
-    /**
-     * Private method to post a MessageReceivedEvent.
-     */
-    private function messageReceived (name :String, value :Object, sender :int) :void
+    protected function messageReceived (name :String, value :Object, sender :int) :void
     {
         dispatch(new MessageReceivedEvent(0, name, value, sender));
     }

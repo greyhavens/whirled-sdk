@@ -9,6 +9,13 @@ import com.whirled.AbstractControl;
 import com.whirled.TargetedSubControl;
 
 /**
+ * Dispatched when this player receives a coin payout.
+ *
+ * @eventType com.whirled.net.MessageReceivedEvent.COINS_AWARDED
+ */
+[Event(name="CoinsAwarded", type="com.whirled.avrg.AVRGameControlEvent")]
+
+/**
  */
 public class PlayerBaseSubControl extends TargetedSubControl
 {
@@ -26,6 +33,13 @@ public class PlayerBaseSubControl extends TargetedSubControl
     public function completeTask (taskId :String, payout :Number) :Boolean
     {
         return callHostCode("completeTask_v1", taskId, payout);
+    }
+
+    /** @private */
+    internal function coinsAwarded_v1 (amount :int) :void
+    {
+        // TODO: targetId
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.COINS_AWARDED, null, amount));
     }
 }
 }

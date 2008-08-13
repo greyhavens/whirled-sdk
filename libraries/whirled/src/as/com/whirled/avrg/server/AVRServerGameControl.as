@@ -14,6 +14,8 @@ import com.threerings.util.Log;
 
 import com.whirled.AbstractControl;
 import com.whirled.ServerObject;
+import com.whirled.avrg.PlayerBaseSubControl;
+import com.whirled.avrg.RoomBaseSubControl;
 
 /**
  * This file should be included by AVR games so that they can communicate
@@ -63,6 +65,28 @@ public class AVRServerGameControl extends AbstractControl
     override protected function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
+
+        o["playerLeft_v1"] =
+            relayToRoom(RoomBaseSubControl.prototype.playerLeft_v1);
+        o["playerEntered_v1"] =
+            relayToRoom(RoomBaseSubControl.prototype.playerEntered_v1);
+        o["leftRoom_v1"] =
+            relayToRoom(RoomBaseSubControl.prototype.leftRoom_v1);
+        o["enteredRoom_v1"] =
+            relayToRoom(RoomBaseSubControl.prototype.enteredRoom_v1);
+
+        o["actorStateSet_v1"] =
+            relayToRoom(RoomBaseSubControl.prototype.actorStateSet_v1);
+        o["actorAppearanceChanged_v1"] =
+            relayToRoom(RoomBaseSubControl.prototype.actorAppearanceChanged_v1);
+
+        o["room_messageReceived_v1"] =
+            relayToRoom(RoomBaseSubControl.prototype.messageReceived);
+
+        o["player_messageReceived_v1"] =
+            relayToPlayer(PlayerBaseSubControl.prototype.messageReceived);
+        o["coinsAwarded_v1"] =
+            relayToPlayer(PlayerBaseSubControl.prototype.coinsAwarded);
     }
 
     /** @private */
@@ -74,10 +98,28 @@ public class AVRServerGameControl extends AbstractControl
     }
 
     /** @private */
+    protected function relayToRoom (fun :Function) :Function
+    {
+        return function (targetId :int, ... args) :* {
+            return fun.apply(getRoom(targetId), args);
+        };
+    }
+
+    /** @private */
+    protected function relayToPlayer (fun :Function) :Function
+    {
+        return function (targetId :int, ... args) :* {
+            return fun.apply(getPlayer(targetId), args);
+        };
+    }
+
+    /** @private */
     protected var _game :GameServerSubControl;
 
+    /** @private */
     protected var _roomControls :Dictionary = new Dictionary();
 
+    /** @private */
     protected var _playerControls :Dictionary = new Dictionary();
 }
 }
