@@ -1,0 +1,125 @@
+// Whirled contrib library - tools for developing whirled games
+// http://www.whirled.com/code/contrib/asdocs
+//
+// This library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with this library.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2008 Three Rings Design
+//
+// $Id$
+
+package com.whirled.contrib.platformer.board {
+
+import com.whirled.contrib.platformer.piece.Actor;
+import com.whirled.contrib.platformer.util.Maths;
+
+import com.whirled.contrib.platformer.game.ActorController;
+
+public class WalkTask extends ColliderTask
+{
+    public function WalkTask (ac :ActorController, col :Collider)
+    {
+        super(ac, col);
+        _sab = col.getActorBounds(ac.getActor());
+    }
+
+    public override function init (delta :Number) :void
+    {
+        super.init(delta);
+        var a :Actor = _sab.actor;
+        if (a.attached == null) {
+            a.dy -= 15 * delta;
+            a.dy = Math.max(a.dy, -Collider.MAX_DY);
+            a.dx += a.accelX * delta;
+            a.dx -= Maths.sign0(a.dx) * Maths.limit(9 * delta, Math.abs(a.dx));
+            a.dx = Maths.limit(a.dx, Collider.MAX_DX);
+        }
+        _attached = null;
+        _lastDelta = NaN;
+    }
+
+    public override function genCD () :ColliderDetails
+    {
+        var a :Actor = _sab.actor;
+        if (_cd == null) {
+            if (a.attached != null && a.attached != _attached) {
+                _attached = a.attached;
+                // Newly attached to a walkable tile, preserve our momentum
+                if (Math.abs(a.attached.iy) < a.maxWalkable) {
+                    var dot :Number = a.dx * a.attached.ix + a.dy * a.attached.iy;
+                    if (a.attached.ix >= 0) {
+                        dot += a.accelX * _delta;
+                    } else {
+                        dot -= a.accelX * _delta;
+                    }
+                    dot -= Maths.sign0(dot) * Maths.limit(9 * _delta, Math.abs(dot));
+                    dot = Maths.limit(dot, Collider.MAX_DX);
+                    a.dx = dot * a.attached.ix;
+                    a.dy = dot * a.attached.iy;
+                // Newly attached to an unwalkable tile, start to slide
+                } else {
+                    if (a.attached.iy > 0) {
+                        a.dx = - a.attached.ix;
+                        a.dy = - a.attached.iy;
+                    } else {
+                        a.dx = a.attached.ix;
+                        a.dy = a.attached.iy;
+                    }
+                    a.dx *= 6;
+                    a.dy *= 6;
+                    a.dx = Maths.limit(a.dx, Collider.MAX_DX);
+                    a.dy = Maths.limit(a.dy, Collider.MAX_DY);
+                }
+            }
+        }
+        if (a.attached != null) {
+            if ((a.attached.isLineOutside(_sab.lines[3]) &&
+                    a.attached.normalDot(a.dx, a.dy) < 0) ||
+                (a.attached.isLineInside(_sab.lines[3]) &&
+                    a.attached.normalDot(a.dx, a.dy) > 0)) {
+                var mag :Number = a.attached.dot(a.dx, a.dy);
+                a.dx = a.attached.ix * mag;
+                a.dy = a.attached.iy * mag;
+            } else if (a.attached.isIntersecting(_sab.lines[3])) {
+                trace(a.sprite + " is intersecting attached " + a.attached +
+                        ", " + _sab.lines[3]);
+            }
+        }
+
+        _cd = _sab.findColliders(_delta, _cd);
+        return _cd;
+    }
+
+    protected override function runTask () :void
+    {
+        _sab.move(_cd);
+        if (_cd != null) {
+            if (!isNaN(_lastDelta)) {
+                if (_lastDelta == _cd.rdelta) {
+                    _cd.rdelta = 0;
+                }
+            }
+            _lastDelta = _delta;
+            _delta = _cd.rdelta;
+            _cd = null;
+        } else {
+            _delta = 0;
+            trace("WalkTask ran with no cd");
+        }
+    }
+
+    protected var _attached :LineData;
+    protected var _lastDelta :Number;
+    protected var _sab :SimpleActorBounds;
+}
+}
