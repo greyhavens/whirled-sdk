@@ -7,6 +7,8 @@ package com.whirled.avrg {
 
 import com.whirled.AbstractControl;
 import com.whirled.TargetedSubControl;
+import com.whirled.net.PropertySubControl;
+import com.whirled.net.impl.PropertySubControlImpl;
 
 /**
  * Dispatched when this player receives a coin payout.
@@ -25,6 +27,11 @@ public class PlayerBaseSubControl extends TargetedSubControl
         super(ctrl, targetId);
     }
 
+    public function get props () :PropertySubControl
+    {
+        return _props;
+    }
+
     public function getPlayerId () :int
     {
         return callHostCode("getPlayerId_v1") as int;
@@ -36,10 +43,22 @@ public class PlayerBaseSubControl extends TargetedSubControl
     }
 
     /** @private */
+    override protected function createSubControls () :Array
+    {
+        _props = new PropertySubControlImpl(
+            _parent, _targetId, "player_propertyWasSet",
+            "player_getGameData", "player_setProperty");
+        return [ _props ];
+    }
+
+    /** @private */
     internal function coinsAwarded_v1 (amount :int) :void
     {
         // TODO: targetId
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.COINS_AWARDED, null, amount));
     }
+
+    /** @private */
+    protected var _props :PropertySubControl;
 }
 }
