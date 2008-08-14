@@ -26,5 +26,11 @@ public /*abstract*/ class MatchConfig extends SimpleStreamableObject
     {
         throw new Error("Abstract");
     }
+
+    /** Returns the maximum number of players permitted to play this game. */
+    public function getMaximumPlayers () :int
+    {
+        throw new Error("Abstract");
+    }
 }
 }

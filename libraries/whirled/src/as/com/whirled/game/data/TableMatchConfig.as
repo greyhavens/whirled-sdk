@@ -41,6 +41,12 @@ public class TableMatchConfig extends MatchConfig
         return minSeats;
     }
 
+    // from MatchConfig
+    override public function getMaximumPlayers () :int
+    {
+        return maxSeats;
+    }
+
     // from interface Streamable
     override public function readObject (ins :ObjectInputStream) :void
     {
