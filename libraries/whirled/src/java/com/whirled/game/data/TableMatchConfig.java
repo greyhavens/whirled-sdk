@@ -33,4 +33,10 @@ public class TableMatchConfig extends MatchConfig
     {
         return minSeats;
     }
+
+    @Override // from MatchConfig
+    public int getMaximumPlayers ()
+    {
+        return maxSeats;
+    }
 }

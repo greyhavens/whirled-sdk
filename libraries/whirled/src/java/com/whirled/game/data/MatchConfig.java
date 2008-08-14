@@ -18,4 +18,7 @@ public abstract class MatchConfig extends SimpleStreamableObject
 
     /** Returns the minimum number of players needed to play this game. */
     public abstract int getMinimumPlayers ();
+
+    /** Returns the maximum number of players permitted to play this game. */
+    public abstract int getMaximumPlayers ();
 }
