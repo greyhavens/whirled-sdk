@@ -9,7 +9,7 @@ import com.threerings.crowd.data.BodyObject;
 
 import com.threerings.media.FrameManager;
 import com.threerings.media.image.ImageManager;
-import com.threerings.media.sound.SoundManager;
+import com.threerings.media.sound.SoundPlayer;
 import com.threerings.media.tile.TileManager;
 
 import com.threerings.resource.ResourceManager;
@@ -40,7 +40,7 @@ public abstract class WhirledContext
     /**
      * Provides a means for loading and playing sounds.
      */
-    public abstract SoundManager getSoundManager ();
+    public abstract SoundPlayer getSoundManager ();
 
     /**
      * Returns a reference to the message manager used by the client to
