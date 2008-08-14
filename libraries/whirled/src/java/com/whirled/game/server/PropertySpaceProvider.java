@@ -19,6 +19,6 @@ public interface PropertySpaceProvider extends InvocationProvider
     /**
      * Handles a {@link PropertySpaceService#setProperty} request.
      */
-    void setProperty (ClientObject caller, String arg1, Object arg2, int arg3, boolean arg4, boolean arg5, Object arg6, InvocationService.InvocationListener arg7)
+    void setProperty (ClientObject caller, String arg1, Object arg2, Integer arg3, boolean arg4, boolean arg5, Object arg6, InvocationService.InvocationListener arg7)
         throws InvocationException;
 }

@@ -39,7 +39,7 @@ public class PropertySpaceDispatcher extends InvocationDispatcher<PropertySpaceM
         switch (methodId) {
         case PropertySpaceMarshaller.SET_PROPERTY:
             ((PropertySpaceProvider)provider).setProperty(
-                source, (String)args[0], args[1], ((Integer)args[2]).intValue(), ((Boolean)args[3]).booleanValue(), ((Boolean)args[4]).booleanValue(), args[5], (InvocationService.InvocationListener)args[6]
+                source, (String)args[0], args[1], (Integer)args[2], ((Boolean)args[3]).booleanValue(), ((Boolean)args[4]).booleanValue(), args[5], (InvocationService.InvocationListener)args[6]
             );
             return;
 

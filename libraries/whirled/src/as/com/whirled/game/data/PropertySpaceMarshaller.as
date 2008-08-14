@@ -27,12 +27,12 @@ public class PropertySpaceMarshaller extends InvocationMarshaller
     public static const SET_PROPERTY :int = 1;
 
     // from interface PropertySpaceService
-    public function setProperty (arg1 :Client, arg2 :String, arg3 :Object, arg4 :int, arg5 :Boolean, arg6 :Boolean, arg7 :Object, arg8 :InvocationService_InvocationListener) :void
+    public function setProperty (arg1 :Client, arg2 :String, arg3 :Object, arg4 :Integer, arg5 :Boolean, arg6 :Boolean, arg7 :Object, arg8 :InvocationService_InvocationListener) :void
     {
         var listener8 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
         listener8.listener = arg8;
         sendRequest(arg1, SET_PROPERTY, [
-            arg2, arg3, Integer.valueOf(arg4), langBoolean.valueOf(arg5), langBoolean.valueOf(arg6), arg7, listener8
+            arg2, arg3, arg4, langBoolean.valueOf(arg5), langBoolean.valueOf(arg6), arg7, listener8
         ]);
     }
 }

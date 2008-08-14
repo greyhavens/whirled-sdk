@@ -8,6 +8,7 @@ package com.whirled.game.client {
 import com.threerings.presents.client.Client;
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.client.InvocationService_InvocationListener;
+import com.threerings.util.Integer;
 
 /**
  * An ActionScript version of the Java PropertySpaceService interface.
@@ -15,6 +16,6 @@ import com.threerings.presents.client.InvocationService_InvocationListener;
 public interface PropertySpaceService extends InvocationService
 {
     // from Java interface PropertySpaceService
-    function setProperty (arg1 :Client, arg2 :String, arg3 :Object, arg4 :int, arg5 :Boolean, arg6 :Boolean, arg7 :Object, arg8 :InvocationService_InvocationListener) :void;
+    function setProperty (arg1 :Client, arg2 :String, arg3 :Object, arg4 :Integer, arg5 :Boolean, arg6 :Boolean, arg7 :Object, arg8 :InvocationService_InvocationListener) :void;
 }
 }

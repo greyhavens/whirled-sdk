@@ -24,12 +24,12 @@ public class PropertySpaceMarshaller extends InvocationMarshaller
     public static final int SET_PROPERTY = 1;
 
     // from interface PropertySpaceService
-    public void setProperty (Client arg1, String arg2, Object arg3, int arg4, boolean arg5, boolean arg6, Object arg7, InvocationService.InvocationListener arg8)
+    public void setProperty (Client arg1, String arg2, Object arg3, Integer arg4, boolean arg5, boolean arg6, Object arg7, InvocationService.InvocationListener arg8)
     {
         ListenerMarshaller listener8 = new ListenerMarshaller();
         listener8.listener = arg8;
         sendRequest(arg1, SET_PROPERTY, new Object[] {
-            arg2, arg3, Integer.valueOf(arg4), Boolean.valueOf(arg5), Boolean.valueOf(arg6), arg7, listener8
+            arg2, arg3, arg4, Boolean.valueOf(arg5), Boolean.valueOf(arg6), arg7, listener8
         });
     }
 }

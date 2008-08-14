@@ -19,6 +19,6 @@ public interface PropertySpaceService
      * @see PropertySpaceHelper#testProperty
      * @see PropertySpaceHelper#applyPropertySet
      */
-    void setProperty (Client caller, String propName, Object data, int key, boolean isArray, 
+    void setProperty (Client caller, String propName, Object data, Integer key, boolean isArray, 
         boolean testAndSet, Object testValue, InvocationListener listener);
 }
