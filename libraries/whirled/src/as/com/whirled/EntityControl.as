@@ -270,12 +270,13 @@ public class EntityControl extends AbstractControl
 
     /**
      * Returns the value associated with the supplied key in this item's memory. If no value is
-     * mapped in the item's memory, the supplied default value will be returned. NOTE:
-     * Avatar memories are inconsistent at the moment and should not be used.
+     * mapped in the item's memory, the supplied default value will be returned.
+     *
+     * NOTE: Avatar memories are inconsistent at the moment and should not be used.
      *
      * @return the value for the specified key from this item's memory or the supplied default.
      */
-    public function lookupMemory (key :String, defval :Object = null) :Object
+    public function getMemory (key :String, defval :Object = null) :Object
     {
         var value :Object = callHostCode("lookupMemory_v1", key);
         return (value == null) ? defval : value;
@@ -291,12 +292,13 @@ public class EntityControl extends AbstractControl
      *
      * NOTE: Avatar memories are inconsistent at the moment and should not be used.
      *
-     * @return true if the memory was updated, false if the memory update could not be completed
-     * due to size restrictions.
+     * @return true if the memory update was sent to the server, although there is no guarantee
+     * that it will be applied if the server decides that memories are already too big; or false
+     * if the memory update was not even sent to the server due to size or other restrictions.
      *
      * Note: any instance can update memories!
      */
-    public function updateMemory (key :String, value :Object) :Boolean
+    public function setMemory (key :String, value :Object) :Boolean
     {
         return callHostCode("updateMemory_v1", key, value);
     }
