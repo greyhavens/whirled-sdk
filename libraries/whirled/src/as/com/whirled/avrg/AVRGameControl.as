@@ -72,12 +72,6 @@ public class AVRGameControl extends AbstractControl
         return _agent;
     }
 
-    // TODO: Move to server
-    public function deactivateGame () :Boolean
-    {
-        return callHostCode("deactivateGame_v1");
-    }
-
     /** @private */
     override protected function setUserProps (o :Object) :void
     {

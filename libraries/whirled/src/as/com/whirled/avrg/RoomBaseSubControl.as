@@ -83,7 +83,7 @@ public class RoomBaseSubControl extends TargetedSubControl
 
     public function getPlayerIds () :Array
     {
-        return callHostCode("getRoomPlayerIds_v1") as Array;
+        return callHostCode("room_getPlayerIds_v1") as Array;
     }
 
     public function isPlayerHere (id :int) :Boolean
@@ -110,31 +110,6 @@ public class RoomBaseSubControl extends TargetedSubControl
         info.isIdle = data[ix ++];
         info.stageBounds = data[ix ++];
         return info;
-    }
-
-    public function playAvatarAction (action :String) :Boolean
-    {
-        return callHostCode("playAvatarAction_v1", action);
-    }
-
-    public function setAvatarState (state :String) :Boolean
-    {
-        return callHostCode("setAvatarState_v1", state);
-    }
-
-    public function setAvatarMoveSpeed (pixelsPerSecond :Number) :Boolean
-    {
-        return callHostCode("setAvatarMoveSpeed_v1", pixelsPerSecond);
-    }
-
-    public function setAvatarLocation (x :Number, y :Number, z: Number, orient :Number) :Boolean
-    {
-        return callHostCode("setAvatarLocation_v1", x, y, z, orient);
-    }
-
-    public function setAvatarOrientation (orient :Number) :Boolean
-    {
-        return callHostCode("setAvatarOrientation_v1", orient);
     }
 
     /** @private */

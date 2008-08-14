@@ -28,7 +28,7 @@ public class GameBaseSubControl extends AbstractSubControl
 
     public function getPlayerIds () :Array
     {
-        return callHostCode("getGamePlayerIds_v1") as Array;
+        return callHostCode("game_getPlayerIds_v1") as Array;
     }
 
     /** @private */

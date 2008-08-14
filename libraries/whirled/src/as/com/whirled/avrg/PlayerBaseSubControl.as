@@ -42,6 +42,11 @@ public class PlayerBaseSubControl extends TargetedSubControl
         return callHostCode("completeTask_v1", taskId, payout);
     }
 
+    public function deactivateGame () :Boolean
+    {
+        return callHostCode("deactivateGame_v1");
+    }
+
     /** @private */
     override protected function createSubControls () :Array
     {
