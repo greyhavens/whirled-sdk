@@ -82,7 +82,7 @@ public class PropertySetEvent extends NamedEvent
                 try {
                     _oldValue = PropertySpaceHelper.applyPropertySet(
                         psObj, _name, _data, _key, _isArray);
-                } catch (WhirledGameObject.ArrayRangeException are) {
+                } catch (PropertySpaceObject.ArrayRangeException are) {
                     return false;
                 }
             }

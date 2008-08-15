@@ -22,6 +22,7 @@ import com.threerings.presents.client.InvocationService;
 import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.util.CrowdContext;
 
+import com.whirled.game.data.PropertySpaceObject;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.server.PropertySpaceHelper;
 import com.whirled.game.util.ObjectMarshaller;
@@ -82,7 +83,7 @@ public class GameObjectImpl
         // set it immediately in the game object
         try {
             PropertySpaceHelper.applyPropertySet(_gameObj, propName, reconstituted, index, false);
-        } catch (WhirledGameObject.ArrayRangeException are) {
+        } catch (PropertySpaceObject.ArrayRangeException are) {
             throw new RuntimeException(are);
         }
     }

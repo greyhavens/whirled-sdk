@@ -20,7 +20,7 @@ import com.threerings.presents.dobj.DObjectManager;
 import com.whirled.game.data.GameMap;
 import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.data.PropertySpaceObject;
-import com.whirled.game.data.WhirledGameObject.ArrayRangeException;
+import com.whirled.game.data.PropertySpaceObject.ArrayRangeException;
 import com.whirled.game.util.ObjectMarshaller;
 
 import static com.whirled.Log.log;

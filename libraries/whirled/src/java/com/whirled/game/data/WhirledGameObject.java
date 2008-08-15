@@ -27,18 +27,6 @@ import com.whirled.game.server.PropertySpaceHelper;
 public class WhirledGameObject extends GameObject
     implements TurnGameObject, PropertySpaceObject
 {
-    /**
-     * A checked exception thrown by applyPropertySet to indicate when
-     * an array set hasn't gone through.
-     */
-    public static class ArrayRangeException extends Exception
-    {
-        public ArrayRangeException (String msg)
-        {
-            super(msg);
-        }
-    }
-
     /** The identifier for a MessageEvent containing a user message. */
     public static final String USER_MESSAGE = "Umsg";
 

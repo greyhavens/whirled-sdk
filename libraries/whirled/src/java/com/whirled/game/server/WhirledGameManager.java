@@ -38,6 +38,7 @@ import com.threerings.parlor.turn.server.TurnGameManager;
 
 import com.threerings.util.MessageBundle;
 
+import com.whirled.game.data.PropertySpaceObject;
 import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.WhirledGameOccupantInfo;
@@ -582,7 +583,7 @@ public abstract class WhirledGameManager extends GameManager
                 _gameObj, propName, value, key, isArray);
             _gameObj.postEvent(
                 new PropertySetEvent(_gameObj.getOid(), propName, value, key, isArray, oldValue));
-        } catch (WhirledGameObject.ArrayRangeException are) {
+        } catch (PropertySpaceObject.ArrayRangeException are) {
             log.info("Game attempted deprecated set semantics: setting cells of an empty array.");
         }
     }

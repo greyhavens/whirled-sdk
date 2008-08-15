@@ -15,6 +15,18 @@ import com.whirled.game.server.PropertySpaceHelper;
 public interface PropertySpaceObject
 {
     /**
+     * A checked exception thrown by applyPropertySet to indicate when
+     * an array set hasn't gone through.
+     */
+    public static class ArrayRangeException extends Exception
+    {
+        public ArrayRangeException (String msg)
+        {
+            super(msg);
+        }
+    }
+
+    /**
      * Should return a pointer to the internal mapping of property names to property values.
      * This data structure will be modified by methods in {@link PropertySpaceHelper}.
      */
