@@ -103,7 +103,7 @@ public class ForkingToyState extends EventDispatcher
         _followKey = _myKey;
         setTimeout();
         if (isSaving()) {
-            _ctrl.updateMemory(_myKey, [ _seqId, state ]);
+            _ctrl.setMemory(_myKey, [ _seqId, state ]);
         }
     }
 
@@ -119,10 +119,10 @@ public class ForkingToyState extends EventDispatcher
         if (isSaving()) {
             for (var key :String in _ctrl.getMemories()) {
                 if (STATE_KEY.test(key)) {
-                    _ctrl.updateMemory(key, null); // kaboom!
+                    _ctrl.setMemory(key, null); // kaboom!
                 }
             }
-            _ctrl.updateMemory(RESET_KEY, [ 0, null ]);
+            _ctrl.setMemory(RESET_KEY, [ 0, null ]);
         }
     }
 
@@ -161,7 +161,7 @@ public class ForkingToyState extends EventDispatcher
                     _state = null;
                     dispatchEvent(new Event(STATE_UPDATED));
                 }
-                _ctrl.updateMemory(_followKey, null);
+                _ctrl.setMemory(_followKey, null);
                 _followKey = null;
                 _timeout = 0;
             }
@@ -213,7 +213,7 @@ public class ForkingToyState extends EventDispatcher
         }
 
         if (count >= deleteCount) {
-            _ctrl.updateMemory(lowKey, null);
+            _ctrl.setMemory(lowKey, null);
         }
 
         _followKey = highKey;

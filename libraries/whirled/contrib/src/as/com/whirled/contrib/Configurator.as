@@ -66,7 +66,7 @@ public class Configurator
                                   key :String, configured :Function)
     {
         // most of the time the value will have been configured
-        var value :Object = control.lookupMemory(key);
+        var value :Object = control.getMemory(key);
         if (value != null) {
             setTimeout(configured, 0, value);
             return;
@@ -138,7 +138,7 @@ public class Configurator
         ok.y = y;
         ok.addEventListener(MouseEvent.CLICK, function (evt :MouseEvent) :void {
             // TODO: only show the button active if something has been typed
-            if (input.text && _control.updateMemory(_key, input.text)) {
+            if (input.text && _control.setMemory(_key, input.text)) {
                 _configured(input.text);
                 evt.currentTarget.removeEventListener(MouseEvent.CLICK, handleClick);
                 _control.clearPopup();

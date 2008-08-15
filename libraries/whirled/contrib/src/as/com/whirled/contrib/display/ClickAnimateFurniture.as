@@ -305,11 +305,11 @@ public class ClickAnimateFurniture extends Sprite
 	   enabled, this lookup should fail.  If it fails otherwise,
 	   the furniture is probably being used for the first time
 	   or there's been an upgrade and either way, we write a 0. */
-	currentAnimation = control.lookupMemory("currentAnimation",-1) as int;
+	currentAnimation = control.getMemory("currentAnimation",-1) as int;
 	if (currentAnimation == -1 ) {
 	   currentAnimation = 0;
 	   if (!returnToBaseAnimation) {
-	       control.updateMemory("currentAnimation",currentAnimation);
+	       control.setMemory("currentAnimation",currentAnimation);
 	   }
 	}
 
@@ -496,7 +496,7 @@ public class ClickAnimateFurniture extends Sprite
 	if (returnToBaseAnimation) {
 	    control.sendMessage("changeAnimation",currentAnimation);
 	} else {
-	    control.updateMemory("currentAnimation",currentAnimation);
+	    control.setMemory("currentAnimation",currentAnimation);
 	}
 	currentFrame = 0;
 	updateDisplay();
