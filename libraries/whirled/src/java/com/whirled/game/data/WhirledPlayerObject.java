@@ -9,7 +9,6 @@ import com.threerings.crowd.data.PlaceObject;
 
 /**
  * Body for playing whirled games.
- * TODO: hookup to toybox and msoy
  */
 public class WhirledPlayerObject extends BodyObject
 {
