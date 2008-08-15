@@ -139,12 +139,6 @@ public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarsh
             );
             return;
 
-        case WhirledGameMarshaller.SET_PROPERTY:
-            ((WhirledGameProvider)provider).setProperty(
-                source, (String)args[0], args[1], (Integer)args[2], ((Boolean)args[3]).booleanValue(), ((Boolean)args[4]).booleanValue(), args[5], (InvocationService.InvocationListener)args[6]
-            );
-            return;
-
         case WhirledGameMarshaller.SET_TICKER:
             ((WhirledGameProvider)provider).setTicker(
                 source, (String)args[0], ((Integer)args[1]).intValue(), (InvocationService.InvocationListener)args[2]

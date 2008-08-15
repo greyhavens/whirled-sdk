@@ -76,7 +76,7 @@ public class GameObjectImpl
 
         Object encoded = ObjectMarshaller.encode(value);
         Object reconstituted = ObjectMarshaller.decode(encoded);
-        _gameObj.whirledGameService.setProperty(
+        _gameObj.propertyService.setProperty(
             _ctx.getClient(), propName, encoded, index, false, false, null,
             createLoggingListener("setProperty"));
 
@@ -101,7 +101,7 @@ public class GameObjectImpl
         validatePropertyChange(propName, value, -1);
 
         Object encoded = ObjectMarshaller.encode(value);
-        _gameObj.whirledGameService.setProperty(
+        _gameObj.propertyService.setProperty(
             _ctx.getClient(), propName, encoded, null, false, true, testValue,
             createLoggingListener("testAndSet"));
     }

@@ -119,12 +119,6 @@ public interface WhirledGameProvider extends InvocationProvider
         throws InvocationException;
 
     /**
-     * Handles a {@link WhirledGameService#setProperty} request.
-     */
-    void setProperty (ClientObject caller, String arg1, Object arg2, Integer arg3, boolean arg4, boolean arg5, Object arg6, InvocationService.InvocationListener arg7)
-        throws InvocationException;
-
-    /**
      * Handles a {@link WhirledGameService#setTicker} request.
      */
     void setTicker (ClientObject caller, String arg1, int arg2, InvocationService.InvocationListener arg3)

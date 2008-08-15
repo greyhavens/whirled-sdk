@@ -690,7 +690,7 @@ public class BaseGameBackend
 
         var encoded :Object = PropertySpaceHelper.encodeProperty(value, (key == null));
         var ikey :Integer = (key == null) ? null : new Integer(int(key));
-        _gameObj.whirledGameService.setProperty(
+        _gameObj.propertyService.setProperty(
             _ctx.getClient(), propName, encoded, ikey, isArray,
             false, null, createLoggingConfirmListener("setProperty"));
         if (immediate) {
@@ -728,7 +728,7 @@ public class BaseGameBackend
 
         var encodedValue :Object = PropertySpaceHelper.encodeProperty(value, true);
         var encodedTestValue :Object = PropertySpaceHelper.encodeProperty(testValue, true);
-        _gameObj.whirledGameService.setProperty(
+        _gameObj.propertyService.setProperty(
             _ctx.getClient(), propName, encodedValue, null, false, true, encodedTestValue,
             createLoggingConfirmListener("testAndSetProperty"));
     }

@@ -38,11 +38,9 @@ import com.threerings.parlor.turn.server.TurnGameManager;
 
 import com.threerings.util.MessageBundle;
 
-import com.whirled.game.data.PropertySpaceObject;
 import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.WhirledGameOccupantInfo;
-import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.data.UserCookie;
 import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.ThaneGameConfig;
@@ -241,19 +239,6 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     // from WhirledGameProvider
-    public void setProperty (ClientObject caller, String propName, Object data, Integer key,
-        boolean isArray, boolean testAndSet, Object testValue,
-        InvocationService.InvocationListener listener)
-        throws InvocationException
-    {
-        validateUser(caller);
-        if (testAndSet && !PropertySpaceHelper.testProperty(_gameObj, propName, testValue)) {
-            return; // the test failed: do not set the property
-        }
-        setProperty(propName, data, key, isArray);
-    }
-
-    // from WhirledGameProvider
     public void getDictionaryLetterSet (ClientObject caller, String locale, String dictionary,
                                         int count, InvocationService.ResultListener listener)
         throws InvocationException
@@ -333,7 +318,8 @@ public abstract class WhirledGameManager extends GameManager
                 }
 
                 if (playerId == TO_ALL) {
-                    setProperty(msgOrPropName, result, null, false);
+                    _propertySpaceHandler.setProperty(
+                        null, msgOrPropName, result, null, false, false, null, null);
                 } else {
                     sendPrivateMessage(caller, playerId, msgOrPropName, result);
                 }
@@ -573,22 +559,6 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
-     * Helper method to post a property set event.
-     */
-    protected void setProperty (String propName, Object value, Integer key, boolean isArray)
-    {
-        // apply the property set immediately
-        try {
-            Object oldValue = PropertySpaceHelper.applyPropertySet(
-                _gameObj, propName, value, key, isArray);
-            _gameObj.postEvent(
-                new PropertySetEvent(_gameObj.getOid(), propName, value, key, isArray, oldValue));
-        } catch (PropertySpaceObject.ArrayRangeException are) {
-            log.info("Game attempted deprecated set semantics: setting cells of an empty array.");
-        }
-    }
-
-    /**
      * Validate that the specified user has access to do things in the game.
      */
     protected void validateUser (ClientObject caller)
@@ -714,7 +684,18 @@ public abstract class WhirledGameManager extends GameManager
         super.didStartup();
 
         _gameObj = (WhirledGameObject) _plobj;
+
+        // we need to retain a reference to this
+        _propertySpaceHandler = new PropertySpaceHandler(_gameObj) {
+            @Override protected void validateUser (ClientObject caller) 
+                throws InvocationException {
+                WhirledGameManager.this.validateUser(caller);
+            }
+        };
+
         _gameObj.setWhirledGameService(_invmgr.registerDispatcher(new WhirledGameDispatcher(this)));
+        _gameObj.setPropertyService(_invmgr.registerDispatcher(
+            new PropertySpaceDispatcher(_propertySpaceHandler)));
         _gameObj.setUserCookies(new DSet<UserCookie>());
 
         // register an agent for this game if required
@@ -833,6 +814,7 @@ public abstract class WhirledGameManager extends GameManager
     protected void didShutdown ()
     {
         _invmgr.clearDispatcher(_gameObj.whirledGameService);
+        _invmgr.clearDispatcher(_gameObj.propertyService);
         stopTickers();
 
         if (_gameAgent != null) {
@@ -963,6 +945,10 @@ public abstract class WhirledGameManager extends GameManager
 
     /** A nice casted reference to the game object. */
     protected WhirledGameObject _gameObj;
+
+    /** We need a direct reference to this in order to set a property as a result of one of our 
+     * service calls ({@link #getFromcollection}). */
+    protected PropertySpaceHandler _propertySpaceHandler;
 
     /** Our turn delegate. */
     protected WhirledGameTurnDelegate _turnDelegate;

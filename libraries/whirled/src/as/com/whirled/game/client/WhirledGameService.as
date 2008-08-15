@@ -11,7 +11,6 @@ import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.client.InvocationService_ConfirmListener;
 import com.threerings.presents.client.InvocationService_InvocationListener;
 import com.threerings.presents.client.InvocationService_ResultListener;
-import com.threerings.util.Integer;
 import flash.utils.ByteArray;
 
 /**
@@ -69,9 +68,6 @@ public interface WhirledGameService extends InvocationService
 
     // from Java interface WhirledGameService
     function setCookie (arg1 :Client, arg2 :ByteArray, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
-
-    // from Java interface WhirledGameService
-    function setProperty (arg1 :Client, arg2 :String, arg3 :Object, arg4 :Integer, arg5 :Boolean, arg6 :Boolean, arg7 :Object, arg8 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
     function setTicker (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void;

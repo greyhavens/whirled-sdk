@@ -74,6 +74,9 @@ public class WhirledGameObject extends GameObject
     /** The service interface for requesting special things from the server. */
     public var whirledGameService :WhirledGameMarshaller;
 
+    /** The service interface for requesting property changes from the server. */
+    public var propertyService :PropertySpaceMarshaller;
+
     // from PropertySpaceObject
     public function getUserProps () :Object
     {
@@ -120,6 +123,7 @@ public class WhirledGameObject extends GameObject
         userCookies = (ins.readObject() as DSet);
         gameData = (ins.readObject() as TypedArray);
         whirledGameService = (ins.readObject() as WhirledGameMarshaller);
+        propertyService = (ins.readObject() as PropertySpaceMarshaller);
     }
     
     /** The raw properties set by the game. */

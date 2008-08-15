@@ -12,15 +12,6 @@ import com.threerings.presents.client.InvocationService;
 public interface WhirledGameService extends InvocationService
 {
     /**
-     * Request to set the specified property.
-     *
-     * @param value either a byte[] if setting a non-array property or a property at an array
-     * index, or a byte[][] if setting an array property where index is -1.
-     */
-    public void setProperty (Client client, String propName, Object value, Integer index,
-        boolean isArray, boolean testAndSet, Object testValue, InvocationListener listener);
-
-    /**
      * Request to end the turn, possibly futzing the next turn holder unless -1 is specified for
      * the nextPlayerIndex.
      */
@@ -61,9 +52,6 @@ public interface WhirledGameService extends InvocationService
 
     /**
      * Request to send a private message to one other player in the game.
-     *
-     * @param value either a byte[] if setting a non-array property or a property at an array
-     * index, or a byte[][] if setting an array property where index is -1.
      */
     public void sendMessage (Client client, String msgName, Object value, int playerId,
                              InvocationListener listener);
