@@ -25,7 +25,6 @@ import com.threerings.util.ClassUtil;
 import com.threerings.util.HashMap;
 
 import com.whirled.contrib.platformer.piece.Actor;
-import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.PieceFactory;
