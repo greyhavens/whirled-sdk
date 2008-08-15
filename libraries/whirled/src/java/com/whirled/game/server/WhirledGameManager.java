@@ -60,17 +60,11 @@ public abstract class WhirledGameManager extends GameManager
     /** The default class name to use for the game agent. */
     public static final String DEFAULT_SERVER_CLASS = "Server";
 
-    /** The magic player id constant for sending a message to all players. */
+    /** The magic player id constant for sending a collection change to all players. */
     public static final int TO_ALL = 0;
 
-    /** The magic player id constant for sending a message to the server agent. */
-    public static final int TO_SERVER_AGENT = Integer.MIN_VALUE;
-
-    /** The magic player id constant to indicate a message is from the server. */
-    public static final int FROM_SERVER = 0;
-
-    /** The magic player id constant to indicate a message is from the server agent. */
-    public static final int FROM_SERVER_AGENT = Integer.MIN_VALUE;
+    /** The magic player id constant for the server agent used when sending private messages. */
+    public static final int SERVER_AGENT = Integer.MIN_VALUE;
 
     public WhirledGameManager ()
     {
@@ -228,14 +222,7 @@ public abstract class WhirledGameManager extends GameManager
                              InvocationService.InvocationListener listener)
         throws InvocationException
     {
-        validateUser(caller);
-
-        if (playerId == TO_ALL) {
-            _gameObj.postMessage(WhirledGameObject.USER_MESSAGE, msg, data,
-                getMessageSenderId(caller));
-        } else {
-            sendPrivateMessage(caller, playerId, msg, data);
-        }
+        throw new InvocationException("to be removed");
     }
 
     // from WhirledGameProvider
@@ -321,7 +308,8 @@ public abstract class WhirledGameManager extends GameManager
                     _propertySpaceHandler.setProperty(
                         null, msgOrPropName, result, null, false, false, null, null);
                 } else {
-                    sendPrivateMessage(caller, playerId, msgOrPropName, result);
+                    _messageHandler.sendPrivateMessage(caller, msgOrPropName, result, 
+                        new int[] {playerId}, null);
                 }
                 listener.requestProcessed(); // SUCCESS!
 
@@ -530,35 +518,6 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
-     * Sends a private message to the specified player oid (must already be verified).
-     */
-    protected void sendPrivateMessage (ClientObject caller, int playerOid, String msg, Object data)
-        throws InvocationException
-    {
-        ClientObject target = null;
-
-        if (playerOid == TO_SERVER_AGENT && _gameAgent != null) {
-            // TODO: clients should be guaranteed access to their agent
-            // In the meantime, raise an exception if the agent is not online
-            if (_gameAgent.clientOid == 0) {
-                throw new InvocationException("m.player_not_around");
-            }
-            target = (ClientObject)_omgr.getObject(_gameAgent.clientOid);
-        }
-        else {
-            target = getPlayerByOid(playerOid);
-        }
-
-        if (target == null) {
-            // TODO: this code has no corresponding translation
-            throw new InvocationException("m.player_not_around");
-        }
-
-        target.postMessage(WhirledGameObject.USER_MESSAGE + ":" + _gameObj.getOid(),
-                           new Object[] { msg, data, getMessageSenderId(caller) });
-    }
-
-    /**
      * Validate that the specified user has access to do things in the game.
      */
     protected void validateUser (ClientObject caller)
@@ -587,22 +546,6 @@ public abstract class WhirledGameManager extends GameManager
         if (!isAgent(caller)) {
             throw new InvocationException(InvocationCodes.ACCESS_DENIED);
         }
-    }
-
-    /**
-     * Get the id of a client object sending a message. Returns {@link #FROM_SERVER}
-     * if the caller is our server and {@link #FROM_SERVER_AGENT} if the caller is the server
-     * agent of this game (the game's server-side code). Otherwise returns the client's object id.
-     */
-    protected int getMessageSenderId (ClientObject caller)
-    {
-        if (caller == null) {
-            return FROM_SERVER;
-        }
-        if (isAgent(caller)) {
-            return FROM_SERVER_AGENT;
-        }
-        return caller.getOid();
     }
 
     /**
@@ -692,10 +635,36 @@ public abstract class WhirledGameManager extends GameManager
                 WhirledGameManager.this.validateUser(caller);
             }
         };
+        
+        WhirledGameMessageProvider gameMessages = new WhirledGameMessageHandler(_gameObj, this) {
+            @Override protected void validateSender (ClientObject caller)
+                throws InvocationException {
+                WhirledGameManager.this.validateUser(caller);
+            }
+
+            @Override protected ClientObject getAudienceMember (int id)
+                throws InvocationException
+            {
+                ClientObject target = null;
+                if (id == SERVER_AGENT) {
+                    if (_gameAgent != null && _gameAgent.clientOid != 0) {
+                        target = (ClientObject)_omgr.getObject(_gameAgent.clientOid);
+                    }
+                } else {
+                    target = getPlayerByOid(id);
+                }
+                if (target == null) {
+                    throw new InvocationException("m.player_not_around");
+                }
+                return target;
+            }
+        };
 
         _gameObj.setWhirledGameService(_invmgr.registerDispatcher(new WhirledGameDispatcher(this)));
         _gameObj.setPropertyService(_invmgr.registerDispatcher(
             new PropertySpaceDispatcher(_propertySpaceHandler)));
+        _gameObj.setMessageService(_invmgr.registerDispatcher(
+            new WhirledGameMessageDispatcher(gameMessages)));
         _gameObj.setUserCookies(new DSet<UserCookie>());
 
         // register an agent for this game if required
@@ -815,6 +784,7 @@ public abstract class WhirledGameManager extends GameManager
     {
         _invmgr.clearDispatcher(_gameObj.whirledGameService);
         _invmgr.clearDispatcher(_gameObj.propertyService);
+        _invmgr.clearDispatcher(_gameObj.messageService);
         stopTickers();
 
         if (_gameAgent != null) {
@@ -949,6 +919,10 @@ public abstract class WhirledGameManager extends GameManager
     /** We need a direct reference to this in order to set a property as a result of one of our 
      * service calls ({@link #getFromcollection}). */
     protected PropertySpaceHandler _propertySpaceHandler;
+
+    /** We need a direct reference to this in order to send a message as a result of one of our 
+     * service calls ({@link #getFromcollection}). */
+    protected WhirledGameMessageHandler _messageHandler;
 
     /** Our turn delegate. */
     protected WhirledGameTurnDelegate _turnDelegate;

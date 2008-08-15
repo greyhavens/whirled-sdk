@@ -88,6 +88,9 @@ public class WhirledGameObject extends GameObject
 
     /** The field name of the <code>propertyService</code> field. */
     public static final String PROPERTY_SERVICE = "propertyService";
+
+    /** The field name of the <code>messageService</code> field. */
+    public static final String MESSAGE_SERVICE = "messageService";
     // AUTO-GENERATED: FIELDS END
 
     /** The current round id for this game. Rounds divide a single gameplay session into smaller
@@ -112,6 +115,9 @@ public class WhirledGameObject extends GameObject
     
     /** The service interface for dealing with properties. */
     public PropertySpaceMarshaller propertyService;
+
+    /** The service for sending messages to everyone in the game. */
+    public WhirledGameMessageMarshaller messageService;
 
     // from PropertySpaceObject
     public HashMap<String, Object> getUserProps ()
@@ -302,6 +308,22 @@ public class WhirledGameObject extends GameObject
         requestAttributeChange(
             PROPERTY_SERVICE, value, ovalue);
         this.propertyService = value;
+    }
+
+    /**
+     * Requests that the <code>messageService</code> field be set to the
+     * specified value. The local value will be updated immediately and an
+     * event will be propagated through the system to notify all listeners
+     * that the attribute did change. Proxied copies of this object (on
+     * clients) will apply the value change when they received the
+     * attribute changed notification.
+     */
+    public void setMessageService (WhirledGameMessageMarshaller value)
+    {
+        WhirledGameMessageMarshaller ovalue = this.messageService;
+        requestAttributeChange(
+            MESSAGE_SERVICE, value, ovalue);
+        this.messageService = value;
     }
     // AUTO-GENERATED: METHODS END
 

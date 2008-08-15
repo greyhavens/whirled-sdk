@@ -72,6 +72,11 @@ public class BaseGameBackend
      */
     public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
 
+    /** 
+     * Magic number for sending a message to all players.
+     */
+    public static const TO_ALL :int = 0;
+
     public var log :Log = Log.getLog(this);
 
     public function BaseGameBackend (
@@ -670,8 +675,16 @@ public class BaseGameBackend
         validateValue(value);
 
         var encoded :Object = ObjectMarshaller.encode(value, false);
-        _gameObj.whirledGameService.sendMessage(_ctx.getClient(), messageName, encoded, playerId,
-                                         createLoggingConfirmListener("sendMessage"));
+        var logger :InvocationService_ConfirmListener = createLoggingConfirmListener("sendMessage");
+        if (playerId == TO_ALL) {
+            _gameObj.messageService.sendMessage(_ctx.getClient(), messageName, encoded, logger);
+        }
+        else {
+            var players :TypedArray = TypedArray.create(int);
+            players.push(playerId);
+            _gameObj.messageService.sendPrivateMessage(_ctx.getClient(), messageName, encoded, 
+                players, logger);
+        }
     }
 
     /**
