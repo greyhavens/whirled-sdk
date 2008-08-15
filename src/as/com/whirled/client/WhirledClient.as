@@ -27,13 +27,12 @@ import com.threerings.crowd.data.LocationMarshaller;
 
 import com.threerings.parlor.data.ParlorMarshaller;
 
-import com.whirled.data.WhirledBodyObject;
-
 import com.whirled.game.client.TestGameController;
 import com.whirled.game.client.TestService;
 import com.whirled.game.data.TestGameDefinition;
 import com.whirled.game.data.TestMarshaller;
 import com.whirled.game.data.WhirledGameConfig;
+import com.whirled.game.data.WhirledPlayerObject;
 
 /**
  * A client used for testing games.
@@ -74,7 +73,7 @@ public class WhirledClient extends CrowdClient
         c = WhirledGameConfig;
         c = TestGameDefinition;
         c = TestGameController;
-        c = WhirledBodyObject;
+        c = WhirledPlayerObject;
 
         [ResourceBundle("global")]
         [ResourceBundle("chat")]
