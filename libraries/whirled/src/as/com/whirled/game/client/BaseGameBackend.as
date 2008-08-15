@@ -1153,7 +1153,7 @@ public class BaseGameBackend
         var listener :InvocationService_ConfirmListener;
         if (callback != null) {
             listener = createLoggingConfirmListener("getFromCollection",
-                function (cause :String) :void {
+                function () :void {
                     callback(0);
                 },
                 function () :void {
