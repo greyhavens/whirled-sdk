@@ -19,6 +19,12 @@ public interface WhirledGameMessageProvider extends InvocationProvider
     /**
      * Handles a {@link WhirledGameMessageService#sendMessage} request.
      */
-    void sendMessage (ClientObject caller, String arg1, Object arg2, int arg3, int arg4, InvocationService.InvocationListener arg5)
+    void sendMessage (ClientObject caller, String arg1, Object arg2, InvocationService.InvocationListener arg3)
+        throws InvocationException;
+
+    /**
+     * Handles a {@link WhirledGameMessageService#sendPrivateMessage} request.
+     */
+    void sendPrivateMessage (ClientObject caller, String arg1, Object arg2, int[] arg3, InvocationService.InvocationListener arg4)
         throws InvocationException;
 }

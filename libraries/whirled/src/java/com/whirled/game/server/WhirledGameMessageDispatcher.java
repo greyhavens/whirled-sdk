@@ -39,7 +39,13 @@ public class WhirledGameMessageDispatcher extends InvocationDispatcher<WhirledGa
         switch (methodId) {
         case WhirledGameMessageMarshaller.SEND_MESSAGE:
             ((WhirledGameMessageProvider)provider).sendMessage(
-                source, (String)args[0], args[1], ((Integer)args[2]).intValue(), ((Integer)args[3]).intValue(), (InvocationService.InvocationListener)args[4]
+                source, (String)args[0], args[1], (InvocationService.InvocationListener)args[2]
+            );
+            return;
+
+        case WhirledGameMessageMarshaller.SEND_PRIVATE_MESSAGE:
+            ((WhirledGameMessageProvider)provider).sendPrivateMessage(
+                source, (String)args[0], args[1], (int[])args[2], (InvocationService.InvocationListener)args[3]
             );
             return;
 
