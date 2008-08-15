@@ -8,8 +8,8 @@ import com.threerings.util.Name;
 import com.threerings.presents.dobj.AttributeChangedEvent;
 
 import com.threerings.crowd.client.PlaceView;
-import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.PlaceObject;
+import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.util.CrowdContext;
 
 import com.threerings.parlor.game.client.GameController;
@@ -19,6 +19,7 @@ import com.threerings.parlor.turn.client.TurnGameController;
 import com.threerings.parlor.turn.client.TurnGameControllerDelegate;
 
 import com.whirled.game.data.WhirledGameObject;
+import com.whirled.game.data.WhirledPlayerObject;
 
 /**
  * A controller for whirled games.
@@ -133,5 +134,8 @@ public class BaseGameController extends GameController
 
     protected var _gameObj :WhirledGameObject;
     protected var _turnDelegate :TurnGameControllerDelegate;
+
+    // TODO: use this reference naturally (requires changes to msoy)
+    WhirledPlayerObject; // free reference to force link
 }
 }
