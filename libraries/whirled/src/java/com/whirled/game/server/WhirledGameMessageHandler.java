@@ -103,6 +103,6 @@ public abstract class WhirledGameMessageHandler
         return caller.getOid();
     }
     
-    DObject _messageTarget;
-    PlayManager _playMgr;
+    protected DObject _messageTarget;
+    protected PlayManager _playMgr;
 }
