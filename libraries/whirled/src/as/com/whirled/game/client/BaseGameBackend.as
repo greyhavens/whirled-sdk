@@ -58,6 +58,7 @@ import com.whirled.game.data.UserCookie;
 import com.whirled.game.data.BaseGameConfig;
 import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
+import com.whirled.game.data.WhirledPlayerObject;
 import com.whirled.game.data.WhirledGameOccupantInfo;
 
 /**
@@ -433,7 +434,7 @@ public class BaseGameBackend
     protected function messageReceivedOnUserObject (event :MessageEvent) :void
     {
         var name :String = event.getName();
-        if (name == (WhirledGameObject.USER_MESSAGE + ":" + _gameObj.getOid())) {
+        if (WhirledPlayerObject.isFromGame(name, _gameObj.getOid())) {
             var args :Array = event.getArgs();
             var mname :String = (args[0] as String);
             var data :Object = ObjectMarshaller.decode(args[1]);

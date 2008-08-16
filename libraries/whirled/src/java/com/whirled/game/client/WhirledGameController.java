@@ -20,6 +20,7 @@ import com.threerings.parlor.turn.client.TurnGameControllerDelegate;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.data.PropertySetListener;
+import com.whirled.game.data.WhirledPlayerObject;
 import com.whirled.game.util.ObjectMarshaller;
 
 import com.whirled.game.WhirledGameEvent;
@@ -144,8 +145,7 @@ public class WhirledGameController extends GameController
     protected MessageListener _userListener = new MessageListener() {
         public void messageReceived (MessageEvent event) {
             // see if it's a message about user games
-            String msgName = WhirledGameObject.USER_MESSAGE + ":" + _gameObj.getOid();
-            if (msgName.equals(event.getName())) {
+            if (WhirledPlayerObject.isFromGame(event.getName(), _gameObj.getOid())) {
                 dispatchUserMessage(event.getArgs());
             }
         }

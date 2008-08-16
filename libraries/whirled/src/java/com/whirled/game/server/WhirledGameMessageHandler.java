@@ -6,6 +6,7 @@ import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.dobj.DObject;
 import com.threerings.presents.server.InvocationException;
 import com.whirled.game.data.WhirledGameObject;
+import com.whirled.game.data.WhirledPlayerObject;
 
 /**
  * Uses a DObject to implement the audience for a whirled message.
@@ -38,7 +39,7 @@ public abstract class WhirledGameMessageHandler
         throws InvocationException;
 
     /**
-     * Retrieve the distributed object associated with a private audience member that correpsonds
+     * Retrieve the client object associated with a private audience member that correpsonds
      * to an id.
      * @throws InvocationException if no audience members exists of the given id
      */
@@ -69,8 +70,8 @@ public abstract class WhirledGameMessageHandler
         }
         
         int senderId = getMessageSenderId(caller);
-        String systemMsgName = WhirledGameObject.USER_MESSAGE + ":" + _messageTarget.getOid();
-        for (DObject target : targets) {
+        String systemMsgName = WhirledPlayerObject.getMessageName(_messageTarget.getOid());
+        for (ClientObject target : targets) {
             if (target == null) {
                 continue;
             }
