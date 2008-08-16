@@ -218,14 +218,6 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     // from WhirledGameProvider
-    public void sendMessage (ClientObject caller, String msg, Object data, int playerId,
-                             InvocationService.InvocationListener listener)
-        throws InvocationException
-    {
-        throw new InvocationException("to be removed");
-    }
-
-    // from WhirledGameProvider
     public void getDictionaryLetterSet (ClientObject caller, String locale, String dictionary,
                                         int count, InvocationService.ResultListener listener)
         throws InvocationException

@@ -64,9 +64,6 @@ public interface WhirledGameService extends InvocationService
     function restartGameIn (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function sendMessage (arg1 :Client, arg2 :String, arg3 :Object, arg4 :int, arg5 :InvocationService_InvocationListener) :void;
-
-    // from Java interface WhirledGameService
     function setCookie (arg1 :Client, arg2 :ByteArray, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService

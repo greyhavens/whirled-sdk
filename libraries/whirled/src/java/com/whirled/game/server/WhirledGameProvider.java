@@ -107,12 +107,6 @@ public interface WhirledGameProvider extends InvocationProvider
         throws InvocationException;
 
     /**
-     * Handles a {@link WhirledGameService#sendMessage} request.
-     */
-    void sendMessage (ClientObject caller, String arg1, Object arg2, int arg3, InvocationService.InvocationListener arg4)
-        throws InvocationException;
-
-    /**
      * Handles a {@link WhirledGameService#setCookie} request.
      */
     void setCookie (ClientObject caller, byte[] arg1, int arg2, InvocationService.InvocationListener arg3)

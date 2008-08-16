@@ -127,12 +127,6 @@ public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarsh
             );
             return;
 
-        case WhirledGameMarshaller.SEND_MESSAGE:
-            ((WhirledGameProvider)provider).sendMessage(
-                source, (String)args[0], args[1], ((Integer)args[2]).intValue(), (InvocationService.InvocationListener)args[3]
-            );
-            return;
-
         case WhirledGameMarshaller.SET_COOKIE:
             ((WhirledGameProvider)provider).setCookie(
                 source, (byte[])args[0], ((Integer)args[1]).intValue(), (InvocationService.InvocationListener)args[2]

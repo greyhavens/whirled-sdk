@@ -190,9 +190,15 @@ public class GameObjectImpl
         validateValue(value);
 
         Object encoded = ObjectMarshaller.encode(value);
-        _gameObj.whirledGameService.sendMessage(_ctx.getClient(),
-            messageName, encoded, playerIndex,
-            createLoggingListener("sendMessage"));
+        if (playerIndex == -1) {
+            _gameObj.messageService.sendMessage(_ctx.getClient(),
+                messageName, encoded, createLoggingListener("sendMessage"));
+
+        } else {
+            _gameObj.messageService.sendPrivateMessage(_ctx.getClient(),
+                messageName, encoded, new int [] {playerIndex},
+                createLoggingListener("sendMessage"));
+        }
     }
 
     // from WhirledGame

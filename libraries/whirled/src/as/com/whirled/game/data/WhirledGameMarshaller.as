@@ -224,21 +224,8 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch <code>sendMessage</code> requests. */
-    public static const SEND_MESSAGE :int = 16;
-
-    // from interface WhirledGameService
-    public function sendMessage (arg1 :Client, arg2 :String, arg3 :Object, arg4 :int, arg5 :InvocationService_InvocationListener) :void
-    {
-        var listener5 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener5.listener = arg5;
-        sendRequest(arg1, SEND_MESSAGE, [
-            arg2, arg3, Integer.valueOf(arg4), listener5
-        ]);
-    }
-
     /** The method id used to dispatch <code>setCookie</code> requests. */
-    public static const SET_COOKIE :int = 17;
+    public static const SET_COOKIE :int = 16;
 
     // from interface WhirledGameService
     public function setCookie (arg1 :Client, arg2 :ByteArray, arg3 :int, arg4 :InvocationService_InvocationListener) :void
@@ -251,7 +238,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch <code>setTicker</code> requests. */
-    public static const SET_TICKER :int = 18;
+    public static const SET_TICKER :int = 17;
 
     // from interface WhirledGameService
     public function setTicker (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void

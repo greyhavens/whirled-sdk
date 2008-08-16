@@ -51,12 +51,6 @@ public interface WhirledGameService extends InvocationService
     public void restartGameIn (Client client, int seconds, InvocationListener listener);
 
     /**
-     * Request to send a private message to one other player in the game.
-     */
-    public void sendMessage (Client client, String msgName, Object value, int playerId,
-                             InvocationListener listener);
-
-    /**
      * Ask the dictionary service for a set of random letters appropriate for the given
      * language/culture settings. These will be returned via a message back to the caller.
      *
