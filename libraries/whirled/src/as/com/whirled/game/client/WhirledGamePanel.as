@@ -54,13 +54,13 @@ public class WhirledGamePanel extends Canvas
 
         _gameView = new GameContainer(cfg.getGameDefinition().getMediaPath(cfg.getGameId()));
         configureGameView(_gameView);
-        _ctrl.backend.setSharedEvents(
-            Loader(_gameView.getMediaContainer().getMedia()).contentLoaderInfo.sharedEvents);
         (_ctrl.backend as WhirledGameBackend).setContainer(_gameView);
         addChild(_gameView);
 
         _rematch.label = getRematchLabel(plobj);
         checkGameOverDisplay();
+
+        initiateLoading();
     }
 
     // from PlaceView
@@ -114,6 +114,24 @@ public class WhirledGamePanel extends Canvas
             _rematch.enabled = true;
         }
         displayGameOver(gameOver);
+    }
+
+    /**
+     * Called as soon as the game's agent is ready to initiate loading.
+     */
+    protected function initiateLoading () :void
+    {
+        _gameView.initiateLoading();
+        _ctrl.backend.setSharedEvents(
+            Loader(_gameView.getMediaContainer().getMedia()).contentLoaderInfo.sharedEvents);
+    }
+
+    /**
+     * Called if there was a problem launching the game's agent.
+     */
+    protected function abortLoading () :void
+    {
+        // TODO: show the "server has encountered an error" message
     }
 
     /**

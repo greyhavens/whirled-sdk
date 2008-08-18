@@ -42,11 +42,26 @@ import com.threerings.flash.MediaContainer;
 public class GameContainer extends VBox
     implements ChatCantStealFocus
 {
+    /**
+     * Creates a new game container to load the given url but does not actually start loading it.
+     */
     public function GameContainer (url :String)
     {
-        rawChildren.addChild(_game = new MediaContainer(url));
+        _url = url;
+
+        // TODO: start loading the bytes here
 
         tabEnabled = true; // turned off by Container
+    }
+
+    /**
+     * Starts loading the content of this container.
+     */
+    public function initiateLoading () :void
+    {
+        // TODO: instantiate the byte array after completion
+
+        rawChildren.addChild(_game = new MediaContainer(_url));
     }
 
     public function getMediaContainer () :MediaContainer
@@ -55,5 +70,6 @@ public class GameContainer extends VBox
     }
 
     protected var _game :MediaContainer;
+    protected var _url :String;
 }
 }
