@@ -21,11 +21,6 @@ public class PlayerServerSubControl extends PlayerBaseSubControl
     public function PlayerServerSubControl (ctrl :AbstractControl, targetId :int)
     {
         super(ctrl, targetId);
-
-        if (targetId != getPlayerId()) {
-            throw new Error("Internal error [targetId=" + targetId + ", playerId=" +
-                            getPlayerId + "]");
-        }
     }
 
     /** Sends a message to this player only. */
