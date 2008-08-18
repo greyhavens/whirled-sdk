@@ -66,6 +66,15 @@ public class WhirledGameObject extends GameObject
      * currently playing. Each player vies to get their score the highest, and the coins are split
      * up according to the relative scores. */
     public static final int PROPORTIONAL = 3;
+    
+    /** Value of {@link #agentState} when the agent is launched but not yet running. */
+    public static final int AGENT_PENDING = 0;
+    
+    /** Value of {@link #agentState} when everything is set to go. */
+    public static final int AGENT_READY = 1;
+    
+    /** Value of {@link #agentState} when the could not be launched for some reason. */
+    public static final int AGENT_FAILED = 2;
 
     // AUTO-GENERATED: FIELDS START
     /** The field name of the <code>roundId</code> field. */
@@ -82,6 +91,9 @@ public class WhirledGameObject extends GameObject
 
     /** The field name of the <code>gameData</code> field. */
     public static final String GAME_DATA = "gameData";
+
+    /** The field name of the <code>agentState</code> field. */
+    public static final String AGENT_STATE = "agentState";
 
     /** The field name of the <code>whirledGameService</code> field. */
     public static final String WHIRLED_GAME_SERVICE = "whirledGameService";
@@ -109,6 +121,11 @@ public class WhirledGameObject extends GameObject
 
     /** The various game data available to this game. */
     public GameData[] gameData;
+    
+    /** The current state of the game's agent. One of {@link #AGENT_PENDING}, {@link #AGENT_READY}
+     * or {@link #AGENT_FAILED}. Games with no agent will always have this set to 
+     * {@link #AGENT_READY}. */
+    public int agentState;
 
     /** The service interface for requesting special things from the server. */
     public WhirledGameMarshaller whirledGameService;
@@ -276,6 +293,22 @@ public class WhirledGameObject extends GameObject
         requestElementUpdate(
             GAME_DATA, index, value, ovalue);
         this.gameData[index] = value;
+    }
+
+    /**
+     * Requests that the <code>agentState</code> field be set to the
+     * specified value. The local value will be updated immediately and an
+     * event will be propagated through the system to notify all listeners
+     * that the attribute did change. Proxied copies of this object (on
+     * clients) will apply the value change when they received the
+     * attribute changed notification.
+     */
+    public void setAgentState (int value)
+    {
+        int ovalue = this.agentState;
+        requestAttributeChange(
+            AGENT_STATE, Integer.valueOf(value), Integer.valueOf(ovalue));
+        this.agentState = value;
     }
 
     /**

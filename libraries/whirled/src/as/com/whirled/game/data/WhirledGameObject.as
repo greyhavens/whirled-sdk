@@ -37,6 +37,15 @@ public class WhirledGameObject extends GameObject
     /** A message dispatched to each player's client object when coins are awarded. */
     public static const COINS_AWARDED_MESSAGE :String = "CoinsAwarded";
 
+    /** Value of <code>agentState</code> when the agent is launched but not yet running. */
+    public static const AGENT_PENDING :int = 0;
+    
+    /** Value of <code>agentState</code> when everything is set to go. */
+    public static const AGENT_READY :int = 1;
+    
+    /** Value of <code>agentState</code> when the could not be launched for some reason. */
+    public static const AGENT_FAILED :int = 2;
+
     // AUTO-GENERATED: FIELDS START
     /** The field name of the <code>roundId</code> field. */
     public static const ROUND_ID :String = "roundId";
@@ -49,6 +58,9 @@ public class WhirledGameObject extends GameObject
 
     /** The field name of the <code>userCookies</code> field. */
     public static const USER_COOKIES :String = "userCookies";
+
+    /** The field name of the <code>agentState</code> field. */
+    public static const AGENT_STATE :String = "agentState";
 
     /** The field name of the <code>whirledGameService</code> field. */
     public static const WHIRLED_GAME_SERVICE :String = "whirledGameService";
@@ -70,6 +82,10 @@ public class WhirledGameObject extends GameObject
 
     /** The set of game data available to this game. */
     public var gameData :TypedArray /* of GameData */;
+
+    /** The current state of the game's agent, one of <code>AGENT_PENDING</code>, 
+     * <code>AGENT_READY</code> or <code>AGENT_FAILED</code>. */
+    public var agentState :int;
 
     /** The service interface for requesting special things from the server. */
     public var whirledGameService :WhirledGameMarshaller;
@@ -125,6 +141,7 @@ public class WhirledGameObject extends GameObject
         turnHolder = (ins.readObject() as Name);
         userCookies = (ins.readObject() as DSet);
         gameData = (ins.readObject() as TypedArray);
+        agentState = ins.readInt();
         whirledGameService = (ins.readObject() as WhirledGameMarshaller);
         propertyService = (ins.readObject() as PropertySpaceMarshaller);
         messageService = (ins.readObject() as WhirledGameMessageMarshaller);

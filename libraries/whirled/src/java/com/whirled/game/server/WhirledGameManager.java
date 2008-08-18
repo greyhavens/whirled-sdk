@@ -445,6 +445,8 @@ public abstract class WhirledGameManager extends GameManager
     {
         log.info("Agent ready for " + caller);
         _gameAgentReady = true;
+        
+        _gameObj.setAgentState(WhirledGameObject.AGENT_READY);
 
         if (allPlayersReady()) {
             playersAllHere();
@@ -663,6 +665,11 @@ public abstract class WhirledGameManager extends GameManager
         _gameAgent = createAgent();
         if (_gameAgent != null) {
             _bureauReg.startAgent(_gameAgent);
+        }
+        
+        // set agent state to ready if the game doesn't require one
+        if (_gameAgent == null) {
+            _gameObj.setAgentState(WhirledGameObject.AGENT_READY);
         }
     }
 
