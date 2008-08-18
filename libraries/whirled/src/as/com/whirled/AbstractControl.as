@@ -191,7 +191,9 @@ public class AbstractControl extends EventDispatcher
         if (_funcs != null) {
             try {
                 var func :Function = (_funcs[name] as Function);
-                if (func != null) {
+                if (func == null) {
+                    trace("Host code \"" + name + "\" not found!");
+                } else {
                     return func.apply(null, args);
                 }
             } catch (err :Error) {
