@@ -151,8 +151,9 @@ public class Collider
     {
         if (dc is ActorController) {
             var a :Actor = (dc as ActorController).getActor();
+            var sab :SimpleActorBounds = getActorBounds(a);
             _actors.remove(a);
-            var idx :int = _actorBounds[a.inter].indexOf(a);
+            var idx :int = _actorBounds[a.inter].indexOf(sab);
             if (idx != -1) {
                 _actorBounds[a.inter].splice(idx, 1);
             }
@@ -274,7 +275,6 @@ public class Collider
     public function jumpActor (ac :ActorController, dX :Number, delta :Number) :void
     {
         var a :Actor = ac.getActor();
-        trace("removing attached");
         if (a.attached != null && Math.abs(a.attached.iy) < a.maxWalkable) {
             a.attached = null;
             a.dy = 8;
