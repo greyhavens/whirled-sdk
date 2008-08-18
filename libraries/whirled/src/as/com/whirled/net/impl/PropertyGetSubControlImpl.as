@@ -57,7 +57,7 @@ public class PropertyGetSubControlImpl extends TargetedSubControl
     {
         super.gotHostProps(o);
 
-        _gameData = o[_fn_getGameData].call(null, _targetId);
+        _gameData = callHostCode(_fn_getGameData, _targetId);
     }
 
     /**
