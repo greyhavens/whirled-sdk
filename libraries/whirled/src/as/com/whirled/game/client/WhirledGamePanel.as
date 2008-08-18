@@ -12,6 +12,9 @@ import com.threerings.util.Name;
 import com.threerings.flex.CommandButton;
 import com.threerings.flex.FlexUtil;
 
+import com.threerings.presents.dobj.AttributeChangeAdapter;
+import com.threerings.presents.dobj.AttributeChangedEvent;
+
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
@@ -60,7 +63,21 @@ public class WhirledGamePanel extends Canvas
         _rematch.label = getRematchLabel(plobj);
         checkGameOverDisplay();
 
-        initiateLoading();
+        // Crank up the media loader only after the agent is ready
+        if (_gameObj.agentState == WhirledGameObject.AGENT_READY) {
+            initiateLoading();
+        } else {
+            _gameObj.addListener(new AttributeChangeAdapter (
+                function (event :AttributeChangedEvent) :void {
+                    if (event.getName() == WhirledGameObject.AGENT_STATE) {
+                        if (event.getValue() == WhirledGameObject.AGENT_READY) {
+                            initiateLoading();
+                        } else if (event.getValue() == WhirledGameObject.AGENT_FAILED) {
+                            abortLoading();
+                        }
+                    }
+                }));
+        }
     }
 
     // from PlaceView
