@@ -258,7 +258,10 @@
       <fileset dir="${projects.dir}/nenya" includes="src/as/com/threerings/flash/**"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/avrg/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/avrg/server/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/game/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/net/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/net/impl/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/nochump/**"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
     </copy>
