@@ -95,6 +95,7 @@ public class GameAgent extends Agent
     {
         Log.warning("Could not subscribe to game object [oid=" + oid + "]");
         Log.logStackTrace(cause);
+        _controller.agentFailed();
     }
 
     /**
@@ -104,6 +105,7 @@ public class GameAgent extends Agent
     {
         if (userCode == null) {
             Log.warning("Unable to load user code [agent: " + _agentObj + "]");
+            _controller.agentFailed();
             return;
         }
 
@@ -124,6 +126,7 @@ public class GameAgent extends Agent
         
         if (!_controller.backend.isConnected()) {
             Log.info("Could not connect to user code");
+            _controller.agentFailed();
             return;
         }
 

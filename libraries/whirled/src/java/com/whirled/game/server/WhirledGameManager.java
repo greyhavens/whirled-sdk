@@ -454,6 +454,18 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
+     * Called privately by the ThaneGameController when an agent's code could not be started.
+     */
+    public void agentFailed (ClientObject caller)
+    {
+        log.info("Agent failed for " + caller);
+        
+        _gameObj.setAgentState(WhirledGameObject.AGENT_FAILED);
+
+        // TODO: abort the game or let the client do it?
+    }
+
+    /**
      * Called privately by the ThaneGameController when anything in the agent's code domain
      * causes a line of debug or error tracing.
      */

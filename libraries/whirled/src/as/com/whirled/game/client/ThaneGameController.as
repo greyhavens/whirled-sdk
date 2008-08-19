@@ -67,6 +67,16 @@ public class ThaneGameController extends Controller
     }
 
 
+    /**
+     * Called if the user code could not be loaded for any reason.
+     */
+    public function agentFailed () :void
+    {
+        _log.info("Reporting agent failed " + _gameObj.which() + ".");
+        _gameObj.manager.invoke("agentFailed");
+    }
+
+
     /** Access the game configuration. */
     public function getConfig () :ThaneGameConfig
     {
