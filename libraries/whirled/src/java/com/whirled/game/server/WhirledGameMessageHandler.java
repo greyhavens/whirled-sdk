@@ -23,8 +23,17 @@ public abstract class WhirledGameMessageHandler
     /**
      * Creates a new message handler.
      * @param messageTarget the subscribers to this object are the audience of messages
-     * @param playMgr the play manager allows us to determine if a message was sent by the agent
      */
+    public WhirledGameMessageHandler (DObject messageTarget)
+    {
+        _messageTarget = messageTarget;
+    }
+
+    /**
+     * Creates a new message handler.
+     * @param messageTarget the subscribers to this object are the audience of messages
+     */
+    @Deprecated
     public WhirledGameMessageHandler (DObject messageTarget, PlayManager playMgr)
     {
         _messageTarget = messageTarget;
@@ -38,6 +47,18 @@ public abstract class WhirledGameMessageHandler
     protected abstract void validateSender (ClientObject caller)
         throws InvocationException;
 
+    /**
+     * Tests if the given service caller object is an agent.
+     * TODO: make abstract after msoy builds
+     */
+    protected boolean isAgent (ClientObject caller)
+    {
+        if (_playMgr != null) {
+            return _playMgr.isAgent(caller);
+        }
+        return false;
+    }
+    
     /**
      * Retrieve the client object associated with a private audience member that correpsonds
      * to an id.
@@ -88,7 +109,7 @@ public abstract class WhirledGameMessageHandler
         if (caller == null) {
             return SERVER;
         }
-        if (_playMgr.isAgent(caller)) {
+        if (isAgent(caller)) {
             return AGENT;
         }
         return resolvePlayerId(caller);
