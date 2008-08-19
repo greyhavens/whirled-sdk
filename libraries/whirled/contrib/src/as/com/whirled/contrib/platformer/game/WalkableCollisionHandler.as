@@ -64,7 +64,7 @@ public class WalkableCollisionHandler extends CollisionHandler
         if (!stopx && attached != null) {
             target.actor.attached = attached;
         } else if (stopy && !stopx) {
-            target.actor.dx = 0;
+            target.actor.dy = 0;
         }
     }
 

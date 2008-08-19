@@ -146,6 +146,21 @@ public class SimpleActorBounds
         return false;
     }
 
+    public function getInteractingActorBounds () :Array
+    {
+        var abounds :Array = new Array();
+        if (actor.inter == Dynamic.DEAD) {
+            return abounds;
+        }
+        abounds = abounds.concat(_collider.getActorBoundsByType(Dynamic.GLOBAL));
+        if (actor.inter == Dynamic.PLAYER) {
+            abounds = abounds.concat(_collider.getActorBoundsByType(Dynamic.ENEMY));
+        } else if (actor.inter == Dynamic.ENEMY) {
+            abounds = abounds.concat(_collider.getActorBoundsByType(Dynamic.PLAYER));
+        }
+        return abounds;
+    }
+
     public function findColliders (delta :Number, cd :ColliderDetails = null) :ColliderDetails
     {
         if (delta <= 0) {
@@ -153,11 +168,9 @@ public class SimpleActorBounds
         }
         var mlines :Array;
         if (cd == null || cd.colliders == null) {
-            cd = new ColliderDetails(_collider.getLines(actor), _collider.getActorBoundsByType(
-                        (actor.inter == Dynamic.ENEMY) ? Dynamic.PLAYER : Dynamic.ENEMY), delta);
+            cd = new ColliderDetails(_collider.getLines(actor), getInteractingActorBounds(), delta);
         } else {
-            cd.setActors(_collider.getActorBoundsByType(
-                (actor.inter == Dynamic.ENEMY) ? Dynamic.PLAYER :Dynamic.ENEMY));
+            cd.setActors(getInteractingActorBounds());
             cd.rdelta = delta;
         }
         var logs :String = "";

@@ -118,6 +118,9 @@ public class Collider
 
     public function getActorBoundsByType (type :int) :Array
     {
+        if (_actorBounds[type] == null) {
+            _actorBounds[type] = new Array();
+        }
         return _actorBounds[type];
     }
 
@@ -131,10 +134,8 @@ public class Collider
         var a :Actor = ac.getActor();
         var sab :SimpleActorBounds = new SimpleActorBounds(ac, this);
         _actors.put(a, sab);
-        if (_actorBounds[a.inter] == null) {
-            _actorBounds[a.inter] = new Array();
-        }
-        _actorBounds[a.inter].push(sab);
+        var arr :Array = getActorBoundsByType(a.inter);
+        arr.push(sab);
         var task :ColliderTask = ac.createTask();
         if (task != null) {
             _tasks.push(task);
@@ -148,15 +149,14 @@ public class Collider
             return;
         }
         var sab :SimpleActorBounds = getActorBounds(a);
-        var idx :int = _actorBounds[a.inter].indexOf(sab);
+        var arr :Array = getActorBoundsByType(a.inter);
+        var idx :int = arr.indexOf(sab);
         if (idx != -1) {
-            _actorBounds[a.inter].splice(idx, 1);
+            arr.splice(idx, 1);
         }
         a.inter = inter;
-        if (_actorBounds[a.inter] == null) {
-            _actorBounds[a.inter] = new Array();
-        }
-        _actorBounds[a.inter].push(sab);
+        arr = getActorBoundsByType(a.inter);
+        arr.push(sab);
     }
 
     public function addShot (sc :ShotController) :void
@@ -173,9 +173,10 @@ public class Collider
             var a :Actor = (dc as ActorController).getActor();
             var sab :SimpleActorBounds = getActorBounds(a);
             _actors.remove(a);
-            var idx :int = _actorBounds[a.inter].indexOf(sab);
+            var arr :Array = getActorBoundsByType(a.inter);
+            var idx :int = arr.indexOf(sab);
             if (idx != -1) {
-                _actorBounds[a.inter].splice(idx, 1);
+                arr.splice(idx, 1);
             }
         }
         for (var ii :int = 0; ii < _tasks.length; ii++) {
