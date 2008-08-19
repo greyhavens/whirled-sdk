@@ -85,6 +85,7 @@ public class TestGamePanel extends WhirledGamePanel
         mask.graphics.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         mask.graphics.endFill();
         view.mask = mask;
+        view.rawChildren.addChild(mask);
     }
 
     // from Container
