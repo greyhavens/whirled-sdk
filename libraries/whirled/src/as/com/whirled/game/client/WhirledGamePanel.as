@@ -67,7 +67,7 @@ public class WhirledGamePanel extends Canvas
         if (_gameObj.agentState == WhirledGameObject.AGENT_READY) {
             initiateLoading();
         } else {
-            _gameObj.addListener(new AttributeChangeAdapter (
+            _gameObj.addListener(new AttributeChangeAdapter(
                 function (event :AttributeChangedEvent) :void {
                     if (event.getName() == WhirledGameObject.AGENT_STATE) {
                         if (event.getValue() == WhirledGameObject.AGENT_READY) {
