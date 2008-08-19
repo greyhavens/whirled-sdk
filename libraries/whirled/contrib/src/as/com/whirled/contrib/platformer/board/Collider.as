@@ -33,8 +33,6 @@ import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.util.Maths;
 import com.whirled.contrib.platformer.util.SectionalIndex;
 
-import com.whirled.contrib.platformer.display.Metrics;
-
 import com.whirled.contrib.platformer.game.ActorController;
 import com.whirled.contrib.platformer.game.DynamicController;
 import com.whirled.contrib.platformer.game.ShotController;
@@ -44,9 +42,9 @@ public class Collider
     public static const MAX_DX :Number = 6;
     public static const MAX_DY :Number = 15;
 
-    public function Collider ()
+    public function Collider (sx :int, sy :int)
     {
-        _sindex = new SectionalIndex(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
+        _sindex = new SectionalIndex(sx, sy);
     }
 
     public function addBoundedPiece (p :BoundedPiece) :void

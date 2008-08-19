@@ -224,6 +224,7 @@ public class BoardSprite extends Sprite
                 _lowBounds[xx] = _lowBounds[xx + 1] - 1;
             }
         }
+        _maxX = Math.max(_maxX, _minX + Metrics.WINDOW_WIDTH);
     }
 
     protected function handleActorAdded (actor :Actor, group :String) :void

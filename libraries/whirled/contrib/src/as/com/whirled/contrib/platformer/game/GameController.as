@@ -45,7 +45,7 @@ public class GameController
     {
         _controller = controller;
         _board = board;
-        _collider = new Collider();
+        _collider = genCollider();
         initDynamicClasses();
         _board.addEventListener(Board.ACTOR_ADDED, handleActorAdded);
         _board.addEventListener(Board.PIECE_LOADED, handlePieceLoaded);
@@ -148,6 +148,11 @@ public class GameController
     public function removeDynamic (d :Dynamic) :void
     {
         _board.removeDynamic(d);
+    }
+
+    protected function genCollider () :Collider
+    {
+        throw new Error("Must initialize collider in subclass");
     }
 
     protected function addActorClass (a :Class, ac :Class, isDefault :Boolean = false) :void

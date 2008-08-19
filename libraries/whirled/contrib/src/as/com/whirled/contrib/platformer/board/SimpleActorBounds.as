@@ -161,6 +161,9 @@ public class SimpleActorBounds
             cd.rdelta = delta;
         }
         var logs :String = "";
+        var beforeX :Number = actor.x;
+        var beforeY :Number = actor.y;
+        var didCollide :Boolean = false;
 
         do {
             var cdX :Number = actor.dx * delta;
@@ -178,6 +181,9 @@ public class SimpleActorBounds
                     }
                     if (ld.polyIntersecting(mlines))  {
                         cd.colliders.push(ld);
+                        log("adding intersecting " + ld);
+                    } else {
+                        log("ignoring non intersecting " + ld);
                     }
                 }
             }
@@ -191,6 +197,7 @@ public class SimpleActorBounds
                 for (var ii :int = 0; ii < verify.length; ii++) {
                     if (!BoundData.doesBound(verify[ii].type)) {
                         cd.colliders.push(verify[ii]);
+                        logs += "ignoring non bounding collider: " + verify[ii] + "\n";
                         continue;
                     }
                     var ignore :Boolean = false;
@@ -266,10 +273,20 @@ public class SimpleActorBounds
                 cd.colliders = verify;
                 cd.acolliders = averify;
             }
+            if (logs != "") {
+                log(logs);
+            }
+            if (cd.colliders.length > 0) {
+                log("found " + cd.colliders.length + " colliders, now halving delta, actor (" + actor.x + ", " + actor.y + ")");
+                didCollide = true;
+            } else if (didCollide) {
+                log("no colliders found, now halving delta, actor (" + actor.x + ", " + actor.y + ")");
+            }
             delta /= 2;
         } while (Math.abs(cdX) > 1/Metrics.TILE_SIZE || Math.abs(cdY) > 1/Metrics.TILE_SIZE);
 
         translate(-cd.oX, -cd.oY);
+        log("actor adjust is (" + cd.oX + ", " + cd.oY + ")");
 
         if (logs != "") {
             log(logs);
@@ -445,6 +462,7 @@ public class SimpleActorBounds
                 actor.attached = null;
             }
         }
+        log("new actor pos (" + actor.x + ", " + actor.y + ")");
         return cd.rdelta;
     }
 
@@ -483,15 +501,16 @@ public class SimpleActorBounds
         var x2 :Number = actor.x + (cdX < 0 ? cdX : 0);
         var y2 :Number = actor.y + (cdX < 0 ?
                 cdY + (cdY < 0 ? actor.height : 0) : (cdY < 0 ? 0 : actor.height));
-        var x3 :Number = actor.x + (cdY > 0 ? cdX : 0);
-        var y3 :Number = actor.y + actor.height + (cdY > 0 ? cdY : 0);
-        var x4 :Number = actor.x + actor.width + (cdY > 0 ? cdX : 0);
-        var y4 :Number = actor.y + actor.height + (cdY > 0 ? cdY : 0);
-        var x5 :Number = actor.x + actor.width + (cdX > 0 ? cdX : 0);
-        var y5 :Number = actor.y + (cdX > 0 ?
+        var x3 :Number = actor.x + (cdY >= 0 ? cdX : 0);
+        var y3 :Number = actor.y + actor.height + (cdY >= 0 ? cdY : 0);
+        var x4 :Number = actor.x + actor.width + (cdY >= 0 ? cdX : 0);
+        var y4 :Number = actor.y + actor.height + (cdY >= 0 ? cdY : 0);
+        var x5 :Number = actor.x + actor.width + (cdX >= 0 ? cdX : 0);
+        var y5 :Number = actor.y + (cdX >= 0 ?
                 cdY + (cdY < 0 ? actor.height : 0) : (cdY < 0 ? 0 : actor.height));
         var x6 :Number = actor.x + actor.width + (cdY < 0 ? cdX : 0);
         var y6 :Number = actor.y + (cdY < 0 ? cdY : 0);
+        log("new movement bounds (" + cdX + ", " + cdY + ")");
         if (mlines == null) {
             mlines = new Array();
             mlines.push(new LineData(x1, y1, x2, y2, ACTOR_BOUND));
@@ -507,6 +526,9 @@ public class SimpleActorBounds
             mlines[3].update(x4, y4, x5, y5);
             mlines[4].update(x5, y5, x6, y6);
             mlines[5].update(x6, y6, x1, y1);
+        }
+        for each (var mline :LineData in mlines) {
+            log("  " + mline);
         }
         return mlines;
     }
