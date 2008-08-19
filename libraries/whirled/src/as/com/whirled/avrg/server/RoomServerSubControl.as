@@ -21,11 +21,6 @@ public class RoomServerSubControl extends RoomBaseSubControl
     public function RoomServerSubControl (ctrl :AbstractControl, targetId :int)
     {
         super(ctrl, targetId);
-
-        if (targetId != getRoomId()) {
-            throw new Error("Internal error [targetId=" + targetId + ", roomId=" +
-                            getRoomId() + "]");
-        }
     }
 
     public function get props () :PropertySubControl
