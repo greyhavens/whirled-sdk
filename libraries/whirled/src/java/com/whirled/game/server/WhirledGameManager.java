@@ -642,15 +642,14 @@ public abstract class WhirledGameManager extends GameManager
             }
         };
         
-        WhirledGameMessageProvider gameMessages = new WhirledGameMessageHandler(_gameObj, this) {
+        WhirledGameMessageProvider gameMessages = new WhirledGameMessageHandler(_gameObj) {
             @Override protected void validateSender (ClientObject caller)
                 throws InvocationException {
                 WhirledGameManager.this.validateUser(caller);
             }
 
             @Override protected ClientObject getAudienceMember (int id)
-                throws InvocationException
-            {
+                throws InvocationException {
                 ClientObject target = null;
                 if (id == SERVER_AGENT) {
                     if (_gameAgent != null && _gameAgent.clientOid != 0) {
@@ -663,6 +662,10 @@ public abstract class WhirledGameManager extends GameManager
                     throw new InvocationException("m.player_not_around");
                 }
                 return target;
+            }
+
+            @Override protected boolean isAgent (ClientObject caller) {
+                return WhirledGameManager.this.isAgent(caller);
             }
         };
 
