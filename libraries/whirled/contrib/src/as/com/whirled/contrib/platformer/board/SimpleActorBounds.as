@@ -181,9 +181,9 @@ public class SimpleActorBounds
                     }
                     if (ld.polyIntersecting(mlines))  {
                         cd.colliders.push(ld);
-                        log("adding intersecting " + ld);
+                        //log("adding intersecting " + ld);
                     } else {
-                        log("ignoring non intersecting " + ld);
+                        //log("ignoring non intersecting " + ld);
                     }
                 }
             }
@@ -209,7 +209,8 @@ public class SimpleActorBounds
                         var sides :Array = verify[ii].isConnected(verify[jj]);
                         if (sides != null) {
                             connected = true;
-                            if (isContained(verify[ii], verify[jj], sides)) {
+                            if (BoundData.getNormalBound(verify[ii].type) != BoundData.ALL &&
+                                    isContained(verify[ii], verify[jj], sides)) {
                                 ignored[ii] = true;
                                 logs += "ignoring contained collider: " + verify[ii] + "\n";
                                 break;
@@ -277,10 +278,12 @@ public class SimpleActorBounds
                 log(logs);
             }
             if (cd.colliders.length > 0) {
-                log("found " + cd.colliders.length + " colliders, now halving delta, actor (" + actor.x + ", " + actor.y + ")");
+                //log("found " + cd.colliders.length + " colliders, now halving delta, actor (" +
+                //        actor.x + ", " + actor.y + ")");
                 didCollide = true;
             } else if (didCollide) {
-                log("no colliders found, now halving delta, actor (" + actor.x + ", " + actor.y + ")");
+                //log("no colliders found, now halving delta, actor (" +
+                //    actor.x + ", " + actor.y + ")");
             }
             delta /= 2;
         } while (Math.abs(cdX) > 1/Metrics.TILE_SIZE || Math.abs(cdY) > 1/Metrics.TILE_SIZE);
@@ -510,7 +513,7 @@ public class SimpleActorBounds
                 cdY + (cdY < 0 ? actor.height : 0) : (cdY < 0 ? 0 : actor.height));
         var x6 :Number = actor.x + actor.width + (cdY < 0 ? cdX : 0);
         var y6 :Number = actor.y + (cdY < 0 ? cdY : 0);
-        log("new movement bounds (" + cdX + ", " + cdY + ")");
+        //log("new movement bounds (" + cdX + ", " + cdY + ")");
         if (mlines == null) {
             mlines = new Array();
             mlines.push(new LineData(x1, y1, x2, y2, ACTOR_BOUND));
@@ -527,9 +530,11 @@ public class SimpleActorBounds
             mlines[4].update(x5, y5, x6, y6);
             mlines[5].update(x6, y6, x1, y1);
         }
+        /*
         for each (var mline :LineData in mlines) {
             log("  " + mline);
         }
+        */
         return mlines;
     }
 
