@@ -33,9 +33,9 @@ public class ShotTask extends ColliderTask
     {
         super(sc, col);
         _s = sc.getShot();
-        var lines :Array = col.getLines(_s);
         var line :LineData = new LineData(
                 _s.x, _s.y, _s.x + _s.dx * _s.ttl, _s.y + _s.dy * _s.ttl, BoundData.S_ALL);
+        var lines :Array = col.getLinesFromLine(line);
         //trace("projectile line: " + line + " testing against " + lines.length + " lines");
         var closehit :Number = int.MAX_VALUE;
         for each (var ld :LineData in lines) {

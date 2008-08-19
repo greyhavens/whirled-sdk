@@ -94,6 +94,28 @@ public class Collider
         return (lines == null ? new Array() : lines);
     }
 
+    public function getLinesFromLine (line :LineData) :Array
+    {
+        var lines :Array = new Array();
+        var x1 :int = _sindex.getSectionXFromTile(
+                Math.min(Math.floor(line.x1), Math.floor(line.x2)));
+        var x2 :int = _sindex.getSectionXFromTile(
+                Math.max(Math.ceil(line.x1), Math.ceil(line.x2)));
+        var y1 :int = _sindex.getSectionYFromTile(
+                Math.min(Math.floor(line.y1), Math.floor(line.y2)));
+        var y2 :int = _sindex.getSectionYFromTile(
+                Math.max(Math.ceil(line.y1), Math.ceil(line.y2)));
+        for (var yy :int = y1; yy <= y2; yy++) {
+            for (var xx :int = x1; xx <= x2; xx++) {
+                var index :int = _sindex.getSectionIndex(xx, yy);
+                if (_lines[index] != null) {
+                    lines = lines.concat(_lines[index]);
+                }
+            }
+        }
+        return lines;
+    }
+
     public function getActorBoundsByType (type :int) :Array
     {
         return _actorBounds[type];
