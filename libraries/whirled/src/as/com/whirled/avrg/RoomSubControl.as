@@ -35,8 +35,6 @@ public class RoomSubControl extends RoomBaseSubControl
 
         o["playerLeft_v1"] = playerLeft_v1;
         o["playerEntered_v1"] = playerEntered_v1;
-        o["leftRoom_v1"] = leftRoom_v1;
-        o["enteredRoom_v1"] = enteredRoom_v1;
 
         o["actorStateSet_v1"] = actorStateSet_v1;
         o["actorAppearanceChanged_v1"] = actorAppearanceChanged_v1;

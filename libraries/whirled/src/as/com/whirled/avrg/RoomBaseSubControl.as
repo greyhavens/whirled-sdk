@@ -44,20 +44,6 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
 [Event(name="playerMoved", type="com.whirled.avrg.AVRGameControlEvent")]
 
 /**
- * Dispatched when we've entered our current room.
- *
- * @eventType com.whirled.avrg.AVRGameControlEvent.ENTERED_ROOM
- */
-[Event(name="enteredRoom", type="com.whirled.avrg.AVRGameControlEvent")]
-
-/**
- * Dispatched when we've left our current room.
- *
- * @eventType com.whirled.avrg.AVRGameControlEvent.LEFT_ROOM
- */
-[Event(name="leftRoom", type="com.whirled.avrg.AVRGameControlEvent")]
-
-/**
  * Dispatched when something has changed about a player's
  * avatar.
  *
@@ -131,20 +117,6 @@ public class RoomBaseSubControl extends TargetedSubControl
     {
         // TODO: targetId
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_MOVED, null, id));
-    }
-
-    /** @private */
-    internal function leftRoom_v1 () :void
-    {
-        // TODO: targetId
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.LEFT_ROOM));
-    }
-
-    /** @private */
-    internal function enteredRoom_v1 (newScene :int) :void
-    {
-        // TODO: targetId
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.ENTERED_ROOM, null, newScene));
     }
 
     /** @private */

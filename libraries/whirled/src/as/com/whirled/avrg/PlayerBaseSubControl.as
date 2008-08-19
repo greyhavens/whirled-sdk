@@ -11,6 +11,20 @@ import com.whirled.net.PropertySubControl;
 import com.whirled.net.impl.PropertySubControlImpl;
 
 /**
+ * Dispatched when we've entered our current room.
+ *
+ * @eventType com.whirled.avrg.AVRGameControlEvent.ENTERED_ROOM
+ */
+[Event(name="enteredRoom", type="com.whirled.avrg.AVRGameControlEvent")]
+
+/**
+ * Dispatched when we've left our current room.
+ *
+ * @eventType com.whirled.avrg.AVRGameControlEvent.LEFT_ROOM
+ */
+[Event(name="leftRoom", type="com.whirled.avrg.AVRGameControlEvent")]
+
+/**
  * Dispatched when this player receives a coin payout.
  *
  * @eventType com.whirled.net.MessageReceivedEvent.COINS_AWARDED
@@ -91,6 +105,20 @@ public class PlayerBaseSubControl extends TargetedSubControl
     {
         // TODO: targetId
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.COINS_AWARDED, null, amount));
+    }
+
+    /** @private */
+    internal function leftRoom_v1 () :void
+    {
+        // TODO: targetId
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.LEFT_ROOM));
+    }
+
+    /** @private */
+    internal function enteredRoom_v1 (newScene :int) :void
+    {
+        // TODO: targetId
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.ENTERED_ROOM, null, newScene));
     }
 
     /** @private */

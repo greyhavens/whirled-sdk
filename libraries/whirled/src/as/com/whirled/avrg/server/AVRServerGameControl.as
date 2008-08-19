@@ -70,10 +70,6 @@ public class AVRServerGameControl extends AbstractControl
             relayToRoom(RoomBaseSubControl.prototype.playerLeft_v1);
         o["playerEntered_v1"] =
             relayToRoom(RoomBaseSubControl.prototype.playerEntered_v1);
-        o["leftRoom_v1"] =
-            relayToRoom(RoomBaseSubControl.prototype.leftRoom_v1);
-        o["enteredRoom_v1"] =
-            relayToRoom(RoomBaseSubControl.prototype.enteredRoom_v1);
 
         o["actorStateSet_v1"] =
             relayToRoom(RoomBaseSubControl.prototype.actorStateSet_v1);
@@ -89,6 +85,10 @@ public class AVRServerGameControl extends AbstractControl
         o["room_messageReceived_v1"] =
             relayToRoom(RoomBaseSubControl.prototype.messageReceived);
 
+        o["leftRoom_v1"] =
+            relayToRoom(PlayerBaseSubControl.prototype.leftRoom_v1);
+        o["enteredRoom_v1"] =
+            relayToRoom(PlayerBaseSubControl.prototype.enteredRoom_v1);
         o["player_messageReceived_v1"] =
             relayToPlayer(PlayerBaseSubControl.prototype.messageReceived);
         o["coinsAwarded_v1"] =
