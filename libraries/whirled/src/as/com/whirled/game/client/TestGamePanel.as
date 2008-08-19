@@ -97,17 +97,24 @@ public class TestGamePanel extends WhirledGamePanel
 
         _ctrlBar.x = 0;
         _ctrlBar.y = unscaledHeight - CTRLBAR_HEIGHT;
-        _ctrlBar.width = unscaledWidth - GAP - SIDEBAR_WIDTH;
+        _ctrlBar.width = unscaledWidth;
         _ctrlBar.height = CTRLBAR_HEIGHT;
 
-        _gameView.width = unscaledWidth - GAP - SIDEBAR_WIDTH;
+        // Note: It might be nice to have a bar along the top to make the gameView not be at y=0,
+        // which would force game developers to realize that x and y are not global.
+        // X is probably enough though.
+        _gameView.x = SIDEBAR_WIDTH + GAP;
+        _gameView.y = 0;
+        _gameView.width = unscaledWidth - (SIDEBAR_WIDTH + GAP);
         _gameView.height = unscaledHeight - CTRLBAR_HEIGHT;
-        _playerList.x = unscaledWidth - SIDEBAR_WIDTH;
-        _playerList.width = SIDEBAR_WIDTH - GAP;
 
-        _chatBox.x = unscaledWidth - SIDEBAR_WIDTH;
+        _playerList.x = 0;
+        _playerList.y = 0;
+        _playerList.width = SIDEBAR_WIDTH;
+
+        _chatBox.x = 0;
         _chatBox.y = _playerList.y + _playerList.height + GAP;
-        _chatBox.width = SIDEBAR_WIDTH - GAP;
+        _chatBox.width = SIDEBAR_WIDTH;
         _chatBox.height = unscaledHeight - _chatBox.y;
 
         super.updateDisplayList(unscaledWidth, unscaledHeight);
