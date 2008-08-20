@@ -24,32 +24,32 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
  * Dispatched either when somebody in our room entered our current game,
  * or somebody playing the game entered our current room.
  *
- * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_ENTERED
+ * @eventType com.whirled.avrg.AVRGameRoomEvent.PLAYER_ENTERED
  */
-[Event(name="playerEntered", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="playerEntered", type="com.whirled.avrg.AVRGameRoomEvent")]
 
 /**
  * Dispatched either when somebody in our room left our current game,
  * or somebody playing the game left our current room.
  *
- * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_LEFT
+ * @eventType com.whirled.avrg.AVRGameRoomEvent.PLAYER_LEFT
  */
-[Event(name="playerLeft", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="playerLeft", type="com.whirled.avrg.AVRGameRoomEvent")]
 
 /**
  * Dispatched when another player in our current room took up a new location.
  *
- * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_MOVED
+ * @eventType com.whirled.avrg.AVRGameRoomEvent.PLAYER_MOVED
  */
-[Event(name="playerMoved", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="playerMoved", type="com.whirled.avrg.AVRGameRoomEvent")]
 
 /**
  * Dispatched when something has changed about a player's
  * avatar.
  *
- * @eventType com.whirled.avrg.AVRGameControlEvent.AVATAR_CHANGED
+ * @eventType com.whirled.avrg.AVRGameRoomEvent.AVATAR_CHANGED
  */
-[Event(name="avatarChanged", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="avatarChanged", type="com.whirled.avrg.AVRGameRoomEvent")]
 
 /**
  * Defines actions, accessors and callbacks available on the client only.
@@ -101,41 +101,38 @@ public class RoomBaseSubControl extends TargetedSubControl
     /** @private */
     internal function playerLeft_v1 (id :int) :void
     {
-        // TODO: targetId
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_LEFT, null, id));
+        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.PLAYER_LEFT, _targetId, null, id));
     }
 
     /** @private */
     internal function playerEntered_v1 (id :int) :void
     {
-        // TODO: targetId
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_ENTERED, null, id));
+        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.PLAYER_ENTERED, _targetId, null, id));
     }
 
     /** @private */
     internal function playerMoved_v1 (id :int) :void
     {
-        // TODO: targetId
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PLAYER_MOVED, null, id));
+        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.PLAYER_MOVED, _targetId, null, id));
     }
 
     /** @private */
     internal function actorAppearanceChanged_v1 (playerId :int) :void
     {
-        // TODO: targetId
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
+        dispatch(new AVRGameRoomEvent(
+                AVRGameRoomEvent.AVATAR_CHANGED, _targetId, null, playerId));
     }
 
     /** @private */
     internal function actorStateSet_v1 (playerId :int, state :String) :void
     {
-        // TODO: targetId
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.AVATAR_CHANGED, null, playerId));
+        dispatch(new AVRGameRoomEvent(
+                AVRGameRoomEvent.AVATAR_CHANGED, _targetId, null, playerId));
     }
+
     /** @private */
     internal function messageReceived_v1 (name :String, value :Object, sender :int) :void
     {
-        // TODO: targetId
         dispatch(new MessageReceivedEvent(_targetId, name, value, sender));
     }
 }

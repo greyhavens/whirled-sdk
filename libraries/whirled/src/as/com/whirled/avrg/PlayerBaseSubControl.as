@@ -13,23 +13,23 @@ import com.whirled.net.impl.PropertySubControlImpl;
 /**
  * Dispatched when we've entered our current room.
  *
- * @eventType com.whirled.avrg.AVRGameControlEvent.ENTERED_ROOM
+ * @eventType com.whirled.avrg.AVRGamePlayerEvent.ENTERED_ROOM
  */
-[Event(name="enteredRoom", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="enteredRoom", type="com.whirled.avrg.AVRGamePlayerEvent")]
 
 /**
  * Dispatched when we've left our current room.
  *
- * @eventType com.whirled.avrg.AVRGameControlEvent.LEFT_ROOM
+ * @eventType com.whirled.avrg.AVRGamePlayerEvent.LEFT_ROOM
  */
-[Event(name="leftRoom", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="leftRoom", type="com.whirled.avrg.AVRGamePlayerEvent")]
 
 /**
  * Dispatched when this player receives a coin payout.
  *
  * @eventType com.whirled.net.MessageReceivedEvent.COINS_AWARDED
  */
-[Event(name="CoinsAwarded", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="CoinsAwarded", type="com.whirled.avrg.AVRGamePlayerEvent")]
 
 /**
  */
@@ -103,22 +103,21 @@ public class PlayerBaseSubControl extends TargetedSubControl
     /** @private */
     internal function coinsAwarded_v1 (amount :int) :void
     {
-        // TODO: targetId
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.COINS_AWARDED, null, amount));
+        dispatch(new AVRGamePlayerEvent(
+                AVRGamePlayerEvent.COINS_AWARDED, _targetId, null, amount));
     }
 
     /** @private */
     internal function leftRoom_v1 () :void
     {
-        // TODO: targetId
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.LEFT_ROOM));
+        dispatch(new AVRGamePlayerEvent(AVRGamePlayerEvent.LEFT_ROOM, _targetId));
     }
 
     /** @private */
     internal function enteredRoom_v1 (newScene :int) :void
     {
-        // TODO: targetId
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.ENTERED_ROOM, null, newScene));
+        dispatch(new AVRGamePlayerEvent(
+                AVRGamePlayerEvent.ENTERED_ROOM, _targetId, null, newScene));
     }
 
     /** @private */
