@@ -1,6 +1,5 @@
 package com.whirled.game.server;
 
-import com.threerings.parlor.server.PlayManager;
 import com.threerings.presents.client.InvocationService.InvocationListener;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.dobj.DObject;
@@ -30,17 +29,6 @@ public abstract class WhirledGameMessageHandler
     }
 
     /**
-     * Creates a new message handler.
-     * @param messageTarget the subscribers to this object are the audience of messages
-     */
-    @Deprecated
-    public WhirledGameMessageHandler (DObject messageTarget, PlayManager playMgr)
-    {
-        _messageTarget = messageTarget;
-        _playMgr = playMgr;
-    }
-
-    /**
      * Check to see if a client is allowed to send a message.
      * @throws InvocationException if the given caller cannot send a message
      */
@@ -49,15 +37,8 @@ public abstract class WhirledGameMessageHandler
 
     /**
      * Tests if the given service caller object is an agent.
-     * TODO: make abstract after msoy builds
      */
-    protected boolean isAgent (ClientObject caller)
-    {
-        if (_playMgr != null) {
-            return _playMgr.isAgent(caller);
-        }
-        return false;
-    }
+    protected abstract boolean isAgent (ClientObject caller);
     
     /**
      * Retrieve the client object associated with a private audience member that correpsonds
@@ -126,5 +107,4 @@ public abstract class WhirledGameMessageHandler
     }
     
     protected DObject _messageTarget;
-    protected PlayManager _playMgr;
 }
