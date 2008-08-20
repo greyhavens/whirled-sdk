@@ -29,24 +29,6 @@ public class GameServerSubControl extends GameBaseSubControl
         return _props;
     }
 
-    /**
-     * Start the ticker with the specified name. The ticker will deliver messages
-     * to all connected clients, at the specified delay. The value of each message is
-     * a single integer, starting with 0 and increasing by 1 with each messsage.
-     */
-    public function startTicker (tickerName :String, msOfDelay :int) :void
-    {
-        callHostCode("setTicker_v1", tickerName, msOfDelay);
-    }
-
-    /**
-     * Stop the specified ticker.
-     */
-    public function stopTicker (tickerName :String) :void
-    {
-        startTicker(tickerName, 0);
-    }
-
     /** Sends a message to all players in this instance. use carefully if instanceId == 0 */
     public function sendMessage (name :String, value :Object) :void
     {
