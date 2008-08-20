@@ -65,7 +65,7 @@ public class ActorController extends DynamicController
     {
     }
 
-    public function doAttack () :void
+    public function doAttack (target :ActorController) :void
     {
     }
 

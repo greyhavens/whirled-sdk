@@ -52,7 +52,7 @@ public class AttackCollisionHandler extends CollisionHandler
             tsab.actor.wasHit = ((diff > 0 && (tsab.actor.orient & Actor.ORIENT_RIGHT) == 0) ||
                     (diff < 0 && (tsab.actor.orient & Actor.ORIENT_RIGHT) > 0)) ?
                 Actor.HIT_FRONT : Actor.HIT_BACK;
-            ac.doAttack();
+            ac.doAttack(tsab.controller);
         }
     }
 
