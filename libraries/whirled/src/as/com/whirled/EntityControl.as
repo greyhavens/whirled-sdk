@@ -452,8 +452,8 @@ public class EntityControl extends AbstractControl
     }
 
     /**
-     * Show a popup to the current user in the whirled. This may ONLY be called inside of a
-     * MOUSE_CLICK handler, to prevent malicious furniture from jamming up popups left and right.
+     * Show a popup to the current user in the whirled. Only one popup between all entities in
+     * a room can be show at one time. Calling this closes any existing popup currently open.
      *
      * @param title The title displayed in the title bar for the popup.
      * @param panel The display object to show in the popup. It should only paint inside the
