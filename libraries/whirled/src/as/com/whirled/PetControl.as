@@ -29,10 +29,10 @@ public class PetControl extends ActorControl
 
     /**
      * Send a chat message to the entire room. The chat message will be treated as if it
-     * were typed in at the chat message box - it will be filtered, and any action commands
-     * (e.g. /emote) will be handled appropriately.
+     * was typed in at the chat message box - it will be filtered.
+     * TODO: Any action commands (e.g. /emote) should be handled appropriately.
      */
-    public function sendChatMessage (msg :String) :void
+    public function sendChat (msg :String) :void
     {
         callHostCode("sendChatMessage_v1", msg);
     }
