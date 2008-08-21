@@ -14,5 +14,10 @@ public interface PropertySpaceObject
      * This data structure will be modified by methods in {@link PropertySpaceHelper}.
      */
     function getUserProps () :Object;
+
+    /**
+     * Returns the marshaller for requesting a property change.
+     */
+    function getPropService () :PropertySpaceMarshaller;
 }
 }

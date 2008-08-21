@@ -102,6 +102,12 @@ public class WhirledGameObject extends GameObject
         return _props;
     }
 
+    // from PropertySpaceObject
+    public function getPropService () :PropertySpaceMarshaller
+    {
+        return propertyService;
+    }
+
     // from TurnGameObject
     public function getTurnHolderFieldName () :String
     {
