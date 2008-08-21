@@ -14,19 +14,19 @@ import com.whirled.avrg.AVRGameControlEvent;
  */
 public class AVRGameRoomEvent extends AVRGameControlEvent
 {
-    /** An event type dispatched either when somebody in our room joined our current game,
-     * or somebody playing the game entered our current room.
+    /**
+     * An event type dispatched when a player entered a room.
      * key: N/A
-     * value: the oid of the player body
+     * value: the memberId of the player
      *
      * @eventType playerEntered
      */
     public static const PLAYER_ENTERED :String = "playerEntered";
 
-    /** An event type dispatched either when somebody in our room left our current game,
-     * or somebody playing the game left our current room.
+    /**
+     * An event type dispatched either when a player left a room.
      * key: N/A
-     * value: the oid of the player body
+     * value: the memberId of the player
      *
      * @eventType playerLeft
      */
