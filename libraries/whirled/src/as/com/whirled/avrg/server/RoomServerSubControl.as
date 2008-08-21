@@ -44,6 +44,11 @@ public class RoomServerSubControl extends RoomBaseSubControl
         callHostCode("room_sendMessage_v1", name, value);
     }
 
+    internal function gotHostPropsFriend (o :Object) :void
+    {
+        gotHostProps(o);
+    }
+
     /** @private */
     override protected function createSubControls () :Array
     {

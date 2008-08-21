@@ -13,6 +13,7 @@ import flash.utils.Dictionary;
 import com.threerings.util.Log;
 
 import com.whirled.AbstractControl;
+import com.whirled.AbstractSubControl;
 import com.whirled.ServerObject;
 import com.whirled.avrg.PlayerBaseSubControl;
 import com.whirled.avrg.RoomBaseSubControl;
@@ -47,7 +48,11 @@ public class AVRServerGameControl extends AbstractControl
     {
         var ctrl :RoomServerSubControl = _roomControls[roomId];
         if (ctrl == null) {
-            ctrl = _roomControls[roomId] = new RoomServerSubControl(this, roomId);
+            // This throws an error if the room isn't loaded
+            // TODO: document
+            ctrl = new RoomServerSubControl(this, roomId);
+            ctrl.gotHostPropsFriend(_funcs);
+            _roomControls[roomId] = ctrl;
         }
         return ctrl;
     }
@@ -90,6 +95,8 @@ public class AVRServerGameControl extends AbstractControl
             relayToPlayer(PlayerBaseSubControl.prototype.messageReceived);
         o["coinsAwarded_v1"] =
             relayToPlayer(PlayerBaseSubControl.prototype.coinsAwarded);
+
+        o["roomUnloaded_v1"] = roomUnloaded_v1;
     }
 
     /** @private */
@@ -114,6 +121,14 @@ public class AVRServerGameControl extends AbstractControl
         return function (targetId :int, ... args) :* {
             return fun.apply(getPlayer(targetId), args);
         };
+    }
+
+    /**
+     * Called by the backend when a room is no longer accessible.
+     */
+    protected function roomUnloaded_v1 (roomId :int) :void
+    {
+        delete _roomControls[roomId];
     }
 
     /** @private */
