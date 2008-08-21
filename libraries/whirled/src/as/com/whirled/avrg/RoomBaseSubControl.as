@@ -9,16 +9,8 @@ import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 
 import com.whirled.TargetedSubControl;
-import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
-
-/**
- * Dispatched when a message arrives with information that is not part of the shared game state.
- *
- * @eventType com.whirled.net.MessageReceivedEvent.MESSAGE_RECEIVED
- */
-[Event(name="MsgReceived", type="com.whirled.net.MessageReceivedEvent")]
 
 /**
  * Dispatched either when somebody in our room entered our current game,
@@ -128,12 +120,6 @@ public class RoomBaseSubControl extends TargetedSubControl
     {
         dispatch(new AVRGameRoomEvent(
                 AVRGameRoomEvent.AVATAR_CHANGED, _targetId, null, playerId));
-    }
-
-    /** @private */
-    internal function messageReceived_v1 (name :String, value :Object, sender :int) :void
-    {
-        dispatch(new MessageReceivedEvent(_targetId, name, value, sender));
     }
 }
 }

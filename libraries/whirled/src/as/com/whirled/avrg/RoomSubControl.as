@@ -9,8 +9,16 @@ import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 
 import com.whirled.TargetedSubControl;
+import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
+
+/**
+ * Dispatched when a message arrives with information that is not part of the shared game state.
+ *
+ * @eventType com.whirled.net.MessageReceivedEvent.MESSAGE_RECEIVED
+ */
+[Event(name="MsgReceived", type="com.whirled.net.MessageReceivedEvent")]
 
 /**
  * Defines actions, accessors and callbacks available on the client only.
@@ -48,6 +56,13 @@ public class RoomSubControl extends RoomBaseSubControl
         _props = new PropertyGetSubControlImpl(
             _parent, _targetId, "room_propertyWasSet_v1", "room_getGameData_v1");
         return [ _props ];
+    }
+
+
+    /** @private */
+    internal function messageReceived_v1 (name :String, value :Object, sender :int) :void
+    {
+        dispatch(new MessageReceivedEvent(_targetId, name, value, sender));
     }
 
     protected var _props :PropertyGetSubControl;

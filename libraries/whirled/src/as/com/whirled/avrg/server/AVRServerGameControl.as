@@ -82,9 +82,6 @@ public class AVRServerGameControl extends AbstractControl
 //         o["mobAppearanceChanged_v1"] =
 //             relayToRoom(RoomBaseSubControl.mobAppearanceChanged_v1);
 
-        o["room_messageReceived_v1"] =
-            relayToRoom(RoomBaseSubControl.prototype.messageReceived);
-
         o["leftRoom_v1"] =
             relayToRoom(PlayerBaseSubControl.prototype.leftRoom_v1);
         o["enteredRoom_v1"] =
