@@ -48,16 +48,17 @@ public class RoomSubControl extends RoomBaseSubControl
         o["actorAppearanceChanged_v1"] = actorAppearanceChanged_v1;
 
         o["room_messageReceived_v1"] = messageReceived_v1;
+
+        // the client backend does not send in targetId
+        o["room_propertyWasSet_v1"] = _props.propertyWasSet_v1;
     }
 
     /** @private */
     override protected function createSubControls () :Array
     {
-        _props = new PropertyGetSubControlImpl(
-            _parent, _targetId, "room_propertyWasSet_v1", "room_getGameData_v1");
+        _props = new PropertyGetSubControlImpl(_parent, _targetId, "room_getGameData_v1");
         return [ _props ];
     }
-
 
     /** @private */
     internal function messageReceived_v1 (name :String, value :Object, sender :int) :void
@@ -65,6 +66,6 @@ public class RoomSubControl extends RoomBaseSubControl
         dispatch(new MessageReceivedEvent(_targetId, name, value, sender));
     }
 
-    protected var _props :PropertyGetSubControl;
+    protected var _props :PropertyGetSubControlImpl;
 }
 }

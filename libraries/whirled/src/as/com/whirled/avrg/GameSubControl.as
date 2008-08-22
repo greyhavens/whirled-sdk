@@ -28,11 +28,15 @@ public class GameSubControl extends GameBaseSubControl
     /** @private */
     override protected function createSubControls () :Array
     {
-        _props = new PropertyGetSubControlImpl(
-            _parent, 0, "game_propertyWasSet_v1", "game_getGameData_v1");
+        _props = new PropertyGetSubControlImpl(_parent, 0, "game_getGameData_v1");
         return [ _props ];
     }
 
-    protected var _props :PropertyGetSubControl;
+    override protected function internalProps () :PropertyGetSubControlImpl
+    {
+        return _props;
+    }
+
+    protected var _props :PropertyGetSubControlImpl;
 }
 }

@@ -53,8 +53,7 @@ public class RoomServerSubControl extends RoomBaseSubControl
     override protected function createSubControls () :Array
     {
         _props = new PropertySubControlImpl(
-            _parent, _targetId, "room_propertyWasSet_v1",
-            "room_getGameData_v1", "room_setProperty_v1");
+            _parent, _targetId, "room_getGameData_v1", "room_setProperty_v1");
         return [ _props ];
     }
 

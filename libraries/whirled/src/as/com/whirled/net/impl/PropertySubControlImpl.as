@@ -13,11 +13,10 @@ public class PropertySubControlImpl extends PropertyGetSubControlImpl
     implements PropertySubControl
 {
     public function PropertySubControlImpl (
-        ctrl :AbstractControl, targetId :int, fn_propertyWasSet :String, fn_getGameData :String,
-        fn_setProperty :String)
+        ctrl :AbstractControl, targetId :int, fn_getGameData :String, fn_setProperty :String)
     {
         _fn_setProperty = fn_setProperty;
-        super(ctrl, targetId, fn_propertyWasSet, fn_getGameData);
+        super(ctrl, targetId, fn_getGameData);
     }
 
     /** @inheritDoc */

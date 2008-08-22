@@ -95,8 +95,7 @@ public class PlayerBaseSubControl extends TargetedSubControl
     override protected function createSubControls () :Array
     {
         _props = new PropertySubControlImpl(
-            _parent, _targetId, "player_propertyWasSet_v1",
-            "player_getGameData_v1", "player_setProperty_v1");
+            _parent, _targetId, "player_getGameData_v1", "player_setProperty_v1");
         return [ _props ];
     }
 
@@ -121,6 +120,6 @@ public class PlayerBaseSubControl extends TargetedSubControl
     }
 
     /** @private */
-    protected var _props :PropertySubControl;
+    protected var _props :PropertySubControlImpl;
 }
 }

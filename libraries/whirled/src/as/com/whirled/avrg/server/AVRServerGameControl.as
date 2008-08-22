@@ -15,6 +15,7 @@ import com.threerings.util.Log;
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 import com.whirled.ServerObject;
+import com.whirled.net.impl.PropertyGetSubControlImpl;
 import com.whirled.avrg.PlayerBaseSubControl;
 import com.whirled.avrg.RoomBaseSubControl;
 
@@ -91,10 +92,15 @@ public class AVRServerGameControl extends AbstractControl
             relayToRoom(PlayerBaseSubControl.prototype.leftRoom_v1);
         o["enteredRoom_v1"] =
             relayToRoom(PlayerBaseSubControl.prototype.enteredRoom_v1);
+        o["player_propertyWasSet_v1"] =
+            relayToPlayer(PlayerBaseSubControl.prototype.propertyWasSet_v1);
         o["player_messageReceived_v1"] =
             relayToPlayer(PlayerBaseSubControl.prototype.messageReceived);
         o["coinsAwarded_v1"] =
             relayToPlayer(PlayerBaseSubControl.prototype.coinsAwarded);
+
+        o["player_propertyWasSet_v1"] =
+            relayToPlayerProps(PropertyGetSubControlImpl.prototype.propertyWasSet_v1);
 
         o["roomUnloaded_v1"] = roomUnloaded_v1;
     }
@@ -129,6 +135,14 @@ public class AVRServerGameControl extends AbstractControl
     protected function roomUnloaded_v1 (roomId :int) :void
     {
         delete _roomControls[roomId];
+    }
+
+    /** @private */
+    protected function relayToPlayerProps (fun :Function) :Function
+    {
+        return function (targetId :int, ... args) :* {
+            return fun.apply(getPlayer(targetId).props, args);
+        };
     }
 
     /** @private */

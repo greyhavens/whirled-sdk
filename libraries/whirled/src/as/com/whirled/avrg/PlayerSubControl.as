@@ -15,9 +15,9 @@ import com.whirled.net.MessageReceivedEvent;
 public class PlayerSubControl extends PlayerBaseSubControl
 {
     /** @private */
-    public function PlayerSubControl (ctrl :AbstractControl, targetId :int = 0)
+    public function PlayerSubControl (ctrl :AbstractControl)
     {
-        super(ctrl, targetId);
+        super(ctrl, 0);
     }
 
     /** @private */
@@ -28,6 +28,10 @@ public class PlayerSubControl extends PlayerBaseSubControl
         o["coinsAwarded_v1"] = coinsAwarded_v1;
         o["leftRoom_v1"] = leftRoom_v1;
         o["enteredRoom_v1"] = enteredRoom_v1;
+
+        // the client backend does not send in targetId
+        o["player_propertyWasSet_v1"] = _props.propertyWasSet_v1;
+
         o["player_messageReceived_v1"] = player_messageReceived_v1;
     }
 

@@ -17,9 +17,8 @@ public class PropertyGetSubControlImpl extends TargetedSubControl
     implements PropertyGetSubControl
 {
     public function PropertyGetSubControlImpl (
-        ctrl :AbstractControl, targetId :int, fn_propertyWasSet :String, fn_getGameData :String)
+        ctrl :AbstractControl, targetId :int, fn_getGameData :String)
     {
-        _fn_propertyWasSet = fn_propertyWasSet;
         _fn_getGameData = fn_getGameData;
         super(ctrl, targetId);
     }
@@ -43,16 +42,6 @@ public class PropertyGetSubControlImpl extends TargetedSubControl
     }
 
     /** @private */
-    override protected function setUserProps (o :Object) :void
-    {
-        super.setUserProps(o);
-
-        if (_fn_propertyWasSet != null) {
-            o[_fn_propertyWasSet] = propertyWasSet;
-        }
-    }
-
-    /** @private */
     override protected function gotHostProps (o :Object) :void
     {
         super.gotHostProps(o);
@@ -61,9 +50,10 @@ public class PropertyGetSubControlImpl extends TargetedSubControl
     }
 
     /**
-     * Private method to post a PropertyChangedEvent.
+     * Internal method to post a PropertyChangedEvent. Called from various subcontrols.
+     * @private
      */
-    private function propertyWasSet (
+    public function propertyWasSet_v1 (
         name :String, newValue :Object, oldValue :Object, key :Object) :void
     {
         if (key == null) {
@@ -78,8 +68,6 @@ public class PropertyGetSubControlImpl extends TargetedSubControl
     /** Game properties. @private */
     protected var _gameData :Object;
 
-    /** @private */
-    protected var _fn_propertyWasSet :String;
     /** @private */
     protected var _fn_getGameData :String;
 }
