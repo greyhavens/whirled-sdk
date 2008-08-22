@@ -12,6 +12,8 @@ import com.whirled.TargetedSubControl;
 import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
 
+import flash.geom.Rectangle;
+
 /**
  * Dispatched either when somebody in our room entered our current game,
  * or somebody playing the game entered our current room.
@@ -67,6 +69,18 @@ public class RoomBaseSubControl extends TargetedSubControl
     public function isPlayerHere (id :int) :Boolean
     {
         return callHostCode("isPlayerHere_v1", id);
+    }
+
+    /**
+     * Get the room's bounds in pixel coordinates. This is essentially the width and height
+     * of the room's decor. It is an absolute coordinate system, i.e. (x, y) for one client
+     * here is the same (x, y) as for another.
+     *
+     * @return a Rectangle anchored at (0, 0)
+     */
+    public function getRoomBounds () :Rectangle
+    {
+        return callHostCode("getRoomBounds_v1") as Rectangle;
     }
 
     public function getAvatarInfo (playerId :int) :AVRGameAvatar

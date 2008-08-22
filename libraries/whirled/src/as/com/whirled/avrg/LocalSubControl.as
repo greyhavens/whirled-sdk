@@ -57,18 +57,6 @@ public class LocalSubControl extends AbstractSubControl
         return Rectangle(callHostCode("getStageSize_v1", full));
     }
 
-    /**
-     * Get the room's bounds in pixel coordinates. This is essentially the width and height
-     * of the room's decor. It is an absolute coordinate system, i.e. (x, y) for one client
-     * here is the same (x, y) as for another.
-     *
-     * @return a Rectangle anchored at (0, 0)
-     */
-    public function getRoomBounds () :Rectangle
-    {
-        return callHostCode("getRoomBounds_v1") as Rectangle;
-    }
-
     public function stageToRoom (p :Point) :Point
     {
         return callHostCode("stageToRoom_v1", p) as Point;
