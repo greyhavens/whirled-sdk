@@ -62,7 +62,11 @@ public class AVRServerGameControl extends AbstractControl
     {
         var ctrl :PlayerServerSubControl = _playerControls[playerId];
         if (ctrl == null) {
-            ctrl = _playerControls[playerId] = new PlayerServerSubControl(this, playerId);
+            // This throws an error if the room isn't loaded
+            // TODO: document
+            ctrl = new PlayerServerSubControl(this, playerId);
+            ctrl.gotHostPropsFriend(_funcs);
+            _playerControls[playerId] = ctrl;
         }
         return ctrl;
     }

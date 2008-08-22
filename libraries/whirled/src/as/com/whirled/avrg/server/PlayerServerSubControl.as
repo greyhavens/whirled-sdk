@@ -28,5 +28,10 @@ public class PlayerServerSubControl extends PlayerBaseSubControl
     {
         callHostCode("player_sendMessage_v1", name, value);
     }
+
+    internal function gotHostPropsFriend (o :Object) :void
+    {
+        gotHostProps(o);
+    }
 }
 }
