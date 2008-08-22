@@ -39,7 +39,7 @@ public class RoomServerSubControl extends RoomBaseSubControl
     }
 
     /** Sends a message to all the players that are in the room. */
-    public function sendMessage (name :String, value :Object) :void
+    public function sendMessage (name :String, value :Object = null) :void
     {
         callHostCode("room_sendMessage_v1", name, value);
     }

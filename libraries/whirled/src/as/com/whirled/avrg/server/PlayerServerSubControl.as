@@ -24,7 +24,7 @@ public class PlayerServerSubControl extends PlayerBaseSubControl
     }
 
     /** Sends a message to this player only. */
-    public function sendMessage (name :String, value :Object) :void
+    public function sendMessage (name :String, value :Object = null) :void
     {
         callHostCode("player_sendMessage_v1", name, value);
     }

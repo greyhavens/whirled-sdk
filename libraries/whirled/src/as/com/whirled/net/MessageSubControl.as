@@ -20,6 +20,6 @@ public interface MessageSubControl
      * @param messageName The message to send.
      * @param value The value to attach to the message.
      */
-    function sendMessage (name :String, value :Object) :void
+    function sendMessage (name :String, value :Object = null) :void
 }
 }

@@ -19,7 +19,7 @@ public class MessageSubControlAdapter extends AbstractSubControl
     }
 
     /** @inheritDoc */
-    public function sendMessage (name :String, value :Object) :void
+    public function sendMessage (name :String, value :Object = null) :void
     {
         _sendMessage(name, value);
     }

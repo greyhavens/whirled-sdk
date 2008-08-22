@@ -26,7 +26,7 @@ public class AgentSubControl extends AbstractSubControl
     /**
      * Sends a message to the agent.
      */
-    public function sendMessage (name :String, value :Object) :void
+    public function sendMessage (name :String, value :Object = null) :void
     {
         callHostCode("agent_sendMessage_v1", name, value);
     }

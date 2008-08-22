@@ -30,7 +30,7 @@ public class GameServerSubControl extends GameBaseSubControl
     }
 
     /** Sends a message to all players in this instance. use carefully if instanceId == 0 */
-    public function sendMessage (name :String, value :Object) :void
+    public function sendMessage (name :String, value :Object = null) :void
     {
         callHostCode("game_sendMessage_v1", name, value);
     }
