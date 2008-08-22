@@ -48,7 +48,7 @@ public class PlayerBaseSubControl extends TargetedSubControl
 
     public function getPlayerId () :int
     {
-        return _targetId;
+        return callHostCode("getPlayerId_v1");
     }
 
     public function getRoomId () :int
