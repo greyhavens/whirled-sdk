@@ -5,11 +5,13 @@
 
 package com.whirled.net {
 
+import flash.events.IEventDispatcher;
+
 /**
  * Provides the ability to read game state in the form of named properties which are
  * automatically shared between players and, potentially, the server agent.
  */
-public interface PropertyGetSubControl
+public interface PropertyGetSubControl extends IEventDispatcher
 {
     /**
      * Get a property value. Calling this method results in no network traffic, it just
