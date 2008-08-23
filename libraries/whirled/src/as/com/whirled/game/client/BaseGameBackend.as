@@ -641,7 +641,7 @@ public class BaseGameBackend
     protected function dispatchMessageReceived (
         mname :String, data :Object, senderId :int) :void
     {
-        if ("messageReceived_v2" in _userFuncs) {
+        if (_userFuncs != null && ("messageReceived_v2" in _userFuncs)) {
             callUserCode("messageReceived_v2", mname, data, senderId);
         } else {
             callUserCode("messageReceived_v1", mname, data);
