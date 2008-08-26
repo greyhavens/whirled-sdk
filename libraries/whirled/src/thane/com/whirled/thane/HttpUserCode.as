@@ -10,6 +10,7 @@ import org.httpclient.http.Get;
 import org.httpclient.events.HttpDataEvent;
 import org.httpclient.events.HttpErrorEvent;
 import org.httpclient.events.HttpStatusEvent;
+import com.threerings.util.Log;
 import com.whirled.bureau.client.UserCodeLoader;
 import com.whirled.bureau.client.UserCode;
 
@@ -17,6 +18,8 @@ import com.whirled.bureau.client.UserCode;
 public class HttpUserCode
     implements UserCode
 {
+    protected static var log :Log = Log.getLog(HttpUserCode);
+
     /** Creates a new HttpUserCode and automatically starts downloading code.
      *  @param url the location of the code media (abc file)
      *  @param className the name of the class to look for in the library
@@ -56,7 +59,7 @@ public class HttpUserCode
                 });
             }
             _instance = new _class();
-            trace("New server instantiated!");
+            log.info("New server instantiated!");
         }
         finally {
             _bridge = null; // prevent connecting twice
@@ -68,7 +71,7 @@ public class HttpUserCode
     public function release () :void
     {
         // TODO: forcibly kill off the domain etc.
-        trace("Releasing " + this);
+        log.info("Releasing " + this);
         releaseReferences();
     }
 
@@ -84,20 +87,20 @@ public class HttpUserCode
     /** Generically report an event. */
     protected function event (evt :Event) :void
     {
-        trace("Got an event from the HTTP client: " + evt.type);
+        log.debug("Got an event from the HTTP client: " + evt.type);
     }
 
     /** Receive some data from teh intarnets. */
     protected function handleData (evt :HttpDataEvent) :void
     {
-        trace("Read " + evt.bytes.length + " bytes...");
+        log.debug("Read " + evt.bytes.length + " bytes...");
         _bytes.writeBytes(evt.bytes);
     }
 
     /** Finished receiving data. */
     protected function handleComplete (evt :Event) :void
     {
-        trace("Compiling bytecode into new Domain...");
+        log.debug("Compiling bytecode into new Domain...");
 
         var success :Boolean = false;
 
@@ -108,15 +111,15 @@ public class HttpUserCode
             _domain = Thane.spawnDomain(domainId, _bridge);
             // TODO: do we still need _bytes after this
             _domain.loadBytes(_bytes);
-            trace("Successfully loaded! Testing...");
+            log.debug("Successfully loaded!");
 
             _class = _domain.getClass(_className);
-            trace("Server class in new domain: " + _class);
+            log.debug("Server class in new domain: " + _class);
 
             success = _class != null;
 
         } catch (err :Error) {
-            trace("Error loading user code: " + err.getStackTrace());
+            log.warning("Error loading user code: " + err.getStackTrace());
 
         } finally {
 
@@ -124,7 +127,7 @@ public class HttpUserCode
                 _callback(success ? this : null);
 
             } catch (err :Error) {
-                trace("Error invoking callback: " + err.getStackTrace());
+                log.warning("Error invoking callback: " + err.getStackTrace());
                 releaseReferences();
             }
 
