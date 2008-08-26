@@ -48,10 +48,12 @@ public class DynamicController
         return _dynamic;
     }
 
-    public function createTask () :ColliderTask
+    public function getTask () :ColliderTask
     {
-        trace("WARNING!! No task created for DynamicController: " + ClassUtil.getClassName(this));
-        return null;
+        if (_task == null) {
+            _task = createTask();
+        }
+        return _task;
     }
 
     public function getCollisionHandler (other :Object) :CollisionHandler
@@ -82,8 +84,15 @@ public class DynamicController
         }
     }
 
+    protected function createTask () :ColliderTask
+    {
+        trace("WARNING!! No task created for DynamicController: " + ClassUtil.getClassName(this));
+        return null;
+    }
+
     protected var _chandlers :Array;
     protected var _dynamic :Dynamic;
     protected var _controller :GameController;
+    protected var _task :ColliderTask;
 }
 }

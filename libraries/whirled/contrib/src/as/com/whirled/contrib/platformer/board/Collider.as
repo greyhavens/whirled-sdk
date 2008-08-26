@@ -116,27 +116,29 @@ public class Collider
         return lines;
     }
 
-    public function getActorBoundsByType (type :int) :Array
+    public function getDynamicBoundsByType (type :int) :Array
     {
-        if (_actorBounds[type] == null) {
-            _actorBounds[type] = new Array();
+        if (_dynamicBounds[type] == null) {
+            _dynamicBounds[type] = new Array();
         }
-        return _actorBounds[type];
+        return _dynamicBounds[type];
     }
 
-    public function getActorBounds (a :Actor) :SimpleActorBounds
+    public function getDynamicBounds (d :Dynamic) :DynamicBounds
     {
-        return _actors.get(a);
+        return _dynamics.get(d);
     }
 
-    public function addActor (ac :ActorController) :void
+    public function addDynamic (dc :DynamicController) :void
     {
-        var a :Actor = ac.getActor();
-        var sab :SimpleActorBounds = new SimpleActorBounds(ac, this);
-        _actors.put(a, sab);
-        var arr :Array = getActorBoundsByType(a.inter);
-        arr.push(sab);
-        var task :ColliderTask = ac.createTask();
+        var d :Dynamic = dc.getDynamic();
+        var db :DynamicBounds = getBounds(dc);
+        if (db != null) {
+            _dynamics.put(d, db);
+            var arr :Array = getDynamicBoundsByType(d.inter);
+            arr.push(db);
+        }
+        var task :ColliderTask = dc.getTask();
         if (task != null) {
             _tasks.push(task);
         }
@@ -148,20 +150,20 @@ public class Collider
         if (a.inter == inter) {
             return;
         }
-        var sab :SimpleActorBounds = getActorBounds(a);
-        var arr :Array = getActorBoundsByType(a.inter);
-        var idx :int = arr.indexOf(sab);
+        var db :DynamicBounds = getDynamicBounds(a);
+        var arr :Array = getDynamicBoundsByType(a.inter);
+        var idx :int = arr.indexOf(db);
         if (idx != -1) {
             arr.splice(idx, 1);
         }
         a.inter = inter;
-        arr = getActorBoundsByType(a.inter);
-        arr.push(sab);
+        arr = getDynamicBoundsByType(a.inter);
+        arr.push(db);
     }
 
     public function addShot (sc :ShotController) :void
     {
-        var task :ColliderTask = sc.createTask();
+        var task :ColliderTask = sc.getTask();
         if (task != null) {
             _tasks.push(task);
         }
@@ -169,12 +171,12 @@ public class Collider
 
     public function removeDynamic (dc :DynamicController) :void
     {
-        if (dc is ActorController) {
-            var a :Actor = (dc as ActorController).getActor();
-            var sab :SimpleActorBounds = getActorBounds(a);
-            _actors.remove(a);
-            var arr :Array = getActorBoundsByType(a.inter);
-            var idx :int = arr.indexOf(sab);
+        var d :Dynamic = dc.getDynamic();
+        var db :DynamicBounds = getDynamicBounds(d);
+        if (db != null) {
+            _dynamics.remove(d);
+            var arr :Array = getDynamicBoundsByType(d.inter);
+            var idx :int = arr.indexOf(db);
             if (idx != -1) {
                 arr.splice(idx, 1);
             }
@@ -227,87 +229,36 @@ public class Collider
         }
     }
 
-    public function walkActor (ac :ActorController, dX :Number, delta :Number) :void
+    public function translateDynamic (d :Dynamic, dX :Number, dY :Number) :void
     {
-        var a :Actor = ac.getActor();
-        var sab :SimpleActorBounds = _actors.get(a);
-        if (a.attached == null) {
-            a.dy -= 15 * delta;
-            a.dy = Math.max(a.dy, -MAX_DY);
-            a.dx += dX * delta;
-            a.dx -= Maths.sign0(a.dx) * Maths.limit(9 * delta, Math.abs(a.dx));
-            a.dx = Maths.limit(a.dx, MAX_DX);
-        }
-        var attached :LineData;
-        var oldDelta :Number = delta;
-        var oldDist :Number = 1;
-        while (delta > 0) {
-            if (a.attached != null && a.attached != attached) {
-                attached = a.attached;
-                //var detach :Boolean = false;
-                // Newly attached to a walkable tile, preserve our momentum
-                if (Math.abs(a.attached.iy) < a.maxWalkable) {
-                    var dot :Number = a.dx * a.attached.ix + a.dy * a.attached.iy;
-                    if (a.attached.ix >= 0) {
-                        dot += dX * delta;
-                    } else {
-                        dot -= dX * delta;
-                    }
-                    dot -= Maths.sign0(dot) * Maths.limit(9 * delta, Math.abs(dot));
-                    dot = Maths.limit(dot, MAX_DX);
-                    a.dx = dot * a.attached.ix;
-                    a.dy = dot * a.attached.iy;
-                // Newly attached to an unwalkable tile, start to slide
-                } else {
-                    if (a.attached.iy > 0) {
-                        a.dx = - a.attached.ix;
-                        a.dy = - a.attached.iy;
-                    } else {
-                        a.dx = a.attached.ix;
-                        a.dy = a.attached.iy;
-                    }
-                    a.dx *= 6;
-                    a.dy *= 6;
-                    a.dx = Maths.limit(a.dx, MAX_DX);
-                    a.dy = Maths.limit(a.dy, MAX_DY);
+        var db :DynamicBounds = _dynamics.get(d);
+        db.translate(dX, dY);
+    }
+
+    public function collide (source :DynamicBounds, target :DynamicBounds) :Array
+    {
+        var cols :Array = new Array();
+        if (source is SimpleActorBounds && target is SimpleActorBounds) {
+            for each (var line :LineData in (target as SimpleActorBounds).lines) {
+                if (line.polyIntersecting((source as SimpleActorBounds).mlines)) {
+                    cols.push(line);
                 }
             }
-            //delta = sab.move(delta);
-            if (oldDist == 0 && oldDelta - delta == 0) {
-                break;
-            }
-            oldDist = oldDelta - delta;
-            oldDelta = delta;
         }
+        return cols;
     }
 
-    public function flyActor (a :Actor, delta :Number) :void
+    protected function getBounds (dc :DynamicController) :DynamicBounds
     {
-        var sab :SimpleActorBounds = _actors.get(a);
-        sab.translate(a.dx * delta, a.dy * delta);
-    }
-
-    public function translateActor (a :Actor, dX :Number, dY :Number) :void
-    {
-        var sab :SimpleActorBounds = _actors.get(a);
-        sab.translate(dX, dY);
-    }
-
-    public function jumpActor (ac :ActorController, dX :Number, delta :Number) :void
-    {
-        var a :Actor = ac.getActor();
-        if (a.attached != null && Math.abs(a.attached.iy) < a.maxWalkable) {
-            a.attached = null;
-            a.dy = 8;
-        } else if (a.attached == null) {
-            a.dy += 10 * delta;
+        if (dc is ActorController) {
+            return new SimpleActorBounds(dc as ActorController, this);
         }
-        walkActor(ac, dX, delta);
+        return null;
     }
 
     protected var _lines :Array = new Array();
-    protected var _actors :HashMap = new HashMap();
-    protected var _actorBounds :Array = new Array();
+    protected var _dynamics :HashMap = new HashMap();
+    protected var _dynamicBounds :Array = new Array();
     protected var _tasks :Array = new Array();
     protected var _sindex :SectionalIndex;
 

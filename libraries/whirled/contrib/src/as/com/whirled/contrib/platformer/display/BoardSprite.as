@@ -51,8 +51,9 @@ public class BoardSprite extends Sprite
     public function BoardSprite (board :Board)
     {
         _board = board;
-        _board.addEventListener(Board.ACTOR_ADDED, handleActorAdded);
-        _board.addEventListener(Board.SHOT_ADDED, handleShotAdded);
+        _board.addEventListener(Board.ACTOR_ADDED, handleDynamicAdded);
+        _board.addEventListener(Board.SHOT_ADDED, handleDynamicAdded);
+        _board.addEventListener(Board.DYNAMIC_ADDED, handleDynamicAdded);
         _board.addEventListener(Board.DYNAMIC_REMOVED, handleDynamicRemoved);
         //scaleX = 0.5;
         //scaleY = 0.5;
@@ -82,6 +83,7 @@ public class BoardSprite extends Sprite
             new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
         //_layers[LEVEL_LAYER] = new PieceSpriteLayer();
         addChild(_layers[LEVEL_LAYER]);
+        addChild(_layers[BACK_DYNAMIC_LAYER] = new DynamicSpriteLayer());
         addChild(_layers[BACK_PARTICLE_LAYER] = new ParticleLayer());
         _layers[ACTOR_LAYER] = new ActorSpriteLayer();
         addChild(_layers[ACTOR_LAYER]);
@@ -167,6 +169,7 @@ public class BoardSprite extends Sprite
 
     public function updateActors (delta :Number) :void
     {
+        _layers[BACK_DYNAMIC_LAYER].updateSprites(delta);
         _layers[ACTOR_LAYER].updateSprites(delta);
         _layers[SHOT_LAYER].updateSprites(delta);
     }
@@ -227,17 +230,16 @@ public class BoardSprite extends Sprite
         _maxX = Math.max(_maxX, _minX + Metrics.WINDOW_WIDTH);
     }
 
-    protected function handleActorAdded (actor :Actor, group :String) :void
+    protected function handleDynamicAdded (d :Dynamic, group :String) :void
     {
-        var ds :DynamicSprite = PieceSpriteFactory.getDynamicSprite(actor);
-        _layers[ACTOR_LAYER].addDynamicSprite(ds);
-        ds.setParticleCallback(addParticleEffect);
-    }
-
-    protected function handleShotAdded (s :Shot, group :String) :void
-    {
-        var ds :DynamicSprite = PieceSpriteFactory.getDynamicSprite(s);
-        _layers[SHOT_LAYER].addDynamicSprite(ds);
+        var ds :DynamicSprite = PieceSpriteFactory.getDynamicSprite(d);
+        if (d is Actor) {
+            _layers[ACTOR_LAYER].addDynamicSprite(ds);
+        } else if (d is Shot) {
+            _layers[SHOT_LAYER].addDynamicSprite(ds);
+        } else {
+            _layers[BACK_DYNAMIC_LAYER].addDynamicSprite(ds);
+        }
         ds.setParticleCallback(addParticleEffect);
     }
 
@@ -284,12 +286,13 @@ public class BoardSprite extends Sprite
 
     protected static const BG_LAYER :int = 0;
     protected static const LEVEL_LAYER :int = 1;
-    protected static const BACK_PARTICLE_LAYER :int = 2;
-    protected static const ACTOR_LAYER :int = 3;
-    protected static const SHOT_LAYER :int = 4;
-    protected static const FRONT_PARTICLE_LAYER :int = 5;
-    protected static const FRONT_LEVEL_LAYER :int = 6;
-    protected static const NUM_LAYERS :int = 7;
+    protected static const BACK_DYNAMIC_LAYER :int = 2;
+    protected static const BACK_PARTICLE_LAYER :int = 3;
+    protected static const ACTOR_LAYER :int = 4;
+    protected static const SHOT_LAYER :int = 5;
+    protected static const FRONT_PARTICLE_LAYER :int = 6;
+    protected static const FRONT_LEVEL_LAYER :int = 7;
+    protected static const NUM_LAYERS :int = 8;
 
     protected static const BUFFER :int = Metrics.TILE_SIZE*3;
     protected static const LBUFFER :int = Metrics.TILE_SIZE;

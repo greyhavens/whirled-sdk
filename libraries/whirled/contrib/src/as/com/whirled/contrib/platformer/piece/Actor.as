@@ -20,15 +20,12 @@
 
 package com.whirled.contrib.platformer.piece {
 
-import com.threerings.util.Hashable;
-
 import com.whirled.contrib.platformer.board.LineData;
 
 /**
  * A game actor that has orientation, acceleration and health.
  */
 public class Actor extends Dynamic
-    implements Hashable
 {
     public static const ORIENT_LEFT :int = 0;
     public static const ORIENT_RIGHT :int = 1;
@@ -71,16 +68,6 @@ public class Actor extends Dynamic
         var at :String = (attached != null) ? " attached" : "";
         return "actor: (" + x.toFixed(3) + ", " + y.toFixed(3) +
             ") d:(" + dx.toFixed(3) + ", " + dy.toFixed(3) + ")" + at;
-    }
-
-    public function hashCode () :int
-    {
-        return id;
-    }
-
-    public function equals (other :Object) :Boolean
-    {
-        return (other is Actor && (other as Actor).id == id);
     }
 
     public function doesHit (x :Number, y :Number) :Boolean

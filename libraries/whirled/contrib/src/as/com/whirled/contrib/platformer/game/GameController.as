@@ -51,6 +51,7 @@ public class GameController
         _board.addEventListener(Board.PIECE_LOADED, handlePieceLoaded);
         _board.addEventListener(Board.SHOT_ADDED, handleShotAdded);
         _board.addEventListener(Board.DYNAMIC_REMOVED, handleDynamicRemoved);
+        _board.addEventListener(Board.DYNAMIC_ADDED, handleDynamicAdded);
     }
 
     public function initDynamicClasses () :void
@@ -171,6 +172,14 @@ public class GameController
         }
     }
 
+    protected function addDynamicClass (d :Class, dc :Class, isDefault :Boolean = false) :void
+    {
+        _dynamicMap.put(ClassUtil.getClassName(d), dc);
+        if (isDefault) {
+            _defaultDynamicClass = dc;
+        }
+    }
+
     protected function handlePieceLoaded (p :Piece, tree :String) :void
     {
         if (p is BoundedPiece) {
@@ -187,7 +196,7 @@ public class GameController
         }
         var ac :ActorController = new aclass(actor, this);
         addController(ac);
-        _collider.addActor(ac);
+        _collider.addDynamic(ac);
     }
 
     protected function handleShotAdded (shot :Shot, group :String) :void
@@ -202,6 +211,18 @@ public class GameController
         _collider.addShot(sc);
     }
 
+    protected function handleDynamicAdded (d :Dynamic, group :String) :void
+    {
+        var className :String = ClassUtil.getClassName(d);
+        var dclass :Class = _dynamicMap.get(className);
+        if (dclass == null) {
+            dclass = _defaultDynamicClass;
+        }
+        var dc :DynamicController = new dclass(d, this);
+        addController(dc);
+        _collider.addDynamic(dc);
+    }
+
     protected function handleDynamicRemoved (d :Dynamic, group :String) :void
     {
         removeDynamicController(d);
@@ -212,8 +233,10 @@ public class GameController
     protected var _controllers :Array = new Array();
     protected var _actorMap :HashMap = new HashMap();
     protected var _shotMap :HashMap = new HashMap();
+    protected var _dynamicMap :HashMap = new HashMap();
     protected var _defaultActorClass :Class;
     protected var _defaultShotClass :Class;
+    protected var _defaultDynamicClass :Class;
 
     protected var _board :Board;
 

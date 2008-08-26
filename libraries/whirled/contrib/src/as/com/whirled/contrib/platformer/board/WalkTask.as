@@ -30,7 +30,7 @@ public class WalkTask extends ColliderTask
     public function WalkTask (ac :ActorController, col :Collider)
     {
         super(ac, col);
-        _sab = col.getActorBounds(ac.getActor());
+        _sab = col.getDynamicBounds(ac.getActor()) as SimpleActorBounds;
     }
 
     public override function init (delta :Number) :void

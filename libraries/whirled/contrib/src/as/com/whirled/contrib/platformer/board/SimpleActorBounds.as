@@ -33,17 +33,19 @@ import com.whirled.contrib.platformer.game.CollisionHandler;
  * Provides collision detection support for an actor that has an axis aligned rectangular bounding
  * box.
  */
-public class SimpleActorBounds
+public class SimpleActorBounds extends DynamicBounds
 {
-    public var controller :ActorController;
+    //public var controller :ActorController;
     public var actor :Actor;
     public var lines :Array = new Array();
+    public var mlines :Array = null;
 
     public static const DEBUG :Boolean = false;
 
     public function SimpleActorBounds (ac :ActorController, c :Collider)
     {
-        controller = ac;
+        super(ac, c);
+        //controller = ac;
         actor = ac.getActor();
         lines.push(new LineData(actor.x, actor.y, actor.x, actor.y+actor.height, ACTOR_BOUND));
         lines.push(new LineData(actor.x, actor.y+actor.height, actor.x+actor.width,
@@ -51,16 +53,15 @@ public class SimpleActorBounds
         lines.push(new LineData(actor.x+actor.width, actor.y+actor.height, actor.x+actor.width,
                 actor.y, ACTOR_BOUND));
         lines.push(new LineData(actor.x+actor.width, actor.y, actor.x, actor.y, ACTOR_BOUND));
-        _collider = c;
+        //_collider = c;
     }
 
     /**
      * Translates the actor and updates all the boundary data.
      */
-    public function translate (dX :Number, dY :Number) :void
+    public override function translate (dX :Number, dY :Number) :void
     {
-        actor.x += dX;
-        actor.y += dY;
+        super.translate(dX, dY);
         for each (var ld :LineData in lines) {
             ld.translate(dX, dY);
         }
@@ -68,22 +69,19 @@ public class SimpleActorBounds
 
     /**
      * Returns an array of colliding lines from the other actor.
-     */
-    public function collide (ab :SimpleActorBounds, mlines :Array) :Array
+    public function collide (db :DynamicBounds) :Array
     {
         var cols :Array = new Array();
-        /*
-        if (simpleCollide(ab)) {
-            return cols;
-        }
-        */
-        for each (var line :LineData in ab.lines) {
-            if (line.polyIntersecting(mlines)) {
-                cols.push(line);
+        if (db is SimpleActorBounds) {
+            for each (var line :LineData in (db as SimpleActorBounds).lines) {
+                if (line.polyIntersecting(mlines)) {
+                    cols.push(line);
+                }
             }
         }
         return cols;
     }
+     */
 
     /**
      * Returns true if these actors are colliding.
@@ -146,31 +144,16 @@ public class SimpleActorBounds
         return false;
     }
 
-    public function getInteractingActorBounds () :Array
-    {
-        var abounds :Array = new Array();
-        if (actor.inter == Dynamic.DEAD) {
-            return abounds;
-        }
-        abounds = abounds.concat(_collider.getActorBoundsByType(Dynamic.GLOBAL));
-        if (actor.inter == Dynamic.PLAYER) {
-            abounds = abounds.concat(_collider.getActorBoundsByType(Dynamic.ENEMY));
-        } else if (actor.inter == Dynamic.ENEMY) {
-            abounds = abounds.concat(_collider.getActorBoundsByType(Dynamic.PLAYER));
-        }
-        return abounds;
-    }
-
     public function findColliders (delta :Number, cd :ColliderDetails = null) :ColliderDetails
     {
+        mlines = null;
         if (delta <= 0) {
             return new ColliderDetails(null, null, 0);
         }
-        var mlines :Array;
         if (cd == null || cd.colliders == null) {
-            cd = new ColliderDetails(_collider.getLines(actor), getInteractingActorBounds(), delta);
+            cd = new ColliderDetails(_collider.getLines(actor), getInteractingBounds(), delta);
         } else {
-            cd.setActors(getInteractingActorBounds());
+            cd.setActors(getInteractingBounds());
             cd.rdelta = delta;
         }
         var logs :String = "";
@@ -182,7 +165,7 @@ public class SimpleActorBounds
             var cdX :Number = actor.dx * delta;
             var cdY :Number = actor.dy * delta;
             var verify :Array = new Array();
-            mlines = genMovementBounds(mlines, cdX, cdY);
+            genMovementBounds(cdX, cdY);
 
             // Find all the static lines we collide with
             if (cd.colliders.length > 0) {
@@ -254,13 +237,13 @@ public class SimpleActorBounds
             if (cd.acolliders != null && cd.acolliders.length > 0) {
                 var averify :Array = cd.acolliders;
                 cd.acolliders = new Array();
-                for each (var ab :SimpleActorBounds in averify) {
-                    var acols :Array = collide(ab, mlines);
+                for each (var db :DynamicBounds in averify) {
+                    var acols :Array = _collider.collide(this, db);
                     if (acols.length > 0 &&
-                            (controller.getCollisionHandler(ab.controller) != null ||
-                             ab.controller.getCollisionHandler(controller) != null)) {
+                            (controller.getCollisionHandler(db.controller) != null ||
+                             db.controller.getCollisionHandler(controller) != null)) {
                         cd.alines[cd.acolliders.length] = acols;
-                        cd.acolliders.push(ab);
+                        cd.acolliders.push(db);
                     }
                 }
             }
@@ -307,6 +290,7 @@ public class SimpleActorBounds
         if (logs != "") {
             log(logs);
         }
+        mlines = null;
         return cd;
     }
 
@@ -468,7 +452,7 @@ public class SimpleActorBounds
         if (hitY) {
             actor.dy = 0;
         }
-        actorCollider(cd);
+        dynamicCollider(cd);
 
         if (actor.attached != null) {
             var dist :Number = actor.attached.getLineDist(lines[3]);
@@ -487,30 +471,7 @@ public class SimpleActorBounds
 
     }
 
-    protected function actorCollider (cd :ColliderDetails) :void
-    {
-        if (cd.acolliders == null || cd.acolliders.length == 0) {
-            return;
-        }
-        var ay :Number = 0;
-        var ax :Number = 0;
-        var day :Number = 0;
-        var dax :Number = 0;
-
-        for (var ii :int = 0; ii < cd.acolliders.length; ii++) {
-            var ch :CollisionHandler =
-                controller.getCollisionHandler(cd.acolliders[ii].controller);
-            if (ch != null) {
-                ch.collide(this, cd.acolliders[ii], cd);
-            }
-            ch = cd.acolliders[ii].controller.getCollisionHandler(controller);
-            if (ch != null) {
-                ch.collide(cd.acolliders[ii], this, cd);
-            }
-        }
-    }
-
-    protected function genMovementBounds (mlines :Array, cdX :Number, cdY :Number) :Array
+    protected function genMovementBounds (cdX :Number, cdY :Number) :void
     {
         var x1 :Number = actor.x + (cdY < 0 ? cdX : 0);
         var y1 :Number = actor.y + (cdY < 0 ? cdY : 0);
@@ -548,7 +509,6 @@ public class SimpleActorBounds
             log("  " + mline);
         }
         */
-        return mlines;
     }
 
     protected function inYBounds (line :LineData) :Boolean
@@ -565,7 +525,7 @@ public class SimpleActorBounds
         }
     }
 
-    protected var _collider :Collider;
+    //protected var _collider :Collider;
 
     protected static const MIN_ATTACH_DIST :Number = 0.1;
 

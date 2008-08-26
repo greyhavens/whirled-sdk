@@ -50,6 +50,11 @@ public class Board
     public static const DYNAMIC_ADDED :String = "dynamic_added";
     public static const DYNAMIC_REMOVED :String = "dynamic_removed";
 
+    public static const ACTORS :int = 0;
+    public static const PLATFORMS :int = 1;
+
+    public static const GROUP_NAMES :Array = [ "actors", "platforms" ];
+
     public function loadFromXML (level :XML, pfac :PieceFactory) :void
     {
         _pfac = pfac;
@@ -65,19 +70,32 @@ public class Board
             _pieceTree.push([ "front" ]);
             _pieceTree.push([ "back" ]);
         }
+        _dynamicIns[ACTORS] = new Array();
         if (boardHas("actors")) {
-            loadActors(_xml.board[0].actors[0], _actorIns);
+            loadDynamics(_xml.board[0].actors[0], _dynamicIns[ACTORS]);
+        }
+        _dynamicIns[PLATFORMS] = new Array();
+        if (boardHas("platforms")) {
+            loadDynamics(_xml.board[0].platforms[0], _dynamicIns[PLATFORMS]);
+        }
+        if (boardHas("spawns")) {
+            loadSpawns(_xml.board[0].spawns[0], _spawns);
         }
     }
 
-    public function getActorIns () :Array
+    public function getDynamicIns (idx :int) :Array
     {
-        return _actorIns;
+        return _dynamicIns[idx];
     }
 
     public function getActors () :Array
     {
         return _actors;
+    }
+
+    public function getSpawn (idx :int) :Array
+    {
+        return (_spawns[idx] == null) ? [11, 11] : _spawns[idx];
     }
 
     public function addActor (a :Actor) :void
@@ -88,24 +106,32 @@ public class Board
         sendEvent(ACTOR_ADDED, a, "");
     }
 
+    public function addDynamic (d :Dynamic) :void
+    {
+        d.id = ++_actorId;
+        _dynamics.push(d);
+        trace("adding dynamic " + d.id + " at (" + d.x + ", " + d.y + ")");
+        sendEvent(DYNAMIC_ADDED, d, "");
+    }
+
     public function hasActor (a :Actor) :Boolean
     {
         return _actors.indexOf(a) != -1;
     }
 
-    public function addActorIns (a :Actor) :void
+    public function addDynamicIns (d :Dynamic, idx :int) :void
     {
-        _actorIns.push(a);
-        if (_maxId < a.id) {
-            _maxId = a.id;
+        _dynamicIns[idx].push(d);
+        if (_maxId < d.id) {
+            _maxId = d.id;
         }
-        sendEvent(DYNAMIC_ADDED, a, "root.actors");
+        sendEvent(DYNAMIC_ADDED, d, "root." + GROUP_NAMES[idx]);
     }
 
-    public function updateActorIns (a :Actor) :void
+    public function updateDynamicIns (d :Dynamic, idx :int) :void
     {
-        if (_actorIns.indexOf(a) != -1) {
-            sendEvent(ITEM_UPDATED, a, "root.actors");
+        if (_dynamicIns[idx].indexOf(d) != -1) {
+            sendEvent(ITEM_UPDATED, d, "root." + GROUP_NAMES[idx]);
         }
     }
 
@@ -307,8 +333,10 @@ public class Board
     protected function getGroup (tree :String) :Array
     {
         tree = tree.replace(/root(\.)*/, "");
-        if (tree == "actors") {
-            return _actorIns;
+        for (var ii :int = 0; ii < GROUP_NAMES.length; ii++) {
+            if (tree == GROUP_NAMES[ii]) {
+                return _dynamicIns[ii];
+            }
         }
         var arr :Array = _pieceTree;
         for each (var name :String in tree.split(".")) {
@@ -339,17 +367,9 @@ public class Board
 
     public function getXML () :XML
     {
-        var pieceXML :XML = getPieceTreeXML();
-        if (_xml.board[0].piecenode.length() > 0) {
-            _xml.board[0].replace("piecenode", pieceXML);
-        } else {
-            _xml.board[0].appendChild(pieceXML);
-        }
-        var actorsXML :XML = getActorsXML();
-        if (_xml.board[0].actors.length() > 0) {
-            _xml.board[0].replace("actors", actorsXML);
-        } else {
-            _xml.board[0].appendChild(actorsXML);
+        addOrReplaceXML(_xml.board[0], "piecenode", getPieceTreeXML());
+        for (var ii :int = 0; ii < GROUP_NAMES.length; ii++) {
+            addOrReplaceXML(_xml.board[0], GROUP_NAMES[ii], getDynamicsXML(ii));
         }
         return _xml;
     }
@@ -359,17 +379,17 @@ public class Board
         return genPieceTreeXML(_pieceTree);
     }
 
-    public function getActorsXML () :XML
+    public function getDynamicsXML (idx :int) :XML
     {
-        return genActorsXML(_actorIns);
+        return genDynamicsXML(_dynamicIns[idx], GROUP_NAMES[idx]);
     }
 
-    public function loadActor (xml :XML) :Actor
+    public function loadDynamic (xml :XML) :Dynamic
     {
-        var aclass :Class = ClassUtil.getClassByName("piece." + xml.@type);
-        if (aclass != null) {
-            trace("creating actor: " + xml.@type);
-            return new aclass(xml);
+        var dclass :Class = ClassUtil.getClassByName("piece." + xml.@type);
+        if (dclass != null) {
+            trace("creating dynamic: " + xml.@type);
+            return new dclass(xml);
         }
         return null;
     }
@@ -393,11 +413,30 @@ public class Board
         }
     }
 
-    protected function loadActors (xml :XML, arr :Array) :void
+    protected function loadDynamics (xml :XML, arr :Array) :void
     {
-        trace("Loading actors");
+        trace("Loading dynamics");
         for each (var node :XML in xml.children()) {
-            arr.push(loadActor(node));
+            var d :Dynamic = loadDynamic(node);
+            if (d != null) {
+                arr.push(d);
+            }
+        }
+    }
+
+    protected function loadSpawns (xml :XML, arr :Array) :void
+    {
+        for each (var node :XML in xml.children()) {
+            arr.push([ node.@x, node.@y ]);
+        }
+    }
+
+    protected function addOrReplaceXML (source:XML, nodename :String, node :XML) :void
+    {
+        if (source.child(nodename).length() > 0) {
+            source.replace(nodename, node);
+        } else {
+            source.appendChild(node);
         }
     }
 
@@ -416,11 +455,11 @@ public class Board
         return node;
     }
 
-    protected function genActorsXML (actors :Array) :XML
+    protected function genDynamicsXML (dynamics :Array, nodename :String) :XML
     {
-        var node :XML = <actors/>;
-        for each (var actor :Actor in actors) {
-            node.appendChild(actor.xmlInstance());
+        var node :XML = new XML("<" + nodename + "/>");
+        for each (var dyn :Dynamic in dynamics) {
+            node.appendChild(dyn.xmlInstance());
         }
         return node;
     }
@@ -478,9 +517,11 @@ public class Board
     protected var _maxId :int;
     protected var _actorId :int;
 
-    protected var _actorIns :Array = new Array();
     protected var _actors :Array = new Array();
+    protected var _dynamics :Array = new Array();
+    protected var _dynamicIns :Array = new Array();
     protected var _shots :Array = new Array();
+    protected var _spawns :Array = new Array();
 
     protected var _listeners :HashMap = new HashMap();
 

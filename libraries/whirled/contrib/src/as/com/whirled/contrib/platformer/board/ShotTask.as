@@ -68,18 +68,21 @@ public class ShotTask extends ColliderTask
                 return;
             }
         }
-        var actors :Array = _collider.getActorBoundsByType(_s.inter);
+        var dynamics :Array = _collider.getDynamicBoundsByType(_s.inter);
         var closehit :Number = int.MAX_VALUE;
         var csab :SimpleActorBounds = null;
         var line :LineData = new LineData(
                 _s.x, _s.y, _s.x + _s.dx * _delta, _s.y + _s.dy * _delta, BoundData.S_ALL);
-        if (actors != null && actors.length > 0) {
-            for each (var sab :SimpleActorBounds in actors) {
-                var arr :Array = line.polyIntersect(sab.lines);
-                if (arr[0] < closehit) {
-                    closehit = arr[0];
-                    csab = sab;
-                    _cd.alines[0] = arr[1];
+        if (dynamics != null && dynamics.length > 0) {
+            for each (var db :DynamicBounds in dynamics) {
+                if (db is SimpleActorBounds) {
+                    var sab :SimpleActorBounds = (db as SimpleActorBounds);
+                    var arr :Array = line.polyIntersect(sab.lines);
+                    if (arr[0] < closehit) {
+                        closehit = arr[0];
+                        csab = sab;
+                        _cd.alines[0] = arr[1];
+                    }
                 }
             }
             if (csab != null) {

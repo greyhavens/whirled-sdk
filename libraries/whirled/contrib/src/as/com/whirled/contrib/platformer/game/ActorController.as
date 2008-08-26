@@ -37,11 +37,6 @@ public class ActorController extends DynamicController
         return _actor;
     }
 
-    public function getTask () :ColliderTask
-    {
-        return _task;
-    }
-
     public override function postTick () :void
     {
         super.postTick();
@@ -70,6 +65,5 @@ public class ActorController extends DynamicController
     }
 
     protected var _actor :Actor;
-    protected var _task :ColliderTask;
 }
 }

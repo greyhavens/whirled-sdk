@@ -42,7 +42,7 @@ public class AttackCollisionHandler extends CollisionHandler
     public override function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
         var ssab :SimpleActorBounds = source as SimpleActorBounds;
-        var ac :ActorController = ssab.controller;
+        var ac :ActorController = ssab.controller as ActorController;
         var tsab :SimpleActorBounds = target as SimpleActorBounds;
         if (_ac.canAttack()) {
             ac.startAttack();
@@ -52,7 +52,7 @@ public class AttackCollisionHandler extends CollisionHandler
             tsab.actor.wasHit = ((diff > 0 && (tsab.actor.orient & Actor.ORIENT_RIGHT) == 0) ||
                     (diff < 0 && (tsab.actor.orient & Actor.ORIENT_RIGHT) > 0)) ?
                 Actor.HIT_FRONT : Actor.HIT_BACK;
-            ac.doAttack(tsab.controller);
+            ac.doAttack(tsab.controller as ActorController);
         }
     }
 

@@ -20,10 +20,13 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import com.threerings.util.Hashable;
+
 /**
  * Base class for any object that can move in the world.
  */
 public class Dynamic
+    implements Hashable
 {
     public static const GLOBAL :int = 0;
     public static const PLAYER :int = 1;
@@ -57,6 +60,16 @@ public class Dynamic
         xml.@y = y;
         xml.@id = id;
         return xml;
+    }
+
+    public function hashCode () :int
+    {
+        return id;
+    }
+
+    public function equals (other :Object) :Boolean
+    {
+        return (other is Dynamic && (other as Dynamic).id == id);
     }
 }
 }

@@ -139,6 +139,9 @@ public class PieceSpriteFactory
             if (d is Actor) {
                 var a :Actor = d as Actor;
                 ret = blockShape(a.width, a.height, -a.width/2);
+            } else if (d.hasOwnProperty("width") && d.hasOwnProperty("height")) {
+                var o :Object = d;
+                ret = blockShape(o.width, o.height);
             } else {
                 ret = blockShape(0.1, 0.1, -0.05);
             }
