@@ -16,6 +16,7 @@ import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 import com.whirled.ServerObject;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
+import com.whirled.avrg.AVRGameControlEvent;
 import com.whirled.avrg.PlayerBaseSubControl;
 import com.whirled.avrg.RoomBaseSubControl;
 
@@ -92,10 +93,8 @@ public class AVRServerGameControl extends AbstractControl
 //         o["mobAppearanceChanged_v1"] =
 //             relayToRoom(RoomBaseSubControl.mobAppearanceChanged_v1);
 
-        o["leftRoom_v1"] =
-            relayToRoom(PlayerBaseSubControl.prototype.leftRoom_v1);
-        o["enteredRoom_v1"] =
-            relayToRoom(PlayerBaseSubControl.prototype.enteredRoom_v1);
+        o["leftRoom_v1"] = leftRoom_v1;
+        o["enteredRoom_v1"] = enteredRoom_v1;
         o["player_propertyWasSet_v1"] =
             relayToPlayer(PlayerBaseSubControl.prototype.propertyWasSet_v1);
         o["player_messageReceived_v1"] =
@@ -107,6 +106,9 @@ public class AVRServerGameControl extends AbstractControl
             relayToPlayerProps(PropertyGetSubControlImpl.prototype.propertyWasSet_v1);
 
         o["roomUnloaded_v1"] = roomUnloaded_v1;
+
+        o["playerJoinedGame_v1"] = playerJoinedGame_v1;
+        o["playerLeftGame_v1"] = playerLeftGame_v1;
     }
 
     /** @private */
@@ -115,6 +117,33 @@ public class AVRServerGameControl extends AbstractControl
         return [
             _game = new GameServerSubControl(this),
         ];
+    }
+
+    /** @private */
+    protected function enteredRoom_v1 (playerId :int, roomId :int) :void
+    {
+        getPlayer(playerId).enteredRoom(roomId);
+    }
+
+    /** @private */
+    protected function leftRoom_v1 (playerId :int) :void
+    {
+        getPlayer(playerId).leftRoom();
+    }
+
+    /** @private */
+    protected function playerJoinedGame_v1 (playerId :int) :void
+    {
+        game.dispatchFriend(new AVRGameControlEvent(
+            AVRGameControlEvent.PLAYER_JOINED_GAME, null, playerId));
+    }
+
+    /** @private */
+    protected function playerLeftGame_v1 (playerId :int) :void
+    {
+        game.dispatchFriend(new AVRGameControlEvent(
+            AVRGameControlEvent.PLAYER_QUIT_GAME, null, playerId));
+        delete _playerControls[playerId];
     }
 
     /** @private */

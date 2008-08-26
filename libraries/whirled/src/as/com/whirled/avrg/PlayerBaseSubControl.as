@@ -120,6 +120,18 @@ public class PlayerBaseSubControl extends TargetedSubControl
     }
 
     /** @private */
+    protected function leftRoomProtected () :void
+    {
+        leftRoom_v1();
+    }
+
+    /** @private */
+    protected function enteredRoomProtected (newScene :int) :void
+    {
+        enteredRoom_v1(newScene);
+    }
+
+    /** @private */
     protected var _props :PropertySubControlImpl;
 }
 }

@@ -29,6 +29,18 @@ public class PlayerServerSubControl extends PlayerBaseSubControl
         callHostCode("player_sendMessage_v1", name, value);
     }
 
+    /** @private */
+    internal function leftRoom () :void
+    {
+        super.leftRoomProtected();
+    }
+
+    /** @private */
+    internal function enteredRoom (newScene :int) :void
+    {
+        super.enteredRoomProtected(newScene);
+    }
+
     internal function gotHostPropsFriend (o :Object) :void
     {
         gotHostProps(o);

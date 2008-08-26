@@ -5,6 +5,8 @@
 
 package com.whirled.avrg.server {
 
+import flash.events.Event;
+
 import com.whirled.AbstractControl;
 
 import com.whirled.avrg.GameBaseSubControl;
@@ -15,6 +17,21 @@ import com.whirled.net.PropertySubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
 
 import com.whirled.net.impl.PropertySubControlImpl;
+
+/**
+ * Dispatched when a new player joins the game.
+ *
+ * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_JOINED_GAME
+ */
+[Event(name="playerJoinedGame", type="com.whirled.avrg.AVRGameControlEvent")]
+
+/**
+ * Dispatched when a player leaves the game.
+ *
+ * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_QUIT_GAME
+ */
+[Event(name="playerQuitGame", type="com.whirled.avrg.AVRGameControlEvent")]
+
 public class GameServerSubControl extends GameBaseSubControl
     implements MessageSubControl
 {
@@ -33,6 +50,12 @@ public class GameServerSubControl extends GameBaseSubControl
     public function sendMessage (name :String, value :Object = null) :void
     {
         callHostCode("game_sendMessage_v1", name, value);
+    }
+
+    /** @private */
+    internal function dispatchFriend (event :Event) :void
+    {
+        super.dispatch(event);
     }
 
     /** @private */
