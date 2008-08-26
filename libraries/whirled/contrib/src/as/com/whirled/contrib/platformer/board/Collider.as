@@ -26,11 +26,9 @@ import com.threerings.util.HashMap;
 import com.threerings.util.ClassUtil;
 
 import com.whirled.contrib.platformer.piece.Actor;
-import com.whirled.contrib.platformer.piece.BoundData;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.Dynamic;
 
-import com.whirled.contrib.platformer.util.Maths;
 import com.whirled.contrib.platformer.util.SectionalIndex;
 
 import com.whirled.contrib.platformer.game.ActorController;
