@@ -3,7 +3,7 @@
 //
 // Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
 
-package com.whirled.avrg.server {
+package com.whirled.avrg {
 
 import flash.display.DisplayObject;
 import flash.geom.Point;
@@ -89,8 +89,8 @@ public class AVRServerGameControl extends AbstractControl
 //         o["mobAppearanceChanged_v1"] =
 //             relayToRoom(RoomBaseSubControl.mobAppearanceChanged_v1);
 
-        o["leftRoom_v1"] = relayTo(getPlayer, "leftRoom");
-        o["enteredRoom_v1"] = relayTo(getPlayer, "enteredRoom");
+        o["leftRoom_v1"] = relayTo(getPlayer, "leftRoom_v1");
+        o["enteredRoom_v1"] = relayTo(getPlayer, "enteredRoom_v1");
         o["player_propertyWasSet_v1"] = relayTo(getPlayer, "propertyWasSet_v1");
         o["player_messageReceived_v1"] = relayTo(getPlayer, "messageReceived");
         o["coinsAwarded_v1"] = relayTo(getPlayer, "coinsAwarded");
@@ -156,14 +156,6 @@ public class AVRServerGameControl extends AbstractControl
     protected function roomUnloaded_v1 (roomId :int) :void
     {
         delete _roomControls[roomId];
-    }
-
-    /** @private */
-    protected function relayToPlayerProps (fun :Function) :Function
-    {
-        return function (targetId :int, ... args) :* {
-            return fun.apply(getPlayer(targetId).props, args);
-        };
     }
 
     /** @private */

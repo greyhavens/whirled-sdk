@@ -3,7 +3,7 @@
 //
 // Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
 
-package com.whirled.avrg.server {
+package com.whirled.avrg {
 
 import com.whirled.AbstractControl;
 
@@ -27,18 +27,6 @@ public class PlayerServerSubControl extends PlayerBaseSubControl
     public function sendMessage (name :String, value :Object = null) :void
     {
         callHostCode("player_sendMessage_v1", name, value);
-    }
-
-    /** @private */
-    internal function leftRoom () :void
-    {
-        super.leftRoomProtected();
-    }
-
-    /** @private */
-    internal function enteredRoom (newScene :int) :void
-    {
-        super.enteredRoomProtected(newScene);
     }
 
     internal function gotHostPropsFriend (o :Object) :void

@@ -3,7 +3,7 @@
 //
 // Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
 
-package com.whirled.avrg.server {
+package com.whirled.avrg {
 
 import com.whirled.AbstractControl;
 
