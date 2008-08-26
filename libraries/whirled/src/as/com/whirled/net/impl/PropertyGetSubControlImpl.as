@@ -26,27 +26,19 @@ public class PropertyGetSubControlImpl extends TargetedSubControl
     /** @inheritDoc */
     public function get (propName :String) :Object
     {
-        return _gameData[propName];
+        return callHostCode(_fn_getGameData)[propName];
     }
 
     /** @inheritDoc */
     public function getPropertyNames (prefix :String = "") :Array
     {
         var props :Array = [];
-        for (var s :String in _gameData) {
+        for (var s :String in callHostCode(_fn_getGameData)) {
             if (s.lastIndexOf(prefix, 0) == 0) {
                 props.push(s);
             }
         }
         return props;
-    }
-
-    /** @private */
-    override protected function gotHostProps (o :Object) :void
-    {
-        super.gotHostProps(o);
-
-        _gameData = callHostCode(_fn_getGameData);
     }
 
     /**
@@ -64,9 +56,6 @@ public class PropertyGetSubControlImpl extends TargetedSubControl
                                              _targetId, name, newValue, oldValue, int(key)));
         }
     }
-
-    /** Game properties. @private */
-    protected var _gameData :Object;
 
     /** @private */
     protected var _fn_getGameData :String;
