@@ -7,9 +7,7 @@ package com.whirled.avrg {
 
 import flash.events.Event;
 
-import com.whirled.ControlEvent;
-
-public class AVRGameControlEvent extends ControlEvent
+public class AVRGameControlEvent extends Event
 {
     /**
      * An event type dispatched when somebody joined the AVRG.
@@ -39,12 +37,32 @@ public class AVRGameControlEvent extends ControlEvent
     public static const SIZE_CHANGED :String = "sizeChanged";
 
     /**
+     * Retrieve the 'name' for this event, which is a String value
+     * whose meaning is determined by the event type.
+     */
+    public function get name () :String
+    {
+        return _name;
+    }
+
+    /**
+     * Retrieve the object 'value' for this event, which is a value
+     * whose meaning is determined by the event type.
+     */
+    public function get value () :Object
+    {
+        return _value;
+    }
+
+    /**
      * Create a new AVRGameControlEvent.
      */
-    public function AVRGameControlEvent (
-        type :String, name :String = null, value :Object = null)
+    public function AVRGameControlEvent (type :String, name :String = null, value :Object = null)
     {
-        super(type, name, value);
+        super(type);
+
+        _name = name;
+        _value = value;
     }
 
     override public function toString () :String
@@ -57,5 +75,11 @@ public class AVRGameControlEvent extends ControlEvent
     {
         return new AVRGameControlEvent(type, _name, _value);
     }
+
+    /** Internal storage for our name property. @private */
+    protected var _name :String;
+
+    /** Internal storage for our value property. @private */
+    protected var _value :Object;
 }
 }
