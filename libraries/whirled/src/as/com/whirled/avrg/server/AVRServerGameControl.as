@@ -15,6 +15,7 @@ import com.threerings.util.Log;
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 import com.whirled.ServerObject;
+import com.whirled.net.PropertySubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
 import com.whirled.avrg.AVRGameControlEvent;
 import com.whirled.avrg.PlayerBaseSubControl;
@@ -77,15 +78,10 @@ public class AVRServerGameControl extends AbstractControl
     {
         super.setUserProps(o);
 
-        o["playerLeft_v1"] =
-            relayToRoom(RoomBaseSubControl.prototype.playerLeft_v1);
-        o["playerEntered_v1"] =
-            relayToRoom(RoomBaseSubControl.prototype.playerEntered_v1);
-
-        o["actorStateSet_v1"] =
-            relayToRoom(RoomBaseSubControl.prototype.actorStateSet_v1);
-        o["actorAppearanceChanged_v1"] =
-            relayToRoom(RoomBaseSubControl.prototype.actorAppearanceChanged_v1);
+        o["playerLeft_v1"] = relayTo(getRoom, "playerLeft_v1");
+        o["playerEntered_v1"] = relayTo(getRoom, "playerEntered_v1");
+        o["actorStateSet_v1"] = relayTo(getRoom, "actorStateSet_v1");
+        o["actorAppearanceChanged_v1"] = relayTo(getRoom, "actorAppearanceChanged_v1");
 
 // TODO: not sure how mobs on the server are going to work quite yet
 //         o["mobRemoved_v1"] =
@@ -93,17 +89,12 @@ public class AVRServerGameControl extends AbstractControl
 //         o["mobAppearanceChanged_v1"] =
 //             relayToRoom(RoomBaseSubControl.mobAppearanceChanged_v1);
 
-        o["leftRoom_v1"] = leftRoom_v1;
-        o["enteredRoom_v1"] = enteredRoom_v1;
-        o["player_propertyWasSet_v1"] =
-            relayToPlayer(PlayerBaseSubControl.prototype.propertyWasSet_v1);
-        o["player_messageReceived_v1"] =
-            relayToPlayer(PlayerBaseSubControl.prototype.messageReceived);
-        o["coinsAwarded_v1"] =
-            relayToPlayer(PlayerBaseSubControl.prototype.coinsAwarded);
-
-        o["player_propertyWasSet_v1"] =
-            relayToPlayerProps(PropertyGetSubControlImpl.prototype.propertyWasSet_v1);
+        o["leftRoom_v1"] = relayTo(getPlayer, "leftRoom");
+        o["enteredRoom_v1"] = relayTo(getPlayer, "enteredRoom");
+        o["player_propertyWasSet_v1"] = relayTo(getPlayer, "propertyWasSet_v1");
+        o["player_messageReceived_v1"] = relayTo(getPlayer, "messageReceived");
+        o["coinsAwarded_v1"] = relayTo(getPlayer, "coinsAwarded");
+        o["player_propertyWasSet_v1"] = relayTo(getPlayerProps, "propertyWasSet_v1");
 
         o["roomUnloaded_v1"] = roomUnloaded_v1;
 
@@ -120,15 +111,9 @@ public class AVRServerGameControl extends AbstractControl
     }
 
     /** @private */
-    protected function enteredRoom_v1 (playerId :int, roomId :int) :void
+    protected function getPlayerProps (playerId :int) :PropertySubControl
     {
-        getPlayer(playerId).enteredRoom(roomId);
-    }
-
-    /** @private */
-    protected function leftRoom_v1 (playerId :int) :void
-    {
-        getPlayer(playerId).leftRoom();
+        return getPlayer(playerId).props;
     }
 
     /** @private */
@@ -147,18 +132,21 @@ public class AVRServerGameControl extends AbstractControl
     }
 
     /** @private */
-    protected function relayToRoom (fun :Function) :Function
+    protected function relayTo (getObj :Function, fun :String) :Function
     {
         return function (targetId :int, ... args) :* {
-            return fun.apply(getRoom(targetId), args);
-        };
-    }
-
-    /** @private */
-    protected function relayToPlayer (fun :Function) :Function
-    {
-        return function (targetId :int, ... args) :* {
-            return fun.apply(getPlayer(targetId), args);
+            // fetch the relevant subcontrol
+            var obj :Object = getObj(targetId);
+            // early-development sanity checks
+            if (obj == null) {
+                throw new Error("failed to find subcontrol [targetId=" + targetId + "]");
+            }
+            if (obj[fun] == null) {
+                throw new Error("failed to find function in subcontrol [targetId=" +
+                                targetId + ", fun=" + fun + "]");
+            }
+            // call the right function on it
+            return obj[fun].apply(obj, args);
         };
     }
 
