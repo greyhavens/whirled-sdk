@@ -81,23 +81,28 @@ public class WalkTask extends ColliderTask
                     a.dy = Maths.limit(a.dy, Collider.MAX_DY);
                 }
             }
-        }
-        if (a.attached != null) {
-            if ((a.attached.isLineOutside(_sab.lines[3]) &&
-                    a.attached.normalDot(a.dx, a.dy) < 0) ||
-                (a.attached.isLineInside(_sab.lines[3]) &&
-                    a.attached.normalDot(a.dx, a.dy) > 0)) {
-                var mag :Number = a.attached.dot(a.dx, a.dy);
-                a.dx = a.attached.ix * mag;
-                a.dy = a.attached.iy * mag;
-            } else if (a.attached.isIntersecting(_sab.lines[3])) {
-                trace(a.sprite + " is intersecting attached " + a.attached +
-                        ", " + _sab.lines[3]);
+            if (a.attached != null) {
+                adjustAttached(a);
             }
         }
 
         _cd = _sab.findColliders(_delta, _cd);
         return _cd;
+    }
+
+    protected function adjustAttached (a :Actor) :void
+    {
+        if ((a.attached.isLineOutside(_sab.lines[3]) &&
+                a.attached.normalDot(a.dx, a.dy) < 0) ||
+            (a.attached.isLineInside(_sab.lines[3]) &&
+                a.attached.normalDot(a.dx, a.dy) > 0)) {
+            var mag :Number = a.attached.dot(a.dx, a.dy);
+            a.dx = a.attached.ix * mag;
+            a.dy = a.attached.iy * mag;
+        } else if (a.attached.isIntersecting(_sab.lines[3])) {
+            trace(a.sprite + " is intersecting attached " + a.attached +
+                    ", " + _sab.lines[3]);
+        }
     }
 
     protected override function runTask () :void

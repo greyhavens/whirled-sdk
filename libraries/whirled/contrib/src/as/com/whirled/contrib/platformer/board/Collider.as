@@ -45,6 +45,11 @@ public class Collider
         _sindex = new SectionalIndex(sx, sy);
     }
 
+    public function getStartDelta () :Number
+    {
+        return _tickCounter / 1000;
+    }
+
     public function addBoundedPiece (p :BoundedPiece) :void
     {
         var offset :Point = new Point(p.x, p.y);
@@ -187,11 +192,12 @@ public class Collider
         }
     }
 
-    public function tick (delta :Number) :void
+    public function tick (delta :int) :void
     {
         var runTasks :Array = new Array();
+        _tickCounter += delta;
         for each (var task :ColliderTask in _tasks) {
-            task.init(delta);
+            task.init(delta / 1000);
             if (!task.isInteractive()) {
                 task.genCD();
                 task.run();
@@ -259,6 +265,7 @@ public class Collider
     protected var _dynamicBounds :Array = new Array();
     protected var _tasks :Array = new Array();
     protected var _sindex :SectionalIndex;
+    protected var _tickCounter :int;
 
     protected const MIN_DELTA :Number = 1/100;
 

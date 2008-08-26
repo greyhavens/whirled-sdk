@@ -74,7 +74,7 @@ public class GameController
                 }
             }
             var now :int = getTimer();
-            _collider.tick(tdelta / 1000);
+            _collider.tick(tdelta);
             colliderTicks += getTimer() - now;
             rdelta -= tdelta;
         }
