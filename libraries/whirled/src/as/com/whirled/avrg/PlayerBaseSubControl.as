@@ -107,16 +107,16 @@ public class PlayerBaseSubControl extends TargetedSubControl
     }
 
     /** @private */
-    internal function leftRoom_v1 () :void
+    internal function leftRoom_v1 (scene :int) :void
     {
-        dispatch(new AVRGamePlayerEvent(AVRGamePlayerEvent.LEFT_ROOM, _targetId));
+        dispatch(new AVRGamePlayerEvent(AVRGamePlayerEvent.LEFT_ROOM, _targetId, null, scene));
     }
 
     /** @private */
     internal function enteredRoom_v1 (newScene :int) :void
     {
         dispatch(new AVRGamePlayerEvent(
-                AVRGamePlayerEvent.ENTERED_ROOM, _targetId, null, newScene));
+            AVRGamePlayerEvent.ENTERED_ROOM, _targetId, null, newScene));
     }
 
     /** @private */
