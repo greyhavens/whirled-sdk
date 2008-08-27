@@ -25,6 +25,10 @@ import com.threerings.flex.FlexWrapper;
 
 public class PieceEditView extends Canvas
 {
+    /**
+     * In addition to requiring valid XML, the PieceSpriteFactory should have been initialized 
+     * before this view is created.
+     */
     public function PieceEditView (container :Container, pieces :XML)
     {
         Metrics.init(700, 500, 50);
@@ -39,13 +43,7 @@ public class PieceEditView extends Canvas
         _pfac.addEventListener(PieceFactory.PIECE_UPDATED, pieceUpdated);
         _pfac.addEventListener(PieceFactory.PIECE_REMOVED, pieceRemoved);
         _editSprite.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
-    }
 
-    /**
-     * Called externally when PieceSpriteFactory is initialized.
-     */
-    public function init () :void
-    {
         addChild(new FlexWrapper(_editSprite));
         _editDetails.x = Metrics.DISPLAY_WIDTH;
         addChild(_editDetails);

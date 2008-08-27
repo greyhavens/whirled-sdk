@@ -29,10 +29,10 @@ public class LevelEditor extends Panel
         title = "Platformer Level Editor";
         percentHeight = 100;
         percentWidth = 100;
-        setStyle("PaddingTop", 0);
-        setStyle("PaddingBottom", 0);
-        setStyle("PaddingLeft", 0);
-        setStyle("PaddingRight", 0);
+        setStyle("paddingTop", 0);
+        setStyle("paddingBottom", 0);
+        setStyle("paddingLeft", 0);
+        setStyle("paddingRight", 0);
     }
 
     /**
