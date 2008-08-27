@@ -78,6 +78,11 @@ public abstract class PropertySpaceHelper
                 if (curValue instanceof GameMap) {
                     map = (GameMap) curValue;
                 } else {
+                    if (curValue != null) {
+                        // TODO we're just logging this to see what would be affected if
+                        // we changed this replacing behavior
+                        log.info("Replaced non-null, non-GameMap property with a GameMap.");
+                    }
                     map = new GameMap(); // force anything else to be a map
                     props.put(propName, map);
                 }
