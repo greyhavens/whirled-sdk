@@ -91,8 +91,6 @@ public class AVRServerGameControl extends AbstractControl
 
         o["leftRoom_v1"] = relayTo(getPlayer, "leftRoom_v1");
         o["enteredRoom_v1"] = relayTo(getPlayer, "enteredRoom_v1");
-        o["player_propertyWasSet_v1"] = relayTo(getPlayer, "propertyWasSet_v1");
-        o["player_messageReceived_v1"] = relayTo(getPlayer, "messageReceived");
         o["coinsAwarded_v1"] = relayTo(getPlayer, "coinsAwarded");
         o["player_propertyWasSet_v1"] = relayTo(getPlayerProps, "propertyWasSet_v1");
 

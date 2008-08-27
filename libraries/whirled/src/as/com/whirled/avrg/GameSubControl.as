@@ -26,6 +26,14 @@ public class GameSubControl extends GameBaseSubControl
     }
 
     /** @private */
+    override protected function setUserProps (o :Object) :void
+    {
+        super.setUserProps(o);
+
+        o["game_propertyWasSet_v1"] = _props.propertyWasSet_v1;
+    }
+
+    /** @private */
     override protected function createSubControls () :Array
     {
         _props = new PropertyGetSubControlImpl(_parent, 0, "game_getGameData_v1");

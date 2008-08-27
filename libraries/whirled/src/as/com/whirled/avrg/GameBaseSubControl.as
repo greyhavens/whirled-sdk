@@ -38,9 +38,6 @@ public class GameBaseSubControl extends AbstractSubControl
         super.setUserProps(o);
 
         o["game_messageReceived_v1"] = messageReceived;
-
-        // neither backend sends in targetId for game
-        o["game_propertyWasSet_v1"] = internalProps().propertyWasSet_v1;
     }
 
     /** @private */
