@@ -35,7 +35,7 @@ public class AVRGameRoomEvent extends AVRGameControlEvent
     /** An event type dispatched either when a player of our game who's also in our
      * current room took up a new location in the scene.
      * key: N/A
-     * value: the oid of the player body
+     * value: the memberId of the player
      *
      * @eventType playerLeft
      */

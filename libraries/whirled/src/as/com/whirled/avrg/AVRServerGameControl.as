@@ -82,6 +82,7 @@ public class AVRServerGameControl extends AbstractControl
         o["playerEntered_v1"] = relayTo(getRoom, "playerEntered_v1");
         o["actorStateSet_v1"] = relayTo(getRoom, "actorStateSet_v1");
         o["actorAppearanceChanged_v1"] = relayTo(getRoom, "actorAppearanceChanged_v1");
+        o["playerMoved_v1"] = relayTo(getRoom, "playerMoved_v1");
 
 // TODO: not sure how mobs on the server are going to work quite yet
 //         o["mobRemoved_v1"] =

@@ -47,6 +47,8 @@ public class RoomSubControl extends RoomBaseSubControl
         o["actorStateSet_v1"] = actorStateSet_v1;
         o["actorAppearanceChanged_v1"] = actorAppearanceChanged_v1;
 
+        o["playerMoved_v1"] = playerMoved_v1;
+
         o["room_messageReceived_v1"] = messageReceived_v1;
 
         // the client backend does not send in targetId
