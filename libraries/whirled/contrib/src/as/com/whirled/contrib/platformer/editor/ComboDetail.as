@@ -26,18 +26,28 @@ import mx.utils.ArrayUtil;
 
 public class ComboDetail extends Detail
 {
-    public function ComboDetail (attr :XML, options :Array)
+    public function ComboDetail (attr :XML, options :Array, optionToValue :Function = null,
+        valueToOption :Function = null)
     {
         super(attr);
         _combo = new ComboBox();
         _combo.dataProvider = options;
-        _combo.selectedIndex = ArrayUtil.getItemIndex(attr.toString(), options);
+        var selectedIndexOption :String = attr.toString();
+        if (valueToOption != null) {
+            selectedIndexOption = valueToOption(selectedIndexOption);
+        }
+        _combo.selectedIndex = ArrayUtil.getItemIndex(selectedIndexOption, options);
         _combo.width = 150;
+        _optionToValue = optionToValue;
     }
 
     public override function setData (defxml :XML) :void
     {
-        defxml.@[name] = _combo.selectedLabel;
+        if (_optionToValue != null) {
+            defxml.@[name] = _optionToValue(_combo.selectedLabel);
+        } else {
+            defxml.@[name] = _combo.selectedLabel;
+        }
     }
 
     protected override function input () :UIComponent
@@ -46,5 +56,6 @@ public class ComboDetail extends Detail
     }
 
     protected var _combo :ComboBox;
+    protected var _optionToValue :Function;
 }
 }

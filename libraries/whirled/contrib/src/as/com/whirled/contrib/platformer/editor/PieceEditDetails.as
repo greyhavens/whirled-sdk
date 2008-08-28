@@ -67,7 +67,7 @@ public class PieceEditDetails extends Canvas
         hbox.addChild(label);
         _createClass = new ComboBox();
         _createClass.width = 150;
-        _createClass.dataProvider = pfac.getPieceClasses();
+        _createClass.dataProvider = pfac.getShortPieceClasses();
         hbox.addChild(_createClass);
         vbox.addChild(hbox);
         var button :Button = new Button();
@@ -118,11 +118,11 @@ public class PieceEditDetails extends Canvas
 
     protected function createPiece (event :FlexEvent) :void
     {
-        if (!ApplicationDomain.currentDomain.hasDefinition(_createClass.selectedLabel)) {
+        var cname :String = _pfac.getClassName(_createClass.selectedLabel);
+        if (!ApplicationDomain.currentDomain.hasDefinition(cname)) {
             return;
         }
-        var cdef :Class =
-                ApplicationDomain.currentDomain.getDefinition(_createClass.selectedLabel) as Class;
+        var cdef :Class = ApplicationDomain.currentDomain.getDefinition(cname) as Class;
         var p :Piece = new cdef() as Piece;
         p.type = _createType.text;
         _pfac.newPiece(p);
@@ -155,7 +155,13 @@ public class PieceEditDetails extends Canvas
         }
         _detailTypes = new HashMap();
         _detailTypes.put("cname", function (attr :XML) :Detail {
-            return new ComboDetail(attr, _pfac.getPieceClasses());
+            return new ComboDetail(
+                attr, _pfac.getShortPieceClasses(), function (option :String) :String {
+                    return _pfac.getClassName(option);
+                }, function (value :String) :String {
+                    var dex :int = value.lastIndexOf(".");
+                    return value.substring(dex + 1); // works even if dex is -1
+                });
         });
         _detailTypes.put("bounds", function (attr :XML) :Detail {
             return new BoundsDetail(attr);

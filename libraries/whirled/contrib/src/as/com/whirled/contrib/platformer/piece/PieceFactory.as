@@ -49,9 +49,29 @@ public class PieceFactory
         addPieceClass(new BoundedPiece());
     }
 
+    /**
+     * Returns an array of fully qualified class names for piece classes.
+     */
     public function getPieceClasses () :Array
     {
-        return _pieceClasses;
+        return _pieceClasses.values();
+    }
+
+    /**
+     * Returns an array of just the class name for piece classes.
+     */
+    public function getShortPieceClasses () :Array
+    {
+        return _pieceClasses.keys();
+    }
+
+    /**
+     * Given the short classname provided by getShortPieceClasses(), returns the cooresponding
+     * fully qualified class name.
+     */
+    public function getClassName (shortName :String) :String
+    {
+        return _pieceClasses.get(shortName) as String;
     }
 
     public function getPiece (xml :XML) :Piece
@@ -149,8 +169,9 @@ public class PieceFactory
 
     protected function addPieceClass (piece :Piece, isDefault :Boolean = false) :void
     {
+        var sname :String = ClassUtil.tinyClassName(piece);
         var cname :String = ClassUtil.getClassName(piece);
-        _pieceClasses.push(cname);
+        _pieceClasses.put(sname, cname);
         if (isDefault) {
             _defaultClass = cname;
         }
@@ -158,7 +179,7 @@ public class PieceFactory
 
     protected var _pieceMap :HashMap = new HashMap();
     protected var _listeners :HashMap = new HashMap();
-    protected var _pieceClasses :Array = new Array();
+    protected var _pieceClasses :HashMap = new HashMap();
     protected var _defaultClass :String;
 }
 }
