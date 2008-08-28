@@ -29,11 +29,15 @@ import mx.containers.TabNavigator;
 import mx.containers.VBox;
 import mx.controls.TextArea;
 import mx.events.IndexChangedEvent;
+import mx.styles.CSSStyleDeclaration;
+import mx.styles.StyleManager;
 
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 
 import com.whirled.contrib.platformer.editor.PieceEditView;
+
+[Style(name="tileSize", type="int")]
 
 /**
  * A piece editor for platformer games.  The use of this piece editor requires the inclusion of
@@ -115,8 +119,10 @@ public class PieceEditor extends Panel
         _codeArea.setStyle("fontSize", "12");
         _xmlCode.addChild(_codeArea);
 
+        var tileSize :int = getStyle("tileSize");
         var xmlPieces :XML = (_piecesLoader == null ? null : new XML(_piecesLoader.data));
-        _pieceEdit.rawChildren.addChild(_editView = new PieceEditView(_pieceEdit, xmlPieces));
+        _pieceEdit.rawChildren.addChild(
+            _editView = new PieceEditView(_pieceEdit, tileSize, xmlPieces));
     }
 
     protected function tabChanged (selected :Container) :void
@@ -126,6 +132,22 @@ public class PieceEditor extends Panel
         }
     }
 
+    // This is the recommended way for defining a static initializer to set style default 
+    // values, outlined in the Flex 3 docs.
+    protected static function classConstruct () :Boolean
+    {
+        // prevent against overwriting CSS declarations
+        if (!StyleManager.getStyleDeclaration("PieceEditor")) {
+            var pieceEditorStyles :CSSStyleDeclaration = new CSSStyleDeclaration();
+            pieceEditorStyles.defaultFactory = function () :void
+            {
+                this.tileSize = DEFAULT_TILE_SIZE;
+            }
+            StyleManager.setStyleDeclaration("PieceEditor", pieceEditorStyles, true);
+        }
+        return true;
+    }
+
     protected var _codeArea :TextArea;
     protected var _editView :PieceEditView;
     protected var _piecesLoader :URLLoader;
@@ -133,5 +155,9 @@ public class PieceEditor extends Panel
     protected var _pieceEdit :FocusContainer;
     protected var _xmlCode :VBox;
     protected var _factoryInitialized :Boolean = false;
+
+    protected static var _classConstructed :Boolean = classConstruct();
+
+    protected static const DEFAULT_TILE_SIZE :int = 50;
 }
 }
