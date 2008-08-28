@@ -24,6 +24,7 @@ import flash.display.Sprite;
 
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
+import flash.system.System;
 
 import flash.utils.ByteArray;
 
@@ -137,6 +138,13 @@ public class EditView extends Canvas
             _boardSprite.resetActorLayer();
         }));
         box.y = Metrics.DISPLAY_HEIGHT + 35;
+        box.x = 410;
+        addChild(box);
+        box = new HBox();
+        box.addChild(makeButton("Copy to Clipboard", function () :void {
+            System.setClipboard(getXML());
+        }));
+        box.y = Metrics.DISPLAY_HEIGHT + 70;
         box.x = 410;
         addChild(box);
         _editCoords.y = Metrics.DISPLAY_HEIGHT;

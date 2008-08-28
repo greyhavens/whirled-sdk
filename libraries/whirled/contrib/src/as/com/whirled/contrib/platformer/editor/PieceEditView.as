@@ -24,6 +24,7 @@ import flash.display.Sprite;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.system.System;
 
 import flash.utils.ByteArray;
 
@@ -36,6 +37,7 @@ import com.whirled.contrib.platformer.piece.PieceFactory;
 import mx.core.Container;
 import mx.core.FlexSprite;
 import mx.containers.Canvas;
+import mx.controls.Button;
 import mx.controls.Label;
 
 import com.threerings.flex.FlexWrapper;
@@ -43,7 +45,7 @@ import com.threerings.flex.FlexWrapper;
 public class PieceEditView extends Canvas
 {
     /**
-     * In addition to requiring valid XML, the PieceSpriteFactory should have been initialized 
+     * In addition to requiring valid XML, the PieceSpriteFactory should have been initialized
      * before this view is created.
      */
     public function PieceEditView (container :Container, pieces :XML)
@@ -71,6 +73,12 @@ public class PieceEditView extends Canvas
         _editCoords.y = Metrics.DISPLAY_HEIGHT;
         _editCoords.x = 410;
         _editCoords.text = "Coords (0, 0)";
+        var button :Button = EditView.makeButton("Copy to Clipboard", function () :void {
+            System.setClipboard(getXML());
+        });
+        button.y = Metrics.DISPLAY_HEIGHT + 35;
+        button.x = 410;
+        addChild(button);
     }
 
     public function getXML () :String
