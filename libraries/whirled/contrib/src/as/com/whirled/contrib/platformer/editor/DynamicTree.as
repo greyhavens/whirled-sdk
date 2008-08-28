@@ -21,6 +21,7 @@
 package com.whirled.contrib.platformer.editor {
 
 import mx.collections.HierarchicalData;
+import mx.containers.Canvas;
 import mx.containers.VBox;
 import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
 import mx.controls.Button;
@@ -58,7 +59,11 @@ public class DynamicTree extends BaseTree
     protected override function addButtons (box :VBox) :void
     {
         super.addButtons(box);
-        box.addChild(_settingsBox = new VBox());
+        var settingsContainer :Canvas = new Canvas();
+        settingsContainer.width = 240;
+        settingsContainer.height = 250;
+        settingsContainer.addChild(_settingsBox = new VBox());
+        box.addChild(settingsContainer);
     }
 
     protected override function getItemName (tree :String) :String
@@ -129,6 +134,11 @@ public class DynamicTree extends BaseTree
             _settingsBox.addChild(detail.createBox());
             _details.push(detail);
         }
+        for each (varxml in def.elements("mult")) {
+            var mdetail :MultDynamicDetail = new MultDynamicDetail(varxml, _dynamic);
+            _settingsBox.addChild(mdetail.createBox());
+            _details.push(mdetail);
+        }
         for each (varxml in def.elements("const")) {
             (_dynamic as Object)[varxml.@id.toString()] = varxml.@value;
         }
@@ -140,7 +150,7 @@ public class DynamicTree extends BaseTree
 
     protected function updateDynamic (event :FlexEvent) :void
     {
-        for each (var detail :DynamicDetail in _details) {
+        for each (var detail :DynamicDetailInterface in _details) {
             detail.updateDynamic(_dynamic);
         }
         var group :String = _group.@name;

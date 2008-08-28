@@ -62,7 +62,7 @@ public class EditView extends Canvas
     }
 
     /**
-     * In addition to requiring valid XML, the PieceSpriteFactory should have been initialized 
+     * In addition to requiring valid XML, the PieceSpriteFactory should have been initialized
      * before this view is created.
      */
     public function EditView (container :Container, pieces :XML, dynamics :XML, level :XML)
@@ -102,17 +102,17 @@ public class EditView extends Canvas
         _dynamicTree.addEventListener(ListEvent.CHANGE, dynamicSelection);
         var bs :FlexWrapper = new FlexWrapper(_boardSprite);
         addChild(bs);
-        var rbg :RadioButtonGroup = new RadioButtonGroup();
-        rbg.addEventListener(ItemClickEvent.ITEM_CLICK, modeClicked);
+        _rbg = new RadioButtonGroup();
+        _rbg.addEventListener(ItemClickEvent.ITEM_CLICK, modeClicked);
         var rb :RadioButton = new RadioButton();
         rb.label = "Pieces";
-        rb.group = rbg;
+        rb.group = _rbg;
         rb.x = Metrics.DISPLAY_WIDTH;
         rb.selected = true;
         addChild(rb);
         rb = new RadioButton();
         rb.label = "Dynamics";
-        rb.group = rbg;
+        rb.group = _rbg;
         rb.x = Metrics.DISPLAY_WIDTH + 100;
         addChild(rb);
 
@@ -151,8 +151,13 @@ public class EditView extends Canvas
 
     public function selectItem (tree :String, name :String) :void
     {
-        trace("selectItem " + tree + " " + name);
-        getTree(tree).selectItem(tree, name);
+        var btree :BaseTree = getTree(tree);
+        if (btree == _pieceTree) {
+            changeMode("Pieces");
+        } else {
+            changeMode("Dynamics");
+        }
+        btree.selectItem(tree, name);
     }
 
     protected function addPiece (event :MouseEvent) :void
@@ -183,8 +188,8 @@ public class EditView extends Canvas
         var xml :XML = new XML("<" + group + "/>");
         xml.@type = type;
         xml.@x = Math.max(0, _boardSprite.getX());
-        xml.@y = Math.max(
-                0, _boardSprite.getY() + (group == Board.GROUP_NAMES[Board.ACTORS] ? 0.01 : 0));
+        xml.@y = Math.max(0, _boardSprite.getY()) +
+                (group == Board.GROUP_NAMES[Board.ACTORS] ? 0.01 : 0);
         xml.@id = _board.getMaxId() + 1;
         for each (var cxml :XML in _dynamicSelector.getConst()) {
             xml["@" + cxml.@id] = cxml.@value;
@@ -219,10 +224,17 @@ public class EditView extends Canvas
 
     protected function modeClicked (event :ItemClickEvent) :void
     {
-        _pieceTree.visible = (event.label == "Pieces");
-        _editSelector.visible = (event.label == "Pieces");
-        _dynamicTree.visible = (event.label == "Dynamics");
-        _dynamicSelector.visible = (event.label == "Dynamics");
+        changeMode(event.label);
+    }
+
+    protected function changeMode (type :String) :void
+    {
+        _pieceTree.visible = (type == "Pieces");
+        _editSelector.visible = (type == "Pieces");
+        _dynamicTree.visible = (type == "Dynamics");
+        _dynamicSelector.visible = (type == "Dynamics");
+        _rbg.getRadioButtonAt(0).selected = (type == "Pieces");
+        _rbg.getRadioButtonAt(1).selected = (type == "Dynamics");
     }
 
     protected function getTree (tree :String) :BaseTree
@@ -251,5 +263,7 @@ public class EditView extends Canvas
     protected var _editCoords :Label;
 
     protected var _pfac :PieceFactory;
+
+    protected var _rbg :RadioButtonGroup;
 }
 }

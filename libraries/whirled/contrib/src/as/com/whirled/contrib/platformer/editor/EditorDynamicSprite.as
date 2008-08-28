@@ -21,6 +21,7 @@
 package com.whirled.contrib.platformer.editor {
 
 import com.whirled.contrib.platformer.display.DynamicSprite;
+import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.Dynamic;
 
 public class EditorDynamicSprite extends EditorSprite
@@ -71,7 +72,7 @@ public class EditorDynamicSprite extends EditorSprite
     {
         if (!isNaN(_startX)) {
             _dynamic.x = Math.max(0, newX - _startX);
-            _dynamic.y = Math.max(0, newY - _startY);
+            _dynamic.y = Math.max((_dynamic is Actor ? 0.01 : 0), newY - _startY);
             update();
         }
     }

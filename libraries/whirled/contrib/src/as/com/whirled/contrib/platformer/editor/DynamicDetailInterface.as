@@ -20,43 +20,10 @@
 
 package com.whirled.contrib.platformer.editor {
 
-import mx.controls.CheckBox;
-import mx.controls.TextInput;
-import mx.core.UIComponent;
-
 import com.whirled.contrib.platformer.piece.Dynamic;
 
-public class DynamicDetail extends Detail
+public interface DynamicDetailInterface
 {
-
-    public function DynamicDetail (varxml :XML, d:Dynamic)
-    {
-        super();
-        name = varxml.@id;
-        if (varxml.@type == "checkbox") {
-            _checkbox = new CheckBox();
-            _checkbox.selected = (d as Object)[name];
-        } else {
-            _input = new TextInput();
-            _input.text = (d as Object)[name];
-        }
-    }
-
-    public function updateDynamic (d :Dynamic) :void
-    {
-        if (_checkbox != null) {
-            (d as Object)[name] = _checkbox.selected;
-        } else {
-            (d as Object)[name] = _input.text;
-        }
-    }
-
-    protected override function input () :UIComponent
-    {
-        return _checkbox != null ? _checkbox : _input;
-    }
-
-    protected var _input :TextInput;
-    protected var _checkbox :CheckBox;
+    function updateDynamic (d :Dynamic) :void;
 }
 }

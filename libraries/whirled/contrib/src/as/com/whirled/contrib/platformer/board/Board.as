@@ -122,9 +122,7 @@ public class Board
     public function addDynamicIns (d :Dynamic, idx :int) :void
     {
         _dynamicIns[idx].push(d);
-        if (_maxId < d.id) {
-            _maxId = d.id;
-        }
+        adjustMaxId(d);
         sendEvent(DYNAMIC_ADDED, d, "root." + GROUP_NAMES[idx]);
     }
 
@@ -401,8 +399,8 @@ public class Board
             if (node.localName() == "piece") {
                 var p :Piece = _pfac.getPiece(node);
                 arr.push(p);
-                if (_maxId < node.@id) {
-                    _maxId = node.@id;
+                if (_maxId < p.id) {
+                    _maxId = p.id;
                 }
                 sendEvent(PIECE_LOADED, p, "");
             } else {
@@ -419,6 +417,7 @@ public class Board
         for each (var node :XML in xml.children()) {
             var d :Dynamic = loadDynamic(node);
             if (d != null) {
+                adjustMaxId(d);
                 arr.push(d);
             }
         }
@@ -507,6 +506,13 @@ public class Board
     protected function boardHas (child :String) :Boolean
     {
         return _xml.board[0].child(child).length() > 0;
+    }
+
+    protected function adjustMaxId (d :Dynamic) :void
+    {
+        if (_maxId < d.id) {
+            _maxId = d.id;
+        }
     }
 
     /** The XML definition. */
