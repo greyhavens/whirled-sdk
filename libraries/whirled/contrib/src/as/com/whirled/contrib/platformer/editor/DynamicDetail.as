@@ -27,6 +27,7 @@ import mx.core.UIComponent;
 import com.whirled.contrib.platformer.piece.Dynamic;
 
 public class DynamicDetail extends Detail
+    implements DynamicDetailInterface
 {
 
     public function DynamicDetail (varxml :XML, d:Dynamic)
