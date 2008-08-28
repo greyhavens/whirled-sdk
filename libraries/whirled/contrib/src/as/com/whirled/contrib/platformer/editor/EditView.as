@@ -66,10 +66,9 @@ public class EditView extends Canvas
      * In addition to requiring valid XML, the PieceSpriteFactory should have been initialized
      * before this view is created.
      */
-    public function EditView (container :Container, tileSize :int, pieces :XML, dynamics :XML, 
-        level :XML)
+    public function EditView (container :Container, pieces :XML, dynamics :XML, level :XML)
     {
-        Metrics.init(700, 500, tileSize);
+        Metrics.init(700, 500, 50);
         _container = container;
 
         _pfac = new PieceFactory(pieces);

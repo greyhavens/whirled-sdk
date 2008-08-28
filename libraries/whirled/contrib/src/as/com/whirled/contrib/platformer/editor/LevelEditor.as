@@ -29,15 +29,11 @@ import mx.containers.TabNavigator;
 import mx.containers.VBox;
 import mx.controls.TextArea;
 import mx.events.IndexChangedEvent;
-import mx.styles.CSSStyleDeclaration;
-import mx.styles.StyleManager;
 
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 
 import com.whirled.contrib.platformer.editor.EditView;
-
-[Style(name="tileSize", type="int")]
 
 /**
  * A level editor for platformer games.  The use of this level editor requires the inclusion of
@@ -145,13 +141,12 @@ public class LevelEditor extends Panel
         _codeArea.setStyle("fontSize", "12");
         _xmlCode.addChild(_codeArea);
     
-        var tileSize :int = getStyle("tileSize");
         var xmlPieces :XML = new XML(_piecesLoader.data);
         var xmlLevel :XML = (_levelLoader == null ? null : new XML(_levelLoader.data));
         var xmlDynamics :XML = new XML(_dynamicsLoader.data);
     
         _levelEdit.rawChildren.addChild(_editView = new EditView(
-            _levelEdit, tileSize, xmlPieces, xmlDynamics, xmlLevel));
+            _levelEdit, xmlPieces, xmlDynamics, xmlLevel));
     }
     
     protected function tabChanged (selected :Container) :void
@@ -159,22 +154,6 @@ public class LevelEditor extends Panel
         if (selected == _xmlCode) {
             _codeArea.text = _editView.getXML();
         }
-    }
-
-    // This is the recommended way for defining a static initializer to set style default 
-    // values, outlined in the Flex 3 docs.
-    protected static function classConstruct () :Boolean
-    {
-        // prevent against overwriting CSS declarations
-        if (!StyleManager.getStyleDeclaration("LevelEditor")) {
-            var pieceEditorStyles :CSSStyleDeclaration = new CSSStyleDeclaration();
-            pieceEditorStyles.defaultFactory = function () :void
-            {
-                this.tileSize = DEFAULT_TILE_SIZE;
-            }
-            StyleManager.setStyleDeclaration("LevelEditor", pieceEditorStyles, true);
-        }
-        return true;
     }
     
     protected var _codeArea :TextArea;
@@ -188,9 +167,5 @@ public class LevelEditor extends Panel
     protected var _levelEdit :FocusContainer;
     protected var _xmlCode :VBox;
     protected var _factoryInitialized :Boolean = false;
-
-    protected static var _classConstructred :Boolean = classConstruct();
-
-    protected static const DEFAULT_TILE_SIZE :int = 50;
 }
 }
