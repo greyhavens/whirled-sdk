@@ -70,13 +70,18 @@ public class LevelEditor extends Panel
     
         dynamicsXmlPath = dynamicsXmlPath.replace(/:/, "|");
         dynamicsXmlPath = dynamicsXmlPath.replace(/\\/g, "/");
-        _dynamicsLoader = new URLLoader();
-        _dynamicsLoader.addEventListener(Event.COMPLETE,
-            function (event :Event) :void {
-                _dynamicsLoaded = true;
-                addEditView();
-            });
-        _dynamicsLoader.load(new URLRequest("file://" + dynamicsXmlPath));
+        if (dynamicsXmlPath == null || dynamicsXmlPath == "") {
+            _dynamicsLoaded = true;
+            addEditView();
+        } else {
+            _dynamicsLoader = new URLLoader();
+            _dynamicsLoader.addEventListener(Event.COMPLETE,
+                function (event :Event) :void {
+                    _dynamicsLoaded = true;
+                    addEditView();
+                });
+            _dynamicsLoader.load(new URLRequest("file://" + dynamicsXmlPath));
+        }
     
         levelXmlPath = levelXmlPath.replace(/:/, "|");
         levelXmlPath = levelXmlPath.replace(/\\/g, "/");
@@ -143,7 +148,8 @@ public class LevelEditor extends Panel
     
         var xmlPieces :XML = new XML(_piecesLoader.data);
         var xmlLevel :XML = (_levelLoader == null ? null : new XML(_levelLoader.data));
-        var xmlDynamics :XML = new XML(_dynamicsLoader.data);
+        var xmlDynamics :XML = 
+            (_dynamicsLoader == null ? <dynamics/> : new XML(_dynamicsLoader.data));
     
         _levelEdit.rawChildren.addChild(_editView = new EditView(
             _levelEdit, xmlPieces, xmlDynamics, xmlLevel));
