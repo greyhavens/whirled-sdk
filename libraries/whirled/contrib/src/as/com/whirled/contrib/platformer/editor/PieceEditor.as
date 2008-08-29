@@ -57,6 +57,12 @@ public class PieceEditor extends Panel
      */
     public function setXmlPaths (piecesXmlPath :String) :void
     {
+        if (piecesXmlPath == null || piecesXmlPath == "") {
+            _piecesLoaded = true;
+            addEditView();
+            return;
+        }
+
         piecesXmlPath = piecesXmlPath.replace(/:/, "|");
         piecesXmlPath = piecesXmlPath.replace(/\\/g, "/");
         _piecesLoader = new URLLoader();
