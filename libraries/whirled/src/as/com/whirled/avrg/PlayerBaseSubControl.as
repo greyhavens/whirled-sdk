@@ -56,39 +56,39 @@ public class PlayerBaseSubControl extends TargetedSubControl
         return callHostCode("getRoomId_v1") as int;
     }
 
-    public function deactivateGame () :Boolean
+    public function deactivateGame () :void
     {
-        return callHostCode("deactivateGame_v1");
+        callHostCode("deactivateGame_v1");
     }
 
-    public function completeTask (taskId :String, payout :Number) :Boolean
+    public function completeTask (taskId :String, payout :Number) :void
     {
-        return callHostCode("completeTask_v1", taskId, payout);
+        callHostCode("completeTask_v1", taskId, payout);
     }
 
-    public function playAvatarAction (action :String) :Boolean
+    public function playAvatarAction (action :String) :void
     {
-        return callHostCode("playAvatarAction_v1", action);
+        callHostCode("playAvatarAction_v1", action);
     }
 
-    public function setAvatarState (state :String) :Boolean
+    public function setAvatarState (state :String) :void
     {
-        return callHostCode("setAvatarState_v1", state);
+        callHostCode("setAvatarState_v1", state);
     }
 
-    public function setAvatarMoveSpeed (pixelsPerSecond :Number) :Boolean
+    public function setAvatarMoveSpeed (pixelsPerSecond :Number) :void
     {
-        return callHostCode("setAvatarMoveSpeed_v1", pixelsPerSecond);
+        callHostCode("setAvatarMoveSpeed_v1", pixelsPerSecond);
     }
 
-    public function setAvatarLocation (x :Number, y :Number, z: Number, orient :Number) :Boolean
+    public function setAvatarLocation (x :Number, y :Number, z: Number, orient :Number) :void
     {
-        return callHostCode("setAvatarLocation_v1", x, y, z, orient);
+        callHostCode("setAvatarLocation_v1", x, y, z, orient);
     }
 
-    public function setAvatarOrientation (orient :Number) :Boolean
+    public function setAvatarOrientation (orient :Number) :void
     {
-        return callHostCode("setAvatarOrientation_v1", orient);
+        callHostCode("setAvatarOrientation_v1", orient);
     }
 
     /** @private */
