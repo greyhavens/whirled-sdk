@@ -46,7 +46,12 @@ public class ColliderTask
         return _cc;
     }
 
-    public function genCD () :ColliderDetails
+    public function getBounds () :DynamicBounds
+    {
+        return null;
+    }
+
+    public function genCD (ct :ColliderTask = null) :ColliderDetails
     {
         return _cd;
     }
@@ -56,6 +61,7 @@ public class ColliderTask
         _running = true;
         runTask();
         _running = false;
+        reset();
     }
 
     public function isComplete () :Boolean

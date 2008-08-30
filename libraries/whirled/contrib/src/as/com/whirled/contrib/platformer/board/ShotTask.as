@@ -54,7 +54,7 @@ public class ShotTask extends ColliderTask
         }
     }
 
-    public override function genCD () :ColliderDetails
+    public override function genCD (ct :ColliderTask = null) :ColliderDetails
     {
         _cd = new ColliderDetails(null, null, _delta);
         return _cd;

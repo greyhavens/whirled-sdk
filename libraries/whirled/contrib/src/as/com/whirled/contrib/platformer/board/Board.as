@@ -93,6 +93,11 @@ public class Board
         return _actors;
     }
 
+    public function getDynamics () :Array
+    {
+        return _dynamics;
+    }
+
     public function getSpawn (idx :int) :Array
     {
         return (_spawns[idx] == null) ? [11, 11] : _spawns[idx];
@@ -141,9 +146,13 @@ public class Board
 
     public function removeDynamic (d :Dynamic) :void
     {
-        var arr :Array = _shots;
+        var arr :Array = _dynamics;
         if (d is Actor) {
             arr = _actors;
+        } else if (d is Shot) {
+            arr = _shots;
+        } else {
+            trace("removing dynamic " + d.id);
         }
         var idx :int = arr.indexOf(d);
         if (idx != -1) {

@@ -23,6 +23,7 @@ package com.whirled.contrib.platformer.board {
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundData;
 import com.whirled.contrib.platformer.piece.Dynamic;
+import com.whirled.contrib.platformer.piece.Rect;
 import com.whirled.contrib.platformer.util.Maths;
 
 import com.whirled.contrib.platformer.display.Metrics;
@@ -65,6 +66,11 @@ public class SimpleActorBounds extends DynamicBounds
         for each (var ld :LineData in lines) {
             ld.translate(dX, dY);
         }
+    }
+
+    public override function getRect () :Rect
+    {
+        return new Rect(actor.x, actor.y, actor.width, actor.height);
     }
 
     /**
@@ -152,9 +158,10 @@ public class SimpleActorBounds extends DynamicBounds
         }
         if (cd == null || cd.colliders == null) {
             cd = new ColliderDetails(_collider.getLines(actor), getInteractingBounds(), delta);
+        } else if (cd.colliders.length == 0 && cd.acolliders.length == 0) {
+            return cd;
         } else {
-            cd.setActors(getInteractingBounds());
-            cd.rdelta = delta;
+            cd.reset(delta);
         }
         var logs :String = "";
         var beforeX :Number = actor.x;
@@ -234,7 +241,7 @@ public class SimpleActorBounds extends DynamicBounds
             }
 
             // Now check for collisions with dynamic objects
-            if (cd.acolliders != null && cd.acolliders.length > 0) {
+            if (cd.acolliders.length > 0) {
                 var averify :Array = cd.acolliders;
                 cd.acolliders = new Array();
                 for each (var db :DynamicBounds in averify) {
@@ -247,14 +254,12 @@ public class SimpleActorBounds extends DynamicBounds
                     }
                 }
             }
-            if (cd.acolliders != null && cd.acolliders.length > 0 &&
-                    cd.colliders.length == 0 && verify.length > 0) {
+            if (cd.acolliders.length > 0 && cd.colliders.length == 0 && verify.length > 0) {
                 verify = new Array();
-            } else if (cd.colliders.length > 0 && cd.acolliders != null &&
-                    cd.acolliders.length == 0) {
+            } else if (cd.colliders.length > 0 && cd.acolliders.length == 0) {
                 averify = new Array();
             }
-            if (cd.colliders.length > 0 || (cd.acolliders != null && cd.acolliders.length > 0)) {
+            if (cd.colliders.length > 0 || cd.acolliders.length > 0) {
                 cd.fcdX = cdX;
                 cd.fcdY = cdY;
             } else {
@@ -285,7 +290,7 @@ public class SimpleActorBounds extends DynamicBounds
         } while (Math.abs(cdX) > 1/Metrics.TILE_SIZE || Math.abs(cdY) > 1/Metrics.TILE_SIZE);
 
         translate(-cd.oX, -cd.oY);
-        log("actor adjust is (" + cd.oX + ", " + cd.oY + ")");
+        log("actor adjust is (" + cd.oX + ", " + cd.oY + ") pos (" + actor.x + ", " + actor.y + ")");
 
         if (logs != "") {
             log(logs);
@@ -307,7 +312,9 @@ public class SimpleActorBounds extends DynamicBounds
             return 0;
         }
 
+        log("translating actor (" + cd.oX + ", " + cd.oY + ")");
         translate(cd.oX, cd.oY);
+        log("post trans actor pos (" + actor.x + ", " + actor.y + ")");
 
         var base :LineData = lines[3].clone();
         if (!isNaN(cd.fcdX)) {
@@ -364,7 +371,7 @@ public class SimpleActorBounds extends DynamicBounds
                 (actor.attached.iy > 0 && !actor.attached.yIntersecting(lines[3]))) {
                 maxY = -1;
                 attached = null;
-                if (cd.acolliders == null || cd.acolliders.length == 0) {
+                if (cd.acolliders.length == 0) {
                     for each (var ld :LineData in _collider.getLines(actor)) {
                         if (ld == actor.attached || ld.isConnected(actor.attached, false) == null ||
                             Math.abs(ld.iy) > actor.maxWalkable ||
@@ -393,6 +400,7 @@ public class SimpleActorBounds extends DynamicBounds
                 }
                 if (attached == null) {
                     log(actor.sprite + " detached " + actor.attached + ", " + lines[3]);
+                    //trace(actor.sprite + " detached " + actor.attached + ", " + lines[3]);
                 } else {
                     log(actor.sprite + " autoatached " + attached + ", " + lines[3]);
                 }
@@ -452,6 +460,9 @@ public class SimpleActorBounds extends DynamicBounds
         if (hitY) {
             actor.dy = 0;
         }
+        if (cd.acolliders.length == 0) {
+            log("no dynamic colliders found (" + actor.x + ", " + actor.y + ")");
+        }
         dynamicCollider(cd);
 
         if (actor.attached != null) {
@@ -459,6 +470,8 @@ public class SimpleActorBounds extends DynamicBounds
             if (dist > MIN_ATTACH_DIST) {
                 log(actor.sprite + " detaching: " + actor.attached + " dist: " + dist +
                         ", " + lines[3]);
+                //trace(actor.sprite + " detaching: " + actor.attached + " dist: " + dist +
+                //        ", " + lines[3]);
                 actor.attached = null;
             }
         }

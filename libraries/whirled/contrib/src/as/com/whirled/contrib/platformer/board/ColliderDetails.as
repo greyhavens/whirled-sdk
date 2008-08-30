@@ -45,16 +45,27 @@ public class ColliderDetails
     public function ColliderDetails (cols :Array, acols :Array, delta :Number)
     {
         colliders = cols;
-        rdelta = delta;
-        setActors(acols);
+        acolliders = acols;
+        reset(delta);
     }
 
-    public function setActors (acols :Array) :void
+    public function reset (delta :Number) :void
     {
-        acolliders = acols;
+        rdelta = delta;
         alines = new Array();
         oX = 0;
         oY = 0;
+    }
+
+    public function pushActor (db :DynamicBounds) :void
+    {
+        if (acolliders == null) {
+            acolliders = [ db ];
+        } else {
+            if (acolliders.indexOf(db) == -1) {
+                acolliders.push(db);
+            }
+        }
     }
 }
 }

@@ -40,6 +40,7 @@ public class GameController
     public var forceX :Number = 0;
     public var forceY :Number = -4.8;
     public var colliderTicks :int;
+    public var ticked :int;
 
     public function GameController (board :Board, controller :Controller)
     {
@@ -65,9 +66,10 @@ public class GameController
 
     public function tick (delta :int) :void
     {
-        var rdelta :int = delta;
-        while (rdelta > 0) {
-            var tdelta :int = Math.min(MAX_TICK, rdelta);
+        _rdelta += delta;
+        var usedDelta :int;
+        while (_rdelta > 0) {
+            var tdelta :int = Math.min(MAX_TICK, _rdelta);
             for each (var controller :Object in _controllers) {
                 if (controller is TickController) {
                     (controller as TickController).tick(tdelta / 1000);
@@ -76,9 +78,14 @@ public class GameController
             var now :int = getTimer();
             _collider.tick(tdelta);
             colliderTicks += getTimer() - now;
-            rdelta -= tdelta;
+            ticked++;
+            usedDelta += tdelta;
+            _rdelta -= tdelta;
+            if (_rdelta < MAX_TICK) {
+                break;
+            }
         }
-        _controller.getSprite().tick(delta/1000);
+        _controller.getSprite().tick(usedDelta/1000);
         for each (controller in _controllers) {
             if (controller is TickController) {
                 (controller as TickController).postTick();
@@ -241,7 +248,9 @@ public class GameController
     protected var _board :Board;
 
     protected var _collider :Collider;
+    protected var _rdelta :int;
 
     protected static const MAX_TICK :int = 33;
+    //protected static const MAX_TICK :int = 40;
 }
 }

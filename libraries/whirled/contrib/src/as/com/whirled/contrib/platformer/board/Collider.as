@@ -21,6 +21,7 @@
 package com.whirled.contrib.platformer.board {
 
 import flash.geom.Point;
+import flash.utils.getTimer;
 
 import com.threerings.util.HashMap;
 import com.threerings.util.ClassUtil;
@@ -28,6 +29,7 @@ import com.threerings.util.ClassUtil;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.Dynamic;
+import com.whirled.contrib.platformer.piece.Rect;
 
 import com.whirled.contrib.platformer.util.SectionalIndex;
 
@@ -143,7 +145,11 @@ public class Collider
         }
         var task :ColliderTask = dc.getTask();
         if (task != null) {
-            _tasks.push(task);
+            if (d.inter == Dynamic.GLOBAL) {
+                _tasks.unshift(task);
+            } else {
+                _tasks.push(task);
+            }
         }
     }
 
@@ -183,6 +189,7 @@ public class Collider
             if (idx != -1) {
                 arr.splice(idx, 1);
             }
+            trace("dynamic removed inter: " + d.inter + " remaining bounds: " + arr.length);
         }
         for (var ii :int = 0; ii < _tasks.length; ii++) {
             if (_tasks[ii].getController() == dc) {
@@ -192,10 +199,24 @@ public class Collider
         }
     }
 
+    public function numTasks () :int
+    {
+        return _tasks.length;
+    }
+
+    public function numBounds () :int
+    {
+        var bounds :int = getDynamicBoundsByType(Dynamic.GLOBAL).length;
+        bounds += getDynamicBoundsByType(Dynamic.PLAYER).length;
+        bounds += getDynamicBoundsByType(Dynamic.ENEMY).length;
+        return bounds;
+    }
+
     public function tick (delta :int) :void
     {
         var runTasks :Array = new Array();
         _tickCounter += delta;
+        var time :int = getTimer();
         for each (var task :ColliderTask in _tasks) {
             task.init(delta / 1000);
             if (!task.isInteractive()) {
@@ -205,14 +226,16 @@ public class Collider
                 runTasks.push(task);
             }
         }
-        //trace("collider has " + runTasks.length + " runTasks");
+        var initTime :int = getTimer() - time;
+        var lastTask :ColliderTask;
+        var runs :int = 0;
         while (true) {
             var firstTask :ColliderTask = null;
             for each (task in runTasks) {
                 if (task.isComplete()) {
                     continue;
                 }
-                var cd :ColliderDetails = task.genCD();
+                var cd :ColliderDetails = task.genCD(lastTask);
                 if (cd == null) {
                     trace("cd is null from task: " + ClassUtil.getClassName(task));
                 }
@@ -224,19 +247,43 @@ public class Collider
             if (firstTask == null) {
                 break;
             }
+            lastTask = firstTask;
             if (firstTask.getCD() != null) {
                 firstTask.run();
+                runs++;
             }
         }
+        var runTime :int = getTimer() - time - initTime;
         for each (task in _tasks) {
             task.finish();
         }
+        var finishTime :int = getTimer() - time - initTime - runTime;
+        /*
+        trace("collider init: " + initTime + " run " + runTasks.length + " in " + runTime +
+            " finish: " + finishTime + "  run called: " + runs);
+        */
     }
 
     public function translateDynamic (d :Dynamic, dX :Number, dY :Number) :void
     {
         var db :DynamicBounds = _dynamics.get(d);
         db.translate(dX, dY);
+    }
+
+    public function doesInteract (sinter :int, tinter :int) :Boolean
+    {
+        if (sinter == Dynamic.DEAD || tinter == Dynamic.DEAD) {
+            return false;
+        }
+        return sinter != tinter;
+    }
+
+    public function isInteresting (source :DynamicBounds, target :DynamicBounds) :Boolean
+    {
+        if (source is SimpleActorBounds && target is SimpleActorBounds) {
+            return closeIndices(source.getRect(), target.getRect());
+        }
+        return false;
     }
 
     public function collide (source :DynamicBounds, target :DynamicBounds) :Array
@@ -258,6 +305,23 @@ public class Collider
             return new SimpleActorBounds(dc as ActorController, this);
         }
         return null;
+    }
+
+    protected function closeIndices (rect1 :Rect, rect2 :Rect) :Boolean
+    {
+        rect1.grow(1);
+        rect2.grow(1);
+        return rect1.overlaps(rect2);
+        /*
+        return !(_sindex.getSectionXFromTile(rect1.x) >
+                _sindex.getSectionXFromTile(rect2.x + rect2.width) ||
+            _sindex.getSectionXFromTile(rect1.x + rect1.width) <
+                _sindex.getSectionXFromTile(rect2.x) ||
+            _sindex.getSectionYFromTile(rect1.y) >
+                _sindex.getSectionYFromTile(rect2.y + rect2.height) ||
+            _sindex.getSectionYFromTile(rect1.y + rect1.height) <
+                _sindex.getSectionYFromTile(rect2.y));
+        */
     }
 
     protected var _lines :Array = new Array();

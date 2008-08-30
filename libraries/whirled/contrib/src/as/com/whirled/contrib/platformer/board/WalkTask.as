@@ -37,7 +37,8 @@ public class WalkTask extends ColliderTask
     {
         super.init(delta);
         var a :Actor = _sab.actor;
-        if (a.attached == null) {
+        if (a.attached == null || a.accelY > 0) {
+            a.dy += a.accelY;
             a.dy -= 15 * delta;
             a.dy = Math.max(a.dy, -Collider.MAX_DY);
             a.dx += a.accelX * delta;
@@ -46,56 +47,76 @@ public class WalkTask extends ColliderTask
         }
         _attached = null;
         _lastDelta = NaN;
+        updateVector();
     }
 
-    public override function genCD () :ColliderDetails
+    public override function getBounds () :DynamicBounds
     {
-        var a :Actor = _sab.actor;
-        if (_cd == null) {
-            if (a.attached != null && a.attached != _attached) {
-                _attached = a.attached;
-                // Newly attached to a walkable tile, preserve our momentum
-                if (Math.abs(a.attached.iy) < a.maxWalkable) {
-                    var dot :Number = a.dx * a.attached.ix + a.dy * a.attached.iy;
-                    if (a.attached.ix >= 0) {
-                        dot += a.accelX * _delta;
-                    } else {
-                        dot -= a.accelX * _delta;
-                    }
-                    dot -= Maths.sign0(dot) * Maths.limit(9 * _delta, Math.abs(dot));
-                    dot = Maths.limit(dot, Collider.MAX_DX);
-                    a.dx = dot * a.attached.ix;
-                    a.dy = dot * a.attached.iy;
-                // Newly attached to an unwalkable tile, start to slide
-                } else {
-                    if (a.attached.iy > 0) {
-                        a.dx = - a.attached.ix;
-                        a.dy = - a.attached.iy;
-                    } else {
-                        a.dx = a.attached.ix;
-                        a.dy = a.attached.iy;
-                    }
-                    a.dx *= 6;
-                    a.dy *= 6;
-                    a.dx = Maths.limit(a.dx, Collider.MAX_DX);
-                    a.dy = Maths.limit(a.dy, Collider.MAX_DY);
-                }
-            }
-            if (a.attached != null) {
-                adjustAttached(a);
-            }
-        }
+        return _sab;
+    }
 
+    public override function genCD (ct :ColliderTask = null) :ColliderDetails
+    {
+        if (_cd != null && ct != null) {
+            _sab.updatedDB(_cd, ct.getBounds());
+        }
         _cd = _sab.findColliders(_delta, _cd);
         return _cd;
     }
 
+    public override function reset () :void
+    {
+        super.reset();
+        if (!_running) {
+            updateVector();
+        }
+    }
+
+    protected function updateVector () :void
+    {
+        var a :Actor = _sab.actor;
+
+        if (a.attached != null && a.attached != _attached && a.accelY == 0) {
+            _attached = a.attached;
+            // Newly attached to a walkable tile, preserve our momentum
+            if (Math.abs(a.attached.iy) < a.maxWalkable) {
+                var dot :Number = a.dx * a.attached.ix + a.dy * a.attached.iy;
+                if (a.attached.ix >= 0) {
+                    dot += a.accelX * _delta;
+                } else {
+                    dot -= a.accelX * _delta;
+                }
+                dot -= Maths.sign0(dot) * Maths.limit(9 * _delta, Math.abs(dot));
+                dot = Maths.limit(dot, Collider.MAX_DX);
+                a.dx = dot * a.attached.ix;
+                a.dy = dot * a.attached.iy;
+            // Newly attached to an unwalkable tile, start to slide
+            } else {
+                if (a.attached.iy > 0) {
+                    a.dx = - a.attached.ix;
+                    a.dy = - a.attached.iy;
+                } else {
+                    a.dx = a.attached.ix;
+                    a.dy = a.attached.iy;
+                }
+                a.dx *= 6;
+                a.dy *= 6;
+                a.dx = Maths.limit(a.dx, Collider.MAX_DX);
+                a.dy = Maths.limit(a.dy, Collider.MAX_DY);
+            }
+        }
+        if (a.attached != null) {
+            adjustAttached(a);
+        }
+    }
+
     protected function adjustAttached (a :Actor) :void
     {
-        if ((a.attached.isLineOutside(_sab.lines[3]) &&
+        if (a.accelY == 0 &&
+            ((a.attached.isLineOutside(_sab.lines[3]) &&
                 a.attached.normalDot(a.dx, a.dy) < 0) ||
             (a.attached.isLineInside(_sab.lines[3]) &&
-                a.attached.normalDot(a.dx, a.dy) > 0)) {
+                a.attached.normalDot(a.dx, a.dy) > 0))) {
             var mag :Number = a.attached.dot(a.dx, a.dy);
             a.dx = a.attached.ix * mag;
             a.dy = a.attached.iy * mag;
@@ -108,6 +129,9 @@ public class WalkTask extends ColliderTask
     protected override function runTask () :void
     {
         _sab.move(_cd);
+        if (_sab.actor.accelY > 0) {
+            _sab.actor.attached = null;
+        }
         if (_cd != null) {
             if (!isNaN(_lastDelta)) {
                 if (_lastDelta == _cd.rdelta) {
@@ -116,7 +140,6 @@ public class WalkTask extends ColliderTask
             }
             _lastDelta = _delta;
             _delta = _cd.rdelta;
-            _cd = null;
         } else {
             _delta = 0;
             trace("WalkTask ran with no cd");

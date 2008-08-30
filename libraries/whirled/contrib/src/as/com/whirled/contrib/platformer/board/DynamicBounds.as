@@ -23,6 +23,7 @@ package com.whirled.contrib.platformer.board {
 import com.whirled.contrib.platformer.game.CollisionHandler;
 import com.whirled.contrib.platformer.game.DynamicController;
 import com.whirled.contrib.platformer.piece.Dynamic;
+import com.whirled.contrib.platformer.piece.Rect;
 
 public class DynamicBounds
 {
@@ -45,19 +46,50 @@ public class DynamicBounds
         dyn.y += dY;
     }
 
+    public function getRect () :Rect
+    {
+        return new Rect(dyn.x, dyn.y, 0, 0);
+    }
+
     public function getInteractingBounds () :Array
     {
         var abounds :Array = new Array();
-        if (dyn.inter == Dynamic.DEAD) {
-            return abounds;
+        if (_collider.doesInteract(dyn.inter, Dynamic.GLOBAL)) {
+            checkAndPush(abounds, _collider.getDynamicBoundsByType(Dynamic.GLOBAL));
+            //abounds = abounds.concat(_collider.getDynamicBoundsByType(Dynamic.GLOBAL));
         }
-        abounds = abounds.concat(_collider.getDynamicBoundsByType(Dynamic.GLOBAL));
-        if (dyn.inter == Dynamic.PLAYER) {
-            abounds = abounds.concat(_collider.getDynamicBoundsByType(Dynamic.ENEMY));
-        } else if (dyn.inter == Dynamic.ENEMY) {
-            abounds = abounds.concat(_collider.getDynamicBoundsByType(Dynamic.PLAYER));
+        if (_collider.doesInteract(dyn.inter, Dynamic.ENEMY)) {
+            checkAndPush(abounds, _collider.getDynamicBoundsByType(Dynamic.ENEMY));
+            //abounds = abounds.concat(_collider.getDynamicBoundsByType(Dynamic.ENEMY));
+        }
+        if (_collider.doesInteract(dyn.inter, Dynamic.PLAYER)) {
+            checkAndPush(abounds, _collider.getDynamicBoundsByType(Dynamic.PLAYER));
+            //abounds = abounds.concat(_collider.getDynamicBoundsByType(Dynamic.PLAYER));
         }
         return abounds;
+    }
+
+    public function checkAndPush (dest :Array, source :Array) :void
+    {
+        for each (var db :DynamicBounds in source) {
+            if (isInteresting(db)) {
+                dest.push(db);
+            }
+        }
+    }
+
+    public function isInteresting (db :DynamicBounds) :Boolean
+    {
+        return _collider.isInteresting(this, db);
+    }
+
+    public function updatedDB (cd :ColliderDetails, db :DynamicBounds) :void
+    {
+        if (cd != null && db != null) {
+            if (_collider.doesInteract(dyn.inter, db.dyn.inter) && isInteresting(db)) {
+                cd.pushActor(db);
+            }
+        }
     }
 
     protected function dynamicCollider (cd :ColliderDetails) :void
