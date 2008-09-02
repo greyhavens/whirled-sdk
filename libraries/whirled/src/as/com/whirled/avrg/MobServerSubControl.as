@@ -6,7 +6,7 @@
 package com.whirled.avrg {
 
 /**
- * Defines actions, accessors and callbacks available to all MOBs.
+ * Defines actions, accessors and callbacks available to MOBs on the server.
  */
 public class MobServerSubControl extends MobBaseSubControl
 {

@@ -74,7 +74,7 @@ public class RoomBaseSubControl extends TargetedSubControl
         return callHostCode("isPlayerHere_v1", id);
     }
 
-    public function getMobControl (id :String) :MobBaseSubControl
+    public function getMobSubControl (id :String) :MobBaseSubControl
     {
         return _mobControls[id];
     }
@@ -145,7 +145,7 @@ public class RoomBaseSubControl extends TargetedSubControl
     }
 
     /** @private */
-    internal function setMobControl (mobId :String, ctrl :MobBaseSubControl) :void
+    internal function setMobSubControl (mobId :String, ctrl :MobBaseSubControl) :void
     {
         if (_mobControls[mobId] !== undefined) {
             Log.getLog(this).warning("Eek, overwriting mob control [mobId=" + mobId + "]");

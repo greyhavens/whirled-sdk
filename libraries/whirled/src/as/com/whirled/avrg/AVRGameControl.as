@@ -98,7 +98,7 @@ public class AVRGameControl extends AbstractControl
     /** @private */
     protected function requestMobSprite_v1 (id :String) :DisplayObject
     {
-        var ctrl :MobControl = MobControl(_room.getMobControl(id));
+        var ctrl :MobSubControl = MobSubControl(_room.getMobSubControl(id));
         if (ctrl != null) {
             // TODO: this is not actually OK, the control should be nuked when we move
             return ctrl.getMobSprite();
@@ -111,7 +111,7 @@ public class AVRGameControl extends AbstractControl
         var sprite :DisplayObject = _local.mobSpriteExporter(id) as DisplayObject;
         Log.getLog(this).debug("Requested sprite [id=" + id + ", sprite=" + sprite + "]");
         if (sprite != null) {
-            _room.setMobControl(id, new MobControl(this, id, sprite));
+            _room.setMobSubControl(id, new MobSubControl(this, id, sprite));
         }
         return sprite;
     }
@@ -142,13 +142,13 @@ public class AVRGameControl extends AbstractControl
 
 import flash.display.DisplayObject;
 
-import com.whirled.avrg.MobControl;
+import com.whirled.avrg.MobSubControl;
 
 class MobEntry
 {
-    public var control :MobControl;
+    public var control :MobSubControl;
 
-    public function MobEntry (control :MobControl, sprite :DisplayObject)
+    public function MobEntry (control :MobSubControl, sprite :DisplayObject)
     {
         this.control = control;
     }

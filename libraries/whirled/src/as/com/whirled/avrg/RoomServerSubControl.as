@@ -53,7 +53,7 @@ public class RoomServerSubControl extends RoomBaseSubControl
     internal function mobSpawned_v1 (mobId :String) :void
     {
         // TODO: we should also report server-side MOB spawning errors to the game
-        setMobControl(mobId, new MobServerSubControl(AVRServerGameControl(_parent), mobId));
+        setMobSubControl(mobId, new MobServerSubControl(AVRServerGameControl(_parent), mobId));
     }
 
     /** @private */
