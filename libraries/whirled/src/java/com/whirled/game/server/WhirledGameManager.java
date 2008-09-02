@@ -642,7 +642,7 @@ public abstract class WhirledGameManager extends GameManager
             }
         };
         
-        WhirledGameMessageProvider gameMessages = new WhirledGameMessageHandler(_gameObj) {
+        _messageHandler = new WhirledGameMessageHandler(_gameObj) {
             @Override protected void validateSender (ClientObject caller)
                 throws InvocationException {
                 WhirledGameManager.this.validateUser(caller);
@@ -673,7 +673,7 @@ public abstract class WhirledGameManager extends GameManager
         _gameObj.setPropertyService(_invmgr.registerDispatcher(
             new PropertySpaceDispatcher(_propertySpaceHandler)));
         _gameObj.setMessageService(_invmgr.registerDispatcher(
-            new WhirledGameMessageDispatcher(gameMessages)));
+            new WhirledGameMessageDispatcher(_messageHandler)));
         _gameObj.setUserCookies(new DSet<UserCookie>());
 
         // register an agent for this game if required
