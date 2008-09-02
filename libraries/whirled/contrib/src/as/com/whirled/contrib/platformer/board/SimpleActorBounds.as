@@ -43,6 +43,8 @@ public class SimpleActorBounds extends DynamicBounds
 
     public static const DEBUG :Boolean = false;
 
+    public static var fcCalls :int = 0;
+
     public function SimpleActorBounds (ac :ActorController, c :Collider)
     {
         super(ac, c);
@@ -169,6 +171,7 @@ public class SimpleActorBounds extends DynamicBounds
         var didCollide :Boolean = false;
 
         do {
+            fcCalls++;
             var cdX :Number = actor.dx * delta;
             var cdY :Number = actor.dy * delta;
             var verify :Array = new Array();

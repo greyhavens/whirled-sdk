@@ -42,6 +42,8 @@ public class Collider
     public static const MAX_DX :Number = 6;
     public static const MAX_DY :Number = 15;
 
+    public static const DEBUG :Boolean = false;
+
     public function Collider (sx :int, sy :int)
     {
         _sindex = new SectionalIndex(sx, sy);
@@ -189,7 +191,7 @@ public class Collider
             if (idx != -1) {
                 arr.splice(idx, 1);
             }
-            trace("dynamic removed inter: " + d.inter + " remaining bounds: " + arr.length);
+            debug("dynamic removed inter: " + d.inter + " remaining bounds: " + arr.length);
         }
         for (var ii :int = 0; ii < _tasks.length; ii++) {
             if (_tasks[ii].getController() == dc) {
@@ -212,16 +214,18 @@ public class Collider
         return bounds;
     }
 
-    public function tick (delta :int) :void
+    public function tick (delta :int) :Boolean
     {
         var runTasks :Array = new Array();
         _tickCounter += delta;
         var time :int = getTimer();
+        var quickTasks :int = 0;
         for each (var task :ColliderTask in _tasks) {
             task.init(delta / 1000);
             if (!task.isInteractive()) {
                 task.genCD();
                 task.run();
+                quickTasks++;
             } else {
                 runTasks.push(task);
             }
@@ -237,7 +241,7 @@ public class Collider
                 }
                 var cd :ColliderDetails = task.genCD(lastTask);
                 if (cd == null) {
-                    trace("cd is null from task: " + ClassUtil.getClassName(task));
+                    debug("cd is null from task: " + ClassUtil.getClassName(task));
                 }
                 if (firstTask == null || firstTask.getCD() == null ||
                         firstTask.getCD().rdelta < cd.rdelta) {
@@ -258,6 +262,12 @@ public class Collider
             task.finish();
         }
         var finishTime :int = getTimer() - time - initTime - runTime;
+        if (runTime > 10) {
+            debug("collider quick: " + quickTasks + ", slow: " + runTasks.length +
+                    " runs: " + runs + " runTime: " + runTime);
+            return true;
+        }
+        return false;
         /*
         trace("collider init: " + initTime + " run " + runTasks.length + " in " + runTime +
             " finish: " + finishTime + "  run called: " + runs);
@@ -322,6 +332,13 @@ public class Collider
             _sindex.getSectionYFromTile(rect1.y + rect1.height) <
                 _sindex.getSectionYFromTile(rect2.y));
         */
+    }
+
+    protected function debug (str :String) :void
+    {
+        if (DEBUG) {
+            trace(str);
+        }
     }
 
     protected var _lines :Array = new Array();
