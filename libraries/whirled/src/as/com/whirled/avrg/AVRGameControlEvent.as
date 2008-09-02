@@ -37,6 +37,15 @@ public class AVRGameControlEvent extends Event
     public static const SIZE_CHANGED :String = "sizeChanged";
 
     /**
+     * An event type dispatched when a mob has changed appearance.
+     * key: N/A
+     * value: N/A
+     *
+     * @eventType mobAppearanceChanged
+     */
+    public static const MOB_APPEARANCE_CHANGED :String = "mobAppearanceChanged";
+
+    /**
      * Retrieve the 'name' for this event, which is a String value
      * whose meaning is determined by the event type.
      */

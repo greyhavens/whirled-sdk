@@ -78,8 +78,9 @@ public class AVRGameControl extends AbstractControl
         super.setUserProps(o);
 
         o["requestMobSprite_v1"] = requestMobSprite_v1;
-        o["mobRemoved_v1"] = mobRemoved_v1;
-        o["mobAppearanceChanged_v1"] = mobAppearanceChanged_v1;
+
+        o["leftRoom_v1"] = leftRoom_v1;
+        o["enteredRoom_v1"] = enteredRoom_v1;
     }
 
     /** @private */
@@ -97,44 +98,33 @@ public class AVRGameControl extends AbstractControl
     /** @private */
     protected function requestMobSprite_v1 (id :String) :DisplayObject
     {
-        var info :MobEntry = _mobs[id];
-        if (info) {
-            Log.getLog(this).warning(
-                "Sprite requested for previously known mob [id=" + id + "]");
-            return info.sprite;
+        var ctrl :MobControl = MobControl(_room.getMobControl(id));
+        if (ctrl != null) {
+            // TODO: this is not actually OK, the control should be nuked when we move
+            return ctrl.getMobSprite();
         }
         if (_local.mobSpriteExporter == null) {
             Log.getLog(this).warning(
                 "Sprite requested but control has no exporter [id=" + id + "]");
             return null;
         }
-        var ctrl :MobControl = new MobControl(this, id);
-        var sprite :DisplayObject = _local.mobSpriteExporter(id, ctrl) as DisplayObject;
+        var sprite :DisplayObject = _local.mobSpriteExporter(id) as DisplayObject;
         Log.getLog(this).debug("Requested sprite [id=" + id + ", sprite=" + sprite + "]");
-        if (sprite) {
-            _mobs[id] = new MobEntry(ctrl, sprite);
+        if (sprite != null) {
+            _room.setMobControl(id, new MobControl(this, id, sprite));
         }
         return sprite;
     }
 
-    /** @private */
-    protected function mobRemoved_v1 (targetId :int, id :String) :void
+    internal function leftRoom_v1 (scene :int) :void    
     {
-        // TODO: targetId
-        Log.getLog(this).debug("Nuking control [id=" + id + "]");
-        delete _mobs[id];
+        _player.leftRoom_v1(scene);
+        _room.leftRoom();
     }
 
-    /** @private */
-    protected function mobAppearanceChanged_v1 (
-        targetId :int, id :String, locArray :Array, orient :Number,
-        moving :Boolean, idle :Boolean) :void
+    internal function enteredRoom_v1 (scene :int) :void    
     {
-        // TODO: targetId
-        var entry :MobEntry = _mobs[id];
-        if (entry) {
-            entry.control.appearanceChanged(locArray, orient, moving, idle);
-        }
+        _player.enteredRoom_v1(scene);
     }
 
     /** @private */
@@ -147,9 +137,6 @@ public class AVRGameControl extends AbstractControl
     protected var _local :LocalSubControl;
     /** @private */
     protected var _agent :AgentSubControl;
-
-    /** @private */
-    protected var _mobs :Dictionary = new Dictionary();
 }
 }
 
@@ -160,11 +147,9 @@ import com.whirled.avrg.MobControl;
 class MobEntry
 {
     public var control :MobControl;
-    public var sprite :DisplayObject;
 
     public function MobEntry (control :MobControl, sprite :DisplayObject)
     {
         this.control = control;
-        this.sprite = sprite;
     }
 }

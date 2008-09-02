@@ -49,6 +49,13 @@ public class RoomServerSubControl extends RoomBaseSubControl
         gotHostProps(o);
     }
 
+    /** @private -- relayed from AVRServerGameControl when mob spawn is successful. */
+    internal function mobSpawned_v1 (mobId :String) :void
+    {
+        // TODO: we should also report server-side MOB spawning errors to the game
+        setMobControl(mobId, new MobServerSubControl(AVRServerGameControl(_parent), mobId));
+    }
+
     /** @private */
     override protected function createSubControls () :Array
     {

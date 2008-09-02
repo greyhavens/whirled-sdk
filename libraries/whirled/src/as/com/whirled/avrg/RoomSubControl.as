@@ -13,6 +13,8 @@ import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
 
+import flash.utils.Dictionary;
+
 /**
  * Dispatched when a message arrives with information that is not part of the shared game state.
  *
@@ -51,6 +53,9 @@ public class RoomSubControl extends RoomBaseSubControl
 
         o["room_messageReceived_v1"] = messageReceived_v1;
 
+        o["mobRemoved_v1"] = mobRemoved_v1;
+        o["mobAppearanceChanged_v1"] = mobAppearanceChanged_v1;
+
         // the client backend does not send in targetId
         o["room_propertyWasSet_v1"] = _props.propertyWasSet_v1;
     }
@@ -66,6 +71,13 @@ public class RoomSubControl extends RoomBaseSubControl
     internal function messageReceived_v1 (name :String, value :Object, sender :int) :void
     {
         dispatch(new MessageReceivedEvent(_targetId, name, value, sender));
+    }
+
+    /** @private */
+    internal function leftRoom () :void
+    {
+        // called on the client when we leave a room; reset any awareness of MOBs
+        _mobControls = new Dictionary();
     }
 
     protected var _props :PropertyGetSubControlImpl;

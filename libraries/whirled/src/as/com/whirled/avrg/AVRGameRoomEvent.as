@@ -41,13 +41,21 @@ public class AVRGameRoomEvent extends AVRGameControlEvent
      */
     public static const PLAYER_MOVED :String = "playerMoved";
 
-    /** An event type dispatched when a something has changed about a player's avatar.
+    /** An event type dispatched when something has changed about a player's avatar.
      * key: N/A
      * value: N/A
      *
      * @eventType avatarChanged
      */
     public static const AVATAR_CHANGED :String = "avatarChanged";
+
+    /** An event type dispatched when the control for a spawned mob is available.
+     * key: mobId :String
+     * value: mobControl :MobBaseControl
+     *
+     * @eventType mobControlAvailable
+     */
+    public static const MOB_CONTROL_AVAILABLE :String = "mobControlAvailable";
 
     /**
      * Create a new AVRGameRoomEvent.

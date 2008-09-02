@@ -5,14 +5,17 @@
 
 package com.whirled.avrg {
 
+import flash.geom.Rectangle;
+import flash.utils.Dictionary;
+
+import com.threerings.util.Log;
+
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 
 import com.whirled.TargetedSubControl;
 import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
-
-import flash.geom.Rectangle;
 
 /**
  * Dispatched either when somebody in our room entered our current game,
@@ -69,6 +72,11 @@ public class RoomBaseSubControl extends TargetedSubControl
     public function isPlayerHere (id :int) :Boolean
     {
         return callHostCode("isPlayerHere_v1", id);
+    }
+
+    public function getMobControl (id :String) :MobBaseSubControl
+    {
+        return _mobControls[id];
     }
 
     /**
@@ -135,5 +143,38 @@ public class RoomBaseSubControl extends TargetedSubControl
         dispatch(new AVRGameRoomEvent(
                 AVRGameRoomEvent.AVATAR_CHANGED, _targetId, null, playerId));
     }
+
+    /** @private */
+    internal function setMobControl (mobId :String, ctrl :MobBaseSubControl) :void
+    {
+        if (_mobControls[mobId] !== undefined) {
+            Log.getLog(this).warning("Eek, overwriting mob control [mobId=" + mobId + "]");
+        }
+        _mobControls[mobId] = ctrl;
+        dispatch(new AVRGameRoomEvent(
+            AVRGameRoomEvent.MOB_CONTROL_AVAILABLE, _targetId, mobId, ctrl));
+    }
+
+    /** @private */
+    internal function mobRemoved_v1 (id :String) :void
+    {
+        Log.getLog(this).debug("Nuking control [id=" + id + "]");
+        delete _mobControls[id];
+    }
+
+    /** @private */
+    internal function mobAppearanceChanged_v1 (
+        mobId :String, locArray :Array, orient :Number,
+        moving :Boolean, idle :Boolean) :void
+    {
+        var control :MobBaseSubControl = _mobControls[mobId];
+        if (control != null) {
+            control.appearanceChanged(locArray, orient, moving, idle);
+        }
+    }
+
+    /** @private */
+    protected var _mobControls :Dictionary = new Dictionary();
 }
 }
+

@@ -84,11 +84,9 @@ public class AVRServerGameControl extends AbstractControl
         o["actorAppearanceChanged_v1"] = relayTo(getRoom, "actorAppearanceChanged_v1");
         o["playerMoved_v1"] = relayTo(getRoom, "playerMoved_v1");
 
-// TODO: not sure how mobs on the server are going to work quite yet
-//         o["mobRemoved_v1"] =
-//             relayToRoom(RoomBaseSubControl.prototype.mobRemoved_v1);
-//         o["mobAppearanceChanged_v1"] =
-//             relayToRoom(RoomBaseSubControl.mobAppearanceChanged_v1);
+        o["mobSpawned_v1"] = relayTo(getRoom, "mobSpawned_v1");
+        o["mobRemoved_v1"] = relayTo(getRoom, "mobRemoved_v1");
+        o["mobAppearanceChanged_v1"] = relayTo(getRoom, "mobAppearanceChanged_v1");
 
         o["leftRoom_v1"] = relayTo(getPlayer, "leftRoom_v1");
         o["enteredRoom_v1"] = relayTo(getPlayer, "enteredRoom_v1");

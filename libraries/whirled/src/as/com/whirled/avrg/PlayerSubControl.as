@@ -26,8 +26,6 @@ public class PlayerSubControl extends PlayerBaseSubControl
         super.setUserProps(o);
 
         o["coinsAwarded_v1"] = coinsAwarded_v1;
-        o["leftRoom_v1"] = leftRoom_v1;
-        o["enteredRoom_v1"] = enteredRoom_v1;
 
         // the client backend does not send in targetId
         o["player_propertyWasSet_v1"] = _props.propertyWasSet_v1;
