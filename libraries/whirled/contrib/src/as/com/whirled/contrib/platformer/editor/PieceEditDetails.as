@@ -34,6 +34,7 @@ import mx.controls.TextInput;
 import mx.containers.VBox;
 import mx.containers.HBox;
 import mx.containers.Canvas;
+import mx.core.ScrollPolicy;
 
 import mx.events.FlexEvent;
 
@@ -51,6 +52,7 @@ public class PieceEditDetails extends Canvas
         initDetails();
         _pfac = pfac;
         width = 210;
+        horizontalScrollPolicy = ScrollPolicy.OFF;
         height = Metrics.DISPLAY_HEIGHT;
         var vbox :VBox = new VBox();
         var hbox :HBox = new HBox();
