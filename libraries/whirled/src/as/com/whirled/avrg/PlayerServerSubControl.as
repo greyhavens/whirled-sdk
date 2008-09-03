@@ -23,6 +23,11 @@ public class PlayerServerSubControl extends PlayerBaseSubControl
         super(ctrl, targetId);
     }
 
+    public function getPlayerId () :int
+    {
+        return _targetId;
+    }
+
     /** Sends a message to this player only. */
     public function sendMessage (name :String, value :Object = null) :void
     {

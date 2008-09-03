@@ -20,6 +20,11 @@ public class PlayerSubControl extends PlayerBaseSubControl
         super(ctrl, 0);
     }
 
+    public function getPlayerId () :int
+    {
+        return callHostCode("getPlayerId_v1");
+    }
+
     /** @private */
     override protected function setUserProps (o :Object) :void
     {
