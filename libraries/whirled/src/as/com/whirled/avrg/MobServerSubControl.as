@@ -10,9 +10,9 @@ package com.whirled.avrg {
  */
 public class MobServerSubControl extends MobBaseSubControl
 {
-    public function MobServerSubControl (ctrl :AVRServerGameControl, id :String)
+    public function MobServerSubControl (parent :AVRServerGameControl, id :String)
     {
-        super(ctrl, id);
+        super(parent, id);
     }
 }
 }

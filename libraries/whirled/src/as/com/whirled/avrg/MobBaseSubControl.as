@@ -15,9 +15,9 @@ import com.whirled.AbstractSubControl;
  */
 public class MobBaseSubControl extends AbstractSubControl
 {
-    public function MobBaseSubControl (ctrl :AbstractControl, id :String)
+    public function MobBaseSubControl (parent :AbstractControl, id :String)
     {
-        super(ctrl);
+        super(parent);
         _id = id;
     }
 

@@ -18,9 +18,9 @@ import com.whirled.ControlEvent;
  */
 public class MobSubControl extends MobBaseSubControl
 {
-    public function MobSubControl (ctrl :AbstractControl, id :String, sprite :DisplayObject)
+    public function MobSubControl (parent :AbstractControl, id :String, sprite :DisplayObject)
     {
-        super(ctrl, id);
+        super(parent, id);
         _sprite = sprite;
     }
 

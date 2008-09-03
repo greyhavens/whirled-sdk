@@ -158,7 +158,7 @@ public class RoomBaseSubControl extends TargetedSubControl
     /** @private */
     internal function mobRemoved_v1 (id :String) :void
     {
-        Log.getLog(this).debug("Nuking control [id=" + id + "]");
+        Log.getLog(this).debug("Nuking mob control [id=" + id + "]");
         delete _mobControls[id];
     }
 

@@ -28,14 +28,14 @@ public class RoomServerSubControl extends RoomBaseSubControl
         return _props;
     }
 
-    public function spawnMob (id :String, name :String) :Boolean
+    public function spawnMob (id :String, name :String) :void
     {
-        return callHostCode("spawnMob_v1", id, name);
+        callHostCode("spawnMob_v1", id, name);
     }
 
-    public function despawnMob (id :String) :Boolean
+    public function despawnMob (id :String) :void
     {
-        return callHostCode("despawnMob_v1", id);
+        callHostCode("despawnMob_v1", id);
     }
 
     /** Sends a message to all the players that are in the room. */
