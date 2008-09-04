@@ -48,7 +48,7 @@ public class PlayerBaseSubControl extends TargetedSubControl
 
     public function getRoomId () :int
     {
-        return callHostCode("getRoomId_v1") as int;
+        return callHostCode("player_getRoomId_v1") as int;
     }
 
     public function deactivateGame () :void

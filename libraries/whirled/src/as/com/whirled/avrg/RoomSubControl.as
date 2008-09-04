@@ -40,7 +40,7 @@ public class RoomSubControl extends RoomBaseSubControl
 
     public function getRoomId () :int
     {
-        return callHostCode("getRoomId_v1");
+        return callHostCode("room_getRoomId_v1");
     }
 
     public function getMobSubControl (id :String) :MobSubControl
