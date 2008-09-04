@@ -37,6 +37,10 @@ public class DynamicBounds
         _collider = c;
     }
 
+    public function updateBounds () :void
+    {
+    }
+
     /**
      * Translates the actor and updates all the boundary data.
      */

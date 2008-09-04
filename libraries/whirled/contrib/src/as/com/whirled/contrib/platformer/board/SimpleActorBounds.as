@@ -38,7 +38,7 @@ public class SimpleActorBounds extends DynamicBounds
 {
     //public var controller :ActorController;
     public var actor :Actor;
-    public var lines :Array = new Array();
+    public var lines :Array;
     public var mlines :Array = null;
 
     public static const DEBUG :Boolean = false;
@@ -50,13 +50,19 @@ public class SimpleActorBounds extends DynamicBounds
         super(ac, c);
         //controller = ac;
         actor = ac.getActor();
+        updateBounds();
+        //_collider = c;
+    }
+
+    public override function updateBounds () :void
+    {
+        lines = new Array();
         lines.push(new LineData(actor.x, actor.y, actor.x, actor.y+actor.height, ACTOR_BOUND));
         lines.push(new LineData(actor.x, actor.y+actor.height, actor.x+actor.width,
                 actor.y+actor.height, ACTOR_BOUND));
         lines.push(new LineData(actor.x+actor.width, actor.y+actor.height, actor.x+actor.width,
                 actor.y, ACTOR_BOUND));
         lines.push(new LineData(actor.x+actor.width, actor.y, actor.x, actor.y, ACTOR_BOUND));
-        //_collider = c;
     }
 
     /**

@@ -53,6 +53,7 @@ public class Actor extends Dynamic
 
     public var attached :LineData;
     public var health :Number;
+    public var startHealth :Number;
 
     public var maxAttachable :Number = -1;
     public var maxWalkable :Number = -1;
@@ -73,6 +74,16 @@ public class Actor extends Dynamic
     public function doesHit (x :Number, y :Number) :Boolean
     {
         return true;
+    }
+
+    public function orientBody (body :int) :void
+    {
+        orient = (orient & ~ORIENT_RIGHT) | body;
+    }
+
+    public function orientShoot (shoot :int) :void
+    {
+        orient = (orient & ORIENT_SHOOT_MASK) | shoot;
     }
 }
 }

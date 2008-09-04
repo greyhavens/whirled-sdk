@@ -38,7 +38,7 @@ public class WalkTask extends ColliderTask
         super.init(delta);
         var a :Actor = _sab.actor;
         if (a.attached == null || a.accelY > 0) {
-            a.dy += a.accelY;
+            a.dy += a.accelY * delta;
             a.dy -= 15 * delta;
             a.dy = Math.max(a.dy, -Collider.MAX_DY);
             a.dx += a.accelX * delta;
