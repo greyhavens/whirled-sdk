@@ -44,6 +44,8 @@ public class EditSprite extends Sprite
         addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler);
         addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler);
         addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+
+        initDisplay();
     }
 
     public function positionView (nX :Number, nY :Number) :void
