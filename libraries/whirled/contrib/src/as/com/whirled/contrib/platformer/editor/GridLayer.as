@@ -35,7 +35,7 @@ public class GridLayer extends Layer
         mouseChildren = false;
     }
 
-    public override function update (nX :Number, nY :Number, scale :Number = 1) :void
+    override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         if (scale != _oldScale) {
             redraw(scale);

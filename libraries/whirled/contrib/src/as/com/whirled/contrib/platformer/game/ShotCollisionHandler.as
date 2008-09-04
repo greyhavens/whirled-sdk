@@ -33,7 +33,7 @@ public class ShotCollisionHandler extends CollisionHandler
         super(ActorController);
     }
 
-    public override function collide (source :Object, target :Object, cd :ColliderDetails) :void
+    override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
         pCollide(source as Shot, target as SimpleActorBounds, cd);
     }

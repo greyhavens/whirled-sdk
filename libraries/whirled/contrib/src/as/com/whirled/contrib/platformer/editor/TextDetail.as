@@ -33,12 +33,12 @@ public class TextDetail extends Detail
         _input.width = 150;
     }
 
-    public override function setData (defxml :XML) :void
+    override public function setData (defxml :XML) :void
     {
         defxml.@[name] = _input.text;
     }
 
-    protected override function input () :UIComponent
+    override protected function input () :UIComponent
     {
         return _input;
     }

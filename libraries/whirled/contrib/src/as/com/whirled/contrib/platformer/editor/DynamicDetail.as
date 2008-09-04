@@ -52,7 +52,7 @@ public class DynamicDetail extends Detail
         }
     }
 
-    protected override function input () :UIComponent
+    override protected function input () :UIComponent
     {
         return _checkbox != null ? _checkbox : _input;
     }

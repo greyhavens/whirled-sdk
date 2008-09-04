@@ -157,7 +157,7 @@ public class EditorSpriteLayer extends Layer
         return tree;
     }
 
-    public override function update (nX :Number, nY :Number, scale :Number = 1) :void
+    override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         scaleX = 1 / scale;
         scaleY = 1 / scale;

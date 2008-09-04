@@ -34,18 +34,18 @@ public class FlyTask extends ColliderTask
         _sab = col.getDynamicBounds(ac.getActor()) as SimpleActorBounds;
     }
 
-    public override function init (delta :Number) :void
+    override public function init (delta :Number) :void
     {
         super.init(delta);
         _lastDelta = NaN;
     }
 
-    public override function getBounds () :DynamicBounds
+    override public function getBounds () :DynamicBounds
     {
         return _sab;
     }
 
-    public override function genCD (ct :ColliderTask = null) :ColliderDetails
+    override public function genCD (ct :ColliderTask = null) :ColliderDetails
     {
         if (_cd == null) {
             updateVector();
@@ -68,7 +68,7 @@ public class FlyTask extends ColliderTask
         a.dx = Math.min(Math.max(a.dx, -MAX_DX), MAX_DX);
     }
 
-    protected override function runTask () :void
+    override protected function runTask () :void
     {
         _sab.move(_cd);
         if (_cd != null) {

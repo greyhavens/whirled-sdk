@@ -51,7 +51,7 @@ public class ParallaxBackground extends Layer
         }
     }
 
-    public override function update (nX :Number, nY :Number, scale :Number = 1) :void
+    override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         if (USE_BITMAP) {
             _layers.forEach(function (layer :ParallaxBitmap, index :int, arr :Array) :void {

@@ -29,12 +29,12 @@ public class StaticTask extends ColliderTask
         super(ac, col);
     }
 
-    public override function init (delta :Number) :void
+    override public function init (delta :Number) :void
     {
         // do nothing
     }
 
-    public override function isInteractive () :Boolean
+    override public function isInteractive () :Boolean
     {
         return false;
     }

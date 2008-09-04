@@ -39,19 +39,19 @@ public class ShotController extends DynamicController
         return _shot;
     }
 
-    public override function tick (delta :Number) :void
+    override public function tick (delta :Number) :void
     {
         _shot.ttl -= delta;
     }
 
-    public override function postTick () :void
+    override public function postTick () :void
     {
         if (_shot.hit || _shot.ttl < 0) {
             _controller.removeDynamic(_shot);
         }
     }
 
-    protected override function createTask () :ColliderTask
+    override protected function createTask () :ColliderTask
     {
         return new ShotTask(this, _controller.getCollider());
     }

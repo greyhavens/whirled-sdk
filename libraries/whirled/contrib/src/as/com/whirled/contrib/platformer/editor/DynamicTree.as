@@ -56,7 +56,7 @@ public class DynamicTree extends BaseTree
         }
     }
 
-    protected override function addButtons (box :VBox) :void
+    override protected function addButtons (box :VBox) :void
     {
         super.addButtons(box);
         var settingsContainer :Canvas = new Canvas();
@@ -66,19 +66,19 @@ public class DynamicTree extends BaseTree
         box.addChild(settingsContainer);
     }
 
-    protected override function getItemName (tree :String) :String
+    override protected function getItemName (tree :String) :String
     {
         return "dyn";
     }
 
-    protected override function getColumn () :AdvancedDataGridColumn
+    override protected function getColumn () :AdvancedDataGridColumn
     {
         var column :AdvancedDataGridColumn = new AdvancedDataGridColumn("Dynamic");
         column.dataField = "@label";
         return column;
     }
 
-    protected override function createHD () :HierarchicalData
+    override protected function createHD () :HierarchicalData
     {
         return new HierarchicalData(buildDynamicTree());
     }
@@ -103,7 +103,7 @@ public class DynamicTree extends BaseTree
         return root;
     }
 
-    protected override function handleChange (event :ListEvent) :void
+    override protected function handleChange (event :ListEvent) :void
     {
         super.handleChange(event);
         updateDetails();

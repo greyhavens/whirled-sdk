@@ -38,7 +38,7 @@ public class SectionalLayer extends PieceSpriteLayer
         _sindex = new SectionalIndex(secWidth, secHeight);
     }
 
-    public override function addPieceSprite (ps :PieceSprite) :void
+    override public function addPieceSprite (ps :PieceSprite) :void
     {
         ps.z = _count++;
         var p :Piece = ps.getPiece();
@@ -50,12 +50,12 @@ public class SectionalLayer extends PieceSpriteLayer
         _sections[idx].push(ps);
     }
 
-    public override function clear () :void
+    override public function clear () :void
     {
         _sections = new Array();
     }
 
-    public override function update (nX :Number, nY :Number, scale :Number = 1) :void
+    override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         var section :int = getSectionFromCoord(nX, nY);
         if (section != _currentSection) {

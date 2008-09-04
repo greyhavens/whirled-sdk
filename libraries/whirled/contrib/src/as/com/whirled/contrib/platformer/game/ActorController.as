@@ -37,7 +37,7 @@ public class ActorController extends DynamicController
         return _actor;
     }
 
-    public override function postTick () :void
+    override public function postTick () :void
     {
         super.postTick();
         _actor.wasHit = 0;

@@ -51,7 +51,7 @@ public class PieceSelector extends BaseSelector
         _pfac.addEventListener(PieceFactory.PIECE_UPDATED, handlePieceUpdated);
     }
 
-    protected override function getColumns () :Array
+    override protected function getColumns () :Array
     {
         var columns :Array = new Array();
         var column :AdvancedDataGridColumn = new AdvancedDataGridColumn("Piece");
@@ -126,7 +126,7 @@ public class PieceSelector extends BaseSelector
         return new HierarchicalData(root);
     }
 
-    protected override function getType (item :XML) :String
+    override protected function getType (item :XML) :String
     {
         if (item != null && item.parent() != null) {
             var type :String = item.@label;

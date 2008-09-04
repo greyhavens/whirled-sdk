@@ -58,7 +58,7 @@ public class ParallaxBitmap extends Layer
         //addChild(disp);
     }
 
-    public override function update (nX :Number, nY :Number, scale :Number = 1) :void
+    override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         nX = (_scaleX == 0) ? 0 : nX / _scaleX;
         nY = (_scaleY == 0) ? 0 : nY / _scaleY;

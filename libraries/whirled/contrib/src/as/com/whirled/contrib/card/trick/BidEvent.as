@@ -61,14 +61,14 @@ public class BidEvent extends Event
 
     /** @inheritDoc */
     // from flash.events.Event
-    public override function clone () :Event
+    override public function clone () :Event
     {
         return new BidEvent(type, player, value);
     }
 
     /** @inheritDoc */
     // from Object
-    public override function toString () :String
+    override public function toString () :String
     {
         return formatToString("BidEvent", "type", "bubbles", "cancelable", 
             "value", "player");

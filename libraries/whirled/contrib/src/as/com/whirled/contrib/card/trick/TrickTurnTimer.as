@@ -66,7 +66,7 @@ public class TrickTurnTimer extends TurnTimer
     }
 
     // inherit docs
-    protected override function getCurrentTurnTimeBase (turnHolder :int) :Number
+    override protected function getCurrentTurnTimeBase (turnHolder :int) :Number
     {
         var seat :int = _table.getAbsoluteFromId(turnHolder);
         var bidding :Boolean = !_bids.hasBid(seat);

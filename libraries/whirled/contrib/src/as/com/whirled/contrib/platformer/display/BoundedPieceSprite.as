@@ -37,7 +37,7 @@ public class BoundedPieceSprite extends PieceSprite
         _bpiece = p;
     }
 
-    protected override function createDetails () :void
+    override protected function createDetails () :void
     {
         super.createDetails();
         if (_bounds != null) {

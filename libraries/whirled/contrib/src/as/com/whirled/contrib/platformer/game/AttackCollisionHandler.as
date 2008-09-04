@@ -33,13 +33,13 @@ public class AttackCollisionHandler extends CollisionHandler
         _ac = ac;
     }
 
-    public override function handlesObject (o :Object) :Boolean
+    override public function handlesObject (o :Object) :Boolean
     {
         return (_ac.canAttack() || _ac.inAttack()) && super.handlesObject(o) &&
             ((o as ActorController).getActor().health > 0);
     }
 
-    public override function collide (source :Object, target :Object, cd :ColliderDetails) :void
+    override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
         var ssab :SimpleActorBounds = source as SimpleActorBounds;
         var ac :ActorController = ssab.controller as ActorController;

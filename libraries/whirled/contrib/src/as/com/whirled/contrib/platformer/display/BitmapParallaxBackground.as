@@ -41,7 +41,7 @@ public class BitmapParallaxBackground extends Layer
         }
     }
 
-    public override function update (nX :Number, nY :Number, scale :Number = 1) :void
+    override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         var updated :Boolean = false;
         for each (var layer :BitmapParallax in _layers) {

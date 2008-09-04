@@ -43,7 +43,7 @@ public class DynamicSelector extends BaseSelector
         return _const;
     }
 
-    protected override function getColumns () :Array
+    override protected function getColumns () :Array
     {
         var column :AdvancedDataGridColumn = new AdvancedDataGridColumn("Dynamic");
         column.dataField = "@label";
@@ -67,7 +67,7 @@ public class DynamicSelector extends BaseSelector
         return new HierarchicalData(root);
     }
 
-    protected override function handleChange (event :ListEvent) :void
+    override protected function handleChange (event :ListEvent) :void
     {
         var item :XML = _adg.selectedItem as XML;
         if (item != null && item.parent() != null && item.children().length() == 0) {
@@ -80,7 +80,7 @@ public class DynamicSelector extends BaseSelector
         super.handleChange(event);
     }
 
-    protected override function getType (item :XML) :String
+    override protected function getType (item :XML) :String
     {
         if (item == null || item.parent() == null || item.children().length() != 0) {
             return null;

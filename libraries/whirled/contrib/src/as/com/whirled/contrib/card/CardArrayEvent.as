@@ -53,14 +53,14 @@ public class CardArrayEvent extends Event
 
     /** @inheritDoc */
     // from flash.events.Event
-    public override function clone () :Event
+    override public function clone () :Event
     {
         return new CardArrayEvent(type, _card, _index);
     }
 
     /** @inheritDoc */
     // from Object
-    public override function toString () :String
+    override public function toString () :String
     {
         return formatToString("CardEvent", "type", "bubbles", "cancelable", 
             "card", "index");

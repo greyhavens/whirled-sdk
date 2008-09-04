@@ -59,14 +59,14 @@ public class TrickEvent extends Event
 
     /** @inheritDoc */
     // from flash.events.Event
-    public override function clone () :Event
+    override public function clone () :Event
     {
         return new TrickEvent(type, _card, _player);
     }
 
     /** @inheritDoc */
     // from Object
-    public override function toString () :String
+    override public function toString () :String
     {
         return formatToString("TrickEvent", "type", "bubbles", "cancelable", 
             "card", "player");

@@ -79,12 +79,12 @@ public class PieceTree extends BaseTree
         }
     }
 
-    protected override function getItemName (tree :String) :String
+    override protected function getItemName (tree :String) :String
     {
         return "piece";
     }
 
-    protected override function addButtons (box :VBox) :void
+    override protected function addButtons (box :VBox) :void
     {
         var hbox :HBox = new HBox();
         hbox.addChild(EditView.makeButton("Delete", function () :void {
@@ -120,14 +120,14 @@ public class PieceTree extends BaseTree
         box.addChild(hbox);
     }
 
-    protected override function getColumn () :AdvancedDataGridColumn
+    override protected function getColumn () :AdvancedDataGridColumn
     {
         var column :AdvancedDataGridColumn = new AdvancedDataGridColumn("Piece");
         column.dataField = "@label";
         return column;
     }
 
-    protected override function createHD () :HierarchicalData
+    override protected function createHD () :HierarchicalData
     {
         return new HierarchicalData(convertPiecenode(_board.getPieceTreeXML()));
     }

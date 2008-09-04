@@ -120,12 +120,12 @@ public class BoardEditSprite extends EditSprite
             Board.GROUP_NAMES[Board.PLATFORMS]);
     }
 
-    public override function getMouseX () :int
+    override public function getMouseX () :int
     {
         return Math.floor((_bX + mouseX * _scale) / Metrics.TILE_SIZE);
     }
 
-    public override function getMouseY () :int
+    override public function getMouseY () :int
     {
         return Math.floor(((Metrics.DISPLAY_HEIGHT - mouseY) * _scale - _bY) / Metrics.TILE_SIZE);
     }
@@ -175,7 +175,7 @@ public class BoardEditSprite extends EditSprite
         }
     }
 
-    protected override function initDisplay () :void
+    override protected function initDisplay () :void
     {
         var masker :Shape = new Shape();
         masker.graphics.beginFill(0x000000);
@@ -294,7 +294,7 @@ public class BoardEditSprite extends EditSprite
         }
     }
 
-    protected override function updateDisplay () :void
+    override protected function updateDisplay () :void
     {
         for each (var layer :Layer in _layers) {
             if (layer != null) {
@@ -309,7 +309,7 @@ public class BoardEditSprite extends EditSprite
         }
     }
 
-    protected override function tileChanged (newX :int, newY :int) :void
+    override protected function tileChanged (newX :int, newY :int) :void
     {
         for (var ii :int = 0; ii < GRID_LAYER; ii++) {
             _layers[ii].forEach(function (eps :*, index :int, array :Array) :void {
@@ -318,7 +318,7 @@ public class BoardEditSprite extends EditSprite
         }
     }
 
-    protected override function clearDrag () :void
+    override protected function clearDrag () :void
     {
         for (var ii :int = 0; ii < GRID_LAYER; ii++) {
             _layers[ii].forEach(function (eps :*, index :int, array :Array) :void {

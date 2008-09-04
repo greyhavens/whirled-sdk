@@ -272,7 +272,7 @@ public class CardArray extends EventDispatcher
     }
 
     /** @inheritDoc */
-    public override function toString () :String
+    override public function toString () :String
     {
         var s :String = "";
         _cards.forEach(append);

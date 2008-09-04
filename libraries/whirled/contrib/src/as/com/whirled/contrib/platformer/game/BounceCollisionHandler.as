@@ -34,7 +34,7 @@ public class BounceCollisionHandler extends CollisionHandler
         _ac = ac;
     }
 
-    public override function handlesObject (o :Object) :Boolean
+    override public function handlesObject (o :Object) :Boolean
     {
         if (_ac.getActor().health <= 0) {
             return false;
@@ -48,12 +48,12 @@ public class BounceCollisionHandler extends CollisionHandler
         return false;
     }
 
-    public override function collide (source :Object, target :Object, cd :ColliderDetails) :void
+    override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
         sabCollide(source as SimpleActorBounds, target as SimpleActorBounds, cd);
     }
 
-    public override function reset () :void
+    override public function reset () :void
     {
         if (_colliders.length > 0) {
             _colliders = new Array();

@@ -41,27 +41,27 @@ public class EditorPieceSprite extends EditorSprite
         name = _piece.id.toString();
     }
 
-    public override function getTileX () :Number
+    override public function getTileX () :Number
     {
         return _piece.x;
     }
 
-    public override function getTileY () :Number
+    override public function getTileY () :Number
     {
         return _piece.y;
     }
 
-    public override function getTileWidth () :Number
+    override public function getTileWidth () :Number
     {
         return _piece.width;
     }
 
-    public override function getTileHeight () :Number
+    override public function getTileHeight () :Number
     {
         return _piece.height;
     }
 
-    public override function mouseMove (newX :int, newY :int) :void
+    override public function mouseMove (newX :int, newY :int) :void
     {
         if (!isNaN(_startX)) {
             _piece.x = Math.max(0, newX - _startX);

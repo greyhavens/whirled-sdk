@@ -61,7 +61,7 @@ public class ActorSprite extends DynamicSprite
         return _actor;
     }
 
-    public override function update (delta :Number) :void
+    override public function update (delta :Number) :void
     {
         super.update(delta);
         _oldDx = _actor.dx;
@@ -86,7 +86,7 @@ public class ActorSprite extends DynamicSprite
         }
     }
 
-    public override function setStatic (s :Boolean) :void
+    override public function setStatic (s :Boolean) :void
     {
         var changed :Boolean = s != _static;
         super.setStatic(s);
@@ -104,7 +104,7 @@ public class ActorSprite extends DynamicSprite
     {
     }
 
-    protected override function onAdded () :void
+    override protected function onAdded () :void
     {
         playState();
     }
@@ -121,7 +121,7 @@ public class ActorSprite extends DynamicSprite
         }
     }
 
-    protected override function onRemoved () :void
+    override protected function onRemoved () :void
     {
         if (_disp is MovieClip) {
             (_disp as MovieClip).stop();

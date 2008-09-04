@@ -54,7 +54,7 @@ public class SimpleActorBounds extends DynamicBounds
         //_collider = c;
     }
 
-    public override function updateBounds () :void
+    override public function updateBounds () :void
     {
         lines = new Array();
         lines.push(new LineData(actor.x, actor.y, actor.x, actor.y+actor.height, ACTOR_BOUND));
@@ -68,7 +68,7 @@ public class SimpleActorBounds extends DynamicBounds
     /**
      * Translates the actor and updates all the boundary data.
      */
-    public override function translate (dX :Number, dY :Number) :void
+    override public function translate (dX :Number, dY :Number) :void
     {
         super.translate(dX, dY);
         for each (var ld :LineData in lines) {
@@ -76,7 +76,7 @@ public class SimpleActorBounds extends DynamicBounds
         }
     }
 
-    public override function getRect () :Rect
+    override public function getRect () :Rect
     {
         return new Rect(actor.x, actor.y, actor.width, actor.height);
     }

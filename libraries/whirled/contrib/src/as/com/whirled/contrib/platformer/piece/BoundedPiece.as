@@ -71,7 +71,7 @@ public class BoundedPiece extends Piece
         return [ _boundPts[side % _boundPts.length], _boundPts[(side + 1) % _boundPts.length] ];
     }
 
-    public override function xmlDef () :XML
+    override public function xmlDef () :XML
     {
         var xml :XML = super.xmlDef();
         var bxml :XML = <bounds/>;

@@ -35,22 +35,22 @@ public class EditorDynamicSprite extends EditorSprite
         ds.setStatic(true);
     }
 
-    public override function update () :void
+    override public function update () :void
     {
         (_sprite as DynamicSprite).update(0);
     }
 
-    public override function getTileX () :Number
+    override public function getTileX () :Number
     {
         return _dynamic.x;
     }
 
-    public override function getTileY () :Number
+    override public function getTileY () :Number
     {
         return _dynamic.y;
     }
 
-    public override function getTileWidth () :Number
+    override public function getTileWidth () :Number
     {
         if (_dynamic.hasOwnProperty("width")) {
             return (_dynamic as Object).width;
@@ -59,7 +59,7 @@ public class EditorDynamicSprite extends EditorSprite
         }
     }
 
-    public override function getTileHeight () :Number
+    override public function getTileHeight () :Number
     {
         if (_dynamic.hasOwnProperty("height")) {
             return (_dynamic as Object).height;
@@ -68,7 +68,7 @@ public class EditorDynamicSprite extends EditorSprite
         }
     }
 
-    public override function mouseMove (newX :int, newY :int) :void
+    override public function mouseMove (newX :int, newY :int) :void
     {
         if (!isNaN(_startX)) {
             _dynamic.x = Math.max(0, newX - _startX);

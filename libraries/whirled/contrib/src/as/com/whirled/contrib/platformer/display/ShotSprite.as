@@ -38,7 +38,7 @@ public class ShotSprite extends DynamicSprite
         }
     }
 
-    public override function update (delta :Number) :void
+    override public function update (delta :Number) :void
     {
         super.update(delta);
         if (_disp != null && !_disp.visible) {

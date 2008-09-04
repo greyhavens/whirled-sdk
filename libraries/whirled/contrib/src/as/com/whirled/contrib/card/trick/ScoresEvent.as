@@ -64,14 +64,14 @@ public class ScoresEvent extends Event
 
     /** @inheritDoc */
     // from flash.events.Event
-    public override function clone () :Event
+    override public function clone () :Event
     {
         return new ScoresEvent(type, _team, _value);
     }
 
     /** @inheritDoc */
     // from Object
-    public override function toString () :String
+    override public function toString () :String
     {
         return formatToString("ScoresEvent", "type", "bubbles", "cancelable", 
             "team", "value");

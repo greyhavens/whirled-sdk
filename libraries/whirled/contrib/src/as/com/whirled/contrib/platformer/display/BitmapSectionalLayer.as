@@ -42,7 +42,7 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
         addChild(new Bitmap(_bd));
     }
 
-    public override function addPieceSprite (ps :PieceSprite) :void
+    override public function addPieceSprite (ps :PieceSprite) :void
     {
         var p :Piece = ps.getPiece();
         for (var xx :int = _sindex.getSectionXFromTile(p.x - 1),
@@ -63,13 +63,13 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
         //trace("adding piece: " + ps.getPiece() + " to section: " + idx);
     }
 
-    public override function clear () :void
+    override public function clear () :void
     {
         _sections = new Array();
         _pool.clear();
     }
 
-    public override function update (nX :Number, nY :Number, scale :Number = 1) :void
+    override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         var sx :int = Math.floor(nX);
         var sy :int = Math.floor(nY);

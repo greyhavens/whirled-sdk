@@ -48,7 +48,7 @@ public class MultDynamicDetail extends Detail
         }
     }
 
-    public override function createBox () :Box
+    override public function createBox () :Box
     {
         _box = new VBox();
         var label :Label = new Label;

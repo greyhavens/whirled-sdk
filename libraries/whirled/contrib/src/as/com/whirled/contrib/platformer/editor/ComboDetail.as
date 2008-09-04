@@ -41,7 +41,7 @@ public class ComboDetail extends Detail
         _optionToValue = optionToValue;
     }
 
-    public override function setData (defxml :XML) :void
+    override public function setData (defxml :XML) :void
     {
         if (_optionToValue != null) {
             defxml.@[name] = _optionToValue(_combo.selectedLabel);
@@ -50,7 +50,7 @@ public class ComboDetail extends Detail
         }
     }
 
-    protected override function input () :UIComponent
+    override protected function input () :UIComponent
     {
         return _combo;
     }

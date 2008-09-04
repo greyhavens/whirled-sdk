@@ -61,7 +61,7 @@ public class BoundDetail extends Detail
         }
     }
 
-    public override function createBox () :Box
+    override public function createBox () :Box
     {
         var box :HBox = new HBox();
         var label :Label = new Label();
@@ -79,7 +79,7 @@ public class BoundDetail extends Detail
         return box;
     }
 
-    public override function setData (defxml :XML) :void
+    override public function setData (defxml :XML) :void
     {
         if (_x.text == "" || _y.text == "") {
             return;

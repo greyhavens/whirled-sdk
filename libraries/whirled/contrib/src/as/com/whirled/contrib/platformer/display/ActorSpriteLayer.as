@@ -22,7 +22,7 @@ package com.whirled.contrib.platformer.display {
 
 public class ActorSpriteLayer extends DynamicSpriteLayer
 {
-    public override function update (nX :Number, nY :Number, scale :Number = 1) :void
+    override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         super.update(nX, nY);
         for each (var acts :ActorSprite in _dynamics) {

@@ -35,7 +35,7 @@ public class BoundsDetail extends Detail
         }
     }
 
-    public override function createBox () :Box
+    override public function createBox () :Box
     {
         var box :VBox = new VBox();
         _bbox = new VBox();
@@ -50,7 +50,7 @@ public class BoundsDetail extends Detail
         return box;
     }
 
-    public override function setData (defxml :XML) :void
+    override public function setData (defxml :XML) :void
     {
         var xml :XML = <bounds/>;
         for each (var bound :BoundDetail in _bounds) {

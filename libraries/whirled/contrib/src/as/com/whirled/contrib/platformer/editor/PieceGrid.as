@@ -39,7 +39,7 @@ public class PieceGrid extends AdvancedDataGrid
         _keyHandler = keyHandler;
     }
 
-    protected override function keyDownHandler (event: KeyboardEvent) :void
+    override protected function keyDownHandler (event: KeyboardEvent) :void
     {
         if (_keyHandler != null) {
             if (!_keyHandler(event)) {

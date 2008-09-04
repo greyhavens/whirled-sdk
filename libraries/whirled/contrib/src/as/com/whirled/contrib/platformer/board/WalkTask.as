@@ -33,7 +33,7 @@ public class WalkTask extends ColliderTask
         _sab = col.getDynamicBounds(ac.getActor()) as SimpleActorBounds;
     }
 
-    public override function init (delta :Number) :void
+    override public function init (delta :Number) :void
     {
         super.init(delta);
         var a :Actor = _sab.actor;
@@ -50,12 +50,12 @@ public class WalkTask extends ColliderTask
         updateVector();
     }
 
-    public override function getBounds () :DynamicBounds
+    override public function getBounds () :DynamicBounds
     {
         return _sab;
     }
 
-    public override function genCD (ct :ColliderTask = null) :ColliderDetails
+    override public function genCD (ct :ColliderTask = null) :ColliderDetails
     {
         if (_cd != null && ct != null) {
             _sab.updatedDB(_cd, ct.getBounds());
@@ -64,7 +64,7 @@ public class WalkTask extends ColliderTask
         return _cd;
     }
 
-    public override function reset () :void
+    override public function reset () :void
     {
         super.reset();
         if (!_running) {
@@ -126,7 +126,7 @@ public class WalkTask extends ColliderTask
         }
     }
 
-    protected override function runTask () :void
+    override protected function runTask () :void
     {
         _sab.move(_cd);
         if (_sab.actor.accelY > 0) {

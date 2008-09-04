@@ -54,13 +54,13 @@ public class ShotTask extends ColliderTask
         }
     }
 
-    public override function genCD (ct :ColliderTask = null) :ColliderDetails
+    override public function genCD (ct :ColliderTask = null) :ColliderDetails
     {
         _cd = new ColliderDetails(null, null, _delta);
         return _cd;
     }
 
-    public override function run () :void
+    override public function run () :void
     {
         if (_s.ttl <= 0) {
             _delta += _s.ttl;
@@ -97,7 +97,7 @@ public class ShotTask extends ColliderTask
         _delta = 0;
     }
 
-    public override function isInteractive () :Boolean
+    override public function isInteractive () :Boolean
     {
         return false;
     }

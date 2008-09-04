@@ -32,12 +32,12 @@ public class WalkableCollisionHandler extends CollisionHandler
         _ac = ac;
     }
 
-    public override function handlesObject (o :Object) :Boolean
+    override public function handlesObject (o :Object) :Boolean
     {
         return _ac.getActor().health > 0 && super.handlesObject(o);
     }
 
-    public override function collide (source :Object, target :Object, cd :ColliderDetails) :void
+    override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
         sabCollide(source as SimpleActorBounds, target as SimpleActorBounds, cd);
     }

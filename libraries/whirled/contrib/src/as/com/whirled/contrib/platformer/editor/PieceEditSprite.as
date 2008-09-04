@@ -84,7 +84,7 @@ public class PieceEditSprite extends EditSprite
         }
     }
 
-    protected override function initDisplay () :void
+    override protected function initDisplay () :void
     {
         var masker :Shape = new Shape();
         masker.graphics.beginFill(0x000000);
@@ -102,7 +102,7 @@ public class PieceEditSprite extends EditSprite
         super.initDisplay();
     }
 
-    protected override function updateDisplay () :void
+    override protected function updateDisplay () :void
     {
         _gridLayer.update(_bX, _bY);
         _pieceLayer.update(_bX, _bY);
