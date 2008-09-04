@@ -361,19 +361,19 @@ public class BaseGameBackend
     }
 
     /**
-     * Reports an invocation service failure. The default implementation just records it to the
-     * logs, but derived classes can report the message to the user in the appropriate
-     * circumstances.
+     * Reports an invocation service failure. The default implementation reports the raw error
+     * message via <code>reportGameError</code> but derived classes may want to actually translate
+     * the message appropriately and then use reportGameError to report it.
      */
     protected function reportServiceFailure (service :String, cause :String) :void
     {
-        logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
+        reportGameError("Service failure [service=" + service + ", cause=" + cause + "].");
     }
 
     /**
      * Log the specified game error message.
      */
-    protected function logGameError (msg :String, err :Error = null) :void
+    protected function reportGameError (msg :String, err :Error = null) :void
     {
         // here, we just shoot this to the logs
         log.warning(msg);
@@ -472,7 +472,7 @@ public class BaseGameBackend
                     try {
                         fn(decodedValue, cookie.playerId);
                     } catch (err :Error) {
-                        logGameError("Error in user-code: " + err, err);
+                        reportGameError("Error in user-code: " + err, err);
                     }
                 }
             }
@@ -527,7 +527,7 @@ public class BaseGameBackend
                 }
 
             } catch (err :Error) {
-                logGameError("Error in user-code: " + err, err);
+                reportGameError("Error in user-code: " + err, err);
             }
         }
         return undefined;
@@ -1019,7 +1019,7 @@ public class BaseGameBackend
             // I'd like to throw an error, but some old games incorrectly call this
             // and we don't want to break them, so just log it here, but we throw an Error
             // in newer versions of GameSubControl.
-            logGameError("restartGameIn() is only applicable to party games.");
+            reportGameError("restartGameIn() is only applicable to party games.");
             return;
         }
         _gameObj.whirledGameService.restartGameIn(

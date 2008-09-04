@@ -164,6 +164,15 @@ public class WhirledGameBackend extends BaseGameBackend
     }
 
     // from BaseGameBackend
+    override protected function reportGameError (msg :String, err :Error = null) :void
+    {
+        super.reportGameError(msg, err);
+
+        // report the message to chat to aid developer debugging
+        (_ctx as CrowdContext).getChatDirector().displayAttention(null, MessageBundle.taint(msg));
+    }
+
+    // from BaseGameBackend
     override protected function setUserCodeProperties (o :Object) :void
     {
         super.setUserCodeProperties(o);
@@ -332,7 +341,7 @@ public class WhirledGameBackend extends BaseGameBackend
             // I'd like to throw an error, but some old games incorrectly call this
             // and we don't want to break them, so just log it here, but we throw an Error
             // in newer versions of GameSubControl.
-            logGameError("playerReady() is only applicable to seated games.");
+            reportGameError("playerReady() is only applicable to seated games.");
             return;
         }
         _ctrl.playerIsReady();

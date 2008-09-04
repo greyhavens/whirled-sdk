@@ -20,14 +20,15 @@ public class TestGameBackend extends WhirledGameBackend
         super(ctx, gameObj, ctrl);
     }
 
-    override protected function logGameError (msg :String, err :Error = null) :void
+    // from BaseGameBackend
+    override protected function reportGameError (msg :String, err :Error = null) :void
     {
-        super.logGameError(msg, err);
+        super.reportGameError(msg, err);
 
-        // also, to aid testing, spew it to the chat
-        displayInfo(null, MessageBundle.taint("Game error: " + msg));
+        // in the text environment we also report the stack trace to the chat
         if (err != null) {
-            displayInfo(null, MessageBundle.taint(err.getStackTrace()));
+            (_ctx as CrowdContext).getChatDirector().displayAttention(
+                null, MessageBundle.taint(err.getStackTrace()));
         }
     }
 }
