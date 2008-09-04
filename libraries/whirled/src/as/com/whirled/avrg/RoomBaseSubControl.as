@@ -7,6 +7,7 @@ package com.whirled.avrg {
 
 import flash.geom.Rectangle;
 import flash.utils.Dictionary;
+import flash.utils.setTimeout;
 
 import com.threerings.util.Log;
 
@@ -69,9 +70,13 @@ public class RoomBaseSubControl extends TargetedSubControl
         return callHostCode("isPlayerHere_v1", id);
     }
 
-    public function getMobSubControl (id :String) :MobBaseSubControl
+    public function getSpawnedMobs () :Array
     {
-        return _mobControls[id];
+        var mobIds :Array = [];
+        for (var id :String in _mobControls) {
+            mobIds.push(id);
+        }
+        return mobIds;
     }
 
     /**
@@ -140,14 +145,23 @@ public class RoomBaseSubControl extends TargetedSubControl
     }
 
     /** @private */
-    internal function setMobSubControl (mobId :String, ctrl :MobBaseSubControl) :void
+    internal function setMobSubControl (
+        mobId :String, ctrl :MobBaseSubControl, delayEvent :Boolean) :void
     {
         if (_mobControls[mobId] !== undefined) {
             Log.getLog(this).warning("Eek, overwriting mob control [mobId=" + mobId + "]");
         }
         _mobControls[mobId] = ctrl;
-        dispatch(new AVRGameRoomEvent(
-            AVRGameRoomEvent.MOB_CONTROL_AVAILABLE, _targetId, mobId, ctrl));
+        ctrl.gotHostPropsFriend(_funcs);
+        function doDisp () :void {
+            dispatch(new AVRGameRoomEvent(
+                AVRGameRoomEvent.MOB_CONTROL_AVAILABLE, _targetId, mobId, ctrl));
+        }
+        if (delayEvent) {
+            setTimeout(doDisp, 0);
+        } else {
+            doDisp();
+        }
     }
 
     /** @private */
@@ -166,6 +180,13 @@ public class RoomBaseSubControl extends TargetedSubControl
         if (control != null) {
             control.appearanceChanged(locArray, orient, moving, idle);
         }
+    }
+
+    /** @private */
+    internal function callHostCodeFriend (name :String, ...args) :*
+    {
+        args.unshift(name);
+        return callHostCode.apply(null, args);
     }
 
     /** @private */

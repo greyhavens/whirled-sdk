@@ -111,7 +111,8 @@ public class AVRGameControl extends AbstractControl
         var sprite :DisplayObject = _local.mobSpriteExporter(id) as DisplayObject;
         Log.getLog(this).debug("Requested sprite [id=" + id + ", sprite=" + sprite + "]");
         if (sprite != null) {
-            _room.setMobSubControl(id, new MobSubControl(this, id, sprite));
+            var delayEvent :Boolean = false;
+            _room.setMobSubControl(id, new MobSubControl(this, id, sprite), delayEvent);
         }
         return sprite;
     }

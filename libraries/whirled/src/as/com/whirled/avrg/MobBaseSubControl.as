@@ -33,6 +33,12 @@ public class MobBaseSubControl extends AbstractSubControl
     }
 
     /** @private */
+    internal function gotHostPropsFriend (o :Object) :void
+    {
+        super.gotHostProps(o);
+    }
+
+    /** @private */
     protected var _id :String;
 
     /** Our current orientation, or 0. @private */

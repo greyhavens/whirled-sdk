@@ -43,6 +43,11 @@ public class RoomSubControl extends RoomBaseSubControl
         return callHostCode("getRoomId_v1");
     }
 
+    public function getMobSubControl (id :String) :MobSubControl
+    {
+        return _mobControls[id] as MobSubControl;
+    }
+
     /** @private */
     override protected function setUserProps (o :Object) :void
     {
