@@ -11,7 +11,7 @@
   <property name="app.package-dir" value="."/>
   <property name="app.library-dir" value="."/>
   <property name="app.server-agent" value="Server"/>
-  <property name="app.enabled-server-agent" value="false"/>
+  <property name="app.enable-server-agent" value="false"/>
 
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
   <!-- out of it. otherwise just use a dummy value (can't easily skip it, alas). -->
