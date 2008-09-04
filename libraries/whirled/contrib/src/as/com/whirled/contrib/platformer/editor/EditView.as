@@ -107,13 +107,13 @@ public class EditView extends Canvas
         _rbg = new RadioButtonGroup();
         _rbg.addEventListener(ItemClickEvent.ITEM_CLICK, modeClicked);
         var rb :RadioButton = new RadioButton();
-        rb.label = "Pieces";
+        rb.label = PIECES;
         rb.group = _rbg;
         rb.x = Metrics.DISPLAY_WIDTH;
         rb.selected = true;
         addChild(rb);
         rb = new RadioButton();
-        rb.label = "Dynamics";
+        rb.label = DYNAMICS;
         rb.group = _rbg;
         rb.x = Metrics.DISPLAY_WIDTH + 100;
         addChild(rb);
@@ -162,9 +162,9 @@ public class EditView extends Canvas
     {
         var btree :BaseTree = getTree(tree);
         if (btree == _pieceTree) {
-            changeMode("Pieces");
+            changeMode(PIECES);
         } else {
-            changeMode("Dynamics");
+            changeMode(DYNAMICS);
         }
         btree.selectItem(tree, name);
     }
@@ -238,12 +238,12 @@ public class EditView extends Canvas
 
     protected function changeMode (type :String) :void
     {
-        _pieceTree.visible = (type == "Pieces");
-        _editSelector.visible = (type == "Pieces");
-        _dynamicTree.visible = (type == "Dynamics");
-        _dynamicSelector.visible = (type == "Dynamics");
-        _rbg.getRadioButtonAt(0).selected = (type == "Pieces");
-        _rbg.getRadioButtonAt(1).selected = (type == "Dynamics");
+        _pieceTree.visible = (type == PIECES);
+        _editSelector.visible = (type == PIECES);
+        _dynamicTree.visible = (type == DYNAMICS);
+        _dynamicSelector.visible = (type == DYNAMICS);
+        _rbg.getRadioButtonAt(0).selected = (type == PIECES);
+        _rbg.getRadioButtonAt(1).selected = (type == DYNAMICS);
     }
 
     protected function getTree (tree :String) :BaseTree
@@ -274,5 +274,9 @@ public class EditView extends Canvas
     protected var _pfac :PieceFactory;
 
     protected var _rbg :RadioButtonGroup;
+    
+    /** The lables used for the type radio button group */
+    protected static const PIECES :String = "Pieces";
+    protected static const DYNAMICS :String = "Dynamics";
 }
 }
