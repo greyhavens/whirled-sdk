@@ -32,6 +32,11 @@ import com.whirled.contrib.platformer.piece.Piece;
 
 public class PieceEditSprite extends EditSprite
 {
+    public function PieceEditSprite ()
+    {
+        initDisplay();
+    }
+
     public function setPiece (p :Piece) :void
     {
         _pieceLayer.clear();
