@@ -28,6 +28,11 @@ public class RoomServerSubControl extends RoomBaseSubControl
         return _props;
     }
 
+    public function getRoomId () :int
+    {
+        return _targetId;
+    }
+
     public function spawnMob (id :String, name :String) :void
     {
         callHostCode("spawnMob_v1", id, name);

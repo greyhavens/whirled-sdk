@@ -59,11 +59,6 @@ public class RoomBaseSubControl extends TargetedSubControl
         super(ctrl, targetId);
     }
 
-    public function getRoomId () :int
-    {
-        return callHostCode("getRoomId_v1");
-    }
-
     public function getPlayerIds () :Array
     {
         return callHostCode("room_getPlayerIds_v1") as Array;
