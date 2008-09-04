@@ -334,7 +334,8 @@ public class BaseGameBackend
      * Create a logging confirm listener for service requests.
      */
     protected function createLoggingConfirmListener (
-        service :String, failure :Function = null, success :Function = null) :InvocationService_ConfirmListener
+        service :String, failure :Function = null,
+        success :Function = null) :InvocationService_ConfirmListener
     {
         return new ConfirmAdapter(function (cause :String) :void {
             logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
@@ -348,7 +349,8 @@ public class BaseGameBackend
      * Create a logging result listener for service requests.
      */
     protected function createLoggingResultListener (
-        service :String, failure :Function = null, success :Function = null) :InvocationService_ResultListener
+        service :String, failure :Function = null,
+        success :Function = null) :InvocationService_ResultListener
     {
         return new ResultWrapper(function (cause :String) :void {
             logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
@@ -788,8 +790,7 @@ public class BaseGameBackend
 
         // request it to be made so by the server
         _gameObj.whirledGameService.getCookie(
-            _ctx.getClient(), occupantId, 
-            createLoggingConfirmListener("getCookie"));
+            _ctx.getClient(), occupantId, createLoggingConfirmListener("getCookie"));
     }
 
     protected function setUserCookie_v1 (
@@ -810,8 +811,7 @@ public class BaseGameBackend
         }
 
         _gameObj.whirledGameService.setCookie(
-            _ctx.getClient(), ba, occupantId, 
-            createLoggingConfirmListener("setCookie"));
+            _ctx.getClient(), ba, occupantId, createLoggingConfirmListener("setCookie"));
         return true;
     }
 
@@ -829,8 +829,7 @@ public class BaseGameBackend
         }
 
         _gameObj.whirledGameService.awardTrophy(
-            _ctx.getClient(), ident, playerId, 
-            createLoggingConfirmListener("awardTrophy"));
+            _ctx.getClient(), ident, playerId, createLoggingConfirmListener("awardTrophy"));
 
         return true;
     }
@@ -840,8 +839,7 @@ public class BaseGameBackend
     {
         if (!playerOwnsData(GameData.PRIZE_MARKER, ident, playerId)) {
             _gameObj.whirledGameService.awardPrize(
-                _ctx.getClient(), ident, playerId, 
-                createLoggingConfirmListener("awardPrize"));
+                _ctx.getClient(), ident, playerId, createLoggingConfirmListener("awardPrize"));
         }
     }
 
