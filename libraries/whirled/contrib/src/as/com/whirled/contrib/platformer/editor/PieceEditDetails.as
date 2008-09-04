@@ -95,13 +95,13 @@ public class PieceEditDetails extends Canvas
             var xmlDef :XML = p.xmlDef();
             for each (var attr :XML in xmlDef.attributes()) {
                 var dfunc :Function = _detailTypes.get(attr.name().toString());
-                var detail :Detail = (dfunc == null ? new TextDetail(attr) : new dfunc(attr));
+                var detail :Detail = (dfunc == null ? new TextDetail(attr) : dfunc(attr) as Detail);
                 _details.push(detail);
                 _detailsBox.addChild(detail.createBox());
             }
             for each (var child :XML in xmlDef.children()) {
                 dfunc = _detailTypes.get(child.name().toString());
-                detail = (dfunc == null ? new TextDetail(child) : new dfunc(child));
+                detail = (dfunc == null ? new TextDetail(child) : dfunc(child) as Detail);
                 _details.push(detail);
                 _detailsBox.addChild(detail.createBox());
             }
