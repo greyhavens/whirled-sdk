@@ -338,7 +338,7 @@ public class BaseGameBackend
         success :Function = null) :InvocationService_ConfirmListener
     {
         return new ConfirmAdapter(function (cause :String) :void {
-            logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
+            reportServiceFailure(service, cause);
             if (failure != null) {
                 failure();
             }
@@ -353,9 +353,21 @@ public class BaseGameBackend
         success :Function = null) :InvocationService_ResultListener
     {
         return new ResultWrapper(function (cause :String) :void {
-            logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
-            failure();
+            reportServiceFailure(service, cause);
+            if (failure != null) {
+                failure();
+            }
         }, success);
+    }
+
+    /**
+     * Reports an invocation service failure. The default implementation just records it to the
+     * logs, but derived classes can report the message to the user in the appropriate
+     * circumstances.
+     */
+    protected function reportServiceFailure (service :String, cause :String) :void
+    {
+        logGameError("Service failure [service=" + service + ", cause=" + cause + "].");
     }
 
     /**
