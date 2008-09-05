@@ -103,7 +103,7 @@ public class Scoreboard
     }
 
     /**
-     * Fills two Arrays, one with the contents of the players that are ranked on the scoreboard,
+     * Fills two Arrays, one with the IDs of the players that are ranked on the scoreboard,
      * and the other with their scores. Useful for calling GameSubControl.endGameWithScores.
      */
     public function getPlayerIdsAndScores (playerIds :Array, scores :Array) :void
