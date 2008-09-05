@@ -88,8 +88,8 @@ public class PieceEditView extends Canvas
         var scaleSlider :HSlider = new HSlider();
         scaleSlider.liveDragging = true;
         scaleSlider.showDataTip = false;
-        scaleSlider.maximum = 8;
-        scaleSlider.minimum = -2;
+        scaleSlider.maximum = EditSprite.MAX_SCALE;
+        scaleSlider.minimum = EditSprite.MIN_SCALE;
         scaleSlider.tickInterval = 1;
         scaleSlider.snapInterval = 1;
         _editSprite.setScale(scaleSlider.value = 0);

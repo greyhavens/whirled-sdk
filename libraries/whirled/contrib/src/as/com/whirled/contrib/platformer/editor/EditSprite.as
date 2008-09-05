@@ -40,6 +40,10 @@ import com.whirled.contrib.platformer.piece.Piece;
 
 public class EditSprite extends Sprite
 {
+    /** Defines the value range accepted in the setScale function. */
+    public static const MIN_SCALE :int = -2;
+    public static const MAX_SCALE :int = 8;
+
     public function EditSprite ()
     {
         addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
@@ -100,7 +104,7 @@ public class EditSprite extends Sprite
 
     public function setScale (scale :int) :void
     {
-        scale = MathUtil.clamp(scale, -2, 8);
+        scale = MathUtil.clamp(scale, MIN_SCALE, MAX_SCALE);
         if (scale < 0) {
             _scale = 1 / -(scale - 1);
         } else {
