@@ -32,6 +32,7 @@ import flash.geom.Point;
 import com.threerings.util.KeyboardCodes;
 
 import com.whirled.contrib.platformer.board.Board;
+import com.whirled.contrib.platformer.display.Layer;
 import com.whirled.contrib.platformer.display.Metrics;
 import com.whirled.contrib.platformer.piece.Piece;
 
@@ -103,29 +104,48 @@ public class EditSprite extends Sprite
         }
     }
 
+    public function toggleGrid () :void
+    {
+        _layers[GRID_LAYER].alpha = _layers[GRID_LAYER].alpha > 0 ? 0 : 0.5;
+        updateDisplay();
+    }
+
+    protected function get GRID_LAYER () :int
+    {
+        return 0;
+    }
+
     protected function clearDisplay () :void
     {
     }
 
     protected function initDisplay () :void
     {
+        addChildAt(_layers[GRID_LAYER] = new GridLayer(), GRID_LAYER);
+        _layers[GRID_LAYER].alpha = 0.5;
+
         var masker :Shape = new Shape();
         masker.graphics.beginFill(0x000000);
         masker.graphics.drawRect(0, 0, Metrics.DISPLAY_WIDTH, Metrics.DISPLAY_HEIGHT);
         masker.graphics.endFill();
         mask = masker;
-        addChild(masker);
+        addChildAt(masker, 0);
         masker = new Shape();
         masker.graphics.beginFill(0xEEEEEE);
         masker.graphics.drawRect(0, 0, Metrics.DISPLAY_WIDTH, Metrics.DISPLAY_HEIGHT);
         masker.graphics.endFill();
-        addChild(masker);
+        addChildAt(masker, 0);
 
         positionView(0, 0);
     }
 
     protected function updateDisplay () :void
     {
+        for each (var layer :Layer in _layers) {
+            if (layer != null) {
+                layer.update(_bX / _scale, _bY / _scale, _scale);
+            }
+        }
     }
 
     protected function mouseDownHandler (event :MouseEvent) :void
@@ -189,6 +209,9 @@ public class EditSprite extends Sprite
             moveViewTile(0, -1 * _scale);
         }
     }
+
+    /** The board layers. */
+    protected var _layers :Array = new Array();
 
     protected var _bX :int;
     protected var _bY :int;

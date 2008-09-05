@@ -39,36 +39,27 @@ public class PieceEditSprite extends EditSprite
 
     public function setPiece (p :Piece) :void
     {
-        _pieceLayer.clear();
+        _layers[PIECE_LAYER].clear();
         if (p != null) {
             var ps :PieceSprite = PieceSpriteFactory.getPieceSprite(p);
             ps.showDetails(true);
-            _pieceLayer.addEditorSprite(new EditorPieceSprite(ps, null), "");
+            _layers[PIECE_LAYER].addEditorSprite(new EditorPieceSprite(ps, null), "");
         }
     }
 
     override protected function initDisplay () :void
     {
+        addChild(_layers[PIECE_LAYER] = new EditorSpriteLayer());
+
         super.initDisplay();
-
-        addChild(_gridLayer = new GridLayer());
-        _gridLayer.alpha = 0.5;
-        addChild(_pieceLayer = new EditorSpriteLayer());
-
-        positionView(0, 0);
     }
 
-    override protected function updateDisplay () :void
+    override protected function get GRID_LAYER () :int
     {
-        if (_gridLayer == null || _pieceLayer == null) {
-            return;
-        }
-
-        _gridLayer.update(_bX / _scale, _bY / _scale, _scale);
-        _pieceLayer.update(_bX / _scale, _bY / _scale, _scale);
+        return PIECE_GRID_LAYER;
     }
 
-    protected var _pieceLayer :EditorSpriteLayer;
-    protected var _gridLayer :GridLayer;
+    protected static const PIECE_GRID_LAYER :int = 0;
+    protected static const PIECE_LAYER :int = 1;
 }
 }

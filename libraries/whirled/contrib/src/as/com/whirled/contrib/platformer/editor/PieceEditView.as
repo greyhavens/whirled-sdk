@@ -28,19 +28,20 @@ import flash.system.System;
 
 import flash.utils.ByteArray;
 
-import com.whirled.contrib.platformer.board.Board;
-
-import com.whirled.contrib.platformer.display.Metrics;
-import com.whirled.contrib.platformer.piece.Piece;
-import com.whirled.contrib.platformer.piece.PieceFactory;
-
 import mx.core.Container;
 import mx.core.FlexSprite;
 import mx.containers.Canvas;
+import mx.containers.HBox;
+import mx.containers.VBox;
 import mx.controls.Button;
 import mx.controls.Label;
 
 import com.threerings.flex.FlexWrapper;
+
+import com.whirled.contrib.platformer.board.Board;
+import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.piece.Piece;
+import com.whirled.contrib.platformer.piece.PieceFactory;
 
 public class PieceEditView extends Canvas
 {
@@ -65,21 +66,33 @@ public class PieceEditView extends Canvas
         _editSprite.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 
         addChild(new FlexWrapper(_editSprite));
+
         _editDetails.x = Metrics.DISPLAY_WIDTH;
         addChild(_editDetails);
         _editSelector.y = Metrics.DISPLAY_HEIGHT;
         addChild(_editSelector);
         _editSelector.addEventListener(Event.CHANGE, pieceSelected);
-        addChild(_editCoords);
-        _editCoords.y = Metrics.DISPLAY_HEIGHT;
-        _editCoords.x = 410;
+
+        var controlsBox :VBox = new VBox();
+        controlsBox.y = Metrics.DISPLAY_HEIGHT;
+        controlsBox.x = 410;
+        addChild(controlsBox);
         _editCoords.text = "Coords (0, 0)";
-        var button :Button = EditView.makeButton("Copy to Clipboard", function () :void {
+        controlsBox.addChild(_editCoords);
+        var row :HBox = new HBox();
+        row.addChild(EditView.makeButton("-", function () :void {
+            _editSprite.changeScale(1);
+        }));
+        row.addChild(EditView.makeButton("+", function () :void {
+            _editSprite.changeScale(-1);
+        }));
+        row.addChild(EditView.makeButton("grid", function () :void {
+            _editSprite.toggleGrid();
+        }));
+        controlsBox.addChild(row);
+        controlsBox.addChild(EditView.makeButton("Copy to Clipboard", function () :void {
             System.setClipboard(getXML());
-        });
-        button.y = Metrics.DISPLAY_HEIGHT + 35;
-        button.x = 410;
-        addChild(button);
+        }));
     }
 
     public function getXML () :String

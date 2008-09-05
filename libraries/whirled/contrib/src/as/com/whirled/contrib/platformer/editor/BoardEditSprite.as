@@ -113,12 +113,6 @@ public class BoardEditSprite extends EditSprite
             Board.GROUP_NAMES[Board.PLATFORMS]);
     }
 
-    public function toggleGrid () :void
-    {
-        _layers[GRID_LAYER].alpha = _layers[GRID_LAYER].alpha > 0 ? 0 : 0.5;
-        updateDisplay();
-    }
-
     public function isOnScreen (sprite :EditorSprite) :Boolean
     {
         return !(sprite.getTileX() + sprite.getTileWidth() <= getX() ||
@@ -129,17 +123,10 @@ public class BoardEditSprite extends EditSprite
 
     override protected function initDisplay () :void
     {
-        addChild(_layerPoint = new Sprite());
-        _layers[LEVEL_LAYER] = new EditorSpriteLayer();
-        _layers[DYNAMIC_LAYER] = new EditorSpriteLayer();
-        _layers[ACTOR_LAYER] = new EditorSpriteLayer();
-        _layers[FRONT_LEVEL_LAYER] = new EditorSpriteLayer();
-        _layerPoint.addChild(_layers[LEVEL_LAYER]);
-        _layerPoint.addChild(_layers[DYNAMIC_LAYER]);
-        _layerPoint.addChild(_layers[ACTOR_LAYER]);
-        _layerPoint.addChild(_layers[FRONT_LEVEL_LAYER]);
-        _layerPoint.addChild(_layers[GRID_LAYER] = new GridLayer());
-        _layers[GRID_LAYER].alpha = 0.5;
+        addChild(_layers[LEVEL_LAYER] = new EditorSpriteLayer());
+        addChild(_layers[DYNAMIC_LAYER] = new EditorSpriteLayer());
+        addChild(_layers[ACTOR_LAYER] = new EditorSpriteLayer());
+        addChild(_layers[FRONT_LEVEL_LAYER] = new EditorSpriteLayer());
         resetPieceLayer();
         resetActorLayer();
 
@@ -268,12 +255,12 @@ public class BoardEditSprite extends EditSprite
         }
     }
 
-    /** The board layers. */
-    protected var _layers :Array = new Array();
+    override protected function get GRID_LAYER () :int
+    {
+        return BOARD_GRID_LAYER;
+    }
 
     protected var _board :Board;
-
-    protected var _layerPoint :Sprite;
 
     protected var _ev :EditView;
 
@@ -281,6 +268,6 @@ public class BoardEditSprite extends EditSprite
     protected static const DYNAMIC_LAYER :int = 1;
     protected static const ACTOR_LAYER :int = 2;
     protected static const FRONT_LEVEL_LAYER :int = 3;
-    protected static const GRID_LAYER :int = 4;
+    protected static const BOARD_GRID_LAYER :int = 4;
 }
 }
