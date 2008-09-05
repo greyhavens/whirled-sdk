@@ -30,6 +30,7 @@ import flash.events.MouseEvent;
 import flash.geom.Point;
 
 import com.threerings.util.KeyboardCodes;
+import com.threerings.util.Log;
 
 import com.threerings.flash.MathUtil;
 
@@ -81,13 +82,12 @@ public class EditSprite extends Sprite
         return -_bY / Metrics.TILE_SIZE;
     }
 
-    public function moveViewTile (dX :int, dY :int) :void
+    public function moveViewTile (dX :Number, dY :Number) :void
     {
-        //trace("moveViewTile (" + dX + ", " + dY + ")");
         moveView(dX * Metrics.TILE_SIZE, dY * Metrics.TILE_SIZE);
     }
 
-    public function positionViewTile (dX :int, dY :int) :void
+    public function positionViewTile (dX :Number, dY :Number) :void
     {
         positionView(dX * Metrics.TILE_SIZE, dY * Metrics.TILE_SIZE);
     }
@@ -228,6 +228,8 @@ public class EditSprite extends Sprite
     protected var _mX :int;
     protected var _mY :int;
 
-    protected var _scale :Number = 2;
+    protected var _scale :Number = 1;
+
+    private static const log :Log = Log.getLog(EditSprite);
 }
 }

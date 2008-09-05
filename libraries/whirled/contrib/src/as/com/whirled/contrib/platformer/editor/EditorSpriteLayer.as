@@ -24,6 +24,8 @@ import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
 
+import com.threerings.util.Log;
+
 import com.whirled.contrib.platformer.display.Metrics;
 import com.whirled.contrib.platformer.display.Layer;
 
@@ -186,5 +188,7 @@ public class EditorSpriteLayer extends Layer
     }
 
     protected var _esprites :Array = new Array();
+
+    private static const log :Log = Log.getLog(EditorSpriteLayer);
 }
 }

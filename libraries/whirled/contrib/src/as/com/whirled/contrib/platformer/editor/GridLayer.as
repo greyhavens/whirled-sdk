@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer.editor {
 
+import com.threerings.util.Log;
+
 import com.whirled.contrib.platformer.display.Layer;
 import com.whirled.contrib.platformer.display.Metrics;
 
@@ -43,11 +45,11 @@ public class GridLayer extends Layer
         }
         x = Math.floor(-nX);
         if (x < 0) {
-            x %= Metrics.TILE_SIZE;
+            x %= Metrics.TILE_SIZE / scale;
         }
         y = Math.floor(-nY);
         if (nY < 0) {
-            y %= Metrics.TILE_SIZE;
+            y %= Metrics.TILE_SIZE / scale;
         }
     }
 
@@ -55,17 +57,20 @@ public class GridLayer extends Layer
     {
         graphics.clear();
         graphics.lineStyle(0, 0x000000, 0.5);
-        for (var ii :int = 0; ii <= Metrics.WINDOW_WIDTH * scale; ii++) {
-            graphics.moveTo(ii * Metrics.TILE_SIZE / scale, Metrics.DISPLAY_HEIGHT);
-            graphics.lineTo(ii * Metrics.TILE_SIZE / scale, -Metrics.TILE_SIZE);
+        var maxX :int = Metrics.DISPLAY_WIDTH + Metrics.TILE_SIZE / scale;
+        var minY :int = -Metrics.TILE_SIZE / scale;
+        for (var xx :int = 0; xx <= maxX; xx += Metrics.TILE_SIZE / scale) {
+            graphics.moveTo(xx, Metrics.DISPLAY_HEIGHT);
+            graphics.lineTo(xx, minY);
         }
-        for (ii = 0; ii <= Metrics.WINDOW_HEIGHT * scale; ii++) {
-            graphics.moveTo(0, ii * Metrics.TILE_SIZE / scale);
-            graphics.lineTo(
-                (Metrics.DISPLAY_WIDTH + Metrics.TILE_SIZE), ii * Metrics.TILE_SIZE / scale);
+        for (var yy :int = Metrics.DISPLAY_HEIGHT; yy >= minY; yy -= Metrics.TILE_SIZE / scale) {
+            graphics.moveTo(0, yy);
+            graphics.lineTo(maxX, yy);
         }
     }
 
     protected var _oldScale :Number = 1;
+
+    private static const log :Log = Log.getLog(GridLayer);
 }
 }
