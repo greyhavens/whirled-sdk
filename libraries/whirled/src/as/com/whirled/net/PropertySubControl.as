@@ -94,9 +94,11 @@ public interface PropertySubControl extends PropertyGetSubControl
 
     /**
      * Update one element of a Dictionary.<br/>
-     * <b>Note</b>: Unlike setAt(), this will always work. No key is out of range, and if
-     * this is called on a property that doesn't currently contain a Dictionary, one will
-     * be automatically created and inserted at the specified property name.
+     * <b>Note</b>: Unlike setAt(), this will usually work. No key is out of range, obviously,
+     * and if you set a value in a property that was previously null, a new Dictionary will
+     * be created to hold your value. If a non-Dictionary property is already stored with the
+     * specified name then this will fail silently on the server. But: don't do that!
+     * It would be pretty bad style to store two different types of property under the same name.
      *
      * @param propName the name of the property to modify.
      * @param key the key of the element to update.

@@ -16,13 +16,14 @@ public interface PropertySpaceObject
 {
     /**
      * A checked exception thrown by applyPropertySet to indicate when
-     * an array set hasn't gone through.
+     * a property set failed for some reason. Usually this is caught on the server
+     * and merely logged, but the information could be returned to the client.
      */
-    public static class ArrayRangeException extends Exception
+    public static class PropertySetException extends Exception
     {
-        public ArrayRangeException (String msg)
+        public PropertySetException (String msg, String propName, int key)
         {
-            super(msg);
+            super(msg + " [prop=" + propName + ", key=" + key + "]");
         }
     }
 

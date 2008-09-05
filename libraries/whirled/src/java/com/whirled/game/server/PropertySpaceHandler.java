@@ -8,7 +8,7 @@ import com.threerings.presents.dobj.DObject;
 import com.threerings.presents.server.InvocationException;
 import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.data.PropertySpaceObject;
-import com.whirled.game.data.PropertySpaceObject.ArrayRangeException;
+import com.whirled.game.data.PropertySpaceObject.PropertySetException;
 
 /**
  * Provides a property space service based on a {@link PropertySpaceObject}.
@@ -58,8 +58,8 @@ public abstract class PropertySpaceHandler
                 dobj.postEvent(
                     new PropertySetEvent(dobj.getOid(), propName, value, key, isArray, oldValue));
             }
-        } catch (ArrayRangeException are) {
-            log.info("Game attempted deprecated set semantics: setting cells of an empty array.");
+        } catch (PropertySetException pse) {
+            log.info("Game attempted deprecated set semantics: " + pse.getMessage());
         }
     }
 

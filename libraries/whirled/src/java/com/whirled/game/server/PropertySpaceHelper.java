@@ -20,7 +20,7 @@ import com.threerings.presents.dobj.DObjectManager;
 import com.whirled.game.data.GameMap;
 import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.data.PropertySpaceObject;
-import com.whirled.game.data.PropertySpaceObject.ArrayRangeException;
+import com.whirled.game.data.PropertySpaceObject.PropertySetException;
 import com.whirled.game.util.ObjectMarshaller;
 
 import static com.whirled.Log.log;
@@ -43,11 +43,11 @@ public abstract class PropertySpaceHelper
      *
      * @return the old value.
      *
-     * @throws ArrayIndexOutOfBoundsException if an array update is out of bounds.
+     * @throws PropertySetException if there's an error using setIn or setAt
      */
     public static Object applyPropertySet (
         PropertySpaceObject psObj, String propName, Object data, Integer key, boolean isArray)
-        throws ArrayRangeException
+        throws PropertySetException
     {
         Map<String, Object> props = psObj.getUserProps();
 
@@ -62,13 +62,13 @@ public abstract class PropertySpaceHelper
             Object curValue = props.get(propName);
             if (isArray) {
                 if (!(curValue instanceof Object[])) {
-                    throw new ArrayRangeException("Current value is not an Array.");
+                    throw new PropertySetException("Current value is not an Array.", propName, key);
                 }
                 // this is actually a byte[][] on the server..
                 Object[] arr = (Object[]) curValue;
                 int index = key.intValue();
                 if (index < 0 || index >= arr.length) {
-                    throw new ArrayRangeException("Array index out of range.");
+                    throw new PropertySetException("Array index out of range.", propName, key);
                 }
                 oldValue = arr[index];
                 arr[index] = data;
@@ -79,9 +79,8 @@ public abstract class PropertySpaceHelper
                     map = (GameMap) curValue;
                 } else {
                     if (curValue != null) {
-                        // TODO we're just logging this to see what would be affected if
-                        // we changed this replacing behavior
-                        log.info("Replaced non-null, non-GameMap property with a GameMap.");
+                        throw new PropertySetException("Cannot implicitly create a Dictionary " +
+                            "with setIn() over a non-null non-Dictionary property", propName, key);
                     }
                     map = new GameMap(); // force anything else to be a map
                     props.put(propName, map);

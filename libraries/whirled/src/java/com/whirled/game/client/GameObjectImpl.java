@@ -83,8 +83,8 @@ public class GameObjectImpl
         // set it immediately in the game object
         try {
             PropertySpaceHelper.applyPropertySet(_gameObj, propName, reconstituted, index, false);
-        } catch (PropertySpaceObject.ArrayRangeException are) {
-            throw new RuntimeException(are);
+        } catch (PropertySpaceObject.PropertySetException pse) {
+            throw new RuntimeException(pse);
         }
     }
 
