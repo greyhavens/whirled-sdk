@@ -23,9 +23,7 @@ package com.whirled.contrib.platformer.editor {
 import flash.display.DisplayObject;
 import flash.display.Shape;
 
-import com.whirled.contrib.platformer.display.Metrics;
 import com.whirled.contrib.platformer.display.PieceSprite;
-import com.whirled.contrib.platformer.display.PieceSpriteLayer;
 import com.whirled.contrib.platformer.display.PieceSpriteFactory;
 
 import com.whirled.contrib.platformer.piece.Piece;
@@ -34,6 +32,8 @@ public class PieceEditSprite extends EditSprite
 {
     public function PieceEditSprite ()
     {
+        // we default to normal scale here
+        _scale = 1;
         initDisplay();
     }
 
@@ -43,36 +43,32 @@ public class PieceEditSprite extends EditSprite
         if (p != null) {
             var ps :PieceSprite = PieceSpriteFactory.getPieceSprite(p);
             ps.showDetails(true);
-            _pieceLayer.addPieceSprite(ps);
+            _pieceLayer.addEditorSprite(new EditorPieceSprite(ps, null), "");
         }
     }
 
     override protected function initDisplay () :void
     {
-        var masker :Shape = new Shape();
-        masker.graphics.beginFill(0x000000);
-        masker.graphics.drawRect(0, 0, Metrics.DISPLAY_WIDTH, Metrics.DISPLAY_HEIGHT);
-        masker.graphics.endFill();
-        mask = masker;
-        addChild(masker);
-        masker = new Shape();
-        masker.graphics.beginFill(0xFFFFFF);
-        masker.graphics.drawRect(0, 0, Metrics.DISPLAY_WIDTH, Metrics.DISPLAY_HEIGHT);
-        masker.graphics.endFill();
-        addChild(masker);
-        addChild(_gridLayer = new GridLayer());
-        addChild(_pieceLayer = new PieceSpriteLayer());
-
         super.initDisplay();
+
+        addChild(_gridLayer = new GridLayer());
+        _gridLayer.alpha = 0.5;
+        addChild(_pieceLayer = new EditorSpriteLayer());
+
+        positionView(0, 0);
     }
 
     override protected function updateDisplay () :void
     {
-        _gridLayer.update(_bX, _bY);
-        _pieceLayer.update(_bX, _bY);
+        if (_gridLayer == null || _pieceLayer == null) {
+            return;
+        }
+
+        _gridLayer.update(_bX / _scale, _bY / _scale, _scale);
+        _pieceLayer.update(_bX / _scale, _bY / _scale, _scale);
     }
 
-    protected var _pieceLayer :PieceSpriteLayer;
+    protected var _pieceLayer :EditorSpriteLayer;
     protected var _gridLayer :GridLayer;
 }
 }

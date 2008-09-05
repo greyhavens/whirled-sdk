@@ -23,11 +23,7 @@ package com.whirled.contrib.platformer.editor {
 import flash.display.Shape;
 import flash.display.Sprite;
 
-import flash.events.Event;
 import flash.events.MouseEvent;
-import flash.events.KeyboardEvent;
-
-import com.threerings.util.KeyboardCodes;
 
 import com.whirled.contrib.platformer.display.Layer;
 import com.whirled.contrib.platformer.display.Metrics;
@@ -44,7 +40,6 @@ public class BoardEditSprite extends EditSprite
     public function BoardEditSprite (ev :EditView)
     {
         super();
-        focusRect = false;
         _ev = ev;
     }
 
@@ -65,8 +60,6 @@ public class BoardEditSprite extends EditSprite
         _board.addEventListener(Board.ITEM_BACK, moveSpriteBack);
         _board.addEventListener(Board.ITEM_UP, moveSpriteUp);
         _board.addEventListener(Board.ITEM_DOWN, moveSpriteDown);
-        addEventListener(MouseEvent.CLICK, onClick);
-        addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
     }
 
     public function setSelected (sprite :EditorSprite, updateView :Boolean = true) :void
@@ -120,24 +113,6 @@ public class BoardEditSprite extends EditSprite
             Board.GROUP_NAMES[Board.PLATFORMS]);
     }
 
-    override public function getMouseX () :int
-    {
-        return Math.floor((_bX + mouseX * _scale) / Metrics.TILE_SIZE);
-    }
-
-    override public function getMouseY () :int
-    {
-        return Math.floor(((Metrics.DISPLAY_HEIGHT - mouseY) * _scale - _bY) / Metrics.TILE_SIZE);
-    }
-
-    public function changeScale (delta :int) :void
-    {
-        if (_scale + delta > 0 && _scale + delta <= 8) {
-            _scale += delta;
-            updateDisplay();
-        }
-    }
-
     public function toggleGrid () :void
     {
         _layers[GRID_LAYER].alpha = _layers[GRID_LAYER].alpha > 0 ? 0 : 0.5;
@@ -152,42 +127,8 @@ public class BoardEditSprite extends EditSprite
             sprite.getTileY() >= getY() + Metrics.WINDOW_HEIGHT * _scale);
     }
 
-    protected function onAddedToStage (event :Event) :void
-    {
-        addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
-    }
-
-    protected function onClick (event :MouseEvent) :void
-    {
-        stage.focus = this;
-    }
-
-    protected function keyPressed (event :KeyboardEvent) :void
-    {
-        if (event.keyCode == KeyboardCodes.RIGHT) {
-            moveViewTile(1 * _scale, 0);
-        } else if (event.keyCode == KeyboardCodes.DOWN) {
-            moveViewTile(0, 1 * _scale);
-        } else if (event.keyCode == KeyboardCodes.LEFT) {
-            moveViewTile(-1 * _scale, 0);
-        } else if (event.keyCode == KeyboardCodes.UP) {
-            moveViewTile(0, -1 * _scale);
-        }
-    }
-
     override protected function initDisplay () :void
     {
-        var masker :Shape = new Shape();
-        masker.graphics.beginFill(0x000000);
-        masker.graphics.drawRect(0, 0, Metrics.DISPLAY_WIDTH, Metrics.DISPLAY_HEIGHT);
-        masker.graphics.endFill();
-        mask = masker;
-        addChild(masker);
-        masker = new Shape();
-        masker.graphics.beginFill(0xEEEEEE);
-        masker.graphics.drawRect(0, 0, Metrics.DISPLAY_WIDTH, Metrics.DISPLAY_HEIGHT);
-        masker.graphics.endFill();
-        addChild(masker);
         addChild(_layerPoint = new Sprite());
         _layers[LEVEL_LAYER] = new EditorSpriteLayer();
         _layers[DYNAMIC_LAYER] = new EditorSpriteLayer();
@@ -335,8 +276,6 @@ public class BoardEditSprite extends EditSprite
     protected var _layerPoint :Sprite;
 
     protected var _ev :EditView;
-
-    protected var _scale :Number = 2;
 
     protected static const LEVEL_LAYER :int = 0;
     protected static const DYNAMIC_LAYER :int = 1;

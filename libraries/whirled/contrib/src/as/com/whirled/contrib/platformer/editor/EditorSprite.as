@@ -120,6 +120,10 @@ public class EditorSprite extends Sprite
 
     protected function mouseDownHandler (event :MouseEvent) :void
     {
+        if (_es == null) {
+            return;
+        }
+
         _es.setSelected(this);
         _startX = _es.getMouseX() - getTileX();
         _startY = _es.getMouseY() - getTileY();

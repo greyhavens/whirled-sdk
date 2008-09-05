@@ -21,9 +21,15 @@
 package com.whirled.contrib.platformer.editor {
 
 import mx.containers.Box;
+import mx.containers.HBox;
 import mx.containers.VBox;
 import mx.controls.Button;
+import mx.controls.RadioButtonGroup;
+import mx.controls.RadioButton;
 import mx.events.FlexEvent;
+import mx.events.ItemClickEvent;
+
+import com.threerings.util.Log;
 
 public class BoundsDetail extends Detail
 {
@@ -37,17 +43,36 @@ public class BoundsDetail extends Detail
 
     override public function createBox () :Box
     {
-        var box :VBox = new VBox();
-        _bbox = new VBox();
+        _topBox = new VBox();
+
+        var buttonBox :HBox = new HBox();
+        var rbg :RadioButtonGroup = new RadioButtonGroup();
+        rbg.addEventListener(ItemClickEvent.ITEM_CLICK, modeClicked);
+        var rb :RadioButton = new RadioButton();
+        rb.label = NUMBER_MODE;
+        rb.group = rbg;
+        rb.selected = true;
+        buttonBox.addChild(rb);
+        rb = new RadioButton();
+        rb.label = MOUSE_MODE;
+        rb.group = rbg;
+        buttonBox.addChild(rb);
+        _topBox.addChild(buttonBox);
+
+        _numberBox = new VBox();
         for each (var bound :BoundDetail in _bounds) {
-            _bbox.addChild(bound.createBox());
+            _numberBox.addChild(bound.createBox());
         }
-        box.addChild(_bbox);
         var button :Button = new Button();
         button.label = "+";
         button.addEventListener(FlexEvent.BUTTON_DOWN, addBound);
-        box.addChild(button);
-        return box;
+        _numberBox.addChild(button);
+        _topBox.addChild(_numberBox);
+
+        // TODO
+        _mouseBox = new VBox();
+
+        return _topBox;
     }
 
     override public function setData (defxml :XML) :void
@@ -63,10 +88,31 @@ public class BoundsDetail extends Detail
     {
         var bound :BoundDetail = new BoundDetail();
         _bounds.push(bound);
-        _bbox.addChild(bound.createBox());
+        _numberBox.addChild(bound.createBox());
+    }
+
+    protected function modeClicked (event :ItemClickEvent) :void
+    {
+        if (event.label == NUMBER_MODE && _mouseBox.parent == _topBox) {
+            _topBox.removeChild(_mouseBox);
+            _topBox.addChild(_numberBox);
+        } else if (event.label == MOUSE_MODE && _numberBox.parent == _topBox) {
+            _topBox.removeChild(_numberBox);
+            _topBox.addChild(_mouseBox);
+        } else {
+            log.debug("mode change borked [" + event.label + ", " + _mouseBox.parent + ", " + 
+                _numberBox.parent + "]");
+        }
     }
 
     protected var _bounds :Array = new Array();
-    protected var _bbox :VBox;
+    protected var _topBox :VBox;
+    protected var _numberBox :VBox;
+    protected var _mouseBox :VBox;
+
+    protected static const NUMBER_MODE :String = "Number Mode";
+    protected static const MOUSE_MODE :String = "Mouse Mode";
+
+    private static const log :Log = Log.getLog(BoundsDetail);
 }
 }
