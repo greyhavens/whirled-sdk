@@ -41,23 +41,21 @@ public class MobSubControl extends MobBaseSubControl
         callHostCode("setMobHotSpot_v1", _id, x, y, height);
     }
 
-    public function setDecoration (decoration :DisplayObject) :Boolean
+    public function setDecoration (decoration :DisplayObject) :void
     {
         if (_decoration == null) {
             _decoration = decoration;
-            return callHostCode("setMobDecoration_v1", _id, _decoration, true);
+            callHostCode("setMobDecoration_v1", _id, _decoration, true);
         }
-        return false;
     }
 
-    public function removeDecoration () :Boolean
+    public function removeDecoration () :void
     {
         if (_decoration != null) {
             var oldDec :DisplayObject = _decoration;
             _decoration = null;
-            return callHostCode("removeMobDecoration_v1", _id, oldDec, false);
+            callHostCode("setMobDecoration_v1", _id, oldDec, false);
         }
-        return false;
     }
 
     /** @private */
