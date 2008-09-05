@@ -105,6 +105,10 @@ public class EditorSprite extends Sprite
 
     protected function mouseOverHandler (event :MouseEvent) :void
     {
+        if (_es == null) {
+            // we don't highlight in non-board mode.
+            return;
+        }
         if (_hoverH == null) {
             _hoverH = createHighlight(0x000066);
         }
