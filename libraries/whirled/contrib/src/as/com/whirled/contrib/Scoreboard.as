@@ -1,11 +1,10 @@
 package com.whirled.contrib {
 
-import flash.utils.Dictionary;
-
 import com.whirled.game.GameControl;
-import com.whirled.net.PropertyChangedEvent;
 import com.whirled.net.ElementChangedEvent;
-import com.whirled.game.NetSubControl;
+import com.whirled.net.PropertyChangedEvent;
+
+import flash.utils.Dictionary;
 
 /**
  * A class to manage game scores as a Dictionary property and send
@@ -55,8 +54,10 @@ public class Scoreboard
     }
 
     /**
-     * Get a complete copy of the scoreboard Dictionary.
-     * Changes to this copy have no effect.
+     * Get a complete copy of the scoreboard Dictionary. Each entry in the Dictionary is a mapping
+     * from playerId to score.
+     *
+     * Changes to this copy have no effect on the Scoreboard.
      */
     public function getAllScores () :Dictionary
     {
@@ -88,8 +89,7 @@ public class Scoreboard
     }
 
     /**
-     * Get an array of player IDs of all the players that are
-     * ranked on the scoreboard.
+     * Get an array of player IDs of all the players that are ranked on the scoreboard.
      */
     public function getPlayerIds () :Array
     {
@@ -100,6 +100,22 @@ public class Scoreboard
         }
 
         return buffer;
+    }
+
+    /**
+     * Fills two Arrays, one with the contents of the players that are ranked on the scoreboard,
+     * and the other with their scores. Useful for calling GameSubControl.endGameWithScores.
+     */
+    public function getPlayerIdsAndScores (playerIds :Array, scores :Array) :void
+    {
+        playerIds.length = 0;
+        scores.length = 0;
+
+        var scoreDict :Dictionary = getAllScores();
+        for (var playerId :* in scoreDict) {
+            playerIds.push(int(playerId));
+            scores.push(Number(scoreDict[playerId]));
+        }
     }
 
     /** Retrieves the highest known score. */
