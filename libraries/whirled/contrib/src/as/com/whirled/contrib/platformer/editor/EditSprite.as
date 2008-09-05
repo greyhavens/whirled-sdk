@@ -208,14 +208,23 @@ public class EditSprite extends Sprite
 
     protected function keyPressed (event :KeyboardEvent) :void
     {
+//        if (event.keyCode == KeyboardCodes.RIGHT) {
+//            moveViewTile(1 * _scale, 0);
+//        } else if (event.keyCode == KeyboardCodes.DOWN) {
+//            moveViewTile(0, 1 * _scale);
+//        } else if (event.keyCode == KeyboardCodes.LEFT) {
+//            moveViewTile(-1 * _scale, 0);
+//        } else if (event.keyCode == KeyboardCodes.UP) {
+//            moveViewTile(0, -1 * _scale);
+//        }
         if (event.keyCode == KeyboardCodes.RIGHT) {
-            moveViewTile(1 * _scale, 0);
+            moveView(SCROLL_INCREMENT * _scale, 0);
         } else if (event.keyCode == KeyboardCodes.DOWN) {
-            moveViewTile(0, 1 * _scale);
+            moveView(0, SCROLL_INCREMENT * _scale);
         } else if (event.keyCode == KeyboardCodes.LEFT) {
-            moveViewTile(-1 * _scale, 0);
+            moveView(-SCROLL_INCREMENT * _scale, 0);
         } else if (event.keyCode == KeyboardCodes.UP) {
-            moveViewTile(0, -1 * _scale);
+            moveView(0, -SCROLL_INCREMENT * _scale);
         }
     }
 
@@ -229,6 +238,8 @@ public class EditSprite extends Sprite
     protected var _mY :int;
 
     protected var _scale :Number = 1;
+
+    protected static const SCROLL_INCREMENT :int = 50; // in px
 
     private static const log :Log = Log.getLog(EditSprite);
 }
