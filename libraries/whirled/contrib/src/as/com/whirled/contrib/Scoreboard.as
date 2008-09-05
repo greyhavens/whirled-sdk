@@ -139,15 +139,19 @@ public class Scoreboard
 
     protected function initScores (... ignore) :void
     {
-        _gameCtrl.local.clearScores();
-        _gameCtrl.local.setMappedScores(_gameCtrl.net.get(_propName));
+        if (!_gameCtrl.game.amServerAgent()) {
+            _gameCtrl.local.clearScores();
+            _gameCtrl.local.setMappedScores(_gameCtrl.net.get(_propName));
+        }
     }
 
     protected function scoreDidUpdate (playerId :int, old :Number, current :Number) :void
     {
-        var o :Object = {};
-        o[playerId] = current
-        _gameCtrl.local.setMappedScores(o);
+        if (!_gameCtrl.game.amServerAgent()) {
+            var o :Object = {};
+            o[playerId] = current;
+            _gameCtrl.local.setMappedScores(o);
+        }
     }
 
     protected function handleScoreUpdate (e :ElementChangedEvent) :void
