@@ -34,7 +34,9 @@ import mx.containers.Canvas;
 import mx.containers.HBox;
 import mx.containers.VBox;
 import mx.controls.Button;
+import mx.controls.HSlider;
 import mx.controls.Label;
+import mx.events.SliderEvent;
 
 import com.threerings.flex.FlexWrapper;
 
@@ -80,12 +82,21 @@ public class PieceEditView extends Canvas
         _editCoords.text = "Coords (0, 0)";
         controlsBox.addChild(_editCoords);
         var row :HBox = new HBox();
-        row.addChild(EditView.makeButton("-", function () :void {
-            _editSprite.changeScale(1);
-        }));
-        row.addChild(EditView.makeButton("+", function () :void {
-            _editSprite.changeScale(-1);
-        }));
+        var label :Label = new Label();
+        label.text = "Scale: ";
+        row.addChild(label);
+        var scaleSlider :HSlider = new HSlider();
+        scaleSlider.liveDragging = true;
+        scaleSlider.showDataTip = false;
+        scaleSlider.maximum = 8;
+        scaleSlider.minimum = -2;
+        scaleSlider.tickInterval = 1;
+        scaleSlider.snapInterval = 1;
+        _editSprite.setScale(scaleSlider.value = 0);
+        scaleSlider.addEventListener(SliderEvent.CHANGE, function (...ignored) :void {
+            _editSprite.setScale(scaleSlider.value);
+        });
+        row.addChild(scaleSlider);
         row.addChild(EditView.makeButton("grid", function () :void {
             _editSprite.toggleGrid();
         }));

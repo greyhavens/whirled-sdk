@@ -30,13 +30,16 @@ import flash.utils.ByteArray;
 
 import mx.containers.Canvas;
 import mx.containers.HBox;
+import mx.containers.VBox;
 import mx.controls.Button;
+import mx.controls.HSlider;
 import mx.controls.Label;
 import mx.controls.RadioButton;
 import mx.controls.RadioButtonGroup;
 import mx.events.FlexEvent;
 import mx.events.ItemClickEvent;
 import mx.events.ListEvent;
+import mx.events.SliderEvent;
 
 import com.threerings.flex.FlexWrapper;
 
@@ -118,19 +121,32 @@ public class EditView extends Canvas
         rb.x = Metrics.DISPLAY_WIDTH + 100;
         addChild(rb);
 
+        var column :VBox = new VBox();
+        column.y = Metrics.DISPLAY_HEIGHT;
+        column.x = 410;
+        addChild(column);
+        column.addChild(_editCoords);
         var box :HBox = new HBox();
-        box.addChild(makeButton("-", function () :void {
-            _boardSprite.changeScale(1);
-        }));
-        box.addChild(makeButton("+", function () :void {
-            _boardSprite.changeScale(-1);
-        }));
+        var label :Label = new Label();
+        label.text = "Scale: ";
+        box.addChild(label);
+        var scaleSlider :HSlider = new HSlider();
+        scaleSlider.liveDragging = true;
+        scaleSlider.showDataTip = false;
+        scaleSlider.maximum = 8;
+        scaleSlider.minimum = -2;
+        scaleSlider.tickInterval = 1;
+        scaleSlider.snapInterval = 1;
+        _boardSprite.setScale(scaleSlider.value = 1);
+        scaleSlider.addEventListener(SliderEvent.CHANGE, function (...ignored) :void {
+            _boardSprite.setScale(scaleSlider.value);
+        });
+        box.addChild(scaleSlider);
         box.addChild(makeButton("grid", function () :void {
             _boardSprite.toggleGrid();
         }));
-        box.y = Metrics.DISPLAY_HEIGHT;
-        box.x = 500;
         addChild(box);
+        column.addChild(box);
         box = new HBox();
         box.addChild(makeButton("Redraw Level", function () :void {
             _boardSprite.resetPieceLayer();
@@ -138,19 +154,10 @@ public class EditView extends Canvas
         box.addChild(makeButton("Redraw Actors", function () :void {
             _boardSprite.resetActorLayer();
         }));
-        box.y = Metrics.DISPLAY_HEIGHT + 35;
-        box.x = 410;
-        addChild(box);
-        box = new HBox();
-        box.addChild(makeButton("Copy to Clipboard", function () :void {
+        column.addChild(box);
+        column.addChild(makeButton("Copy to Clipboard", function () :void {
             System.setClipboard(getXML());
         }));
-        box.y = Metrics.DISPLAY_HEIGHT + 70;
-        box.x = 410;
-        addChild(box);
-        _editCoords.y = Metrics.DISPLAY_HEIGHT;
-        _editCoords.x = 410;
-        addChild(_editCoords);
     }
 
     public function getXML () :String

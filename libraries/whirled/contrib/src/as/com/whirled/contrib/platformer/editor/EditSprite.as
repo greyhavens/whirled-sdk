@@ -31,6 +31,8 @@ import flash.geom.Point;
 
 import com.threerings.util.KeyboardCodes;
 
+import com.threerings.flash.MathUtil;
+
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.display.Layer;
 import com.whirled.contrib.platformer.display.Metrics;
@@ -96,12 +98,15 @@ public class EditSprite extends Sprite
         return Math.floor(((Metrics.DISPLAY_HEIGHT - mouseY) * _scale - _bY) / Metrics.TILE_SIZE);
     }
 
-    public function changeScale (delta :int) :void
+    public function setScale (scale :int) :void
     {
-        if (_scale + delta > 0 && _scale + delta <= 8) {
-            _scale += delta;
-            updateDisplay();
+        scale = MathUtil.clamp(scale, -2, 8);
+        if (scale < 0) {
+            _scale = 1 / -(scale - 1);
+        } else {
+            _scale = scale + 1;
         }
+        updateDisplay();
     }
 
     public function toggleGrid () :void
