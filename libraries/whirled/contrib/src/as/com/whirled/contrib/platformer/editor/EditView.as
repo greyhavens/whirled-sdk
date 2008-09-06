@@ -234,8 +234,8 @@ public class EditView extends Canvas
 
     protected function mouseMoveHandler (event :MouseEvent) :void
     {
-        _editCoords.text = "Coords (" + (_boardSprite.getMouseX()) + ", " +
-                (_boardSprite.getMouseY()) + ")";
+        _editCoords.text = "Coords (" + (_boardSprite.getMouseTileX()) + ", " +
+                (_boardSprite.getMouseTileY()) + ")";
     }
 
     protected function modeClicked (event :ItemClickEvent) :void

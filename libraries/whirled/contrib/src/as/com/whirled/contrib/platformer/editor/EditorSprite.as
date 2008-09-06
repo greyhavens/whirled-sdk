@@ -129,8 +129,8 @@ public class EditorSprite extends Sprite
         }
 
         _es.setSelected(this);
-        _startX = _es.getMouseX() - getTileX();
-        _startY = _es.getMouseY() - getTileY();
+        _startX = _es.getMouseTileX() - getTileX();
+        _startY = _es.getMouseTileY() - getTileY();
     }
 
     protected function sign (num :Number) :Number

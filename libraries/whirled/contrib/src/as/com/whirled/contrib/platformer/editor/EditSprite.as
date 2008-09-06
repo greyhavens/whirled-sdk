@@ -92,14 +92,14 @@ public class EditSprite extends Sprite
         positionView(dX * Metrics.TILE_SIZE, dY * Metrics.TILE_SIZE);
     }
 
-    public function getMouseX () :int
+    public function getMouseTileX () :int
     {
-        return Math.floor((_bX + mouseX * _scale) / Metrics.TILE_SIZE);
+        return Math.floor(getMouseX() / Metrics.TILE_SIZE);
     }
 
-    public function getMouseY () :int
+    public function getMouseTileY () :int
     {
-        return Math.floor(((Metrics.DISPLAY_HEIGHT - mouseY) * _scale - _bY) / Metrics.TILE_SIZE);
+        return Math.floor(getMouseY() / Metrics.TILE_SIZE);
     }
 
     public function setScale (scale :int) :void
@@ -179,8 +179,8 @@ public class EditSprite extends Sprite
 
     protected function mouseMoveHandler (event :MouseEvent) :void
     {
-        var newX :int = getMouseX();
-        var newY :int = getMouseY();
+        var newX :int = getMouseTileX();
+        var newY :int = getMouseTileY();
         if (newX != _mX || newY != _mY) {
             tileChanged(newX, newY);
             _mX = newX;
@@ -217,6 +217,16 @@ public class EditSprite extends Sprite
         } else if (event.keyCode == KeyboardCodes.UP) {
             moveView(0, -SCROLL_INCREMENT * _scale);
         }
+    }
+    
+    protected function getMouseX () :int
+    {
+        return _bX + mouseX * _scale;
+    }
+
+    protected function getMouseY () :int
+    {
+        return (Metrics.DISPLAY_HEIGHT - mouseY) * _scale - _bY;
     }
 
     /** The board layers. */

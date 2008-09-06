@@ -144,8 +144,8 @@ public class PieceEditView extends Canvas
 
     protected function mouseMoveHandler (event :MouseEvent) :void
     {
-        _editCoords.text = "Coords (" + (_editSprite.getMouseX() - 1) + ", " +
-                (_editSprite.getMouseY() - 1) + ")";
+        _editCoords.text = "Coords (" + (_editSprite.getMouseTileX() - 1) + ", " +
+                (_editSprite.getMouseTileY() - 1) + ")";
     }
 
     protected var _editSprite :PieceEditSprite;

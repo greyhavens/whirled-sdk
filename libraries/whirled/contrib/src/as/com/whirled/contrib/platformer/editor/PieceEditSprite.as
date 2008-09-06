@@ -23,6 +23,8 @@ package com.whirled.contrib.platformer.editor {
 import flash.display.DisplayObject;
 import flash.display.Shape;
 
+import flash.events.MouseEvent;
+
 import com.whirled.contrib.platformer.display.PieceSprite;
 import com.whirled.contrib.platformer.display.PieceSpriteFactory;
 
@@ -50,6 +52,10 @@ public class PieceEditSprite extends EditSprite
     override protected function initDisplay () :void
     {
         addChild(_layers[PIECE_LAYER] = new EditorSpriteLayer());
+        // TODO: sort out the y-positioning bug and re-enable this
+        //addChild(_layers[NODE_MOVE_LAYER] = new NodeMoveLayer());
+        _layers[NODE_MOVE_LAYER] = new NodeMoveLayer();
+        _layers[NODE_MOVE_LAYER].alpha = 0.5;
 
         super.initDisplay();
     }
@@ -59,7 +65,37 @@ public class PieceEditSprite extends EditSprite
         return PIECE_GRID_LAYER;
     }
 
+    override protected function mouseDownHandler (event :MouseEvent) :void
+    {
+        super.mouseDownHandler(event);
+    }
+
+    override protected function mouseUpHandler (event :MouseEvent) :void
+    {
+        super.mouseUpHandler(event);
+    }
+
+    override protected function mouseOverHandler (event :MouseEvent) :void
+    {
+        super.mouseOverHandler(event);
+    }
+
+    override protected function mouseOutHandler (event: MouseEvent) :void
+    {
+        super.mouseOutHandler(event);
+
+        _layers[NODE_MOVE_LAYER].clearDisplay();
+    }
+
+    override protected function mouseMoveHandler (event :MouseEvent) :void
+    {
+        super.mouseMoveHandler(event);
+
+        _layers[NODE_MOVE_LAYER].mousePositionUpdated(getMouseX(), getMouseY());
+    }
+
     protected static const PIECE_GRID_LAYER :int = 0;
     protected static const PIECE_LAYER :int = 1;
+    protected static const NODE_MOVE_LAYER :int = 2;
 }
 }
