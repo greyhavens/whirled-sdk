@@ -85,5 +85,17 @@ public class Actor extends Dynamic
     {
         orient = (orient & ORIENT_SHOOT_MASK) | shoot;
     }
+
+    override public function getBounds () :Rect
+    {
+        if (_bounds == null) {
+            _bounds = new Rect(x, y, width, height);
+        }
+        _bounds.x = x;
+        _bounds.y = y;
+        return _bounds;
+    }
+
+    protected var _bounds :Rect;
 }
 }

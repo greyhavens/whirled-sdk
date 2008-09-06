@@ -62,6 +62,12 @@ public class GameController
 
     public function run () :void
     {
+        for each (var d :Dynamic in _board.getDynamicIns(Board.ACTORS)) {
+            var dc :DynamicController = getController(d);
+            if (dc is InitController) {
+                (dc as InitController).init();
+            }
+        }
     }
 
     public function tick (delta :int) :void
@@ -196,38 +202,46 @@ public class GameController
 
     protected function handleActorAdded (actor :Actor, group :String) :void
     {
-        var className :String = ClassUtil.getClassName(actor);
-        var aclass :Class = _actorMap.get(className);
-        if (aclass == null) {
-            aclass = _defaultActorClass;
-        }
-        var ac :ActorController = new aclass(actor, this);
+        var ac :ActorController = getController(actor) as ActorController;
         addController(ac);
         _collider.addDynamic(ac);
     }
 
     protected function handleShotAdded (shot :Shot, group :String) :void
     {
-        var className :String = ClassUtil.getClassName(shot);
-        var sclass :Class = _shotMap.get(className);
-        if (sclass == null) {
-            sclass = _defaultShotClass;
-        }
-        var sc :ShotController = new sclass(shot, this);
+        var sc :ShotController = getController(shot) as ShotController;
         addController(sc);
         _collider.addShot(sc);
     }
 
     protected function handleDynamicAdded (d :Dynamic, group :String) :void
     {
-        var className :String = ClassUtil.getClassName(d);
-        var dclass :Class = _dynamicMap.get(className);
-        if (dclass == null) {
-            dclass = _defaultDynamicClass;
-        }
-        var dc :DynamicController = new dclass(d, this);
+        var dc :DynamicController = getController(d);
         addController(dc);
         _collider.addDynamic(dc);
+    }
+
+    protected function getController (d :Dynamic) :DynamicController
+    {
+        var className :String = ClassUtil.getClassName(d);
+        var dclass :Class;
+        if (d is Actor) {
+            dclass = _actorMap.get(className);
+            if (dclass == null) {
+                dclass = _defaultActorClass;
+            }
+        } else if (d is Shot) {
+            dclass = _shotMap.get(className);
+            if (dclass == null) {
+                dclass = _defaultShotClass;
+            }
+        } else {
+            dclass = _dynamicMap.get(className);
+            if (dclass == null) {
+                dclass = _defaultDynamicClass;
+            }
+        }
+        return new dclass(d, this);
     }
 
     protected function handleDynamicRemoved (d :Dynamic, group :String) :void

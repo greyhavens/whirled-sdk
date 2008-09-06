@@ -68,18 +68,18 @@ public class Collider
     public function addLine (p1 :Point, p2 :Point, type :int) :void
     {
         if (type > 0) {
-            var index :int = _sindex.getSectionFromTile(p1.x, p1.y);
-            var sx :int = _sindex.getSectionX(index);
-            var sy :int = _sindex.getSectionY(index);
-            index = _sindex.getSectionFromTile(p2.x, p2.y);
-            var osx :int = _sindex.getSectionX(index);
-            var osy :int = _sindex.getSectionY(index);
+            var index :int = _sindex.getSectionFromTile(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y));
+            var sx :int = _sindex.getSectionX(index) - 1;
+            var sy :int = _sindex.getSectionY(index) - 1;
+            index = _sindex.getSectionFromTile(Math.max(p1.x, p2.x), Math.max(p1.y, p2.y));
+            var osx :int = _sindex.getSectionX(index) + 1;
+            var osy :int = _sindex.getSectionY(index) + 1;
             var ld :LineData = LineData.createFromPoints(p1, p2, type);
-            for (var yy :int = Math.min(sy, osy) - 1; yy <= Math.max(sy, osy) + 1; yy++) {
+            for (var yy :int = sy; yy <= osy; yy++) {
                 if (!_sindex.validY(yy)) {
                     continue;
                 }
-                for (var xx :int = Math.min(sx, osx) - 1; xx <= Math.max(sx, osx) + 1; xx++) {
+                for (var xx :int = sx; xx <= osx; xx++) {
                     if (!_sindex.validX(xx)) {
                         continue;
                     }
@@ -96,7 +96,13 @@ public class Collider
 
     public function getLines (d :Dynamic) :Array
     {
-        var index :int = _sindex.getSectionFromTile(Math.floor(d.x), Math.floor(d.y));
+        return getLinesPt(d.x, d.y);
+    }
+
+    public function getLinesPt (x :Number, y :Number) :Array
+    {
+        var index :int = _sindex.getSectionFromTile(Math.floor(x), Math.floor(y));
+        //trace("getLines for index: " + index);
         var lines :Array = _lines[index];
         return (lines == null ? new Array() : lines);
     }

@@ -71,5 +71,10 @@ public class Dynamic
     {
         return (other is Dynamic && (other as Dynamic).id == id);
     }
+
+    public function getBounds () :Rect
+    {
+        return new Rect(x, y);
+    }
 }
 }
