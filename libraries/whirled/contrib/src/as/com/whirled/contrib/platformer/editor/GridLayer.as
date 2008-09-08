@@ -20,6 +20,10 @@
 
 package com.whirled.contrib.platformer.editor {
 
+import flash.events.MouseEvent;
+
+import flash.geom.Point;
+
 import com.threerings.util.Log;
 
 import com.whirled.contrib.platformer.display.Layer;
@@ -33,8 +37,14 @@ public class GridLayer extends Layer
     public function GridLayer ()
     {
         redraw(_oldScale);
-        mouseEnabled = false;
-        mouseChildren = false;
+        //mouseEnabled = false;
+        //mouseChildren = false;
+
+        addEventListener(MouseEvent.MOUSE_MOVE, function (...ignored) :void {
+            var localPoint :Point = globalToLocal(new Point(stage.mouseX, stage.mouseY));
+            log.debug("mouse position [" + localPoint.x + ", " + localPoint.y + ", " + 
+                _oldScale + "]");
+        });
     }
 
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void
@@ -57,13 +67,13 @@ public class GridLayer extends Layer
     {
         graphics.clear();
         graphics.lineStyle(0, 0x000000, 0.5);
-        var maxX :int = Metrics.DISPLAY_WIDTH + Metrics.TILE_SIZE / scale;
-        var minY :int = -Metrics.TILE_SIZE / scale;
-        for (var xx :int = 0; xx <= maxX; xx += Metrics.TILE_SIZE / scale) {
+        var maxX :Number = Metrics.DISPLAY_WIDTH + Metrics.TILE_SIZE / scale;
+        var minY :Number = -Metrics.TILE_SIZE / scale;
+        for (var xx :Number = 0; xx <= maxX; xx += Metrics.TILE_SIZE / scale) {
             graphics.moveTo(xx, Metrics.DISPLAY_HEIGHT);
             graphics.lineTo(xx, minY);
         }
-        for (var yy :int = Metrics.DISPLAY_HEIGHT; yy >= minY; yy -= Metrics.TILE_SIZE / scale) {
+        for (var yy :Number = Metrics.DISPLAY_HEIGHT; yy >= minY; yy -= Metrics.TILE_SIZE / scale) {
             graphics.moveTo(0, yy);
             graphics.lineTo(maxX, yy);
         }
