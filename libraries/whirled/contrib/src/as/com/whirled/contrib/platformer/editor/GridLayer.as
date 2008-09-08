@@ -20,10 +20,6 @@
 
 package com.whirled.contrib.platformer.editor {
 
-import flash.events.MouseEvent;
-
-import flash.geom.Point;
-
 import com.threerings.util.Log;
 
 import com.whirled.contrib.platformer.display.Layer;
@@ -37,14 +33,8 @@ public class GridLayer extends Layer
     public function GridLayer ()
     {
         redraw(_oldScale);
-        //mouseEnabled = false;
-        //mouseChildren = false;
-
-        addEventListener(MouseEvent.MOUSE_MOVE, function (...ignored) :void {
-            var localPoint :Point = globalToLocal(new Point(stage.mouseX, stage.mouseY));
-            log.debug("mouse position [" + localPoint.x + ", " + localPoint.y + ", " + 
-                _oldScale + "]");
-        });
+        mouseEnabled = false;
+        mouseChildren = false;
     }
 
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void
