@@ -21,7 +21,7 @@
 package com.whirled.contrib.platformer.game {
 
 import com.whirled.contrib.platformer.board.ColliderDetails;
-import com.whirled.contrib.platformer.board.SimpleActorBounds;
+import com.whirled.contrib.platformer.board.ActorBounds;
 
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.Shot;
@@ -35,29 +35,29 @@ public class ShotCollisionHandler extends CollisionHandler
 
     override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
-        pCollide(source as Shot, target as SimpleActorBounds, cd);
+        pCollide(source as Shot, target as ActorBounds, cd);
     }
 
-    protected function pCollide (s :Shot, sab :SimpleActorBounds, cd :ColliderDetails) :void
+    protected function pCollide (s :Shot, ab :ActorBounds, cd :ColliderDetails) :void
     {
-        if (cd.alines[0] == null || sab.actor.doesHit(cd.alines[0].x1, cd.alines[0].y1)) {
+        if (cd.alines[0] == null || ab.actor.doesHit(cd.alines[0].x1, cd.alines[0].y1)) {
             s.hit = true;
             if (cd.alines[0] != null && Math.abs(cd.alines[0].nx) > 0) {
-                sab.actor.wasHit =
-                    ((cd.alines[0].nx > 0 && (sab.actor.orient & Actor.ORIENT_RIGHT) > 0) ||
-                     (cd.alines[0].nx < 0 && (sab.actor.orient & Actor.ORIENT_RIGHT) == 0)) ?
+                ab.actor.wasHit =
+                    ((cd.alines[0].nx > 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) > 0) ||
+                     (cd.alines[0].nx < 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) == 0)) ?
                     Actor.HIT_FRONT : Actor.HIT_BACK;
             } else {
                 if (s.dx == 0) {
-                    sab.actor.wasHit = Actor.HIT_FRONT;
-                } else if ((s.dx < 0 && (sab.actor.orient & Actor.ORIENT_RIGHT) > 0) ||
-                    (s.dx > 0 && (sab.actor.orient & Actor.ORIENT_RIGHT) == 0)) {
-                    sab.actor.wasHit = Actor.HIT_FRONT;
+                    ab.actor.wasHit = Actor.HIT_FRONT;
+                } else if ((s.dx < 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) > 0) ||
+                    (s.dx > 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) == 0)) {
+                    ab.actor.wasHit = Actor.HIT_FRONT;
                 } else {
-                    sab.actor.wasHit = Actor.HIT_BACK;
+                    ab.actor.wasHit = Actor.HIT_BACK;
                 }
             }
-            sab.actor.health -= s.damage;
+            ab.actor.health -= s.damage;
         } else {
             s.ttl = 0;
         }

@@ -21,7 +21,7 @@
 package com.whirled.contrib.platformer.game {
 
 import com.whirled.contrib.platformer.board.ColliderDetails;
-import com.whirled.contrib.platformer.board.SimpleActorBounds;
+import com.whirled.contrib.platformer.board.ActorBounds;
 
 import com.whirled.contrib.platformer.piece.Actor;
 
@@ -41,18 +41,18 @@ public class AttackCollisionHandler extends CollisionHandler
 
     override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
-        var ssab :SimpleActorBounds = source as SimpleActorBounds;
-        var ac :ActorController = ssab.controller as ActorController;
-        var tsab :SimpleActorBounds = target as SimpleActorBounds;
+        var sab :ActorBounds = source as ActorBounds;
+        var ac :ActorController = sab.controller as ActorController;
+        var tab :ActorBounds = target as ActorBounds;
         if (_ac.canAttack()) {
             ac.startAttack();
         } else {
             var diff :Number =
-                    tsab.actor.x + tsab.actor.width/2 - ssab.actor.x - ssab.actor.width/2;
-            tsab.actor.wasHit = ((diff > 0 && (tsab.actor.orient & Actor.ORIENT_RIGHT) == 0) ||
-                    (diff < 0 && (tsab.actor.orient & Actor.ORIENT_RIGHT) > 0)) ?
+                    tab.actor.x + tab.actor.width/2 - sab.actor.x - sab.actor.width/2;
+            tab.actor.wasHit = ((diff > 0 && (tab.actor.orient & Actor.ORIENT_RIGHT) == 0) ||
+                    (diff < 0 && (tab.actor.orient & Actor.ORIENT_RIGHT) > 0)) ?
                 Actor.HIT_FRONT : Actor.HIT_BACK;
-            ac.doAttack(tsab.controller as ActorController);
+            ac.doAttack(tab.controller as ActorController);
         }
     }
 

@@ -18,35 +18,37 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.util {
+package com.whirled.contrib.platformer.board {
 
-/**
- * Some useful math functions.
- */
-public class Maths
+import com.whirled.contrib.platformer.game.ActorController;
+import com.whirled.contrib.platformer.piece.Rect;
+
+public class CircleBounds extends ActorBounds
 {
-    /**
-     * Returns the 1 if val > 0, -1 if val < 0 and 0 if val == 0.
-     */
-    public static function sign0 (val :Number) :Number
+    public var radius :Number;
+    public var r2 :Number;
+    public var x :Number;
+    public var y :Number;
+
+    public function CircleBounds (ac :ActorController, c :Collider)
     {
-        return (val == 0) ? 0 : (val > 0) ? 1 : -1;
+        super(ac, c);
+        radius = actor.width/2;
+        r2 = radius * radius;
+        x = actor.x + radius;
+        y = actor.y + radius;
     }
 
-    /**
-     * Returns the value limited to the range -mag <= val <= mag.
-     */
-    public static function limit (val :Number, mag :Number) :Number
+    override public function getRect () :Rect
     {
-        return (Math.abs(val) > mag) ? sign0(val) * mag : val;
+        return new Rect(actor.x, actor.y, actor.width, actor.width);
     }
 
-    /**
-     * Returns the squared distance between two points.
-     */
-    public static function getDist2 (x1 :Number, y1 :Number, x2 :Number, y2 :Number) :Number
+    override public function translate (dX :Number, dY :Number) :void
     {
-        return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+        super.translate(dX, dY);
+        x += dX;
+        y += dY;
     }
 }
 }

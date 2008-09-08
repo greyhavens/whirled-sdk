@@ -212,6 +212,29 @@ public class LineData
     }
 
     /**
+     * Returns the distance on the line to the near intersection between this line and the
+     * supplied circle.
+     */
+    public function getCircleIntersect (x :Number, y :Number, rad :Number) :Number
+    {
+        var dx :Number = x1 - x2;
+        var dy :Number = y1 - y2;
+        var d :Number = (x1 - x) * (y2 - y) - (x2 - x) * (y1 - y);
+        var delta :Number = rad * rad * mag * mag - d * d;
+        if (delta < 0) {
+            return -1;
+        } else if (delta == 0) {
+            return relDot(x + d * dy / mag * mag, y - d * dx / mag * mag);
+        }
+        var sdelta :Number = Math.sqrt(delta);
+        var xx1 :Number = x + (d * dy + (dy < 0 ? -1 : 1) * dx * sdelta) / mag * mag;
+        var yy1 :Number = y - (d * dx + Math.abs(dy) * sdelta) / mag * mag;
+        var xx2 :Number = x + (d * dy - (dy < 0 ? -1 : 1) * dx * sdelta) / mag * mag;
+        var yy2 :Number = y - (d * dx - Math.abs(dy) * sdelta) / mag * mag;
+        return Math.max(0, Math.min(relDot(xx1, yy1), relDot(xx2, yy2)));
+    }
+
+    /**
      * Determins the minimal distance between two line segments.
      */
     public function getLineDist (line :LineData) :Number

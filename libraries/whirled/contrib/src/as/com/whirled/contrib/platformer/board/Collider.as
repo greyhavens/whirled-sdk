@@ -31,6 +31,7 @@ import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Rect;
 
+import com.whirled.contrib.platformer.util.Maths;
 import com.whirled.contrib.platformer.util.SectionalIndex;
 
 import com.whirled.contrib.platformer.game.ActorController;
@@ -296,7 +297,7 @@ public class Collider
 
     public function isInteresting (source :DynamicBounds, target :DynamicBounds) :Boolean
     {
-        if (source is SimpleActorBounds && target is SimpleActorBounds) {
+        if (source is ActorBounds && target is ActorBounds) {
             return closeIndices(source.getRect(), target.getRect());
         }
         return false;
@@ -309,6 +310,30 @@ public class Collider
             for each (var line :LineData in (target as SimpleActorBounds).lines) {
                 if (line.polyIntersecting((source as SimpleActorBounds).mlines)) {
                     cols.push(line);
+                }
+            }
+        } else if (source is CircleBounds && target is CircleBounds) {
+            var cs :CircleBounds = source as CircleBounds;
+            var ct :CircleBounds = target as CircleBounds;
+            var dist :Number = Maths.getDist2(cs.x, cs.y, ct.x, ct.y);
+            if (dist < cs.r2 + ct.r2) {
+                cols.push(dist);
+            }
+        } else if (source is CircleBounds && target is SimpleActorBounds) {
+            cs = source as CircleBounds;
+            for each (line in (target as SimpleActorBounds).lines) {
+                dist = line.getSegmentDist2(cs.x, cs.y);
+                if (dist < cs.r2) {
+                    cols.push(line);
+                }
+            }
+        } else if (source is SimpleActorBounds && target is CircleBounds) {
+            ct = target as CircleBounds;
+            for each (line in (source as SimpleActorBounds).lines) {
+                dist = line.getSegmentDist2(ct.x, ct.y);
+                if (dist < ct.r2) {
+                    cols.push(dist);
+                    break;
                 }
             }
         }

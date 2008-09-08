@@ -18,35 +18,25 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.util {
+package com.whirled.contrib.platformer.board {
 
-/**
- * Some useful math functions.
- */
-public class Maths
+import com.whirled.contrib.platformer.game.ActorController;
+import com.whirled.contrib.platformer.piece.Actor;
+import com.whirled.contrib.platformer.piece.Rect;
+
+public class ActorBounds extends DynamicBounds
 {
-    /**
-     * Returns the 1 if val > 0, -1 if val < 0 and 0 if val == 0.
-     */
-    public static function sign0 (val :Number) :Number
+    public var actor :Actor;
+
+    public function ActorBounds (ac :ActorController, c :Collider)
     {
-        return (val == 0) ? 0 : (val > 0) ? 1 : -1;
+        super(ac, c);
+        actor = ac.getActor();
     }
 
-    /**
-     * Returns the value limited to the range -mag <= val <= mag.
-     */
-    public static function limit (val :Number, mag :Number) :Number
+    override public function getRect () :Rect
     {
-        return (Math.abs(val) > mag) ? sign0(val) * mag : val;
-    }
-
-    /**
-     * Returns the squared distance between two points.
-     */
-    public static function getDist2 (x1 :Number, y1 :Number, x2 :Number, y2 :Number) :Number
-    {
-        return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+        return new Rect(actor.x, actor.y, actor.width, actor.height);
     }
 }
 }

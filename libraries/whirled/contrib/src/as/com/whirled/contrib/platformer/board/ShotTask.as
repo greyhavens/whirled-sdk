@@ -70,7 +70,7 @@ public class ShotTask extends ColliderTask
         }
         var dynamics :Array = _collider.getDynamicBoundsByType(_s.inter);
         var closehit :Number = int.MAX_VALUE;
-        var csab :SimpleActorBounds = null;
+        var cab :ActorBounds = null;
         var line :LineData = new LineData(
                 _s.x, _s.y, _s.x + _s.dx * _delta, _s.y + _s.dy * _delta, BoundData.S_ALL);
         if (dynamics != null && dynamics.length > 0) {
@@ -80,16 +80,27 @@ public class ShotTask extends ColliderTask
                     var arr :Array = line.polyIntersect(sab.lines);
                     if (arr[0] < closehit) {
                         closehit = arr[0];
-                        csab = sab;
+                        cab = sab;
                         _cd.alines[0] = arr[1];
+                    }
+                } else if (db is CircleBounds) {
+                    var cb :CircleBounds = (db as CircleBounds);
+                    var dist :Number = line.getSegmentDist2(cb.x, cb.y);
+                    if (dist < cb.r2) {
+                        var hit :Number = line.getCircleIntersect(cb.x, cb.y, cb.radius);
+                        if (hit < closehit) {
+                            closehit = hit;
+                            cab = cb;
+                            _cd.alines[0] = null;
+                        }
                     }
                 }
             }
-            if (csab != null) {
+            if (cab != null) {
                 // shit happens
                 _delta *= closehit;
-                var ch :CollisionHandler = _cc.getCollisionHandler(csab.controller);
-                ch.collide(_s, csab, _cd);
+                var ch :CollisionHandler = _cc.getCollisionHandler(cab.controller);
+                ch.collide(_s, cab, _cd);
             }
         }
         _s.x += _s.dx * _delta;
