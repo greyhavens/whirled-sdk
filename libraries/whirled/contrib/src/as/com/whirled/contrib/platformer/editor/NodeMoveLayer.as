@@ -81,14 +81,16 @@ public class NodeMoveLayer extends Layer
             return;
         }
 
-        graphics.lineStyle(2, SELECTION_COLOR);
-        graphics.drawCircle(_currentNode.x * Metrics.TILE_SIZE,
-            Metrics.DISPLAY_HEIGHT - _currentNode.y * Metrics.TILE_SIZE, DISPLAY_RADIUS / scaleX);
+        var xPos :Number = _currentNode.x * Metrics.TILE_SIZE;
+        var yPos :Number = Metrics.DISPLAY_HEIGHT / scaleX - _currentNode.y * Metrics.TILE_SIZE;
+        graphics.lineStyle(LINE_WEIGHT / scaleX, SELECTION_COLOR);
+        graphics.drawCircle(xPos, yPos, DISPLAY_RADIUS / scaleX);
     }
 
     protected var _currentNode :Point;
 
     protected static const DISPLAY_RADIUS :int = 5;
+    protected static const LINE_WEIGHT :int = 2;
     protected static const SELECTION_COLOR :int = 0x880000;
 
     private static const log :Log = Log.getLog(NodeMoveLayer);
