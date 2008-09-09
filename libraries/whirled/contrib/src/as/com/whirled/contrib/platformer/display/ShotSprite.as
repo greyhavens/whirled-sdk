@@ -47,16 +47,22 @@ public class ShotSprite extends DynamicSprite
                 _disp.visible = true;
             }
         }
+        if (_dead) {
+            return;
+        }
         if (_shot.hit) {
             generateParticleEffect(_shot.hitEffect, this);
+            _dead = true;
         } else if (_shot.ttl <= 0 && _disp != null) {
             rotation += 180;
             generateParticleEffect(_shot.missEffect, this);
+            _dead = true;
         }
     }
 
     protected var _shot :Shot;
     protected var _alive :Number = 0;
+    protected var _dead :Boolean = false;
 
     protected static const TIME_TO_LIVE :Number = 0.05;
 }

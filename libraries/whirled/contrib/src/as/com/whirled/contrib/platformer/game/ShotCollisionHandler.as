@@ -22,6 +22,7 @@ package com.whirled.contrib.platformer.game {
 
 import com.whirled.contrib.platformer.board.ColliderDetails;
 import com.whirled.contrib.platformer.board.ActorBounds;
+import com.whirled.contrib.platformer.board.LineData;
 
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.Shot;
@@ -40,7 +41,8 @@ public class ShotCollisionHandler extends CollisionHandler
 
     protected function pCollide (s :Shot, ab :ActorBounds, cd :ColliderDetails) :void
     {
-        if (cd.alines[0] == null || ab.actor.doesHit(cd.alines[0].x1, cd.alines[0].y1)) {
+        if (cd.alines[0] == null ||
+                (cd.alines[0] is LineData && ab.actor.doesHit(cd.alines[0].x1, cd.alines[0].y1))) {
             s.hit = true;
             if (cd.alines[0] != null && Math.abs(cd.alines[0].nx) > 0) {
                 ab.actor.wasHit =

@@ -33,25 +33,7 @@ public class ShotTask extends ColliderTask
     {
         super(sc, col);
         _s = sc.getShot();
-        var line :LineData = new LineData(
-                _s.x, _s.y, _s.x + _s.dx * _s.ttl, _s.y + _s.dy * _s.ttl, BoundData.S_ALL);
-        var lines :Array = col.getLinesFromLine(line);
-        //trace("projectile line: " + line + " testing against " + lines.length + " lines");
-        var closehit :Number = int.MAX_VALUE;
-        for each (var ld :LineData in lines) {
-            if (ld.isIntersecting(line) &&
-                    (BoundData.blockInner(ld.type, true) && ld.isInside(_s.x, _s.y) ||
-                     BoundData.blockOuter(ld.type, true) && ld.isOutside(_s.x, _s.y))) {
-                var hit :Number = line.findIntersect(ld);
-                //trace("projectile found intersect " + ld + " hit: " + hit);
-                if (hit < closehit) {
-                    closehit = hit;
-                }
-            }
-        }
-        if (closehit < 1 && closehit > 0) {
-            _s.ttl *= closehit;
-        }
+        preCalcMovement();
     }
 
     override public function genCD (ct :ColliderTask = null) :ColliderDetails
@@ -91,7 +73,7 @@ public class ShotTask extends ColliderTask
                         if (hit < closehit) {
                             closehit = hit;
                             cab = cb;
-                            _cd.alines[0] = null;
+                            _cd.alines[0] = dist;
                         }
                     }
                 }
@@ -111,6 +93,35 @@ public class ShotTask extends ColliderTask
     override public function isInteractive () :Boolean
     {
         return false;
+    }
+
+    protected function preCalcMovement () :void
+    {
+        var line :LineData = new LineData(
+                _s.x, _s.y, _s.x + _s.dx * _s.ttl, _s.y + _s.dy * _s.ttl, BoundData.S_ALL);
+        var closehit :Number = findLineCloseHit(line);
+        if (closehit < 1 && closehit > 0) {
+            _s.ttl *= closehit;
+        }
+    }
+
+    protected function findLineCloseHit (line :LineData) :Number
+    {
+        var lines :Array = _collider.getLinesFromLine(line);
+        //trace("projectile line: " + line + " testing against " + lines.length + " lines");
+        var closehit :Number = int.MAX_VALUE;
+        for each (var ld :LineData in lines) {
+            if (ld.isIntersecting(line) &&
+                    (BoundData.blockInner(ld.type, true) && ld.isInside(_s.x, _s.y) ||
+                     BoundData.blockOuter(ld.type, true) && ld.isOutside(_s.x, _s.y))) {
+                var hit :Number = line.findIntersect(ld);
+                //trace("projectile found intersect " + ld + " hit: " + hit);
+                if (hit < closehit) {
+                    closehit = hit;
+                }
+            }
+        }
+        return closehit;
     }
 
     protected var _s :Shot;
