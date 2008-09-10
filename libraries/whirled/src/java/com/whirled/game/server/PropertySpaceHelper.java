@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.samskivert.util.ObjectUtil;
+import com.samskivert.util.StringUtil;
 
 import com.threerings.presents.dobj.DObject;
 import com.threerings.presents.dobj.DObjectManager;
@@ -159,7 +160,8 @@ public abstract class PropertySpaceHelper
                 state.put(entry.getKey(), decodeFromStore(entry.getValue()));
 
             } catch (Exception e) {
-                log.warning("Failed to decode property", e);
+                log.warning("Failed to decode property", "psObj", psObj, "key", entry.getKey(), 
+                    "value", StringUtil.toString(entry.getValue()), e);
             }
         }
 
@@ -195,7 +197,8 @@ public abstract class PropertySpaceHelper
                 dirtyState.put(propName, encodeForStore(allState.get(propName)));
 
             } catch (Exception e) {
-                log.warning("Failed to encode property", "name", propName, e);
+                log.warning("Failed to encode property", "psObj", obj, "key", propName, 
+                    "value", StringUtil.toString(allState.get(propName)), e);
             }
         }
         return dirtyState;
@@ -241,7 +244,7 @@ public abstract class PropertySpaceHelper
             if (onClient) {
                 o = ObjectMarshaller.decode(o);
             }
-             props.put(key, o);
+            props.put(key, o);
         }
     }
 
