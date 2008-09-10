@@ -193,6 +193,7 @@ public class WhirledTestServer extends CrowdServer
         }
     }
 
+    // from BureauRegistry.CommandGenerator
     public String[] createCommand (
         String bureauId,
         String token)
@@ -235,6 +236,12 @@ public class WhirledTestServer extends CrowdServer
         if (hasServerSideCode()) {
             log.info("Server side code detected, setting game definition");
             ((TestGameDefinition)gamedef).hasServer = true;
+            String pkgDir = System.getProperty("app.package-dir");
+            String server = System.getProperty("app.server-agent");
+            if (!pkgDir.equals(".") && !pkgDir.equals("./")) {
+                server = pkgDir + "/" + server;
+            }
+            gamedef.server = server.replace("/", ".");
         }
 
         // figure out how many players will be involved in the test game

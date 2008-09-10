@@ -220,7 +220,12 @@
       <sysproperty key="remotePlayers" value="${remotePlayers}"/>
       <sysproperty key="party" value="${party}"/>
       <sysproperty key="flash.player" value="${player.path}"/>
+
+      <!-- stuff to run the agent -->
       <sysproperty key="thane.path" value="${thane.path}"/>
+      <sysproperty key="app.package-dir" value="${app.package-dir}"/>
+      <sysproperty key="app.server-agent" value="${app.server-agent}"/>
+
       <classpath>
         <fileset dir="${build.root}/dist" includes="whirled-tools.jar"/>
         <fileset dir="${build.root}/dist/lib" includes="*.jar"/>
