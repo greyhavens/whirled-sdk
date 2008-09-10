@@ -219,6 +219,14 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
+     * Instructs the game client to open the appropriate location in the game's shop
+     */
+    public function showGameShop (itemType :int, catalogId :int = 0) :void
+    {
+        callHostCode("showGameShop_v1", itemType, catalogId);
+    }
+
+    /**
      * @private
      */
     override protected function setUserProps (o :Object) :void

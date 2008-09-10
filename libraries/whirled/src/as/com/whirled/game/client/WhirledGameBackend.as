@@ -202,6 +202,7 @@ public class WhirledGameBackend extends BaseGameBackend
         o["setFrameRate_v1"] = setFrameRate_v1;
         o["setShowReplay_v1"] = setShowReplay_v1;
         o["setStageQuality_v1"] = setStageQuality_v1;
+        o["showGameShop_v1"] = showGameShop_v1;
 
         // .game
         o["isMyTurn_v1"] = isMyTurn_v1;
@@ -319,6 +320,17 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function setMappedScores_v1 (scores :Object) :void
     {
         (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setMappedScores(scores);
+    }
+
+    /**
+     * Opens the game's shop to the correct section or item detail.  At this point there is no
+     * access to the rest of Whirled, so display a message for testing purposes.  This will be
+     * overridden and completed by a subclass with access to the rest of Whirled.
+     */
+    protected function showGameShop_v1 (itemType :int, catalogId :int = 0) :void
+    {
+        displayInfo(null, "Open game shop failed because game is not connected to Whirled.", 
+           WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
 
     protected function getHeadShot_v2 (occupant :int) :DisplayObject

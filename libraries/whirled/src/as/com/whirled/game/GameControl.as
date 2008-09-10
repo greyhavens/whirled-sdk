@@ -39,6 +39,14 @@ import com.whirled.AbstractSubControl;
  */
 public class GameControl extends AbstractControl
 {
+    // Make item type constants available for in-game use
+    public static const ITEM_PACK_SHOP :int = 12;
+    public static const LEVEL_PACK_SHOP :int = 11;
+    public static const AVATAR_SHOP :int = 5;
+    public static const FURNITURE_SHOP :int = 3;
+    public static const BACKDROP_SHOP :int = 9;
+    public static const TOY_SHOP :int = 10;
+  
     /**
      * Creates a GameControl that connects to the Whirled game system.
      *
