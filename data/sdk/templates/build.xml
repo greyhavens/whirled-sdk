@@ -12,7 +12,7 @@
   <!--<property name="app.source-dir" value="src"/>-->
 
   <!-- if you wish to put your source in a package, uncomment this line -->
-  <!--<property name="app.package-dir" value="com.foo.bar"/>-->
+  <!--<property name="app.package-dir" value="com/foo/bar"/>-->
 
   <!-- if you need to include extra source files, uncomment and edit this line -->
   <!--<property name="app.source-extras" value="../../../libraries/whirled/contrib/src/as"/>-->
@@ -21,7 +21,7 @@
   <!--<property name="app.lib-extras" value="../lib/corelib.swc,../lib/tweener.swc"/>-->
 
   <!-- if you wish to name your server agent class something besides "Server", uncomment and edit this line -->
-  <!--<property name="app.server-agent" value="Server"/>-->
+  <!--<property name="app.server-agent" value="subpackage/Server"/>-->
 
   <!-- include the standard build script -->
   <import file="../etc/project-include.xml"/>
