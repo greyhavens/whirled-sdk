@@ -255,7 +255,7 @@ public abstract class PropertySpaceHelper
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         // GameMap is a very common class, let's not waste ~20 bytes per property in the DB for it
-        oos.addTranslation(GameMap.class.getCanonicalName(), "!");
+        oos.addTranslation(GameMap.class.getCanonicalName(), GAME_MAP_MARKER_STRING);
         oos.writeObject(obj);
         oos.flush();
         return baos.toByteArray();
@@ -266,7 +266,9 @@ public abstract class PropertySpaceHelper
         throws IOException, ClassNotFoundException
     {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
-        ois.addTranslation("!", GameMap.class.getCanonicalName());
+        ois.addTranslation(GAME_MAP_MARKER_STRING, GameMap.class.getCanonicalName());
         return ois.readObject();
     }
+
+    protected static final String GAME_MAP_MARKER_STRING = "!";
 }
