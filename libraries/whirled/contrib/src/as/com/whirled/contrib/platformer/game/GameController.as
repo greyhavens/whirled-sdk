@@ -58,6 +58,7 @@ public class GameController
     public function initDynamicClasses () :void
     {
         addShotClass(Shot, ShotController, true);
+        addDynamicClass(Dynamic, DynamicController, true);
     }
 
     public function run () :void
