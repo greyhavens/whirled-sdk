@@ -6,8 +6,6 @@ package com.whirled.game.server;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +13,8 @@ import java.util.Map;
 import com.samskivert.util.ObjectUtil;
 import com.samskivert.util.StringUtil;
 
+import com.threerings.io.ObjectInputStream;
+import com.threerings.io.ObjectOutputStream;
 import com.threerings.presents.dobj.DObject;
 import com.threerings.presents.dobj.DObjectManager;
 
@@ -184,7 +184,7 @@ public abstract class PropertySpaceHelper
 
     /**
      * Takes a snapshot of the state of the given {@link PropertySpaceObject}, isolates the
-     * potions that have been written to since startup, and passes them through
+     * portions that have been written to since startup, and passes them through
      * {@link #encodeForStore(Object)} for persistent storage.
      */
     public static Map<String, byte[]> encodeDirtyStateForStore (PropertySpaceObject obj)
@@ -248,21 +248,25 @@ public abstract class PropertySpaceHelper
         }
     }
 
-    // use basic JVM serialization for the DB
+    // use Narya streaming to encode our values
     protected static byte[] encodeForStore (Object obj)
         throws IOException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
+        // GameMap is a very common class, let's not waste ~20 bytes per property in the DB for it
+        oos.addTranslation(GameMap.class.getCanonicalName(), "!");
         oos.writeObject(obj);
         oos.flush();
         return baos.toByteArray();
     }
 
-    // use basic JVM deserialization for the DB
+    // use Narya streaming to encode our values
     protected static Object decodeFromStore (byte[] data)
         throws IOException, ClassNotFoundException
     {
-        return new ObjectInputStream(new ByteArrayInputStream(data)).readObject();
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
+        ois.addTranslation("!", GameMap.class.getCanonicalName());
+        return ois.readObject();
     }
 }
