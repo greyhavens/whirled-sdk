@@ -5,24 +5,37 @@
 
 package com.whirled.bureau.client {
 
-import com.threerings.bureau.client.Agent;
-import com.threerings.bureau.Log;
-import com.whirled.bureau.data.GameAgentObject;
+import flash.utils.Timer;
+import flash.events.TimerEvent;
+
+import com.threerings.io.TypedArray;
+
 import com.threerings.presents.dobj.ObjectAccessError;
 import com.threerings.presents.dobj.Subscriber;
 import com.threerings.presents.dobj.SubscriberAdapter;
+
 import com.threerings.presents.util.SafeSubscriber;
-import com.whirled.game.data.WhirledGameObject;
+
+import com.threerings.bureau.client.Agent;
+import com.threerings.bureau.Log;
+
 import com.whirled.bureau.util.WhirledBureauContext;
+
+import com.whirled.bureau.data.GameAgentObject;
+
 import com.whirled.game.client.ThaneGameController;
+
+import com.whirled.game.data.WhirledGameObject;
 
 /** The container for a user's game control code. */
 public class GameAgent extends Agent
 {
     public function GameAgent (ctx :WhirledBureauContext)
     {
-        _ctx = ctx;
-    }
+        _ctx = ctx; 
+
+        _traceTimer.addEventListener(TimerEvent.TIMER, handleTimer);
+   }
 
     // from Agent
     public override function start () :void
@@ -53,6 +66,11 @@ public class GameAgent extends Agent
         _subscriber = null;
         _gameObj = null;
         _agentObj = null;
+
+        handleTimer(null);
+        _traceTimer.stop();
+        _traceTimer.removeEventListener(TimerEvent.TIMER, handleTimer);
+        _traceTimer = null;
 
         if (_controller != null) {
             _controller.shutdown();
@@ -134,12 +152,27 @@ public class GameAgent extends Agent
     }
 
     /**
-     * Called whenever a trace() is sent back to us from a usercode Domain; we relay
-     * it back to the server.
+     * Called whenever a trace() is sent back to us from a usercode Domain; we batch these up and
+     * relay back to the server periodically and on shutdown.
      */
     protected function relayTrace (trace :String) :void
     {
-        _gameObj.manager.invoke("agentTrace", trace);
+        _traceOutput.push(trace);
+        _traceTimer.start();
+    }
+
+    /**
+     * Checks to see if we have some trace output to send to the server an if so, sends it.
+     */
+    protected function handleTimer (event :TimerEvent) :void
+    {
+        if (_traceOutput.length == 0) {
+            _traceTimer.stop();
+
+        } else {
+            _gameObj.manager.invoke("agentTrace", _traceOutput);
+            _traceOutput.length = 0;
+        }
     }
 
     /**
@@ -155,6 +188,8 @@ public class GameAgent extends Agent
     protected var _gameObj :WhirledGameObject;
     protected var _userCode :UserCode;
     protected var _controller :ThaneGameController;
+    protected var _traceOutput :TypedArray = TypedArray.create(String);
+    protected var _traceTimer :Timer = new Timer(1000);
 }
 
 }

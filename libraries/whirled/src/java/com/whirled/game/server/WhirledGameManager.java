@@ -469,7 +469,16 @@ public abstract class WhirledGameManager extends GameManager
      * Called privately by the ThaneGameController when anything in the agent's code domain
      * causes a line of debug or error tracing.
      */
-    public void agentTrace (ClientObject caller, String trace)
+    @Deprecated public void agentTrace (ClientObject caller, String trace)
+    {
+        // do nothing, subclasses may implement something interesting here
+    }
+
+    /**
+     * Called privately by the ThaneGameController when anything in the agent's code domain
+     * causes some lines of debug or error tracing to be spit out.
+     */
+    public void agentTrace (ClientObject caller, String[] trace)
     {
         // do nothing, subclasses may implement something interesting here
     }
