@@ -11,7 +11,6 @@
   <property name="app.package-dir" value="."/>
   <property name="app.library-dir" value="."/>
   <property name="app.server-agent" value="Server"/>
-  <property name="app.enable-server-agent" value="false"/>
 
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
   <!-- out of it. otherwise just use a dummy value (can't easily skip it, alas). -->
@@ -32,7 +31,7 @@
     <echo>  ant compile - builds your project</echo>
     <echo>  ant test - builds game projects and runs them in a test environment</echo>
     <echo>  ant -Dplayers=4 test - runs multiple test clients for multiplayer testing</echo>
-    <echo>  ant clean - cleans out build resluts</echo>
+    <echo>  ant clean - cleans out build results</echo>
   </target>
 
   <!-- builds our SWF file -->
