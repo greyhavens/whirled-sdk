@@ -41,15 +41,24 @@ public final class MainLoop
 
     public function MainLoop (hostSprite :Sprite, keyDispatcher :IEventDispatcher = null)
     {
-        if (null == hostSprite) {
-            throw new ArgumentError("hostSprite must be non-null");
-        }
-
         if (null != g_instance) {
             throw new Error("only one MainLoop may exist at a time");
         }
 
         g_instance = this;
+
+        this.reset(hostSprite, keyDispatcher);
+    }
+
+    public function reset (hostSprite :Sprite, keyDispatcher :IEventDispatcher = null) :void
+    {
+        if (null == hostSprite) {
+            throw new ArgumentError("hostSprite must be non-null");
+        }
+
+        this.stop();
+        this.popAllModes();
+        this.handleModeTransitions();
 
         _hostSprite = hostSprite;
         _keyDispatcher = (null != keyDispatcher ? keyDispatcher : _hostSprite);
@@ -112,11 +121,7 @@ public final class MainLoop
      */
     public function shutdown () :void
     {
-        if (_running) {
-            _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
-            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false);
-            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp, false);
-        }
+        this.stop();
 
         this.popAllModes();
         this.handleModeTransitions();
@@ -151,6 +156,16 @@ public final class MainLoop
         _keyDispatcher.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false);
 
         _lastTime = this.elapsedSeconds;
+    }
+
+    public function stop () :void
+    {
+        if (_running) {
+            _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
+            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false);
+            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp, false);
+            _running = false;
+        }
     }
 
     protected function onKeyDown (e :KeyboardEvent) :void

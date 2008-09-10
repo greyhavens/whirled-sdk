@@ -90,12 +90,7 @@ public class AudioManager
 
     public function shutdown () :void
     {
-        // shutdown all sounds
-        for each (var channel :AudioChannel in _channels) {
-            if (channel.isPlaying) {
-                this.stop(channel);
-            }
-        }
+        stopAllSounds();
 
         g_instance = null;
     }
@@ -214,6 +209,16 @@ public class AudioManager
         }
 
         return channel;
+    }
+
+    public function stopAllSounds () :void
+    {
+        // shutdown all sounds
+        for each (var channel :AudioChannel in _channels) {
+            if (channel.isPlaying) {
+                this.stop(channel);
+            }
+        }
     }
 
     public function stop (channel :AudioChannel) :void
