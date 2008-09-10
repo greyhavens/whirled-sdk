@@ -107,10 +107,10 @@ public class BoardEditSprite extends EditSprite
     {
         _layers[ACTOR_LAYER].clear();
         _layers[DYNAMIC_LAYER].clear();
-        addDynamics(
-            _board.getDynamicIns(Board.ACTORS), ACTOR_LAYER, Board.GROUP_NAMES[Board.ACTORS]);
-        addDynamics(_board.getDynamicIns(Board.PLATFORMS), DYNAMIC_LAYER,
-            Board.GROUP_NAMES[Board.PLATFORMS]);
+        for each (var group :String in _board.getGroupNames()) {
+            addDynamics(_board.getDynamicIns(group),
+                (group == Board.ACTORS ? ACTOR_LAYER : DYNAMIC_LAYER), group);
+        }
     }
 
     public function isOnScreen (sprite :EditorSprite) :Boolean

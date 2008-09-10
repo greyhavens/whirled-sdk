@@ -33,6 +33,7 @@ import mx.events.IndexChangedEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 
+import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.editor.EditView;
 
 /**
@@ -53,9 +54,17 @@ public class LevelEditor extends Panel
     }
 
     /**
+     * Set the board to be used in the level editot.
+     */
+    public function setBoard (board :Board) :void
+    {
+        _board = board;
+    }
+
+    /**
      * Must be called to set up loading the XML for this level editor.
      */
-    public function setXmlPaths (piecesXmlPath :String, dynamicsXmlPath :String, 
+    public function setXmlPaths (piecesXmlPath :String, dynamicsXmlPath :String,
         levelXmlPath :String) :void
     {
         piecesXmlPath = piecesXmlPath.replace(/:/, "|");
@@ -67,7 +76,7 @@ public class LevelEditor extends Panel
                 addEditView();
             });
         _piecesLoader.load(new URLRequest("file://" + piecesXmlPath));
-    
+
         dynamicsXmlPath = dynamicsXmlPath.replace(/:/, "|");
         dynamicsXmlPath = dynamicsXmlPath.replace(/\\/g, "/");
         if (dynamicsXmlPath == null || dynamicsXmlPath == "") {
@@ -82,7 +91,7 @@ public class LevelEditor extends Panel
                 });
             _dynamicsLoader.load(new URLRequest("file://" + dynamicsXmlPath));
         }
-    
+
         levelXmlPath = levelXmlPath.replace(/:/, "|");
         levelXmlPath = levelXmlPath.replace(/\\/g, "/");
         if (levelXmlPath == null || levelXmlPath == "") {
@@ -145,23 +154,23 @@ public class LevelEditor extends Panel
         _codeArea.setStyle("fontFamily", "Sans");
         _codeArea.setStyle("fontSize", "12");
         _xmlCode.addChild(_codeArea);
-    
+
         var xmlPieces :XML = new XML(_piecesLoader.data);
         var xmlLevel :XML = (_levelLoader == null ? null : new XML(_levelLoader.data));
-        var xmlDynamics :XML = 
+        var xmlDynamics :XML =
             (_dynamicsLoader == null ? <dynamics/> : new XML(_dynamicsLoader.data));
-    
+
         _levelEdit.rawChildren.addChild(_editView = new EditView(
-            _levelEdit, xmlPieces, xmlDynamics, xmlLevel));
+            _levelEdit, xmlPieces, xmlDynamics, xmlLevel, _board));
     }
-    
+
     protected function tabChanged (selected :Container) :void
     {
         if (selected == _xmlCode) {
             _codeArea.text = _editView.getXML();
         }
     }
-    
+
     protected var _codeArea :TextArea;
     protected var _editView :EditView;
     protected var _piecesLoader :URLLoader;
@@ -173,5 +182,6 @@ public class LevelEditor extends Panel
     protected var _levelEdit :FocusContainer;
     protected var _xmlCode :VBox;
     protected var _factoryInitialized :Boolean = false;
+    protected var _board :Board;
 }
 }

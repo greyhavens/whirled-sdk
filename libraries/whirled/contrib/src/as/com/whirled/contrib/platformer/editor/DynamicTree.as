@@ -49,8 +49,7 @@ public class DynamicTree extends BaseTree
         xml.@label = ClassUtil.tinyClassName(d);
         xml.@name = d.id;
         if (addXML(xml, "root." + group) != null) {
-            var idx :int = Board.GROUP_NAMES.indexOf(group);
-            _board.addDynamicIns(d, idx);
+            _board.addDynamicIns(d, group);
             _adg.selectedItem = xml;
             handleChange(null);
         }
@@ -88,12 +87,12 @@ public class DynamicTree extends BaseTree
         var root :XML = <node>group</node>;
         root.@label = "root";
         root.@name = "root";
-        for (var ii :int = 0; ii < Board.GROUP_NAMES.length; ii++) {
+        for each (var gname :String in _board.getGroupNames()) {
             var group :XML = <node>group</node>;
-            group.@label = Board.GROUP_NAMES[ii];
-            group.@name = Board.GROUP_NAMES[ii];
+            group.@label = gname;
+            group.@name = gname;
             root.appendChild(group);
-            for each (var node :XML in _board.getDynamicsXML(ii).children()) {
+            for each (var node :XML in _board.getDynamicsXML(gname).children()) {
                 var xml :XML = <dyn/>;
                 xml.@label = node.@type;
                 xml.@name = node.@id;
@@ -123,7 +122,7 @@ public class DynamicTree extends BaseTree
         }
         var def :XML;
         var group :String = _group.@name;
-        def = _dxml.elements(group)[0].dynamicdef.(@type == ClassUtil.tinyClassName(_dynamic))[0];
+        def = _dxml.elements(group)[0].dynamicdef.(@cname == ClassUtil.getClassName(_dynamic))[0];
         if (def == null ||
                 (def.elements("var").length() == 0 && def.elements("const").length() == 0)) {
             return;
@@ -154,7 +153,7 @@ public class DynamicTree extends BaseTree
             detail.updateDynamic(_dynamic);
         }
         var group :String = _group.@name;
-        _board.updateDynamicIns(_dynamic, Board.GROUP_NAMES.indexOf(group));
+        _board.updateDynamicIns(_dynamic, group);
     }
 
     protected var _dxml :XML;

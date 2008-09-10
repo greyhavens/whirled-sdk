@@ -50,10 +50,15 @@ public class Board
     public static const DYNAMIC_ADDED :String = "dynamic_added";
     public static const DYNAMIC_REMOVED :String = "dynamic_removed";
 
-    public static const ACTORS :int = 0;
-    public static const PLATFORMS :int = 1;
+    public static const ACTORS :String = "actors";
+    public static const PLATFORMS :String = "platforms";
 
-    public static const GROUP_NAMES :Array = [ "actors", "platforms" ];
+    public function Board () :void
+    {
+        _groupNames = new Array();
+        _groupNames.push(ACTORS);
+        _groupNames.push(PLATFORMS);
+    }
 
     public function loadFromXML (level :XML, pfac :PieceFactory) :void
     {
@@ -83,9 +88,14 @@ public class Board
         }
     }
 
-    public function getDynamicIns (idx :int) :Array
+    public function getGroupNames () :Array
     {
-        return _dynamicIns[idx];
+        return _groupNames;
+    }
+
+    public function getDynamicIns (group :String) :Array
+    {
+        return _dynamicIns[group];
     }
 
     public function getActors () :Array
@@ -124,17 +134,17 @@ public class Board
         return _actors.indexOf(a) != -1;
     }
 
-    public function addDynamicIns (d :Dynamic, idx :int) :void
+    public function addDynamicIns (d :Dynamic, group :String) :void
     {
-        _dynamicIns[idx].push(d);
+        _dynamicIns[group].push(d);
         adjustMaxId(d);
-        sendEvent(DYNAMIC_ADDED, d, "root." + GROUP_NAMES[idx]);
+        sendEvent(DYNAMIC_ADDED, d, "root." + group);
     }
 
-    public function updateDynamicIns (d :Dynamic, idx :int) :void
+    public function updateDynamicIns (d :Dynamic, group :String) :void
     {
-        if (_dynamicIns[idx].indexOf(d) != -1) {
-            sendEvent(ITEM_UPDATED, d, "root." + GROUP_NAMES[idx]);
+        if (_dynamicIns[group].indexOf(d) != -1) {
+            sendEvent(ITEM_UPDATED, d, "root." + group);
         }
     }
 
@@ -340,10 +350,8 @@ public class Board
     protected function getGroup (tree :String) :Array
     {
         tree = tree.replace(/root(\.)*/, "");
-        for (var ii :int = 0; ii < GROUP_NAMES.length; ii++) {
-            if (tree == GROUP_NAMES[ii]) {
-                return _dynamicIns[ii];
-            }
+        if (_dynamicIns[tree] != null) {
+            return _dynamicIns[tree];
         }
         var arr :Array = _pieceTree;
         for each (var name :String in tree.split(".")) {
@@ -375,8 +383,8 @@ public class Board
     public function getXML () :XML
     {
         addOrReplaceXML(_xml.board[0], "piecenode", getPieceTreeXML());
-        for (var ii :int = 0; ii < GROUP_NAMES.length; ii++) {
-            addOrReplaceXML(_xml.board[0], GROUP_NAMES[ii], getDynamicsXML(ii));
+        for each (var group :String in getGroupNames()) {
+            addOrReplaceXML(_xml.board[0], group, getDynamicsXML(group));
         }
         return _xml;
     }
@@ -386,16 +394,16 @@ public class Board
         return genPieceTreeXML(_pieceTree);
     }
 
-    public function getDynamicsXML (idx :int) :XML
+    public function getDynamicsXML (group :String) :XML
     {
-        return genDynamicsXML(_dynamicIns[idx], GROUP_NAMES[idx]);
+        return genDynamicsXML(_dynamicIns[group], group);
     }
 
     public function loadDynamic (xml :XML) :Dynamic
     {
-        var dclass :Class = ClassUtil.getClassByName("piece." + xml.@type);
+        var dclass :Class = ClassUtil.getClassByName(xml.@cname);
         if (dclass != null) {
-            trace("creating dynamic: " + xml.@type);
+            trace("creating dynamic: " + xml.@cname);
             return new dclass(xml);
         }
         return null;
@@ -541,5 +549,6 @@ public class Board
     protected var _listeners :HashMap = new HashMap();
 
     protected var _pfac :PieceFactory;
+    protected var _groupNames :Array;
 }
 }

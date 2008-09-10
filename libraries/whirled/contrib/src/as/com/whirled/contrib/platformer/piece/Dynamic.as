@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import com.threerings.util.ClassUtil;
 import com.threerings.util.Hashable;
 
 /**
@@ -59,6 +60,7 @@ public class Dynamic
         xml.@x = x;
         xml.@y = y;
         xml.@id = id;
+        xml.@cname = ClassUtil.getClassName(this);
         return xml;
     }
 

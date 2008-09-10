@@ -68,15 +68,16 @@ public class EditView extends Canvas
     /**
      * In addition to requiring valid XML, the PieceSpriteFactory should have been initialized
      * before this view is created.
-     * 
+     *
      * Also, it is required that Metrics.init() be called before creating this view.
      */
-    public function EditView (container :Container, pieces :XML, dynamics :XML, level :XML)
+    public function EditView (
+        container :Container, pieces :XML, dynamics :XML, level :XML, board :Board = null)
     {
         _container = container;
 
         _pfac = new PieceFactory(pieces);
-        _board = new Board();
+        _board = board == null ? new Board() : board;
         _boardSprite = new BoardEditSprite(this);
         _board.loadFromXML(level, _pfac);
         _editSelector = new PieceSelector(_pfac);
@@ -202,10 +203,9 @@ public class EditView extends Canvas
             return;
         }
         var xml :XML = new XML("<" + group + "/>");
-        xml.@type = type;
+        xml.@cname = type;
         xml.@x = Math.max(0, _boardSprite.getX());
-        xml.@y = Math.max(0, _boardSprite.getY()) +
-                (group == Board.GROUP_NAMES[Board.ACTORS] ? 0.01 : 0);
+        xml.@y = Math.max(0, _boardSprite.getY()) + (group == Board.ACTORS ? 0.01 : 0);
         xml.@id = _board.getMaxId() + 1;
         for each (var cxml :XML in _dynamicSelector.getConst()) {
             xml["@" + cxml.@id] = cxml.@value;
@@ -256,10 +256,12 @@ public class EditView extends Canvas
     protected function getTree (tree :String) :BaseTree
     {
         var group :String = tree.substr(5);
-        for (var ii :int = 0; ii < Board.GROUP_NAMES.length; ii++) {
-            if (group.indexOf(Board.GROUP_NAMES[ii]) == 0) {
-                return _dynamicTree;
-            }
+        var idx :int = group.indexOf(".");
+        if (idx != -1) {
+            group = group.substr(0, idx);
+        }
+        if (_board.getGroupNames().indexOf(group) != -1) {
+            return _dynamicTree;
         }
         return _pieceTree;
     }
@@ -281,7 +283,7 @@ public class EditView extends Canvas
     protected var _pfac :PieceFactory;
 
     protected var _rbg :RadioButtonGroup;
-    
+
     /** The lables used for the type radio button group */
     protected static const PIECES :String = "Pieces";
     protected static const DYNAMICS :String = "Dynamics";

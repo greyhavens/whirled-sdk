@@ -40,7 +40,6 @@ import mx.events.SliderEvent;
 
 import com.threerings.flex.FlexWrapper;
 
-import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.display.Metrics;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.PieceFactory;
@@ -50,7 +49,7 @@ public class PieceEditView extends Canvas
     /**
      * In addition to requiring valid XML, the PieceSpriteFactory should have been initialized
      * before this view is created.
-     * 
+     *
      * Also, it is required that Metrics.init() be called before creating this view.
      */
     public function PieceEditView (container :Container, pieces :XML)

@@ -58,7 +58,7 @@ public class DynamicSelector extends BaseSelector
             sroot.@label = node.localName();
             for each (var snode :XML in node.children()) {
                 var ssroot :XML = <node/>;
-                ssroot.@type = snode.@type;
+                ssroot.@cname = snode.@cname;
                 ssroot.@label = snode.@label;
                 sroot.appendChild(ssroot);
             }
@@ -85,7 +85,7 @@ public class DynamicSelector extends BaseSelector
         if (item == null || item.parent() == null || item.children().length() != 0) {
             return null;
         }
-        return item.@type;
+        return item.@cname;
     }
 
     protected var _dxml :XML;
