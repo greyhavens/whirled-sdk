@@ -327,7 +327,7 @@ public class WhirledGameBackend extends BaseGameBackend
      * access to the rest of Whirled, so display a message for testing purposes.  This will be
      * overridden and completed by a subclass with access to the rest of Whirled.
      */
-    protected function showGameShop_v1 (itemType :int, catalogId :int = 0) :void
+    protected function showGameShop_v1 (itemType :String, catalogId :int = 0) :void
     {
         displayInfo(null, "Open game shop failed because game is not connected to Whirled.", 
            WhirledGameCodes.USERGAME_CHAT_TYPE);
