@@ -46,7 +46,7 @@ public class DynamicTree extends BaseTree
     public function addDynamic (d :Dynamic, group :String) :void
     {
         var xml :XML = <dyn/>;
-        xml.@label = ClassUtil.tinyClassName(d);
+        xml.@label = ClassUtil.getClassName(d);
         xml.@name = d.id;
         if (addXML(xml, "root." + group) != null) {
             _board.addDynamicIns(d, group);
@@ -94,7 +94,7 @@ public class DynamicTree extends BaseTree
             root.appendChild(group);
             for each (var node :XML in _board.getDynamicsXML(gname).children()) {
                 var xml :XML = <dyn/>;
-                xml.@label = node.@type;
+                xml.@label = node.@cname;
                 xml.@name = node.@id;
                 group.appendChild(xml);
             }
@@ -122,7 +122,23 @@ public class DynamicTree extends BaseTree
         }
         var def :XML;
         var group :String = _group.@name;
-        def = _dxml.elements(group)[0].dynamicdef.(@cname == ClassUtil.getClassName(_dynamic))[0];
+        var defs :XMLList = _dxml.elements(group)[0].dynamicdef.(@cname == ClassUtil.getClassName(_dynamic));
+        if (defs.length() == 1) {
+            def = defs[0];
+        } else if (defs.length() > 1) {
+            for each (var node :XML in defs) {
+                def = node;
+                for each (var cxml :XML in node.elements("const")) {
+                    if ((_dynamic as Object)[cxml.@id] != cxml.@value) {
+                        def = null;
+                        break;
+                    }
+                }
+                if (def != null) {
+                    break;
+                }
+            }
+        }
         if (def == null ||
                 (def.elements("var").length() == 0 && def.elements("const").length() == 0)) {
             return;

@@ -57,12 +57,12 @@ public class ShotTask extends ColliderTask
                 _s.x, _s.y, _s.x + _s.dx * _delta, _s.y + _s.dy * _delta, BoundData.S_ALL);
         if (dynamics != null && dynamics.length > 0) {
             for each (var db :DynamicBounds in dynamics) {
-                if (db is SimpleActorBounds) {
-                    var sab :SimpleActorBounds = (db as SimpleActorBounds);
-                    var arr :Array = line.polyIntersect(sab.lines);
+                if (db is SimpleBounds && db is ActorBounds) {
+                    var sb :SimpleBounds = (db as SimpleActorBounds);
+                    var arr :Array = line.polyIntersect(sb.getBoundLines());
                     if (arr[0] < closehit) {
                         closehit = arr[0];
-                        cab = sab;
+                        cab = db as ActorBounds;
                         _cd.alines[0] = arr[1];
                     }
                 } else if (db is CircleBounds) {

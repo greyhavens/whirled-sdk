@@ -135,11 +135,12 @@ public class BoardEditSprite extends EditSprite
 
     protected function getLayer (tree :String) :int
     {
-        if (tree.indexOf("root.front") == 0) {
+        tree = tree.replace(/root(\.)*/, "");
+        if (tree.indexOf("front") == 0) {
             return FRONT_LEVEL_LAYER;
-        } else if (tree.indexOf("root.actor") == 0) {
+        } else if (tree.indexOf(Board.ACTORS) == 0) {
             return ACTOR_LAYER;
-        } else if (tree.indexOf("root.platforms") == 0) {
+        } else if (_board.getGroupNames().indexOf(tree) != -1) {
             return DYNAMIC_LAYER;
         } else {
             return LEVEL_LAYER;

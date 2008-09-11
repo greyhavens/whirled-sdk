@@ -35,6 +35,7 @@ import com.whirled.contrib.platformer.game.CollisionHandler;
  * box.
  */
 public class SimpleActorBounds extends ActorBounds
+    implements SimpleBounds
 {
     public var lines :Array;
     public var mlines :Array = null;
@@ -47,6 +48,16 @@ public class SimpleActorBounds extends ActorBounds
     {
         super(ac, c);
         updateBounds();
+    }
+
+    public function getBoundLines () :Array
+    {
+        return lines;
+    }
+
+    public function getMovementBoundLines () :Array
+    {
+        return mlines;
     }
 
     override public function updateBounds () :void

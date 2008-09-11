@@ -25,7 +25,7 @@ public class ColliderDetails
     /** An array of LineData static colliders. */
     public var colliders :Array;
 
-    /** An array of SimpleActorBounds dynamic colliders. */
+    /** An array of DynamicBounds dynamic colliders. */
     public var acolliders :Array;
 
     /** An array of LineData for collisions in acolliders. */

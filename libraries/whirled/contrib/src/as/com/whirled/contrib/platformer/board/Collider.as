@@ -297,7 +297,8 @@ public class Collider
 
     public function isInteresting (source :DynamicBounds, target :DynamicBounds) :Boolean
     {
-        if (source is ActorBounds && target is ActorBounds) {
+        if ((source is ActorBounds || source is SimpleBounds) &&
+            (target is ActorBounds || target is SimpleBounds)) {
             return closeIndices(source.getRect(), target.getRect());
         }
         return false;
@@ -306,9 +307,9 @@ public class Collider
     public function collide (source :DynamicBounds, target :DynamicBounds) :Array
     {
         var cols :Array = new Array();
-        if (source is SimpleActorBounds && target is SimpleActorBounds) {
-            for each (var line :LineData in (target as SimpleActorBounds).lines) {
-                if (line.polyIntersecting((source as SimpleActorBounds).mlines)) {
+        if (source is SimpleBounds && target is SimpleBounds) {
+            for each (var line :LineData in (target as SimpleBounds).getBoundLines()) {
+                if (line.polyIntersecting((source as SimpleBounds).getMovementBoundLines())) {
                     cols.push(line);
                 }
             }
@@ -319,17 +320,17 @@ public class Collider
             if (dist < cs.r2 + ct.r2) {
                 cols.push(dist);
             }
-        } else if (source is CircleBounds && target is SimpleActorBounds) {
+        } else if (source is CircleBounds && target is SimpleBounds) {
             cs = source as CircleBounds;
-            for each (line in (target as SimpleActorBounds).lines) {
+            for each (line in (target as SimpleBounds).getBoundLines()) {
                 dist = line.getSegmentDist2(cs.x, cs.y);
                 if (dist < cs.r2) {
                     cols.push(line);
                 }
             }
-        } else if (source is SimpleActorBounds && target is CircleBounds) {
+        } else if (source is SimpleBounds && target is CircleBounds) {
             ct = target as CircleBounds;
-            for each (line in (source as SimpleActorBounds).lines) {
+            for each (line in (source as SimpleBounds).getMovementBoundLines()) {
                 dist = line.getSegmentDist2(ct.x, ct.y);
                 if (dist < ct.r2) {
                     cols.push(dist);
