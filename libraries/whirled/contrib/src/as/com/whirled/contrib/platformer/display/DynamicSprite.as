@@ -109,7 +109,7 @@ public class DynamicSprite extends Sprite
     {
         if (_disp is MovieClip) {
             if (_static) {
-                (_disp as MovieClip).gotoAndStop(1);
+                (_disp as MovieClip).gotoAndStop(_state);
             } else {
                 //trace("goto and play: " + _state);
                 (_disp as MovieClip).gotoAndPlay(_state);
@@ -152,7 +152,6 @@ public class DynamicSprite extends Sprite
             if (event.target == disp) {
                 event.stopPropagation();
                 disp.parent.removeChild(disp);
-                trace("removing generated attached effect");
             }
         });
         node.addChild(disp);

@@ -78,5 +78,10 @@ public class Dynamic
     {
         return new Rect(x, y);
     }
+
+    public function shouldSpawn () :Boolean
+    {
+        return true;
+    }
 }
 }

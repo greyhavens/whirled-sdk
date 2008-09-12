@@ -47,14 +47,14 @@ public class AttackCollisionHandler extends CollisionHandler
         if (_ac.canAttack()) {
             ac.startAttack();
         } else {
-            var hit :Boolean = true;
+            var hit :Boolean = false;
             if (tab.actor.doesHit(tab.actor.x, tab.actor.y)) {
                 var diff :Number =
                         tab.actor.x + tab.actor.width/2 - sab.actor.x - sab.actor.width/2;
                 tab.actor.wasHit = ((diff > 0 && (tab.actor.orient & Actor.ORIENT_RIGHT) == 0) ||
                         (diff < 0 && (tab.actor.orient & Actor.ORIENT_RIGHT) > 0)) ?
                     Actor.HIT_FRONT : Actor.HIT_BACK;
-                hit = false;
+                hit = true;
             }
             ac.doAttack(tab.controller as ActorController, hit);
         }

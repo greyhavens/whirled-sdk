@@ -123,13 +123,20 @@ public class DynamicTree extends BaseTree
         var def :XML;
         var group :String = _group.@name;
         var defs :XMLList = _dxml.elements(group)[0].dynamicdef.(@cname == ClassUtil.getClassName(_dynamic));
+        var dobj :Object = _dynamic;
         if (defs.length() == 1) {
             def = defs[0];
         } else if (defs.length() > 1) {
             for each (var node :XML in defs) {
                 def = node;
                 for each (var cxml :XML in node.elements("const")) {
-                    if ((_dynamic as Object)[cxml.@id] != cxml.@value) {
+                    // fucking as3 can convert booleans consistently
+                    if (dobj is Boolean) {
+                        if (dobj[cxml.@id] != (cxml.@value == "true")) {
+                            def = null;
+                            break;
+                        }
+                    } else if (dobj[cxml.@id] != cxml.@value) {
                         def = null;
                         break;
                     }
@@ -155,7 +162,11 @@ public class DynamicTree extends BaseTree
             _details.push(mdetail);
         }
         for each (varxml in def.elements("const")) {
-            (_dynamic as Object)[varxml.@id.toString()] = varxml.@value;
+            if (dobj[varxml.@id.toString()] is Boolean) {
+                dobj[varxml.@id.toString()] = varxml.@value == "true";
+            } else {
+                dobj[varxml.@id.toString()] = varxml.@value;
+            }
         }
         var button :Button = new Button();
         button.label = "Update";

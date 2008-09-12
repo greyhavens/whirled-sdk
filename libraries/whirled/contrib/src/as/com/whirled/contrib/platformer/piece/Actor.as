@@ -96,6 +96,11 @@ public class Actor extends Dynamic
         return _bounds;
     }
 
+    override public function shouldSpawn () :Boolean
+    {
+        return health > 0;
+    }
+
     protected var _bounds :Rect;
 }
 }
