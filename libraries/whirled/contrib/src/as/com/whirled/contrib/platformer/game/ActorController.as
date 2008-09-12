@@ -60,7 +60,7 @@ public class ActorController extends DynamicController
     {
     }
 
-    public function doAttack (target :ActorController) :void
+    public function doAttack (target :ActorController, doesHit :Boolean) :void
     {
     }
 

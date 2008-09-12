@@ -51,9 +51,6 @@ public class Actor extends Dynamic
     public var justShot :Boolean = false;
     public var events :Array = new Array();
 
-    // TEMP:  will be moved somewhere else
-    public var inventory :String;
-
     public var attached :LineData;
     public var health :Number;
     public var startHealth :Number;

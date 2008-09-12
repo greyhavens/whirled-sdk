@@ -247,8 +247,10 @@ public class BoardSprite extends Sprite
     {
         if (d is Actor) {
             _layers[ACTOR_LAYER].removeDynamicSprite(d);
-        } else {
+        } else if (d is Shot) {
             _layers[SHOT_LAYER].removeDynamicSprite(d);
+        } else {
+            _layers[BACK_DYNAMIC_LAYER].removeDynamicSprite(d);
         }
     }
 

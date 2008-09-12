@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.platformer.display {
 
+import flash.display.MovieClip;
 import flash.display.Sprite;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
@@ -76,6 +77,7 @@ public class DynamicSprite extends Sprite
 
     protected function onAdded () :void
     {
+        playState();
     }
 
     protected function handleRemoved (event :Event) :void
@@ -88,6 +90,31 @@ public class DynamicSprite extends Sprite
 
     protected function onRemoved () :void
     {
+        if (_disp is MovieClip) {
+            (_disp as MovieClip).stop();
+        }
+    }
+
+    protected function changeState (newState :String) :void
+    {
+        if (_state != newState) {
+            _state = newState;
+            if (stage != null) {
+                playState();
+            }
+        }
+    }
+
+    protected function playState () :void
+    {
+        if (_disp is MovieClip) {
+            if (_static) {
+                (_disp as MovieClip).gotoAndStop(1);
+            } else {
+                //trace("goto and play: " + _state);
+                (_disp as MovieClip).gotoAndPlay(_state);
+            }
+        }
     }
 
     protected function generateParticleEffect (
@@ -110,6 +137,25 @@ public class DynamicSprite extends Sprite
             }
             _particleCallback(disp, pt, back);
         }
+    }
+
+    protected function generateAttachedEffect (name :String, node :DisplayObjectContainer) :void
+    {
+        if (stage == null || name == null || node == null) {
+            return;
+        }
+        var disp :DisplayObject = PieceSpriteFactory.instantiateClip(name);
+        if (disp == null) {
+            return;
+        }
+        disp.addEventListener(Event.COMPLETE, function (event :Event) :void {
+            if (event.target == disp) {
+                event.stopPropagation();
+                disp.parent.removeChild(disp);
+                trace("removing generated attached effect");
+            }
+        });
+        node.addChild(disp);
     }
 
     protected function recolorNodesToColor (
@@ -142,6 +188,7 @@ public class DynamicSprite extends Sprite
         }
     }
 
+    protected var _state :String = "";
     protected var _dynamic :Dynamic;
     protected var _disp :DisplayObject;
     protected var _particleCallback :Function;

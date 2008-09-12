@@ -60,6 +60,8 @@ public class ShotCollisionHandler extends CollisionHandler
                 }
             }
             ab.actor.health -= s.damage;
+            ab.actor.dx += s.dx * s.force / 10;
+            ab.actor.dy += s.dy * s.force / 10;
         } else {
             s.ttl = 0;
         }

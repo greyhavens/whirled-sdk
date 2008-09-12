@@ -104,59 +104,35 @@ public class ActorSprite extends DynamicSprite
     {
     }
 
-    override protected function onAdded () :void
-    {
-        playState();
-    }
-
-    protected function playState () :void
-    {
-        if (_disp is MovieClip) {
-            if (_static) {
-                (_disp as MovieClip).gotoAndStop(1);
-            } else {
-                //trace("goto and play: " + _state);
-                (_disp as MovieClip).gotoAndPlay(_state);
-            }
-        }
-    }
-
-    override protected function onRemoved () :void
-    {
-        if (_disp is MovieClip) {
-            (_disp as MovieClip).stop();
-        }
-    }
-
-    protected function changeState (newState :String) :void
+    override protected function changeState (newState :String) :void
     {
         if (_state != newState) {
             if (_state == TURN) {
                 _disp.scaleX *= -1;
             }
-            _state = newState;
-            if (stage != null) {
-                playState();
-            }
         }
+        super.changeState(newState);
     }
 
-    protected function showHit () :void
+    protected function showHit (filter :ColorMatrixFilter = null, length :Number = HIT_LENGTH) :void
     {
         if (_hitLeft <= 0) {
-            _hitLeft = HIT_LENGTH;
-            if (_hitFilter == null) {
-                var matrix :ColorMatrix = new ColorMatrix();
-                matrix.tint(0xFFE377, 0.5);
-                _hitFilter = matrix.createFilter();
+            _hitLeft = length;
+            if (filter == null) {
+                if (_hitFilter == null) {
+                    var matrix :ColorMatrix = new ColorMatrix();
+                    matrix.tint(0xFFE377, 0.5);
+                    _hitFilter = matrix.createFilter();
+                }
+                filter = _hitFilter;
             }
             var filters :Array = _disp.filters;
             if (filters == null) {
-                _disp.filters = [_hitFilter];
+                _disp.filters = [filter];
                 _hitFilterIndex = 0;
             } else {
                 _hitFilterIndex = filters.length;
-                filters.push(_hitFilter);
+                filters.push(filter);
                 _disp.filters = filters;
             }
         }
@@ -193,7 +169,6 @@ public class ActorSprite extends DynamicSprite
         return ret;
     }
 
-    protected var _state :String = "";
     protected var _actor :Actor;
     protected var _hitLeft :Number = 0;
     protected var _hitFilter :ColorMatrixFilter;

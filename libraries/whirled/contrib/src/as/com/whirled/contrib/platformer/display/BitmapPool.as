@@ -84,10 +84,10 @@ public class BitmapPool
         }
         cache.idx = idx;
         if (cache.bd == null) {
-            trace("Adding new bitmap idx: " + idx + " to cache: " + jj);
+            //trace("Adding new bitmap idx: " + idx + " to cache: " + jj);
             cache.bd = new BitmapData(_width, _height, true, 0x00000000);
         } else {
-            trace("Setting bitmap idx: " + idx + " to cache: " + jj);
+            //trace("Setting bitmap idx: " + idx + " to cache: " + jj);
         }
 
         _generator(idx, cache.bd);

@@ -30,5 +30,6 @@ public class Shot extends Dynamic
     public var hit :Boolean = false;
     public var hitEffect :String;
     public var missEffect :String;
+    public var force :Number = 0;
 }
 }

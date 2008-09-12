@@ -46,7 +46,7 @@ public class ShotController extends DynamicController
 
     override public function postTick () :void
     {
-        if (_shot.hit || _shot.ttl < 0) {
+        if (_shot.hit || _shot.ttl <= 0) {
             _controller.removeDynamic(_shot);
         }
     }

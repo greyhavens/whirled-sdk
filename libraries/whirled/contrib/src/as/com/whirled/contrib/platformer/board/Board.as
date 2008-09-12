@@ -115,9 +115,9 @@ public class Board
 
     public function addActor (a :Actor) :void
     {
-        trace("adding actor " + a.sprite + " at (" + a.x + ", " + a.y + ")");
         a.id = ++_actorId;
         _actors.push(a);
+        trace("adding actor " + a.sprite + "(" + a.id + ") at (" + a.x + ", " + a.y + ")");
         sendEvent(ACTOR_ADDED, a, "");
     }
 
