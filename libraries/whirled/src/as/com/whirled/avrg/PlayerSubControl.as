@@ -30,7 +30,7 @@ public class PlayerSubControl extends PlayerBaseSubControl
     {
         super.setUserProps(o);
 
-        o["coinsAwarded_v1"] = coinsAwarded_v1;
+        o["taskCompleted_v1"] = taskCompleted_v1;
 
         // the client backend does not send in targetId
         o["player_propertyWasSet_v1"] = _props.propertyWasSet_v1;

@@ -25,11 +25,11 @@ import com.whirled.net.impl.PropertySubControlImpl;
 [Event(name="leftRoom", type="com.whirled.avrg.AVRGamePlayerEvent")]
 
 /**
- * Dispatched when this player receives a coin payout.
+ * Dispatched when this player completes a task and receives a coin payout.
  *
- * @eventType com.whirled.net.MessageReceivedEvent.COINS_AWARDED
+ * @eventType com.whirled.net.MessageReceivedEvent.TASK_COMPLETE
  */
-[Event(name="CoinsAwarded", type="com.whirled.avrg.AVRGamePlayerEvent")]
+[Event(name="taskCompleted", type="com.whirled.avrg.AVRGamePlayerEvent")]
 
 /**
  */
@@ -95,10 +95,10 @@ public class PlayerBaseSubControl extends TargetedSubControl
     }
 
     /** @private */
-    internal function coinsAwarded_v1 (amount :int) :void
+    internal function taskCompleted_v1 (task :String, amount :int) :void
     {
         dispatch(new AVRGamePlayerEvent(
-                AVRGamePlayerEvent.COINS_AWARDED, _targetId, null, amount));
+                AVRGamePlayerEvent.TASK_COMPLETED, _targetId, task, amount));
     }
 
     /** @private */

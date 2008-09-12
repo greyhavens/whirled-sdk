@@ -15,12 +15,12 @@ import com.whirled.avrg.AVRGameControlEvent;
 public class AVRGamePlayerEvent extends AVRGameControlEvent
 {
     /** An event type dispatched when the player receives some coins.
-     * name: unused
+     * name: the id of the task that was completed
      * value: the amount of coins awarded
      *
-     * @eventType coinsAwarded
+     * @eventType taskCompleted
      */
-    public static const COINS_AWARDED :String = "coinsAwarded";
+    public static const TASK_COMPLETED :String = "taskCompleted";
 
     /** An event type dispatched when we've entered a new room.
      * key: N/A
