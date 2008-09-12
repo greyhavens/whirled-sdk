@@ -47,7 +47,9 @@ import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.data.GameObject;
 
+import com.whirled.game.GameContentEvent;
 import com.whirled.game.client.PropertySpaceHelper;
+import com.whirled.game.data.BaseGameConfig;
 import com.whirled.game.data.GameData;
 import com.whirled.game.data.ItemData;
 import com.whirled.game.data.LevelData;
@@ -55,11 +57,10 @@ import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.data.PropertySetListener;
 import com.whirled.game.data.TrophyData;
 import com.whirled.game.data.UserCookie;
-import com.whirled.game.data.BaseGameConfig;
 import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
-import com.whirled.game.data.WhirledPlayerObject;
 import com.whirled.game.data.WhirledGameOccupantInfo;
+import com.whirled.game.data.WhirledPlayerObject;
 
 /**
  * Manages the backend of the game.
@@ -319,6 +320,31 @@ public class BaseGameBackend
      */
     protected function notifyControllerUserCodeIsConnected (autoReady :Boolean) :void
     {
+    }
+
+    /**
+     * This should be called by subclasses when they know that a user has dynamically added game
+     * content (like if they purchase an item or level pack).
+     *
+     * @param type one of GameData.ITEM_DATA or GameData.LEVEL_DATA.
+     * @param ident the identifier of the content pack in question.
+     * @param playerId the id of the player for whom the content was added.
+     */
+    protected function notifyGameContentAdded (type :int, ident :String, playerId :int) :void
+    {
+        var ctype :String;
+        switch (type) {
+        case GameData.ITEM_DATA:
+            ctype = GameContentEvent.ITEM_PACK;
+            break;
+        case GameData.LEVEL_DATA:
+            ctype = GameContentEvent.LEVEL_PACK;
+            break;
+        default:
+            log.warning("Asked to notify content added for unknown type [type=" + type + "].");
+            return;
+        }
+        callUserCode("notifyGameContentAdded_v1", ctype, ident, playerId);
     }
 
     /**

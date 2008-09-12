@@ -221,8 +221,8 @@ public class GameSubControl extends AbstractSubControl
     }
 
     /**
-     * Returns this client's player id. If this method is called from the game's server agent,
-     * the result is <code>SERVER_AGENT_ID</code>. The method <code>amServerAgent</code> can be used to 
+     * Returns this client's player id. If this method is called from the game's server agent, the
+     * result is <code>SERVER_AGENT_ID</code>. The method <code>amServerAgent</code> can be used to
      * explicitly test for this case.
      * @see #SERVER_AGENT_ID
      * @see #amServerAgent()
@@ -494,6 +494,15 @@ public class GameSubControl extends AbstractSubControl
     private function userChat_v1 (speaker :int, message :String) :void
     {
         dispatch(new UserChatEvent(speaker, message));
+    }
+
+    /**
+     * Private method to post a GameContentEvent.
+     */
+    private function notifyGameContentAdded_v1 (ctype :String, cident :String, playerId :int) :void
+    {
+        dispatch(new GameContentEvent(
+            GameContentEvent.PLAYER_CONTENT_ADDED, ctype, cident, playerId));
     }
 
     /** Contains any custom game configuration data. @private */
