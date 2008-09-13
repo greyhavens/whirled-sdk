@@ -591,6 +591,7 @@ public class BaseGameBackend
         o["awardTrophy_v1"] = awardTrophy_v1;
         o["awardPrize_v1"] = awardPrize_v1;
         o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
+        o["getPlayerLevelPacks_v1"] = getPlayerLevelPacks_v1;
 
         // .game
         o["endGame_v2"] = endGame_v2;
@@ -598,8 +599,8 @@ public class BaseGameBackend
         o["endGameWithWinners_v1"] = endGameWithWinners_v1;
         o["endRound_v1"] = endRound_v1;
         o["getControllerId_v1"] = getControllerId_v1;
-        o["getItemPacks_v1"] = getItemPacks_v1;
         o["getLevelPacks_v1"] = getLevelPacks_v1;
+        o["getItemPacks_v1"] = getItemPacks_v1;
         o["getOccupants_v1"] = getOccupants_v1;
         o["getOccupantName_v1"] = getOccupantName_v1;
         o["getRound_v1"] = getRound_v1;
@@ -884,7 +885,14 @@ public class BaseGameBackend
     protected function getPlayerItemPacks_v1 (
         playerId :int = CURRENT_USER) :Array
     {
-        return getItemPacks_v1().filter(function (data :GameData, idx :int, array :Array) :Boolean {
+        return getItemPacks_v1(function (data :GameData) :Boolean {
+            return playerOwnsData(data.getType(), data.ident, playerId);
+        });
+    }
+
+    protected function getPlayerLevelPacks_v1 (playerId :int = CURRENT_USER) :Array
+    {
+        return getLevelPacks_v1(function (data :GameData) :Boolean {
             return playerOwnsData(data.getType(), data.ident, playerId);
         });
     }
@@ -899,16 +907,11 @@ public class BaseGameBackend
         _gameObj.postMessage(WhirledGameObject.GAME_CHAT, [ msg ]);
     }
 
-    protected function getLevelPacks_v1 (playerId :int = CURRENT_USER) :Array
+    protected function getLevelPacks_v1 (filter :Function = null) :Array
     {
         var packs :Array = [];
         for each (var data :GameData in _gameObj.gameData) {
-            if (data.getType() != GameData.LEVEL_DATA) {
-                continue;
-            }
-            // if the level pack is premium, only add it if we own it
-            if ((data as LevelData).premium && 
-                !playerOwnsData(data.getType(), data.ident, playerId)) {
+            if (data.getType() != GameData.LEVEL_DATA || (filter != null && !filter(data))) {
                 continue;
             }
             packs.unshift({ ident: data.ident,
@@ -919,11 +922,11 @@ public class BaseGameBackend
         return packs;
     }
 
-    protected function getItemPacks_v1 () :Array
+    protected function getItemPacks_v1 (filter :Function = null) :Array
     {
         var packs :Array = [];
         for each (var data :GameData in _gameObj.gameData) {
-            if (data.getType() != GameData.ITEM_DATA) {
+            if (data.getType() != GameData.ITEM_DATA || (filter != null && !filter(data))) {
                 continue;
             }
             packs.unshift({ ident: data.ident,

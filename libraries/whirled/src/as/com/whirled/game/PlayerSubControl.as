@@ -76,6 +76,13 @@ public class PlayerSubControl extends AbstractSubControl
 
     /**
      * Returns all item packs owned by this client's player (the default) or a specified player.
+     * The packs are returned as an array of objects with the following properties:
+     *
+     * <pre>
+     * ident - string identifier of item pack
+     * name - human readable name of item pack
+     * mediaURL - URL for item pack content
+     * </pre>
      *
      * <p>Note: Clients may only get the item packs of the current player. Server agents do not
      * have a current player and therefore must pass in a valid player id.</p>
@@ -85,6 +92,27 @@ public class PlayerSubControl extends AbstractSubControl
     public function getPlayerItemPacks (playerId :int = CURRENT_USER) :Array
     {
         return (callHostCode("getPlayerItemPacks_v1", playerId) as Array);
+    }
+
+    /**
+     * Returns all level packs owned by this client's player (the default) or a specified player.
+     * The packs are returned as an array of objects with the following properties:
+     *
+     * <pre>
+     * ident - string identifier of item pack
+     * name - human readable name of item pack
+     * mediaURL - URL for item pack content
+     * premium - boolean indicating that content is premium or not
+     * </pre>
+     *
+     * <p>Note: Clients may only get the level packs of the current player. Server agents do not
+     * have a current player and therefore must pass in a valid player id.</p>
+     *
+     * @param playerId the id of the player whose level packs to get
+     */
+    public function getPlayerLevelPacks (playerId :int = CURRENT_USER) :Array
+    {
+        return (callHostCode("getPlayerLevelPacks_v1", playerId) as Array);
     }
 
     /**
