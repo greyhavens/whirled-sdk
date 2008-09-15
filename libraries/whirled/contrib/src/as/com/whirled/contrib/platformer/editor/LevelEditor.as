@@ -35,6 +35,7 @@ import flash.net.URLRequest;
 
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.editor.EditView;
+import com.whirled.contrib.platformer.piece.PieceFactory;
 
 /**
  * A level editor for platformer games.  The use of this level editor requires the inclusion of
@@ -54,11 +55,19 @@ public class LevelEditor extends Panel
     }
 
     /**
-     * Set the board to be used in the level editot.
+     * Set the board to be used in the level editor.
      */
     public function setBoard (board :Board) :void
     {
         _board = board;
+    }
+
+    /**
+     * Set the PieceFactory class to be used in the level editor.
+     */
+    public function setPieceFactoryClass (pfClass :Class) :void
+    {
+        _pfClass = pfClass;
     }
 
     /**
@@ -161,7 +170,7 @@ public class LevelEditor extends Panel
             (_dynamicsLoader == null ? <dynamics/> : new XML(_dynamicsLoader.data));
 
         _levelEdit.rawChildren.addChild(_editView = new EditView(
-            _levelEdit, xmlPieces, xmlDynamics, xmlLevel, _board));
+            _levelEdit, new _pfClass(xmlPieces), xmlDynamics, xmlLevel, _board));
     }
 
     protected function tabChanged (selected :Container) :void
@@ -183,5 +192,6 @@ public class LevelEditor extends Panel
     protected var _xmlCode :VBox;
     protected var _factoryInitialized :Boolean = false;
     protected var _board :Board;
+    protected var _pfClass :Class = PieceFactory;
 }
 }

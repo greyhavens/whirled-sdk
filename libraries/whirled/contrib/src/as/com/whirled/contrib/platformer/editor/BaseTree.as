@@ -195,6 +195,11 @@ public class BaseTree extends Canvas
             callLater(scrollToSelected);
         }
         dispatchEvent(new ListEvent(ListEvent.CHANGE));
+        updateDetails();
+    }
+
+    protected function updateDetails () :void
+    {
     }
 
     protected var _adg :PieceGrid;

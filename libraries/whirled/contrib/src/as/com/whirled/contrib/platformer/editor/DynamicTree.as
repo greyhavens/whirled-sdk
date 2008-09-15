@@ -102,13 +102,7 @@ public class DynamicTree extends BaseTree
         return root;
     }
 
-    override protected function handleChange (event :ListEvent) :void
-    {
-        super.handleChange(event);
-        updateDetails();
-    }
-
-    protected function updateDetails () :void
+    override protected function updateDetails () :void
     {
         _settingsBox.removeAllChildren();
         _details = null;
@@ -122,7 +116,8 @@ public class DynamicTree extends BaseTree
         }
         var def :XML;
         var group :String = _group.@name;
-        var defs :XMLList = _dxml.elements(group)[0].dynamicdef.(@cname == ClassUtil.getClassName(_dynamic));
+        var defs :XMLList = _dxml.elements(group)[0].dynamicdef.(
+                @cname == ClassUtil.getClassName(_dynamic));
         var dobj :Object = _dynamic;
         if (defs.length() == 1) {
             def = defs[0];

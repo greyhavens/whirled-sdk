@@ -52,10 +52,10 @@ public class PieceEditView extends Canvas
      *
      * Also, it is required that Metrics.init() be called before creating this view.
      */
-    public function PieceEditView (container :Container, pieces :XML)
+    public function PieceEditView (container :Container, pfac :PieceFactory)
     {
         _container = container;
-        _pfac = new PieceFactory(pieces);
+        _pfac = pfac;
         _editSprite = new PieceEditSprite();
         _editDetails = new PieceEditDetails(_pfac);
         _editSelector = new PieceSelector(_pfac);

@@ -72,11 +72,11 @@ public class EditView extends Canvas
      * Also, it is required that Metrics.init() be called before creating this view.
      */
     public function EditView (
-        container :Container, pieces :XML, dynamics :XML, level :XML, board :Board = null)
+        container :Container, pfac :PieceFactory, dynamics :XML, level :XML, board :Board = null)
     {
         _container = container;
 
-        _pfac = new PieceFactory(pieces);
+        _pfac = pfac;
         _board = board == null ? new Board() : board;
         _boardSprite = new BoardEditSprite(this);
         _board.loadFromXML(level, _pfac);

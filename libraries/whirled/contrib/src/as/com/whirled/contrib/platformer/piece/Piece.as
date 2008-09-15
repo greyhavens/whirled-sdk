@@ -63,6 +63,7 @@ public class Piece
             y = insxml.@y;
             id = insxml.@id;
             orient = insxml.@orient;
+            setXMLEditables(insxml);
         }
     }
 
@@ -85,13 +86,26 @@ public class Piece
      */
     public function xmlInstance () :XML
     {
-        var xml :XML = <piece/>;
+        var xml :XML = getXMLEditables();
         xml.@type = type;
         xml.@x = x;
         xml.@y = y;
         xml.@id = id;
         xml.@orient = orient;
         return xml;
+    }
+
+    /**
+     * Get the editable attributes.
+     */
+    public function getXMLEditables () :XML
+    {
+        var xml :XML = <piece/>;
+        return xml;
+    }
+
+    public function setXMLEditables (xml :XML) :void
+    {
     }
 
     public function toString () :String

@@ -118,6 +118,11 @@ public class PieceTree extends BaseTree
             }
         }));
         box.addChild(hbox);
+        var settingsContainer :Canvas = new Canvas();
+        settingsContainer.width = 240;
+        settingsContainer.height = 150;
+        settingsContainer.addChild(_settingsBox = new VBox());
+        box.addChild(settingsContainer);
     }
 
     override protected function getColumn () :AdvancedDataGridColumn
@@ -273,5 +278,43 @@ public class PieceTree extends BaseTree
         }
         return true;
     }
+
+    override protected function updateDetails () :void
+    {
+        _settingsBox.removeAllChildren();
+        _details = null;
+        if (_group == _adg.selectedItem || _adg.selectedItem == null) {
+            _piece = null;
+        } else {
+            _piece = _board.getItem((_adg.selectedItem as XML).@name, _tree) as Piece;
+        }
+        if (_piece == null) {
+            return;
+        }
+        _details = new Array();
+        var attrs :XML = _piece.getXMLEditables();
+        for each (var attr :XML in attrs.attributes()) {
+            var detail :TextDetail = new TextDetail(attr);
+            _settingsBox.addChild(detail.createBox());
+            _details.push(detail);
+        }
+        var button :Button = new Button();
+        button.label = "Update";
+        button.addEventListener(FlexEvent.BUTTON_DOWN, updatePiece);
+        _settingsBox.addChild(button);
+    }
+
+    protected function updatePiece (event :FlexEvent) :void
+    {
+        var xml :XML = _piece.getXMLEditables();
+        for each (var detail :TextDetail in _details) {
+            detail.setData(xml);
+        }
+        _board.updatePiece(_adg.selectedItem.@name, _tree, xml);
+    }
+
+    protected var _settingsBox :VBox;
+    protected var _details :Array;
+    protected var _piece :Piece;
 }
 }

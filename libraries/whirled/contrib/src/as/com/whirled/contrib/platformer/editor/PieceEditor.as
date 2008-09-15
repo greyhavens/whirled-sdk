@@ -33,7 +33,7 @@ import mx.events.IndexChangedEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 
-import com.whirled.contrib.platformer.editor.PieceEditView;
+import com.whirled.contrib.platformer.piece.PieceFactory;
 
 /**
  * A piece editor for platformer games.  The use of this piece editor requires the inclusion of
@@ -52,7 +52,7 @@ public class PieceEditor extends Panel
         setStyle("paddingRight", 0);
     }
 
-    /** 
+    /**
      * Must be called to set up loading the XML for this piece editor
      */
     public function setXmlPaths (piecesXmlPath :String) :void
@@ -80,6 +80,11 @@ public class PieceEditor extends Panel
     {
         _factoryInitialized = true;
         addEditView();
+    }
+
+    public function setPieceFactoryClass (pfClass :Class) :void
+    {
+        _pieceFactoryClass = pfClass;
     }
 
     override protected function createChildren () :void
@@ -122,7 +127,8 @@ public class PieceEditor extends Panel
         _xmlCode.addChild(_codeArea);
 
         var xmlPieces :XML = (_piecesLoader == null ? null : new XML(_piecesLoader.data));
-        _pieceEdit.rawChildren.addChild(_editView = new PieceEditView(_pieceEdit, xmlPieces));
+        _pieceEdit.rawChildren.addChild(
+                _editView = new PieceEditView(_pieceEdit, new _pieceFactoryClass(xmlPieces)));
     }
 
     protected function tabChanged (selected :Container) :void
@@ -139,5 +145,6 @@ public class PieceEditor extends Panel
     protected var _pieceEdit :FocusContainer;
     protected var _xmlCode :VBox;
     protected var _factoryInitialized :Boolean = false;
+    protected var _pieceFactoryClass :Class = PieceFactory;
 }
 }

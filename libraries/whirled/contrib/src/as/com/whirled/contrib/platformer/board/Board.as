@@ -336,6 +336,21 @@ public class Board
         }
     }
 
+    public function updatePiece (name :String, tree :String, xml :XML) :void
+    {
+        var arr :Array = getGroup(tree);
+        if (arr == null) {
+            return;
+        }
+        for each (var item :Object in arr) {
+            if (item is Piece && item.id.toString() == name) {
+                var p :Piece = item as Piece;
+                p.setXMLEditables(xml);
+                sendEvent(ITEM_UPDATED, p, tree);
+            }
+        }
+    }
+
     protected function isItem (item :Object, name :String) :Boolean
     {
         return ((item is Piece || item is Dynamic) && item.id.toString() == name) ||
