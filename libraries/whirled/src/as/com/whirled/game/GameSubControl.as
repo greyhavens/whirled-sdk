@@ -403,6 +403,7 @@ public class GameSubControl extends AbstractSubControl
         o["roundStateChanged_v1"] = roundStateChanged_v1;
         o["occupantChanged_v1"] = occupantChanged_v1;
         o["userChat_v1"] = userChat_v1;
+        o["notifyGameContentAdded_v1"] = notifyGameContentAdded_v1;
     }
 
     /** @private */
