@@ -403,7 +403,6 @@ public class GameSubControl extends AbstractSubControl
         o["roundStateChanged_v1"] = roundStateChanged_v1;
         o["occupantChanged_v1"] = occupantChanged_v1;
         o["userChat_v1"] = userChat_v1;
-        o["notifyGameContentAdded_v1"] = notifyGameContentAdded_v1;
     }
 
     /** @private */
@@ -483,15 +482,6 @@ public class GameSubControl extends AbstractSubControl
     private function userChat_v1 (speaker :int, message :String) :void
     {
         dispatch(new UserChatEvent(speaker, message));
-    }
-
-    /**
-     * Private method to post a GameContentEvent.
-     */
-    private function notifyGameContentAdded_v1 (ctype :String, cident :String, playerId :int) :void
-    {
-        dispatch(new GameContentEvent(
-            GameContentEvent.PLAYER_CONTENT_ADDED, ctype, cident, playerId));
     }
 
     /** Contains any custom game configuration data. @private */

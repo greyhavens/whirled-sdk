@@ -193,6 +193,7 @@ public class PlayerSubControl extends AbstractSubControl
         super.setUserProps(o);
 
         o["flowAwarded_v1"] = flowAwarded_v1; // old names. No real point in changing it.
+        o["notifyGameContentAdded_v1"] = notifyGameContentAdded_v1;
     }
 
     /**
@@ -204,6 +205,15 @@ public class PlayerSubControl extends AbstractSubControl
         var evt :CoinsAwardedEvent = new CoinsAwardedEvent(amount, percentile);
         dispatch(evt);
         return evt.isDefaultPrevented();
+    }
+
+    /**
+     * Private method to post a GameContentEvent.
+     */
+    private function notifyGameContentAdded_v1 (ctype :String, cident :String, playerId :int) :void
+    {
+        dispatch(new GameContentEvent(
+            GameContentEvent.PLAYER_CONTENT_ADDED, ctype, cident, playerId));
     }
 }
 }
