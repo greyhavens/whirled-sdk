@@ -110,11 +110,11 @@ public class AbstractControl extends EventDispatcher
      * PropertyChangedEvent for "board", checking the value of "scores" will still return
      * the old value.
      */
-    public function doBatch (fn :Function) :void
+    public function doBatch (fn :Function, ... args) :void
     {
         callHostCode("startTransaction");
         try {
-            fn();
+            fn.apply(args);
         } finally {
             callHostCode("commitTransaction");
         }
