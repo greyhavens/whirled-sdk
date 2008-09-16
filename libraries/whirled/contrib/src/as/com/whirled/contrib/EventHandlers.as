@@ -33,8 +33,8 @@ public class EventHandlers
     /**
      * Adds the specified listener to the specified dispatcher for the specified event.
      */
-    public static function registerEventListener (dispatcher :IEventDispatcher, event :String,
-        listener :Function) :void
+    public static function registerEventListener (
+        dispatcher :IEventDispatcher, event :String, listener :Function) :void
     {
         dispatcher.addEventListener(event, listener);
         _eventHandlers.push({dispatcher: dispatcher, event: event, func: listener});
@@ -43,8 +43,8 @@ public class EventHandlers
     /**
      * Removes the specified listener from the specified dispatcher for the specified event.
      */
-    public static function unregisterEventListener (dispatcher :IEventDispatcher, event :String,
-        listener :Function) :void
+    public static function unregisterEventListener (
+        dispatcher :IEventDispatcher, event :String, listener :Function) :void
     {
         dispatcher.removeEventListener(event, listener);
         for (var ii :int = 0; ii < _eventHandlers.length; ii++) {
@@ -54,6 +54,20 @@ public class EventHandlers
                 break;
             }
         }
+    }
+
+    /**
+     * Registers a zero-arg callback function that should be called once when the event fires.
+     */
+    public static function registerOneShotCallback (
+        dispatcher :IEventDispatcher, event :String, callback :Function) :void
+    {
+        var eventListener :Function;
+        eventListener = function (...ignored) :void {
+            dispatcher.removeEventListener(event, eventListener);
+            callback();
+        };
+        dispatcher.addEventListener(event, eventListener);
     }
 
     /**
