@@ -292,15 +292,15 @@ public class EntityControl extends AbstractControl
      *
      * NOTE: Avatar memories are inconsistent at the moment and should not be used.
      *
-     * @return true if the memory update was sent to the server, although there is no guarantee
-     * that it will be applied if the server decides that memories are already too big; or false
-     * if the memory update was not even sent to the server due to size or other restrictions.
+     * @param callback An optional function that is passed a Boolean indicating whether the
+     * memory was successfully updated or not. True if the memory was safely persisted, or false
+     * if the memory update failed due to size or other restrictions.
      *
      * Note: any instance can update memories!
      */
-    public function setMemory (key :String, value :Object) :Boolean
+    public function setMemory (key :String, value :Object, callback :Function = null) :void
     {
-        return callHostCode("updateMemory_v1", key, value);
+        callHostCode("updateMemory_v2", key, value, callback);
     }
 
     /**
