@@ -300,7 +300,7 @@ public class EntityControl extends AbstractControl
      */
     public function setMemory (key :String, value :Object, callback :Function = null) :void
     {
-        callHostCode("updateMemory_v2", key, value, callback);
+        callHostCode("updateMemory_v1", key, value, callback);
     }
 
     /**
