@@ -34,9 +34,10 @@ public class AbstractSubControl extends AbstractControl
     /**
      * @inheritDoc
      */
-    override public function doBatch (fn :Function) :void
+    override public function doBatch (fn :Function, ... args) :void
     {
-        return _parent.doBatch(fn);
+        args.unshift(fn);
+        _parent.doBatch.apply(null, args);
     }
 
     /**
@@ -45,22 +46,6 @@ public class AbstractSubControl extends AbstractControl
     override protected function callHostCode (name :String, ... args) :*
     {
         return _parent.callHostCodeFriend(name, args);
-    }
-
-    /**
-     * @private
-     */
-    internal function setUserPropsFriend (o :Object) :void
-    {
-        setUserProps(o);
-    }
-
-    /**
-     * @private
-     */
-    internal function gotHostPropsFriend (o :Object) :void
-    {
-        gotHostProps(o);
     }
 
     /** @private */

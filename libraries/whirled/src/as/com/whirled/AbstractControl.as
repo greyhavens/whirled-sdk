@@ -137,7 +137,7 @@ public class AbstractControl extends EventDispatcher
     protected function setUserProps (o :Object) :void
     {
         for each (var ctrl :AbstractSubControl in _subControls) {
-            ctrl.setUserPropsFriend(o);
+            ctrl.setUserProps(o);
         }
     }
 
@@ -151,7 +151,7 @@ public class AbstractControl extends EventDispatcher
         _funcs = o;
 
         for each (var ctrl :AbstractSubControl in _subControls) {
-            ctrl.gotHostPropsFriend(o);
+            ctrl.gotHostProps(o);
         }
     }
 
