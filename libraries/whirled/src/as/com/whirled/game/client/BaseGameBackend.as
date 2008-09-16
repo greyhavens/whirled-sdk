@@ -20,7 +20,7 @@ import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringUtil;
 
 import com.threerings.presents.client.ConfirmAdapter;
-import com.threerings.presents.client.ResultWrapper;
+import com.threerings.presents.client.ResultAdapter;
 import com.threerings.presents.client.InvocationService_ConfirmListener;
 import com.threerings.presents.client.InvocationService_ResultListener;
 
@@ -378,7 +378,7 @@ public class BaseGameBackend
         service :String, failure :Function = null,
         success :Function = null) :InvocationService_ResultListener
     {
-        return new ResultWrapper(function (cause :String) :void {
+        return new ResultAdapter(function (cause :String) :void {
             reportServiceFailure(service, cause);
             if (failure != null) {
                 failure();
