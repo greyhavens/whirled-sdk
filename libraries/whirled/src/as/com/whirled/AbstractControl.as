@@ -114,7 +114,7 @@ public class AbstractControl extends EventDispatcher
     {
         callHostCode("startTransaction");
         try {
-            fn.apply(args);
+            fn.apply(null, args);
         } finally {
             callHostCode("commitTransaction");
         }
