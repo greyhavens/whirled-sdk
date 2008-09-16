@@ -290,7 +290,7 @@ public class SimpleActorBounds extends ActorBounds
         //log("actor adjust is (" + cd.oX + ", " + cd.oY + ") pos (" + actor.x + ", " + actor.y + ")");
 
         if (logs != "") {
-            //log(logs);
+            log(logs);
         }
         mlines = null;
         return cd;
@@ -320,20 +320,22 @@ public class SimpleActorBounds extends ActorBounds
 
         // Possibly attach ourselves to a new ground line
         if (cd.colliders.length > 0 && actor.maxWalkable >= 0) {
-            //log(actor.sprite + " found " + cd.colliders.length + " colliders");
+            log(actor.sprite + " found " + cd.colliders.length + " colliders")
+            log("base " + base);
+            log("lines[3] " + lines[3]);
             for each (var col :LineData in cd.colliders) {
-                //log("  " + col);
+                log("  " + col);
             }
             var maxY :Number = -1;
             var attached :LineData;
             if (actor.attached != null && actor.attached.xIntersecting(base)) {
-                //log(actor.sprite + " still hovering attached: " + actor.attached + ", " + base);
+                log(actor.sprite + " still hovering attached: " + actor.attached + ", " + base);
                 maxY = Math.max(actor.attached.y1, actor.attached.y2);
                 attached = actor.attached;
             }
             for each (col in cd.colliders) {
                 if (Math.abs(col.ix) > 0 &&
-                        (col.isIntersecting(base) || col.didCross(lines[3], base))) {
+                        (col.isIntersecting(base) || col.didSimpleCross(lines[3], base))) {
                     if (col.y1 > maxY || col.y2 > maxY || (
                             ((col.y1 == maxY || col.y2 == maxY) &&
                             Math.abs(col.iy) < Math.abs(attached.iy))) ||
@@ -356,7 +358,7 @@ public class SimpleActorBounds extends ActorBounds
                             attached.x2 + 0.00001, attached.y2, BoundData.ALL);
                     }
                 }
-                //log(actor.sprite + " new attached: " + attached + ", " + base);
+                log(actor.sprite + " new attached: " + attached + ", " + base);
                 actor.attached = attached;
             }
 
@@ -396,10 +398,10 @@ public class SimpleActorBounds extends ActorBounds
                     }
                 }
                 if (attached == null) {
-                    //log(actor.sprite + " detached " + actor.attached + ", " + lines[3]);
+                    log(actor.sprite + " detached " + actor.attached + ", " + lines[3]);
                     //trace(actor.sprite + " detached " + actor.attached + ", " + lines[3]);
                 } else {
-                    //log(actor.sprite + " autoatached " + attached + ", " + lines[3]);
+                    log(actor.sprite + " autoatached " + attached + ", " + lines[3]);
                 }
                 actor.attached = attached;
             }

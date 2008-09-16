@@ -321,6 +321,18 @@ public class LineData
     }
 
     /**
+     * Returns true if l2 is intersecting of on the opposide of the line as l1.
+     */
+    public function didSimpleCross (l1 :LineData, l2 :LineData) :Boolean
+    {
+        var start :Boolean = isOutside(l1.x1, l1.y1);
+        if (start != isOutside(l1.x2, l1.y2)) {
+            return false;
+        }
+        return start != isOutside(l2.x1, l2.y1) || start != isOutside(l2.x2, l2.y2);
+    }
+
+    /**
      * Returns true if l1 translated by xd, yd crosses the line without intersecting.
      */
     public function didCrossDelta (l1 :LineData, xd :Number, yd :Number) :Boolean
