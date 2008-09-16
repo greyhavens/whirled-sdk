@@ -13,7 +13,7 @@
     </package>
     <package>
       <string>com.whirled</string>
-      <string>Used for developing Avatars, Toys and other Whirled creations.</string>
+      <string>Used for developing Avatars, Toys and other Whirled entities.</string>
     </package>
     <package>
       <string>com.whirled.avrg</string>
