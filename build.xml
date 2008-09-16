@@ -179,8 +179,8 @@
       <fileset dir="${projects.dir}/nenya/src/as" includes="com/threerings/flash/**"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/*.as"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/net/**/*.as"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/avrg/**/.as"/>
+      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/net/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/avrg/*.as"/>
     </copy>
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>

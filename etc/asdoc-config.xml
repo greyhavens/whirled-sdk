@@ -13,11 +13,19 @@
     </package>
     <package>
       <string>com.whirled</string>
-      <string>Primary classes used for developing avatars, toys and other whirled creations.</string>
+      <string>Used for developing Avatars, Toys and other Whirled creations.</string>
+    </package>
+    <package>
+      <string>com.whirled.avrg</string>
+      <string>Used for developing in-room Games for whirled. NOTE: This API is not finalized.</string>
     </package>
     <package>
       <string>com.whirled.game</string>
-      <string>Used for developing games for whirled.</string>
+      <string>Used for developing Games.</string>
+    </package>
+    <package>
+      <string>com.whirled.net</string>
+      <string>Network related shared and utility classes.</string>
     </package>
   </packages>
 </flex-config>
