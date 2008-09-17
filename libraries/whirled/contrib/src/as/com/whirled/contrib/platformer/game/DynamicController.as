@@ -21,6 +21,7 @@
 package com.whirled.contrib.platformer.game {
 
 import com.whirled.contrib.platformer.board.ColliderTask;
+import com.whirled.contrib.platformer.board.StaticTask;
 
 import com.whirled.contrib.platformer.piece.Dynamic;
 
@@ -86,8 +87,7 @@ public class DynamicController
 
     protected function createTask () :ColliderTask
     {
-        trace("WARNING!! No task created for DynamicController: " + ClassUtil.getClassName(this));
-        return null;
+        return new StaticTask(this, _controller.getCollider());
     }
 
     protected var _chandlers :Array;

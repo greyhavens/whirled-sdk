@@ -113,16 +113,16 @@ public class WalkTask extends ColliderTask
     protected function adjustAttached (a :Actor) :void
     {
         if (a.accelY == 0 &&
-            ((a.attached.isLineOutside(_sab.lines[3]) &&
+            ((a.attached.isLineOutside(_sab.getBottomLine()) &&
                 a.attached.normalDot(a.dx, a.dy) < 0) ||
-            (a.attached.isLineInside(_sab.lines[3]) &&
+            (a.attached.isLineInside(_sab.getBottomLine()) &&
                 a.attached.normalDot(a.dx, a.dy) > 0))) {
             var mag :Number = a.attached.dot(a.dx, a.dy);
             a.dx = a.attached.ix * mag;
             a.dy = a.attached.iy * mag;
-        } else if (a.attached.isIntersecting(_sab.lines[3])) {
+        } else if (a.attached.isIntersecting(_sab.getBottomLine())) {
             trace(a.sprite + " is intersecting attached " + a.attached +
-                    ", " + _sab.lines[3]);
+                    ", " + _sab.getBottomLine());
         }
     }
 

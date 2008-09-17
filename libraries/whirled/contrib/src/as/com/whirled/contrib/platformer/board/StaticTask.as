@@ -20,13 +20,13 @@
 
 package com.whirled.contrib.platformer.board {
 
-import com.whirled.contrib.platformer.game.ActorController;
+import com.whirled.contrib.platformer.game.CollisionController;
 
 public class StaticTask extends ColliderTask
 {
-    public function StaticTask (ac :ActorController, col :Collider)
+    public function StaticTask (cc :CollisionController, col :Collider)
     {
-        super(ac, col);
+        super(cc, col);
     }
 
     override public function init (delta :Number) :void

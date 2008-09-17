@@ -60,15 +60,18 @@ public class SimpleActorBounds extends ActorBounds
         return mlines;
     }
 
+    public function getBottomLine () :LineData
+    {
+        return lines[3];
+    }
+
     override public function updateBounds () :void
     {
         lines = new Array();
-        lines.push(new LineData(actor.x, actor.y, actor.x, actor.y+actor.height, ACTOR_BOUND));
-        lines.push(new LineData(actor.x, actor.y+actor.height, actor.x+actor.width,
-                actor.y+actor.height, ACTOR_BOUND));
-        lines.push(new LineData(actor.x+actor.width, actor.y+actor.height, actor.x+actor.width,
-                actor.y, ACTOR_BOUND));
-        lines.push(new LineData(actor.x+actor.width, actor.y, actor.x, actor.y, ACTOR_BOUND));
+        lines.push(actorLD(0, 0, 0, actor.height, ACTOR_BOUND));
+        lines.push(actorLD(0, actor.height, actor.width, actor.height, ACTOR_BOUND));
+        lines.push(actorLD(actor.width, actor.height, actor.width, 0, ACTOR_BOUND));
+        lines.push(actorLD(actor.width, 0, 0, 0, ACTOR_BOUND));
     }
 
     /**
@@ -313,7 +316,7 @@ public class SimpleActorBounds extends ActorBounds
         translate(cd.oX, cd.oY);
         //log("post trans actor pos (" + actor.x + ", " + actor.y + ")");
 
-        var base :LineData = lines[3].clone();
+        var base :LineData = getBottomLine().clone();
         if (!isNaN(cd.fcdX)) {
             base.translate(cd.fcdX, cd.fcdY);
         }
@@ -322,7 +325,7 @@ public class SimpleActorBounds extends ActorBounds
         if (cd.colliders.length > 0 && actor.maxWalkable >= 0) {
             log(actor.sprite + " found " + cd.colliders.length + " colliders")
             log("base " + base);
-            log("lines[3] " + lines[3]);
+            log("getBottomLine() " + getBottomLine());
             for each (var col :LineData in cd.colliders) {
                 log("  " + col);
             }
@@ -335,7 +338,7 @@ public class SimpleActorBounds extends ActorBounds
             }
             for each (col in cd.colliders) {
                 if (Math.abs(col.ix) > 0 &&
-                        (col.isIntersecting(base) || col.didSimpleCross(lines[3], base))) {
+                        (col.isIntersecting(base) || col.didSimpleCross(getBottomLine(), base))) {
                     if (col.y1 > maxY || col.y2 > maxY || (
                             ((col.y1 == maxY || col.y2 == maxY) &&
                             Math.abs(col.iy) < Math.abs(attached.iy))) ||
@@ -365,20 +368,20 @@ public class SimpleActorBounds extends ActorBounds
         // Possibly detach ourselves from our current ground line and possibly automatically
         // attach to a new ground line
         } else if (actor.attached != null) {
-            //log("attached: " + actor.attached + " bottom: " + lines[3]);
-            if (!actor.attached.xIntersecting(lines[3]) ||
-                (actor.attached.iy > 0 && !actor.attached.yIntersecting(lines[3]))) {
+            //log("attached: " + actor.attached + " bottom: " + getBottomLine());
+            if (!actor.attached.xIntersecting(getBottomLine()) ||
+                (actor.attached.iy > 0 && !actor.attached.yIntersecting(getBottomLine()))) {
                 maxY = -1;
                 attached = null;
                 if (cd.acolliders.length == 0) {
                     for each (var ld :LineData in _collider.getLines(actor)) {
                         if (ld == actor.attached || ld.isConnected(actor.attached, false) == null ||
                             Math.abs(ld.iy) > actor.maxWalkable ||
-                            (ld.y1 > lines[3].y1 && ld.y2 > lines[3].y1)) {
+                            (ld.y1 > getBottomLine().y1 && ld.y2 > getBottomLine().y1)) {
                             continue;
                         }
-                        if ((ld.y1 > maxY || ld.y2 > maxY) && ld.xIntersecting(lines[3]) &&
-                            ld.getLineDist(lines[3]) < MIN_ATTACH_DIST) {
+                        if ((ld.y1 > maxY || ld.y2 > maxY) && ld.xIntersecting(getBottomLine()) &&
+                            ld.getLineDist(getBottomLine()) < MIN_ATTACH_DIST) {
                             attached = ld;
                             maxY = Math.max(ld.y1, ld.y2);
                         }
@@ -398,10 +401,10 @@ public class SimpleActorBounds extends ActorBounds
                     }
                 }
                 if (attached == null) {
-                    log(actor.sprite + " detached " + actor.attached + ", " + lines[3]);
-                    //trace(actor.sprite + " detached " + actor.attached + ", " + lines[3]);
+                    log(actor.sprite + " detached " + actor.attached + ", " + getBottomLine());
+                    //trace(actor.sprite + " detached " + actor.attached + ", " + getBottomLine());
                 } else {
-                    log(actor.sprite + " autoatached " + attached + ", " + lines[3]);
+                    log(actor.sprite + " autoatached " + attached + ", " + getBottomLine());
                 }
                 actor.attached = attached;
             }
@@ -422,7 +425,7 @@ public class SimpleActorBounds extends ActorBounds
                         hitX = true;
                     }
                     if (col.ix != 0) {
-                        if (col.xIntersecting(lines[3])) {
+                        if (col.xIntersecting(getBottomLine())) {
                             hitY = true;
                         } else {
                             hitX = true;
@@ -443,7 +446,7 @@ public class SimpleActorBounds extends ActorBounds
                         hitX = true;
                     }
                     if (col.ix != 0) {
-                        if (col.xIntersecting(lines[3])) {
+                        if (col.xIntersecting(getBottomLine())) {
                             hitY = true;
                         } else {
                             hitX = true;
@@ -465,12 +468,12 @@ public class SimpleActorBounds extends ActorBounds
         dynamicCollider(cd);
 
         if (actor.attached != null) {
-            var dist :Number = actor.attached.getLineDist(lines[3]);
+            var dist :Number = actor.attached.getLineDist(getBottomLine());
             if (dist > MIN_ATTACH_DIST) {
                 log(actor.sprite + " detaching: " + actor.attached + " dist: " + dist +
-                        ", " + lines[3]);
+                        ", " + getBottomLine());
                 //trace(actor.sprite + " detaching: " + actor.attached + " dist: " + dist +
-                //        ", " + lines[3]);
+                //        ", " + getBottomLine());
                 actor.attached = null;
             }
         }
@@ -485,30 +488,42 @@ public class SimpleActorBounds extends ActorBounds
 
     protected function genMovementBounds (cdX :Number, cdY :Number) :void
     {
-        var x1 :Number = actor.x + (cdY < 0 ? cdX : 0);
-        var y1 :Number = actor.y + (cdY < 0 ? cdY : 0);
-        var x2 :Number = actor.x + (cdX < 0 ? cdX : 0);
-        var y2 :Number = actor.y + (cdX < 0 ?
+        var x1 :Number = (cdY < 0 ? cdX : 0);
+        var y1 :Number = (cdY < 0 ? cdY : 0);
+        var x2 :Number = (cdX < 0 ? cdX : 0);
+        var y2 :Number = (cdX < 0 ?
                 cdY + (cdY < 0 ? actor.height : 0) : (cdY < 0 ? 0 : actor.height));
-        var x3 :Number = actor.x + (cdY >= 0 ? cdX : 0);
-        var y3 :Number = actor.y + actor.height + (cdY >= 0 ? cdY : 0);
-        var x4 :Number = actor.x + actor.width + (cdY >= 0 ? cdX : 0);
-        var y4 :Number = actor.y + actor.height + (cdY >= 0 ? cdY : 0);
-        var x5 :Number = actor.x + actor.width + (cdX >= 0 ? cdX : 0);
-        var y5 :Number = actor.y + (cdX >= 0 ?
+        var x3 :Number = (cdY >= 0 ? cdX : 0);
+        var y3 :Number = actor.height + (cdY >= 0 ? cdY : 0);
+        var x4 :Number = actor.width + (cdY >= 0 ? cdX : 0);
+        var y4 :Number = actor.height + (cdY >= 0 ? cdY : 0);
+        var x5 :Number = actor.width + (cdX >= 0 ? cdX : 0);
+        var y5 :Number = (cdX >= 0 ?
                 cdY + (cdY < 0 ? actor.height : 0) : (cdY < 0 ? 0 : actor.height));
-        var x6 :Number = actor.x + actor.width + (cdY < 0 ? cdX : 0);
-        var y6 :Number = actor.y + (cdY < 0 ? cdY : 0);
+        var x6 :Number = actor.width + (cdY < 0 ? cdX : 0);
+        var y6 :Number = (cdY < 0 ? cdY : 0);
         //log("new movement bounds (" + cdX + ", " + cdY + ")");
         if (mlines == null) {
             mlines = new Array();
-            mlines.push(new LineData(x1, y1, x2, y2, ACTOR_BOUND));
-            mlines.push(new LineData(x2, y2, x3, y3, ACTOR_BOUND));
-            mlines.push(new LineData(x3, y3, x4, y4, ACTOR_BOUND));
-            mlines.push(new LineData(x4, y4, x5, y5, ACTOR_BOUND));
-            mlines.push(new LineData(x5, y5, x6, y6, ACTOR_BOUND));
-            mlines.push(new LineData(x6, y6, x1, y1, ACTOR_BOUND));
+            mlines.push(actorLD(x1, y1, x2, y2, ACTOR_BOUND));
+            mlines.push(actorLD(x2, y2, x3, y3, ACTOR_BOUND));
+            mlines.push(actorLD(x3, y3, x4, y4, ACTOR_BOUND));
+            mlines.push(actorLD(x4, y4, x5, y5, ACTOR_BOUND));
+            mlines.push(actorLD(x5, y5, x6, y6, ACTOR_BOUND));
+            mlines.push(actorLD(x6, y6, x1, y1, ACTOR_BOUND));
         } else {
+            x1 += actor.x;
+            y1 += actor.y;
+            x2 += actor.x;
+            y2 += actor.y;
+            x3 += actor.x;
+            y3 += actor.y;
+            x4 += actor.x;
+            y4 += actor.y;
+            x5 += actor.x;
+            y5 += actor.y;
+            x6 += actor.x;
+            y6 += actor.y;
             mlines[0].update(x1, y1, x2, y2);
             mlines[1].update(x2, y2, x3, y3);
             mlines[2].update(x3, y3, x4, y4);
@@ -518,16 +533,21 @@ public class SimpleActorBounds extends ActorBounds
         }
         /*
         for each (var mline :LineData in mlines) {
-            log("  " + mline);
+            trace("  " + mline);
         }
         */
+    }
+
+    protected function actorLD (x1 :Number, y1 :Number, x2 :Number, y2 :Number, type :int) :LineData
+    {
+        return new LineData(actor.x + x1, actor.y + y1, actor.x + x2, actor.y + y2, type);
     }
 
     protected function inYBounds (line :LineData) :Boolean
     {
         var maxY :Number = Math.max(line.y1, line.y2);
         var minY :Number = Math.min(line.y1, line.y2);
-        return (lines[3].y1 >= minY && lines[3].y1 < maxY + 0.1);
+        return (getBottomLine().y1 >= minY && getBottomLine().y1 < maxY + 0.1);
     }
 
     protected function log (str :String) :void
