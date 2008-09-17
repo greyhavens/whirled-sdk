@@ -20,10 +20,10 @@
 
 package com.whirled.contrib {
 
+import com.threerings.util.ArrayUtil;
+
 import flash.events.TimerEvent;
 import flash.utils.Timer;
-
-import com.threerings.util.ArrayUtil;
 
 /**
  * A class for managing a group of timers.
@@ -81,11 +81,21 @@ public class TimerManager
     {
         var timer :ManagedTimer = createTimer(delay, 1,
             function (e :TimerEvent) :void {
-                callback(e);
                 timer.cancel();
+                callback(e);
             });
 
         timer.start();
+    }
+
+    /**
+     * Creates and runs a timer that will run forever, or until canceled.
+     */
+    public function runForever (delay :Number, callback :Function) :ManagedTimer
+    {
+        var timer :ManagedTimer = createTimer(delay, 0, callback);
+        timer.start();
+        return timer;
     }
 
     /**
