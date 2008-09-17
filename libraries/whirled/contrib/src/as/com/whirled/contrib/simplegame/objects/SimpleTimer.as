@@ -20,14 +20,22 @@
 
 package com.whirled.contrib.simplegame.objects {
 
+import com.whirled.contrib.simplegame.MainLoop;
 import com.whirled.contrib.simplegame.SimObject;
 import com.whirled.contrib.simplegame.tasks.*;
 
 public class SimpleTimer extends SimObject
 {
-    public function SimpleTimer (delay :Number, callback :Function = null, repeating :Boolean = false, objectName :String = null)
+    public static function getTimeLeft (timerName :String) :Number
     {
-        _name = objectName;
+        var timer :SimpleTimer = MainLoop.instance.topMode.getObjectNamed(timerName) as SimpleTimer;
+        return (timer != null ? timer.timeLeft : 0);
+    }
+
+    public function SimpleTimer (delay :Number, callback :Function = null,
+        repeating :Boolean = false, timerName :String = null)
+    {
+        _name = timerName;
         _timeLeft["value"] = delay;
 
         if (repeating) {
