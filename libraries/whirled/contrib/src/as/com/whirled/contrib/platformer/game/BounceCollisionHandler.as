@@ -40,7 +40,8 @@ public class BounceCollisionHandler extends CollisionHandler
             return false;
         }
         if (super.handlesObject(o)) {
-            if (_colliders.indexOf(o) == -1) {
+            if ((o as ActorController).getActor().health > 0 &&
+                    _colliders.indexOf(o) == -1) {
                 return true;
             }
             trace("ignoring bounce-collided target");
