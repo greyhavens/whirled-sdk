@@ -20,14 +20,14 @@
 
 package com.whirled.contrib.simplegame {
 
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
+
 import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
 import com.whirled.contrib.simplegame.components.SceneComponent;
 import com.whirled.contrib.simplegame.tasks.*;
-
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
 
 public class ObjectDB
 {
@@ -69,11 +69,9 @@ public class ObjectDB
         }
 
         // iterate over the object's groups
-        // (type checking in do-while loops is broken in AS3)
         var groupNum :int = 0;
-        var groupName :String;
-        while (null != groupName) {
-            groupName = obj.getObjectGroup(groupNum++);
+        do {
+            var groupName :String = obj.getObjectGroup(groupNum++);
             if (null != groupName) {
                 var groupArray :Array = (_groupedObjects.get(groupName) as Array);
                 if (null == groupArray) {
@@ -83,7 +81,7 @@ public class ObjectDB
 
                 groupArray.push(ref);
             }
-        }
+        } while (null != groupName);
 
         // should the object be attached to a display parent?
         // (this is purely a convenience - the client is free to
@@ -275,11 +273,9 @@ public class ObjectDB
         // (we remove the object from its groups here, rather than in
         // destroyObject(), because client code might be iterating an
         // object group Array when destroyObject is called)
-        // (type checking in do-while loops is broken in AS3)
         var groupNum :int = 0;
-        var groupName :String;
-        while (null != groupName) {
-            groupName = obj.getObjectGroup(groupNum++);
+        do {
+            var groupName :String = obj.getObjectGroup(groupNum++);
             if (null != groupName) {
                 var groupArray :Array = (_groupedObjects.get(groupName) as Array);
                 if (null == groupArray) {
@@ -291,7 +287,7 @@ public class ObjectDB
                     throw new Error("destroyed SimObject is returning different object groups than it did on creation");
                 }
             }
-        }
+        } while (null != groupName);
 
         obj._parentDB = null;
     }
