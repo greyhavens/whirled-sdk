@@ -147,7 +147,7 @@ public class GameSubControl extends AbstractSubControl
      */
     public function getLevelPacks () :Array
     {
-        return (callHostCode("getLevelPacks_v1") as Array);
+        return (callHostCode("getLevelPacks_v2") as Array);
     }
 
     /**

@@ -599,7 +599,7 @@ public class BaseGameBackend
         o["endGameWithWinners_v1"] = endGameWithWinners_v1;
         o["endRound_v1"] = endRound_v1;
         o["getControllerId_v1"] = getControllerId_v1;
-        o["getLevelPacks_v1"] = getLevelPacks_v1;
+        o["getLevelPacks_v2"] = getLevelPacks_v2;
         o["getItemPacks_v1"] = getItemPacks_v1;
         o["getOccupants_v1"] = getOccupants_v1;
         o["getOccupantName_v1"] = getOccupantName_v1;
@@ -892,7 +892,7 @@ public class BaseGameBackend
 
     protected function getPlayerLevelPacks_v1 (playerId :int = CURRENT_USER) :Array
     {
-        return getLevelPacks_v1(function (data :GameData) :Boolean {
+        return getLevelPacks_v2(function (data :GameData) :Boolean {
             return playerOwnsData(data.getType(), data.ident, playerId);
         });
     }
@@ -907,7 +907,7 @@ public class BaseGameBackend
         _gameObj.postMessage(WhirledGameObject.GAME_CHAT, [ msg ]);
     }
 
-    protected function getLevelPacks_v1 (filter :Function = null) :Array
+    protected function getLevelPacks_v2 (filter :Function = null) :Array
     {
         var packs :Array = [];
         for each (var data :GameData in _gameObj.gameData) {
@@ -1252,6 +1252,12 @@ public class BaseGameBackend
     protected function awardFlow_v2 (perf :int) :int
     {
         return 0;
+    }
+
+    /** A backwards compatible method. */
+    protected function getLevelPacks_v1 (ignored :int) :Array
+    {
+        return getLevelPacks_v2()
     }
 
     /** 
