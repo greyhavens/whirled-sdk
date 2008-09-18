@@ -52,6 +52,9 @@ public class ActorSprite extends DynamicSprite
                         0, 0, _actor.width*Metrics.TILE_SIZE, -_actor.height*Metrics.TILE_SIZE);
                 addChild(outline);
             }
+            if ((_actor.orient & Actor.ORIENT_RIGHT) == 0) {
+                _disp.scaleX = -1;
+            }
             update(0);
         }
     }

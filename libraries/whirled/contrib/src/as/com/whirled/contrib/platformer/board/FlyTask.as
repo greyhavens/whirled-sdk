@@ -28,10 +28,13 @@ import com.whirled.contrib.platformer.piece.Actor;
 
 public class FlyTask extends ColliderTask
 {
-    public function FlyTask (ac :ActorController, col :Collider)
+    public function FlyTask (
+            ac :ActorController, col :Collider, maxDx :Number = 3, maxDy :Number = 1)
     {
         super(ac, col);
         _sab = col.getDynamicBounds(ac.getActor()) as SimpleActorBounds;
+        _maxDx = maxDx;
+        _maxDy = maxDy;
     }
 
     override public function init (delta :Number) :void
@@ -61,11 +64,11 @@ public class FlyTask extends ColliderTask
         var a :Actor = _sab.actor;
         a.dy += a.accelY * _delta;
         a.dy -= Maths.sign0(a.dy) * Maths.limit(DRAG * _delta, Math.abs(a.dy));
-        var maxDy :Number = (a.health > 0) ? MAX_DY : MAX_DEAD_DY;
+        var maxDy :Number = (a.health > 0) ? _maxDy : MAX_DEAD_DY;
         a.dy = Math.min(Math.max(a.dy, -maxDy), maxDy);
         a.dx += a.accelX * _delta;
         a.dx -= Maths.sign0(a.dx) * Maths.limit(DRAG * _delta, Math.abs(a.dx));
-        a.dx = Math.min(Math.max(a.dx, -MAX_DX), MAX_DX);
+        a.dx = Maths.limit(a.dx, _maxDx);
     }
 
     override protected function runTask () :void
@@ -90,10 +93,10 @@ public class FlyTask extends ColliderTask
 
     protected var _lastDelta :Number;
     protected var _sab :SimpleActorBounds;
+    protected var _maxDx :Number;
+    protected var _maxDy :Number;
 
-    protected var MAX_DY :Number = 1;
     protected var MAX_DEAD_DY :Number = 3;
-    protected var MAX_DX :Number = 3;
     protected var DRAG :Number = 0.5;
 }
 }

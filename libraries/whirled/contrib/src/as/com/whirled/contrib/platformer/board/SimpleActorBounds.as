@@ -67,11 +67,18 @@ public class SimpleActorBounds extends ActorBounds
 
     override public function updateBounds () :void
     {
-        lines = new Array();
-        lines.push(actorLD(0, 0, 0, actor.height, ACTOR_BOUND));
-        lines.push(actorLD(0, actor.height, actor.width, actor.height, ACTOR_BOUND));
-        lines.push(actorLD(actor.width, actor.height, actor.width, 0, ACTOR_BOUND));
-        lines.push(actorLD(actor.width, 0, 0, 0, ACTOR_BOUND));
+        if (lines == null) {
+            lines = new Array();
+            lines.push(actorLD(0, 0, 0, actor.height, ACTOR_BOUND));
+            lines.push(actorLD(0, actor.height, actor.width, actor.height, ACTOR_BOUND));
+            lines.push(actorLD(actor.width, actor.height, actor.width, 0, ACTOR_BOUND));
+            lines.push(actorLD(actor.width, 0, 0, 0, ACTOR_BOUND));
+        } else {
+            actorUpdateLD(lines[0], 0, 0, 0, actor.height);
+            actorUpdateLD(lines[1], 0, actor.height, actor.width, actor.height);
+            actorUpdateLD(lines[2], actor.width, actor.height, actor.width, 0);
+            actorUpdateLD(lines[3], actor.width, 0, 0, 0);
+        }
     }
 
     /**
@@ -80,9 +87,7 @@ public class SimpleActorBounds extends ActorBounds
     override public function translate (dX :Number, dY :Number) :void
     {
         super.translate(dX, dY);
-        for each (var ld :LineData in lines) {
-            ld.translate(dX, dY);
-        }
+        updateBounds();
     }
 
     /**
@@ -512,24 +517,12 @@ public class SimpleActorBounds extends ActorBounds
             mlines.push(actorLD(x5, y5, x6, y6, ACTOR_BOUND));
             mlines.push(actorLD(x6, y6, x1, y1, ACTOR_BOUND));
         } else {
-            x1 += actor.x;
-            y1 += actor.y;
-            x2 += actor.x;
-            y2 += actor.y;
-            x3 += actor.x;
-            y3 += actor.y;
-            x4 += actor.x;
-            y4 += actor.y;
-            x5 += actor.x;
-            y5 += actor.y;
-            x6 += actor.x;
-            y6 += actor.y;
-            mlines[0].update(x1, y1, x2, y2);
-            mlines[1].update(x2, y2, x3, y3);
-            mlines[2].update(x3, y3, x4, y4);
-            mlines[3].update(x4, y4, x5, y5);
-            mlines[4].update(x5, y5, x6, y6);
-            mlines[5].update(x6, y6, x1, y1);
+            actorUpdateLD(mlines[0], x1, y1, x2, y2);
+            actorUpdateLD(mlines[1], x2, y2, x3, y3);
+            actorUpdateLD(mlines[2], x3, y3, x4, y4);
+            actorUpdateLD(mlines[3], x4, y4, x5, y5);
+            actorUpdateLD(mlines[4], x5, y5, x6, y6);
+            actorUpdateLD(mlines[5], x6, y6, x1, y1);
         }
         /*
         for each (var mline :LineData in mlines) {
@@ -541,6 +534,12 @@ public class SimpleActorBounds extends ActorBounds
     protected function actorLD (x1 :Number, y1 :Number, x2 :Number, y2 :Number, type :int) :LineData
     {
         return new LineData(actor.x + x1, actor.y + y1, actor.x + x2, actor.y + y2, type);
+    }
+
+    protected function actorUpdateLD (
+            line :LineData, x1 :Number, y1 :Number, x2 :Number, y2 :Number) :void
+    {
+        line.update(actor.x + x1, actor.y + y1, actor.x + x2, actor.y + y2);
     }
 
     protected function inYBounds (line :LineData) :Boolean
