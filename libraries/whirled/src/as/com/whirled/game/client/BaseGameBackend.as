@@ -1255,7 +1255,7 @@ public class BaseGameBackend
     }
 
     /** A backwards compatible method. */
-    protected function getLevelPacks_v1 (ignored :int) :Array
+    protected function getLevelPacks_v1 (ignored :* = null) :Array
     {
         return getLevelPacks_v2()
     }
