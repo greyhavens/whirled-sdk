@@ -10,6 +10,7 @@
   <property name="app.source-dir" value="."/>
   <property name="app.package-dir" value="."/>
   <property name="app.library-dir" value="."/>
+  <property name="app.server-agent-package-dir" value="${app.package-dir}"/>
   <property name="app.server-agent" value="Server"/>
 
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
@@ -91,7 +92,7 @@
       <arg value="${app.source-extras.arg}"/>
       <arg value="${app.lib-extras.arg}"/>
       <arg value="-file-specs"/>
-      <arg value="${app.source-dir}/${app.package-dir}/${app.server-agent}.${app.source-suffix}"/>
+      <arg value="${app.source-dir}/${app.server-agent-package-dir}/${app.server-agent}.${app.source-suffix}"/>
       <arg value="-output"/>
       <arg value="${app.name}.server.swf"/>
     </java>
