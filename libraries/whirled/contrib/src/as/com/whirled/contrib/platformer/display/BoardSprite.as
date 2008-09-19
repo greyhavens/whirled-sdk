@@ -155,6 +155,9 @@ public class BoardSprite extends Sprite
             _centerY = (_lowBounds[x] + (_lowBounds[x+1] - _lowBounds[x]) * offX) *
                             Metrics.TILE_SIZE;
             _lastY = 0;
+        } else if (_highBound > 0 && offY + Metrics.WINDOW_HEIGHT >= _highBound) {
+            _centerY = (_highBound - Metrics.WINDOW_HEIGHT) * Metrics.TILE_SIZE;
+            _lastY = 0;
         }
 
         updateDisplay();
@@ -172,6 +175,11 @@ public class BoardSprite extends Sprite
         _layers[BACK_DYNAMIC_LAYER].updateSprites(delta);
         _layers[ACTOR_LAYER].updateSprites(delta);
         _layers[SHOT_LAYER].updateSprites(delta);
+    }
+
+    public function setHighBound (bound :int) :void
+    {
+        _highBound = bound;
     }
 
     protected function addPieces (pieces :Array, layer :int = -1) :void
@@ -279,6 +287,7 @@ public class BoardSprite extends Sprite
     protected var _showBG :Boolean = true;
 
     protected var _lowBounds :Array = new Array();
+    protected var _highBound :int;
     protected var _minX :int = int.MAX_VALUE;
     protected var _maxX :int = 0;
     protected var _lastY :Number = 0;

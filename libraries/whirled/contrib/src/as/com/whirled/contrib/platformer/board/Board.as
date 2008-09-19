@@ -84,7 +84,10 @@ public class Board
             loadDynamics(_xml.board[0].platforms[0], _dynamicIns[PLATFORMS]);
         }
         if (boardHas("spawns")) {
-            loadSpawns(_xml.board[0].spawns[0], _spawns);
+            loadCoords(_xml.board[0].spawns[0], _spawns);
+        }
+        if (boardHas("gates")) {
+            loadCoords(_xml.board[0].gates[0], _gates);
         }
     }
 
@@ -113,9 +116,16 @@ public class Board
         return (_spawns[idx] == null) ? [11, 11] : _spawns[idx];
     }
 
+    public function getGates () :Array
+    {
+        return _gates;
+    }
+
     public function addActor (a :Actor) :void
     {
-        a.id = ++_actorId;
+        if (a.id <= 0) {
+            a.id = ++_actorId;
+        }
         _actors.push(a);
         trace("adding actor " + a.sprite + "(" + a.id + ") at (" + a.x + ", " + a.y + ")");
         sendEvent(ACTOR_ADDED, a, "");
@@ -123,7 +133,9 @@ public class Board
 
     public function addDynamic (d :Dynamic) :void
     {
-        d.id = ++_actorId;
+        if (d.id <= 0) {
+            d.id = ++_actorId;
+        }
         _dynamics.push(d);
         trace("adding dynamic " + d.id + " at (" + d.x + ", " + d.y + ")");
         sendEvent(DYNAMIC_ADDED, d, "");
@@ -455,7 +467,7 @@ public class Board
         }
     }
 
-    protected function loadSpawns (xml :XML, arr :Array) :void
+    protected function loadCoords (xml :XML, arr :Array) :void
     {
         for each (var node :XML in xml.children()) {
             arr.push([ node.@x, node.@y ]);
@@ -560,6 +572,7 @@ public class Board
     protected var _dynamicIns :Array = new Array();
     protected var _shots :Array = new Array();
     protected var _spawns :Array = new Array();
+    protected var _gates :Array = new Array();
 
     protected var _listeners :HashMap = new HashMap();
 

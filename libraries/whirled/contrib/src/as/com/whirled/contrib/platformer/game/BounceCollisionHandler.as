@@ -39,12 +39,9 @@ public class BounceCollisionHandler extends CollisionHandler
         if (_ac.getActor().health <= 0) {
             return false;
         }
-        if (super.handlesObject(o)) {
-            if ((o as ActorController).getActor().health > 0 &&
+        if (super.handlesObject(o) && (o as ActorController).getActor().health > 0 &&
                     _colliders.indexOf(o) == -1) {
-                return true;
-            }
-            trace("ignoring bounce-collided target");
+            return true;
         }
         return false;
     }
@@ -99,7 +96,7 @@ public class BounceCollisionHandler extends CollisionHandler
             source.actor.dy += 0.5;
         }
 
-        if (Math.abs(ax) > 0) {
+        if (ax != 0) {
             target.actor.dx = 4 * ax;
             source.actor.dx += Maths.sign0(ax) * -0.5;
         }

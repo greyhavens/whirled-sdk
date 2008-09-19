@@ -57,6 +57,9 @@ public class ShotTask extends ColliderTask
                 _s.x, _s.y, _s.x + _s.dx * _delta, _s.y + _s.dy * _delta, BoundData.S_ALL);
         if (dynamics != null && dynamics.length > 0) {
             for each (var db :DynamicBounds in dynamics) {
+                if (db is ActorBounds && (db as ActorBounds).actor.health <= 0) {
+                    continue;
+                }
                 if (db is SimpleBounds && db is ActorBounds) {
                     var sb :SimpleBounds = (db as SimpleActorBounds);
                     var arr :Array = line.polyIntersect(sb.getBoundLines());

@@ -41,6 +41,8 @@ public class FlyTask extends ColliderTask
     {
         super.init(delta);
         _lastDelta = NaN;
+        _hitX = false;
+        _hitY = false;
     }
 
     override public function getBounds () :DynamicBounds
@@ -59,6 +61,16 @@ public class FlyTask extends ColliderTask
         return _cd;
     }
 
+    public function didHitX () :Boolean
+    {
+        return _hitX;
+    }
+
+    public function didHitY () :Boolean
+    {
+        return _hitY;
+    }
+
     protected function updateVector () :void
     {
         var a :Actor = _sab.actor;
@@ -73,7 +85,12 @@ public class FlyTask extends ColliderTask
 
     override protected function runTask () :void
     {
+        var a :Actor = _sab.actor;
+        _hitX = _hitX || a.dx != 0;
+        _hitY = _hitY || a.dy != 0;
         _sab.move(_cd);
+        _hitX = _hitX && a.dx == 0;
+        _hitY = _hitY && a.dy == 0;
         if (_cd != null) {
             if (!isNaN(_lastDelta)) {
                 if (_lastDelta == _cd.rdelta) {
@@ -95,8 +112,10 @@ public class FlyTask extends ColliderTask
     protected var _sab :SimpleActorBounds;
     protected var _maxDx :Number;
     protected var _maxDy :Number;
+    protected var _hitX :Boolean;
+    protected var _hitY :Boolean;
 
-    protected var MAX_DEAD_DY :Number = 3;
+    protected var MAX_DEAD_DY :Number = 6;
     protected var DRAG :Number = 0.5;
 }
 }
