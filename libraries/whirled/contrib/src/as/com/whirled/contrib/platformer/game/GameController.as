@@ -53,6 +53,12 @@ public class GameController
         _board.addEventListener(Board.SHOT_ADDED, handleShotAdded);
         _board.addEventListener(Board.DYNAMIC_REMOVED, handleDynamicRemoved);
         _board.addEventListener(Board.DYNAMIC_ADDED, handleDynamicAdded);
+
+
+        // We need to reference our various event classes so they're compiled
+        var c :Class = RemoveGatesEventAction;
+        c = DeathEventTrigger;
+        c = SetGateEventAction;
     }
 
     public function initDynamicClasses () :void
@@ -68,6 +74,18 @@ public class GameController
             if (dc is InitController) {
                 (dc as InitController).init();
             }
+        }
+        var eventsXML :XML = _board.getEventXML();
+        if (eventsXML != null) {
+            for each (var node :XML in eventsXML.child("event")) {
+                var event :GameEvent = GameEvent.create(this, node);
+                if (event != null) {
+                    trace("adding event: " + node.toXMLString());
+                    _events.push(event);
+                }
+            }
+        } else {
+            trace("no events xml");
         }
     }
 
@@ -96,6 +114,14 @@ public class GameController
         for each (controller in _controllers) {
             if (controller is TickController) {
                 (controller as TickController).postTick();
+            }
+        }
+        var ii :int = 0;
+        while (ii < _events.length) {
+            if (_events[ii].runEvent()) {
+                _events.splice(ii, 1);
+            } else {
+                ii++;
             }
         }
     }
@@ -256,6 +282,7 @@ public class GameController
     protected var _actorMap :HashMap = new HashMap();
     protected var _shotMap :HashMap = new HashMap();
     protected var _dynamicMap :HashMap = new HashMap();
+    protected var _events :Array = new Array();
     protected var _defaultActorClass :Class;
     protected var _defaultShotClass :Class;
     protected var _defaultDynamicClass :Class;

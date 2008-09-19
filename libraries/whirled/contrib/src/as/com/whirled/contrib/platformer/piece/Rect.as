@@ -64,5 +64,17 @@ public class Rect
         return x <= other.x + other.width && x + width >= other.x &&
                 y <= other.y + other.height && y + height >= other.y;
     }
+
+    public function contains (other :Rect) :Boolean
+    {
+        return x <= other.x && x + width >= other.x + other.width &&
+            y <= other.y && y + height >= other.y + other.height;
+    }
+
+    public function toString () :String
+    {
+        return "rect: (" + x.toFixed(3) + ", " + y.toFixed(3) + ", " +
+            width.toFixed(3) + ", " + height.toFixed(3) + ")";
+    }
 }
 }

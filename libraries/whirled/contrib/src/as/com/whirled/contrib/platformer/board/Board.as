@@ -124,7 +124,7 @@ public class Board
     public function addActor (a :Actor) :void
     {
         if (a.id <= 0) {
-            a.id = ++_actorId;
+            a.id = ++_maxId;
         }
         _actors.push(a);
         trace("adding actor " + a.sprite + "(" + a.id + ") at (" + a.x + ", " + a.y + ")");
@@ -134,7 +134,7 @@ public class Board
     public function addDynamic (d :Dynamic) :void
     {
         if (d.id <= 0) {
-            d.id = ++_actorId;
+            d.id = ++_maxId;
         }
         _dynamics.push(d);
         trace("adding dynamic " + d.id + " at (" + d.x + ", " + d.y + ")");
@@ -407,6 +407,14 @@ public class Board
         return null;
     }
 
+    public function getEventXML () :XML
+    {
+        if (boardHas("events")) {
+            return _xml.board[0].events[0];
+        }
+        return null;
+    }
+
     public function getXML () :XML
     {
         addOrReplaceXML(_xml.board[0], "piecenode", getPieceTreeXML());
@@ -434,6 +442,21 @@ public class Board
             return new dclass(xml);
         }
         return null;
+    }
+
+    public function setHighBound (bound :int) :void
+    {
+        _highBound = bound;
+    }
+
+    public function getHighBound () :int
+    {
+        return _highBound;
+    }
+
+    public function clearGates () :void
+    {
+        _highBound = 0;
     }
 
     protected function loadPieceTree (xml :XML, arr :Array) :void
@@ -575,6 +598,7 @@ public class Board
     protected var _gates :Array = new Array();
 
     protected var _listeners :HashMap = new HashMap();
+    protected var _highBound :int;
 
     protected var _pfac :PieceFactory;
     protected var _groupNames :Array;
