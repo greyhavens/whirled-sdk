@@ -635,6 +635,7 @@ public class BaseGameBackend
         o["getAvailableFlow_v1"] = getAvailableFlow_v1;
         o["getDictionaryLetterSet_v1"] = getDictionaryLetterSet_v1;
         o["setProperty_v1"] = setProperty_v1;
+        o["getLevelPacks_v1"] = getLevelPacks_v1;
     }
 
     /**
