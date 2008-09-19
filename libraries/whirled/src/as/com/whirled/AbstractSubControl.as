@@ -48,6 +48,22 @@ public class AbstractSubControl extends AbstractControl
         return _parent.callHostCodeFriend(name, args);
     }
 
+    /**
+     * @private
+     */
+    internal function setUserPropsFriend (o :Object) :void
+    {
+        setUserProps(o);
+    }
+
+    /**
+     * @private
+     */
+    internal function gotHostPropsFriend (o :Object) :void
+    {
+        gotHostProps(o);
+    }
+
     /** @private */
     protected var _parent :AbstractControl;
 }
