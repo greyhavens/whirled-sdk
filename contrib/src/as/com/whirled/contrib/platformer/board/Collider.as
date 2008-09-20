@@ -101,7 +101,6 @@ public class Collider
         if (_boundLines[idx] != null) {
             for each (var sec :int in _boundLineSections[idx]) {
                 var ix :int = _lines[sec].indexOf(_boundLines[idx]);
-                trace("dropping bound line " + idx + " from section " + sec + " at " + ix);
                 _lines[sec].splice(ix, 1);
             }
         }
@@ -178,7 +177,6 @@ public class Collider
                 if (_lines[idx] == null) {
                     _lines[idx] = new Array();
                 }
-                trace("Adding bound line " + ii + " to section " + idx + " at " + _lines[idx].length);
                 _lines[idx].push(line);
                 _boundLineSections[ii].push(idx);
             }
