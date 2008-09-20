@@ -53,6 +53,11 @@ public class Board
     public static const ACTORS :String = "actors";
     public static const PLATFORMS :String = "platforms";
 
+    public static const TOP_BOUND :int = 0;
+    public static const RIGHT_BOUND :int = 1;
+    public static const BOTTOM_BOUND :int = 2;
+    public static const LEFT_BOUND :int = 3;
+
     public function Board () :void
     {
         _groupNames = new Array();
@@ -444,19 +449,14 @@ public class Board
         return null;
     }
 
-    public function setHighBound (bound :int) :void
+    public function setBound (idx :int, bound :int) :void
     {
-        _highBound = bound;
+        _bound[idx] = bound;
     }
 
-    public function getHighBound () :int
+    public function getBound (idx :int) :int
     {
-        return _highBound;
-    }
-
-    public function clearGates () :void
-    {
-        _highBound = 0;
+        return _bound[idx];
     }
 
     protected function loadPieceTree (xml :XML, arr :Array) :void
@@ -596,9 +596,9 @@ public class Board
     protected var _shots :Array = new Array();
     protected var _spawns :Array = new Array();
     protected var _gates :Array = new Array();
+    protected var _bound :Array = new Array();
 
     protected var _listeners :HashMap = new HashMap();
-    protected var _highBound :int;
 
     protected var _pfac :PieceFactory;
     protected var _groupNames :Array;

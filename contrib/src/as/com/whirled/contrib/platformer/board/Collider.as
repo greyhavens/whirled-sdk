@@ -27,6 +27,7 @@ import com.threerings.util.HashMap;
 import com.threerings.util.ClassUtil;
 
 import com.whirled.contrib.platformer.piece.Actor;
+import com.whirled.contrib.platformer.piece.BoundData;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Rect;
@@ -95,6 +96,32 @@ public class Collider
         }
     }
 
+    public function setBound (idx :int, bound :int) :void
+    {
+        if (_boundLines[idx] != null) {
+            for each (var sec :int in _boundLineSections[idx]) {
+                var ix :int = _lines[sec].indexOf(_boundLines[idx]);
+                trace("dropping bound line " + idx + " from section " + sec + " at " + ix);
+                _lines[sec].splice(ix, 1);
+            }
+        }
+        _boundLineSections[idx] = new Array();
+        if (bound <= 0) {
+            _boundLines[idx] = null;
+        } else {
+            var p1 :Point;
+            var p2 :Point;
+            if (idx == Board.TOP_BOUND || Board.BOTTOM_BOUND) {
+                p1 = new Point(0, bound);
+                p2 = new Point(_sindex.getSectionWidth() * 1000, bound);
+            } else {
+                p1 = new Point(bound, 0);
+                p2 = new Point(bound, _sindex.getSectionHeight() * 1000);
+            }
+            _boundLines[idx] = LineData.createFromPoints(p1, p2, BoundData.ALL | BoundData.S_ALL);
+        }
+    }
+
     public function getLines (d :Dynamic) :Array
     {
         return getLinesPt(d.x, d.y);
@@ -104,6 +131,7 @@ public class Collider
     {
         var index :int = _sindex.getSectionFromTile(Math.floor(x), Math.floor(y));
         //trace("getLines for index: " + index);
+        updateBoundLines(index);
         var lines :Array = _lines[index];
         return (lines == null ? new Array() : lines);
     }
@@ -122,12 +150,39 @@ public class Collider
         for (var yy :int = y1; yy <= y2; yy++) {
             for (var xx :int = x1; xx <= x2; xx++) {
                 var index :int = _sindex.getSectionIndex(xx, yy);
+                updateBoundLines(index);
                 if (_lines[index] != null) {
                     lines = lines.concat(_lines[index]);
                 }
             }
         }
         return lines;
+    }
+
+    public function updateBoundLines (idx :int) :void
+    {
+        for (var ii :int = Board.TOP_BOUND; ii <= Board.LEFT_BOUND; ii++) {
+            if (_boundLines[ii] == null) {
+                continue;
+            }
+            if (_boundLineSections[ii].indexOf(idx) != -1) {
+                continue;
+            }
+            var x :int = _sindex.getSectionX(idx);
+            var y :int = _sindex.getSectionY(idx);
+            var sw :int = _sindex.getSectionWidth();
+            var sh :int = _sindex.getSectionHeight();
+            var line :LineData = _boundLines[ii];
+            if ((line.x1 > (x - 1) * sw && line.x1 < (x + 2) * sw) ||
+                (line.y1 > (y - 1) * sh && line.y1 < (y + 2) * sh)) {
+                if (_lines[idx] == null) {
+                    _lines[idx] = new Array();
+                }
+                trace("Adding bound line " + ii + " to section " + idx + " at " + _lines[idx].length);
+                _lines[idx].push(line);
+                _boundLineSections[ii].push(idx);
+            }
+        }
     }
 
     public function getDynamicBoundsByType (type :int) :Array
@@ -377,6 +432,8 @@ public class Collider
     protected var _dynamics :HashMap = new HashMap();
     protected var _dynamicBounds :Array = new Array();
     protected var _tasks :Array = new Array();
+    protected var _boundLines :Array = new Array();
+    protected var _boundLineSections :Array = new Array();
     protected var _sindex :SectionalIndex;
     protected var _tickCounter :int;
 

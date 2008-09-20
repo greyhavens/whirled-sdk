@@ -122,12 +122,16 @@ public class BoardSprite extends Sprite
                     xbuffer - Metrics.DISPLAY_WIDTH;
         }
         var x :int = Math.floor(_centerX / Metrics.TILE_SIZE);
-        if (x < _minX) {
-            _centerX = _minX * Metrics.TILE_SIZE;
-            x = _minX;
-        } else if (x + 1 + Metrics.WINDOW_WIDTH > _maxX) {
-            _centerX = _maxX * Metrics.TILE_SIZE - Metrics.DISPLAY_WIDTH;
-            x = _maxX - Metrics.WINDOW_WIDTH;
+        var minX :int = _board.getBound(Board.LEFT_BOUND) > 0 ?
+                Math.max(_minX, _board.getBound(Board.LEFT_BOUND)) : _minX;
+        var maxX :int = _board.getBound(Board.RIGHT_BOUND) > 0 ?
+                Math.min(_maxX, _board.getBound(Board.RIGHT_BOUND)) : _maxX;
+        if (x < minX) {
+            _centerX = minX * Metrics.TILE_SIZE;
+            x = minX;
+        } else if (x + 1 + Metrics.WINDOW_WIDTH > maxX) {
+            _centerX = maxX * Metrics.TILE_SIZE - Metrics.DISPLAY_WIDTH;
+            x = maxX - Metrics.WINDOW_WIDTH;
         }
         var offX :Number = (Math.floor(_centerX) % Metrics.TILE_SIZE) / Metrics.TILE_SIZE;
 
@@ -150,14 +154,20 @@ public class BoardSprite extends Sprite
         }
 
         var offY :Number = Math.floor(_centerY / Metrics.TILE_SIZE);
+        var lowBound1 :int = _lowBounds[x];
+        var lowBound2 :int = _lowBounds[x + 1];
+        if (_board.getBound(Board.BOTTOM_BOUND) > 0) {
+            lowBound1 = Math.max(lowBound1, _board.getBound(Board.BOTTOM_BOUND));
+            lowBound2 = Math.max(lowBound2, _board.getBound(Board.BOTTOM_BOUND));
+        }
 
-        if (offY < _lowBounds[x] || offY < _lowBounds[x+1]) {
-            _centerY = (_lowBounds[x] + (_lowBounds[x+1] - _lowBounds[x]) * offX) *
-                            Metrics.TILE_SIZE;
+        if (offY < lowBound1 || offY < lowBound1) {
+            _centerY = (lowBound1 + (lowBound2 - lowBound1) * offX) * Metrics.TILE_SIZE;
             _lastY = 0;
-        } else if (_board.getHighBound() > 0 &&
-                offY + Metrics.WINDOW_HEIGHT >= _board.getHighBound()) {
-            _centerY = (_board.getHighBound() - Metrics.WINDOW_HEIGHT) * Metrics.TILE_SIZE;
+        } else if (_board.getBound(Board.TOP_BOUND) > 0 &&
+                offY + Metrics.WINDOW_HEIGHT >= _board.getBound(Board.TOP_BOUND)) {
+            _centerY = (_board.getBound(Board.TOP_BOUND) - Metrics.WINDOW_HEIGHT) *
+                    Metrics.TILE_SIZE;
             _lastY = 0;
         }
 

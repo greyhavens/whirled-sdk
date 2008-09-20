@@ -191,6 +191,14 @@ public class GameController
         _board.removeDynamic(d);
     }
 
+    public function setBound (idx :int, bound :int) :void
+    {
+        if (bound != _board.getBound(idx)) {
+            _board.setBound(idx, bound);
+            _collider.setBound(idx, bound);
+        }
+    }
+
     protected function genCollider () :Collider
     {
         throw new Error("Must initialize collider in subclass");

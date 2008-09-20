@@ -17,6 +17,7 @@
 
 package com.whirled.contrib.platformer.game {
 
+import com.whirled.contrib.platformer.board.Board;
 
 public class RemoveGatesEventAction extends EventAction
 {
@@ -27,7 +28,9 @@ public class RemoveGatesEventAction extends EventAction
 
     override public function run () :void
     {
-        _gctrl.getBoard().clearGates();
+        for (var ii :int = Board.TOP_BOUND; ii <= Board.LEFT_BOUND; ii++) {
+            _gctrl.setBound(ii, 0);
+        }
     }
 }
 }
