@@ -98,6 +98,10 @@ public class Collider
 
     public function setBound (idx :int, bound :int) :void
     {
+        // Top and Bottom bounds only prevent camera movement, not player movement
+        if (idx == Board.TOP_BOUND || idx == Board.BOTTOM_BOUND) {
+            return;
+        }
         if (_boundLines[idx] != null) {
             for each (var sec :int in _boundLineSections[idx]) {
                 var ix :int = _lines[sec].indexOf(_boundLines[idx]);
