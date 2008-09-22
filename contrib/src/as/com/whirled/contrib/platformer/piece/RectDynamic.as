@@ -21,20 +21,16 @@
 package com.whirled.contrib.platformer.piece {
 
 /**
- * A base class for shots as dynamic objects.
+ * A simple dynamic that has height and width
  */
-public class Shot extends Dynamic
+public class RectDynamic extends Dynamic
 {
-    public var damage :Number = 0;
-    public var ttl :Number = 0;
-    public var hit :Boolean = false;
-    public var hitEffect :String;
-    public var missEffect :String;
-    public var force :Number = 0;
+    public var height :Number = 0;
+    public var width :Number = 0;
 
-    override public function shouldSpawn () :Boolean
+    public function RectDynamic (insxml :XML = null)
     {
-        return false;
+        super(insxml);
     }
 }
 }

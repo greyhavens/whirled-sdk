@@ -21,20 +21,29 @@
 package com.whirled.contrib.platformer.piece {
 
 /**
- * A base class for shots as dynamic objects.
+ * A simple dynamic that changes it's image when hovered.
  */
-public class Shot extends Dynamic
+public class Hover extends RectDynamic
 {
-    public var damage :Number = 0;
-    public var ttl :Number = 0;
-    public var hit :Boolean = false;
-    public var hitEffect :String;
-    public var missEffect :String;
-    public var force :Number = 0;
+    public var hovered :Boolean = false;
 
-    override public function shouldSpawn () :Boolean
+    public function Hover (insxml :XML = null)
     {
-        return false;
+        super(insxml);
+        if (insxml != null) {
+            height = insxml.@height;
+            width = insxml.@width;
+            sprite = insxml.@sprite;
+        }
+    }
+
+    override public function xmlInstance () :XML
+    {
+        var xml :XML = super.xmlInstance();
+        xml.@height = height;
+        xml.@width = width;
+        xml.@sprite = sprite;
+        return xml;
     }
 }
 }

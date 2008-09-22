@@ -18,23 +18,15 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.piece {
+package com.whirled.contrib.platformer.game {
 
-/**
- * A base class for shots as dynamic objects.
- */
-public class Shot extends Dynamic
+import com.whirled.contrib.platformer.piece.RectDynamic;
+
+public class RectDynamicController extends DynamicController
 {
-    public var damage :Number = 0;
-    public var ttl :Number = 0;
-    public var hit :Boolean = false;
-    public var hitEffect :String;
-    public var missEffect :String;
-    public var force :Number = 0;
-
-    override public function shouldSpawn () :Boolean
+    public function RectDynamicController (rd :RectDynamic, controller :GameController)
     {
-        return false;
+        super (rd, controller);
     }
 }
 }

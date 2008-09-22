@@ -52,6 +52,7 @@ public class Board
 
     public static const ACTORS :String = "actors";
     public static const PLATFORMS :String = "platforms";
+    public static const GENERICS :String = "generics";
 
     public static const TOP_BOUND :int = 0;
     public static const RIGHT_BOUND :int = 1;
@@ -63,6 +64,7 @@ public class Board
         _groupNames = new Array();
         _groupNames.push(ACTORS);
         _groupNames.push(PLATFORMS);
+        _groupNames.push(GENERICS);
     }
 
     public function loadFromXML (level :XML, pfac :PieceFactory) :void
@@ -80,19 +82,11 @@ public class Board
             _pieceTree.push([ "front" ]);
             _pieceTree.push([ "back" ]);
         }
-        _dynamicIns[ACTORS] = new Array();
-        if (boardHas("actors")) {
-            loadDynamics(_xml.board[0].actors[0], _dynamicIns[ACTORS]);
-        }
-        _dynamicIns[PLATFORMS] = new Array();
-        if (boardHas("platforms")) {
-            loadDynamics(_xml.board[0].platforms[0], _dynamicIns[PLATFORMS]);
-        }
-        if (boardHas("spawns")) {
-            loadCoords(_xml.board[0].spawns[0], _spawns);
-        }
-        if (boardHas("gates")) {
-            loadCoords(_xml.board[0].gates[0], _gates);
+        for each (var name :String in _groupNames) {
+            _dynamicIns[name] = new Array();
+            if (boardHas(name)) {
+                loadDynamics(_xml.board[0][name][0], _dynamicIns[name]);
+            }
         }
     }
 
@@ -114,16 +108,6 @@ public class Board
     public function getDynamics () :Array
     {
         return _dynamics;
-    }
-
-    public function getSpawn (idx :int) :Array
-    {
-        return (_spawns[idx] == null) ? [11, 11] : _spawns[idx];
-    }
-
-    public function getGates () :Array
-    {
-        return _gates;
     }
 
     public function addActor (a :Actor) :void
@@ -594,8 +578,6 @@ public class Board
     protected var _dynamics :Array = new Array();
     protected var _dynamicIns :Array = new Array();
     protected var _shots :Array = new Array();
-    protected var _spawns :Array = new Array();
-    protected var _gates :Array = new Array();
     protected var _bound :Array = new Array();
 
     protected var _listeners :HashMap = new HashMap();

@@ -72,6 +72,9 @@ public class BounceCollisionHandler extends CollisionHandler
         var by :Number = 0;
         var bx :Number = 0;
         for each (var col :LineData in cd.alines[idx]) {
+            if (col == null) {
+                continue;
+            }
             if (crosser.didCross(col, cd.fcdX, cd.fcdY)) {
                 ay += col.ny;
                 ax += col.nx;

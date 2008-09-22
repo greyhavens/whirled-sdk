@@ -37,6 +37,7 @@ import com.whirled.contrib.platformer.util.SectionalIndex;
 
 import com.whirled.contrib.platformer.game.ActorController;
 import com.whirled.contrib.platformer.game.DynamicController;
+import com.whirled.contrib.platformer.game.RectDynamicController;
 import com.whirled.contrib.platformer.game.ShotController;
 
 public class Collider
@@ -370,6 +371,11 @@ public class Collider
                     cols.push(line);
                 }
             }
+            if (cols.length == 0 &&
+                    (source as SimpleBounds).getMovementBoundLines()[0].polyIntersecting(
+                        (target as SimpleBounds).getBoundLines())) {
+                cols.push(null);
+            }
         } else if (source is CircleBounds && target is CircleBounds) {
             var cs :CircleBounds = source as CircleBounds;
             var ct :CircleBounds = target as CircleBounds;
@@ -402,6 +408,8 @@ public class Collider
     {
         if (dc is ActorController) {
             return new SimpleActorBounds(dc as ActorController, this);
+        } else if (dc is RectDynamicController) {
+            return new RectDynamicBounds(dc as RectDynamicController, this);
         }
         return null;
     }

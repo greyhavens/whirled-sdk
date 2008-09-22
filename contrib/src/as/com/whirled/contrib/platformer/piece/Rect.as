@@ -35,6 +35,11 @@ public class Rect
         this.height = height;
     }
 
+    public function clone () :Rect
+    {
+        return new Rect(x, y, width, height);
+    }
+
     public function includePoint (px :Number, py :Number) :void
     {
         if (px < x) {

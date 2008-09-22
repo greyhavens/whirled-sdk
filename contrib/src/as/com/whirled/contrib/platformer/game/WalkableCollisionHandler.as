@@ -50,6 +50,9 @@ public class WalkableCollisionHandler extends CollisionHandler
         var stopy :Boolean;
         var stopx :Boolean;
         for each (var col :LineData in cd.alines[idx]) {
+            if (col == null) {
+                continue;
+            }
             if (target.didCross(col, cd.fcdX, cd.fcdY)) {
                 if (col.nx != 0) {
                     target.actor.dx = 0;
