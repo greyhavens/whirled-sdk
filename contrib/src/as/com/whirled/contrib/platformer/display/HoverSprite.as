@@ -33,12 +33,13 @@ public class HoverSprite extends DynamicSprite
 
     public function HoverSprite (h :Hover, disp :DisplayObject = null)
     {
-        _hover = h;
         super(h, disp);
+        _hover = h;
         if (_disp != null) {
             _disp.x = h.width/2 * Metrics.TILE_SIZE;
             addChild(_disp);
         }
+        update(0);
     }
 
     override public function update (delta :Number) :void
