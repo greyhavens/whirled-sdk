@@ -43,18 +43,21 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
-     * Returns the bounds of the "stage" on which the AVRG will be drawn.
-     * This value changes when the browser is resized, and when the player moves to another room.
+     * Returns the bounds of the area on which the AVRG will be drawn. This value changes when the
+     * browser is resized, and when the player moves to another room. A null value may be returned
+     * if the paintable area is not currently defined, for example if the player has left a room
+     * and the new room is not yet loaded.
      *
      * @param full If true (the default), return the entire paintable area. If false,
      * return the area occupied by the room's decor, which can be smaller than the entire
      * paintable area in narrow rooms, or when the room view is zoomed out.
      *
-     * @return a Rectangle containing the stage bounds
+     * @return a Rectangle containing the bounds of the paintable area, or null if the area is not
+     * defined
      */
-    public function getStageSize (full :Boolean = true) :Rectangle
+    public function getPaintableArea (full :Boolean = true) :Rectangle
     {
-        return Rectangle(callHostCode("getStageSize_v1", full));
+        return Rectangle(callHostCode("getPaintableArea_v1", full));
     }
 
     public function stageToRoom (p :Point) :Point
