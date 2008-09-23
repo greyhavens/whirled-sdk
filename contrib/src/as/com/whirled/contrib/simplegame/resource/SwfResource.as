@@ -169,7 +169,7 @@ public class SwfResource
 
     protected function onError (e :IOErrorEvent) :void
     {
-        _errorCallback(this, "SwfResouceLoader (" + _resourceName + "): " + e.text);
+        _errorCallback(this, "SwfResourceLoader (" + _resourceName + "): " + e.text);
     }
 
     protected var _loaded :Boolean;
