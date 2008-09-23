@@ -27,6 +27,12 @@ import mx.containers.VBox;
 import mx.controls.FlexNativeMenu;
 import mx.events.FlexNativeMenuEvent;
 
+/**
+ * A class to encapsulate editor functionality with easy file read/write access and AIR supplied
+ * native OS look and feel.
+ *
+ * @playerversion AIR 1.1
+ */
 public class AIREditor extends VBox
 {
     override protected function createChildren () :void
