@@ -204,6 +204,7 @@
     </copy>
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
+      <arg line="-library-path ${flex.path}/frameworks/libs/air"/>
       <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/player-env.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
