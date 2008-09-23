@@ -32,6 +32,37 @@ public class GameBaseSubControl extends AbstractSubControl
         return callHostCode("game_getPlayerIds_v1") as Array;
     }
 
+    /**
+     * Returns the set of all level packs available to this game as an array of objects with the
+     * following properties:
+     *
+     * <pre>
+     * ident - string identifier of item pack
+     * name - human readable name of item pack
+     * mediaURL - URL for item pack content
+     * premium - boolean indicating that content is premium or not
+     * </pre>
+     */
+    public function getLevelPacks () :Array
+    {
+        return (callHostCode("getLevelPacks_v2") as Array);
+    }
+
+    /**
+     * Returns the set of all item packs available to this game as an array of objects with the
+     * following properties:
+     *
+     * <pre>
+     * ident - string identifier of item pack
+     * name - human readable name of item pack
+     * mediaURL - URL for item pack content
+     * </pre>
+     */
+    public function getItemPacks () :Array
+    {
+        return (callHostCode("getItemPacks_v1") as Array);
+    }
+
     /** @private */
     override protected function setUserProps (o :Object) :void
     {

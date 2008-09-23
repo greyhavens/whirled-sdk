@@ -56,6 +56,46 @@ public class PlayerBaseSubControl extends TargetedSubControl
         callHostCode("deactivateGame_v1");
     }
 
+    /**
+     * Returns all item packs owned by this client's player (the default) or a specified player.
+     * The packs are returned as an array of objects with the following properties:
+     *
+     * <pre>
+     * ident - string identifier of item pack
+     * name - human readable name of item pack
+     * mediaURL - URL for item pack content
+     * </pre>
+     */
+    public function getPlayerItemPacks () :Array
+    {
+        return (callHostCode("getPlayerItemPacks_v1") as Array);
+    }
+
+    /**
+     * Returns all level packs owned by this client's player (the default) or a specified player.
+     * The packs are returned as an array of objects with the following properties:
+     *
+     * <pre>
+     * ident - string identifier of item pack
+     * name - human readable name of item pack
+     * mediaURL - URL for item pack content
+     * premium - boolean indicating that content is premium or not
+     * </pre>
+     */
+    public function getPlayerLevelPacks () :Array
+    {
+        return (callHostCode("getPlayerLevelPacks_v1") as Array);
+    }
+
+    /**
+     * Returns true if this client's player (the default) or a specified player has the trophy
+     * with the specified identifier.
+     */
+    public function holdsTrophy (ident :String) :Boolean
+    {
+        return (callHostCode("holdsTrophy_v1", ident) as Boolean);
+    }
+
     public function completeTask (taskId :String, payout :Number) :void
     {
         callHostCode("completeTask_v1", taskId, payout);
