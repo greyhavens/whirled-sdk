@@ -60,12 +60,12 @@ public class LocalSubControl extends AbstractSubControl
         return Rectangle(callHostCode("getPaintableArea_v1", full));
     }
 
-    public function stageToRoom (p :Point) :Point
+    public function paintableToRoom (p :Point) :Point
     {
         return callHostCode("stageToRoom_v1", p) as Point;
     }
 
-    public function roomToStage (p :Point) :Point
+    public function roomToPaintable (p :Point) :Point
     {
         return callHostCode("roomToStage_v1", p) as Point;
     }
@@ -75,11 +75,11 @@ public class LocalSubControl extends AbstractSubControl
         return callHostCode("locationToRoom_v1", x, y, z) as Point;
     }
 
-    public function locationToStage (x :Number, y :Number, z :Number) :Point
+    public function locationToPaintable (x :Number, y :Number, z :Number) :Point
     {
         var roomCoord :Point = locationToRoom(x, y, z);
         if (null != roomCoord) {
-            return roomToStage(roomCoord);
+            return roomToPaintable(roomCoord);
         }
 
         return null;
