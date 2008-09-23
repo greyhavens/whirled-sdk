@@ -168,22 +168,6 @@ public final class MainLoop
         }
     }
 
-    protected function onKeyDown (e :KeyboardEvent) :void
-    {
-        var topMode :AppMode = this.topMode;
-        if (null != topMode) {
-            topMode.onKeyDown(e.keyCode);
-        }
-    }
-
-    protected function onKeyUp (e :KeyboardEvent) :void
-    {
-        var topMode :AppMode = this.topMode;
-        if (null != topMode) {
-            topMode.onKeyUp(e.keyCode);
-        }
-    }
-
     /**
      * Pushes a mode to the mode stack.
      * (Mode changes take effect between game updates.)
@@ -263,6 +247,21 @@ public final class MainLoop
         }
 
         createModeTransition(mode, TRANSITION_UNWIND);
+    }
+
+    /** Returns the number of seconds that have elapsed since the application started. */
+    public function get elapsedSeconds () :Number
+    {
+        return (getTimer() / 1000); // getTimer() returns a value in milliseconds
+    }
+
+    /**
+     * Returns the approximate frames-per-second that the application
+     * is running at.
+     */
+    public function get fps () :Number
+    {
+        return _fps;
     }
 
     protected function createModeTransition (mode :AppMode, transitionType :uint, index :int = 0) :void
@@ -420,19 +419,20 @@ public final class MainLoop
         _lastTime = newTime;
     }
 
-    /** Returns the number of seconds that have elapsed since the application started. */
-    public function get elapsedSeconds () :Number
+    protected function onKeyDown (e :KeyboardEvent) :void
     {
-        return (getTimer() / 1000); // getTimer() returns a value in milliseconds
+        var topMode :AppMode = this.topMode;
+        if (null != topMode) {
+            topMode.onKeyDown(e.keyCode);
+        }
     }
 
-    /**
-     * Returns the approximate frames-per-second that the application
-     * is running at.
-     */
-    public function get fps () :Number
+    protected function onKeyUp (e :KeyboardEvent) :void
     {
-        return _fps;
+        var topMode :AppMode = this.topMode;
+        if (null != topMode) {
+            topMode.onKeyUp(e.keyCode);
+        }
     }
 
     protected static var g_instance :MainLoop;

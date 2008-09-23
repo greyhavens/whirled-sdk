@@ -35,6 +35,16 @@ public class AppMode extends ObjectDB
         return _modeSprite;
     }
 
+    /** Called when a key is pressed while this mode is active */
+    public function onKeyDown (keyCode :uint) :void
+    {
+    }
+
+    /** Called when a key is released while this mode is active */
+    public function onKeyUp (keyCode :uint) :void
+    {
+    }
+
     /** Called when the mode is added to the mode stack */
     protected function setup () :void
     {
@@ -55,18 +65,6 @@ public class AppMode extends ObjectDB
     {
     }
 
-    /** Called when a key is pressed while this mode is active */
-    public function onKeyDown (keyCode :uint) :void
-    {
-
-    }
-
-    /** Called when a key is released while this mode is active */
-    public function onKeyUp (keyCode :uint) :void
-    {
-
-    }
-
     internal function setupInternal () :void
     {
         setup();
@@ -76,6 +74,7 @@ public class AppMode extends ObjectDB
     internal function destroyInternal () :void
     {
         destroy();
+        shutdown();
     }
 
     internal function enterInternal () :void

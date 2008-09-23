@@ -20,14 +20,14 @@
 
 package com.whirled.contrib.simplegame {
 
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
-
 import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
 import com.whirled.contrib.simplegame.components.SceneComponent;
 import com.whirled.contrib.simplegame.tasks.*;
+
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
 
 public class ObjectDB
 {
@@ -153,14 +153,15 @@ public class ObjectDB
         }
 
         obj.removedFromDBInternal();
+        obj.destroyedInternal();
 
-        if (null == _objectsPendingDestroy) {
-            _objectsPendingDestroy = new Array();
+        if (null == _objectsPendingRemoval) {
+            _objectsPendingRemoval = new Array();
         }
 
         // the ref will be unlinked from the objects list
         // at the end of the update()
-        _objectsPendingDestroy.push(obj);
+        _objectsPendingRemoval.push(obj);
 
         --_objectCount;
     }
@@ -216,82 +217,6 @@ public class ObjectDB
         this.endUpdate(dt);
     }
 
-    /** Updates all objects in the mode. */
-    protected function beginUpdate (dt :Number) :void
-    {
-        // update all objects
-
-        var ref :SimObjectRef = _listHead;
-        while (null != ref) {
-            var obj :SimObject = ref._obj;
-            if (null != obj) {
-                obj.updateInternal(dt);
-            }
-
-            ref = ref._next;
-        }
-    }
-
-    /** Removes dead objects from the object list at the end of an update. */
-    protected function endUpdate (dt :Number) :void
-    {
-        // clean out all objects that were destroyed during the update loop
-
-        if (null != _objectsPendingDestroy) {
-            for each (var obj :SimObject in _objectsPendingDestroy) {
-                this.finalizeObjectDestruction(obj);
-            }
-
-            _objectsPendingDestroy = null;
-        }
-    }
-
-    /** Removes a single dead object from the object list. */
-    protected function finalizeObjectDestruction (obj :SimObject) :void
-    {
-        Assert.isTrue(null != obj._ref && null == obj._ref._obj);
-
-        // unlink the object ref
-        var ref :SimObjectRef = obj._ref;
-
-        var prev :SimObjectRef = ref._prev;
-        var next :SimObjectRef = ref._next;
-
-        if (null != prev) {
-            prev._next = next;
-        } else {
-            // if prev is null, ref was the head of the list
-            Assert.isTrue(ref == _listHead);
-            _listHead = next;
-        }
-
-        if (null != next) {
-            next._prev = prev;
-        }
-
-        // iterate over the object's groups
-        // (we remove the object from its groups here, rather than in
-        // destroyObject(), because client code might be iterating an
-        // object group Array when destroyObject is called)
-        var groupNum :int = 0;
-        do {
-            var groupName :String = obj.getObjectGroup(groupNum++);
-            if (null != groupName) {
-                var groupArray :Array = (_groupedObjects.get(groupName) as Array);
-                if (null == groupArray) {
-                    throw new Error("destroyed SimObject is returning different object groups than it did on creation");
-                }
-
-                var wasInArray :Boolean = ArrayUtil.removeFirst(groupArray, ref);
-                if (!wasInArray) {
-                    throw new Error("destroyed SimObject is returning different object groups than it did on creation");
-                }
-            }
-        } while (null != groupName);
-
-        obj._parentDB = null;
-    }
-
     /** Sends a message to every object in the database. */
     public function broadcastMessage (msg :ObjectMessage) :void
     {
@@ -336,11 +261,110 @@ public class ObjectDB
         return _objectCount;
     }
 
+    /** Updates all objects in the mode. */
+    protected function beginUpdate (dt :Number) :void
+    {
+        // update all objects
+
+        var ref :SimObjectRef = _listHead;
+        while (null != ref) {
+            var obj :SimObject = ref._obj;
+            if (null != obj) {
+                obj.updateInternal(dt);
+            }
+
+            ref = ref._next;
+        }
+    }
+
+    /** Removes dead objects from the object list at the end of an update. */
+    protected function endUpdate (dt :Number) :void
+    {
+        // clean out all objects that were destroyed during the update loop
+
+        if (null != _objectsPendingRemoval) {
+            for each (var obj :SimObject in _objectsPendingRemoval) {
+                this.finalizeObjectRemoval(obj);
+            }
+
+            _objectsPendingRemoval = null;
+        }
+    }
+
+    /** Removes a single dead object from the object list. */
+    protected function finalizeObjectRemoval (obj :SimObject) :void
+    {
+        Assert.isTrue(null != obj._ref && null == obj._ref._obj);
+
+        // unlink the object ref
+        var ref :SimObjectRef = obj._ref;
+
+        var prev :SimObjectRef = ref._prev;
+        var next :SimObjectRef = ref._next;
+
+        if (null != prev) {
+            prev._next = next;
+        } else {
+            // if prev is null, ref was the head of the list
+            Assert.isTrue(ref == _listHead);
+            _listHead = next;
+        }
+
+        if (null != next) {
+            next._prev = prev;
+        }
+
+        // iterate over the object's groups
+        // (we remove the object from its groups here, rather than in
+        // destroyObject(), because client code might be iterating an
+        // object group Array when destroyObject is called)
+        var groupNum :int = 0;
+        do {
+            var groupName :String = obj.getObjectGroup(groupNum++);
+            if (null != groupName) {
+                var groupArray :Array = (_groupedObjects.get(groupName) as Array);
+                if (null == groupArray) {
+                    throw new Error("destroyed SimObject is returning different object groups than it did on creation");
+                }
+
+                var wasInArray :Boolean = ArrayUtil.removeFirst(groupArray, ref);
+                if (!wasInArray) {
+                    throw new Error("destroyed SimObject is returning different object groups than it did on creation");
+                }
+            }
+        } while (null != groupName);
+
+        obj._parentDB = null;
+    }
+
+    /**
+     * Destroys all SimObjects contained by this ObjectDB. Applications generally don't need
+     * to call this function - it's called automatically when an {@link AppMode} is popped from
+     * the mode stack.
+     */
+    protected function shutdown () :void
+    {
+        var ref :SimObjectRef = _listHead;
+        while (null != ref) {
+            if (!ref.isNull) {
+                ref.object.destroyedInternal();
+            }
+
+            ref = ref._next;
+        }
+
+        _listHead = null;
+        _objectCount = 0;
+        _objectsPendingRemoval = null;
+        _namedObjects = null;
+        _groupedObjects = null;
+    }
+
     protected var _listHead :SimObjectRef;
     protected var _objectCount :uint;
 
     /** An array of SimObjects */
-    protected var _objectsPendingDestroy :Array;
+    protected var _objectsPendingRemoval :Array;
 
     /** stores a mapping from String to Object */
     protected var _namedObjects :HashMap = new HashMap();

@@ -174,7 +174,11 @@ public class SimObject extends EventDispatcher
         return (null == namedTaskContainer ? false : namedTaskContainer.hasTasks());
     }
 
-    /** Called once per update tick. (Subclasses can override this to do something useful.) */
+    /**
+     * Called once per update tick. (Subclasses can override this to do something useful.)
+     *
+     * @param dt the number of seconds that have elapsed since the last update.
+     */
     protected function update (dt :Number) :void
     {
     }
@@ -189,9 +193,29 @@ public class SimObject extends EventDispatcher
 
     /**
      * Called immediately after the SimObject has been removed from an AppMode.
+     *
+     * removedFromDB is not called when the SimObject's AppMode is removed from the mode stack.
+     * For logic that must be run in this instance, see {@link #destroyed}.
+     *
      * (Subclasses can override this to do something useful.)
      */
     protected function removedFromDB () :void
+    {
+    }
+
+    /**
+     * Called after the SimObject has been removed from the active AppMode, or if the
+     * object's containing AppMode is removed from the mode stack.
+     *
+     * If the SimObject is removed from the active AppMode, {@link #removedFromDB}
+     * will be called before destroyed.
+     *
+     * destroyed should be used for logic that must be always be run when the SimObject is
+     * destroyed (disconnecting event listeners, releasing resources, etc).
+     *
+     * (Subclasses can override this to do something useful.)
+     */
+    protected function destroyed () :void
     {
     }
 
@@ -212,6 +236,11 @@ public class SimObject extends EventDispatcher
     internal function removedFromDBInternal () :void
     {
         removedFromDB();
+    }
+
+    internal function destroyedInternal () :void
+    {
+        destroyed();
     }
 
     internal function updateInternal (dt :Number) :void
