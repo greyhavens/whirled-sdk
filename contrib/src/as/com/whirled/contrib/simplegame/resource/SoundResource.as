@@ -83,9 +83,23 @@ public class SoundResource
         _pan = (_loadParams.hasOwnProperty("pan") ? Number(_loadParams["pan"]) : 0);
 
         if (_loadParams.hasOwnProperty("url")) {
-            _sound = new Sound(new URLRequest(_loadParams["url"]));
-            _sound.addEventListener(Event.COMPLETE, onInit);
-            _sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+            var completeImmediately :Boolean = (_loadParams.hasOwnProperty("completeImmediately") ?
+                Boolean(_loadParams["completeImmediately"]) :
+                false);
+            var url :String = _loadParams["url"];
+
+            // If the sound is to complete immediately, we don't wait for it to finish loading
+            // before we make it available. Sounds loaded in this manner can be played without
+            // issue as long as they download quickly enough.
+            if (completeImmediately) {
+                _sound = new Sound(new URLRequest(url));
+                this.onInit();
+            } else {
+                _sound = new Sound(new URLRequest(_loadParams["url"]));
+                _sound.addEventListener(Event.COMPLETE, onInit);
+                _sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+            }
+
         } else if (_loadParams.hasOwnProperty("embeddedClass")) {
             try {
                 _sound = Sound(new _loadParams["embeddedClass"]());
