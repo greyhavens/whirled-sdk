@@ -61,7 +61,7 @@ public class ShotTask extends ColliderTask
                     continue;
                 }
                 if (db is SimpleBounds && db is ActorBounds) {
-                    var sb :SimpleBounds = (db as SimpleActorBounds);
+                    var sb :SimpleBounds = (db as SimpleBounds);
                     var arr :Array = line.polyIntersect(sb.getBoundLines());
                     if (arr[0] < closehit && arr[1] != null) {
                         closehit = arr[0];

@@ -75,6 +75,7 @@ public class Board
         } else {
             _xml = level;
         }
+        setName(_xml.board[0].@name);
         if (boardHas("piecenode")) {
             loadPieceTree(_xml.board[0].piecenode[0], _pieceTree);
         } else {
@@ -88,6 +89,16 @@ public class Board
                 loadDynamics(_xml.board[0][name][0], _dynamicIns[name]);
             }
         }
+    }
+
+    public function setName (name :String) :void
+    {
+        _name = name;
+    }
+
+    public function getName () :String
+    {
+        return _name;
     }
 
     public function getGroupNames () :Array
@@ -406,6 +417,7 @@ public class Board
 
     public function getXML () :XML
     {
+        _xml.board[0].@name = getName();
         addOrReplaceXML(_xml.board[0], "piecenode", getPieceTreeXML());
         for each (var group :String in getGroupNames()) {
             addOrReplaceXML(_xml.board[0], group, getDynamicsXML(group));
@@ -572,7 +584,7 @@ public class Board
     /** All the pieces on the board. */
     protected var _pieceTree :Array = new Array();
     protected var _maxId :int;
-    protected var _actorId :int;
+    protected var _name :String;
 
     protected var _actors :Array = new Array();
     protected var _dynamics :Array = new Array();

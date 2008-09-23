@@ -22,6 +22,7 @@ package com.whirled.contrib.platformer.editor {
 
 import flash.display.Sprite;
 
+import flash.events.Event;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.system.System;
@@ -36,6 +37,7 @@ import mx.controls.HSlider;
 import mx.controls.Label;
 import mx.controls.RadioButton;
 import mx.controls.RadioButtonGroup;
+import mx.controls.TextInput;
 import mx.events.FlexEvent;
 import mx.events.ItemClickEvent;
 import mx.events.ListEvent;
@@ -129,7 +131,7 @@ public class EditView extends Canvas
         column.addChild(_editCoords);
         var box :HBox = new HBox();
         var label :Label = new Label();
-        label.text = "Scale: ";
+        label.text = "Scale:";
         box.addChild(label);
         var scaleSlider :HSlider = new HSlider();
         scaleSlider.liveDragging = true;
@@ -159,6 +161,20 @@ public class EditView extends Canvas
         column.addChild(makeButton("Copy to Clipboard", function () :void {
             System.setClipboard(getXML());
         }));
+        box = new HBox();
+        label = new Label();
+        label.text = "Name:";
+        box.addChild(label);
+        var input :TextInput = new TextInput();
+        input.width = 200;
+        if (level != null) {
+            input.text = _board.getName();
+        }
+        box.addChild(input);
+        column.addChild(box);
+        input.addEventListener(Event.CHANGE, function (...ignored) :void {
+            _board.setName(input.text);
+        });
     }
 
     public function getXML () :String
