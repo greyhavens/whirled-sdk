@@ -115,7 +115,7 @@ public class Collider
         } else {
             var p1 :Point;
             var p2 :Point;
-            if (idx == Board.TOP_BOUND || Board.BOTTOM_BOUND) {
+            if (idx == Board.TOP_BOUND || idx == Board.BOTTOM_BOUND) {
                 p1 = new Point(0, bound);
                 p2 = new Point(_sindex.getSectionWidth() * 1000, bound);
             } else {

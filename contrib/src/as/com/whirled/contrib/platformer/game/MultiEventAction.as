@@ -20,38 +20,26 @@
 
 package com.whirled.contrib.platformer.game {
 
-import com.whirled.contrib.platformer.board.Board;
-
-public class SetGateEventAction extends EventAction
+public class MultiEventAction extends EventAction
 {
-    public function SetGateEventAction (gctrl :GameController, xml :XML)
+    public function MultiEventAction (gctrl :GameController, xml :XML)
     {
         super(gctrl, xml);
-        _top = xml.hasOwnProperty("@top") ? xml.@top : -1;
-        _left = xml.hasOwnProperty("@left") ? xml.@left : -1;
-        _right = xml.hasOwnProperty("@right") ? xml.@right : -1;
-        _bottom = xml.hasOwnProperty("@bottom") ? xml.@bottom : -1;
+        _actions = new Array();
+        for each (var action :XML in xml.child("action")) {
+            _actions.push(EventAction.createEventAction(gctrl, action));
+        }
     }
 
     override public function run () :void
     {
-        if (_top != -1) {
-            _gctrl.setBound(Board.TOP_BOUND, _top);
-        }
-        if (_left != -1) {
-            _gctrl.setBound(Board.LEFT_BOUND, _left);
-        }
-        if (_right != -1) {
-            _gctrl.setBound(Board.RIGHT_BOUND, _right);
-        }
-        if (_bottom != -1) {
-            _gctrl.setBound(Board.BOTTOM_BOUND, _bottom);
+        for each (var action :EventAction in _actions) {
+            if (action != null) {
+                action.run();
+            }
         }
     }
 
-    protected var _top :int;
-    protected var _left :int;
-    protected var _right :int;
-    protected var _bottom :int;
+    protected var _actions :Array;
 }
 }

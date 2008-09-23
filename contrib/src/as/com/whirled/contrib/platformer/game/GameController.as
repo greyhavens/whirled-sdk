@@ -60,6 +60,8 @@ public class GameController
         var c :Class = RemoveGatesEventAction;
         c = DeathEventTrigger;
         c = SetGateEventAction;
+        c = ImmediateEventTrigger;
+        c = MultiEventAction;
     }
 
     public function initDynamicClasses () :void
