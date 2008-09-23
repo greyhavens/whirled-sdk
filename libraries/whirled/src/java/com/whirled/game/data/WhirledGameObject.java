@@ -25,7 +25,7 @@ import com.whirled.game.server.PropertySpaceHelper;
  * Contains the data for a whirled game.
  */
 public class WhirledGameObject extends GameObject
-    implements TurnGameObject, PropertySpaceObject
+    implements TurnGameObject, PropertySpaceObject, GameDataObject
 {
     /** The identifier for a MessageEvent containing a user message. */
     public static final String USER_MESSAGE = "Umsg";
