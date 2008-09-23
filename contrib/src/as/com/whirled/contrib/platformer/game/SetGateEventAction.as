@@ -26,7 +26,7 @@ public class SetGateEventAction extends EventAction
 {
     public function SetGateEventAction (gctrl :GameController, xml :XML)
     {
-        super(gctrl);
+        super(gctrl, xml);
         _top = xml["@top"] != null ? xml.@top : -1;
         _left = xml["@left"] != null ? xml.@left : -1;
         _right = xml["@right"] != null ? xml.@right : -1;

@@ -35,7 +35,7 @@ public class EventTrigger
         return new triggerClass(gctrl, xml) as EventTrigger;
     }
 
-    public function EventTrigger (gctrl :GameController)
+    public function EventTrigger (gctrl :GameController, xml :XML)
     {
         _gctrl = gctrl;
     }

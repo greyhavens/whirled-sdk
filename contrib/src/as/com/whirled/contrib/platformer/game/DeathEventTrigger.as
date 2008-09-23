@@ -29,7 +29,7 @@ public class DeathEventTrigger extends EventTrigger
 {
     public function DeathEventTrigger (gctrl :GameController, xml :XML)
     {
-        super(gctrl);
+        super(gctrl, xml);
         var ids :String = xml.@ids;
         _ids = new Array();
         for each (var id :int in ids.split(/,/)) {

@@ -31,12 +31,12 @@ public class EventAction
             trace("could not find class for event action " + cname);
             return null;
         }
-        var triggerClass :Class = ApplicationDomain.currentDomain.getDefinition(cname) as Class;
-        return new triggerClass(gctrl, xml) as EventAction;
+        var actionClass :Class = ApplicationDomain.currentDomain.getDefinition(cname) as Class;
+        return new actionClass(gctrl, xml) as EventAction;
     }
 
 
-    public function EventAction (gctrl :GameController)
+    public function EventAction (gctrl :GameController, xml :XML)
     {
         _gctrl = gctrl;
     }

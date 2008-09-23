@@ -23,7 +23,7 @@ public class RemoveGatesEventAction extends EventAction
 {
     public function RemoveGatesEventAction (gctrl :GameController, xml :XML)
     {
-        super(gctrl);
+        super(gctrl, xml);
     }
 
     override public function run () :void
