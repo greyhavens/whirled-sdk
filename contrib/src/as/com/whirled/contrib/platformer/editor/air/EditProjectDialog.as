@@ -33,6 +33,8 @@ import mx.core.Window;
 
 import com.threerings.flex.CommandButton;
 
+import com.threerings.util.Log;
+
 public class EditProjectDialog extends Window
 {
     public function EditProjectDialog (existingProject :File = null)
@@ -67,29 +69,54 @@ public class EditProjectDialog extends Window
 
         var dialogButtons :HBox = new HBox(); 
         dialogButtons.percentWidth = 100;
+        dialogButtons.setStyle("horizontalGap", 20);
+        var spacer :HBox = new HBox();
+        spacer.percentWidth = 100;
+        dialogButtons.addChild(spacer);
         dialogButtons.addChild(new CommandButton("Cancel", close));
-        dialogButtons.addChild(new CommandButton("Save", saveAndClose));
+        dialogButtons.addChild(new CommandButton("Save", handleSave));
         container.addChild(dialogButtons);
     }
 
-    protected function saveAndClose (event :Event = null) :void
+    public function handleSave () :void
     {
-        trace("saveAndClose [" + event + ", " + _existingProject + "]");
-        if (event != null) {
-            _existingProject = event.target as File;
-        } else if (_existingProject == null) {
-            var newFile :File = new File(File.desktopDirectory.nativePath + "project.xml");
-            newFile.browseForSave("Select new project file location");
-            newFile.addEventListener(Event.SELECT, saveAndClose);
-        }
+        if (_existingProject == null) {
+            var newFile :File = 
+                new File(File.desktopDirectory.nativePath + File.separator + "project.xml");
+            newFile.browseForSave("Select new project file location [*.xml]");
+            newFile.addEventListener(Event.SELECT, function (event :Event) :void {
+                saveAndClose(sanitizeFilename(event.target as File));
+            });
 
+        } else {
+            saveAndClose(_existingProject);
+        }
+    }
+
+    protected function saveAndClose (file :File) :void
+    {
         var outputString :String = '<?xml version="1.0" encoding="utf-8"?>\n';
-        outputString += _projectXML.toXMLString();
+        outputString += _projectXML.toXMLString() + '\n';
         var stream :FileStream = new FileStream();
-        stream.open(_existingProject, FileMode.WRITE);
+        stream.open(file, FileMode.WRITE);
         stream.writeUTFBytes(outputString);
         stream.close();
         close();
+    }
+
+    /**
+     * I can't believe how much Adobe fails at life.  AIR lets you filter file selection by 
+     * extension on file selection for open and file selection for upload... but not file selection
+     * for save.
+     */
+    protected function sanitizeFilename (file :File) :File
+    {
+        var pathRegExp :RegExp = 
+            new RegExp("^(.*" + File.separator + ")([^" + File.separator + "]+)$");
+        var filePath :String = file.nativePath.replace(pathRegExp, "$1");
+        var fileName :String = file.nativePath.replace(pathRegExp, "$2"); 
+        fileName = fileName.indexOf(".") < 0 ? fileName : fileName.replace(/^(.*)\.[^\.]*$/, "$1");
+        return new File(filePath + fileName + ".xml");
     }
 
     protected var _existingProject :File;
