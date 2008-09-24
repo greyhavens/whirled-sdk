@@ -20,7 +20,6 @@
 
 package com.whirled.contrib.platformer.editor.air {
 
-import flash.display.NativeWindowType;
 import flash.events.Event;
 import flash.filesystem.File;
 import flash.filesystem.FileMode;
@@ -29,17 +28,17 @@ import flash.net.FileFilter;
 
 import mx.containers.HBox;
 import mx.containers.VBox;
-import mx.core.Window;
 
 import com.threerings.flex.CommandButton;
 
 import com.threerings.util.Log;
 
-public class EditProjectDialog extends Window
+public class EditProjectDialog extends LightweightCenteredDialog
 {
-    public function EditProjectDialog (existingProject :File = null)
+    public function EditProjectDialog (existingProject :File, callback :Function)
     {
         _existingProject = existingProject;
+        _saveCallback = callback;
         if (_existingProject != null) {
             var stream :FileStream = new FileStream();
             stream.open(_existingProject, FileMode.READ);
@@ -51,10 +50,8 @@ public class EditProjectDialog extends Window
 
         width = 500;
         height = 200;
-        maximizable = false;
-        minimizable = false;
-        type = NativeWindowType.UTILITY;
         title = (existingProject != null ? "Edit" : "Create") + " Project";
+        setStyle("backgroundColor", "white");
     }
 
     override protected function createChildren () :void
@@ -69,7 +66,11 @@ public class EditProjectDialog extends Window
 
         var dialogButtons :HBox = new HBox(); 
         dialogButtons.percentWidth = 100;
-        dialogButtons.setStyle("horizontalGap", 20);
+        dialogButtons.setStyle("horizontalGap", 10);
+        dialogButtons.setStyle("paddingTop", 5);
+        dialogButtons.setStyle("paddingBottom", 5);
+        dialogButtons.setStyle("paddingRight", 5);
+        dialogButtons.setStyle("paddingLeft", 5);
         var spacer :HBox = new HBox();
         spacer.percentWidth = 100;
         dialogButtons.addChild(spacer);
@@ -102,6 +103,7 @@ public class EditProjectDialog extends Window
         stream.writeUTFBytes(outputString);
         stream.close();
         close();
+        _saveCallback(file);
     }
 
     /**
@@ -121,5 +123,6 @@ public class EditProjectDialog extends Window
 
     protected var _existingProject :File;
     protected var _projectXML :XML;
+    protected var _saveCallback :Function;
 }
 }

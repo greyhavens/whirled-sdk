@@ -20,7 +20,9 @@
 
 package com.whirled.contrib.platformer.editor.air {
 
+import flash.events.Event;
 import flash.filesystem.File;
+import flash.net.FileFilter;
 
 import mx.collections.ArrayCollection;
 import mx.containers.VBox;
@@ -81,35 +83,61 @@ public class Editor extends VBox
         if (idx >= 0) {
             _menuItems.removeItemAt(idx);
         }
+
+        _projectFile = null;
     }
 
     protected function editProject (createNew :Boolean) :void
     {
+        if (createNew && _projectFile != null) {
+            closeCurrentProject();
+        }
+
+        (new EditProjectDialog(_projectFile, loadProject)).openCentered(_window.nativeWindow);
+    }
+
+    protected function loadProject (file :File = null) :void
+    {
+        if (_projectFile != null) {
+            closeCurrentProject();
+        }
+
+        // if we're not given a file, pop a dialog for one.
+        if (file == null) {
+            var newFile :File = new File(File.desktopDirectory.nativePath);
+            newFile.browseForOpen("Select project file", [new FileFilter("Project XML", "*.xml")]);
+            newFile.addEventListener(Event.SELECT, function (event :Event) :void {
+                loadProject(event.target as File);
+            });
+            return;
+        }
+
+        // do some sanity checking on the project file.
+        if (file.isDirectory || file.isHidden || file.isSymbolicLink || file.isPackage) {
+            popError("The project file is required to be a regular XML file.");
+            return;
+
+        } else if (file.nativePath.split(".").pop() != "xml") {
+            popError("The project file is required to have a \".xml\" extension.");
+            return;
+        }
+
         if (_menuItems.getItemIndex(_projectMenu) < 0) {
             _menuItems.addItem(_projectMenu);
         }
 
-        if (createNew && _project != null) {
-            closeCurrentProject();
-        }
-
-        var dialog :EditProjectDialog = new EditProjectDialog();
-        dialog.open();
-        dialog.nativeWindow.x = _window.nativeWindow.x + 
-            _window.nativeWindow.width / 2 - dialog.nativeWindow.width / 2;
-        dialog.nativeWindow.y = _window.nativeWindow.y + 
-            _window.nativeWindow.height / 2 - dialog.nativeWindow.height / 2;
+        _projectFile = file;
     }
 
-    protected function loadProject () :void
+    protected function popError (error :String) :void
     {
-        _menuItems.addItem(_projectMenu);
+        (new ErrorDialog(error)).openCentered(_window.nativeWindow);
     }
 
     protected var _window :WindowedApplication;
     protected var _menuItems :ArrayCollection;
     protected var _projectMenu :Object;
-    protected var _project :File;
+    protected var _projectFile :File;
 
     protected static const APP_MENU :String = "FancyPants Golf Editor";
     protected static const FILE_MENU :String = "File";
