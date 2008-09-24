@@ -46,7 +46,7 @@ public class DynamicTree extends BaseTree
     public function addDynamic (d :Dynamic, group :String) :void
     {
         var xml :XML = <dyn/>;
-        xml.@label = ClassUtil.getClassName(d);
+        xml.@label = ClassUtil.tinyClassName(d) + " (" + d.id + ")";
         xml.@name = d.id;
         if (addXML(xml, "root." + group) != null) {
             _board.addDynamicIns(d, group);
@@ -94,7 +94,9 @@ public class DynamicTree extends BaseTree
             root.appendChild(group);
             for each (var node :XML in _board.getDynamicsXML(gname).children()) {
                 var xml :XML = <dyn/>;
-                xml.@label = node.@cname;
+                var label :String = node.@cname;
+                label = label.substr(label.lastIndexOf(".")+1) + " (" + node.@id + ")";
+                xml.@label = label;
                 xml.@name = node.@id;
                 group.appendChild(xml);
             }
