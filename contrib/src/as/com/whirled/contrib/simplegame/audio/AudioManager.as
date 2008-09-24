@@ -124,7 +124,8 @@ public class AudioManager
         }
     }
 
-    public function playSoundNamed (name :String, parentControls :AudioControls = null, loopCount :int = 0) :AudioChannel
+    public function playSoundNamed (name :String, parentControls :AudioControls = null,
+        loopCount :int = 0) :AudioChannel
     {
         var rsrc :SoundResource = ResourceManager.instance.getResource(name) as SoundResource;
         if (null == rsrc) {
@@ -135,11 +136,12 @@ public class AudioManager
         return this.playSound(rsrc, parentControls, loopCount);
     }
 
-    public function playSound (soundResource :SoundResource, parentControls :AudioControls = null, loopCount :int = 0) :AudioChannel
+    public function playSound (soundResource :SoundResource, parentControls :AudioControls = null,
+        loopCount :int = 0) :AudioChannel
     {
         if (null == soundResource.sound) {
             log.info("Discarding sound '" + soundResource.resourceName + "' (sound is null)");
-            return null;
+            return new AudioChannel();
         }
 
         // get the appropriate parent controls
@@ -153,7 +155,8 @@ public class AudioManager
         // don't play the sound if its parent controls are stopped
         var audioState :AudioState = parentControls.updateStateNow();
         if (audioState.stopped) {
-            log.info("Discarding sound '" + soundResource.resourceName + "' (parent controls are stopped)");
+            log.info("Discarding sound '" + soundResource.resourceName +
+                "' (parent controls are stopped)");
             return new AudioChannel();
         }
 
@@ -165,12 +168,14 @@ public class AudioManager
         var channel :AudioChannel;
         for each (channel in _channels) {
             if (channel.isPlaying) {
-                if (channel.sound == soundResource && (timeNow - channel.startTime) < SOUND_PLAYED_RECENTLY_DELTA) {
+                if (channel.sound == soundResource &&
+                    (timeNow - channel.startTime) < SOUND_PLAYED_RECENTLY_DELTA) {
                     //log.info("Discarding sound '" + soundResource.resourceName + "' (recently played)");
                     return new AudioChannel();
                 }
 
-                if (null == lowestPriorityChannel || channel.sound.priority < lowestPriorityChannel.sound.priority) {
+                if (null == lowestPriorityChannel ||
+                    channel.sound.priority < lowestPriorityChannel.sound.priority) {
                     lowestPriorityChannel = channel;
                 }
             }
@@ -178,14 +183,19 @@ public class AudioManager
 
         if (_freeChannelIds.length > 0) {
             channel = _channels[int(_freeChannelIds.pop())];
-        } else if (null != lowestPriorityChannel && soundResource.priority > lowestPriorityChannel.sound.priority) {
+
+        } else if (null != lowestPriorityChannel &&
+            soundResource.priority > lowestPriorityChannel.sound.priority) {
             // Steal another channel from a lower-priority sound
-            log.info("Interrupting sound '" + lowestPriorityChannel.sound.resourceName + "' for higher-priority sound '" + soundResource.resourceName + "'");
+            log.info("Interrupting sound '" + lowestPriorityChannel.sound.resourceName +
+                "' for higher-priority sound '" + soundResource.resourceName + "'");
             this.stop(lowestPriorityChannel);
             channel = _channels[int(_freeChannelIds.pop())];
+
         } else {
             // we're out of luck.
-            log.info("Discarding sound '" + soundResource.resourceName + "' (no free AudioChannels)");
+            log.info("Discarding sound '" + soundResource.resourceName +
+                "' (no free AudioChannels)");
             return new AudioChannel();
         }
 
@@ -203,7 +213,8 @@ public class AudioManager
 
             // Flash must've run out of sound channels
             if (null == channel.channel) {
-                log.info("Discarding sound '" + soundResource.resourceName + "' (Flash is out of channels)");
+                log.info("Discarding sound '" + soundResource.resourceName +
+                    "' (Flash is out of channels)");
                 return new AudioChannel();
             }
         }
@@ -270,14 +281,18 @@ public class AudioManager
         }
     }
 
-    protected function playChannel (channel :AudioChannel, audioState :AudioState, playPosition :Number) :Boolean
+    protected function playChannel (channel :AudioChannel, audioState :AudioState,
+        playPosition :Number) :Boolean
     {
         var volume :Number = audioState.actualVolume * channel.sound.volume;
         var pan :Number = audioState.pan * channel.sound.pan;
-        channel.channel = channel.sound.sound.play(playPosition, 0, new SoundTransform(volume, pan));
+        channel.channel = channel.sound.sound.play(playPosition, 0,
+            new SoundTransform(volume, pan));
+
         if (null != channel.channel) {
             channel.channel.addEventListener(Event.SOUND_COMPLETE, channel.completeHandler);
             return true;
+
         } else {
             this.stop(channel);
             return false;
