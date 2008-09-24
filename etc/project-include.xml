@@ -199,7 +199,9 @@
     <condition property="arch" value="64" else="32">
       <or><os arch="amd64"/><os arch="x86_64"/></or>
     </condition>
-    <property name="arch.id" value="${os.name}-${arch}"/>
+    <condition property="arch.id" value="Windows-${arch}" else="${os.name}-${arch}">
+      <os family="Windows"/>
+    </condition>
 
     <!-- then let Windows machines get away with their silly .exe thing -->
     <condition property="thane.path"
@@ -210,6 +212,8 @@
 
     <!-- if we're not using the SDK we have to chmod here, this only works in Unix -->
     <chmod file="${thane.path}" perm="ugo+x"/>
+
+    <echo>Thane path: ${thane.path}</echo>
 
     <copy file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
 
