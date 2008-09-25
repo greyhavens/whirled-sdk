@@ -38,6 +38,37 @@ import mx.events.FlexNativeMenuEvent;
  */
 public class Editor extends VBox
 {
+    public static function checkFileSanity (file :File, extension :String, 
+        description :String, popErrors :Boolean = true) :Boolean
+    {
+        if (!file.exists) {
+            if (popErrors) {
+                popError("The " + description + " file was not found at " + file.nativePath + ".");
+            }
+            return false;
+
+        } else if (file.isDirectory || file.isHidden || file.isSymbolicLink || file.isPackage) {
+            if (popErrors) {
+                popError("The " + description + " file is required to be a regular file.");
+            }
+            return false;
+
+        } else if (file.nativePath.split(".").pop() != extension) {
+            if (popErrors) {
+                popError("The " + description + " file is required to have a \"" + extension + 
+                    "\" extension.");
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function popError (error :String) :void
+    {
+        (new ErrorDialog(error)).openCentered(_window.nativeWindow);
+    }
+
     override protected function createChildren () :void
     {
         super.createChildren();
@@ -112,13 +143,7 @@ public class Editor extends VBox
             return;
         }
 
-        // do some sanity checking on the project file.
-        if (file.isDirectory || file.isHidden || file.isSymbolicLink || file.isPackage) {
-            popError("The project file is required to be a regular XML file.");
-            return;
-
-        } else if (file.nativePath.split(".").pop() != "xml") {
-            popError("The project file is required to have a \".xml\" extension.");
+        if (!checkFileSanity(file, "xml", "project")) {
             return;
         }
 
@@ -129,15 +154,12 @@ public class Editor extends VBox
         _projectFile = file;
     }
 
-    protected function popError (error :String) :void
-    {
-        (new ErrorDialog(error)).openCentered(_window.nativeWindow);
-    }
-
-    protected var _window :WindowedApplication;
     protected var _menuItems :ArrayCollection;
     protected var _projectMenu :Object;
     protected var _projectFile :File;
+
+    // there will only ever be one instance of this class in the AIR application runtime.
+    protected static var _window :WindowedApplication;
 
     protected static const APP_MENU :String = "FancyPants Golf Editor";
     protected static const FILE_MENU :String = "File";
