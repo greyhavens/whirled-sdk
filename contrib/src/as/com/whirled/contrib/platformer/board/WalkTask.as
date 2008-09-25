@@ -33,6 +33,11 @@ public class WalkTask extends ColliderTask
         _sab = col.getDynamicBounds(ac.getActor()) as SimpleActorBounds;
     }
 
+    public function setMaxDx (dx :Number) :void
+    {
+        _maxDx = dx;
+    }
+
     override public function init (delta :Number) :void
     {
         super.init(delta);
@@ -43,7 +48,7 @@ public class WalkTask extends ColliderTask
             a.dy = Math.max(a.dy, -Collider.MAX_DY);
             a.dx += a.accelX * delta;
             a.dx -= Maths.sign0(a.dx) * Maths.limit(9 * delta, Math.abs(a.dx));
-            a.dx = Maths.limit(a.dx, Collider.MAX_DX);
+            a.dx = Maths.limit(a.dx, _maxDx);
         }
         _attached = null;
         _lastDelta = NaN;
@@ -87,7 +92,7 @@ public class WalkTask extends ColliderTask
                     dot -= a.accelX * _delta;
                 }
                 dot -= Maths.sign0(dot) * Maths.limit(9 * _delta, Math.abs(dot));
-                dot = Maths.limit(dot, Collider.MAX_DX);
+                dot = Maths.limit(dot, _maxDx);
                 a.dx = dot * a.attached.ix;
                 a.dy = dot * a.attached.iy;
             // Newly attached to an unwalkable tile, start to slide
@@ -101,7 +106,7 @@ public class WalkTask extends ColliderTask
                 }
                 a.dx *= 6;
                 a.dy *= 6;
-                a.dx = Maths.limit(a.dx, Collider.MAX_DX);
+                a.dx = Maths.limit(a.dx, _maxDx);
                 a.dy = Maths.limit(a.dy, Collider.MAX_DY);
             }
         }
@@ -149,5 +154,6 @@ public class WalkTask extends ColliderTask
     protected var _attached :LineData;
     protected var _lastDelta :Number;
     protected var _sab :SimpleActorBounds;
+    protected var _maxDx :Number = Collider.MAX_DX;
 }
 }

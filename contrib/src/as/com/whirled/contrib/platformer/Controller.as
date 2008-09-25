@@ -22,6 +22,7 @@ package com.whirled.contrib.platformer {
 
 import flash.events.Event;
 import flash.events.KeyboardEvent;
+import flash.utils.getTimer;
 
 import com.threerings.util.KeyboardCodes;
 
@@ -55,6 +56,16 @@ public class Controller
         return _downKeys[keyCode] == null ? false : _downKeys[keyCode];
     }
 
+    public function isDoubleTap (keyCode :int) :Boolean
+    {
+        var now :int = getTimer();
+        if (_doubleTap[keyCode] && _lastDown[keyCode] + DOUBLE_TAP > now) {
+            return true;
+        }
+        _doubleTap[keyCode] = false;
+        return false;
+    }
+
     protected function keyPressed (event :KeyboardEvent) :void
     {
         if (event.keyCode == KeyboardCodes.UP || event.keyCode == KeyboardCodes.W) {
@@ -66,7 +77,43 @@ public class Controller
         } else if (event.keyCode == KeyboardCodes.RIGHT || event.keyCode == KeyboardCodes.D) {
             _dx = 1;
         }
-        _downKeys[event.keyCode] = true;
+        markPressed(event.keyCode);
+        updateACS(event);
+    }
+
+    protected function markPressed (keyCode :int) :void
+    {
+        if (_downKeys[keyCode] == null || _downKeys[keyCode] == false) {
+            var now :int = getTimer();
+            if (_lastDown[keyCode] != null && _lastDown[keyCode] + DOUBLE_TAP > now) {
+                _doubleTap[keyCode] = true;
+                //trace("doubleTap: " + keyCode);
+            } else {
+                _doubleTap[keyCode] = false;
+            }
+            _lastDown[keyCode] = now;
+            _downKeys[keyCode] = true;
+            //trace("keyPressed: " + keyCode);
+        }
+    }
+
+    protected function updateACS (event :KeyboardEvent) :void
+    {
+        if (event.shiftKey) {
+            markPressed(KeyboardCodes.SHIFT);
+        } else {
+            _downKeys[KeyboardCodes.SHIFT] = false;
+        }
+        if (event.altKey) {
+            markPressed(KeyboardCodes.ALTERNATE);
+        } else {
+            _downKeys[KeyboardCodes.ALTERNATE] = false;
+        }
+        if (event.ctrlKey) {
+            markPressed(KeyboardCodes.CONTROL);
+        } else {
+            _downKeys[KeyboardCodes.CONTROL] = false;
+        }
     }
 
     protected function keyReleased (event :KeyboardEvent) :void
@@ -89,15 +136,21 @@ public class Controller
             }
         }
         _downKeys[event.keyCode] = false;
+        updateACS(event);
+        //trace("keyReleased: " + event.keyCode);
     }
 
     protected var _dx :int = 0;
     protected var _dy :int = 0;
 
     protected var _downKeys :Array = new Array();
+    protected var _lastDown :Array = new Array();
+    protected var _doubleTap :Array = new Array();
 
     protected var _gameCtrl :GameControl;
 
     protected var _boardSprite :BoardSprite;
+
+    protected static const DOUBLE_TAP :int = 250;
 }
 }

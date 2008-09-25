@@ -150,6 +150,21 @@ public class SimpleActorBounds extends ActorBounds
         return false;
     }
 
+    public function isStuck () :Boolean
+    {
+        updateBounds();
+        var clines :Array = _collider.getLines(actor);
+        for each (var ld :LineData in clines) {
+            if (actor.attached == ld || !BoundData.doesBound(ld.type, actor.projCollider)) {
+                continue;
+            }
+            if (ld.polyIntersecting(lines)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function findColliders (delta :Number, cd :ColliderDetails = null) :ColliderDetails
     {
         mlines = null;
