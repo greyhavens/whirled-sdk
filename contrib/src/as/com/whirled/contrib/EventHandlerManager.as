@@ -27,56 +27,72 @@ import flash.events.IEventDispatcher;
  * A class for keeping track of event listeners and freeing them all at a given time.  This is
  * useful for keeping track of your ENTER_FRAME listeners, and releasing them all on UNLOAD to
  * make sure your game/furni/avatar fully unloads at the proper time.
- *
- * See {@link EventHandlerManager} for a non-static version of this class.
  */
-public class EventHandlers
+public class EventHandlerManager
 {
     /**
      * Adds the specified listener to the specified dispatcher for the specified event.
      */
-    public static function registerEventListener (
+    public function registerEventListener (
         dispatcher :IEventDispatcher, event :String, listener :Function) :void
     {
-        _mgr.registerEventListener(dispatcher, event, listener);
+        dispatcher.addEventListener(event, listener);
+        _eventHandlers.push({dispatcher: dispatcher, event: event, func: listener});
     }
 
     /**
      * Removes the specified listener from the specified dispatcher for the specified event.
      */
-    public static function unregisterEventListener (
+    public function unregisterEventListener (
         dispatcher :IEventDispatcher, event :String, listener :Function) :void
     {
-        _mgr.unregisterEventListener(dispatcher, event, listener);
+        dispatcher.removeEventListener(event, listener);
+        for (var ii :int = 0; ii < _eventHandlers.length; ii++) {
+            if (dispatcher == _eventHandlers[ii].dispatcher && event == _eventHandlers[ii].event &&
+                listener == _eventHandlers[ii].func) {
+                _eventHandlers.splice(ii, 1);
+                break;
+            }
+        }
     }
 
     /**
      * Registers a zero-arg callback function that should be called once when the event fires.
      */
-    public static function registerOneShotCallback (
+    public function registerOneShotCallback (
         dispatcher :IEventDispatcher, event :String, callback :Function) :void
     {
-        _mgr.registerOneShotCallback(dispatcher, event, callback);
+        var eventListener :Function;
+        eventListener = function (...ignored) :void {
+            dispatcher.removeEventListener(event, eventListener);
+            callback();
+        };
+        dispatcher.addEventListener(event, eventListener);
     }
 
     /**
      * Registers the freeAllHandlers() method to be called upon Event.UNLOAD on the supplied
      * event dispatcher.
      */
-    public static function registerUnload (dispatcher :IEventDispatcher) :void
+    public function registerUnload (dispatcher :IEventDispatcher) :void
     {
-        _mgr.registerUnload(dispatcher);
+        registerEventListener(dispatcher, Event.UNLOAD, freeAllHandlers);
     }
 
     /**
      * Free all handlers that have been added via this registerEventListener() and have not been
      * freed already via unregisterEventListener()
      */
-    public static function freeAllHandlers (...ignored) :void
+    public function freeAllHandlers (...ignored) :void
     {
-        _mgr.freeAllHandlers();
+        for each (var handler :Object in _eventHandlers) {
+            handler.dispatcher.removeEventListener(handler.event, handler.func);
+        }
+
+        _eventHandlers = [];
     }
 
-    protected static var _mgr :EventHandlerManager = new EventHandlerManager();
+    protected static var _eventHandlers :Array = [];
 }
+
 }
