@@ -50,18 +50,12 @@ public class EditProjectDialog extends LightweightCenteredDialog
             _projectXml = <platformerproject/>;
         }
 
-        _pieceXmlFile = 
-            new File(String(_projectXml.pieceXml.@path) != "" ? _projectXml.pieceXml.@path :
-                (_existingProject != null ? _existingProject.parent.nativePath : 
-                                            File.desktopDirectory.nativePath));
-        _pieceSwfFile = 
-            new File(String(_projectXml.pieceSwf.@path) != "" ? _projectXml.pieceSwf.@path :
-                (_existingProject != null ? _existingProject.parent.nativePath :
-                                            File.desktopDirectory.nativePath));
+        _pieceXmlFile = resolvePath(String(_projectXml.pieceXml.@path));
+        _pieceSwfFile = resolvePath(String(_projectXml.pieceSwf.@path));
 
-        width = 400;
+        width = 500;
         height = 180;
-        title = (existingProject != null ? "Edit" : "Create") + " Project";
+        title = (_existingProject != null ? "Edit" : "Create") + " Project";
         setStyle("backgroundColor", "white");
     }
 
@@ -91,13 +85,16 @@ public class EditProjectDialog extends LightweightCenteredDialog
         pathBox.percentWidth = 100;
         pathBox.percentHeight = 100;
         var xmlFilePath :Label = new Label();
-        xmlFilePath.text = Editor.checkFileSanity(_pieceXmlFile, "xml", "", false) ?
-            _pieceXmlFile.nativePath : "Select file...";
+        xmlFilePath.text = !Editor.checkFileSanity(_pieceXmlFile, "xml", "", false) ?
+            "Select file..." : findPath(_existingProject, _pieceXmlFile);
         xmlFilePath.percentWidth = 100;
         pathBox.addChild(xmlFilePath);
         fileRow.addChild(pathBox);
-        fileRow.addChild(
-            new CommandButton("Find File", findFile(xmlFilePath, _pieceXmlFile, "xml")));
+        fileRow.addChild(new CommandButton("Find File", 
+            findFile("Piece XML", xmlFilePath, _pieceXmlFile, "xml")));
+        var createButton :CommandButton = 
+            new CommandButton("Create File", createPieceXML(xmlFilePath));
+        fileRow.addChild(createButton);
 
         fileRow = new HBox();
         container.addChild(fileRow);
@@ -114,18 +111,21 @@ public class EditProjectDialog extends LightweightCenteredDialog
         pathBox.percentWidth = 100;
         pathBox.percentHeight = 100;
         var swfFilePath :Label = new Label();
-        swfFilePath.text = Editor.checkFileSanity(_pieceSwfFile, "swf", "", false) ?
-            _pieceSwfFile.nativePath : "Select file...";
+        swfFilePath.text = !Editor.checkFileSanity(_pieceSwfFile, "swf", "", false) ?
+            "Select file..." : findPath(_existingProject, _pieceSwfFile);
         swfFilePath.percentWidth = 100;
         pathBox.addChild(swfFilePath);
         fileRow.addChild(pathBox);
-        fileRow.addChild(
-            new CommandButton("Find File", findFile(swfFilePath, _pieceSwfFile, "swf")));
+        fileRow.addChild(new CommandButton("Find File", 
+            findFile("Piece SWF", swfFilePath, _pieceSwfFile, "swf")));
+        var spacer :HBox = new HBox();
+        spacer.width = createButton.width;
+        fileRow.addChild(spacer);
 
         var dialogButtons :HBox = new HBox(); 
         dialogButtons.percentWidth = 100;
         setStyles(dialogButtons, 10, 5);
-        var spacer :HBox = new HBox();
+        spacer = new HBox();
         spacer.percentWidth = 100;
         dialogButtons.addChild(spacer);
         dialogButtons.addChild(new CommandButton("Cancel", close));
@@ -149,13 +149,41 @@ public class EditProjectDialog extends LightweightCenteredDialog
 
     public function handleSave () :void
     {
+        if (_pieceXmlFile == null || _pieceSwfFile == null) {
+            Editor.popError("Both the piece XML file and the piece SWF file are required");
+            return;
+        }
+
+        if (!Editor.checkFileSanity(_pieceSwfFile, "swf", "Piece SWF")) {
+            return;
+        }
+
+        if (_createPieceXml) {
+            var pieceXml :XML = <platformer>
+                <pieceset/>
+            </platformer>;
+            var outputString :String = '<?xml verstion="1.0" encoding="utf-8"?>\n';
+            outputString += pieceXml.toXMLString() + '\n';
+            var stream :FileStream = new FileStream();
+            stream.open(_pieceXmlFile, FileMode.WRITE);
+            stream.writeUTFBytes(outputString);
+            stream.close();
+        }
+        if (!Editor.checkFileSanity(_pieceXmlFile, "xml", "Piece XML")) {
+            return;
+        }
+
         if (_existingProject == null) {
             var newFile :File = 
                 new File(File.desktopDirectory.nativePath + File.separator + "project.xml");
             newFile.browseForSave("Select new project file location [*.xml]");
-            newFile.addEventListener(Event.SELECT, function (event :Event) :void {
+            var saver :Function;
+            saver = function (event :Event) :void {
+                newFile.removeEventListener(Event.SELECT, saver);
                 saveAndClose(sanitizeFilename(event.target as File));
-            });
+            };
+            newFile.addEventListener(Event.SELECT, saver);
+            fileDialogCloseHandler(newFile);
 
         } else {
             saveAndClose(_existingProject);
@@ -164,27 +192,10 @@ public class EditProjectDialog extends LightweightCenteredDialog
 
     protected function saveAndClose (file :File) :void
     {
-        if (_pieceXmlFile == null || _pieceSwfFile == null) {
-            Editor.popError("Both the piece XML file and the piece SWF file are required");
-            return;
-        }
-
-        if (!Editor.checkFileSanity(_pieceXmlFile, "xml", "Piece XML") ||
-            !Editor.checkFileSanity(_pieceSwfFile, "swf", "Piece SWF")) {
-            return;
-        }
-
-        // get relative paths from the project file, if possible... otherwise use the absolute 
-        // path representation.
-        var pieceXmlPath :String = file.getRelativePath(_pieceXmlFile, true);
-        pieceXmlPath = pieceXmlPath == null ? _pieceXmlFile.nativePath : pieceXmlPath;
-        var pieceSwfPath :String = file.getRelativePath(_pieceSwfFile, true);
-        pieceSwfPath = pieceSwfPath == null ? _pieceSwfFile.nativePath : pieceSwfPath;
-
         _projectXml.pieceXml = <pieceXml/>;
-        _projectXml.pieceXml.@path = pieceXmlPath;
+        _projectXml.pieceXml.@path = findPath(file, _pieceXmlFile);
         _projectXml.pieceSwf = <pieceSwf/>;
-        _projectXml.pieceSwf.@path = pieceSwfPath;
+        _projectXml.pieceSwf.@path = findPath(file, _pieceSwfFile);
 
         var outputString :String = '<?xml version="1.0" encoding="utf-8"?>\n';
         outputString += _projectXml.toXMLString() + '\n';
@@ -192,6 +203,7 @@ public class EditProjectDialog extends LightweightCenteredDialog
         stream.open(file, FileMode.WRITE);
         stream.writeUTFBytes(outputString);
         stream.close();
+
         close();
         _saveCallback(file);
     }
@@ -211,9 +223,74 @@ public class EditProjectDialog extends LightweightCenteredDialog
         return new File(filePath + fileName + ".xml");
     }
 
-    protected function findFile (label :Label, file :File, extension :String) :Function 
+    protected function findFile (desc :String, label :Label, file :File, 
+        extension :String) :Function 
     {
-        return function () :void {};
+        return function () :void {
+            file.browseForOpen("Select " + desc + " file...", 
+                [new FileFilter(extension + " files", "*." + extension)]);
+            var opener :Function;
+            opener = function (event :Event) :void {
+                label.text = findPath(_existingProject, file);
+                // for some reason, this window hides behind the main window after the file
+                // selection dialog has popped.
+                orderToFront();
+                if (file == _pieceXmlFile) {
+                    _createPieceXml = false;
+                }
+                file.removeEventListener(Event.SELECT, opener);
+            };
+            file.addEventListener(Event.SELECT, opener);
+            fileDialogCloseHandler(file);
+        };
+    }
+
+    protected function createPieceXML (label :Label) :Function
+    {
+        return function () :void {
+            _pieceXmlFile.browseForSave("Select new Piece XML file location [*.xml]");
+            var creator :Function;
+            creator = function (event :Event) :void {
+                _pieceXmlFile = sanitizeFilename(_pieceXmlFile);
+                label.text = findPath(_existingProject, _pieceXmlFile);
+                _createPieceXml = true;
+                _pieceXmlFile.removeEventListener(Event.SELECT, creator);
+            };
+            _pieceXmlFile.addEventListener(Event.SELECT, creator);
+            fileDialogCloseHandler(_pieceXmlFile);
+        };
+    }
+
+    protected function fileDialogCloseHandler (file :File) :void
+    {
+        var orderer :Function;
+        orderer = function (event :Event) :void {
+            file.removeEventListener(Event.SELECT, orderer);
+            file.removeEventListener(Event.CLOSE, orderer);
+            orderToFront();
+        };
+        file.addEventListener(Event.SELECT, orderer);
+        file.addEventListener(Event.CANCEL, orderer);
+    }
+
+    protected function resolvePath (path :String) :File
+    {
+        if (path == "") {
+            return File.desktopDirectory.clone();
+        }
+
+        if (_existingProject != null) {
+            return _existingProject.parent.resolvePath(path);
+        }
+
+        return new File(path);
+    }
+
+    protected function findPath (reference :File, child :File) :String
+    {
+        var path :String = 
+            reference != null ? reference.parent.getRelativePath(child, true) : child.nativePath;
+        return path == null ? child.nativePath : path;
     }
 
     protected var _existingProject :File;
@@ -221,5 +298,6 @@ public class EditProjectDialog extends LightweightCenteredDialog
     protected var _pieceSwfFile :File;
     protected var _projectXml :XML;
     protected var _saveCallback :Function;
+    protected var _createPieceXml :Boolean = false;
 }
 }
