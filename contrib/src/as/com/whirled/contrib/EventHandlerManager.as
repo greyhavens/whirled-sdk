@@ -95,7 +95,7 @@ public class EventHandlerManager
         _eventHandlers = [];
     }
 
-    protected static var _eventHandlers :Array = [];
+    protected var _eventHandlers :Array = [];
 }
 
 }
