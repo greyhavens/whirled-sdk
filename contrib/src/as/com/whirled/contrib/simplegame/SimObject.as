@@ -21,10 +21,12 @@
 package com.whirled.contrib.simplegame {
 
 import com.threerings.util.SortedHashMap;
+import com.whirled.contrib.EventHandlerManager;
 import com.whirled.contrib.simplegame.tasks.ParallelTask;
 import com.whirled.contrib.simplegame.tasks.TaskContainer;
 
 import flash.events.EventDispatcher;
+import flash.events.IEventDispatcher;
 
 public class SimObject extends EventDispatcher
 {
@@ -175,6 +177,39 @@ public class SimObject extends EventDispatcher
     }
 
     /**
+     * Adds the specified listener to the specified dispatcher for the specified event.
+     *
+     * Listeners registered in this way will be automatically unregistered when the SimObject is
+     * destroyed.
+     */
+    protected function registerEventListener (dispatcher :IEventDispatcher, event :String,
+        listener :Function) :void
+    {
+        _events.registerEventListener(dispatcher, event, listener);
+    }
+
+    /**
+     * Removes the specified listener from the specified dispatcher for the specified event.
+     */
+    protected function unregisterEventListener (dispatcher :IEventDispatcher, event :String,
+        listener :Function) :void
+    {
+        _events.unregisterEventListener(dispatcher, event, listener);
+    }
+
+    /**
+     * Registers a zero-arg callback function that should be called once when the event fires.
+     *
+     * Listeners registered in this way will be automatically unregistered when the SimObject is
+     * destroyed.
+     */
+    protected function registerOneShotCallback (dispatcher :IEventDispatcher, event :String,
+        callback :Function) :void
+    {
+        _events.registerOneShotCallback(dispatcher, event, callback);
+    }
+
+    /**
      * Called once per update tick. (Subclasses can override this to do something useful.)
      *
      * @param dt the number of seconds that have elapsed since the last update.
@@ -241,6 +276,7 @@ public class SimObject extends EventDispatcher
     internal function destroyedInternal () :void
     {
         destroyed();
+        _events.freeAllHandlers();
     }
 
     internal function updateInternal (dt :Number) :void
@@ -286,6 +322,8 @@ public class SimObject extends EventDispatcher
     protected var _namedTasks :SortedHashMap = new SortedHashMap(SortedHashMap.STRING_KEYS);
 
     protected var _updatingTasks :Boolean;
+
+    protected var _events :EventHandlerManager = new EventHandlerManager();
 
     // managed by ObjectDB
     internal var _ref :SimObjectRef;

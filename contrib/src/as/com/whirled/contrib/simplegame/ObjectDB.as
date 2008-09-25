@@ -23,11 +23,13 @@ package com.whirled.contrib.simplegame {
 import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
+import com.whirled.contrib.EventHandlerManager;
 import com.whirled.contrib.simplegame.components.SceneComponent;
 import com.whirled.contrib.simplegame.tasks.*;
 
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
+import flash.events.IEventDispatcher;
 
 public class ObjectDB
 {
@@ -261,6 +263,39 @@ public class ObjectDB
         return _objectCount;
     }
 
+    /**
+     * Adds the specified listener to the specified dispatcher for the specified event.
+     *
+     * Listeners registered in this way will be automatically unregistered when the ObjectDB is
+     * shutdown.
+     */
+    protected function registerEventListener (dispatcher :IEventDispatcher, event :String,
+        listener :Function) :void
+    {
+        _events.registerEventListener(dispatcher, event, listener);
+    }
+
+    /**
+     * Removes the specified listener from the specified dispatcher for the specified event.
+     */
+    protected function unregisterEventListener (dispatcher :IEventDispatcher, event :String,
+        listener :Function) :void
+    {
+        _events.unregisterEventListener(dispatcher, event, listener);
+    }
+
+    /**
+     * Registers a zero-arg callback function that should be called once when the event fires.
+     *
+     * Listeners registered in this way will be automatically unregistered when the ObjectDB is
+     * shutdown.
+     */
+    protected function registerOneShotCallback (dispatcher :IEventDispatcher, event :String,
+        callback :Function) :void
+    {
+        _events.registerOneShotCallback(dispatcher, event, callback);
+    }
+
     /** Updates all objects in the mode. */
     protected function beginUpdate (dt :Number) :void
     {
@@ -358,6 +393,8 @@ public class ObjectDB
         _objectsPendingRemoval = null;
         _namedObjects = null;
         _groupedObjects = null;
+
+        _events.freeAllHandlers();
     }
 
     protected var _listHead :SimObjectRef;
@@ -371,6 +408,8 @@ public class ObjectDB
 
     /** stores a mapping from String to Array */
     protected var _groupedObjects :HashMap = new HashMap();
+
+    protected var _events :EventHandlerManager = new EventHandlerManager();
 }
 
 }
