@@ -33,23 +33,26 @@ public class EventHandlerManager
     /**
      * Adds the specified listener to the specified dispatcher for the specified event.
      */
-    public function registerEventListener (
-        dispatcher :IEventDispatcher, event :String, listener :Function) :void
+    public function registerEventListener (dispatcher :IEventDispatcher, event :String,
+        listener :Function, useCapture :Boolean = false, priority :int = 0,
+        useWeakReference :Boolean = false) :void
     {
-        dispatcher.addEventListener(event, listener);
-        _eventHandlers.push({dispatcher: dispatcher, event: event, func: listener});
+        dispatcher.addEventListener(event, listener, useCapture, priority, useWeakReference);
+        _eventHandlers.push(new RegisteredListener(dispatcher, event, listener, useCapture));
     }
 
     /**
      * Removes the specified listener from the specified dispatcher for the specified event.
      */
-    public function unregisterEventListener (
-        dispatcher :IEventDispatcher, event :String, listener :Function) :void
+    public function unregisterEventListener (dispatcher :IEventDispatcher, event :String,
+        listener :Function, useCapture :Boolean = false) :void
     {
-        dispatcher.removeEventListener(event, listener);
+        dispatcher.removeEventListener(event, listener, useCapture);
+
         for (var ii :int = 0; ii < _eventHandlers.length; ii++) {
-            if (dispatcher == _eventHandlers[ii].dispatcher && event == _eventHandlers[ii].event &&
-                listener == _eventHandlers[ii].func) {
+            var rl :RegisteredListener = _eventHandlers[ii];
+            if (dispatcher == rl.dispatcher && event == rl.event &&  listener == rl.listener &&
+                useCapture == rl.useCapture) {
                 _eventHandlers.splice(ii, 1);
                 break;
             }
@@ -59,15 +62,15 @@ public class EventHandlerManager
     /**
      * Registers a zero-arg callback function that should be called once when the event fires.
      */
-    public function registerOneShotCallback (
-        dispatcher :IEventDispatcher, event :String, callback :Function) :void
+    public function registerOneShotCallback (dispatcher :IEventDispatcher, event :String,
+        callback :Function, useCapture :Boolean = false, priority :int = 0) :void
     {
         var eventListener :Function;
         eventListener = function (...ignored) :void {
             dispatcher.removeEventListener(event, eventListener);
             callback();
         };
-        dispatcher.addEventListener(event, eventListener);
+        dispatcher.addEventListener(event, eventListener, useCapture, priority);
     }
 
     /**
@@ -85,8 +88,8 @@ public class EventHandlerManager
      */
     public function freeAllHandlers (...ignored) :void
     {
-        for each (var handler :Object in _eventHandlers) {
-            handler.dispatcher.removeEventListener(handler.event, handler.func);
+        for each (var rl :RegisteredListener in _eventHandlers) {
+            rl.dispatcher.removeEventListener(rl.event, rl.listener, rl.useCapture);
         }
 
         _eventHandlers = [];
@@ -95,4 +98,23 @@ public class EventHandlerManager
     protected static var _eventHandlers :Array = [];
 }
 
+}
+
+import flash.events.IEventDispatcher;
+
+class RegisteredListener
+{
+    public var dispatcher :IEventDispatcher;
+    public var event :String;
+    public var listener :Function;
+    public var useCapture :Boolean;
+
+    public function RegisteredListener (dispatcher :IEventDispatcher, event :String,
+        listener :Function, useCapture :Boolean)
+    {
+        this.dispatcher = dispatcher;
+        this.event = event;
+        this.listener = listener;
+        this.useCapture = useCapture;
+    }
 }

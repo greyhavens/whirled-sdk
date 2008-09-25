@@ -183,18 +183,18 @@ public class SimObject extends EventDispatcher
      * destroyed.
      */
     protected function registerEventListener (dispatcher :IEventDispatcher, event :String,
-        listener :Function) :void
+        listener :Function, useCapture :Boolean = false, priority :int = 0) :void
     {
-        _events.registerEventListener(dispatcher, event, listener);
+        _events.registerEventListener(dispatcher, event, listener, useCapture, priority);
     }
 
     /**
      * Removes the specified listener from the specified dispatcher for the specified event.
      */
     protected function unregisterEventListener (dispatcher :IEventDispatcher, event :String,
-        listener :Function) :void
+        listener :Function, useCapture :Boolean = false) :void
     {
-        _events.unregisterEventListener(dispatcher, event, listener);
+        _events.unregisterEventListener(dispatcher, event, listener, useCapture);
     }
 
     /**
@@ -204,9 +204,9 @@ public class SimObject extends EventDispatcher
      * destroyed.
      */
     protected function registerOneShotCallback (dispatcher :IEventDispatcher, event :String,
-        callback :Function) :void
+        callback :Function, useCapture :Boolean = false, priority :int = 0) :void
     {
-        _events.registerOneShotCallback(dispatcher, event, callback);
+        _events.registerOneShotCallback(dispatcher, event, callback, useCapture, priority);
     }
 
     /**

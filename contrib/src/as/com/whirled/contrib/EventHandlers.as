@@ -20,7 +20,6 @@
 
 package com.whirled.contrib {
 
-import flash.events.Event;
 import flash.events.IEventDispatcher;
 
 /**
@@ -35,28 +34,30 @@ public class EventHandlers
     /**
      * Adds the specified listener to the specified dispatcher for the specified event.
      */
-    public static function registerEventListener (
-        dispatcher :IEventDispatcher, event :String, listener :Function) :void
+    public static function registerEventListener (dispatcher :IEventDispatcher, event :String,
+        listener :Function, useCapture :Boolean = false, priority :int = 0,
+        useWeakReference :Boolean = false) :void
     {
-        _mgr.registerEventListener(dispatcher, event, listener);
+        _mgr.registerEventListener(dispatcher, event, listener, useCapture, priority,
+            useWeakReference);
     }
 
     /**
      * Removes the specified listener from the specified dispatcher for the specified event.
      */
-    public static function unregisterEventListener (
-        dispatcher :IEventDispatcher, event :String, listener :Function) :void
+    public static function unregisterEventListener (dispatcher :IEventDispatcher, event :String,
+        listener :Function, useCapture :Boolean = false) :void
     {
-        _mgr.unregisterEventListener(dispatcher, event, listener);
+        _mgr.unregisterEventListener(dispatcher, event, listener, useCapture);
     }
 
     /**
      * Registers a zero-arg callback function that should be called once when the event fires.
      */
-    public static function registerOneShotCallback (
-        dispatcher :IEventDispatcher, event :String, callback :Function) :void
+    public static function registerOneShotCallback (dispatcher :IEventDispatcher, event :String,
+        callback :Function, useCapture :Boolean = false, priority :int = 0) :void
     {
-        _mgr.registerOneShotCallback(dispatcher, event, callback);
+        _mgr.registerOneShotCallback(dispatcher, event, callback, useCapture, priority);
     }
 
     /**
