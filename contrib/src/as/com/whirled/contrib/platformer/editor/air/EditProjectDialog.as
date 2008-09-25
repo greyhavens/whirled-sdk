@@ -92,9 +92,7 @@ public class EditProjectDialog extends LightweightCenteredDialog
         fileRow.addChild(pathBox);
         fileRow.addChild(new CommandButton("Find File", 
             findFile("Piece XML", xmlFilePath, _pieceXmlFile, "xml")));
-        var createButton :CommandButton = 
-            new CommandButton("Create File", createPieceXML(xmlFilePath));
-        fileRow.addChild(createButton);
+        fileRow.addChild(new CommandButton("Create File", createPieceXML(xmlFilePath)));
 
         fileRow = new HBox();
         container.addChild(fileRow);
@@ -119,7 +117,7 @@ public class EditProjectDialog extends LightweightCenteredDialog
         fileRow.addChild(new CommandButton("Find File", 
             findFile("Piece SWF", swfFilePath, _pieceSwfFile, "swf")));
         var spacer :HBox = new HBox();
-        spacer.width = createButton.width;
+        spacer.width = 86;
         fileRow.addChild(spacer);
 
         var dialogButtons :HBox = new HBox(); 
@@ -132,6 +130,8 @@ public class EditProjectDialog extends LightweightCenteredDialog
         dialogButtons.addChild(new CommandButton("Save", handleSave));
         container.addChild(dialogButtons);
     }
+
+    protected var _button :CommandButton;
 
     protected function setStyles (component :UIComponent, gap :int, padding :int) :void
     {
