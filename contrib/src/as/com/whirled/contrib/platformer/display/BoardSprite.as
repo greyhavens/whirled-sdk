@@ -113,8 +113,8 @@ public class BoardSprite extends Sprite
 
     public function ensureVisible (actor :Actor, yshift :Number = 0) :void
     {
-        var lxbuffer :int = BUFFER * (1 + (actor.dx < 0 ? -actor.dx : 0)) /5;
-        var rxbuffer :int = BUFFER * (1 + (actor.dx > 0 ? actor.dx : 0)) /5;
+        var lxbuffer :int = BUFFER * (1 + (actor.dx < 0 ? -actor.dx : 0) / 5);
+        var rxbuffer :int = BUFFER * (1 + (actor.dx > 0 ? actor.dx : 0) / 5);
         //var xbuffer :int = Math.min(Metrics.DISPLAY_WIDTH/2, BUFFER * (1 + Math.abs(actor.dx) / 5));
         if (actor.x * Metrics.TILE_SIZE < _centerX + lxbuffer) {
             _centerX = actor.x * Metrics.TILE_SIZE - lxbuffer;
