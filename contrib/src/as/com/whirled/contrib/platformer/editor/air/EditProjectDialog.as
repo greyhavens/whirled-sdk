@@ -50,8 +50,12 @@ public class EditProjectDialog extends LightweightCenteredDialog
             _projectXml = <platformerproject/>;
         }
 
-        _pieceXmlFile = resolvePath(String(_projectXml.pieceXml.@path));
-        _pieceSwfFile = resolvePath(String(_projectXml.pieceSwf.@path));
+        _pieceXmlFile = Editor.resolvePath(
+            _existingProject != null ? _existingProject.parent : null, 
+            String(_projectXml.pieceXml.@path));
+        _pieceSwfFile = Editor.resolvePath(
+            _existingProject != null ? _existingProject.parent : null,
+            String(_projectXml.pieceSwf.@path));
 
         width = 500;
         height = 180;
@@ -269,19 +273,6 @@ public class EditProjectDialog extends LightweightCenteredDialog
         };
         file.addEventListener(Event.SELECT, orderer);
         file.addEventListener(Event.CANCEL, orderer);
-    }
-
-    protected function resolvePath (path :String) :File
-    {
-        if (path == "") {
-            return File.desktopDirectory.clone();
-        }
-
-        if (_existingProject != null) {
-            return _existingProject.parent.resolvePath(path);
-        }
-
-        return new File(path);
     }
 
     protected function findPath (reference :File, child :File) :String

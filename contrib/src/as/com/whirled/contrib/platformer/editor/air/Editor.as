@@ -22,13 +22,21 @@ package com.whirled.contrib.platformer.editor.air {
 
 import flash.events.Event;
 import flash.filesystem.File;
+import flash.filesystem.FileMode;
+import flash.filesystem.FileStream;
 import flash.net.FileFilter;
+import flash.utils.ByteArray;
 
 import mx.collections.ArrayCollection;
+import mx.containers.TabNavigator;
 import mx.containers.VBox;
 import mx.controls.FlexNativeMenu;
+import mx.controls.Label;
 import mx.core.WindowedApplication;
 import mx.events.FlexNativeMenuEvent;
+
+import com.whirled.contrib.platformer.display.PieceSpriteFactory;
+import com.whirled.contrib.platformer.editor.PieceEditor;
 
 /**
  * A class to encapsulate editor functionality with easy file read/write access and AIR supplied
@@ -36,7 +44,7 @@ import mx.events.FlexNativeMenuEvent;
  *
  * @playerversion AIR 1.1
  */
-public class Editor extends VBox
+public class Editor extends TabNavigator
 {
     public static function checkFileSanity (file :File, extension :String, 
         description :String, popErrors :Boolean = true) :Boolean
@@ -69,17 +77,47 @@ public class Editor extends VBox
         (new ErrorDialog(error)).openCentered(_window.nativeWindow);
     }
 
+    public static function resolvePath (parentDirectory :File, path :String) :File
+    {
+        if (path == "") {
+            return File.desktopDirectory.clone();
+        }
+
+        if (parentDirectory != null) {
+            return parentDirectory.resolvePath(path);
+        }
+
+        return new File(path);
+    }
+
+    public function Editor ()
+    {
+        percentWidth = 100;
+        percentHeight = 100;
+    }
+
+    /**
+     * By default, this Editor will use PieceSpriteFactory.  If you wish to customize the sprite
+     * factory loading procedure, you can pass a class in here which has a static init() function
+     * with a signature identical to that of PieceSpriteFactory, and it will be called 
+     * instead.
+     */
+    public function setPieceSpriteFactoryClass (factory :Class) :void
+    {
+        _pieceSpriteFactory = factory;
+    }
+
     override protected function createChildren () :void
     {
         super.createChildren();
 
         _window = parent as WindowedApplication;
         _menuItems = new ArrayCollection([
-            {label: APP_MENU, children: [
-                {label: QUIT, keyEquivalent: "q", cmdKey: true}]},
             {label: FILE_MENU, children: [
                 {label: CREATE_PROJECT},
-                {label: LOAD_PROJECT}]}]);
+                {label: LOAD_PROJECT},
+                {type: "separator"},
+                {label: QUIT, keyEquivalent: "q", cmdKey: true}]}]);
         _projectMenu = 
             {label: PROJECT_MENU, children: [
                 {label: EDIT_PROJECT},
@@ -116,6 +154,11 @@ public class Editor extends VBox
         }
 
         _projectFile = null;
+        _projectXml = null;
+
+        while (numChildren > 0) {
+            removeChildAt(0);
+        }
     }
 
     protected function editProject (createNew :Boolean) :void
@@ -151,17 +194,41 @@ public class Editor extends VBox
             _menuItems.addItem(_projectMenu);
         }
 
-        _projectFile = file;
+        var stream :FileStream = new FileStream();
+        stream.open(_projectFile = file, FileMode.READ);
+        _projectXml = XML(stream.readUTFBytes(stream.bytesAvailable));
+        stream.close();
+
+        addPieceEditor(resolvePath(_projectFile.parent, String(_projectXml.pieceXml.@path)),
+            resolvePath(_projectFile.parent, String(_projectXml.pieceSwf.@path)));
+    }
+
+    protected function addPieceEditor (xmlFile :File, swfFile :File) :void
+    {
+        var pieceEditor :PieceEditor = new PieceEditor();
+        pieceEditor.label = "Pieces";
+        addChild(pieceEditor);
+
+        pieceEditor.setXmlPaths(xmlFile.nativePath);
+
+        var stream :FileStream = new FileStream();
+        var bytes :ByteArray = new ByteArray();
+        stream.open(swfFile, FileMode.READ);
+        stream.readBytes(bytes, 0, stream.bytesAvailable);
+        stream.close();
+        _pieceSpriteFactory.init([bytes], pieceEditor.pieceFactoryInitialized);
     }
 
     protected var _menuItems :ArrayCollection;
     protected var _projectMenu :Object;
     protected var _projectFile :File;
+    protected var _projectXml :XML;
+
+    protected var _pieceSpriteFactory :Object = PieceSpriteFactory;
 
     // there will only ever be one instance of this class in the AIR application runtime.
     protected static var _window :WindowedApplication;
 
-    protected static const APP_MENU :String = "FancyPants Golf Editor";
     protected static const FILE_MENU :String = "File";
     protected static const PROJECT_MENU :String = "Project";
 
