@@ -131,8 +131,6 @@ public class EditProjectDialog extends LightweightCenteredDialog
         container.addChild(dialogButtons);
     }
 
-    protected var _button :CommandButton;
-
     protected function setStyles (component :UIComponent, gap :int, padding :int) :void
     {
         if (gap >= 0) {
