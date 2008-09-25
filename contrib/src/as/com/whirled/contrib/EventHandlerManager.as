@@ -65,12 +65,12 @@ public class EventHandlerManager
     public function registerOneShotCallback (dispatcher :IEventDispatcher, event :String,
         callback :Function, useCapture :Boolean = false, priority :int = 0) :void
     {
-        var eventListener :Function;
-        eventListener = function (...ignored) :void {
-            dispatcher.removeEventListener(event, eventListener);
+        var eventListener :Function = function (...ignored) :void {
+            unregisterEventListener(dispatcher, event, eventListener, useCapture);
             callback();
         };
-        dispatcher.addEventListener(event, eventListener, useCapture, priority);
+
+        registerEventListener(dispatcher, event, eventListener, useCapture, priority);
     }
 
     /**
