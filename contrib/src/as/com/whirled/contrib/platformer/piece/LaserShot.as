@@ -20,22 +20,11 @@
 
 package com.whirled.contrib.platformer.piece {
 
-/**
- * A base class for shots as dynamic objects.
- */
-public class Shot extends Dynamic
+public class LaserShot extends Shot
 {
-    public var damage :Number = 0;
-    public var ttl :Number = 0;
-    public var hit :Boolean = false;
-    public var hitEffect :String;
-    public var missEffect :String;
-    public var force :Number = 0;
-    public var source :int = 0;
-
-    override public function shouldSpawn () :Boolean
-    {
-        return false;
-    }
+    public var length :Number;
+    public var laserEffect :String;
+    public var wallEffect :String;
+    public var hits :Array;
 }
 }

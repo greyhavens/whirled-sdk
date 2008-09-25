@@ -36,6 +36,7 @@ import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Hover;
+import com.whirled.contrib.platformer.piece.LaserShot;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.Shot;
 
@@ -55,6 +56,7 @@ public class PieceSpriteFactory
         addPieceClass(BoundedPiece, BoundedPieceSprite);
         addDynamicClass(Actor, ActorSprite, true);
         addDynamicClass(Shot, ShotSprite);
+        addDynamicClass(LaserShot, LaserShotSprite);
         addDynamicClass(Hover, HoverSprite);
     }
 

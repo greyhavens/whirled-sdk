@@ -18,24 +18,22 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.piece {
+package com.whirled.contrib.platformer.game {
 
-/**
- * A base class for shots as dynamic objects.
- */
-public class Shot extends Dynamic
+import com.whirled.contrib.platformer.board.ColliderTask;
+import com.whirled.contrib.platformer.board.LaserShotTask;
+import com.whirled.contrib.platformer.piece.LaserShot;
+
+public class LaserShotController extends ShotController
 {
-    public var damage :Number = 0;
-    public var ttl :Number = 0;
-    public var hit :Boolean = false;
-    public var hitEffect :String;
-    public var missEffect :String;
-    public var force :Number = 0;
-    public var source :int = 0;
-
-    override public function shouldSpawn () :Boolean
+    public function LaserShotController (ls :LaserShot, controller :GameController)
     {
-        return false;
+        super(ls, controller);
+    }
+
+    override protected function createTask () :ColliderTask
+    {
+        return new LaserShotTask(this, _controller.getCollider());
     }
 }
 }

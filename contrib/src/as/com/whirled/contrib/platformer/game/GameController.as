@@ -27,6 +27,7 @@ import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Hover;
+import com.whirled.contrib.platformer.piece.LaserShot;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.Shot;
 import com.whirled.contrib.platformer.board.Board;
@@ -67,6 +68,7 @@ public class GameController
     public function initDynamicClasses () :void
     {
         addShotClass(Shot, ShotController, true);
+        addShotClass(LaserShot, LaserShotController);
         addDynamicClass(Dynamic, DynamicController, true);
         addDynamicClass(Hover, HoverController);
     }

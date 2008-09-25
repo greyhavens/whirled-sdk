@@ -50,43 +50,14 @@ public class ShotTask extends ColliderTask
                 return;
             }
         }
-        var dynamics :Array = _collider.getDynamicBoundsByType(_s.inter);
-        var closehit :Number = int.MAX_VALUE;
-        var cab :ActorBounds = null;
         var line :LineData = new LineData(
                 _s.x, _s.y, _s.x + _s.dx * _delta, _s.y + _s.dy * _delta, BoundData.S_ALL);
-        if (dynamics != null && dynamics.length > 0) {
-            for each (var db :DynamicBounds in dynamics) {
-                if (db is ActorBounds && (db as ActorBounds).actor.health <= 0) {
-                    continue;
-                }
-                if (db is SimpleBounds && db is ActorBounds) {
-                    var sb :SimpleBounds = (db as SimpleBounds);
-                    var arr :Array = line.polyIntersect(sb.getBoundLines());
-                    if (arr[0] < closehit && arr[1] != null) {
-                        closehit = arr[0];
-                        cab = db as ActorBounds;
-                        _cd.alines[0] = arr[1];
-                    }
-                } else if (db is CircleBounds) {
-                    var cb :CircleBounds = (db as CircleBounds);
-                    var dist :Number = line.getSegmentDist2(cb.x, cb.y);
-                    if (dist < cb.r2) {
-                        var hit :Number = line.getCircleIntersect(cb.x, cb.y, cb.radius);
-                        if (hit < closehit) {
-                            closehit = hit;
-                            cab = cb;
-                            _cd.alines[0] = dist;
-                        }
-                    }
-                }
-            }
-            if (cab != null) {
-                // shit happens
-                _delta *= closehit;
-                var ch :CollisionHandler = _cc.getCollisionHandler(cab.controller);
-                ch.collide(_s, cab, _cd);
-            }
+        _delta *= collide(line);
+        if (_cab != null) {
+            // shit happens
+            var ch :CollisionHandler = _cc.getCollisionHandler(_cab.controller);
+            ch.collide(_s, _cab, _cd);
+            _cab = null;
         }
         _s.x += _s.dx * _delta;
         _s.y += _s.dy * _delta;
@@ -98,35 +69,55 @@ public class ShotTask extends ColliderTask
         return false;
     }
 
+    protected function collide (line :LineData) :Number
+    {
+        var dynamics :Array = _collider.getDynamicBoundsByType(_s.inter);
+        var closehit :Number = int.MAX_VALUE;
+        if (dynamics != null && dynamics.length > 0) {
+            for each (var db :DynamicBounds in dynamics) {
+                if (db is ActorBounds && (db as ActorBounds).actor.health <= 0) {
+                    continue;
+                }
+                if (db is SimpleBounds && db is ActorBounds) {
+                    var sb :SimpleBounds = (db as SimpleBounds);
+                    var arr :Array = line.polyIntersect(sb.getBoundLines());
+                    if (arr[0] < closehit && arr[1] != null) {
+                        _cd.alines[0] = arr[1];
+                        closehit = didHit(arr[0], db as ActorBounds);
+                    }
+                } else if (db is CircleBounds) {
+                    var cb :CircleBounds = (db as CircleBounds);
+                    var dist :Number = line.getSegmentDist2(cb.x, cb.y);
+                    if (dist < cb.r2) {
+                        var hit :Number = line.getCircleIntersect(cb.x, cb.y, cb.radius);
+                        if (hit < closehit) {
+                            _cd.alines[0] = dist;
+                            closehit = didHit(hit, cb);
+                        }
+                    }
+                }
+            }
+        }
+        return Math.min(closehit, 1);
+    }
+
+    protected function didHit (hit :Number, ab :ActorBounds) :Number
+    {
+        _cab = ab;
+        return hit;
+    }
+
     protected function preCalcMovement () :void
     {
         var line :LineData = new LineData(
                 _s.x, _s.y, _s.x + _s.dx * _s.ttl, _s.y + _s.dy * _s.ttl, BoundData.S_ALL);
-        var closehit :Number = findLineCloseHit(line);
+        var closehit :Number = _collider.findLineCloseHit(line);
         if (closehit < 1 && closehit > 0) {
             _s.ttl *= closehit;
         }
     }
 
-    protected function findLineCloseHit (line :LineData) :Number
-    {
-        var lines :Array = _collider.getLinesFromLine(line);
-        //trace("projectile line: " + line + " testing against " + lines.length + " lines");
-        var closehit :Number = int.MAX_VALUE;
-        for each (var ld :LineData in lines) {
-            if (ld.isIntersecting(line) &&
-                    (BoundData.blockInner(ld.type, true) && ld.isInside(_s.x, _s.y) ||
-                     BoundData.blockOuter(ld.type, true) && ld.isOutside(_s.x, _s.y))) {
-                var hit :Number = line.findIntersect(ld);
-                //trace("projectile found intersect " + ld + " hit: " + hit);
-                if (hit < closehit) {
-                    closehit = hit;
-                }
-            }
-        }
-        return closehit;
-    }
-
     protected var _s :Shot;
+    protected var _cab :ActorBounds;
 }
 }

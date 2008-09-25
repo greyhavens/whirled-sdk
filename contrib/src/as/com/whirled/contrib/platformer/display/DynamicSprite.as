@@ -119,13 +119,14 @@ public class DynamicSprite extends Sprite
 
     protected function generateParticleEffect (
             name :String, node :DisplayObject, back :Boolean = false,
-            recolor :String = null, filter :ColorMatrixFilter = null) :void
+            recolor :String = null, filter :ColorMatrixFilter = null, scaleY :Number = 1) :void
     {
         if (_particleCallback != null && stage != null && node != null && name != null) {
             var disp :DisplayObject = PieceSpriteFactory.instantiateClip(name);
             if (disp == null) {
                 return;
             }
+            disp.scaleY = scaleY;
             var pt :Point = node.localToGlobal(new Point());
             var opt :Point = node.localToGlobal(new Point(0, 0));
             var apt :Point = node.localToGlobal(new Point(0, -1));

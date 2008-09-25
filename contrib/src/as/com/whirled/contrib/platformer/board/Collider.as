@@ -362,6 +362,23 @@ public class Collider
         return false;
     }
 
+    public function findLineCloseHit (line :LineData) :Number
+    {
+        var lines :Array = getLinesFromLine(line);
+        var closehit :Number = int.MAX_VALUE;
+        for each (var ld :LineData in lines) {
+            if (ld.isIntersecting(line) &&
+                    (BoundData.blockInner(ld.type, true) && ld.isInside(line.x1, line.y1) ||
+                     BoundData.blockOuter(ld.type, true) && ld.isOutside(line.x1, line.y1))) {
+                var hit :Number = line.findIntersect(ld);
+                if (hit < closehit) {
+                    closehit = hit;
+                }
+            }
+        }
+        return closehit;
+    }
+
     public function collide (source :DynamicBounds, target :DynamicBounds) :Array
     {
         var cols :Array = new Array();
