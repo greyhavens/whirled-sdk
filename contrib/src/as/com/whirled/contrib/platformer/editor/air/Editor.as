@@ -36,7 +36,8 @@ import mx.core.WindowedApplication;
 import mx.events.FlexNativeMenuEvent;
 
 import com.whirled.contrib.platformer.display.PieceSpriteFactory;
-import com.whirled.contrib.platformer.editor.PieceEditor;
+import com.whirled.contrib.platformer.editor.PieceEditView;
+import com.whirled.contrib.platformer.piece.PieceFactory;
 
 /**
  * A class to encapsulate editor functionality with easy file read/write access and AIR supplied
@@ -97,14 +98,15 @@ public class Editor extends TabNavigator
     }
 
     /**
-     * By default, this Editor will use PieceSpriteFactory.  If you wish to customize the sprite
-     * factory loading procedure, you can pass a class in here which has a static init() function
-     * with a signature identical to that of PieceSpriteFactory, and it will be called 
-     * instead.
+     * By default, this Editor will use PieceSpriteFactory.init.  If you wish to customize the 
+     * sprite factory loading procedure, you can pass a function in here of the following signature,
+     * and it will be called instead:
+     *
+     * function (sources :Array, onReady :Function) :void
      */
-    public function setPieceSpriteFactoryClass (factory :Class) :void
+    public function setPieceSpriteFactoryClass (initFunc :Function) :void
     {
-        _pieceSpriteFactory = factory;
+        _spriteFactoryInit = initFunc;
     }
 
     override protected function createChildren () :void
@@ -115,7 +117,7 @@ public class Editor extends TabNavigator
         _menuItems = new ArrayCollection([
             {label: FILE_MENU, children: [
                 {label: CREATE_PROJECT},
-                {label: LOAD_PROJECT},
+                {label: LOAD_PROJECT, keyEquivalent: "l", cmdKey: true},
                 {type: "separator"},
                 {label: QUIT, keyEquivalent: "q", cmdKey: true}]}]);
         _projectMenu = 
@@ -205,18 +207,21 @@ public class Editor extends TabNavigator
 
     protected function addPieceEditor (xmlFile :File, swfFile :File) :void
     {
-        var pieceEditor :PieceEditor = new PieceEditor();
-        pieceEditor.label = "Pieces";
-        addChild(pieceEditor);
-
-        pieceEditor.setXmlPaths(xmlFile.nativePath);
-
         var stream :FileStream = new FileStream();
+        stream.open(xmlFile, FileMode.READ);
+        var piecesXml :XML = XML(stream.readUTFBytes(stream.bytesAvailable));
+        stream.close();
+
         var bytes :ByteArray = new ByteArray();
+        stream = new FileStream();
         stream.open(swfFile, FileMode.READ);
         stream.readBytes(bytes, 0, stream.bytesAvailable);
         stream.close();
-        _pieceSpriteFactory.init([bytes], pieceEditor.pieceFactoryInitialized);
+        _spriteFactoryInit([bytes], function () :void {
+            var pieceEditView :PieceEditView = new PieceEditView(new PieceFactory(piecesXml));
+            pieceEditView.label = "Pieces";
+            addChild(pieceEditView);
+        });
     }
 
     protected var _menuItems :ArrayCollection;
@@ -224,7 +229,7 @@ public class Editor extends TabNavigator
     protected var _projectFile :File;
     protected var _projectXml :XML;
 
-    protected var _pieceSpriteFactory :Object = PieceSpriteFactory;
+    protected var _spriteFactoryInit :Function = PieceSpriteFactory.init;
 
     // there will only ever be one instance of this class in the AIR application runtime.
     protected static var _window :WindowedApplication;

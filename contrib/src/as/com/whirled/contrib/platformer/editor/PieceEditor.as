@@ -128,7 +128,7 @@ public class PieceEditor extends Panel
 
         var xmlPieces :XML = (_piecesLoader == null ? null : new XML(_piecesLoader.data));
         _pieceEdit.rawChildren.addChild(
-                _editView = new PieceEditView(_pieceEdit, new _pieceFactoryClass(xmlPieces)));
+                _editView = new PieceEditView(new _pieceFactoryClass(xmlPieces)));
     }
 
     protected function tabChanged (selected :Container) :void

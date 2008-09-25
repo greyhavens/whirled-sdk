@@ -30,6 +30,7 @@ import flash.utils.ByteArray;
 
 import com.threerings.util.ClassUtil;
 import com.threerings.util.HashMap;
+import com.threerings.util.Log;
 import com.threerings.util.MultiLoader;
 
 import com.whirled.contrib.platformer.piece.Actor;
@@ -160,7 +161,8 @@ public class PieceSpriteFactory
             var symbolClass :Class = _contentDomain.getDefinition(name) as Class;
             return (new symbolClass() as MovieClip);
         } catch (e :Error) {
-            trace("Failed to load sprite: " + e);
+            log.warning("Failed to load sprite [" + e + "]. Stack trace follows");
+            log.logStackTrace(e);
         }
         return null;
     }
@@ -172,5 +174,7 @@ public class PieceSpriteFactory
     protected static var _defaultDynamicSprite :Class;
 
     protected static var _contentDomain :ApplicationDomain = new ApplicationDomain(null);
+
+    private static const log :Log = Log.getLog(PieceSpriteFactory);
 }
 }
