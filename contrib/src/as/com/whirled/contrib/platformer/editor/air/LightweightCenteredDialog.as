@@ -33,6 +33,8 @@ public class LightweightCenteredDialog extends Window
         maximizable = false;
         minimizable = false;
         resizable = false;
+        showStatusBar = false;
+        showGripper = false;
         systemChrome = NativeWindowSystemChrome.NONE;
         type = NativeWindowType.LIGHTWEIGHT;
 

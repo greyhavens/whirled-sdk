@@ -57,8 +57,8 @@ public class EditProjectDialog extends LightweightCenteredDialog
             _existingProject != null ? _existingProject.parent : null,
             String(_projectXml.pieceSwf.@path));
 
-        width = 500;
-        height = 180;
+        width = 600;
+        height = 160;
         title = (_existingProject != null ? "Edit" : "Create") + " Project";
         setStyle("backgroundColor", "white");
     }
@@ -89,6 +89,7 @@ public class EditProjectDialog extends LightweightCenteredDialog
         pathBox.percentWidth = 100;
         pathBox.percentHeight = 100;
         var xmlFilePath :Label = new Label();
+        xmlFilePath.truncateToFit = true;
         xmlFilePath.text = !Editor.checkFileSanity(_pieceXmlFile, "xml", "", false) ?
             "Select file..." : findPath(_existingProject, _pieceXmlFile);
         xmlFilePath.percentWidth = 100;
@@ -113,6 +114,7 @@ public class EditProjectDialog extends LightweightCenteredDialog
         pathBox.percentWidth = 100;
         pathBox.percentHeight = 100;
         var swfFilePath :Label = new Label();
+        swfFilePath.truncateToFit = true;
         swfFilePath.text = !Editor.checkFileSanity(_pieceSwfFile, "swf", "", false) ?
             "Select file..." : findPath(_existingProject, _pieceSwfFile);
         swfFilePath.percentWidth = 100;
