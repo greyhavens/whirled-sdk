@@ -98,6 +98,9 @@ public class WhirledGameObject extends GameObject
     /** The field name of the <code>whirledGameService</code> field. */
     public static final String WHIRLED_GAME_SERVICE = "whirledGameService";
 
+    /** The field name of the <code>prizeService</code> field. */
+    public static final String PRIZE_SERVICE = "prizeService";
+
     /** The field name of the <code>propertyService</code> field. */
     public static final String PROPERTY_SERVICE = "propertyService";
 
@@ -129,6 +132,9 @@ public class WhirledGameObject extends GameObject
 
     /** The service interface for requesting special things from the server. */
     public WhirledGameMarshaller whirledGameService;
+    
+    /** The service interface for awarding prizes and trophies. */
+    public PrizeMarshaller prizeService;
     
     /** The service interface for dealing with properties. */
     public PropertySpaceMarshaller propertyService;
@@ -325,6 +331,22 @@ public class WhirledGameObject extends GameObject
         requestAttributeChange(
             WHIRLED_GAME_SERVICE, value, ovalue);
         this.whirledGameService = value;
+    }
+
+    /**
+     * Requests that the <code>prizeService</code> field be set to the
+     * specified value. The local value will be updated immediately and an
+     * event will be propagated through the system to notify all listeners
+     * that the attribute did change. Proxied copies of this object (on
+     * clients) will apply the value change when they received the
+     * attribute changed notification.
+     */
+    public void setPrizeService (PrizeMarshaller value)
+    {
+        PrizeMarshaller ovalue = this.prizeService;
+        requestAttributeChange(
+            PRIZE_SERVICE, value, ovalue);
+        this.prizeService = value;
     }
 
     /**

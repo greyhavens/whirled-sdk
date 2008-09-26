@@ -868,7 +868,7 @@ public class BaseGameBackend
             return false;
         }
 
-        _gameObj.whirledGameService.awardTrophy(
+        _gameObj.prizeService.awardTrophy(
             _ctx.getClient(), ident, playerId, createLoggingConfirmListener("awardTrophy"));
 
         return true;
@@ -878,7 +878,7 @@ public class BaseGameBackend
         ident :String, playerId :int = CURRENT_USER) :void
     {
         if (!playerOwnsData(GameData.PRIZE_MARKER, ident, playerId)) {
-            _gameObj.whirledGameService.awardPrize(
+            _gameObj.prizeService.awardPrize(
                 _ctx.getClient(), ident, playerId, createLoggingConfirmListener("awardPrize"));
         }
     }

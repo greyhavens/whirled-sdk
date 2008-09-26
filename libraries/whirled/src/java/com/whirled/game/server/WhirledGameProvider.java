@@ -23,18 +23,6 @@ public interface WhirledGameProvider extends InvocationProvider
         throws InvocationException;
 
     /**
-     * Handles a {@link WhirledGameService#awardPrize} request.
-     */
-    void awardPrize (ClientObject caller, String arg1, int arg2, InvocationService.InvocationListener arg3)
-        throws InvocationException;
-
-    /**
-     * Handles a {@link WhirledGameService#awardTrophy} request.
-     */
-    void awardTrophy (ClientObject caller, String arg1, int arg2, InvocationService.InvocationListener arg3)
-        throws InvocationException;
-
-    /**
      * Handles a {@link WhirledGameService#checkDictionaryWord} request.
      */
     void checkDictionaryWord (ClientObject caller, String arg1, String arg2, String arg3, InvocationService.ResultListener arg4)

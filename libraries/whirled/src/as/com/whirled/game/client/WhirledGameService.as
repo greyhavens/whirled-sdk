@@ -22,12 +22,6 @@ public interface WhirledGameService extends InvocationService
     function addToCollection (arg1 :Client, arg2 :String, arg3 :TypedArray /* of class [B */, arg4 :Boolean, arg5 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function awardPrize (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
-
-    // from Java interface WhirledGameService
-    function awardTrophy (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
-
-    // from Java interface WhirledGameService
     function checkDictionaryWord (arg1 :Client, arg2 :String, arg3 :String, arg4 :String, arg5 :InvocationService_ResultListener) :void;
 
     // from Java interface WhirledGameService

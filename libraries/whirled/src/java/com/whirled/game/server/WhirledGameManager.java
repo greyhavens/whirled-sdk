@@ -55,7 +55,7 @@ import static com.whirled.game.Log.log;
  * A manager for whirled games.
  */
 public abstract class WhirledGameManager extends GameManager
-    implements WhirledGameCodes, WhirledGameProvider, TurnGameManager
+    implements WhirledGameCodes, WhirledGameProvider, TurnGameManager, PrizeProvider
 {
     /** The default class name to use for the game agent. */
     public static final String DEFAULT_SERVER_CLASS = "Server";
@@ -679,6 +679,7 @@ public abstract class WhirledGameManager extends GameManager
         };
 
         _gameObj.setWhirledGameService(_invmgr.registerDispatcher(new WhirledGameDispatcher(this)));
+        _gameObj.setPrizeService(_invmgr.registerDispatcher(new PrizeDispatcher(this)));
         _gameObj.setPropertyService(_invmgr.registerDispatcher(
             new PropertySpaceDispatcher(_propertySpaceHandler)));
         _gameObj.setMessageService(_invmgr.registerDispatcher(

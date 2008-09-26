@@ -90,6 +90,9 @@ public class WhirledGameObject extends GameObject
     /** The service interface for requesting special things from the server. */
     public var whirledGameService :WhirledGameMarshaller;
 
+    /** The service interface for awarding prizes and trophies. */
+    public var prizeService :PrizeMarshaller;
+    
     /** The service interface for requesting property changes from the server. */
     public var propertyService :PropertySpaceMarshaller;
 
@@ -149,6 +152,7 @@ public class WhirledGameObject extends GameObject
         gameData = (ins.readObject() as TypedArray);
         agentState = ins.readInt();
         whirledGameService = (ins.readObject() as WhirledGameMarshaller);
+        prizeService = (ins.readObject() as PrizeMarshaller);
         propertyService = (ins.readObject() as PropertySpaceMarshaller);
         messageService = (ins.readObject() as WhirledGameMessageMarshaller);
     }

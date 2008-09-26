@@ -43,18 +43,6 @@ public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarsh
             );
             return;
 
-        case WhirledGameMarshaller.AWARD_PRIZE:
-            ((WhirledGameProvider)provider).awardPrize(
-                source, (String)args[0], ((Integer)args[1]).intValue(), (InvocationService.InvocationListener)args[2]
-            );
-            return;
-
-        case WhirledGameMarshaller.AWARD_TROPHY:
-            ((WhirledGameProvider)provider).awardTrophy(
-                source, (String)args[0], ((Integer)args[1]).intValue(), (InvocationService.InvocationListener)args[2]
-            );
-            return;
-
         case WhirledGameMarshaller.CHECK_DICTIONARY_WORD:
             ((WhirledGameProvider)provider).checkDictionaryWord(
                 source, (String)args[0], (String)args[1], (String)args[2], (InvocationService.ResultListener)args[3]
