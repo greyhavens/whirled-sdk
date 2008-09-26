@@ -254,6 +254,7 @@ public class EditSprite extends Sprite
 }
 
 import flash.display.DisplayObject;
+import flash.display.Shape;
 
 import mx.core.UIComponent;
 
@@ -267,14 +268,28 @@ class Wrapper extends UIComponent
         // don't capture mouse events in this wrapper
         mouseEnabled = false;
         addChild(_editSprite = editSprite);
+        _mask = new Shape();
+        _mask.graphics.beginFill(0);
+        _mask.graphics.drawRect(0, 0, _editSprite.width, _editSprite.height);
+        _mask.graphics.endFill();
+        mask = _mask;
+        addChild(_mask);
     }
 
     override public function setActualSize (w :Number, h :Number) :void
     {
         super.setActualSize(w, h);
 
-        _editSprite.y = h - _editSprite.height + Metrics.TILE_SIZE;
+        _editSprite.x = Math.max(0, (w - _editSprite.width) / 2);
+        var baseY :Number = h - _editSprite.height + Metrics.TILE_SIZE;
+        _editSprite.y = Math.min(baseY, baseY - baseY / 2);
+
+        _mask.graphics.clear();
+        _mask.graphics.beginFill(0);
+        _mask.graphics.drawRect(0, 0, w, h);
+        _mask.graphics.endFill();
     }
 
     protected var _editSprite :DisplayObject;
+    protected var _mask :Shape;
 }

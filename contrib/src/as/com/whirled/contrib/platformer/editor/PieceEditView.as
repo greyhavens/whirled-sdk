@@ -111,8 +111,8 @@ public class PieceEditView extends Canvas
         component.setStyle("left", 0);
         component.setStyle("right", _editDetails.width);
         // bottomBox needs a frame to represent its real height
-        callLater(function () :void { component.setStyle("bottom", bottomBox.height + 20); });
-        addChild(component);
+        callLater(function () :void { component.setStyle("bottom", bottomBox.height); });
+        addChildAt(component, 0);
     }
 
     override public function setActualSize (w :Number, h :Number) :void
@@ -124,7 +124,7 @@ public class PieceEditView extends Canvas
 
     public function getXML () :String
     {
-        return _pfac.toXML();
+        return _pfac.toXML().toXMLString();
     }
 
     protected function pieceSelected (event :Event) :void
