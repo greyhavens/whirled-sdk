@@ -379,7 +379,7 @@ public class Collider
         return closehit;
     }
 
-    public function collide (source :DynamicBounds, target :DynamicBounds) :Array
+    public function collide (source :Object, target :Object) :Array
     {
         var cols :Array = new Array();
         if (source is SimpleBounds && target is SimpleBounds) {
