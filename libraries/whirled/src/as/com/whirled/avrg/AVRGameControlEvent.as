@@ -66,9 +66,10 @@ public class AVRGameControlEvent extends Event
     /**
      * Create a new AVRGameControlEvent.
      */
-    public function AVRGameControlEvent (type :String, name :String = null, value :Object = null)
+    public function AVRGameControlEvent (
+        type :String, name :String = null, value :Object = null, cancelable :Boolean = false)
     {
-        super(type);
+        super(type, false, cancelable);
 
         _name = name;
         _value = value;
@@ -76,13 +77,14 @@ public class AVRGameControlEvent extends Event
 
     override public function toString () :String
     {
-        return "AVRGameControlEvent [type=" + type + ", name=" + _name + ", value=" + _value + "]";
+        return "AVRGameControlEvent [type=" + type + ", name=" + _name + ", value=" + _value +
+            ", cancelable=" + cancelable + "]";
     }
 
     // documentation inherited from Event
     override public function clone () :Event
     {
-        return new AVRGameControlEvent(type, _name, _value);
+        return new AVRGameControlEvent(type, _name, _value, cancelable);
     }
 
     /** Internal storage for our name property. @private */

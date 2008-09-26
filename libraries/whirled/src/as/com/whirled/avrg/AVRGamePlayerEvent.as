@@ -42,9 +42,10 @@ public class AVRGamePlayerEvent extends AVRGameControlEvent
      * Create a new AVRGamePlayerEvent.
      */
     public function AVRGamePlayerEvent (
-        type :String, playerId :int, name :String = null, value :Object = null)
+        type :String, playerId :int, name :String = null, value :Object = null,
+        cancelable :Boolean = false)
     {
-        super(type, name, value);
+        super(type, name, value, cancelable);
         _playerId = playerId;
     }
 
@@ -55,14 +56,14 @@ public class AVRGamePlayerEvent extends AVRGameControlEvent
 
     override public function toString () :String
     {
-        return "AVRGamePlayerEvent [type=" + type + ", playerId=" + playerId +
-            ", name=" + _name + ", value=" + _value + "]";
+        return "AVRGamePlayerEvent [type=" + type + ", playerId=" + playerId + ", name=" + _name +
+            ", value=" + _value + ", cancelable=" + cancelable + "]";
     }
 
     // documentation inherited from Event
     override public function clone () :Event
     {
-        return new AVRGamePlayerEvent(type, _playerId, _name, _value);
+        return new AVRGamePlayerEvent(type, _playerId, _name, _value, cancelable);
     }
 
     protected var _playerId :int;
