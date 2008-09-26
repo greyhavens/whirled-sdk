@@ -135,10 +135,12 @@ public class PlayerBaseSubControl extends TargetedSubControl
     }
 
     /** @private */
-    internal function taskCompleted_v1 (task :String, amount :int) :void
+    internal function taskCompleted_v1 (task :String, amount :int) :Boolean
     {
-        dispatch(new AVRGamePlayerEvent(
-                AVRGamePlayerEvent.TASK_COMPLETED, _targetId, task, amount));
+        var evt :AVRGamePlayerEvent = new AVRGamePlayerEvent(
+            AVRGamePlayerEvent.TASK_COMPLETED, _targetId, task, amount);
+        dispatch(evt);
+        return evt.isDefaultPrevented();
     }
 
     /** @private */
