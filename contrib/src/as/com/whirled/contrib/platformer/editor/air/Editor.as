@@ -75,7 +75,12 @@ public class Editor extends TabNavigator
 
     public static function popError (error :String) :void
     {
-        (new ErrorDialog(error)).openCentered(_window.nativeWindow);
+        (new FeedbackDialog(error, true)).openCentered(_window.nativeWindow);
+    }
+
+    public static function popFeedback (feedback :String) :void
+    {
+        (new FeedbackDialog(feedback)).openCentered(_window.nativeWindow);
     }
 
     public static function resolvePath (parentDirectory :File, path :String) :File
@@ -123,6 +128,7 @@ public class Editor extends TabNavigator
         _projectMenu = 
             {label: PROJECT_MENU, children: [
                 {label: EDIT_PROJECT},
+                {label: SAVE_PIECES},
                 {type: "separator"},
                 {label: CLOSE_PROJECT}]};
 
@@ -145,6 +151,8 @@ public class Editor extends TabNavigator
             loadProject();
         } else if (event.label == EDIT_PROJECT) {
             editProject(false);
+        } else if (event.label == SAVE_PIECES) {
+            savePieceFile();
         }
     }
 
@@ -207,6 +215,12 @@ public class Editor extends TabNavigator
 
     protected function addPieceEditor (xmlFile :File, swfFile :File) :void
     {
+        if (!checkFileSanity(xmlFile, "xml", "Pieces XML") || 
+            !checkFileSanity(swfFile, "swf", "Pieces SWF")) {
+            closeCurrentProject();
+            return;
+        }
+
         var stream :FileStream = new FileStream();
         stream.open(xmlFile, FileMode.READ);
         var piecesXml :XML = XML(stream.readUTFBytes(stream.bytesAvailable));
@@ -218,18 +232,34 @@ public class Editor extends TabNavigator
         stream.readBytes(bytes, 0, stream.bytesAvailable);
         stream.close();
         _spriteFactoryInit([bytes], function () :void {
-            var pieceEditView :PieceEditView = new PieceEditView(new PieceFactory(piecesXml));
-            pieceEditView.label = "Pieces";
-            addChild(pieceEditView);
+            _pieceEditView = new PieceEditView(new PieceFactory(piecesXml.copy()));
+            _pieceEditView.label = "Pieces";
+            addChild(_pieceEditView);
         });
+    }
+
+    protected function savePieceFile () :void
+    {
+        var file :File = resolvePath(_projectFile.parent, String(_projectXml.pieceXml.@path));
+        if (!checkFileSanity(file, "xml", "Piece XML")) {
+            return;
+        }
+
+        var outputString :String = '<?xml version="1.0" encoding="utf-8"?>\n';
+        outputString += _pieceEditView.getXML() + '\n';
+        var stream :FileStream = new FileStream();
+        stream.open(file, FileMode.WRITE);
+        stream.writeUTFBytes(outputString);
+        stream.close();
+        popFeedback("Piece XML file saved successfully.");
     }
 
     protected var _menuItems :ArrayCollection;
     protected var _projectMenu :Object;
     protected var _projectFile :File;
     protected var _projectXml :XML;
-
     protected var _spriteFactoryInit :Function = PieceSpriteFactory.init;
+    protected var _pieceEditView :PieceEditView;
 
     // there will only ever be one instance of this class in the AIR application runtime.
     protected static var _window :WindowedApplication;
@@ -241,6 +271,7 @@ public class Editor extends TabNavigator
     protected static const LOAD_PROJECT :String = "Load Project";
     protected static const CREATE_PROJECT :String = "Create Project";
     protected static const CLOSE_PROJECT :String = "Close";
-    protected static const EDIT_PROJECT :String = "Edit...";
+    protected static const EDIT_PROJECT :String = "Edit Project";
+    protected static const SAVE_PIECES :String = "Save Piece File";
 }
 }

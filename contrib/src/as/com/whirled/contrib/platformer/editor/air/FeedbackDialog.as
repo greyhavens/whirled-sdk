@@ -25,16 +25,16 @@ import mx.controls.Text;
 
 import com.threerings.flex.CommandButton;
 
-public class ErrorDialog extends LightweightCenteredDialog
+public class FeedbackDialog extends LightweightCenteredDialog
 {
-    public function ErrorDialog (error :String)
+    public function FeedbackDialog (feedback :String, error :Boolean = false)
     {
-        _error = error;
+        _feedback = feedback;
 
         width = 300;
         height = 150;
-        title = "Error!";
-        setStyle("backgroundColor", "white");
+        title = error ? "Error!" : "Feedback";
+        setStyle("backgroundColor", error ? 0xFFAAAA : 0xAAFFAA);
     }
 
     override protected function createChildren () :void
@@ -50,7 +50,7 @@ public class ErrorDialog extends LightweightCenteredDialog
         labelBox.setStyle("paddingRight", 5);
         addChild(labelBox);
         var label :Text = new Text();
-        label.text = _error;
+        label.text = _feedback;
         labelBox.addChild(label);
 
         var spacerBox :HBox = new HBox();
@@ -69,6 +69,6 @@ public class ErrorDialog extends LightweightCenteredDialog
         buttonBox.addChild(new CommandButton("Dismiss", close));
     }
 
-    protected var _error :String;
+    protected var _feedback :String;
 }
 }
