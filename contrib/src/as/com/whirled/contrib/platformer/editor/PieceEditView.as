@@ -59,24 +59,35 @@ public class PieceEditView extends Canvas
         _editDetails = new PieceEditDetails(_pfac);
         _editSelector = new PieceSelector(_pfac);
         _editCoords = new Label();
-        width = 910;
-        height = 700;
+        percentWidth = 100;
+        percentHeight = 100;
         _pfac.addEventListener(PieceFactory.PIECE_UPDATED, pieceUpdated);
         _pfac.addEventListener(PieceFactory.PIECE_REMOVED, pieceRemoved);
         _editSprite.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 
-        addChild(new FlexWrapper(_editSprite));
+        var wrapper :FlexWrapper = new FlexWrapper(_editSprite);
+        wrapper.setStyle("top", 0);
+        wrapper.setStyle("left", 0);
+        wrapper.setStyle("right", _editDetails.width);
+        wrapper.setStyle("bottom", _editSelector.height);
+        addChild(wrapper);
 
-        _editDetails.x = Metrics.DISPLAY_WIDTH;
+        _editDetails.setStyle("right", 0);
+        _editDetails.setStyle("top", 0);
+        _editDetails.setStyle("bottom", 0);
+        _editDetails.setStyle("backgroundColor", "white");
         addChild(_editDetails);
-        _editSelector.y = Metrics.DISPLAY_HEIGHT;
-        addChild(_editSelector);
+
+        var bottomBox :HBox = new HBox();
+        bottomBox.setStyle("left", 0);
+        bottomBox.setStyle("right", _editDetails.width);
+        bottomBox.setStyle("bottom", 0);
+        addChild(bottomBox);
+        bottomBox.addChild(_editSelector);
         _editSelector.addEventListener(Event.CHANGE, pieceSelected);
 
         var controlsBox :VBox = new VBox();
-        controlsBox.y = Metrics.DISPLAY_HEIGHT;
-        controlsBox.x = 410;
-        addChild(controlsBox);
+        bottomBox.addChild(controlsBox);
         _editCoords.text = "Coords (0, 0)";
         controlsBox.addChild(_editCoords);
         var row :HBox = new HBox();
