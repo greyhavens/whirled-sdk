@@ -44,8 +44,8 @@ public class PieceEditor extends Panel
     public function PieceEditor ()
     {
         title = "Platformer Piece Editor";
-        percentHeight = 100;
-        percentWidth = 100;
+        width = 940;
+        height = 800;
         setStyle("paddingTop", 0);
         setStyle("paddingBottom", 0);
         setStyle("paddingLeft", 0);
@@ -91,25 +91,13 @@ public class PieceEditor extends Panel
     {
         super.createChildren();
 
-        var tabs :TabNavigator = new TabNavigator();
-        tabs.percentWidth = 100;
-        tabs.percentHeight = 100;
-        tabs.addEventListener(IndexChangedEvent.CHANGE, function (...ignored) :void {
-            tabChanged(tabs.selectedChild);
+        _tabs = new TabNavigator();
+        _tabs.percentWidth = 100;
+        _tabs.percentHeight = 100;
+        _tabs.addEventListener(IndexChangedEvent.CHANGE, function (...ignored) :void {
+            tabChanged(_tabs.selectedChild);
         });
-        var editBox :HBox = new HBox();
-        editBox.percentWidth = 100;
-        editBox.label = "Edit Piece";
-        editBox.addChild(_pieceEdit = new FocusContainer());
-        _pieceEdit.width = 910;
-        _pieceEdit.height = 700;
-        tabs.addChild(editBox);
-        _xmlCode = new VBox();
-        _xmlCode.label = "XML Code";
-        _xmlCode.percentWidth = 100;
-        _xmlCode.percentHeight = 100;
-        tabs.addChild(_xmlCode);
-        addChild(tabs);
+        addChild(_tabs);
     }
 
     protected function addEditView () :void
@@ -118,6 +106,16 @@ public class PieceEditor extends Panel
             return;
         }
 
+        var xmlPieces :XML = (_piecesLoader == null ? null : new XML(_piecesLoader.data));
+        _editView = new PieceEditView(new _pieceFactoryClass(xmlPieces));
+        _editView.label = "Edit Piece";
+        _tabs.addChild(_editView);
+
+        _xmlCode = new VBox();
+        _xmlCode.label = "XML Code";
+        _xmlCode.percentWidth = 100;
+        _xmlCode.percentHeight = 100;
+        _tabs.addChild(_xmlCode);
         _codeArea = new TextArea();
         _codeArea.percentWidth = 100;
         _codeArea.percentHeight = 100;
@@ -125,10 +123,6 @@ public class PieceEditor extends Panel
         _codeArea.setStyle("fontFamily", "Sans");
         _codeArea.setStyle("fontSize", "12");
         _xmlCode.addChild(_codeArea);
-
-        var xmlPieces :XML = (_piecesLoader == null ? null : new XML(_piecesLoader.data));
-        _pieceEdit.rawChildren.addChild(
-                _editView = new PieceEditView(new _pieceFactoryClass(xmlPieces)));
     }
 
     protected function tabChanged (selected :Container) :void
@@ -138,12 +132,12 @@ public class PieceEditor extends Panel
         }
     }
 
+    protected var _tabs :TabNavigator;
+    protected var _xmlCode :VBox;
     protected var _codeArea :TextArea;
     protected var _editView :PieceEditView;
     protected var _piecesLoader :URLLoader;
     protected var _piecesLoaded :Boolean;
-    protected var _pieceEdit :FocusContainer;
-    protected var _xmlCode :VBox;
     protected var _factoryInitialized :Boolean = false;
     protected var _pieceFactoryClass :Class = PieceFactory;
 }

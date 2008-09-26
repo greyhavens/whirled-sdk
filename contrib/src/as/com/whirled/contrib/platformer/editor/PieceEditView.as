@@ -30,6 +30,7 @@ import flash.utils.ByteArray;
 
 import mx.core.Container;
 import mx.core.FlexSprite;
+import mx.core.UIComponent;
 import mx.containers.Canvas;
 import mx.containers.HBox;
 import mx.containers.VBox;
@@ -37,8 +38,6 @@ import mx.controls.Button;
 import mx.controls.HSlider;
 import mx.controls.Label;
 import mx.events.SliderEvent;
-
-import com.threerings.flex.FlexWrapper;
 
 import com.whirled.contrib.platformer.display.Metrics;
 import com.whirled.contrib.platformer.piece.Piece;
@@ -65,13 +64,6 @@ public class PieceEditView extends Canvas
         _pfac.addEventListener(PieceFactory.PIECE_REMOVED, pieceRemoved);
         _editSprite.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 
-        var wrapper :FlexWrapper = new FlexWrapper(_editSprite);
-        wrapper.setStyle("top", 0);
-        wrapper.setStyle("left", 0);
-        wrapper.setStyle("right", _editDetails.width);
-        wrapper.setStyle("bottom", _editSelector.height);
-        addChild(wrapper);
-
         _editDetails.setStyle("right", 0);
         _editDetails.setStyle("top", 0);
         _editDetails.setStyle("bottom", 0);
@@ -87,7 +79,6 @@ public class PieceEditView extends Canvas
         _editSelector.addEventListener(Event.CHANGE, pieceSelected);
 
         var controlsBox :VBox = new VBox();
-        bottomBox.addChild(controlsBox);
         _editCoords.text = "Coords (0, 0)";
         controlsBox.addChild(_editCoords);
         var row :HBox = new HBox();
@@ -113,6 +104,22 @@ public class PieceEditView extends Canvas
         controlsBox.addChild(EditView.makeButton("Copy to Clipboard", function () :void {
             System.setClipboard(getXML());
         }));
+        bottomBox.addChild(controlsBox);
+
+        var component :UIComponent = _editSprite.getUIComponent();
+        component.setStyle("top", 0);
+        component.setStyle("left", 0);
+        component.setStyle("right", _editDetails.width);
+        // bottomBox needs a frame to represent its real height
+        callLater(function () :void { component.setStyle("bottom", bottomBox.height + 20); });
+        addChild(component);
+    }
+
+    override public function setActualSize (w :Number, h :Number) :void
+    {
+        super.setActualSize(w, h);
+
+        trace("setActualSize [" + w + ", " + h + "]");
     }
 
     public function getXML () :String

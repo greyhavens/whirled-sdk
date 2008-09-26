@@ -29,6 +29,8 @@ import flash.events.MouseEvent;
 
 import flash.geom.Point;
 
+import mx.core.UIComponent;
+
 import com.threerings.util.KeyboardCodes;
 import com.threerings.util.Log;
 
@@ -117,6 +119,11 @@ public class EditSprite extends Sprite
     {
         _layers[GRID_LAYER].alpha = _layers[GRID_LAYER].alpha > 0 ? 0 : 0.5;
         updateDisplay();
+    }
+
+    public function getUIComponent () :UIComponent
+    {
+        return new Wrapper(this);
     }
 
     protected function get GRID_LAYER () :int
@@ -244,4 +251,30 @@ public class EditSprite extends Sprite
 
     private static const log :Log = Log.getLog(EditSprite);
 }
+}
+
+import flash.display.DisplayObject;
+
+import mx.core.UIComponent;
+
+import com.whirled.contrib.platformer.editor.EditSprite;
+import com.whirled.contrib.platformer.display.Metrics;
+
+class Wrapper extends UIComponent
+{
+    public function Wrapper (editSprite :EditSprite)
+    {
+        // don't capture mouse events in this wrapper
+        mouseEnabled = false;
+        addChild(_editSprite = editSprite);
+    }
+
+    override public function setActualSize (w :Number, h :Number) :void
+    {
+        super.setActualSize(w, h);
+
+        _editSprite.y = h - _editSprite.height + Metrics.TILE_SIZE;
+    }
+
+    protected var _editSprite :DisplayObject;
 }
