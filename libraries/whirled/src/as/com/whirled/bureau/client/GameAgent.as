@@ -62,15 +62,16 @@ public class GameAgent extends Agent
     public override function stop () :void
     {
         Log.info("Stopping agent " + _agentObj);
-        _subscriber.unsubscribe(_ctx.getDObjectManager());
-        _subscriber = null;
-        _gameObj = null;
-        _agentObj = null;
 
         handleTimer(null);
         _traceTimer.stop();
         _traceTimer.removeEventListener(TimerEvent.TIMER, handleTimer);
         _traceTimer = null;
+
+        _subscriber.unsubscribe(_ctx.getDObjectManager());
+        _subscriber = null;
+        _gameObj = null;
+        _agentObj = null;
 
         if (_controller != null) {
             _controller.shutdown();
@@ -170,7 +171,9 @@ public class GameAgent extends Agent
             _traceTimer.stop();
 
         } else {
-            _gameObj.manager.invoke("agentTrace", _traceOutput);
+            if (_gameObj != null && _gameObj.manager != null) {
+                _gameObj.manager.invoke("agentTrace", _traceOutput);
+            }
             _traceOutput.length = 0;
         }
     }
