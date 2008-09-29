@@ -85,8 +85,9 @@ public class Editor extends TabNavigator
 
     public static function resolvePath (parentDirectory :File, path :String) :File
     {
-        if (path == "") {
-            return File.desktopDirectory.clone();
+        if (path == null || path == "") {
+            return parentDirectory != null ? parentDirectory.clone() : 
+                File.desktopDirectory.clone();
         }
 
         if (parentDirectory != null) {
@@ -157,6 +158,8 @@ public class Editor extends TabNavigator
             editProject(false);
         } else if (event.label == SAVE_PIECES) {
             savePieceFile();
+        } else if (event.label == ADD_LEVEL) {
+            addLevel();
         }
     }
 
@@ -262,6 +265,15 @@ public class Editor extends TabNavigator
         stream.writeUTFBytes(outputString);
         stream.close();
         popFeedback("Piece XML file saved successfully.");
+    }
+
+    protected function addLevel () :void
+    {
+        (new AddLevelDialog(_projectFile, levelAdded)).openCentered(_window.nativeWindow);
+    }
+
+    protected function levelAdded (levelFile :File) :void
+    {
     }
 
     protected var _menuItems :ArrayCollection;
