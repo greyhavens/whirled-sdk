@@ -122,9 +122,9 @@ public class Editor extends TabNavigator
         _menuItems = new ArrayCollection([
             {label: FILE_MENU, children: [
                 {label: CREATE_PROJECT},
-                {label: LOAD_PROJECT, keyEquivalent: "l", cmdKey: true},
+                {label: LOAD_PROJECT},
                 {type: "separator"},
-                {label: QUIT, keyEquivalent: "q", cmdKey: true}]}]);
+                {label: QUIT}]}]);
         _projectMenu = 
             {label: PROJECT_MENU, children: [
                 {label: EDIT_PROJECT},
