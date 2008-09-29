@@ -131,6 +131,10 @@ public class Editor extends TabNavigator
                 {label: SAVE_PIECES},
                 {type: "separator"},
                 {label: CLOSE_PROJECT}]};
+        _levelMenu = 
+            {label: LEVEL_MENU, children: [
+                {type: "separator"},
+                {label: ADD_LEVEL}]};
 
         var menu :FlexNativeMenu = new FlexNativeMenu();
         menu.dataProvider = _menuItems;
@@ -159,6 +163,11 @@ public class Editor extends TabNavigator
     protected function closeCurrentProject () :void
     {
         var idx :int = _menuItems.getItemIndex(_projectMenu);
+        if (idx >= 0) {
+            _menuItems.removeItemAt(idx);
+        }
+
+        idx = _menuItems.getItemIndex(_levelMenu);
         if (idx >= 0) {
             _menuItems.removeItemAt(idx);
         }
@@ -202,6 +211,7 @@ public class Editor extends TabNavigator
 
         if (_menuItems.getItemIndex(_projectMenu) < 0) {
             _menuItems.addItem(_projectMenu);
+            _menuItems.addItem(_levelMenu);
         }
 
         var stream :FileStream = new FileStream();
@@ -256,6 +266,7 @@ public class Editor extends TabNavigator
 
     protected var _menuItems :ArrayCollection;
     protected var _projectMenu :Object;
+    protected var _levelMenu :Object;
     protected var _projectFile :File;
     protected var _projectXml :XML;
     protected var _spriteFactoryInit :Function = PieceSpriteFactory.init;
@@ -266,6 +277,7 @@ public class Editor extends TabNavigator
 
     protected static const FILE_MENU :String = "File";
     protected static const PROJECT_MENU :String = "Project";
+    protected static const LEVEL_MENU :String = "Levels";
 
     protected static const QUIT :String = "Quit";
     protected static const LOAD_PROJECT :String = "Load Project";
@@ -273,5 +285,6 @@ public class Editor extends TabNavigator
     protected static const CLOSE_PROJECT :String = "Close";
     protected static const EDIT_PROJECT :String = "Edit Project";
     protected static const SAVE_PIECES :String = "Save Piece File";
+    protected static const ADD_LEVEL :String = "Add Level";
 }
 }

@@ -50,15 +50,8 @@ public class EditProjectDialog extends LightweightCenteredDialog
             _projectXml = <platformerproject/>;
         }
 
-        _pieceXmlFile = Editor.resolvePath(
-            _existingProject != null ? _existingProject.parent : null, 
-            String(_projectXml.pieceXml.@path));
-        _pieceSwfFile = Editor.resolvePath(
-            _existingProject != null ? _existingProject.parent : null,
-            String(_projectXml.pieceSwf.@path));
-
         width = 600;
-        height = 160;
+        height = 200;
         title = (_existingProject != null ? "Edit" : "Create") + " Project";
         setStyle("backgroundColor", "white");
     }
@@ -74,62 +67,24 @@ public class EditProjectDialog extends LightweightCenteredDialog
         setStyles(container, -1, 10);
         addChild(container);
 
-        var fileRow :HBox = new HBox();
-        container.addChild(fileRow);
-        fileRow.percentWidth = 100;
-        setStyles(fileRow, 10, 5);
-        var fileDesc :Label = new Label();
-        fileDesc.text = "Piece XML:";
-        fileDesc.setStyle("fontWeight", "bold");
-        fileRow.addChild(fileDesc);
-        var pathBox :HBox = new HBox();
-        pathBox.setStyle("borderColor", "black");
-        pathBox.setStyle("borderThickness", 1);
-        pathBox.setStyle("borderStyle", "solid");
-        pathBox.percentWidth = 100;
-        pathBox.percentHeight = 100;
-        var xmlFilePath :Label = new Label();
-        xmlFilePath.truncateToFit = true;
-        xmlFilePath.text = !Editor.checkFileSanity(_pieceXmlFile, "xml", "", false) ?
-            "Select file..." : findPath(_existingProject, _pieceXmlFile);
-        xmlFilePath.percentWidth = 100;
-        pathBox.addChild(xmlFilePath);
-        fileRow.addChild(pathBox);
-        fileRow.addChild(new CommandButton("Find File", 
-            findFile("Piece XML", xmlFilePath, _pieceXmlFile, "xml")));
-        fileRow.addChild(new CommandButton("Create File", createPieceXML(xmlFilePath)));
+        var pieceXmlFile :File = Editor.resolvePath(
+            _existingProject != null ? _existingProject.parent : null, 
+            String(_projectXml.pieceXml.@path));
+        var pieceSwfFile :File = Editor.resolvePath(
+            _existingProject != null ? _existingProject.parent : null,
+            String(_projectXml.pieceSwf.@path));
 
-        fileRow = new HBox();
-        container.addChild(fileRow);
-        fileRow.percentWidth = 100;
-        setStyles(fileRow, 10, 5);
-        fileDesc = new Label();
-        fileDesc.text = "Piece SWF:";
-        fileDesc.setStyle("fontWeight", "bold");
-        fileRow.addChild(fileDesc);
-        pathBox = new HBox();
-        pathBox.setStyle("borderColor", "black");
-        pathBox.setStyle("borderThickness", 1);
-        pathBox.setStyle("borderStyle", "solid");
-        pathBox.percentWidth = 100;
-        pathBox.percentHeight = 100;
-        var swfFilePath :Label = new Label();
-        swfFilePath.truncateToFit = true;
-        swfFilePath.text = !Editor.checkFileSanity(_pieceSwfFile, "swf", "", false) ?
-            "Select file..." : findPath(_existingProject, _pieceSwfFile);
-        swfFilePath.percentWidth = 100;
-        pathBox.addChild(swfFilePath);
-        fileRow.addChild(pathBox);
-        fileRow.addChild(new CommandButton("Find File", 
-            findFile("Piece SWF", swfFilePath, _pieceSwfFile, "swf")));
-        var spacer :HBox = new HBox();
-        spacer.width = 86;
-        fileRow.addChild(spacer);
+        FileRow.findPath = findPath;
+        FileRow.findFile = findFile;
+        container.addChild(_pieceXmlRow = 
+            new FileRow("Piece XML", "xml", createPieceXML, pieceXmlFile, _existingProject));
+        container.addChild(_pieceSwfRow =
+            new FileRow("Piece SWF", "swf", null, pieceSwfFile, _existingProject));
 
         var dialogButtons :HBox = new HBox(); 
         dialogButtons.percentWidth = 100;
         setStyles(dialogButtons, 10, 5);
-        spacer = new HBox();
+        var spacer :HBox = new HBox();
         spacer.percentWidth = 100;
         dialogButtons.addChild(spacer);
         dialogButtons.addChild(new CommandButton("Cancel", close));
@@ -153,12 +108,12 @@ public class EditProjectDialog extends LightweightCenteredDialog
 
     public function handleSave () :void
     {
-        if (_pieceXmlFile == null || _pieceSwfFile == null) {
+        if (_pieceXmlRow.file == null || _pieceSwfRow.file == null) {
             Editor.popError("Both the piece XML file and the piece SWF file are required");
             return;
         }
 
-        if (!Editor.checkFileSanity(_pieceSwfFile, "swf", "Piece SWF")) {
+        if (!Editor.checkFileSanity(_pieceSwfRow.file, "swf", "Piece SWF")) {
             return;
         }
 
@@ -169,11 +124,11 @@ public class EditProjectDialog extends LightweightCenteredDialog
             var outputString :String = '<?xml verstion="1.0" encoding="utf-8"?>\n';
             outputString += pieceXml.toXMLString() + '\n';
             var stream :FileStream = new FileStream();
-            stream.open(_pieceXmlFile, FileMode.WRITE);
+            stream.open(_pieceXmlRow.file, FileMode.WRITE);
             stream.writeUTFBytes(outputString);
             stream.close();
         }
-        if (!Editor.checkFileSanity(_pieceXmlFile, "xml", "Piece XML")) {
+        if (!Editor.checkFileSanity(_pieceXmlRow.file, "xml", "Piece XML")) {
             return;
         }
 
@@ -197,9 +152,9 @@ public class EditProjectDialog extends LightweightCenteredDialog
     protected function saveAndClose (file :File) :void
     {
         _projectXml.pieceXml = <pieceXml/>;
-        _projectXml.pieceXml.@path = findPath(file, _pieceXmlFile);
+        _projectXml.pieceXml.@path = findPath(file, _pieceXmlRow.file);
         _projectXml.pieceSwf = <pieceSwf/>;
-        _projectXml.pieceSwf.@path = findPath(file, _pieceSwfFile);
+        _projectXml.pieceSwf.@path = findPath(file, _pieceSwfRow.file);
 
         var outputString :String = '<?xml version="1.0" encoding="utf-8"?>\n';
         outputString += _projectXml.toXMLString() + '\n';
@@ -239,7 +194,7 @@ public class EditProjectDialog extends LightweightCenteredDialog
                 // for some reason, this window hides behind the main window after the file
                 // selection dialog has popped.
                 orderToFront();
-                if (file == _pieceXmlFile) {
+                if (file == _pieceXmlRow.file) {
                     _createPieceXml = false;
                 }
                 file.removeEventListener(Event.SELECT, opener);
@@ -249,19 +204,19 @@ public class EditProjectDialog extends LightweightCenteredDialog
         };
     }
 
-    protected function createPieceXML (label :Label) :Function
+    protected function createPieceXML (label :Label, file :File) :Function
     {
         return function () :void {
-            _pieceXmlFile.browseForSave("Select new Piece XML file location [*.xml]");
+            file.browseForSave("Select new Piece XML file location [*.xml]");
             var creator :Function;
             creator = function (event :Event) :void {
-                _pieceXmlFile = sanitizeFilename(_pieceXmlFile);
-                label.text = findPath(_existingProject, _pieceXmlFile);
+                file = sanitizeFilename(file);
+                label.text = findPath(_existingProject, file);
                 _createPieceXml = true;
-                _pieceXmlFile.removeEventListener(Event.SELECT, creator);
+                file.removeEventListener(Event.SELECT, creator);
             };
-            _pieceXmlFile.addEventListener(Event.SELECT, creator);
-            fileDialogCloseHandler(_pieceXmlFile);
+            file.addEventListener(Event.SELECT, creator);
+            fileDialogCloseHandler(file);
         };
     }
 
@@ -285,10 +240,89 @@ public class EditProjectDialog extends LightweightCenteredDialog
     }
 
     protected var _existingProject :File;
-    protected var _pieceXmlFile :File;
-    protected var _pieceSwfFile :File;
     protected var _projectXml :XML;
     protected var _saveCallback :Function;
     protected var _createPieceXml :Boolean = false;
+    protected var _pieceXmlRow :FileRow;
+    protected var _pieceSwfRow :FileRow;
 }
+}
+
+import flash.filesystem.File;
+
+import mx.containers.HBox;
+import mx.controls.Label;
+
+import com.threerings.flex.CommandButton;
+
+import com.whirled.contrib.platformer.editor.air.Editor;
+
+class FileRow extends HBox 
+{
+    public function FileRow (description :String, extension :String, creationFunction :Function, 
+        existingFile :File, projectFile :File)
+    {
+        _description = description;
+        _extension = extension;
+        _creationFunction = creationFunction;
+        _file = existingFile;
+        _projectFile = projectFile;
+    }
+
+    public static var findPath :Function;
+    public static var findFile :Function;
+
+    public function get file () :File
+    {
+        return _file;
+    }
+
+    override protected function createChildren () :void
+    {
+        super.createChildren();
+
+        percentWidth = 100;
+        setStyle("horizontalGap", 10);
+        setStyle("paddingTop", 5);
+        setStyle("paddingBottom", 5);
+        setStyle("paddingLeft", 5);
+        setStyle("paddingRight", 5);
+        setStyle("borderStyle", "none");
+
+        var fileDesc :Label = new Label();
+        fileDesc.text = _description + ":";
+        fileDesc.setStyle("fontWeight", "bold");
+        addChild(fileDesc);
+
+        var xmlFilePath :Label = new Label();
+        xmlFilePath.truncateToFit = true;
+        xmlFilePath.text = !Editor.checkFileSanity(_file, _extension, "", false) ?
+            "Select file..." : findPath(_projectFile, _file);
+        xmlFilePath.percentWidth = 100;
+        var pathBox :HBox = new HBox();
+        pathBox.setStyle("borderColor", "black");
+        pathBox.setStyle("borderThickness", 1);
+        pathBox.setStyle("borderStyle", "solid");
+        pathBox.percentWidth = 100;
+        pathBox.percentHeight = 100;
+        pathBox.addChild(xmlFilePath);
+        addChild(pathBox);
+
+        addChild(
+            new CommandButton("Find File", findFile(_description, xmlFilePath, _file, _extension)));
+
+        if (_creationFunction != null) {
+            addChild(new CommandButton("Create File", _creationFunction(xmlFilePath, _file)));
+        } else {
+            var spacer :HBox = new HBox();
+            spacer.width = 86;
+            addChild(spacer);
+        }
+    }
+
+    protected var _description :String;
+    protected var _extension :String;
+    protected var _projectFile :File;
+    protected var _file :File;
+    protected var _creationFunction :Function;
 }
