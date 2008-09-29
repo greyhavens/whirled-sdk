@@ -39,6 +39,7 @@ import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Piece;
+import com.whirled.contrib.platformer.piece.RectDynamic;
 import com.whirled.contrib.platformer.piece.Shot;
 
 /**
@@ -108,6 +109,13 @@ public class BoardSprite extends Sprite
     {
         _centerX = nX * Metrics.TILE_SIZE;
         _centerY = nY * Metrics.TILE_SIZE;
+        updateDisplay();
+    }
+
+    public function ensureCentered (rd :RectDynamic) :void
+    {
+        _centerX = (rd.x + rd.width/2) * Metrics.TILE_SIZE - Metrics.DISPLAY_WIDTH/2;
+        _centerY = rd.y * Metrics.TILE_SIZE - LBUFFER;
         updateDisplay();
     }
 

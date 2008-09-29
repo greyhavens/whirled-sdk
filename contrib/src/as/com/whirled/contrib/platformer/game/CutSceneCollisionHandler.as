@@ -21,37 +21,22 @@
 package com.whirled.contrib.platformer.game {
 
 import com.whirled.contrib.platformer.board.ColliderDetails;
-import com.whirled.contrib.platformer.piece.Hover;
+import com.whirled.contrib.platformer.piece.CutScene;
 
-public class HoverCollisionHandler extends CollisionHandler
+public class CutSceneCollisionHandler extends HoverCollisionHandler
 {
-    public function HoverCollisionHandler (hc :HoverController)
+    public function CutSceneCollisionHandler (csc: CutSceneController)
     {
-        super(ActorController);
-        _hover = hc.getDynamic() as Hover;
-    }
-
-    override public function handlesObject (o :Object) :Boolean
-    {
-        return super.handlesObject(o) && _collided.indexOf(o) == -1;
+        super(csc);
+        _cs = csc.getDynamic() as CutScene;
     }
 
     override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
-        _hover.hovered = true;
-        _collided.push(target.controller);
+        super.collide(source, target, cd);
+        _cs.played = true;
     }
 
-    override public function reset () :void
-    {
-        if (_collided.length > 0) {
-            _collided.splice(0);
-        } else {
-            _hover.hovered = false;
-        }
-    }
-
-    protected var _hover :Hover;
-    protected var _collided :Array = new Array();
+    protected var _cs :CutScene;
 }
 }

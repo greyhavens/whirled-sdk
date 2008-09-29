@@ -25,7 +25,9 @@ import flash.utils.getTimer;
 import com.whirled.contrib.platformer.Controller;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
+import com.whirled.contrib.platformer.piece.CutScene;
 import com.whirled.contrib.platformer.piece.Dynamic;
+import com.whirled.contrib.platformer.piece.RectDynamic;
 import com.whirled.contrib.platformer.piece.Hover;
 import com.whirled.contrib.platformer.piece.LaserShot;
 import com.whirled.contrib.platformer.piece.Piece;
@@ -71,6 +73,7 @@ public class GameController
         addShotClass(LaserShot, LaserShotController);
         addDynamicClass(Dynamic, DynamicController, true);
         addDynamicClass(Hover, HoverController);
+        addDynamicClass(CutScene, CutSceneController);
     }
 
     public function run () :void
@@ -95,20 +98,34 @@ public class GameController
         }
     }
 
+    public function setPause (pause :Boolean) :void
+    {
+        _pause = pause;
+    }
+
+    public function isPaused () :Boolean
+    {
+        return _pause;
+    }
+
     public function tick (delta :int) :void
     {
         _rdelta += delta;
         var usedDelta :int;
         while (_rdelta > 0) {
+            var paused :Boolean = isPaused();
             var tdelta :int = Math.min(MAX_TICK, _rdelta);
             for each (var controller :Object in _controllers) {
-                if (controller is TickController) {
+                if (controller is TickController &&
+                        (!paused || controller is PauseController)) {
                     (controller as TickController).tick(tdelta / 1000);
                 }
             }
-            var now :int = getTimer();
-            _collider.tick(tdelta);
-            colliderTicks += getTimer() - now;
+            if (!paused) {
+                var now :int = getTimer();
+                _collider.tick(tdelta);
+                colliderTicks += getTimer() - now;
+            }
             ticked++;
             usedDelta += tdelta;
             _rdelta -= tdelta;
@@ -118,16 +135,18 @@ public class GameController
         }
         _controller.getSprite().tick(usedDelta/1000);
         for each (controller in _controllers) {
-            if (controller is TickController) {
+            if (controller is TickController && (!paused || controller is PauseController)) {
                 (controller as TickController).postTick();
             }
         }
-        var ii :int = 0;
-        while (ii < _events.length) {
-            if (_events[ii].runEvent()) {
-                _events.splice(ii, 1);
-            } else {
-                ii++;
+        if (!paused) {
+            var ii :int = 0;
+            while (ii < _events.length) {
+                if (_events[ii].runEvent()) {
+                    _events.splice(ii, 1);
+                } else {
+                    ii++;
+                }
             }
         }
     }
@@ -151,6 +170,11 @@ public class GameController
     public function ensureVisible (a :Actor) :void
     {
         _controller.getSprite().ensureVisible(a, getDy());
+    }
+
+    public function ensureCentered (rd :RectDynamic) :void
+    {
+        _controller.getSprite().ensureCentered(rd);
     }
 
     public function getDx () :Number
@@ -302,6 +326,8 @@ public class GameController
     protected var _defaultDynamicClass :Class;
 
     protected var _board :Board;
+
+    protected var _pause :Boolean;
 
     protected var _collider :Collider;
     protected var _rdelta :int;

@@ -20,22 +20,7 @@
 
 package com.whirled.contrib.platformer.game {
 
-import com.whirled.contrib.platformer.piece.Hover;
-
-public class HoverController extends RectDynamicController
+public interface PauseController
 {
-    public function HoverController (h :Hover, controller :GameController)
-    {
-        super(h, controller);
-        _hover = h;
-        addCollisionHandlers();
-    }
-
-    protected function addCollisionHandlers () :void
-    {
-        addCollisionHandler(new HoverCollisionHandler(this));
-    }
-
-    protected var _hover :Hover;
 }
 }

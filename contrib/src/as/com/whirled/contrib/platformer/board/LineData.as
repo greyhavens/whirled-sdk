@@ -259,7 +259,7 @@ public class LineData
      */
     public function isInside (x :Number, y :Number) :Boolean
     {
-        return getDist(x, y) < 0;
+        return getDist(x, y) <= 0;
     }
 
     /**
