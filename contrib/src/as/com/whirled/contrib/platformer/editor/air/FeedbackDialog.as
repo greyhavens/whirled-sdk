@@ -27,6 +27,16 @@ import com.threerings.flex.CommandButton;
 
 public class FeedbackDialog extends LightweightCenteredDialog
 {
+    public static function popError (error :String) :void
+    {
+        (new FeedbackDialog(error, true)).open();
+    }
+
+    public static function popFeedback (feedback :String) :void
+    {
+        (new FeedbackDialog(feedback)).open();
+    }
+
     public function FeedbackDialog (feedback :String, error :Boolean = false)
     {
         _feedback = feedback;

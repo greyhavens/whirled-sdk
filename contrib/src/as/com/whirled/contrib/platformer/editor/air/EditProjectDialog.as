@@ -104,7 +104,7 @@ public class EditProjectDialog extends LightweightCenteredDialog
     {
         if (_pieceXmlRow.file == null || _pieceSwfRow.file == null || 
                 _dynamicsXmlRow.file == null) {
-            Editor.popError("All files are required");
+            FeedbackDialog.popError("All files are required");
             return;
         }
 

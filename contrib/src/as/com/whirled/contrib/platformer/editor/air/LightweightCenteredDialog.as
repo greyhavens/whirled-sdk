@@ -23,12 +23,13 @@ package com.whirled.contrib.platformer.editor.air {
 import flash.display.NativeWindow;
 import flash.display.NativeWindowSystemChrome;
 import flash.display.NativeWindowType;
+import flash.display.Screen;
 
 import mx.core.Window;
 
 public class LightweightCenteredDialog extends Window
 {
-    public function openCentered (parentWindow :NativeWindow) :void
+    override public function open (openWindowActive :Boolean = true) :void
     {
         maximizable = false;
         minimizable = false;
@@ -38,9 +39,10 @@ public class LightweightCenteredDialog extends Window
         systemChrome = NativeWindowSystemChrome.NONE;
         type = NativeWindowType.LIGHTWEIGHT;
 
-        open();
-        nativeWindow.x = parentWindow.x + parentWindow.width / 2 - nativeWindow.width / 2;
-        nativeWindow.y = parentWindow.y + parentWindow.height / 2 - nativeWindow.height / 2;
+        super.open(openWindowActive);
+
+        nativeWindow.x = Screen.mainScreen.bounds.width / 2 - nativeWindow.width / 2;
+        nativeWindow.y = Screen.mainScreen.bounds.height / 2 - nativeWindow.height / 2;
     }
 }
 }

@@ -120,7 +120,7 @@ public class AddLevelDialog extends LightweightCenteredDialog
             // TODO: this is a really weak validity test, and should be fleshed out with something
             // much more robust.
             if (_nameText.text == "" || _nameText.text.indexOf(" ") >= 0) {
-                Editor.popError("The level name must be specified, and free of spaces");
+                FeedbackDialog.popError("The level name must be specified, and free of spaces");
                 return;
             }
 

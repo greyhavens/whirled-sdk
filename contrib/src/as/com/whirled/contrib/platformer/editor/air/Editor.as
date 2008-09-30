@@ -52,35 +52,28 @@ public class Editor extends TabNavigator
     {
         if (!file.exists) {
             if (popErrors) {
-                popError("The " + description + " file was not found at " + file.nativePath + ".");
+                FeedbackDialog.popError(
+                    "The " + description + " file was not found at " + file.nativePath + ".");
             }
             return false;
 
         } else if (file.isDirectory || file.isHidden || file.isSymbolicLink || file.isPackage) {
             if (popErrors) {
-                popError("The " + description + " file is required to be a regular file.");
+                FeedbackDialog.popError(
+                    "The " + description + " file is required to be a regular file.");
             }
             return false;
 
         } else if (file.nativePath.split(".").pop() != extension) {
             if (popErrors) {
-                popError("The " + description + " file is required to have a \"" + extension + 
+                FeedbackDialog.popError(
+                    "The " + description + " file is required to have a \"" + extension + 
                     "\" extension.");
             }
             return false;
         }
 
         return true;
-    }
-
-    public static function popError (error :String) :void
-    {
-        (new FeedbackDialog(error, true)).openCentered(_window.nativeWindow);
-    }
-
-    public static function popFeedback (feedback :String) :void
-    {
-        (new FeedbackDialog(feedback)).openCentered(_window.nativeWindow);
     }
 
     public static function resolvePath (parentDirectory :File, path :String) :File
@@ -213,7 +206,7 @@ public class Editor extends TabNavigator
             closeCurrentProject();
         }
 
-        (new EditProjectDialog(_projectFile, loadProject)).openCentered(_window.nativeWindow);
+        (new EditProjectDialog(_projectFile, loadProject)).open();
     }
 
     protected function loadProject (file :File = null) :void
@@ -269,7 +262,7 @@ public class Editor extends TabNavigator
 
     protected function addLevel () :void
     {
-        (new AddLevelDialog(_projectFile, addLevelEditor)).openCentered(_window.nativeWindow);
+        (new AddLevelDialog(_projectFile, addLevelEditor)).open();
     }
 
     protected function addLevelEditor (levelFile :File, addToLevel :Boolean = true) :Boolean
@@ -283,13 +276,14 @@ public class Editor extends TabNavigator
             var projectXml :XML = readXmlFile(_projectFile); 
             var levelPath :String = findPath(_projectFile, levelFile);
             if (projectXml.level.(@path == levelPath).length() != 0) {
-                popError("That level has already been added to this project");
+                FeedbackDialog.popError("That level has already been added to this project.");
                 return false;
             }
 
             var levelName :String = String(levelXml.board.@name);
             if (projectXml.level.(@name == levelName).length() != 0) {
-                popError("A level of that name has already been added to this project");
+                FeedbackDialog.popError(
+                    "A level of that name has already been added to this project.");
                 return false;
             }
 
@@ -328,7 +322,7 @@ public class Editor extends TabNavigator
         }
 
         writeXmlFile(file, _pieceEditView.getXML());
-        popFeedback("Piece XML file saved successfully.");
+        FeedbackDialog.popFeedback("Piece XML file saved successfully.");
     }
 
     protected var _menuItems :ArrayCollection;
@@ -337,9 +331,7 @@ public class Editor extends TabNavigator
     protected var _projectFile :File;
     protected var _spriteFactoryInit :Function = PieceSpriteFactory.init;
     protected var _pieceEditView :PieceEditView;
-
-    // there will only ever be one instance of this class in the AIR application runtime.
-    protected static var _window :WindowedApplication;
+    protected var _window :WindowedApplication;
 
     protected static const FILE_MENU :String = "File";
     protected static const PROJECT_MENU :String = "Project";
