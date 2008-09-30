@@ -282,17 +282,13 @@ public class Editor extends TabNavigator
         if (addToLevel) {
             var projectXml :XML = readXmlFile(_projectFile); 
             var levelPath :String = findPath(_projectFile, levelFile);
-            trace("looking for file [" + levelPath + ", " + projectXml.level.(@path == levelPath) +
-                "]");
-            if (String(projectXml.level.(@path == levelPath)) != "") {
+            if (projectXml.level.(@path == levelPath).length() != 0) {
                 popError("That level has already been added to this project");
                 return false;
             }
 
             var levelName :String = String(levelXml.board.@name);
-            trace("looking for name [" + levelName + ", " + projectXml.level.(@name == levelName) + 
-                "]");
-            if (String(projectXml.level.(@name == levelName)) != "") {
+            if (projectXml.level.(@name == levelName).length() != 0) {
                 popError("A level of that name has already been added to this project");
                 return false;
             }
