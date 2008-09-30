@@ -1,11 +1,12 @@
 <!-- Properties file for testing a backdrop -->
 <backdrop>
   <type>1</type> <!-- 1 is the standard type, 2 is a fixed image, 3 is "flatland" -->
+  <hideWalls>false</hideWalls> <!-- whether to hide the walls, true or false -->
   <width>800</width> <!-- the width, in pixels -->
   <height>494</height> <!-- the height, in pixels -->
   <depth>400</depth> <!-- the virtual depth, in pixels -->
   <horizon>.5</horizon> <!-- the height of the horizon, a number from 0 to 1 -->
+  <scale>1</scale> <!-- the scale of entities in the room- must be larger than 0, default=1 -->
   <offsetX>0</offsetX> <!-- the pixel offset in the x direction -->
   <offsetY>0</offsetY> <!-- the pixel offset in the y direction -->
-  <hideWalls>false</hideWalls> <!-- whether to hide the walls, true or false -->
 </backdrop>
