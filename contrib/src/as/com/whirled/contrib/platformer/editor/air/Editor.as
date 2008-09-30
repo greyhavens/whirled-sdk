@@ -97,6 +97,31 @@ public class Editor extends TabNavigator
         return new File(path);
     }
 
+    public static function findPath (reference :File, child :File) :String
+    {
+        var path :String = 
+            reference != null ? reference.parent.getRelativePath(child, true) : child.nativePath;
+        return path == null ? child.nativePath : path;
+    }
+
+    public static function writeXmlFile (file :File, xml :XML) :void
+    {
+        var outputString :String = XML_HEADER + xml.toXMLString() + '\n';
+        var stream :FileStream = new FileStream();
+        stream.open(file, FileMode.WRITE);
+        stream.writeUTFBytes(outputString);
+        stream.close();
+    }
+
+    public static function readXmlFile (file :File) :XML
+    {
+        var stream :FileStream = new FileStream();
+        stream.open(file, FileMode.READ);
+        var xml :XML = XML(stream.readUTFBytes(stream.bytesAvailable));
+        stream.close();
+        return xml;
+    }
+
     public function Editor ()
     {
         percentWidth = 100;
@@ -176,7 +201,6 @@ public class Editor extends TabNavigator
         }
 
         _projectFile = null;
-        _projectXml = null;
 
         while (numChildren > 0) {
             removeChildAt(0);
@@ -217,13 +241,9 @@ public class Editor extends TabNavigator
             _menuItems.addItem(_levelMenu);
         }
 
-        var stream :FileStream = new FileStream();
-        stream.open(_projectFile = file, FileMode.READ);
-        _projectXml = XML(stream.readUTFBytes(stream.bytesAvailable));
-        stream.close();
-
-        addPieceEditor(resolvePath(_projectFile.parent, String(_projectXml.pieceXml.@path)),
-            resolvePath(_projectFile.parent, String(_projectXml.pieceSwf.@path)));
+        var projectXml :XML = readXmlFile(_projectFile = file);
+        addPieceEditor(resolvePath(_projectFile.parent, String(projectXml.pieceXml.@path)),
+            resolvePath(_projectFile.parent, String(projectXml.pieceSwf.@path)));
     }
 
     protected function addPieceEditor (xmlFile :File, swfFile :File) :void
@@ -234,53 +254,91 @@ public class Editor extends TabNavigator
             return;
         }
 
-        var stream :FileStream = new FileStream();
-        stream.open(xmlFile, FileMode.READ);
-        var piecesXml :XML = XML(stream.readUTFBytes(stream.bytesAvailable));
-        stream.close();
-
+        var piecesXml :XML = readXmlFile(xmlFile);
         var bytes :ByteArray = new ByteArray();
-        stream = new FileStream();
+        var stream :FileStream = new FileStream();
         stream.open(swfFile, FileMode.READ);
         stream.readBytes(bytes, 0, stream.bytesAvailable);
         stream.close();
         _spriteFactoryInit([bytes], function () :void {
-            _pieceEditView = new PieceEditView(new PieceFactory(piecesXml.copy()));
+            _pieceEditView = new PieceEditView(new PieceFactory(piecesXml));
             _pieceEditView.label = "Pieces";
             addChild(_pieceEditView);
         });
     }
 
+    protected function addLevel () :void
+    {
+        (new AddLevelDialog(_projectFile, addLevelEditor)).openCentered(_window.nativeWindow);
+    }
+
+    protected function addLevelEditor (levelFile :File, addToLevel :Boolean = true) :Boolean
+    {
+        if (!checkFileSanity(levelFile, "xml", "Level XML")) {
+            return false;
+        }
+
+        var levelXml :XML = readXmlFile(levelFile);
+        if (addToLevel) {
+            var projectXml :XML = readXmlFile(_projectFile); 
+            var levelPath :String = findPath(_projectFile, levelFile);
+            trace("looking for file [" + levelPath + ", " + projectXml.level.(@path == levelPath) +
+                "]");
+            if (String(projectXml.level.(@path == levelPath)) != "") {
+                popError("That level has already been added to this project");
+                return false;
+            }
+
+            var levelName :String = String(levelXml.board.@name);
+            trace("looking for name [" + levelName + ", " + projectXml.level.(@name == levelName) + 
+                "]");
+            if (String(projectXml.level.(@name == levelName)) != "") {
+                popError("A level of that name has already been added to this project");
+                return false;
+            }
+
+            var level :XML = <level/>;
+            level.@path = levelPath;
+            level.@name = levelName;
+            projectXml.level += level;
+            writeXmlFile(_projectFile, projectXml);
+        }
+
+//        var stream :FileStream = new FileStream();
+//        stream.open(xmlFile, FileMode.READ);
+//        var piecesXml :XML = XML(stream.readUTFBytes(stream.bytesAvailable));
+//        stream.close();
+//
+//        var bytes :ByteArray = new ByteArray();
+//        stream = new FileStream();
+//        stream.open(swfFile, FileMode.READ);
+//        stream.readBytes(bytes, 0, stream.bytesAvailable);
+//        stream.close();
+//        _spriteFactoryInit([bytes], function () :void {
+//            _pieceEditView = new PieceEditView(new PieceFactory(piecesXml.copy()));
+//            _pieceEditView.label = "Pieces";
+//            addChild(_pieceEditView);
+//        });
+
+        return true;
+    }
+
     protected function savePieceFile () :void
     {
-        var file :File = resolvePath(_projectFile.parent, String(_projectXml.pieceXml.@path));
+        var projectXml :XML = readXmlFile(_projectFile);
+        var file :File = resolvePath(_projectFile.parent, String(projectXml.pieceXml.@path));
         if (!checkFileSanity(file, "xml", "Piece XML")) {
             return;
         }
 
-        var outputString :String = '<?xml version="1.0" encoding="utf-8"?>\n';
-        outputString += _pieceEditView.getXML() + '\n';
-        var stream :FileStream = new FileStream();
-        stream.open(file, FileMode.WRITE);
-        stream.writeUTFBytes(outputString);
-        stream.close();
+        writeXmlFile(file, _pieceEditView.getXML());
         popFeedback("Piece XML file saved successfully.");
-    }
-
-    protected function addLevel () :void
-    {
-        (new AddLevelDialog(_projectFile, levelAdded)).openCentered(_window.nativeWindow);
-    }
-
-    protected function levelAdded (levelFile :File) :void
-    {
     }
 
     protected var _menuItems :ArrayCollection;
     protected var _projectMenu :Object;
     protected var _levelMenu :Object;
     protected var _projectFile :File;
-    protected var _projectXml :XML;
     protected var _spriteFactoryInit :Function = PieceSpriteFactory.init;
     protected var _pieceEditView :PieceEditView;
 
@@ -298,5 +356,7 @@ public class Editor extends TabNavigator
     protected static const EDIT_PROJECT :String = "Edit Project";
     protected static const SAVE_PIECES :String = "Save Piece File";
     protected static const ADD_LEVEL :String = "Add Level";
+
+    protected static const XML_HEADER :String = '<?xml version="1.0" encoding="utf-8"?>\n';
 }
 }

@@ -22,8 +22,6 @@ package com.whirled.contrib.platformer.editor.air {
 
 import flash.events.Event;
 import flash.filesystem.File;
-import flash.filesystem.FileMode;
-import flash.filesystem.FileStream;
 
 import mx.containers.HBox;
 import mx.containers.VBox;
@@ -38,10 +36,7 @@ public class EditProjectDialog extends LightweightCenteredDialog
         _existingProject = existingProject;
         _saveCallback = callback;
         if (_existingProject != null) {
-            var stream :FileStream = new FileStream();
-            stream.open(_existingProject, FileMode.READ);
-            _projectXml = XML(stream.readUTFBytes(stream.bytesAvailable));
-            stream.close();
+            _projectXml = Editor.readXmlFile(_existingProject);
         } else {
             _projectXml = <platformerproject/>;
         }
@@ -118,26 +113,14 @@ public class EditProjectDialog extends LightweightCenteredDialog
         }
 
         if (_pieceXmlRow.create) {
-            var pieceXml :XML = <platformer>
-                <pieceset/>
-            </platformer>;
-            var outputString :String = XML_HEADER + pieceXml.toXMLString() + '\n';
-            var stream :FileStream = new FileStream();
-            stream.open(_pieceXmlRow.file, FileMode.WRITE);
-            stream.writeUTFBytes(outputString);
-            stream.close();
+            Editor.writeXmlFile(_pieceXmlRow.file, <platformer><pieceset/></platformer>);
         }
         if (!Editor.checkFileSanity(_pieceXmlRow.file, "xml", "Piece XML")) {
             return;
         }
 
         if (_dynamicsXmlRow.create) {
-            var dynamicsXml :XML = <dynamics/>;
-            outputString = XML_HEADER + dynamicsXml.toXMLString() + '\n';
-            stream = new FileStream();
-            stream.open(_dynamicsXmlRow.file, FileMode.WRITE);
-            stream.writeUTFBytes(outputString);
-            stream.close();
+            Editor.writeXmlFile(_dynamicsXmlRow.file, <dynamics/>);
         }
         if (!Editor.checkFileSanity(_dynamicsXmlRow.file, "xml", "Dynamics XML")) {
             return;
@@ -162,19 +145,11 @@ public class EditProjectDialog extends LightweightCenteredDialog
 
     protected function saveAndClose (file :File) :void
     {
-        _projectXml.pieceXml = <pieceXml/>;
-        _projectXml.pieceXml.@path = findPath(file, _pieceXmlRow.file);
-        _projectXml.pieceSwf = <pieceSwf/>;
-        _projectXml.pieceSwf.@path = findPath(file, _pieceSwfRow.file);
-        _projectXml.dynamicsXml = <dynamicsXml/>;
-        _projectXml.dynamicsXml.@path = findPath(file, _dynamicsXmlRow.file);
+        _projectXml.pieceXml.@path = Editor.findPath(file, _pieceXmlRow.file);
+        _projectXml.pieceSwf.@path = Editor.findPath(file, _pieceSwfRow.file);
+        _projectXml.dynamicsXml.@path = Editor.findPath(file, _dynamicsXmlRow.file);
 
-        var outputString :String = XML_HEADER + _projectXml.toXMLString() + '\n';
-        var stream :FileStream = new FileStream();
-        stream.open(file, FileMode.WRITE);
-        stream.writeUTFBytes(outputString);
-        stream.close();
-
+        Editor.writeXmlFile(file, _projectXml);
         close();
         _saveCallback(file);
     }
@@ -191,20 +166,11 @@ public class EditProjectDialog extends LightweightCenteredDialog
         file.addEventListener(Event.CANCEL, orderer);
     }
 
-    protected function findPath (reference :File, child :File) :String
-    {
-        var path :String = 
-            reference != null ? reference.parent.getRelativePath(child, true) : child.nativePath;
-        return path == null ? child.nativePath : path;
-    }
-
     protected var _existingProject :File;
     protected var _projectXml :XML;
     protected var _saveCallback :Function;
     protected var _pieceXmlRow :EditorFileRow;
     protected var _pieceSwfRow :EditorFileRow;
     protected var _dynamicsXmlRow :EditorFileRow;
-
-    protected static const XML_HEADER :String = '<?xml version="1.0" encoding="utf-8"?>\n';
 }
 }

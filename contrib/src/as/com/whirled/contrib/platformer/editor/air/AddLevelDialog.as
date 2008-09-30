@@ -22,12 +22,11 @@ package com.whirled.contrib.platformer.editor.air {
 
 import flash.events.Event;
 import flash.filesystem.File;
-import flash.filesystem.FileMode;
-import flash.filesystem.FileStream;
 
 import mx.containers.HBox;
 import mx.containers.VBox;
 import mx.controls.Label;
+import mx.controls.TextInput;
 import mx.core.UIComponent;
 
 import com.threerings.flex.CommandButton;
@@ -57,12 +56,21 @@ public class AddLevelDialog extends LightweightCenteredDialog
         addChild(container);
 
         var nameRow :HBox = new HBox();
+        nameRow.percentWidth = 100;
         setStyles(nameRow, 10, 5);
         var nameLabel :Label = new Label();
         nameLabel.text = "Level Name:";
         nameLabel.setStyle("fontWeight", "bold");
         nameRow.addChild(nameLabel);
-        container.addChild(nameLabel);
+        _nameText = new TextInput();
+        _nameText.percentWidth = 100;
+        _nameText.setStyle("borderStyle", "solid");
+        _nameText.setStyle("borderThickness", 1);
+        _nameText.setStyle("borderColor", "black");
+        _nameText.editable = false;
+        _nameText.text = "Select Level file...";
+        nameRow.addChild(_nameText);
+        container.addChild(nameRow);
         
         container.addChild(_levelXmlRow = new EditorFileRow(
             "Level XML", "xml", true, _projectFile.parent.clone(), _projectFile, this));
@@ -95,14 +103,40 @@ public class AddLevelDialog extends LightweightCenteredDialog
 
     protected function selectedFile (event :Event) :void
     {
+        if (_levelXmlRow.create) {
+            _nameText.editable = true;
+            _nameText.text = "";
+
+        } else {
+            var levelXml :XML = Editor.readXmlFile(_levelXmlRow.file);
+            _nameText.editable = false;
+            _nameText.text = levelXml.board.@name;
+        }
     }
 
     protected function handleSave () :void
     {
+        if (_levelXmlRow.create) {
+            // TODO: this is a really weak validity test, and should be fleshed out with something
+            // much more robust.
+            if (_nameText.text == "" || _nameText.text.indexOf(" ") >= 0) {
+                Editor.popError("The level name must be specified, and free of spaces");
+                return;
+            }
+
+            var levelXml :XML = <platformer/>;
+            levelXml.board.@name = _nameText.text;
+            Editor.writeXmlFile(_levelXmlRow.file, levelXml);
+        }
+
+        if (_callback(_levelXmlRow.file)) {
+            close();
+        }
     }
 
     protected var _projectFile :File;
     protected var _callback :Function;
     protected var _levelXmlRow :EditorFileRow;
+    protected var _nameText :TextInput;
 }
 }

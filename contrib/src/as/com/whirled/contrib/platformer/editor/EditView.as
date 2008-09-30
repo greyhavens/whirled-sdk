@@ -159,7 +159,7 @@ public class EditView extends Canvas
         }));
         column.addChild(box);
         column.addChild(makeButton("Copy to Clipboard", function () :void {
-            System.setClipboard(getXML());
+            System.setClipboard(getXML().toXMLString());
         }));
         box = new HBox();
         label = new Label();
@@ -177,9 +177,9 @@ public class EditView extends Canvas
         });
     }
 
-    public function getXML () :String
+    public function getXML () :XML
     {
-        return _board.getXML().toXMLString();
+        return _board.getXML();
     }
 
     public function selectItem (tree :String, name :String) :void

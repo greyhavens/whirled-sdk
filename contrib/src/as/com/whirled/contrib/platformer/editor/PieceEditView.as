@@ -102,7 +102,7 @@ public class PieceEditView extends Canvas
         }));
         controlsBox.addChild(row);
         controlsBox.addChild(EditView.makeButton("Copy to Clipboard", function () :void {
-            System.setClipboard(getXML());
+            System.setClipboard(getXML().toXMLString());
         }));
         bottomBox.addChild(controlsBox);
 
@@ -115,9 +115,9 @@ public class PieceEditView extends Canvas
         addChildAt(component, 0);
     }
 
-    public function getXML () :String
+    public function getXML () :XML
     {
-        return _pfac.toXML().toXMLString();
+        return _pfac.toXML();
     }
 
     protected function pieceSelected (event :Event) :void

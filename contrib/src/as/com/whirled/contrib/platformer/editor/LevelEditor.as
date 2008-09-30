@@ -176,7 +176,7 @@ public class LevelEditor extends Panel
     protected function tabChanged (selected :Container) :void
     {
         if (selected == _xmlCode) {
-            _codeArea.text = _editView.getXML();
+            _codeArea.text = _editView.getXML().toXMLString();
         }
     }
 

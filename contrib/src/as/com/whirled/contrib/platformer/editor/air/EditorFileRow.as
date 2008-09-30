@@ -135,10 +135,10 @@ public class EditorFileRow extends HBox
                 _window.orderToFront();
                 _create = false;
                 _file.removeEventListener(Event.SELECT, opener);
+                dispatchEvent(new Event(SELECTED));
             };
             _file.addEventListener(Event.SELECT, opener);
             fileDialogCloseHandler(_file);
-            dispatchEvent(new Event(SELECTED));
         };
     }
 
@@ -153,10 +153,10 @@ public class EditorFileRow extends HBox
                 _file = sanitizeFilename(_file);
                 label.text = findPath(_projectFile, _file);
                 _create = true;
+                dispatchEvent(new Event(SELECTED));
             };
             _file.addEventListener(Event.SELECT, creator);
             fileDialogCloseHandler(_file);
-            dispatchEvent(new Event(SELECTED));
         };
     }
 
