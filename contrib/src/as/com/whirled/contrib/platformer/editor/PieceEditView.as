@@ -115,13 +115,6 @@ public class PieceEditView extends Canvas
         addChildAt(component, 0);
     }
 
-    override public function setActualSize (w :Number, h :Number) :void
-    {
-        super.setActualSize(w, h);
-
-        trace("setActualSize [" + w + ", " + h + "]");
-    }
-
     public function getXML () :String
     {
         return _pfac.toXML().toXMLString();
