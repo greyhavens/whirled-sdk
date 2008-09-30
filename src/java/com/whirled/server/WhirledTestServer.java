@@ -142,6 +142,7 @@ public class WhirledTestServer extends CrowdServer
         _invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
 
         _bureauReg.init();
+        _bureauReg.setDefaultClientFactory();
         _bureauReg.setLauncher(BureauTypes.THANE_BUREAU_TYPE, new BureauRegistry.Launcher() {
             public void launchBureau (String bureauId, String token) throws IOException {
                 ABCLibs abcLibs = new ABCLibs();
