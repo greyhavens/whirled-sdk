@@ -43,7 +43,6 @@ public class FeedbackDialog extends LightweightCenteredDialog
 
         var labelBox :HBox = new HBox();
         labelBox.percentWidth = 100;
-        labelBox.setStyle("horizontalAlign", "center");
         labelBox.setStyle("paddingTop", 5);
         labelBox.setStyle("paddingBottom", 5);
         labelBox.setStyle("paddingLeft", 5);
@@ -51,6 +50,8 @@ public class FeedbackDialog extends LightweightCenteredDialog
         addChild(labelBox);
         var label :Text = new Text();
         label.text = _feedback;
+        label.percentWidth = 100;
+        label.setStyle("textAlign", "center");
         labelBox.addChild(label);
 
         var spacerBox :HBox = new HBox();
