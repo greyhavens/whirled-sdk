@@ -238,7 +238,7 @@ public class WhirledTestServer extends CrowdServer
         if (hasServerSideCode()) {
             log.info("Server side code detected, setting game definition");
             ((TestGameDefinition)gamedef).hasServer = true;
-            String pkgDir = System.getProperty("app.package-dir");
+            String pkgDir = System.getProperty("app.server-agent-package-dir");
             String server = System.getProperty("app.server-agent");
             if (!pkgDir.equals(".") && !pkgDir.equals("./")) {
                 server = pkgDir + "/" + server;
