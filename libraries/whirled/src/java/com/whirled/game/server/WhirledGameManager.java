@@ -726,7 +726,7 @@ public abstract class WhirledGameManager extends GameManager
 
         GameAgentObject gameAgentObj = new GameAgentObject();
         gameAgentObj.gameOid = _gameObj.getOid();
-        gameAgentObj.config = new ThaneGameConfig(id, def);
+        gameAgentObj.config = new ThaneGameConfig(id, def, cfg.params);
         gameAgentObj.bureauId = BureauTypes.GAME_BUREAU_ID_PREFIX + def.getBureauId(id);
         // We assume this is a thane/tamarin abc pacakage. TODO: do we need to check that?
         gameAgentObj.bureauType = BureauTypes.THANE_BUREAU_TYPE;

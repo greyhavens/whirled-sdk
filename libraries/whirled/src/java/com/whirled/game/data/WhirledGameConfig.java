@@ -16,6 +16,6 @@ public class WhirledGameConfig extends BaseGameConfig
     /** Constructs a game config based on the supplied game definition. */
     public WhirledGameConfig (int gameId, GameDefinition gameDef)
     {
-        super(gameId, gameDef);
+        super(gameId, gameDef, null);
     }
 }

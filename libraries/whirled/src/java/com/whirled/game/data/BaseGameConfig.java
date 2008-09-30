@@ -28,16 +28,21 @@ public class BaseGameConfig extends GameConfig
     {
     }
 
-    /** Constructs a game config based on the supplied game definition. */
-    public BaseGameConfig (int gameId, GameDefinition gameDef)
+    /** Constructs a game config based on the supplied game definition and optional parameters. */
+    public BaseGameConfig (
+        int gameId, GameDefinition gameDef, StreamableHashMap<String, Object> inParams)
     {
         Preconditions.checkNotNull(gameDef, "Missing GameDefinition");
 
         _gameId = gameId;
         _gameDef = gameDef;
 
-        // set the default values for our parameters
-        if (gameDef.params != null) {
+        if (inParams != null) {
+            // copy the given parameters
+            params.putAll(inParams);
+
+        } else if (gameDef.params != null) {
+            // set the default values for our parameters
             for (int ii = 0; ii < gameDef.params.length; ii++) {
                 params.put(gameDef.params[ii].ident, gameDef.params[ii].getDefaultValue());
             }
