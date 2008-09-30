@@ -5,54 +5,63 @@
 
 package com.whirled.avrg {
 
-import flash.display.DisplayObject;
-import flash.geom.Point;
-import flash.geom.Rectangle;
 import flash.utils.Dictionary;
 
 import com.threerings.util.Log;
 
 import com.whirled.AbstractControl;
-import com.whirled.AbstractSubControl;
 import com.whirled.ServerObject;
 import com.whirled.net.PropertySubControl;
-import com.whirled.net.impl.PropertyGetSubControlImpl;
 import com.whirled.avrg.AVRGameControlEvent;
-import com.whirled.avrg.PlayerBaseSubControl;
-import com.whirled.avrg.RoomBaseSubControl;
 
 /**
- * This file should be included by AVR games so that they can communicate
- * with the whirled.
+ * This file should be included by the server agents of AVR games so that they can communicate
+ * with the whirled. Server agents are normally responsible for deciding how players will be
+ * grouped and for an arbitrary amount of the game logic.
  *
- * AVRGame means: Alternate Virtual Reality Game, and refers to games
- * played within the whirled environment with your avatar.
+ * <p>AVRGame means: Alternate Virtual Reality Game, and refers to games played within the whirled
+ * environment with your avatar.</p>
  *
- * <p><b>Note</b>: The AVRG framework is "alpha" and may be changed in incompatible ways.
- * If you are making an AVRG game, please let us know what you're doing in the AVRG
- * discussion forum: <a href="http://first.whirled.com/#whirleds-d_135_r">http://first.whirled.com/#whirleds-d_135_r</a></p>
+ * <p>AVR games can be significantly more complicated than lobbied games. Please consult the whirled
+ * wiki section on AVRGs as well as the AVRG discussion forum if you're having any problems.</p>
+ *
+ * @see http://wiki.whirled.com/AVR_Games
+ * @see http://www.whirled.com/#whirleds-d_135
  */
 public class AVRServerGameControl extends AbstractControl
 {
     /**
-     * Create a world game interface. The display object is your world game.
+     * Creates a new game control for a server agent.
      */
     public function AVRServerGameControl (serv :ServerObject)
     {
         super(serv);
     }
 
+    /**
+     * Accesses the server agent's game sub control.
+     */
     public function get game () :GameServerSubControl
     {
         return _game;
     }
 
+    /**
+     * Accesses the server agent's room sub control for a given room id. This method will fail by
+     * throwing an <code>Error</code> if the room is not currently loaded by the server agent. A
+     * room with at least one player in it is guaranteed to be loaded. Server agents are notified
+     * of player entry and exit by events. A room with no players in it should be considered
+     * unloaded after the event is sent for the last player exiting the room.
+     * @see AVRGamePlayerEvent#ENTERED_ROOM
+     * @see AVRGamePlayerEvent#LEFT_ROOM
+     * @see AVRGameRoomEvent#PLAYER_ENTERED
+     * @see AVRGameRoomEvent#PLAYER_LEFT
+     */
     public function getRoom (roomId :int) :RoomServerSubControl
     {
         var ctrl :RoomServerSubControl = _roomControls[roomId];
         if (ctrl == null) {
             // This throws an error if the room isn't loaded
-            // TODO: document
             ctrl = new RoomServerSubControl(this, roomId);
             ctrl.gotHostPropsFriend(_funcs);
             _roomControls[roomId] = ctrl;
@@ -60,12 +69,18 @@ public class AVRServerGameControl extends AbstractControl
         return ctrl;
     }
 
+    /**
+     * Accesses the server agent's player sub control for a player with a given id. Server agents
+     * are notified when a player joins and quits the game by events. An <code>Error</code> is
+     * thrown if the requested player has not joined the game or has quit.
+     * @see AVRGameControlEvent.PLAYER_JOINED
+     * @see AVRGameControlEvent.PLAYER_QUIT
+     */
     public function getPlayer (playerId :int) :PlayerServerSubControl
     {
         var ctrl :PlayerServerSubControl = _playerControls[playerId];
         if (ctrl == null) {
-            // This throws an error if the room isn't loaded
-            // TODO: document
+            // This throws an error if the player isn't loaded
             ctrl = new PlayerServerSubControl(this, playerId);
             ctrl.gotHostPropsFriend(_funcs);
             _playerControls[playerId] = ctrl;
@@ -149,6 +164,7 @@ public class AVRServerGameControl extends AbstractControl
 
     /**
      * Called by the backend when a room is no longer accessible.
+     * @private
      */
     protected function roomUnloaded_v1 (roomId :int) :void
     {

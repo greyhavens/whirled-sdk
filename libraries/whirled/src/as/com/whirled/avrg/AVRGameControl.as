@@ -6,9 +6,6 @@
 package com.whirled.avrg {
 
 import flash.display.DisplayObject;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.utils.Dictionary;
 
 import com.threerings.util.Log;
 
@@ -16,20 +13,22 @@ import com.whirled.AbstractControl;
 import com.whirled.ServerObject;
 
 /**
- * This file should be included by AVR games so that they can communicate
- * with the whirled.
+ * This file should be included by AVR game clients so that they can communicate with their server
+ * agent and the whirled.
  *
  * AVRGame means: Alternate Virtual Reality Game, and refers to games
  * played within the whirled environment with your avatar.
  *
- * <p><b>Note</b>: The AVRG framework is "alpha" and may be changed in incompatible ways.
- * If you are making an AVRG game, please let us know what you're doing in the AVRG
- * discussion forum: <a href="http://first.whirled.com/#whirleds-d_135_r">http://first.whirled.com/#whirleds-d_135_r</a></p>
+ * <p>AVR games can be significantly more complicated than lobbied games. Please consult the whirled
+ * wiki section on AVRGs as well as the AVRG discussion forum if you're having any problems.</p>
+ *
+ * @see http://wiki.whirled.com/AVR_Games
+ * @see http://www.whirled.com/#whirleds-d_135
  */
 public class AVRGameControl extends AbstractControl
 {
     /**
-     * Create a world game interface. The display object is your world game.
+     * Creates a new game control for an AVR game client.
      */
     public function AVRGameControl (disp :DisplayObject)
     {
@@ -43,30 +42,41 @@ public class AVRGameControl extends AbstractControl
         _local.setHitPointTester(disp.root.hitTestPoint);
     }
 
+    /**
+     * Accesses the client's game sub control.
+     */
     public function get game () :GameSubControl
     {
         return _game;
     }
 
+    /**
+     * Accesses the client's room sub control for the player's current room.
+     */
     public function get room () :RoomSubControl
     {
         return _room;
     }
 
+    /**
+     * Accesses the client's local player sub control.
+     */
     public function get player () :PlayerSubControl
     {
         return _player;
     }
 
     /**
-     * Get the LocalSubControl which contains methods that are only relevant on the
-     * client, as they deal with e.g. on-screen pixels rather than logical positioning.
+     * Accesses the client's local sub control.
      */
     public function get local () :LocalSubControl
     {
         return _local;
     }
 
+    /**
+     * Accesses the client's agent sub control.
+     */
     public function get agent () :AgentSubControl
     {
         return _agent;
@@ -76,9 +86,7 @@ public class AVRGameControl extends AbstractControl
     override protected function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
-
         o["requestMobSprite_v1"] = requestMobSprite_v1;
-
         o["leftRoom_v1"] = leftRoom_v1;
         o["enteredRoom_v1"] = enteredRoom_v1;
     }
@@ -117,12 +125,14 @@ public class AVRGameControl extends AbstractControl
         return sprite;
     }
 
+    /** @private */
     internal function leftRoom_v1 (scene :int) :void    
     {
         _player.leftRoom_v1(scene);
         _room.leftRoom();
     }
 
+    /** @private */
     internal function enteredRoom_v1 (scene :int) :void    
     {
         _player.enteredRoom_v1(scene);
@@ -130,12 +140,16 @@ public class AVRGameControl extends AbstractControl
 
     /** @private */
     protected var _game :GameSubControl;
+
     /** @private */
     protected var _room :RoomSubControl;
+
     /** @private */
     protected var _player :PlayerSubControl;
+
     /** @private */
     protected var _local :LocalSubControl;
+
     /** @private */
     protected var _agent :AgentSubControl;
 }

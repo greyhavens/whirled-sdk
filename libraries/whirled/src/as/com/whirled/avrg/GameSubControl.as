@@ -11,6 +11,7 @@ import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
 
 /**
+ * Provides AVR client game services.
  */
 public class GameSubControl extends GameBaseSubControl
 {
@@ -20,6 +21,9 @@ public class GameSubControl extends GameBaseSubControl
         super(ctrl);
     }
 
+    /**
+     * Accesses the properties associated with this game.
+     */
     public function get props () :PropertyGetSubControl
     {
         return _props;
@@ -40,11 +44,7 @@ public class GameSubControl extends GameBaseSubControl
         return [ _props ];
     }
 
-    override protected function internalProps () :PropertyGetSubControlImpl
-    {
-        return _props;
-    }
-
+    /** @private */
     protected var _props :PropertyGetSubControlImpl;
 }
 }

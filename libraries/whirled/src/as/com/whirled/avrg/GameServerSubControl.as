@@ -9,9 +9,6 @@ import flash.events.Event;
 
 import com.whirled.AbstractControl;
 
-import com.whirled.avrg.GameBaseSubControl;
-
-import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.MessageSubControl;
 import com.whirled.net.PropertySubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
@@ -32,6 +29,9 @@ import com.whirled.net.impl.PropertySubControlImpl;
  */
 [Event(name="playerQuitGame", type="com.whirled.avrg.AVRGameControlEvent")]
 
+/**
+ * Provides services for AVR game server agents.
+ */
 public class GameServerSubControl extends GameBaseSubControl
     implements MessageSubControl
 {
@@ -41,12 +41,19 @@ public class GameServerSubControl extends GameBaseSubControl
         super(ctrl);
     }
 
+    /**
+     * Accesses the global properties for this game.
+     */
     public function get props () :PropertySubControl
     {
         return _props;
     }
 
-    /** Sends a message to all players in this instance. use carefully if instanceId == 0 */
+    /**
+     * Sends a message to all players in this game. Use carefully since the resulting outgoing
+     * message load could be significant. Games that overload the server are subject to
+     * discretionary action.
+     */
     public function sendMessage (name :String, value :Object = null) :void
     {
         callHostCode("game_sendMessage_v1", name, value);
@@ -66,11 +73,7 @@ public class GameServerSubControl extends GameBaseSubControl
         return [ _props ];
     }
 
-    override protected function internalProps () :PropertyGetSubControlImpl
-    {
-        return _props;
-    }
-
+    /** @private */
     protected var _props :PropertySubControlImpl;
 }
 }

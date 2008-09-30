@@ -55,17 +55,12 @@ public class RoomSubControl extends RoomBaseSubControl
 
         o["playerLeft_v1"] = playerLeft_v1;
         o["playerEntered_v1"] = playerEntered_v1;
-
         o["actorStateSet_v1"] = actorStateSet_v1;
         o["actorAppearanceChanged_v1"] = actorAppearanceChanged_v1;
-
         o["playerMoved_v1"] = playerMoved_v1;
-
         o["room_messageReceived_v1"] = messageReceived_v1;
-
         o["mobRemoved_v1"] = mobRemoved_v1;
         o["mobAppearanceChanged_v1"] = mobAppearanceChanged_v1;
-
         // the client backend does not send in targetId
         o["room_propertyWasSet_v1"] = _props.propertyWasSet_v1;
     }

@@ -108,7 +108,7 @@ public class RoomBaseSubControl extends TargetedSubControl
         info.moveSpeed = data[ix ++];
         info.isMoving = data[ix ++];
         info.isIdle = data[ix ++];
-        info.stageBounds = data[ix ++];
+        info.bounds = data[ix ++];
         return info;
     }
 

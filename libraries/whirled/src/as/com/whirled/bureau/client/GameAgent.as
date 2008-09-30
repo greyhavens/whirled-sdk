@@ -35,7 +35,7 @@ public class GameAgent extends Agent
         _ctx = ctx; 
 
         _traceTimer.addEventListener(TimerEvent.TIMER, handleTimer);
-   }
+    }
 
     // from Agent
     public override function start () :void

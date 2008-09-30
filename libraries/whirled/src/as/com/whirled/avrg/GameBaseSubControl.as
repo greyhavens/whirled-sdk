@@ -14,10 +14,13 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
  * Dispatched when a message arrives with information that is not part of the shared game state.
  *
  * @eventType com.whirled.net.MessageReceivedEvent.MESSAGE_RECEIVED
+ * @see GameServerSubControl#sendMessage
+ * @see AgentSubControl#sendMessage
  */
 [Event(name="MsgReceived", type="com.whirled.net.MessageReceivedEvent")]
 
 /**
+ * Provides AVR game services for server agents and clients.
  */
 public class GameBaseSubControl extends AbstractSubControl
 {
@@ -27,6 +30,9 @@ public class GameBaseSubControl extends AbstractSubControl
         super(ctrl);
     }
 
+    /**
+     * Returns an array of the ids of all players who have joined and not yet quit the game.
+     */
     public function getPlayerIds () :Array
     {
         return callHostCode("game_getPlayerIds_v1") as Array;
@@ -75,11 +81,6 @@ public class GameBaseSubControl extends AbstractSubControl
     protected function messageReceived (name :String, value :Object, sender :int) :void
     {
         dispatch(new MessageReceivedEvent(0, name, value, sender));
-    }
-
-    protected function internalProps () :PropertyGetSubControlImpl
-    {
-        throw new Error("abstract");
     }
 }
 }
