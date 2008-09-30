@@ -87,20 +87,20 @@ public class HttpUserCode
     /** Generically report an event. */
     protected function event (evt :Event) :void
     {
-        log.debug("Got an event from the HTTP client: " + evt.type);
+        // log.debug("Got an event from the HTTP client: " + evt.type);
     }
 
     /** Receive some data from teh intarnets. */
     protected function handleData (evt :HttpDataEvent) :void
     {
-        log.debug("Read " + evt.bytes.length + " bytes...");
+        // log.debug("Read " + evt.bytes.length + " bytes...");
         _bytes.writeBytes(evt.bytes);
     }
 
     /** Finished receiving data. */
     protected function handleComplete (evt :Event) :void
     {
-        log.debug("Compiling bytecode into new Domain...");
+        // log.debug("Compiling bytecode into new Domain...");
 
         var success :Boolean = false;
 
@@ -111,7 +111,7 @@ public class HttpUserCode
             _domain = Thane.spawnDomain(domainId, _bridge);
             // TODO: do we still need _bytes after this
             _domain.loadBytes(_bytes);
-            log.debug("Successfully loaded!");
+            // log.debug("Successfully loaded!");
 
             _class = _domain.getClass(_className);
             log.debug("Server class in new domain: " + _class);
