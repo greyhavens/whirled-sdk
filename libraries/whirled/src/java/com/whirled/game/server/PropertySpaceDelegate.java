@@ -3,7 +3,9 @@ package com.whirled.game.server;
 import java.util.Map;
 
 import com.threerings.crowd.data.PlaceObject;
+import com.threerings.parlor.server.PlayManager;
 import com.threerings.parlor.server.PlayManagerDelegate;
+
 import com.whirled.game.data.PropertySpaceObject;
 
 import static com.whirled.Log.log;

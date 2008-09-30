@@ -72,7 +72,7 @@ public abstract class WhirledGameManager extends GameManager
 
     /**
      * Configures the oids of the winners of this game. If a game manager delegate wishes to handle
-     * winner assignment, it should call this method and then call {@link #enddGame}.
+     * winner assignment, it should call this method and then call {@link #endGame}.
      */
     public void setWinners (int[] winnerOids)
     {

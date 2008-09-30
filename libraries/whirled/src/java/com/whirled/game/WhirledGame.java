@@ -113,15 +113,10 @@ public interface WhirledGame
      * These is similar to setting a property, except that the
      * value will not be saved- it will merely end up coming out
      * as a MessageReceivedEvent.
-     *
-     * @param playerIndex if -1, sends to all players, otherwise
-     * the message will be private to just one player
      */
-    public void sendMessage (
-        String messageName, Object value);
+    public void sendMessage (String messageName, Object value);
     
-    public void sendMessage (
-        String messageName, Object value, int playerIndex);
+    public void sendMessage (String messageName, Object value, int playerIndex);
 
     /**
      * Start the ticker with the specified name. It will deliver

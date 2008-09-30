@@ -13,7 +13,7 @@ import com.threerings.parlor.game.data.GameConfig;
  */
 public abstract class MatchConfig extends SimpleStreamableObject
 {
-    /** Returns the matchmaking type to use for this game, e.g. {@link GameConfig.SEATED_GAME}. */
+    /** Returns the matchmaking type to use for this game, e.g. {@link GameConfig#SEATED_GAME}. */
     public abstract int getMatchType ();
 
     /** Returns the minimum number of players needed to play this game. */

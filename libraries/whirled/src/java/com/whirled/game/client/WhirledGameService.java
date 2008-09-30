@@ -6,6 +6,8 @@ package com.whirled.game.client;
 import com.threerings.presents.client.Client;
 import com.threerings.presents.client.InvocationService;
 
+import com.whirled.game.WhirledGame;
+
 /**
  * Provides services for whirled games.
  */
