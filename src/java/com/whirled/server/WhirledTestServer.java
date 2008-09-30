@@ -3,11 +3,13 @@
 
 package com.whirled.server;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 
 import java.util.HashSet;
@@ -23,6 +25,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+import com.samskivert.io.StreamUtil;
 import com.samskivert.util.CollectionUtil;
 import com.threerings.util.Name;
 import com.samskivert.util.StringUtil;
@@ -71,7 +74,7 @@ import static com.whirled.Log.log;
  * Handles setting up the Whirled standalone test server.
  */
 public class WhirledTestServer extends CrowdServer
-    implements TestProvider, BureauRegistry.CommandGenerator, ShutdownManager.Shutdowner
+    implements TestProvider, ShutdownManager.Shutdowner
 {
     /** Configures dependencies needed by the Whirled test services. */
     public static class Module extends CrowdServer.Module
@@ -139,7 +142,24 @@ public class WhirledTestServer extends CrowdServer
         _invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
 
         _bureauReg.init();
-        _bureauReg.setCommandGenerator(BureauTypes.THANE_BUREAU_TYPE, this);
+        _bureauReg.setLauncher(BureauTypes.THANE_BUREAU_TYPE, new BureauRegistry.Launcher() {
+            public void launchBureau (String bureauId, String token) throws IOException {
+                ABCLibs abcLibs = new ABCLibs();
+                List<String> args = Lists.newArrayList();
+                args.add(System.getProperty("thane.path"));
+                args.add("-Dinterp");
+                args.addAll(abcLibs.getLibs("game-server-lib.", "game-server."));
+                args.add("--");
+                args.add(bureauId);
+                args.add(token);
+                args.add(String.valueOf(getListenPorts()[0]));
+                log.info("Bureau arguments: " + StringUtil.toString(args));
+                ProcessBuilder builder = new ProcessBuilder(args.toArray(new String[args.size()]));
+                builder.redirectErrorStream(true);
+                Process process = builder.start();
+                new StreamCopier(process.getInputStream()).start();
+            }
+        });
 
         _clmgr.addClientObserver(new ClientManager.ClientObserver () {
             public void clientSessionDidEnd (PresentsClient client) {
@@ -191,24 +211,6 @@ public class WhirledTestServer extends CrowdServer
             createGameManager(_config);
             _ready.clear();
         }
-    }
-
-    // from BureauRegistry.CommandGenerator
-    public String[] createCommand (
-        String bureauId,
-        String token)
-    {
-        ABCLibs abcLibs = new ABCLibs();
-        List<String> args = Lists.newArrayList();
-        args.add(System.getProperty("thane.path"));
-        args.add("-Dinterp");
-        args.addAll(abcLibs.getLibs("game-server-lib.", "game-server."));
-        args.add("--");
-        args.add(bureauId);
-        args.add(token);
-        args.add(String.valueOf(getListenPorts()[0]));
-        log.info("Bureau arguments: " + StringUtil.toString(args));
-        return args.toArray(new String[args.size()]);
     }
 
     protected void prepareGame ()
@@ -409,8 +411,7 @@ public class WhirledTestServer extends CrowdServer
         {
             File[] contents = dir.listFiles();
             if (contents == null) {
-                log.warning("Could not open dist/lib directory in " + 
-                    dir.getAbsolutePath());
+                log.warning("Could not open dist/lib directory in " + dir.getAbsolutePath());
                 return;
             }
             
@@ -423,6 +424,32 @@ public class WhirledTestServer extends CrowdServer
 
         /** Our collection of abc files. */
         protected List<File> _libs = Lists.newArrayList();
+    }
+
+    /** Copies bureau output to stdout. */
+    protected static class StreamCopier extends Thread
+    {
+        public StreamCopier (InputStream input)
+        {
+            super("StreamCopier");
+            setDaemon(true);
+            _reader = new BufferedReader(new InputStreamReader(input));
+        }
+
+        @Override public void run () {
+            String line;
+            try {
+                while ((line = _reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            } catch (Exception e) {
+                System.out.println("Copy failure: " + e);
+            } finally {
+                StreamUtil.close(_reader);
+            }
+        }
+
+        protected BufferedReader _reader;
     }
 
     /** The configuration for the game we'll start when everyone is ready. */
