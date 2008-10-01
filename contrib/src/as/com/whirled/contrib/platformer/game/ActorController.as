@@ -25,6 +25,7 @@ import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.board.ColliderTask;
 
 public class ActorController extends DynamicController
+    implements ShootableController
 {
     public function ActorController (actor :Actor, controller :GameController)
     {
@@ -35,6 +36,31 @@ public class ActorController extends DynamicController
     public function getActor () :Actor
     {
         return _actor;
+    }
+
+    public function doesHit (x :Number = NaN, y :Number = NaN) :Boolean
+    {
+        return _actor.doesHit(x, y);
+    }
+
+    public function doesCollide () :Boolean
+    {
+        return true;
+    }
+
+    public function doHit (damage :Number) :void
+    {
+        _actor.health -= damage;
+    }
+
+    public function getCenterX () :Number
+    {
+        return _actor.x + _actor.width/2;
+    }
+
+    public function getCenterY () :Number
+    {
+        return _actor.x + _actor.height/2;
     }
 
     override public function postTick () :void

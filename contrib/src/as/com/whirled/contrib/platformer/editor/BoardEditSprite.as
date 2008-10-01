@@ -206,7 +206,7 @@ public class BoardEditSprite extends EditSprite
         }
     }
 
-    protected function addDynamics (dynamics :Array, layer :int, group :String) :void
+    protected function addDynamics (dynamics :Object, layer :int, group :String) :void
     {
         for each (var d :Dynamic in dynamics) {
             _layers[layer].addEditorSprite(new EditorDynamicSprite(

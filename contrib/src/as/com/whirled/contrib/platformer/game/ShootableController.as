@@ -20,13 +20,16 @@
 
 package com.whirled.contrib.platformer.game {
 
-import com.whirled.contrib.platformer.piece.RectDynamic;
-
-public class RectDynamicController extends DynamicController
+public interface ShootableController
 {
-    public function RectDynamicController (rd :RectDynamic, controller :GameController)
-    {
-        super(rd, controller);
-    }
+    function doesHit (x :Number = NaN, y :Number = NaN) :Boolean;
+
+    function doHit (damage :Number) :void
+
+    function doesCollide () :Boolean;
+
+    function getCenterX () :Number;
+
+    function getCenterY () :Number;
 }
 }

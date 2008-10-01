@@ -22,6 +22,7 @@ package com.whirled.contrib.platformer.game {
 
 import com.whirled.contrib.platformer.board.ColliderDetails;
 import com.whirled.contrib.platformer.board.ActorBounds;
+import com.whirled.contrib.platformer.board.DynamicBounds;
 import com.whirled.contrib.platformer.board.LineData;
 
 import com.whirled.contrib.platformer.piece.Actor;
@@ -31,37 +32,46 @@ public class ShotCollisionHandler extends CollisionHandler
 {
     public function ShotCollisionHandler ()
     {
-        super(ActorController);
+        super(ShootableController);
+    }
+
+    override public function handlesObject (o :Object) :Boolean
+    {
+        return super.handlesObject(o) && (o as ShootableController).doesCollide();
     }
 
     override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
-        pCollide(source as Shot, target as ActorBounds, cd);
+        pCollide(source as Shot, target as DynamicBounds, cd);
     }
 
-    protected function pCollide (s :Shot, ab :ActorBounds, cd :ColliderDetails) :void
+    protected function pCollide (s :Shot, db :DynamicBounds, cd :ColliderDetails) :void
     {
+        var sc :ShootableController = db.controller as ShootableController;
         if (cd.alines[0] == null ||
-                (cd.alines[0] is LineData && ab.actor.doesHit(cd.alines[0].x1, cd.alines[0].y1))) {
+                (cd.alines[0] is LineData && sc.doesHit(cd.alines[0].x1, cd.alines[0].y1))) {
             s.hit = true;
-            if (cd.alines[0] != null && Math.abs(cd.alines[0].nx) > 0) {
-                ab.actor.wasHit =
-                    ((cd.alines[0].nx > 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) > 0) ||
-                     (cd.alines[0].nx < 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) == 0)) ?
-                    Actor.HIT_FRONT : Actor.HIT_BACK;
-            } else {
-                if (s.dx == 0) {
-                    ab.actor.wasHit = Actor.HIT_FRONT;
-                } else if ((s.dx < 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) > 0) ||
-                    (s.dx > 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) == 0)) {
-                    ab.actor.wasHit = Actor.HIT_FRONT;
+            sc.doHit(s.damage);
+            if (db is ActorBounds) {
+                var ab :ActorBounds = db as ActorBounds;
+                if (cd.alines[0] != null && Math.abs(cd.alines[0].nx) > 0) {
+                    ab.actor.wasHit =
+                        ((cd.alines[0].nx > 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) > 0) ||
+                         (cd.alines[0].nx < 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) == 0)) ?
+                        Actor.HIT_FRONT : Actor.HIT_BACK;
                 } else {
-                    ab.actor.wasHit = Actor.HIT_BACK;
+                    if (s.dx == 0) {
+                        ab.actor.wasHit = Actor.HIT_FRONT;
+                    } else if ((s.dx < 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) > 0) ||
+                        (s.dx > 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) == 0)) {
+                        ab.actor.wasHit = Actor.HIT_FRONT;
+                    } else {
+                        ab.actor.wasHit = Actor.HIT_BACK;
+                    }
                 }
+                ab.actor.dx += s.dx * s.force / 10;
+                ab.actor.dy += s.dy * s.force / 10;
             }
-            ab.actor.health -= s.damage;
-            ab.actor.dx += s.dx * s.force / 10;
-            ab.actor.dy += s.dy * s.force / 10;
         } else {
             s.ttl = 0;
         }

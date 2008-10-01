@@ -21,6 +21,7 @@
 package com.whirled.contrib.platformer.editor {
 
 import mx.collections.HierarchicalData;
+import mx.containers.Box;
 import mx.containers.Canvas;
 import mx.containers.VBox;
 import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
@@ -37,6 +38,57 @@ import com.whirled.contrib.platformer.piece.Dynamic;
 
 public class DynamicTree extends BaseTree
 {
+    public static function getDef (ddef :XML, dobj :Object) :XML
+    {
+        if (dobj == null) {
+            return null;
+        }
+        var defs :XMLList = ddef.dynamicdef.(@cname == ClassUtil.getClassName(dobj));
+        var def :XML;
+        if (defs.length() == 1) {
+            def = defs[0];
+        } else if (defs.length() > 1) {
+            for each (var node :XML in defs) {
+                def = node;
+                for each (var cxml :XML in node.elements("const")) {
+                    // fucking as3 can't convert booleans consistently
+                    if (dobj[cxml.@id] is Boolean) {
+                        if (dobj[cxml.@id] != (cxml.@value == "true")) {
+                            def = null;
+                            break;
+                        }
+                    } else if (dobj[cxml.@id] is Array) {
+                        if (dobj[cxml.@id].join(",") != cxml.@value) {
+                            def = null;
+                            break;
+                        }
+                    } else if (dobj[cxml.@id] != cxml.@value) {
+                        def = null;
+                        break;
+                    }
+                }
+                if (def != null) {
+                    break;
+                }
+            }
+        }
+        return def;
+    }
+
+    public static function genDetails (details :Array, box :Box, def :XML, d :Dynamic) :void
+    {
+        for each (var varxml :XML in def.elements("var")) {
+            var detail :DynamicDetail = new DynamicDetail(varxml, d);
+            box.addChild(detail.createBox());
+            details.push(detail);
+        }
+        for each (varxml in def.elements("mult")) {
+            var mdetail :MultDynamicDetail = new MultDynamicDetail(varxml, d);
+            box.addChild(mdetail.createBox());
+            details.push(mdetail);
+        }
+    }
+
     public function DynamicTree (b :Board, dynamics :XML)
     {
         super(b);
@@ -116,64 +168,20 @@ public class DynamicTree extends BaseTree
         if (_dynamic == null) {
             return;
         }
-        var def :XML;
         var group :String = _group.@name;
-        var defs :XMLList = _dxml.elements(group)[0].dynamicdef.(
-                @cname == ClassUtil.getClassName(_dynamic));
-        var dobj :Object = _dynamic;
-        if (defs.length() == 1) {
-            def = defs[0];
-        } else if (defs.length() > 1) {
-            for each (var node :XML in defs) {
-                def = node;
-                for each (var cxml :XML in node.elements("const")) {
-                    // fucking as3 can convert booleans consistently
-                    if (dobj[cxml.@id] is Boolean) {
-                        if (dobj[cxml.@id] != (cxml.@value == "true")) {
-                            def = null;
-                            break;
-                        }
-                    } else if (dobj[cxml.@id] is Array) {
-                        if (dobj[cxml.@id].join(",") != cxml.@value) {
-                            def = null;
-                            break;
-                        }
-                    } else if (dobj[cxml.@id] != cxml.@value) {
-                        def = null;
-                        break;
-                    }
-                }
-                if (def != null) {
-                    break;
-                }
-            }
-        }
+        var def :XML = getDef(_dxml.elements(group)[0], _dynamic);
         if (def == null ||
                 (def.elements("var").length() == 0 && def.elements("const").length() == 0)) {
             return;
         }
         _details = new Array();
-        for each (var varxml :XML in def.elements("var")) {
-            var detail :DynamicDetail = new DynamicDetail(varxml, _dynamic);
-            _settingsBox.addChild(detail.createBox());
-            _details.push(detail);
+        genDetails(_details, _settingsBox, def, _dynamic);
+        for each (var varxml :XML in def.elements("actor")) {
+            var adetail :ActorDynamicDetail =
+                    new ActorDynamicDetail(varxml, _dynamic, _dxml.elements(Board.ACTORS)[0]);
+            _settingsBox.addChild(adetail.createBox());
+            _details.push(adetail);
         }
-        for each (varxml in def.elements("mult")) {
-            var mdetail :MultDynamicDetail = new MultDynamicDetail(varxml, _dynamic);
-            _settingsBox.addChild(mdetail.createBox());
-            _details.push(mdetail);
-        }
-        /*
-        for each (varxml in def.elements("const")) {
-            if (dobj[varxml.@id.toString()] is Boolean) {
-                dobj[varxml.@id.toString()] = varxml.@value == "true";
-            } else if (dobj[varxml.@id.toString()] is Array) {
-                dobj[varxml.@id.toString()] =
-            } else {
-                dobj[varxml.@id.toString()] = varxml.@value;
-            }
-        }
-        */
         var button :Button = new Button();
         button.label = "Update";
         button.addEventListener(FlexEvent.BUTTON_DOWN, updateDynamic);

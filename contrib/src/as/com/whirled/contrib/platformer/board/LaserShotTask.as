@@ -42,18 +42,20 @@ public class LaserShotTask extends ShotTask
         _s.hit = true;
     }
 
-    override protected function didHit (hit :Number, ab :ActorBounds) :Number
+    override protected function didHit (hit :Number, db :DynamicBounds) :Number
     {
-        var ch :CollisionHandler = _cc.getCollisionHandler(ab.controller);
-        _s.hit = false;
-        ch.collide(_s, ab, _cd);
-        if (_ls.hits == null) {
-            _ls.hits = new Array();
+        var ch :CollisionHandler = _cc.getCollisionHandler(db.controller);
+        if (ch != null) {
+            _s.hit = false;
+            ch.collide(_s, db, _cd);
+            if (_ls.hits == null) {
+                _ls.hits = new Array();
+            }
+            if (_s.hit) {
+                _ls.hits.push(hit);
+            }
+            //_ls.hits.push([hit, _s.hit]);
         }
-        if (_s.hit) {
-            _ls.hits.push(hit);
-        }
-        //_ls.hits.push([hit, _s.hit]);
         return int.MAX_VALUE;
     }
 

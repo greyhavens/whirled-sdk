@@ -51,6 +51,7 @@ public class Board
     public static const DYNAMIC_REMOVED :String = "dynamic_removed";
 
     public static const ACTORS :String = "actors";
+    public static const SPAWNERS :String = "spawners";
     public static const PLATFORMS :String = "platforms";
     public static const GENERICS :String = "generics";
 
@@ -59,10 +60,21 @@ public class Board
     public static const BOTTOM_BOUND :int = 2;
     public static const LEFT_BOUND :int = 3;
 
+    public static function loadDynamic (xml :XML) :Dynamic
+    {
+        var dclass :Class = ClassUtil.getClassByName(xml.@cname);
+        if (dclass != null) {
+            trace("creating dynamic: " + xml.@cname);
+            return new dclass(xml);
+        }
+        return null;
+    }
+
     public function Board () :void
     {
         _groupNames = new Array();
         _groupNames.push(ACTORS);
+        _groupNames.push(SPAWNERS);
         _groupNames.push(PLATFORMS);
         _groupNames.push(GENERICS);
     }
@@ -84,7 +96,9 @@ public class Board
             _pieceTree.push([ "back" ]);
         }
         for each (var name :String in _groupNames) {
-            _dynamicIns[name] = new Array();
+            _dynamicIns[name] = new Object();
+            //_dynamicIns[name] = new HashMap();
+            //_dynamicIns[name] = new Array();
             if (boardHas(name)) {
                 loadDynamics(_xml.board[0][name][0], _dynamicIns[name]);
             }
@@ -106,17 +120,25 @@ public class Board
         return _groupNames;
     }
 
-    public function getDynamicIns (group :String) :Array
+    public function getDynamicIns (group :String) :Object
     {
         return _dynamicIns[group];
     }
 
-    public function getActors () :Array
+    public function getActors () :Object
     {
         return _actors;
     }
 
-    public function getDynamics () :Array
+    public function getActor (id :int) :Actor
+    {
+        if (_actors[id] != undefined) {
+            return _actors[id];
+        }
+        return _dynamicIns[Board.ACTORS][id];
+    }
+
+    public function getDynamics () :Object
     {
         return _dynamics;
     }
@@ -126,7 +148,8 @@ public class Board
         if (a.id <= 0) {
             a.id = ++_maxId;
         }
-        _actors.push(a);
+        _actors[a.id] = a;
+        //_actors.push(a);
         trace("adding actor " + a.sprite + "(" + a.id + ") at (" + a.x + ", " + a.y + ")");
         sendEvent(ACTOR_ADDED, a, "");
     }
@@ -136,39 +159,43 @@ public class Board
         if (d.id <= 0) {
             d.id = ++_maxId;
         }
-        _dynamics.push(d);
+        _dynamics[d.id] = d;
+        //_dynamics.push(d);
         trace("adding dynamic " + d.id + " at (" + d.x + ", " + d.y + ")");
         sendEvent(DYNAMIC_ADDED, d, "");
     }
 
     public function hasActor (a :Actor) :Boolean
     {
-        return _actors.indexOf(a) != -1;
+        return _actors[a.id] != undefined;
+        //return _actors.indexOf(a) != -1;
     }
 
     public function addDynamicIns (d :Dynamic, group :String) :void
     {
-        _dynamicIns[group].push(d);
+        _dynamicIns[group][d.id] = d;
+        //_dynamicIns[group].push(d);
         adjustMaxId(d);
         sendEvent(DYNAMIC_ADDED, d, "root." + group);
     }
 
     public function updateDynamicIns (d :Dynamic, group :String) :void
     {
-        if (_dynamicIns[group].indexOf(d) != -1) {
-            sendEvent(ITEM_UPDATED, d, "root." + group);
-        }
+        _dynamicIns[group][d.id] = d;
+        sendEvent(ITEM_UPDATED, d, "root." + group);
     }
 
     public function addShot (s :Shot) :void
     {
-        _shots.push(s);
+        s.id = ++_maxId;
+        _shots[s.id] = s;
+        //_shots.push(s);
         sendEvent(SHOT_ADDED, s, "");
     }
 
     public function removeDynamic (d :Dynamic) :void
     {
-        var arr :Array = _dynamics;
+        var arr :Object = _dynamics;
         if (d is Actor) {
             arr = _actors;
         } else if (d is Shot) {
@@ -176,16 +203,19 @@ public class Board
         } else {
             trace("removing dynamic " + d.id);
         }
+        delete arr[d.id];
+        /*
         var idx :int = arr.indexOf(d);
         if (idx != -1) {
             arr.splice(idx, 1);
         }
+        */
         sendEvent(DYNAMIC_REMOVED, d, "");
     }
 
     public function addPiece (p :Piece, tree :String) :void
     {
-        var arr :Array = getGroup(tree);
+        var arr :Array = getGroup(tree) as Array;
         if (arr == null) {
             return;
         }
@@ -198,7 +228,7 @@ public class Board
 
     public function addPieceGroup (tree :String, name :String) :void
     {
-        var arr :Array = getGroup(tree);
+        var arr :Array = getGroup(tree) as Array;
         if (arr == null) {
             return;
         }
@@ -210,14 +240,17 @@ public class Board
 
     public function getItem (name :String, tree :String) :Object
     {
-        var arr :Array = getGroup(tree);
+        var arr :Object = getGroup(tree);
         if (arr == null) {
             return null;
-        }
-        for (var ii :int = 0; ii < arr.length; ii++) {
-            if (isItem(arr[ii], name)) {
-                return arr[ii];
+        } else if (arr is Array) {
+            for (var ii :int = 0; ii < arr.length; ii++) {
+                if (isItem(arr[ii], name)) {
+                    return arr[ii];
+                }
             }
+        } else {
+           return arr[name];
         }
         return null;
 
@@ -225,21 +258,24 @@ public class Board
 
     public function removeItem (name :String, tree :String) :void
     {
-        var arr :Array = getGroup(tree);
+        var arr :Object = getGroup(tree);
         if (arr == null) {
             return;
-        }
-        for (var ii :int = 0; ii < arr.length; ii++) {
-            if (isItem(arr[ii], name)) {
-                arr.splice(ii--, 1);
+        } else if (arr is Array) {
+            for (var ii :int = 0; ii < arr.length; ii++) {
+                if (isItem(arr[ii], name)) {
+                    arr.splice(ii--, 1);
+                }
             }
+        } else {
+            delete arr[name];
         }
         sendEvent(ITEM_REMOVED, name, tree);
     }
 
     public function moveItemForward (name :String, tree :String) :void
     {
-        var arr :Array = getGroup(tree);
+        var arr :Array = getGroup(tree) as Array;
         if (arr == null) {
             return;
         }
@@ -261,7 +297,7 @@ public class Board
 
     public function moveItemBack (name :String, tree :String) :void
     {
-        var arr :Array = getGroup(tree);
+        var arr :Array = getGroup(tree) as Array;
         if (arr == null) {
             return;
         }
@@ -283,8 +319,8 @@ public class Board
 
     public function moveItemUp (name :String, tree :String) :void
     {
-        var arr :Array = getGroup(tree);
-        var up :Array = getGroup(tree.substr(0, tree.lastIndexOf(".")));
+        var arr :Array = getGroup(tree) as Array;
+        var up :Array = getGroup(tree.substr(0, tree.lastIndexOf("."))) as Array;
         if (arr == null || up == null) {
             return;
         }
@@ -305,7 +341,7 @@ public class Board
 
     public function moveItemDown (name :String, tree :String) :void
     {
-        var arr :Array = getGroup(tree);
+        var arr :Array = getGroup(tree) as Array;
         if (arr == null) {
             return;
         }
@@ -335,7 +371,7 @@ public class Board
 
     public function flipPiece (name :String, tree :String) :void
     {
-        var arr :Array = getGroup(tree);
+        var arr :Array = getGroup(tree) as Array;
         if (arr == null) {
             return;
         }
@@ -350,7 +386,7 @@ public class Board
 
     public function updatePiece (name :String, tree :String, xml :XML) :void
     {
-        var arr :Array = getGroup(tree);
+        var arr :Array = getGroup(tree) as Array;
         if (arr == null) {
             return;
         }
@@ -374,7 +410,7 @@ public class Board
         return _pieceTree;
     }
 
-    protected function getGroup (tree :String) :Array
+    protected function getGroup (tree :String) :Object
     {
         tree = tree.replace(/root(\.)*/, "");
         if (_dynamicIns[tree] != null) {
@@ -435,16 +471,6 @@ public class Board
         return genDynamicsXML(_dynamicIns[group], group);
     }
 
-    public function loadDynamic (xml :XML) :Dynamic
-    {
-        var dclass :Class = ClassUtil.getClassByName(xml.@cname);
-        if (dclass != null) {
-            trace("creating dynamic: " + xml.@cname);
-            return new dclass(xml);
-        }
-        return null;
-    }
-
     public function setBound (idx :int, bound :int) :void
     {
         _bound[idx] = bound;
@@ -474,14 +500,15 @@ public class Board
         }
     }
 
-    protected function loadDynamics (xml :XML, arr :Array) :void
+    protected function loadDynamics (xml :XML, arr :Object) :void
     {
         trace("Loading dynamics");
         for each (var node :XML in xml.children()) {
             var d :Dynamic = loadDynamic(node);
             if (d != null) {
                 adjustMaxId(d);
-                arr.push(d);
+                arr[d.id] = d;
+                //arr.push(d);
             }
         }
     }
@@ -517,7 +544,7 @@ public class Board
         return node;
     }
 
-    protected function genDynamicsXML (dynamics :Array, nodename :String) :XML
+    protected function genDynamicsXML (dynamics :Object, nodename :String) :XML
     {
         var node :XML = new XML("<" + nodename + "/>");
         for each (var dyn :Dynamic in dynamics) {
@@ -586,10 +613,10 @@ public class Board
     protected var _maxId :int;
     protected var _name :String;
 
-    protected var _actors :Array = new Array();
-    protected var _dynamics :Array = new Array();
+    protected var _actors :Object = new Object();
+    protected var _dynamics :Object = new Object();
     protected var _dynamicIns :Array = new Array();
-    protected var _shots :Array = new Array();
+    protected var _shots :Object = new Object();
     protected var _bound :Array = new Array();
 
     protected var _listeners :HashMap = new HashMap();

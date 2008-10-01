@@ -23,6 +23,8 @@ package com.whirled.contrib.platformer.game {
 import flash.utils.getTimer;
 
 import com.whirled.contrib.platformer.Controller;
+import com.whirled.contrib.platformer.board.Board;
+import com.whirled.contrib.platformer.board.Collider;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.CutScene;
@@ -32,8 +34,7 @@ import com.whirled.contrib.platformer.piece.Hover;
 import com.whirled.contrib.platformer.piece.LaserShot;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.Shot;
-import com.whirled.contrib.platformer.board.Board;
-import com.whirled.contrib.platformer.board.Collider;
+import com.whirled.contrib.platformer.piece.Spawner;
 
 import com.threerings.util.ClassUtil;
 import com.threerings.util.HashMap;
@@ -58,7 +59,6 @@ public class GameController
         _board.addEventListener(Board.DYNAMIC_REMOVED, handleDynamicRemoved);
         _board.addEventListener(Board.DYNAMIC_ADDED, handleDynamicAdded);
 
-
         // We need to reference our various event classes so they're compiled
         var c :Class = RemoveGatesEventAction;
         c = DeathEventTrigger;
@@ -74,6 +74,7 @@ public class GameController
         addDynamicClass(Dynamic, DynamicController, true);
         addDynamicClass(Hover, HoverController);
         addDynamicClass(CutScene, CutSceneController);
+        addDynamicClass(Spawner, SpawnerController);
     }
 
     public function run () :void

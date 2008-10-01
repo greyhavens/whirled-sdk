@@ -226,7 +226,7 @@ public class EditView extends Canvas
         for each (var cxml :XML in _dynamicSelector.getConst()) {
             xml["@" + cxml.@id] = cxml.@value;
         }
-        var d :Dynamic = _board.loadDynamic(xml);
+        var d :Dynamic = Board.loadDynamic(xml);
         if (d != null) {
             _dynamicTree.addDynamic(d, group);
         }

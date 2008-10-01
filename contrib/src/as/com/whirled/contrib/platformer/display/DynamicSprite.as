@@ -55,6 +55,20 @@ public class DynamicSprite extends Sprite
     {
         this.x = _dynamic.x * Metrics.TILE_SIZE;
         this.y = -_dynamic.y * Metrics.TILE_SIZE;
+        if (_hitLeft > 0) {
+            _hitLeft -= delta;
+            if (_hitLeft <= 0) {
+                var filters :Array = _disp.filters;
+                if (filters != null) {
+                    // Adding a filter to a DisplayObject changes the filter, so you can't compare
+                    // the filter to figure out which one it is in the array.  So we're left with
+                    // maintaining an index, and hoping that the filters haven't changed so that
+                    // we remove the correct one.  Thank you ActionScript.
+                    filters.splice(_hitFilterIndex, 1);
+                    _disp.filters = filters;
+                }
+            }
+        }
     }
 
     public function setParticleCallback (callback :Function) :void
@@ -188,10 +202,40 @@ public class DynamicSprite extends Sprite
         }
     }
 
+    protected function showHit (filter :ColorMatrixFilter = null, length :Number = HIT_LENGTH) :void
+    {
+        if (_hitLeft <= 0) {
+            _hitLeft = length;
+            if (filter == null) {
+                if (_hitFilter == null) {
+                    var matrix :ColorMatrix = new ColorMatrix();
+                    matrix.tint(0xFFE377, 0.5);
+                    _hitFilter = matrix.createFilter();
+                }
+                filter = _hitFilter;
+            }
+            var filters :Array = _disp.filters;
+            if (filters == null) {
+                _disp.filters = [filter];
+                _hitFilterIndex = 0;
+            } else {
+                _hitFilterIndex = filters.length;
+                filters.push(filter);
+                _disp.filters = filters;
+            }
+        }
+    }
+
     protected var _state :String = "";
     protected var _dynamic :Dynamic;
     protected var _disp :DisplayObject;
     protected var _particleCallback :Function;
     protected var _static :Boolean;
+
+    protected var _hitLeft :Number = 0;
+    protected var _hitFilter :ColorMatrixFilter;
+    protected var _hitFilterIndex :int;
+
+    protected static const HIT_LENGTH :Number = 0.1;
 }
 }

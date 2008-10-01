@@ -43,10 +43,13 @@ public class DeathEventTrigger extends EventTrigger
         if (hasTriggered()) {
             return true;
         }
-        for each (var a :Actor in _gctrl.getBoard().getActors()) {
-            var idx :int = _ids.indexOf(a.id);
-            if (idx != -1 && a.health <= 0) {
-                _ids.splice(idx, 1);
+        var ii :int;
+        while (ii < _ids.length) {
+            var a :Actor = _gctrl.getBoard().getActor(_ids[ii]);
+            if (a == null || a.health <= 0) {
+                _ids.splice(ii, 1);
+            } else {
+                ii++;
             }
         }
         if (_ids.length == 0) {

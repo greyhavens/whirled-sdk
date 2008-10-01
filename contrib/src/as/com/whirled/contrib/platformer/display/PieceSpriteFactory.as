@@ -41,6 +41,7 @@ import com.whirled.contrib.platformer.piece.Hover;
 import com.whirled.contrib.platformer.piece.LaserShot;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.Shot;
+import com.whirled.contrib.platformer.piece.Spawner;
 
 /**
  * Generates a piece sprite from the supplied piece.
@@ -61,6 +62,7 @@ public class PieceSpriteFactory
         addDynamicClass(LaserShot, LaserShotSprite);
         addDynamicClass(Hover, HoverSprite);
         addDynamicClass(CutScene, CutSceneSprite);
+        addDynamicClass(Spawner, SpawnerSprite);
     }
 
     public static function addPieceClass (

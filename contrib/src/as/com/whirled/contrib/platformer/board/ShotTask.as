@@ -53,11 +53,11 @@ public class ShotTask extends ColliderTask
         var line :LineData = new LineData(
                 _s.x, _s.y, _s.x + _s.dx * _delta, _s.y + _s.dy * _delta, BoundData.S_ALL);
         _delta *= collide(line);
-        if (_cab != null) {
+        if (_cdb != null) {
             // shit happens
-            var ch :CollisionHandler = _cc.getCollisionHandler(_cab.controller);
-            ch.collide(_s, _cab, _cd);
-            _cab = null;
+            var ch :CollisionHandler = _cc.getCollisionHandler(_cdb.controller);
+            ch.collide(_s, _cdb, _cd);
+            _cdb = null;
         }
         _s.x += _s.dx * _delta;
         _s.y += _s.dy * _delta;
@@ -78,19 +78,20 @@ public class ShotTask extends ColliderTask
                 if (db is ActorBounds && (db as ActorBounds).actor.health <= 0) {
                     continue;
                 }
-                if (db is SimpleBounds && db is ActorBounds) {
+                if (db is SimpleBounds) {
                     var sb :SimpleBounds = (db as SimpleBounds);
                     var arr :Array = line.polyIntersect(sb.getBoundLines());
-                    if (arr[0] < closehit && arr[1] != null) {
+                    if (arr[0] < closehit && arr[1] != null &&
+                            _cc.getCollisionHandler(db.controller) != null) {
                         _cd.alines[0] = arr[1];
-                        closehit = didHit(arr[0], db as ActorBounds);
+                        closehit = didHit(arr[0], db);
                     }
                 } else if (db is CircleBounds) {
                     var cb :CircleBounds = (db as CircleBounds);
                     var dist :Number = line.getSegmentDist2(cb.x, cb.y);
                     if (dist < cb.r2) {
                         var hit :Number = line.getCircleIntersect(cb.x, cb.y, cb.radius);
-                        if (hit < closehit) {
+                        if (hit < closehit && _cc.getCollisionHandler(cb.controller) != null) {
                             _cd.alines[0] = dist;
                             closehit = didHit(hit, cb);
                         }
@@ -101,9 +102,9 @@ public class ShotTask extends ColliderTask
         return Math.min(closehit, 1);
     }
 
-    protected function didHit (hit :Number, ab :ActorBounds) :Number
+    protected function didHit (hit :Number, db :DynamicBounds) :Number
     {
-        _cab = ab;
+        _cdb = db;
         return hit;
     }
 
@@ -118,6 +119,6 @@ public class ShotTask extends ColliderTask
     }
 
     protected var _s :Shot;
-    protected var _cab :ActorBounds;
+    protected var _cdb :DynamicBounds;
 }
 }
