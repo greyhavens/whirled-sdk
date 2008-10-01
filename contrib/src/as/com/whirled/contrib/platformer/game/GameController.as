@@ -66,6 +66,7 @@ public class GameController
         c = ImmediateEventTrigger;
         c = MultiEventAction;
         c = SpawnerDeathEventTrigger;
+        c = MultiEventTrigger;
     }
 
     public function initDynamicClasses () :void

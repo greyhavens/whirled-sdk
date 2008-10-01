@@ -38,7 +38,7 @@ public class SpawnerController extends RectDynamicController
 
     public function doesHit (x :Number = NaN, y :Number = NaN) :Boolean
     {
-        return _spawner.destructable;
+        return _spawner.destructable && _spawner.health > 0;
     }
 
     public function doHit (damage :Number) :void
@@ -49,7 +49,7 @@ public class SpawnerController extends RectDynamicController
 
     public function doesCollide () :Boolean
     {
-        return _spawner.destructable;
+        return _spawner.destructable && _spawner.health > 0;
     }
 
     public function getCenterX () :Number
