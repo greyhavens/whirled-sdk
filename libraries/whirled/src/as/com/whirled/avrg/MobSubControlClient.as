@@ -16,9 +16,9 @@ import com.whirled.ControlEvent;
 /**
  * Defines actions, accessors and callbacks available to MOBs on the client.
  */
-public class MobSubControl extends MobBaseSubControl
+public class MobSubControlClient extends MobSubControlBase
 {
-    public function MobSubControl (parent :AbstractControl, id :String, sprite :DisplayObject)
+    public function MobSubControlClient (parent :AbstractControl, id :String, sprite :DisplayObject)
     {
         super(parent, id);
         _sprite = sprite;

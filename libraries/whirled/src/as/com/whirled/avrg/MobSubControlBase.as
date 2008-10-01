@@ -13,9 +13,9 @@ import com.whirled.AbstractSubControl;
 /**
  * Defines actions, accessors and callbacks available to all MOBs.
  */
-public class MobBaseSubControl extends AbstractSubControl
+public class MobSubControlBase extends AbstractSubControl
 {
-    public function MobBaseSubControl (parent :AbstractControl, id :String)
+    public function MobSubControlBase (parent :AbstractControl, id :String)
     {
         super(parent);
         _id = id;

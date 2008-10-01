@@ -52,10 +52,10 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
 /**
  * Defines actions, accessors and callbacks available on the client only.
  */
-public class RoomBaseSubControl extends TargetedSubControl
+public class RoomSubControlBase extends TargetedSubControl
 {
     /** @private */
-    public function RoomBaseSubControl (ctrl :AbstractControl, targetId :int)
+    public function RoomSubControlBase (ctrl :AbstractControl, targetId :int)
     {
         super(ctrl, targetId);
     }
@@ -146,7 +146,7 @@ public class RoomBaseSubControl extends TargetedSubControl
 
     /** @private */
     internal function setMobSubControl (
-        mobId :String, ctrl :MobBaseSubControl, delayEvent :Boolean) :void
+        mobId :String, ctrl :MobSubControlBase, delayEvent :Boolean) :void
     {
         if (_mobControls[mobId] !== undefined) {
             Log.getLog(this).warning("Eek, overwriting mob control [mobId=" + mobId + "]");
@@ -176,7 +176,7 @@ public class RoomBaseSubControl extends TargetedSubControl
         mobId :String, locArray :Array, orient :Number,
         moving :Boolean, idle :Boolean) :void
     {
-        var control :MobBaseSubControl = _mobControls[mobId];
+        var control :MobSubControlBase = _mobControls[mobId];
         if (control != null) {
             control.appearanceChanged(locArray, orient, moving, idle);
         }

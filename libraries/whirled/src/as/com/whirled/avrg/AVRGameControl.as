@@ -45,7 +45,7 @@ public class AVRGameControl extends AbstractControl
     /**
      * Accesses the client's game sub control.
      */
-    public function get game () :GameSubControl
+    public function get game () :GameSubControlClient
     {
         return _game;
     }
@@ -53,7 +53,7 @@ public class AVRGameControl extends AbstractControl
     /**
      * Accesses the client's room sub control for the player's current room.
      */
-    public function get room () :RoomSubControl
+    public function get room () :RoomSubControlClient
     {
         return _room;
     }
@@ -61,7 +61,7 @@ public class AVRGameControl extends AbstractControl
     /**
      * Accesses the client's local player sub control.
      */
-    public function get player () :PlayerSubControl
+    public function get player () :PlayerSubControlClient
     {
         return _player;
     }
@@ -95,9 +95,9 @@ public class AVRGameControl extends AbstractControl
     override protected function createSubControls () :Array
     {
         return [
-            _game = new GameSubControl(this),
-            _room = new RoomSubControl(this),
-            _player = new PlayerSubControl(this),
+            _game = new GameSubControlClient(this),
+            _room = new RoomSubControlClient(this),
+            _player = new PlayerSubControlClient(this),
             _local = new LocalSubControl(this),
             _agent = new AgentSubControl(this),
         ];
@@ -106,7 +106,7 @@ public class AVRGameControl extends AbstractControl
     /** @private */
     protected function requestMobSprite_v1 (id :String) :DisplayObject
     {
-        var ctrl :MobSubControl = MobSubControl(_room.getMobSubControl(id));
+        var ctrl :MobSubControlClient = MobSubControlClient(_room.getMobSubControl(id));
         if (ctrl != null) {
             // TODO: this is not actually OK, the control should be nuked when we move
             return ctrl.getMobSprite();
@@ -120,7 +120,7 @@ public class AVRGameControl extends AbstractControl
         Log.getLog(this).debug("Requested sprite [id=" + id + ", sprite=" + sprite + "]");
         if (sprite != null) {
             var delayEvent :Boolean = false;
-            _room.setMobSubControl(id, new MobSubControl(this, id, sprite), delayEvent);
+            _room.setMobSubControl(id, new MobSubControlClient(this, id, sprite), delayEvent);
         }
         return sprite;
     }
@@ -139,13 +139,13 @@ public class AVRGameControl extends AbstractControl
     }
 
     /** @private */
-    protected var _game :GameSubControl;
+    protected var _game :GameSubControlClient;
 
     /** @private */
-    protected var _room :RoomSubControl;
+    protected var _room :RoomSubControlClient;
 
     /** @private */
-    protected var _player :PlayerSubControl;
+    protected var _player :PlayerSubControlClient;
 
     /** @private */
     protected var _local :LocalSubControl;
@@ -157,13 +157,13 @@ public class AVRGameControl extends AbstractControl
 
 import flash.display.DisplayObject;
 
-import com.whirled.avrg.MobSubControl;
+import com.whirled.avrg.MobSubControlClient;
 
 class MobEntry
 {
-    public var control :MobSubControl;
+    public var control :MobSubControlClient;
 
-    public function MobEntry (control :MobSubControl, sprite :DisplayObject)
+    public function MobEntry (control :MobSubControlClient, sprite :DisplayObject)
     {
         this.control = control;
     }

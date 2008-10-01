@@ -25,10 +25,10 @@ import flash.utils.Dictionary;
 /**
  * Defines actions, accessors and callbacks available on the client only.
  */
-public class RoomSubControl extends RoomBaseSubControl
+public class RoomSubControlClient extends RoomSubControlBase
 {
     /** @private */
-    public function RoomSubControl (ctrl :AbstractControl, targetId :int = 0)
+    public function RoomSubControlClient (ctrl :AbstractControl, targetId :int = 0)
     {
         super(ctrl, targetId);
     }
@@ -43,9 +43,9 @@ public class RoomSubControl extends RoomBaseSubControl
         return callHostCode("room_getRoomId_v1");
     }
 
-    public function getMobSubControl (id :String) :MobSubControl
+    public function getMobSubControl (id :String) :MobSubControlClient
     {
-        return _mobControls[id] as MobSubControl;
+        return _mobControls[id] as MobSubControlClient;
     }
 
     /** @private */

@@ -7,18 +7,18 @@ package com.whirled.avrg {
 
 import com.whirled.AbstractControl;
 
-import com.whirled.avrg.RoomBaseSubControl;
+import com.whirled.avrg.RoomSubControlBase;
 
 import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.MessageSubControl;
 import com.whirled.net.PropertySubControl;
 import com.whirled.net.impl.PropertySubControlImpl;
 
-public class RoomServerSubControl extends RoomBaseSubControl
+public class RoomSubControlServer extends RoomSubControlBase
     implements MessageSubControl
 {
     /** @private */
-    public function RoomServerSubControl (ctrl :AbstractControl, targetId :int)
+    public function RoomSubControlServer (ctrl :AbstractControl, targetId :int)
     {
         super(ctrl, targetId);
     }
@@ -43,9 +43,9 @@ public class RoomServerSubControl extends RoomBaseSubControl
         callHostCode("despawnMob_v1", id);
     }
 
-    public function getMobSubControl (id :String) :MobServerSubControl
+    public function getMobSubControl (id :String) :MobSubControlServer
     {
-        return _mobControls[id] as MobServerSubControl;
+        return _mobControls[id] as MobSubControlServer;
     }
 
     /** Sends a message to all the players that are in the room. */
@@ -71,7 +71,7 @@ public class RoomServerSubControl extends RoomBaseSubControl
         var delayEvent :Boolean = true;
         var mobIds :Array = callHostCode("getSpawnedMobs_v1") as Array;
         for each (var mobId :String in mobIds) {
-            setMobSubControl(mobId, new MobServerSubControl(this, mobId), delayEvent);
+            setMobSubControl(mobId, new MobSubControlServer(this, mobId), delayEvent);
         }
     }
 
@@ -80,7 +80,7 @@ public class RoomServerSubControl extends RoomBaseSubControl
     {
         // TODO: we should also report server-side MOB spawning errors to the game
         var delayEvent :Boolean = false;
-        setMobSubControl(mobId, new MobServerSubControl(this, mobId), delayEvent);
+        setMobSubControl(mobId, new MobSubControlServer(this, mobId), delayEvent);
     }
 
     /** @private */

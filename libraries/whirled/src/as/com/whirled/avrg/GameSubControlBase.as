@@ -14,7 +14,7 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
  * Dispatched when a message arrives with information that is not part of the shared game state.
  *
  * @eventType com.whirled.net.MessageReceivedEvent.MESSAGE_RECEIVED
- * @see GameServerSubControl#sendMessage
+ * @see GameSubControlServer#sendMessage
  * @see AgentSubControl#sendMessage
  */
 [Event(name="MsgReceived", type="com.whirled.net.MessageReceivedEvent")]
@@ -22,10 +22,10 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
 /**
  * Provides AVR game services for server agents and clients.
  */
-public class GameBaseSubControl extends AbstractSubControl
+public class GameSubControlBase extends AbstractSubControl
 {
     /** @private */
-    public function GameBaseSubControl (ctrl :AbstractControl)
+    public function GameSubControlBase (ctrl :AbstractControl)
     {
         super(ctrl);
     }

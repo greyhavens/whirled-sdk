@@ -41,7 +41,7 @@ public class AVRServerGameControl extends AbstractControl
     /**
      * Accesses the server agent's game sub control.
      */
-    public function get game () :GameServerSubControl
+    public function get game () :GameSubControlServer
     {
         return _game;
     }
@@ -57,12 +57,12 @@ public class AVRServerGameControl extends AbstractControl
      * @see AVRGameRoomEvent#PLAYER_ENTERED
      * @see AVRGameRoomEvent#PLAYER_LEFT
      */
-    public function getRoom (roomId :int) :RoomServerSubControl
+    public function getRoom (roomId :int) :RoomSubControlServer
     {
-        var ctrl :RoomServerSubControl = _roomControls[roomId];
+        var ctrl :RoomSubControlServer = _roomControls[roomId];
         if (ctrl == null) {
             // This throws an error if the room isn't loaded
-            ctrl = new RoomServerSubControl(this, roomId);
+            ctrl = new RoomSubControlServer(this, roomId);
             ctrl.gotHostPropsFriend(_funcs);
             _roomControls[roomId] = ctrl;
         }
@@ -76,12 +76,12 @@ public class AVRServerGameControl extends AbstractControl
      * @see AVRGameControlEvent.PLAYER_JOINED
      * @see AVRGameControlEvent.PLAYER_QUIT
      */
-    public function getPlayer (playerId :int) :PlayerServerSubControl
+    public function getPlayer (playerId :int) :PlayerSubControlServer
     {
-        var ctrl :PlayerServerSubControl = _playerControls[playerId];
+        var ctrl :PlayerSubControlServer = _playerControls[playerId];
         if (ctrl == null) {
             // This throws an error if the player isn't loaded
-            ctrl = new PlayerServerSubControl(this, playerId);
+            ctrl = new PlayerSubControlServer(this, playerId);
             ctrl.gotHostPropsFriend(_funcs);
             _playerControls[playerId] = ctrl;
         }
@@ -118,7 +118,7 @@ public class AVRServerGameControl extends AbstractControl
     override protected function createSubControls () :Array
     {
         return [
-            _game = new GameServerSubControl(this),
+            _game = new GameSubControlServer(this),
         ];
     }
 
@@ -172,7 +172,7 @@ public class AVRServerGameControl extends AbstractControl
     }
 
     /** @private */
-    protected var _game :GameServerSubControl;
+    protected var _game :GameSubControlServer;
 
     /** @private */
     protected var _roomControls :Dictionary = new Dictionary();

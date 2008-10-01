@@ -125,15 +125,15 @@ public class LocalSubControl extends AbstractSubControl
      *
      * Once created, the mob will be drawn in the room until the server agent despawns it. Clients
      * should not attempt to remove the sprite. Each mob in a room has a corresponding
-     * <code>MobSubControl</code>. Games that use mobs should call this function during
+     * <code>MobSubControlClient</code>. Games that use mobs should call this function during
      * initialization so that if the player is joining an in-progress game, all the previously
      * spawned mobs will be created.
      *
-     * @see RoomServerSubControl#spawnMob()
-     * @see RoomServerSubControl#despawnMob()
-     * @see RoomBaseSubControl#getSpawnedMobs()
-     * @see RoomSubControl#getMobSubControl()
-     * @see MobSubControl
+     * @see RoomSubControlServer#spawnMob()
+     * @see RoomSubControlServer#despawnMob()
+     * @see RoomSubControlBase#getSpawnedMobs()
+     * @see RoomSubControlClient#getMobSubControl()
+     * @see MobSubControlClient
      * @see http://wiki.whirled.com/Mobs
      */
     public function setMobSpriteExporter (exporter :Function) :void

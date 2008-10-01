@@ -12,10 +12,10 @@ import com.whirled.net.MessageReceivedEvent;
 
 /**
  */
-public class PlayerSubControl extends PlayerBaseSubControl
+public class PlayerSubControlClient extends PlayerSubControlBase
 {
     /** @private */
-    public function PlayerSubControl (ctrl :AbstractControl)
+    public function PlayerSubControlClient (ctrl :AbstractControl)
     {
         super(ctrl, 0);
     }

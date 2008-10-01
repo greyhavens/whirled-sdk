@@ -13,10 +13,10 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
 /**
  * Provides AVR client game services.
  */
-public class GameSubControl extends GameBaseSubControl
+public class GameSubControlClient extends GameSubControlBase
 {
     /** @private */
-    public function GameSubControl (ctrl :AbstractControl)
+    public function GameSubControlClient (ctrl :AbstractControl)
     {
         super(ctrl);
     }

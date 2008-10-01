@@ -33,10 +33,10 @@ import com.whirled.net.impl.PropertySubControlImpl;
 
 /**
  */
-public class PlayerBaseSubControl extends TargetedSubControl
+public class PlayerSubControlBase extends TargetedSubControl
 {
     /** @private */
-    public function PlayerBaseSubControl (ctrl :AbstractControl, targetId :int = 0)
+    public function PlayerSubControlBase (ctrl :AbstractControl, targetId :int = 0)
     {
         super(ctrl, targetId);
     }

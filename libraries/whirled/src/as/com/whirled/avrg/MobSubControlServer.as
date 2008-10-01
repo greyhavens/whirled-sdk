@@ -10,9 +10,9 @@ import com.whirled.AbstractControl;
 /**
  * Defines actions, accessors and callbacks available to MOBs on the server.
  */
-public class MobServerSubControl extends MobBaseSubControl
+public class MobSubControlServer extends MobSubControlBase
 {
-    public function MobServerSubControl (parent :AbstractControl, id :String)
+    public function MobSubControlServer (parent :AbstractControl, id :String)
     {
         super(parent, id);
     }
@@ -22,7 +22,7 @@ public class MobServerSubControl extends MobBaseSubControl
      */
     public function moveTo (x :Number, y :Number, z :Number) :void
     {
-        RoomServerSubControl(_parent).callHostCodeFriend("moveMob_v1", _id, x, y, z);
+        RoomSubControlServer(_parent).callHostCodeFriend("moveMob_v1", _id, x, y, z);
     }
 }
 }

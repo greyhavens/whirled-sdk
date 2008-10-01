@@ -32,11 +32,11 @@ import com.whirled.net.impl.PropertySubControlImpl;
 /**
  * Provides services for AVR game server agents.
  */
-public class GameServerSubControl extends GameBaseSubControl
+public class GameSubControlServer extends GameSubControlBase
     implements MessageSubControl
 {
     /** @private */
-    public function GameServerSubControl (ctrl :AbstractControl)
+    public function GameSubControlServer (ctrl :AbstractControl)
     {
         super(ctrl);
     }

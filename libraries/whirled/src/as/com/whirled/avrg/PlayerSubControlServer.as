@@ -7,18 +7,18 @@ package com.whirled.avrg {
 
 import com.whirled.AbstractControl;
 
-import com.whirled.avrg.PlayerBaseSubControl;
+import com.whirled.avrg.PlayerSubControlBase;
 
 import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.MessageSubControl;
 import com.whirled.net.PropertySubControl;
 import com.whirled.net.impl.PropertySubControlImpl;
 
-public class PlayerServerSubControl extends PlayerBaseSubControl
+public class PlayerSubControlServer extends PlayerSubControlBase
     implements MessageSubControl
 {
     /** @private */
-    public function PlayerServerSubControl (ctrl :AbstractControl, targetId :int)
+    public function PlayerSubControlServer (ctrl :AbstractControl, targetId :int)
     {
         super(ctrl, targetId);
     }
