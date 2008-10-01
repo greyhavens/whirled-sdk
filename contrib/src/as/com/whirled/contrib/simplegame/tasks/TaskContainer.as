@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.simplegame.tasks {
 
+import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
 import com.whirled.contrib.simplegame.ObjectMessage;
 import com.whirled.contrib.simplegame.ObjectTask;
@@ -107,8 +108,12 @@ public class TaskContainer
     /** Returns a clone of the TaskContainer. */
     public function clone () :ObjectTask
     {
+        var clonedSubtasks :Array = this.cloneSubtasks();
+
         var theClone :TaskContainer = new TaskContainer(_type);
-        theClone._tasks = this.cloneSubtasks();
+        theClone._tasks = clonedSubtasks;
+        theClone._completedTasks = ArrayUtil.create(clonedSubtasks.length, null);
+        theClone._activeTaskCount = clonedSubtasks.length;
 
         return theClone;
     }
@@ -183,7 +188,7 @@ public class TaskContainer
     protected var _type :int;
     protected var _tasks :Array = new Array();
     protected var _completedTasks :Array = new Array();
-    protected var _activeTaskCount :uint;
+    protected var _activeTaskCount :int;
     protected var _invalidated :Boolean;
 }
 
