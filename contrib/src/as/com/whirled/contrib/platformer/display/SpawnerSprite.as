@@ -48,6 +48,9 @@ public class SpawnerSprite extends DynamicSprite
     override public function update (delta :Number) :void
     {
         super.update(delta);
+        if (_disp == null) {
+            return;
+        }
         if (_state == DEAD || _state == DEATH) {
             // do nothing;
         } else if (!_spawner.shouldSpawn()) {
