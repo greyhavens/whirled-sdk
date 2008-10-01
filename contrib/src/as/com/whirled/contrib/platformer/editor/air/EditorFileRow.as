@@ -22,13 +22,15 @@ package com.whirled.contrib.platformer.editor.air {
 
 import flash.events.Event;
 import flash.filesystem.File;
-import flash.net.FileFilter;
 
 import mx.containers.HBox;
 import mx.controls.Label;
 import mx.core.Window;
 
 import com.threerings.flex.CommandButton;
+
+import com.whirled.contrib.platformer.editor.air.file.EditorFile;
+import com.whirled.contrib.platformer.editor.air.file.XmlFile;
 
 [Event(name="selectedFile", type="flash.events.Event")];
 
@@ -37,33 +39,16 @@ public class EditorFileRow extends HBox
     /** The event that is dispatched when the player selects a new file name */
     public static const SELECTED :String = "selectedFile";
 
-    /**
-     * I can't believe how much Adobe fails at life.  AIR lets you filter file selection by 
-     * extension on file selection for open and file selection for upload... but not file selection
-     * for save.
-     */
-    public static function sanitizeFilename (file :File) :File
+    public function EditorFileRow (existingFile :EditorFile, createOption :Boolean, 
+        projectFile :XmlFile, window :Window)
     {
-        var pathRegExp :RegExp = 
-            new RegExp("^(.*" + File.separator + ")([^" + File.separator + "]+)$");
-        var filePath :String = file.nativePath.replace(pathRegExp, "$1");
-        var fileName :String = file.nativePath.replace(pathRegExp, "$2"); 
-        fileName = fileName.indexOf(".") < 0 ? fileName : fileName.replace(/^(.*)\.[^\.]*$/, "$1");
-        return new File(filePath + fileName + ".xml");
-    }
-
-    public function EditorFileRow (description :String, extension :String, createOption :Boolean, 
-        existingFile :File, projectFile :File, window :Window)
-    {
-        _description = description;
-        _extension = extension;
-        _createOption = createOption;
         _file = existingFile;
+        _createOption = createOption;
         _projectFile = projectFile;
         _window = window;
     }
 
-    public function get file () :File
+    public function get file () :EditorFile
     {
         return _file;
     }
@@ -86,14 +71,14 @@ public class EditorFileRow extends HBox
         setStyle("borderStyle", "none");
 
         var fileDesc :Label = new Label();
-        fileDesc.text = _description + ":";
+        fileDesc.text = _file.description + ":";
         fileDesc.setStyle("fontWeight", "bold");
         addChild(fileDesc);
 
         var xmlFilePath :Label = new Label();
         xmlFilePath.truncateToFit = true;
-        xmlFilePath.text = !Editor.checkFileSanity(_file, _extension, "", false) ?
-            "Select file..." : findPath(_projectFile, _file);
+        xmlFilePath.text = !file.checkFileSanity(false) ?
+            "Select file..." : EditorFile.findPath(_projectFile, _file);
         xmlFilePath.percentWidth = 100;
         var pathBox :HBox = new HBox();
         pathBox.setStyle("borderColor", "black");
@@ -115,29 +100,14 @@ public class EditorFileRow extends HBox
         }
     }
 
-    protected function findPath (reference :File, child :File) :String
-    {
-        var path :String = 
-            reference != null ? reference.parent.getRelativePath(child, true) : child.nativePath;
-        return path == null ? child.nativePath : path;
-    }
-
     protected function findFile (label :Label) :Function
     {
         return function () :void {
-            file.browseForOpen("Select " + _description + " file...", 
-                [new FileFilter(_extension + " files", "*." + _extension)]);
-            var opener :Function;
-            opener = function (event :Event) :void {
-                label.text = findPath(_projectFile, _file);
-                // for some reason, this window hides behind the main window after the file
-                // selection dialog has popped.
-                _window.orderToFront();
+            _file.browseForFile(function (file :File) :void {
+                label.text = EditorFile.findPath(_projectFile, _file);
                 _create = false;
-                _file.removeEventListener(Event.SELECT, opener);
                 dispatchEvent(new Event(SELECTED));
-            };
-            _file.addEventListener(Event.SELECT, opener);
+            });
             fileDialogCloseHandler(_file);
         };
     }
@@ -145,17 +115,12 @@ public class EditorFileRow extends HBox
     protected function createFile (label :Label) :Function
     {
         return function () :void {
-            file.browseForSave(
-                "Select new " + _description + " file location [*." + _extension + "]");
-            var creator :Function;
-            creator = function (event :Event) :void {
-                _file.removeEventListener(Event.SELECT, creator);
-                _file = sanitizeFilename(_file);
-                label.text = findPath(_projectFile, _file);
+            _file.createFile(function (file :File) :void {
+                _file.sanitizeFilename();
+                label.text = EditorFile.findPath(_projectFile, _file);
                 _create = true;
                 dispatchEvent(new Event(SELECTED));
-            };
-            _file.addEventListener(Event.SELECT, creator);
+            });
             fileDialogCloseHandler(_file);
         };
     }
@@ -174,8 +139,8 @@ public class EditorFileRow extends HBox
 
     protected var _description :String;
     protected var _extension :String;
-    protected var _projectFile :File;
-    protected var _file :File;
+    protected var _projectFile :XmlFile;
+    protected var _file :EditorFile;
     protected var _createOption :Boolean;
     protected var _create :Boolean = false;
     protected var _window :Window;

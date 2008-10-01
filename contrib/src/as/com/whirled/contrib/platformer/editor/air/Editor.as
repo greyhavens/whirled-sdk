@@ -39,6 +39,10 @@ import com.whirled.contrib.platformer.display.PieceSpriteFactory;
 import com.whirled.contrib.platformer.editor.PieceEditView;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 
+import com.whirled.contrib.platformer.editor.air.file.EditorFile;
+import com.whirled.contrib.platformer.editor.air.file.SwfFile;
+import com.whirled.contrib.platformer.editor.air.file.XmlFile;
+
 /**
  * A class to encapsulate editor functionality with easy file read/write access and AIR supplied
  * native OS look and feel.
@@ -47,74 +51,6 @@ import com.whirled.contrib.platformer.piece.PieceFactory;
  */
 public class Editor extends TabNavigator
 {
-    public static function checkFileSanity (file :File, extension :String, 
-        description :String, popErrors :Boolean = true) :Boolean
-    {
-        if (!file.exists) {
-            if (popErrors) {
-                FeedbackDialog.popError(
-                    "The " + description + " file was not found at " + file.nativePath + ".");
-            }
-            return false;
-
-        } else if (file.isDirectory || file.isHidden || file.isSymbolicLink || file.isPackage) {
-            if (popErrors) {
-                FeedbackDialog.popError(
-                    "The " + description + " file is required to be a regular file.");
-            }
-            return false;
-
-        } else if (file.nativePath.split(".").pop() != extension) {
-            if (popErrors) {
-                FeedbackDialog.popError(
-                    "The " + description + " file is required to have a \"" + extension + 
-                    "\" extension.");
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    public static function resolvePath (parentDirectory :File, path :String) :File
-    {
-        if (path == null || path == "") {
-            return parentDirectory != null ? parentDirectory.clone() : 
-                File.desktopDirectory.clone();
-        }
-
-        if (parentDirectory != null) {
-            return parentDirectory.resolvePath(path);
-        }
-
-        return new File(path);
-    }
-
-    public static function findPath (reference :File, child :File) :String
-    {
-        var path :String = 
-            reference != null ? reference.parent.getRelativePath(child, true) : child.nativePath;
-        return path == null ? child.nativePath : path;
-    }
-
-    public static function writeXmlFile (file :File, xml :XML) :void
-    {
-        var outputString :String = XML_HEADER + xml.toXMLString() + '\n';
-        var stream :FileStream = new FileStream();
-        stream.open(file, FileMode.WRITE);
-        stream.writeUTFBytes(outputString);
-        stream.close();
-    }
-
-    public static function readXmlFile (file :File) :XML
-    {
-        var stream :FileStream = new FileStream();
-        stream.open(file, FileMode.READ);
-        var xml :XML = XML(stream.readUTFBytes(stream.bytesAvailable));
-        stream.close();
-        return xml;
-    }
-
     public function Editor ()
     {
         percentWidth = 100;
@@ -209,7 +145,7 @@ public class Editor extends TabNavigator
         (new EditProjectDialog(_projectFile, loadProject)).open();
     }
 
-    protected function loadProject (file :File = null) :void
+    protected function loadProject (file :XmlFile = null) :void
     {
         if (_projectFile != null) {
             closeCurrentProject();
@@ -217,15 +153,12 @@ public class Editor extends TabNavigator
 
         // if we're not given a file, pop a dialog for one.
         if (file == null) {
-            var newFile :File = new File(File.desktopDirectory.nativePath);
-            newFile.browseForOpen("Select project file", [new FileFilter("Project XML", "*.xml")]);
-            newFile.addEventListener(Event.SELECT, function (event :Event) :void {
-                loadProject(event.target as File);
-            });
+            var newFile :XmlFile = new XmlFile("Project XML", File.desktopDirectory.nativePath)
+            newFile.browseForFile(loadProject);
             return;
         }
 
-        if (!checkFileSanity(file, "xml", "project")) {
+        if (!file.checkFileSanity()) {
             return;
         }
 
@@ -234,26 +167,23 @@ public class Editor extends TabNavigator
             _menuItems.addItem(_levelMenu);
         }
 
-        var projectXml :XML = readXmlFile(_projectFile = file);
-        addPieceEditor(resolvePath(_projectFile.parent, String(projectXml.pieceXml.@path)),
-            resolvePath(_projectFile.parent, String(projectXml.pieceSwf.@path)));
+        var projectXml :XML = (_projectFile = file).readXml();
+        var pieceXmlFile :XmlFile = EditorFile.resolvePath(_projectFile.parent, 
+            String(projectXml.pieceXml.@path), "Piece XML", EditorFile.XML_FILE) as XmlFile;
+        var pieceSwfFile :SwfFile = EditorFile.resolvePath(_projectFile.parent,
+            String(projectXml.pieceSwf.@path), "Piece SWF", EditorFile.SWF_FILE) as SwfFile;
+        addPieceEditor(pieceXmlFile, pieceSwfFile);
     }
 
-    protected function addPieceEditor (xmlFile :File, swfFile :File) :void
+    protected function addPieceEditor (xmlFile :XmlFile, swfFile :SwfFile) :void
     {
-        if (!checkFileSanity(xmlFile, "xml", "Pieces XML") || 
-            !checkFileSanity(swfFile, "swf", "Pieces SWF")) {
+        if (!xmlFile.checkFileSanity() || !swfFile.checkFileSanity()) {
             closeCurrentProject();
             return;
         }
 
-        var piecesXml :XML = readXmlFile(xmlFile);
-        var bytes :ByteArray = new ByteArray();
-        var stream :FileStream = new FileStream();
-        stream.open(swfFile, FileMode.READ);
-        stream.readBytes(bytes, 0, stream.bytesAvailable);
-        stream.close();
-        _spriteFactoryInit([bytes], function () :void {
+        var piecesXml :XML = xmlFile.readXml();
+        _spriteFactoryInit([swfFile.readBytes()], function () :void {
             _pieceEditView = new PieceEditView(new PieceFactory(piecesXml));
             _pieceEditView.label = "Pieces";
             addChild(_pieceEditView);
@@ -265,16 +195,16 @@ public class Editor extends TabNavigator
         (new AddLevelDialog(_projectFile, addLevelEditor)).open();
     }
 
-    protected function addLevelEditor (levelFile :File, addToLevel :Boolean = true) :Boolean
+    protected function addLevelEditor (levelFile :XmlFile, addToLevel :Boolean = true) :Boolean
     {
-        if (!checkFileSanity(levelFile, "xml", "Level XML")) {
+        if (!levelFile.checkFileSanity()) {
             return false;
         }
 
-        var levelXml :XML = readXmlFile(levelFile);
+        var levelXml :XML = levelFile.readXml();
         if (addToLevel) {
-            var projectXml :XML = readXmlFile(_projectFile); 
-            var levelPath :String = findPath(_projectFile, levelFile);
+            var projectXml :XML = _projectFile.readXml();
+            var levelPath :String = EditorFile.findPath(_projectFile, levelFile);
             if (projectXml.level.(@path == levelPath).length() != 0) {
                 FeedbackDialog.popError("That level has already been added to this project.");
                 return false;
@@ -291,7 +221,7 @@ public class Editor extends TabNavigator
             level.@path = levelPath;
             level.@name = levelName;
             projectXml.level += level;
-            writeXmlFile(_projectFile, projectXml);
+            _projectFile.writeXml(projectXml);
         }
 
 //        var stream :FileStream = new FileStream();
@@ -315,20 +245,21 @@ public class Editor extends TabNavigator
 
     protected function savePieceFile () :void
     {
-        var projectXml :XML = readXmlFile(_projectFile);
-        var file :File = resolvePath(_projectFile.parent, String(projectXml.pieceXml.@path));
-        if (!checkFileSanity(file, "xml", "Piece XML")) {
+        var projectXml :XML = _projectFile.readXml();
+        var pieceFile :XmlFile = EditorFile.resolvePath(_projectFile.parent, 
+            String(projectXml.pieceXml.@path), "Piece XML", EditorFile.XML_FILE) as XmlFile;
+        if (!pieceFile.checkFileSanity()) {
             return;
         }
 
-        writeXmlFile(file, _pieceEditView.getXML());
+        pieceFile.writeXml(_pieceEditView.getXML());
         FeedbackDialog.popFeedback("Piece XML file saved successfully.");
     }
 
     protected var _menuItems :ArrayCollection;
     protected var _projectMenu :Object;
     protected var _levelMenu :Object;
-    protected var _projectFile :File;
+    protected var _projectFile :XmlFile;
     protected var _spriteFactoryInit :Function = PieceSpriteFactory.init;
     protected var _pieceEditView :PieceEditView;
     protected var _window :WindowedApplication;
@@ -344,7 +275,5 @@ public class Editor extends TabNavigator
     protected static const EDIT_PROJECT :String = "Edit Project";
     protected static const SAVE_PIECES :String = "Save Piece File";
     protected static const ADD_LEVEL :String = "Add Level";
-
-    protected static const XML_HEADER :String = '<?xml version="1.0" encoding="utf-8"?>\n';
 }
 }

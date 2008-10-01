@@ -29,14 +29,18 @@ import mx.core.UIComponent;
 
 import com.threerings.flex.CommandButton;
 
+import com.whirled.contrib.platformer.editor.air.file.EditorFile;
+import com.whirled.contrib.platformer.editor.air.file.XmlFile;
+import com.whirled.contrib.platformer.editor.air.file.SwfFile;
+
 public class EditProjectDialog extends LightweightCenteredDialog
 {
-    public function EditProjectDialog (existingProject :File, callback :Function)
+    public function EditProjectDialog (existingProject :XmlFile, callback :Function)
     {
         _existingProject = existingProject;
         _saveCallback = callback;
         if (_existingProject != null) {
-            _projectXml = Editor.readXmlFile(_existingProject);
+            _projectXml = _existingProject.readXml();
         } else {
             _projectXml = <platformerproject/>;
         }
@@ -58,22 +62,20 @@ public class EditProjectDialog extends LightweightCenteredDialog
         setStyles(container, -1, 10);
         addChild(container);
 
-        var pieceXmlFile :File = Editor.resolvePath(
-            _existingProject != null ? _existingProject.parent : null, 
-            String(_projectXml.pieceXml.@path));
-        var pieceSwfFile :File = Editor.resolvePath(
-            _existingProject != null ? _existingProject.parent : null,
-            String(_projectXml.pieceSwf.@path));
-        var dynamicsXmlFile :File = Editor.resolvePath(
-            _existingProject != null ? _existingProject.parent : null,
-            String(_projectXml.dynamicsXml.@path));
+        var parentDir :File = _existingProject != null ? _existingProject.parent : null;
+        var pieceXmlFile :XmlFile = EditorFile.resolvePath(parentDir, 
+            String(_projectXml.pieceXml.@path), "Piece XML", EditorFile.XML_FILE) as XmlFile;
+        var pieceSwfFile :SwfFile = EditorFile.resolvePath(parentDir,
+            String(_projectXml.pieceSwf.@path), "Piece SWF", EditorFile.SWF_FILE) as SwfFile;
+        var dynamicsXmlFile :XmlFile = EditorFile.resolvePath(parentDir,
+            String(_projectXml.dynamicsXml.@path), "Dynamics XML", EditorFile.XML_FILE) as XmlFile;
 
-        container.addChild(_pieceXmlRow = new EditorFileRow(
-            "Piece XML", "xml", true, pieceXmlFile, _existingProject, this));
-        container.addChild(_pieceSwfRow = new EditorFileRow(
-            "Piece SWF", "swf", false, pieceSwfFile, _existingProject, this));
-        container.addChild(_dynamicsXmlRow = new EditorFileRow(
-            "Dynamics XML", "xml", true, dynamicsXmlFile, _existingProject, this));
+        container.addChild(
+            _pieceXmlRow = new EditorFileRow(pieceXmlFile, true, _existingProject, this));
+        container.addChild(
+            _pieceSwfRow = new EditorFileRow(pieceSwfFile, false, _existingProject, this));
+        container.addChild(
+            _dynamicsXmlRow = new EditorFileRow(dynamicsXmlFile, true, _existingProject, this));
 
         var dialogButtons :HBox = new HBox(); 
         dialogButtons.percentWidth = 100;
@@ -102,54 +104,45 @@ public class EditProjectDialog extends LightweightCenteredDialog
 
     public function handleSave () :void
     {
-        if (_pieceXmlRow.file == null || _pieceSwfRow.file == null || 
-                _dynamicsXmlRow.file == null) {
-            FeedbackDialog.popError("All files are required");
-            return;
-        }
-
-        if (!Editor.checkFileSanity(_pieceSwfRow.file, "swf", "Piece SWF")) {
+        if (!_pieceSwfRow.file.checkFileSanity()) {
             return;
         }
 
         if (_pieceXmlRow.create) {
-            Editor.writeXmlFile(_pieceXmlRow.file, <platformer><pieceset/></platformer>);
+            (_pieceXmlRow.file as XmlFile).writeXml(<platformer><pieceset/></platformer>);
         }
-        if (!Editor.checkFileSanity(_pieceXmlRow.file, "xml", "Piece XML")) {
+        if (!_pieceXmlRow.file.checkFileSanity()) {
             return;
         }
 
         if (_dynamicsXmlRow.create) {
-            Editor.writeXmlFile(_dynamicsXmlRow.file, <dynamics/>);
+            (_dynamicsXmlRow.file as XmlFile).writeXml(<dynamics/>);
         }
-        if (!Editor.checkFileSanity(_dynamicsXmlRow.file, "xml", "Dynamics XML")) {
+        if (!_dynamicsXmlRow.file.checkFileSanity()) {
             return;
         }
 
         if (_existingProject == null) {
-            var newFile :File = 
-                new File(File.desktopDirectory.nativePath + File.separator + "project.xml");
-            newFile.browseForSave("Select new project file location [*.xml]");
-            var saver :Function;
-            saver = function (event :Event) :void {
-                newFile.removeEventListener(Event.SELECT, saver);
-                saveAndClose(EditorFileRow.sanitizeFilename(event.target as File));
-            };
-            newFile.addEventListener(Event.SELECT, saver);
-            fileDialogCloseHandler(newFile);
+            var projectFile :XmlFile = new XmlFile("Project XML", 
+                File.desktopDirectory.nativePath + File.separator + "project.xml");
+            projectFile.createFile(function (file :XmlFile) :void {
+                projectFile.sanitizeFilename();
+                saveAndClose(projectFile);
+            });
+            fileDialogCloseHandler(projectFile);
 
         } else {
             saveAndClose(_existingProject);
         }
     }
 
-    protected function saveAndClose (file :File) :void
+    protected function saveAndClose (file :XmlFile) :void
     {
-        _projectXml.pieceXml.@path = Editor.findPath(file, _pieceXmlRow.file);
-        _projectXml.pieceSwf.@path = Editor.findPath(file, _pieceSwfRow.file);
-        _projectXml.dynamicsXml.@path = Editor.findPath(file, _dynamicsXmlRow.file);
+        _projectXml.pieceXml.@path = EditorFile.findPath(file, _pieceXmlRow.file);
+        _projectXml.pieceSwf.@path = EditorFile.findPath(file, _pieceSwfRow.file);
+        _projectXml.dynamicsXml.@path = EditorFile.findPath(file, _dynamicsXmlRow.file);
 
-        Editor.writeXmlFile(file, _projectXml);
+        file.writeXml(_projectXml);
         close();
         _saveCallback(file);
     }
@@ -166,7 +159,7 @@ public class EditProjectDialog extends LightweightCenteredDialog
         file.addEventListener(Event.CANCEL, orderer);
     }
 
-    protected var _existingProject :File;
+    protected var _existingProject :XmlFile;
     protected var _projectXml :XML;
     protected var _saveCallback :Function;
     protected var _pieceXmlRow :EditorFileRow;

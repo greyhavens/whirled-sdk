@@ -21,7 +21,6 @@
 package com.whirled.contrib.platformer.editor.air {
 
 import flash.events.Event;
-import flash.filesystem.File;
 
 import mx.containers.HBox;
 import mx.containers.VBox;
@@ -31,9 +30,11 @@ import mx.core.UIComponent;
 
 import com.threerings.flex.CommandButton;
 
+import com.whirled.contrib.platformer.editor.air.file.XmlFile;
+
 public class AddLevelDialog extends LightweightCenteredDialog
 {
-    public function AddLevelDialog (projectFile :File, callback :Function)
+    public function AddLevelDialog (projectFile :XmlFile, callback :Function)
     {
         _projectFile = projectFile;
         _callback = callback;
@@ -72,8 +73,9 @@ public class AddLevelDialog extends LightweightCenteredDialog
         nameRow.addChild(_nameText);
         container.addChild(nameRow);
         
-        container.addChild(_levelXmlRow = new EditorFileRow(
-            "Level XML", "xml", true, _projectFile.parent.clone(), _projectFile, this));
+        var newFile :XmlFile = new XmlFile("Level XML", _projectFile.parent.nativePath);
+        container.addChild(
+            _levelXmlRow = new EditorFileRow(newFile, true, _projectFile, this));
         _levelXmlRow.addEventListener(EditorFileRow.SELECTED, selectedFile);
 
         var dialogButtons :HBox = new HBox(); 
@@ -108,7 +110,7 @@ public class AddLevelDialog extends LightweightCenteredDialog
             _nameText.text = "";
 
         } else {
-            var levelXml :XML = Editor.readXmlFile(_levelXmlRow.file);
+            var levelXml :XML = (_levelXmlRow.file as XmlFile).readXml();
             _nameText.editable = false;
             _nameText.text = levelXml.board.@name;
         }
@@ -126,7 +128,7 @@ public class AddLevelDialog extends LightweightCenteredDialog
 
             var levelXml :XML = <platformer/>;
             levelXml.board.@name = _nameText.text;
-            Editor.writeXmlFile(_levelXmlRow.file, levelXml);
+            (_levelXmlRow.file as XmlFile).writeXml(levelXml);
         }
 
         if (_callback(_levelXmlRow.file)) {
@@ -134,7 +136,7 @@ public class AddLevelDialog extends LightweightCenteredDialog
         }
     }
 
-    protected var _projectFile :File;
+    protected var _projectFile :XmlFile;
     protected var _callback :Function;
     protected var _levelXmlRow :EditorFileRow;
     protected var _nameText :TextInput;
