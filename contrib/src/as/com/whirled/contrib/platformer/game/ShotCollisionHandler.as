@@ -69,8 +69,11 @@ public class ShotCollisionHandler extends CollisionHandler
                         ab.actor.wasHit = Actor.HIT_BACK;
                     }
                 }
-                ab.actor.dx += s.dx * s.force / 10;
-                ab.actor.dy += s.dy * s.force / 10;
+                if (s.force != 0) {
+                    ab.actor.dx += s.dx * s.force / 10;
+                    ab.actor.dy += s.dy * s.force / 10;
+                    db.controller.getTask().reset();
+                }
             }
         } else {
             s.ttl = 0;
