@@ -50,7 +50,8 @@ public class ResourceManager
         _resourceClasses.put(resourceType, theClass);
     }
 
-    protected function createResource (resourceType :String, resourceName :String, loadParams :*) :Resource
+    protected function createResource (resourceType :String, resourceName :String, loadParams :*)
+        :Resource
     {
         var loaderClass :Class = _resourceClasses.get(resourceType);
         if (null != loaderClass) {
@@ -60,7 +61,8 @@ public class ResourceManager
         return null;
     }
 
-    public function pendResourceLoad (resourceType :String, resourceName: String, loadParams :*) :void
+    public function queueResourceLoad (resourceType :String, resourceName: String, loadParams :*)
+        :void
     {
         if (_loading) {
             throw new Error("A load operation is already in progress");
@@ -79,7 +81,8 @@ public class ResourceManager
         _pendingResources.put(resourceName, rsrc);
     }
 
-    public function load (loadCompleteCallback :Function = null, loadErrorCallback :Function = null) :void
+    public function loadQueuedResources (loadCompleteCallback :Function = null,
+        loadErrorCallback :Function = null) :void
     {
         if (_loading) {
             throw new Error("A load operation is already in progress");
