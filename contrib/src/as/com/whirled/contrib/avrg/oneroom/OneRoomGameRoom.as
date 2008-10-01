@@ -5,7 +5,7 @@ import com.threerings.util.ClassUtil;
 
 import com.whirled.net.MessageReceivedEvent;
 import com.whirled.avrg.AVRServerGameControl;
-import com.whirled.avrg.RoomServerSubControl;
+import com.whirled.avrg.RoomSubControlServer;
 import com.whirled.avrg.AVRGameRoomEvent;
 
 /**
@@ -165,7 +165,7 @@ public class OneRoomGameRoom
     }
 
     /** The room control for this room. */
-    protected var _roomCtrl :RoomServerSubControl;
+    protected var _roomCtrl :RoomSubControlServer;
 
     /** The game control for the agent. */
     protected var _gameCtrl :AVRServerGameControl;

@@ -9,7 +9,6 @@ import com.whirled.ServerObject;
 import com.whirled.avrg.AVRGameControlEvent;
 import com.whirled.avrg.AVRGamePlayerEvent;
 import com.whirled.avrg.AVRServerGameControl;
-import com.whirled.avrg.RoomServerSubControl;
 
 /**
  * Server agent for games that take place in exactly one room. This means that whenever a player
