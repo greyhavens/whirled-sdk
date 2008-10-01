@@ -81,8 +81,7 @@ public class ShotTask extends ColliderTask
                 if (db is SimpleBounds) {
                     var sb :SimpleBounds = (db as SimpleBounds);
                     var arr :Array = line.polyIntersect(sb.getBoundLines());
-                    if (arr[0] < closehit && arr[1] != null &&
-                            _cc.getCollisionHandler(db.controller) != null) {
+                    if (arr[0] < closehit && _cc.getCollisionHandler(db.controller) != null) {
                         _cd.alines[0] = arr[1];
                         closehit = didHit(arr[0], db);
                     }
