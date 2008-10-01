@@ -31,16 +31,17 @@ public class DeathEventTrigger extends EventTrigger
     {
         super(gctrl, xml);
         var ids :String = xml.@ids;
-        _ids = new Array();
-        for each (var id :int in ids.split(/,/)) {
-            _ids.push(id);
+        if (ids != null) {
+            _ids = new Array();
+            for each (var id :int in ids.split(/,/)) {
+                _ids.push(id);
+            }
         }
-        trace("new Death Trigger " + _ids.join(","));
     }
 
-    override public function checkTriggered () :Boolean
+    override protected function testTriggered () :Boolean
     {
-        if (hasTriggered()) {
+        if (_ids == null) {
             return true;
         }
         var ii :int;
@@ -52,10 +53,7 @@ public class DeathEventTrigger extends EventTrigger
                 ii++;
             }
         }
-        if (_ids.length == 0) {
-            _triggered = true;
-        }
-        return _triggered;
+        return _ids.length == 0;
     }
 
     protected var _ids :Array;

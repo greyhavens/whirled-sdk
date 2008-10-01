@@ -143,6 +143,11 @@ public class Board
         return _dynamics;
     }
 
+    public function getDynamic (id :int) :Dynamic
+    {
+        return _dynamics[id];
+    }
+
     public function addActor (a :Actor) :void
     {
         if (a.id <= 0) {

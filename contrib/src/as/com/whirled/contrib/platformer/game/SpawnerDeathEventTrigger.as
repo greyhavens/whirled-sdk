@@ -20,16 +20,38 @@
 
 package com.whirled.contrib.platformer.game {
 
-public class ImmediateEventTrigger extends EventTrigger
+import com.whirled.contrib.platformer.piece.Dynamic;
+import com.whirled.contrib.platformer.piece.Spawner;
+
+public class SpawnerDeathEventTrigger extends DeathEventTrigger
 {
-    public function ImmediateEventTrigger (gctrl :GameController, xml :XML)
+    public function SpawnerDeathEventTrigger (gctrl :GameController, xml :XML)
     {
         super(gctrl, xml);
+        _id = xml.@id;
     }
 
     override protected function testTriggered () :Boolean
     {
-        return true;
+        if (_ids != null) {
+            return super.testTriggered();
+        }
+        var d :Dynamic = _gctrl.getBoard().getDynamic(_id);
+        if (d == null) {
+            return false;
+        } else if (!(d is Spawner)) {
+            return true;
+        }
+        var s :Spawner = d as Spawner;
+        if (s.destructable && s.health <= 0) {
+            _ids = s.spawns;
+        } else if (!s.destructable && s.spawnCount == s.totalSpawns) {
+            _ids = s.spawns;
+        }
+        return false;
+
     }
+
+    protected var _id :int;
 }
 }

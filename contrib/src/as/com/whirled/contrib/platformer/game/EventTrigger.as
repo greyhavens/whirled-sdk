@@ -47,6 +47,15 @@ public class EventTrigger
 
     public function checkTriggered () :Boolean
     {
+        if (hasTriggered()) {
+            return true;
+        }
+        _triggered = testTriggered();
+        return hasTriggered();
+    }
+
+    protected function testTriggered () :Boolean
+    {
         return false;
     }
 
