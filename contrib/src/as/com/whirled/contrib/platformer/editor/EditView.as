@@ -216,7 +216,7 @@ public class EditView extends Canvas
         var xml :XML = new XML("<" + group + "/>");
         xml.@cname = type;
         xml.@x = Math.max(0, _boardSprite.getX());
-        xml.@y = Math.max(0, _boardSprite.getY()) + (group == Board.ACTORS ? 0.01 : 0);
+        xml.@y = Math.max(0, _boardSprite.getY());
         xml.@id = _board.getMaxId() + 1;
         for each (var cxml :XML in _dynamicSelector.getConst()) {
             xml["@" + cxml.@id] = cxml.@value;
