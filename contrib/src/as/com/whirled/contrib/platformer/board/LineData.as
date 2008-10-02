@@ -267,7 +267,7 @@ public class LineData
      */
     public function isLineOutside (line :LineData) :Boolean
     {
-        return getDist(line.x1, line.y1) > 0 && getDist(line.x2, line.y2) > 0;
+        return isOutside(line.x1, line.y1) && isOutside(line.x2, line.y2);
     }
 
     /**
@@ -275,7 +275,7 @@ public class LineData
      */
     public function isLineInside (line :LineData) :Boolean
     {
-        return getDist(line.x1, line.y1) < 0 && getDist(line.x2, line.y2) > 0;
+        return isInside(line.x1, line.y1) && isInside(line.x2, line.y2);
     }
 
     /**
