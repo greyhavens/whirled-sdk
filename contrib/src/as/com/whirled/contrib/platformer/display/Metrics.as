@@ -38,6 +38,11 @@ public class Metrics
         _set = true;
     }
 
+    public static function get INITIALIZED () :Boolean
+    {
+        return (_set);
+    }
+
     public static function get DISPLAY_WIDTH () :int
     {
         return isSet(_width);

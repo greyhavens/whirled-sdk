@@ -25,6 +25,7 @@ import flash.filesystem.File;
 import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
 import flash.net.FileFilter;
+import flash.net.SharedObject;
 import flash.utils.ByteArray;
 
 import mx.collections.ArrayCollection;
@@ -38,6 +39,7 @@ import mx.events.FlexNativeMenuEvent;
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 
+import com.whirled.contrib.platformer.display.Metrics;
 import com.whirled.contrib.platformer.display.PieceSpriteFactory;
 import com.whirled.contrib.platformer.editor.EditView;
 import com.whirled.contrib.platformer.editor.PieceEditView;
@@ -99,6 +101,27 @@ public class Editor extends TabNavigator
         menu.dataProvider = _menuItems;
         menu.addEventListener(FlexNativeMenuEvent.ITEM_CLICK, menuItemClicked);
         _window.menu = menu;
+
+        var loader :Function;
+        loader = function () :void {
+            if (!Metrics.INITIALIZED) {
+                callLater(loader);
+                return;
+            }
+
+            var localSo :SharedObject = SharedObject.getLocal(EDITOR_SHARED_OBJECT);
+            if (localSo.data[PROJECT_FILE_PROP] !== undefined) {
+                var projectFile :XmlFile = EditorFile.resolvePath(new File(), 
+                    localSo.data[PROJECT_FILE_PROP], "Project XML", EditorFile.XML_FILE) as XmlFile;
+                if (!projectFile.checkFileSanity(false)) {
+                    FeedbackDialog.popError(
+                        "Unable to open last open project:\n" + localSo.data[PROJECT_FILE_PROP]);
+                } else {
+                    loadProject(projectFile);
+                }
+            }
+        };
+        loader();
     }
 
     protected function menuItemClicked (event :FlexNativeMenuEvent) :void
@@ -183,17 +206,24 @@ public class Editor extends TabNavigator
         var pieceSwfFile :SwfFile = EditorFile.resolvePath(_projectFile.parent,
             String(projectXml.pieceSwf.@path), "Piece SWF", EditorFile.SWF_FILE) as SwfFile;
         addPieceEditor(pieceXmlFile, pieceSwfFile);
+
+        var localSo :SharedObject = SharedObject.getLocal(EDITOR_SHARED_OBJECT);
+        localSo.data[PROJECT_FILE_PROP] = _projectFile.nativePath; 
     }
 
     protected function addPieceEditor (xmlFile :XmlFile, swfFile :SwfFile) :void
     {
         if (!xmlFile.checkFileSanity() || !swfFile.checkFileSanity()) {
             closeCurrentProject();
+            log.warning("closed project due to insanity in project files [" + 
+                xmlFile.nativePath + ", " + swfFile.nativePath + "]");
             return;
         }
 
+        log.debug("attempting to add piece editor");
         var piecesXml :XML = xmlFile.readXml();
         _spriteFactoryInit([swfFile.readBytes()], function () :void {
+            log.debug("adding piece editor");
             _pieceEditView = new PieceEditView(new PieceFactory(piecesXml));
             _pieceEditView.label = "Pieces";
             addChild(_pieceEditView);
@@ -393,5 +423,8 @@ public class Editor extends TabNavigator
     protected static const OPEN_LEVEL :String = "Open Level";
     protected static const CLOSE_LEVEL :String = "Close Level";
     protected static const SAVE_LEVEL :String = "Save Level";
+
+    protected static const EDITOR_SHARED_OBJECT :String = "PlatformerEditor";
+    protected static const PROJECT_FILE_PROP :String = "projectFile";
 }
 }

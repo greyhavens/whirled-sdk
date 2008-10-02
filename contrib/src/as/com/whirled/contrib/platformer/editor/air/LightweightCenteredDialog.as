@@ -31,6 +31,7 @@ public class LightweightCenteredDialog extends Window
 {
     override public function open (openWindowActive :Boolean = true) :void
     {
+        alwaysInFront = true;
         maximizable = false;
         minimizable = false;
         resizable = false;
