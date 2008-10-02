@@ -41,8 +41,8 @@ public class SpawnerSprite extends DynamicSprite
         super(s, disp);
         if (_disp != null) {
             addChild(_disp);
-            update(0);
         }
+        update(0);
     }
 
     override public function update (delta :Number) :void
