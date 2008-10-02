@@ -220,10 +220,8 @@ public class Editor extends TabNavigator
             return;
         }
 
-        log.debug("attempting to add piece editor");
         var piecesXml :XML = xmlFile.readXml();
         _spriteFactoryInit([swfFile.readBytes()], function () :void {
-            log.debug("adding piece editor");
             _pieceEditView = new PieceEditView(new PieceFactory(piecesXml));
             _pieceEditView.label = "Pieces";
             addChild(_pieceEditView);
