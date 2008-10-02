@@ -22,6 +22,7 @@ package com.whirled.contrib.simplegame.resource {
 
 import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
+import com.threerings.util.Log;
 
 public class ResourceManager
 {
@@ -175,6 +176,8 @@ public class ResourceManager
 
     protected function onSingleResourceError (rsrc :Resource, err :String) :void
     {
+        log.warning("Resource load error: " + err);
+
         // upon error, cancel all pending loads
         this.cancelLoad();
 
@@ -193,6 +196,8 @@ public class ResourceManager
     protected var _resourceClasses :HashMap = new HashMap();
 
     protected static var g_instance :ResourceManager;
+
+    protected static var log :Log = Log.getLog(ResourceManager);
 }
 
 }
