@@ -35,7 +35,11 @@ import mx.controls.Label;
 import mx.core.WindowedApplication;
 import mx.events.FlexNativeMenuEvent;
 
+import com.threerings.util.HashMap;
+import com.threerings.util.Log;
+
 import com.whirled.contrib.platformer.display.PieceSpriteFactory;
+import com.whirled.contrib.platformer.editor.EditView;
 import com.whirled.contrib.platformer.editor.PieceEditView;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 
@@ -99,21 +103,21 @@ public class Editor extends TabNavigator
 
     protected function menuItemClicked (event :FlexNativeMenuEvent) :void
     {
-        if (event.label == QUIT) {
+        switch (event.label) {
+        case QUIT: 
             closeCurrentProject();
             _window.close();
-        } else if (event.label == CREATE_PROJECT) {
-            editProject(true);
-        } else if (event.label == CLOSE_PROJECT) {
-            closeCurrentProject();
-        } else if (event.label == LOAD_PROJECT) {
-            loadProject();
-        } else if (event.label == EDIT_PROJECT) {
-            editProject(false);
-        } else if (event.label == SAVE_PIECES) {
-            savePieceFile();
-        } else if (event.label == ADD_LEVEL) {
-            addLevel();
+            break;
+        
+        case CREATE_PROJECT: editProject(true); break;
+        case CLOSE_PROJECT: closeCurrentProject(); break;
+        case LOAD_PROJECT: loadProject(); break;
+        case EDIT_PROJECT: editProject(false); break;
+        case SAVE_PIECES: savePieceFile(); break;
+        case ADD_LEVEL: addLevel(); break;
+        case OPEN_LEVEL: addLevelEditor(getLevelXmlFile(findLevel(event.item)), false); break;
+        case SAVE_LEVEL: saveLevel(findLevel(event.item)); break;
+        case CLOSE_LEVEL: closeLevel(findLevel(event.item)); break;
         }
     }
 
@@ -168,6 +172,12 @@ public class Editor extends TabNavigator
         }
 
         var projectXml :XML = (_projectFile = file).readXml();
+        var levels :Array = [];
+        for each (var level :XML in projectXml.level) {
+            levels.push(String(level.@name));
+        }
+        addLevelsToMenu(levels);
+
         var pieceXmlFile :XmlFile = EditorFile.resolvePath(_projectFile.parent, 
             String(projectXml.pieceXml.@path), "Piece XML", EditorFile.XML_FILE) as XmlFile;
         var pieceSwfFile :SwfFile = EditorFile.resolvePath(_projectFile.parent,
@@ -190,7 +200,7 @@ public class Editor extends TabNavigator
         });
     }
 
-    protected function addLevel () :void
+    protected function addLevel (name :String = null) :void
     {
         (new AddLevelDialog(_projectFile, addLevelEditor)).open();
     }
@@ -202,15 +212,15 @@ public class Editor extends TabNavigator
         }
 
         var levelXml :XML = levelFile.readXml();
+        var levelName :String = String(levelXml.board.@name);
+        var projectXml :XML = _projectFile.readXml();
         if (addToLevel) {
-            var projectXml :XML = _projectFile.readXml();
             var levelPath :String = EditorFile.findPath(_projectFile, levelFile);
             if (projectXml.level.(@path == levelPath).length() != 0) {
                 FeedbackDialog.popError("That level has already been added to this project.");
                 return false;
             }
 
-            var levelName :String = String(levelXml.board.@name);
             if (projectXml.level.(@name == levelName).length() != 0) {
                 FeedbackDialog.popError(
                     "A level of that name has already been added to this project.");
@@ -222,25 +232,76 @@ public class Editor extends TabNavigator
             level.@name = levelName;
             projectXml.level += level;
             _projectFile.writeXml(projectXml);
+
+            addLevelsToMenu(levelName);
+
+            FeedbackDialog.popFeedback(
+                "Level has been added to the project, and the project file has been saved.");
         }
 
-//        var stream :FileStream = new FileStream();
-//        stream.open(xmlFile, FileMode.READ);
-//        var piecesXml :XML = XML(stream.readUTFBytes(stream.bytesAvailable));
-//        stream.close();
-//
-//        var bytes :ByteArray = new ByteArray();
-//        stream = new FileStream();
-//        stream.open(swfFile, FileMode.READ);
-//        stream.readBytes(bytes, 0, stream.bytesAvailable);
-//        stream.close();
-//        _spriteFactoryInit([bytes], function () :void {
-//            _pieceEditView = new PieceEditView(new PieceFactory(piecesXml.copy()));
-//            _pieceEditView.label = "Pieces";
-//            addChild(_pieceEditView);
-//        });
+        if (_openLevels.containsKey(levelName)) {
+            // shouldn't be possible... freak out passively.
+            log.warning("asked to open already open level [" + levelName + ", " + addToLevel + "]");
+            return true;
+        }
+
+        // TODO: this should probably be using the same PieceFactory instance as the 
+        // PieceEditView...
+        var piecesXml :XML = getProjectXmlFile(projectXml.pieceXml.@path).readXml();
+        var dynamicsXml :XML = getProjectXmlFile(projectXml.dynamicsXml.@path).readXml();
+        var editView :EditView = new EditView(new PieceFactory(piecesXml), dynamicsXml, levelXml);
+        editView.label = levelName.replace("_", " ");
+        addChild(editView);
+        _openLevels.put(levelName, {editor: editView, file: levelFile});
+        var values :Object = {};
+        values[OPEN_LEVEL] = false;
+        values[CLOSE_LEVEL] = true;
+        values[SAVE_LEVEL] = true;
+        setLevelMenuItemsEnabled(levelName, values);
+
+        selectedIndex = numChildren - 1;
 
         return true;
+    }
+
+    protected function getProjectXmlFile (path :String) :XmlFile
+    {
+        return EditorFile.resolvePath(
+            _projectFile.parent, path, "", EditorFile.XML_FILE) as XmlFile;
+    }
+
+    protected function getLevelXmlFile (levelName :String) :XmlFile
+    {
+        return getProjectXmlFile(_projectFile.readXml().level.(@name == levelName)[0].@path);
+    }
+
+    protected function closeLevel (levelName :String) :void
+    {
+        // TODO: prompt to save - requires a ConfirmationDialog
+        var level :Object = _openLevels.remove(levelName);
+        if (level == null) {
+            log.warning("level not found to close [" + levelName + "]");
+            return;
+        }
+
+        removeChild(level.editor);
+        var values :Object = {};
+        values[OPEN_LEVEL] = true;
+        values[CLOSE_LEVEL] = false;
+        values[SAVE_LEVEL] = false;
+        setLevelMenuItemsEnabled(levelName, values);
+    }
+
+    protected function saveLevel (levelName :String) :void
+    {
+        var level :Object = _openLevels.get(levelName);
+        if (level == null) {
+            log.warning("level not found to save [" + levelName + "]");
+            return;
+        }
+
+        (level.file as XmlFile).writeXml((level.editor as EditView).getXML()); 
+        FeedbackDialog.popFeedback(levelName + "'s level file has been saved."); 
     }
 
     protected function savePieceFile () :void
@@ -256,6 +317,57 @@ public class Editor extends TabNavigator
         FeedbackDialog.popFeedback("Piece XML file saved successfully.");
     }
 
+    protected function addLevelsToMenu (levels :*) :void
+    {
+        var adder :Function = function (name :String) :void {
+            name = name.replace("_", " ");
+            _levelMenu.children.unshift({
+                label: name,
+                children: [
+                    {label: OPEN_LEVEL, enabled: true},
+                    {label: SAVE_LEVEL, enabled: false},
+                    {type: "separator"},
+                    {label: CLOSE_LEVEL, enabled: false}
+                ]
+            });
+        };
+
+        if (levels is String) {
+            adder(levels as String);
+        } else {
+            for each (var name :String in levels) {
+                adder(name);
+            }
+        }
+        _menuItems.itemUpdated(_levelMenu);
+    }
+
+    protected function findLevel (menuObject :Object) :String
+    {
+        for each (var level :Object in _levelMenu.children) {
+            if (level.children != null && level.children.indexOf(menuObject) >= 0) {
+                return level.label.replace(" ", "_");
+            }
+        }
+        return null;
+    }
+
+    protected function setLevelMenuItemsEnabled (levelName :String, values :Object) :void
+    {
+        levelName = levelName.replace("_", " ");
+        for each (var level :Object in _levelMenu.children) {
+            if (level.label == levelName) {
+                for each (var item :Object in level.children) {
+                    if (values[item.label] !== undefined) {
+                        item.enabled = values[item.label];
+                    }
+                }
+                _menuItems.itemUpdated(_levelMenu);
+                return;
+            }
+        }
+    }
+
     protected var _menuItems :ArrayCollection;
     protected var _projectMenu :Object;
     protected var _levelMenu :Object;
@@ -263,6 +375,9 @@ public class Editor extends TabNavigator
     protected var _spriteFactoryInit :Function = PieceSpriteFactory.init;
     protected var _pieceEditView :PieceEditView;
     protected var _window :WindowedApplication;
+    protected var _openLevels :HashMap = new HashMap();
+
+    protected static const log :Log = Log.getLog(Editor);
 
     protected static const FILE_MENU :String = "File";
     protected static const PROJECT_MENU :String = "Project";
@@ -275,5 +390,8 @@ public class Editor extends TabNavigator
     protected static const EDIT_PROJECT :String = "Edit Project";
     protected static const SAVE_PIECES :String = "Save Piece File";
     protected static const ADD_LEVEL :String = "Add Level";
+    protected static const OPEN_LEVEL :String = "Open Level";
+    protected static const CLOSE_LEVEL :String = "Close Level";
+    protected static const SAVE_LEVEL :String = "Save Level";
 }
 }

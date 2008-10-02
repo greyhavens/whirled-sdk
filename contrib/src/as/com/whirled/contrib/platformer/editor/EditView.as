@@ -53,8 +53,6 @@ import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 
-import mx.core.Container;
-
 public class EditView extends Canvas
 {
     public static function makeButton (label :String, callback :Function) :Button
@@ -73,11 +71,8 @@ public class EditView extends Canvas
      *
      * Also, it is required that Metrics.init() be called before creating this view.
      */
-    public function EditView (
-        container :Container, pfac :PieceFactory, dynamics :XML, level :XML, board :Board = null)
+    public function EditView (pfac :PieceFactory, dynamics :XML, level :XML, board :Board = null)
     {
-        _container = container;
-
         _pfac = pfac;
         _board = board == null ? new Board() : board;
         _boardSprite = new BoardEditSprite(this);
@@ -291,8 +286,6 @@ public class EditView extends Canvas
 
     protected var _pieceTree :PieceTree;
     protected var _dynamicTree :DynamicTree;
-
-    protected var _container :Container;
 
     protected var _editCoords :Label;
 

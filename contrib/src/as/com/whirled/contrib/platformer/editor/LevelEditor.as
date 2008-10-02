@@ -63,14 +63,6 @@ public class LevelEditor extends Panel
     }
 
     /**
-     * Set the PieceFactory class to be used in the level editor.
-     */
-    public function setPieceFactoryClass (pfClass :Class) :void
-    {
-        _pfClass = pfClass;
-    }
-
-    /**
      * Must be called to set up loading the XML for this level editor.
      */
     public function setXmlPaths (piecesXmlPath :String, dynamicsXmlPath :String,
@@ -170,7 +162,7 @@ public class LevelEditor extends Panel
             (_dynamicsLoader == null ? <dynamics/> : new XML(_dynamicsLoader.data));
 
         _levelEdit.rawChildren.addChild(_editView = new EditView(
-            _levelEdit, new _pfClass(xmlPieces), xmlDynamics, xmlLevel, _board));
+            new PieceFactory(xmlPieces), xmlDynamics, xmlLevel, _board));
     }
 
     protected function tabChanged (selected :Container) :void
@@ -192,6 +184,5 @@ public class LevelEditor extends Panel
     protected var _xmlCode :VBox;
     protected var _factoryInitialized :Boolean = false;
     protected var _board :Board;
-    protected var _pfClass :Class = PieceFactory;
 }
 }

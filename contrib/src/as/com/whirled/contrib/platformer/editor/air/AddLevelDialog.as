@@ -21,9 +21,11 @@
 package com.whirled.contrib.platformer.editor.air {
 
 import flash.events.Event;
+import flash.events.MouseEvent;
 
 import mx.containers.HBox;
 import mx.containers.VBox;
+import mx.controls.Button;
 import mx.controls.Label;
 import mx.controls.TextInput;
 import mx.core.UIComponent;
@@ -85,7 +87,14 @@ public class AddLevelDialog extends LightweightCenteredDialog
         spacer.percentWidth = 100;
         dialogButtons.addChild(spacer);
         dialogButtons.addChild(new CommandButton("Cancel", close));
-        dialogButtons.addChild(new CommandButton("Add Level", handleSave));
+        var saveButton :Button = new Button();
+        saveButton.label = "Add Level";
+        saveButton.addEventListener(MouseEvent.CLICK, function (event :MouseEvent) :void {
+            // for some odd reason, using a CommandButton is getting handleSave called twice,
+            // so lets wire up a plain 'ole Button.
+            handleSave();
+        });
+        dialogButtons.addChild(saveButton);
         container.addChild(dialogButtons);
     }
 
