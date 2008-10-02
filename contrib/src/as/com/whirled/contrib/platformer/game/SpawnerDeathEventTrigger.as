@@ -49,7 +49,6 @@ public class SpawnerDeathEventTrigger extends DeathEventTrigger
             _ids = s.spawns;
         }
         return false;
-
     }
 
     protected var _id :int;

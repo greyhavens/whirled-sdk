@@ -33,12 +33,13 @@ public class MultiEventTrigger extends EventTrigger
 
     override protected function testTriggered () :Boolean
     {
+        var ret :Boolean = true;
         for each (var trigger :EventTrigger in _triggers) {
             if (!trigger.checkTriggered()) {
-                return false;
+                ret = false;
             }
         }
-        return true;
+        return ret;
     }
 
     protected var _triggers :Array;
