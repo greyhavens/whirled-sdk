@@ -77,7 +77,7 @@ public class ActorController extends DynamicController
         return false;
     }
 
-    public function inAttack () :Boolean
+    public function inAttack (o :Object) :Boolean
     {
         return false;
     }

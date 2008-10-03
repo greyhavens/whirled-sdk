@@ -35,7 +35,7 @@ public class AttackCollisionHandler extends CollisionHandler
 
     override public function handlesObject (o :Object) :Boolean
     {
-        return (_ac.canAttack() || _ac.inAttack()) && super.handlesObject(o) &&
+        return (_ac.canAttack() || _ac.inAttack(o)) && super.handlesObject(o) &&
             ((o as ActorController).getActor().health > 0);
     }
 
