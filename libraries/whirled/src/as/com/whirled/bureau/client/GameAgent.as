@@ -114,7 +114,7 @@ public class GameAgent extends Agent
         _gameObj = gameObj;
 
         _controller = createController();
-        _controller.init(_ctx, _gameObj, gameAgentObj.config);
+        _controller.init(_ctx, _gameObj, this, gameAgentObj.config);
 
         if (_userCode != null && _gameObj != null) {
             launchUserCode();

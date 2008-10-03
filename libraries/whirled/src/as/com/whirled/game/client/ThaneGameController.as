@@ -11,6 +11,7 @@ import com.threerings.presents.dobj.AttributeChangedEvent;
 import com.threerings.bureau.util.BureauContext;
 import com.threerings.parlor.game.data.GameObject;
 import com.threerings.parlor.turn.client.TurnGameControllerDelegate;
+import com.whirled.bureau.client.GameAgent;
 import com.whirled.game.data.ThaneGameConfig;
 import com.whirled.game.data.WhirledGameObject;
 
@@ -31,12 +32,12 @@ public class ThaneGameController extends Controller
 
     /** Initializes the controller. */
     public function init (
-        ctx :BureauContext, 
-        gameObj :WhirledGameObject, 
+        ctx :BureauContext, gameObj :WhirledGameObject, gameAgent :GameAgent,
         config :ThaneGameConfig) :void
     {
         _ctx = ctx;
         _gameObj = gameObj;
+        _gameAgent = gameAgent;
         _config = config;
 
         backend = createBackend();
@@ -122,6 +123,17 @@ public class ThaneGameController extends Controller
 
     }
 
+    /**
+     * Outputs a message to the user code's internal trace method. This is used to avoid
+     * generating warnings and traces from backend and controller code.
+     */
+    public function outputToUserCode (msg :String, error :Error = null) :void
+    {
+        if (_gameAgent != null) {
+            _gameAgent.outputToUserCode(msg, error);
+        }
+    }
+
     /** Called when the turn holder field changes. */
     protected function turnDidChange (turnHolder :Name) :void
     {
@@ -202,6 +214,7 @@ public class ThaneGameController extends Controller
 
     protected var _ctx :BureauContext;
     protected var _gameObj :WhirledGameObject;
+    protected var _gameAgent :GameAgent;
     protected var _config :ThaneGameConfig;
 
     /** A local flag overriding the game over state for situations where
