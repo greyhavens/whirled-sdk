@@ -105,6 +105,7 @@ public class NodeMoveLayer extends Layer
 
     public function mouseDown (down :Boolean) :void
     {
+        _mouseDown = down;
         regenerateBounds();
 
         if (_mouseBound == null) {
@@ -149,7 +150,7 @@ public class NodeMoveLayer extends Layer
     {
         var bound :Object = findBoundOnNode(position); 
         if (bound == null) {
-            log.debug("bound not found to change color on [" + position + "]");
+            log.warning("bound not found to change color on [" + position + "]");
             return;
         }
 
@@ -161,7 +162,7 @@ public class NodeMoveLayer extends Layer
     {
         var idx :int = findBoundIndex(position);
         if (idx < 0) {
-            log.debug("bound not found to remove [" + position + "]");
+            log.warning("bound not found to remove [" + position + "]");
             return;
         }
 
