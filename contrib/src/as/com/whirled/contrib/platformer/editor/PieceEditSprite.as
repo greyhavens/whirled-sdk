@@ -23,6 +23,7 @@ package com.whirled.contrib.platformer.editor {
 import flash.display.DisplayObject;
 import flash.display.Shape;
 import flash.display.Sprite;
+import flash.events.KeyboardEvent;
 
 import flash.events.MouseEvent;
 
@@ -39,6 +40,9 @@ public class PieceEditSprite extends EditSprite
         // we default to normal scale here
         _scale = 1;
         initDisplay();
+
+        addEventListener(KeyboardEvent.KEY_DOWN, keyDown);
+        addEventListener(KeyboardEvent.KEY_UP, keyUp);
     }
 
     public function setPiece (p :Piece) :void
@@ -116,8 +120,32 @@ public class PieceEditSprite extends EditSprite
         }
     }
 
+    protected function keyDown (event :KeyboardEvent) :void
+    {
+        if (event.charCode == PIECE_ADD_KEY && !_addKeyDown) { 
+            _addKeyDown = true;
+            if (_layers[NODE_MOVE_LAYER] != null) {
+                (_layers[NODE_MOVE_LAYER] as NodeMoveLayer).setMode(NodeMoveLayer.ADD_MODE); 
+            }
+        }
+    }
+
+    protected function keyUp (event :KeyboardEvent) :void
+    {
+        if (event.charCode == PIECE_ADD_KEY && _addKeyDown) {
+            _addKeyDown = false;
+            if (_layers[NODE_MOVE_LAYER] != null) {
+                (_layers[NODE_MOVE_LAYER] as NodeMoveLayer).setMode(NodeMoveLayer.EDIT_MODE);
+            }
+        }
+    }
+
+    protected var _addKeyDown :Boolean = false;
+
     protected static const PIECE_GRID_LAYER :int = 0;
     protected static const PIECE_LAYER :int = 1;
     protected static const NODE_MOVE_LAYER :int = 2;
+
+    protected static const PIECE_ADD_KEY :int = "a".charCodeAt(0);
 }
 }

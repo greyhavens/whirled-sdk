@@ -24,6 +24,7 @@ import flash.display.BlendMode;
 import flash.display.Graphics;
 import flash.display.Sprite;
 import flash.geom.Point;
+import flash.geom.Matrix;
 
 import com.threerings.util.Log;
 
@@ -34,6 +35,9 @@ import com.whirled.contrib.platformer.display.Metrics;
 
 public class NodeMoveLayer extends Layer
 {
+    public static const EDIT_MODE :int = 1;
+    public static const ADD_MODE :int = 2;
+
     public function NodeMoveLayer (detail :BoundsDetail, pieceWidth :int, pieceHeight :int)
     {
         _boundsDetail = detail;
@@ -55,6 +59,16 @@ public class NodeMoveLayer extends Layer
         _selectedGraphics = selectedDisplay.graphics;
     }
 
+    public function setMode (mode :int) :void
+    {
+        if (_mouseDown) {
+            mouseDown(false);
+        }
+        _mode = mode;
+        _addNode = null;
+        _boundsDetail.modeChanged(mode);
+    }
+
     public function mousePositionUpdated (mouseX :Number, mouseY :Number) :void
     {
         var closestNode :Point = new Point(
@@ -67,8 +81,19 @@ public class NodeMoveLayer extends Layer
             return;
         }
 
-        var draggingBound :Boolean = _mouseDown && _mouseBound != null;
+        if (_mode == ADD_MODE) {
+            _highlightGraphics.clear();
+            var idx :int = checkLineIntersection(closestNode);
+            if (idx >= 0) {
+                _addNode = closestNode;
+                markNode(_highlightGraphics, _addNode, HIGHLIGHT_RADIUS, SELECTED_COLOR);
+            } else {
+                _addNode = null;
+            }
+            return;
+        }
 
+        var draggingBound :Boolean = _mouseDown && _mouseBound != null;
         var distance :Number = Point.distance(
             new Point(mouseX - Metrics.TILE_SIZE, mouseY - Metrics.TILE_SIZE), 
             new Point(closestNode.x * Metrics.TILE_SIZE, closestNode.y * Metrics.TILE_SIZE));
@@ -108,6 +133,16 @@ public class NodeMoveLayer extends Layer
         _mouseDown = down;
         regenerateBounds();
 
+        if (_mode == ADD_MODE && !down) {
+            if (_addNode != null) {
+                var idx :int = checkLineIntersection(_addNode);
+                log.debug("adding node [" + idx + ", " + _bounds.length + "]");
+                _boundsDetail.addClickBound(_addNode, idx);
+                _addNode = null;
+            }
+            return;
+        }
+
         if (_mouseBound == null) {
             return;
         }
@@ -124,6 +159,7 @@ public class NodeMoveLayer extends Layer
 
     public function mouseOut () :void
     {
+        _addNode = null;
         mouseDown(false);
     }
 
@@ -140,9 +176,13 @@ public class NodeMoveLayer extends Layer
         }
     }
 
-    public function addBoundMarker (position :Point, markerColor :uint) :void
+    public function addBoundMarker (position :Point, markerColor :uint, idx :int = -1) :void
     {
-        _bounds.push({pos: position, color: markerColor});
+        if (idx < 0) {
+            _bounds.push({pos: position, color: markerColor});
+        } else {
+            _bounds.splice(idx, 0, {pos: position, color: markerColor});
+        }
         markNode(_boundGraphics, position, BOUND_MARKER_RADIUS, markerColor); 
     }
 
@@ -216,6 +256,40 @@ public class NodeMoveLayer extends Layer
         return -1;
     }
 
+    protected function checkLineIntersection (closestNode :Point) :int
+    {
+        if (_bounds.length < 3) {
+            return _bounds.length;
+        }
+
+        for (var ii :int = 0; ii < _bounds.length; ii++) {
+            var bound1 :Point = _bounds[ii].pos; 
+            var bound2 :Point = _bounds[(ii + 1) % _bounds.length].pos;
+
+            if (bound1.equals(closestNode) || bound2.equals(closestNode)) {
+                return -1;
+            }
+
+            var trans :Matrix = new Matrix();
+            trans.translate(-bound1.x, -bound1.y);
+            var edge :Point = trans.transformPoint(bound2);
+            trans.rotate(-Math.atan2(edge.y, edge.x));
+            var current :Point = trans.transformPoint(closestNode);
+
+            if (Math.abs(current.y) > 0.5) {
+                continue;
+            } 
+            edge = trans.transformPoint(bound2);
+            if (current.x > edge.x + 0.5 || current.x < 0.5) {
+                continue;
+            }
+
+            return ii + 1;
+        }
+
+        return -1;
+    }
+
     protected var _currentNode :Point;
     protected var _mouseBound :Object;
     protected var _bounds :Array = [];
@@ -227,6 +301,8 @@ public class NodeMoveLayer extends Layer
     protected var _highlightGraphics :Graphics;
     protected var _boundGraphics :Graphics;
     protected var _selectedGraphics :Graphics;
+    protected var _mode :int = EDIT_MODE;
+    protected var _addNode :Point;
 
     protected static const LINE_WEIGHT :int = 2;
     protected static const BOUND_MARKER_RADIUS :int = 3;

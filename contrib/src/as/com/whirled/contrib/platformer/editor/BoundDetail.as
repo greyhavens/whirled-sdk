@@ -94,7 +94,7 @@ public class BoundDetail extends Detail
         var xml :XML = <bound/>;
         xml.@x = _x.text;
         xml.@y = _y.text;
-        xml.@type = _type.selectedItem.data | _proj.selectedItem.data;
+        xml.@type = getType();
         defxml.appendChild(xml);
     }
 
@@ -157,6 +157,11 @@ public class BoundDetail extends Detail
     public function getColor () :uint
     {
         return BoundData.getColor(_type.selectedItem.data | _proj.selectedItem.data);
+    }
+
+    public function getType () :int
+    {
+        return _type.selectedItem.data | _proj.selectedItem.data;
     }
 
     protected var _x :TextInput;

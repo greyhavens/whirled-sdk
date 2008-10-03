@@ -28,6 +28,7 @@ import mx.containers.VBox;
 import mx.controls.Button;
 import mx.controls.RadioButtonGroup;
 import mx.controls.RadioButton;
+import mx.controls.Text;
 import mx.events.FlexEvent;
 import mx.events.ItemClickEvent;
 
@@ -71,6 +72,12 @@ public class BoundsDetail extends Detail
         _topBox.addChild(_numberBox);
 
         _mouseBox = new VBox();
+        _mouseBox.percentWidth = 100;
+        _mouseModeLabel = new Text();
+        _mouseModeLabel.percentWidth = 100;
+        _mouseModeLabel.setStyle("textAlign", "center");
+        _mouseModeLabel.text = EDIT_MODE_LABEL;
+        _mouseBox.addChild(_mouseModeLabel);
 
         return _topBox;
     }
@@ -86,8 +93,8 @@ public class BoundsDetail extends Detail
 
     public function nodeSelected (pos :Point) :void
     {
-        while(_mouseBox.numChildren > 0) {
-            _mouseBox.removeChildAt(0);
+        while(_mouseBox.numChildren > 1) {
+            _mouseBox.removeChildAt(1);
         }
 
         if (pos == null) {
@@ -126,6 +133,38 @@ public class BoundsDetail extends Detail
 
         bound.setPosition(newPos);
         _pieceDetails.updatePiece();
+    }
+
+    public function addClickBound (pos :Point, idx :int) :void
+    {
+        var bdef :XML = <bound/>;
+        bdef.@x = pos.x;
+        bdef.@y = pos.y;
+        if (_bounds.length == 0) {
+            bdef.@type = 0;
+        } else {
+            var prevBound :BoundDetail = _bounds[idx - 1] as BoundDetail;
+            bdef.@type = prevBound.getType();
+        }
+         
+        var bound :BoundDetail = new BoundDetail(bdef);
+        if (idx == _bounds.length) {
+            _bounds.push(bound);
+        } else {
+            _bounds.splice(idx, 0, bound);
+        }
+
+        _nodeMoveLayer.addBoundMarker(bound.getPosition(), bound.getColor(), idx);
+        _pieceDetails.updatePiece();
+    }
+
+    public function modeChanged (mode :int) :void
+    {
+        if (mode == NodeMoveLayer.ADD_MODE) {
+            _mouseModeLabel.text = ADD_MODE_LABEL;
+        } else if (mode == NodeMoveLayer.EDIT_MODE) {
+            _mouseModeLabel.text = EDIT_MODE_LABEL;
+        }
     }
 
     protected function findBound (pos :Point) :BoundDetail
@@ -177,7 +216,7 @@ public class BoundsDetail extends Detail
                 _nodeMoveLayer.addBoundMarker(bound.getPosition(), bound.getColor());
             }
         } else {
-            log.debug("mode change borked [" + event.label + ", " + _mouseBox.parent + ", " + 
+            log.warning("mode change borked [" + event.label + ", " + _mouseBox.parent + ", " + 
                 _numberBox.parent + "]");
         }
     }
@@ -186,12 +225,17 @@ public class BoundsDetail extends Detail
     protected var _topBox :VBox;
     protected var _numberBox :VBox;
     protected var _mouseBox :VBox;
+    protected var _mouseModeLabel :Text;
     protected var _editSprite :PieceEditSprite;
     protected var _pieceDetails :PieceEditDetails;
     protected var _nodeMoveLayer :NodeMoveLayer;
 
     protected static const NUMBER_MODE :String = "Number Mode";
     protected static const MOUSE_MODE :String = "Mouse Mode";
+    protected static const EDIT_MODE_LABEL :String = 
+        "Enter Add mode by clicking in the edit area and holding the 'a' key";
+    protected static const ADD_MODE_LABEL :String = 
+         "Currently in Add mode - release the 'a' key to edit nodes";
 
     private static const log :Log = Log.getLog(BoundsDetail);
 }
