@@ -10,6 +10,8 @@ import flash.events.TimerEvent;
 
 import com.threerings.io.TypedArray;
 
+import com.threerings.util.Log;
+
 import com.threerings.presents.dobj.ObjectAccessError;
 import com.threerings.presents.dobj.Subscriber;
 import com.threerings.presents.dobj.SubscriberAdapter;
@@ -17,7 +19,6 @@ import com.threerings.presents.dobj.SubscriberAdapter;
 import com.threerings.presents.util.SafeSubscriber;
 
 import com.threerings.bureau.client.Agent;
-import com.threerings.bureau.Log;
 
 import com.whirled.bureau.util.WhirledBureauContext;
 
@@ -30,6 +31,8 @@ import com.whirled.game.data.WhirledGameObject;
 /** The container for a user's game control code. */
 public class GameAgent extends Agent
 {
+    public static var log :Log = Log.getLog(GameAgent);
+
     public function GameAgent (ctx :WhirledBureauContext)
     {
         _ctx = ctx; 
@@ -40,13 +43,13 @@ public class GameAgent extends Agent
     // from Agent
     public override function start () :void
     {
-        Log.info("Starting agent " + _agentObj);
+        log.info("Starting agent", "agentObj", _agentObj);
 
         // subscribe to the game object
         var delegator :Subscriber = 
             new SubscriberAdapter(objectAvailable, requestFailed);
 
-        Log.info("Subscribing to game object " + gameAgentObj.gameOid);
+        log.info("Subscribing to game object", "oid", gameAgentObj.gameOid);
 
         _subscriber = new SafeSubscriber(gameAgentObj.gameOid, delegator);
         _subscriber.subscribe(_ctx.getDObjectManager());
@@ -61,7 +64,7 @@ public class GameAgent extends Agent
     // from Agent
     public override function stop () :void
     {
-        Log.info("Stopping agent " + _agentObj);
+        log.info("Stopping agent", "agentObj", _agentObj.which());
 
         handleTimer(null);
         _traceTimer.stop();
@@ -96,7 +99,7 @@ public class GameAgent extends Agent
      */
     protected function objectAvailable (gameObj :WhirledGameObject) :void
     {
-        Log.info("Subscribed to game object " + gameObj);
+        log.info("Subscribed to game object", "gameObj", gameObj.which());
         _gameObj = gameObj;
 
         _controller = createController();
@@ -112,8 +115,7 @@ public class GameAgent extends Agent
      */
     protected function requestFailed (oid :int, cause :ObjectAccessError) :void
     {
-        Log.warning("Could not subscribe to game object [oid=" + oid + "]");
-        Log.logStackTrace(cause);
+        log.warning("Could not subscribe to game object", "oid", oid, cause);
         _controller.agentFailed();
     }
 
@@ -123,13 +125,13 @@ public class GameAgent extends Agent
     protected function gotUserCode (userCode :UserCode) :void
     {
         if (userCode == null) {
-            Log.warning("Unable to load user code [agent: " + _agentObj + "]");
+            log.warning("Unable to load user code", "agentObj", _agentObj.which());
             _controller.agentFailed();
             return;
         }
 
         _userCode = userCode;
-        Log.info("Loaded user code " + _userCode);
+        log.info("Loaded agent user code", "code", _userCode, "agent", _agentObj.which());
 
         if (_userCode != null && _gameObj != null) {
             launchUserCode();
@@ -144,7 +146,7 @@ public class GameAgent extends Agent
         _userCode.connect(_controller.backend.getConnectListener(), relayTrace);
         
         if (!_controller.backend.isConnected()) {
-            Log.info("Could not connect to user code");
+            log.info("Could not connect to user code", "agentObj", _agentObj.which());
             _controller.agentFailed();
             return;
         }
@@ -158,8 +160,13 @@ public class GameAgent extends Agent
      */
     protected function relayTrace (trace :String) :void
     {
-        _traceOutput.push(trace);
-        _traceTimer.start();
+        if (_traceTimer == null) {
+            log.warning("relayTrace called after agent stop", new Error());
+
+        } else {
+            _traceOutput.push(trace);
+            _traceTimer.start();
+        }
     }
 
     /**
