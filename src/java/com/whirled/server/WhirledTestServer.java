@@ -154,6 +154,7 @@ public class WhirledTestServer extends CrowdServer
                 args.add(bureauId);
                 args.add(token);
                 args.add(String.valueOf(getListenPorts()[0]));
+                args.add(System.getProperty("thane.logLevel"));
                 log.info("Bureau arguments: " + StringUtil.toString(args));
                 ProcessBuilder builder = new ProcessBuilder(args.toArray(new String[args.size()]));
                 builder.redirectErrorStream(true);

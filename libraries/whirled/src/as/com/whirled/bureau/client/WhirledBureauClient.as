@@ -5,19 +5,22 @@
 
 package com.whirled.bureau.client {
 
+import com.threerings.util.Log;
+
 import com.threerings.bureau.client.BureauClient;
 import com.threerings.bureau.client.BureauDirector;
 import com.threerings.bureau.util.BureauContext;
-import com.threerings.bureau.Log;
 import com.threerings.presents.client.ClientEvent;
 import com.whirled.bureau.util.WhirledBureauContext;
 
 /** The bureau client for whirled. */
 public class WhirledBureauClient extends BureauClient
 {
+    public static var log :Log = Log.getLog(WhirledBureauClient);
+
     /**
      * Launches a new client from command line (String) arguments. 
-     * @param argv array of command line arguments: (bureauId) (token) (port)
+     * @param argv array of command line arguments: (bureauId) (token) (port) (logLevel)
      * @param version for authenticaion, the deployment version
      * @param userCodeLoader the implementation to use to download user code
      * @param cleanup the function to call when the client is no longer in use:
@@ -32,12 +35,16 @@ public class WhirledBureauClient extends BureauClient
         var token :String = args[1];
         var server :String = "localhost";
         var port :int = parseInt(args[2]);
+        var logLevel :String = args[3] as String;
 
-        Log.info(
+        Log.setLevels(":" + logLevel);
+
+        log.info(
             "Starting client with token=" + token + 
             ", bureauId=" + bureauId + 
             ", server=" + server + 
-            ", port=" + port);
+            ", port=" + port +
+            ", logLevel=" + logLevel);
 
         // create the client and log on
         var client :WhirledBureauClient = new WhirledBureauClient(
@@ -89,13 +96,13 @@ public class WhirledBureauClient extends BureauClient
 
     protected function clientDidLogoff (evt :ClientEvent) :void
     {
-        Log.log.info("Client logged off, cleaning up", "evt", evt);
+        log.info("Client logged off, cleaning up", "evt", evt);
         _cleanup(this);
     }
 
     protected function clientFailedToLogon (evt :ClientEvent) :void
     {
-        Log.log.info("Client failed to logon, cleaning up", "evt", evt);
+        log.info("Client failed to logon, cleaning up", "evt", evt);
         _cleanup(this);
     }
 

@@ -227,6 +227,7 @@
 
       <!-- stuff to run the agent -->
       <sysproperty key="thane.path" value="${thane.path}"/>
+      <sysproperty key="thane.logLevel" value="warn"/>
       <sysproperty key="app.server-agent-package-dir" value="${app.server-agent-package-dir}"/>
       <sysproperty key="app.server-agent" value="${app.server-agent}"/>
 
