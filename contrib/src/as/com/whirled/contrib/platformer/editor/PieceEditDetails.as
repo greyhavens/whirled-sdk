@@ -47,10 +47,11 @@ import com.whirled.contrib.platformer.display.Metrics;
 
 public class PieceEditDetails extends Canvas
 {
-    public function PieceEditDetails (pfac :PieceFactory)
+    public function PieceEditDetails (pfac :PieceFactory, editSprite :PieceEditSprite)
     {
         initDetails();
         _pfac = pfac;
+        _editSprite = editSprite;
         width = 210;
         horizontalScrollPolicy = ScrollPolicy.OFF;
         height = Metrics.DISPLAY_HEIGHT;
@@ -118,19 +119,7 @@ public class PieceEditDetails extends Canvas
         }
     }
 
-    protected function createPiece (event :FlexEvent) :void
-    {
-        var cname :String = _pfac.getClassName(_createClass.selectedLabel);
-        if (!ApplicationDomain.currentDomain.hasDefinition(cname)) {
-            return;
-        }
-        var cdef :Class = ApplicationDomain.currentDomain.getDefinition(cname) as Class;
-        var p :Piece = new cdef() as Piece;
-        p.type = _createType.text;
-        _pfac.newPiece(p);
-    }
-
-    protected function updatePiece (event :FlexEvent) :void
+    public function updatePiece (...ignored) :void
     {
         var defxml :XML = <piecedef/>;
         for each (var detail :Detail in _details) {
@@ -145,7 +134,24 @@ public class PieceEditDetails extends Canvas
         _pfac.updatePiece(_p, p);
     }
 
-    protected function deletePiece (event :FlexEvent) :void
+    public function getCurrentPiece () :Piece
+    {
+        return _p;
+    }
+
+    protected function createPiece (event :FlexEvent) :void
+    {
+        var cname :String = _pfac.getClassName(_createClass.selectedLabel);
+        if (!ApplicationDomain.currentDomain.hasDefinition(cname)) {
+            return;
+        }
+        var cdef :Class = ApplicationDomain.currentDomain.getDefinition(cname) as Class;
+        var p :Piece = new cdef() as Piece;
+        p.type = _createType.text;
+        _pfac.newPiece(p);
+    }
+
+    protected function deletePiece (...ignored) :void
     {
         _pfac.deletePiece(_p);
     }
@@ -165,8 +171,9 @@ public class PieceEditDetails extends Canvas
                     return value.substring(dex + 1); // works even if dex is -1
                 });
         });
+        var thisDetail :PieceEditDetails = this;
         _detailTypes.put("bounds", function (attr :XML) :Detail {
-            return new BoundsDetail(attr);
+            return new BoundsDetail(attr, _editSprite, thisDetail);
         });
     }
 
@@ -178,6 +185,7 @@ public class PieceEditDetails extends Canvas
     protected var _details :Array;
 
     protected var _pfac :PieceFactory;
+    protected var _editSprite :PieceEditSprite;
 
     protected var _p :Piece;
 

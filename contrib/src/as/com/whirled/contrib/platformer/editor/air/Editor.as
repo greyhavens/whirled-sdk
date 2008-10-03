@@ -70,7 +70,7 @@ public class Editor extends TabNavigator
      *
      * function (sources :Array, onReady :Function) :void
      */
-    public function setPieceSpriteFactoryClass (initFunc :Function) :void
+    public function setPieceSpriteFactoryInit (initFunc :Function) :void
     {
         _spriteFactoryInit = initFunc;
     }

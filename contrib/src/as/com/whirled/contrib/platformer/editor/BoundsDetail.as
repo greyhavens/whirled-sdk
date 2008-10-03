@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer.editor {
 
+import flash.geom.Point;
+
 import mx.containers.Box;
 import mx.containers.HBox;
 import mx.containers.VBox;
@@ -31,11 +33,16 @@ import mx.events.ItemClickEvent;
 
 import com.threerings.util.Log;
 
+import com.whirled.contrib.platformer.piece.Piece;
+
 public class BoundsDetail extends Detail
 {
-    public function BoundsDetail (attr :XML)
+    public function BoundsDetail (attr :XML, editSprite :PieceEditSprite, 
+        pieceDetails :PieceEditDetails)
     {
         super(attr);
+        _editSprite = editSprite;
+        _pieceDetails = pieceDetails;
         for each (var bdef :XML in attr.bound) {
             _bounds.push(new BoundDetail(bdef));
         }
@@ -60,13 +67,7 @@ public class BoundsDetail extends Detail
         _topBox.addChild(buttonBox);
 
         _numberBox = new VBox();
-        for each (var bound :BoundDetail in _bounds) {
-            _numberBox.addChild(bound.createBox());
-        }
-        var button :Button = new Button();
-        button.label = "+";
-        button.addEventListener(FlexEvent.BUTTON_DOWN, addBound);
-        _numberBox.addChild(button);
+        updateNumberBox();
         _topBox.addChild(_numberBox);
 
         // TODO
@@ -84,6 +85,33 @@ public class BoundsDetail extends Detail
         defxml.appendChild(xml);
     }
 
+    protected function updateNumberBox () :void
+    {
+        while(_numberBox.numChildren > 0) {
+            _numberBox.removeChildAt(0);
+        }
+
+        for each (var bound :BoundDetail in _bounds) {
+            _numberBox.addChild(bound.createBox());
+        }
+        var button :Button = new Button();
+        button.label = "+";
+        button.addEventListener(FlexEvent.BUTTON_DOWN, addBound);
+        _numberBox.addChild(button);
+    }
+
+    public function boundMoved (oldPos :Point, newPos :Point) :void
+    {
+        for each (var bound :BoundDetail in _bounds) {
+            if (bound.getPosition().equals(oldPos)) {
+                bound.setPosition(newPos);
+                _pieceDetails.updatePiece();
+                return;
+            }
+        }
+        log.warning("bound not found to move [" + oldPos + ", " + newPos + "]");
+    }
+
     protected function addBound (event :FlexEvent) :void
     {
         var bound :BoundDetail = new BoundDetail();
@@ -95,10 +123,18 @@ public class BoundsDetail extends Detail
     {
         if (event.label == NUMBER_MODE && _mouseBox.parent == _topBox) {
             _topBox.removeChild(_mouseBox);
+            updateNumberBox();
             _topBox.addChild(_numberBox);
+            _editSprite.setNodeMoveLayer(_nodeMoveLayer = null);
         } else if (event.label == MOUSE_MODE && _numberBox.parent == _topBox) {
             _topBox.removeChild(_numberBox);
             _topBox.addChild(_mouseBox);
+            var piece :Piece = _pieceDetails.getCurrentPiece();
+            _editSprite.setNodeMoveLayer(
+                _nodeMoveLayer = new NodeMoveLayer(this, piece.width, piece.height));
+            for each (var bound :BoundDetail in _bounds) {
+                _nodeMoveLayer.addBoundMarker(bound.getPosition(), bound.getColor());
+            }
         } else {
             log.debug("mode change borked [" + event.label + ", " + _mouseBox.parent + ", " + 
                 _numberBox.parent + "]");
@@ -109,6 +145,9 @@ public class BoundsDetail extends Detail
     protected var _topBox :VBox;
     protected var _numberBox :VBox;
     protected var _mouseBox :VBox;
+    protected var _editSprite :PieceEditSprite;
+    protected var _pieceDetails :PieceEditDetails;
+    protected var _nodeMoveLayer :NodeMoveLayer;
 
     protected static const NUMBER_MODE :String = "Number Mode";
     protected static const MOUSE_MODE :String = "Mouse Mode";

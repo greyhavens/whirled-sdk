@@ -55,7 +55,7 @@ public class PieceEditView extends Canvas
     {
         _pfac = pfac;
         _editSprite = new PieceEditSprite();
-        _editDetails = new PieceEditDetails(_pfac);
+        _editDetails = new PieceEditDetails(_pfac, _editSprite);
         _editSelector = new PieceSelector(_pfac);
         _editCoords = new Label();
         percentWidth = 100;
@@ -127,7 +127,11 @@ public class PieceEditView extends Canvas
 
     protected function pieceUpdated (type :String, xmlDef :XML) :void
     {
-        setPiece(type);
+        var pxml :XML = <piece/>;
+        pxml.@type = type;
+        pxml.@x = 1;
+        pxml.@y = 1;
+        _editSprite.setPiece(_pfac.getPiece(pxml));
     }
 
     protected function pieceRemoved (type :String, xmlDef :XML) :void

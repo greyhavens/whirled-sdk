@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer.editor {
 
+import flash.geom.Point;
+
 import mx.collections.ArrayCollection;
 import mx.containers.Box;
 import mx.containers.HBox;
@@ -89,6 +91,22 @@ public class BoundDetail extends Detail
         xml.@y = _y.text;
         xml.@type = _type.selectedItem.data | _proj.selectedItem.data;
         defxml.appendChild(xml);
+    }
+
+    public function getPosition () :Point
+    {
+        return new Point(parseInt(_x.text), parseInt(_y.text));
+    }
+
+    public function setPosition (pos :Point) :void
+    {
+        _x.text = String(pos.x);
+        _y.text = String(pos.y);
+    }
+
+    public function getColor () :uint
+    {
+        return BoundData.getColor(_type.selectedItem.data | _proj.selectedItem.data);
     }
 
     protected var _x :TextInput;
