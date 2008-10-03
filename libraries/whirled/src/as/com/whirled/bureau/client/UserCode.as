@@ -14,6 +14,9 @@ public interface UserCode
     /** Releases this code. Once released, <code>connect</code> may no longer be used and 
      *  all references to the instance should be cleared. */
     function release () :void;
-}
 
+    /** Outputs a trace using the trace function inside this user code. Optionally also print the
+     *  stack trace of an error. */
+    function outputTrace (str :String, error :Error = null) :void;
+}
 }

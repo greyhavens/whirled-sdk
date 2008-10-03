@@ -87,6 +87,17 @@ public class GameAgent extends Agent
         }
     }
 
+    /**
+     * Outputs a message to the user code's internal trace method. This is used to avoid
+     * generating warnings and traces from backend and controller code.
+     */
+    public function outputToUserCode (msg :String, err :Error = null) :void
+    {
+        if (_userCode != null) {
+            _userCode.outputTrace(msg, err);
+        }
+    }
+
     /** Access the agent object, casted to a game agent object. */
     protected function get gameAgentObj () :GameAgentObject
     {

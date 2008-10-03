@@ -76,6 +76,16 @@ public class HttpUserCode
     }
 
     /** @inheritDoc */
+    public function outputTrace (str :String, err :Error = null) :void
+    {
+        // TODO: Domain.outputTrace
+        trace(str);
+        if (err != null) {
+            trace(err.getStackTrace());
+        }
+    }
+
+    /** @inheritDoc */
     // from Object
     public function toString () :String
     {
