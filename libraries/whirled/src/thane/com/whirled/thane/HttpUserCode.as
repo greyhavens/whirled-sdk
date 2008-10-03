@@ -39,7 +39,7 @@ public class HttpUserCode
         client.addEventListener(Event.COMPLETE, handleComplete);
         client.addEventListener(Event.CONNECT, event);
         client.addEventListener(HttpDataEvent.DATA, handleData);
-        client.addEventListener(HttpErrorEvent.ERROR, event);
+        client.addEventListener(HttpErrorEvent.ERROR, handleError);
         client.addEventListener(HttpStatusEvent.STATUS, event);
 
         client.request(new URI(_url), new Get());
@@ -101,21 +101,25 @@ public class HttpUserCode
     /** Generically report an event. */
     protected function event (evt :Event) :void
     {
-        // log.debug("Got an event from the HTTP client: " + evt.type);
+        log.debug("Got an event from the HTTP client", "type", evt.type);
+    }
+
+    /** Receive some data from teh intarnets. */
+    protected function handleError (evt :HttpErrorEvent) :void
+    {
+        log.warning("Error while downloading code", "code", this, "evt", evt);
+        // TODO: will handleComplete be called too? If not, we need to invoke _callback(null)
     }
 
     /** Receive some data from teh intarnets. */
     protected function handleData (evt :HttpDataEvent) :void
     {
-        // log.debug("Read " + evt.bytes.length + " bytes...");
         _bytes.writeBytes(evt.bytes);
     }
 
     /** Finished receiving data. */
     protected function handleComplete (evt :Event) :void
     {
-        // log.debug("Compiling bytecode into new Domain...");
-
         var success :Boolean = false;
 
         try {
@@ -125,11 +129,7 @@ public class HttpUserCode
             _domain = Thane.spawnDomain(_domainId, /** TODO: new thanes: consoleTracePrefix, */ _bridge);
             _domain.loadBytes(_bytes);
             _bytes = null;
-            // log.debug("Successfully loaded!");
-
             _class = _domain.getClass(_className);
-            log.debug("Server class in new domain: " + _class);
-
             success = _class != null;
 
         } catch (err :Error) {
