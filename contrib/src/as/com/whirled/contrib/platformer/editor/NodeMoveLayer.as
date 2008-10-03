@@ -145,6 +145,18 @@ public class NodeMoveLayer extends Layer
         markNode(_boundGraphics, position, BOUND_MARKER_RADIUS, markerColor); 
     }
 
+    public function setBoundColor (position :Point, markerColor :uint) :void
+    {
+        var bound :Object = findBoundOnNode(position); 
+        if (bound == null) {
+            log.debug("bound not found to change color on [" + position + "]");
+            return;
+        }
+
+        bound.color = markerColor;
+        regenerateBounds(!(_mouseDown && _mouseBound != null));
+    }
+
     protected function regenerateBounds (includeCurrent :Boolean = true) :void
     {
         _boundGraphics.clear();
@@ -164,10 +176,11 @@ public class NodeMoveLayer extends Layer
         gfx.drawCircle(xPos, yPos, radius / scaleX);
     }
 
-    protected function findBoundOnNode () :Object
+    protected function findBoundOnNode (node :Point = null) :Object
     {
+        node = node == null ? _currentNode : node;
         for each (var bound :Object in _bounds) {
-            if (bound.pos.equals(_currentNode)) {
+            if (bound.pos.equals(node)) {
                 return bound;
             }
         }

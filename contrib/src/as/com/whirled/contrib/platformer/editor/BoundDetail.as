@@ -21,15 +21,18 @@
 package com.whirled.contrib.platformer.editor {
 
 import flash.geom.Point;
+import flash.events.Event;
 
 import mx.collections.ArrayCollection;
 import mx.containers.Box;
 import mx.containers.HBox;
 import mx.containers.VBox;
-
 import mx.controls.ComboBox;
 import mx.controls.TextInput;
 import mx.controls.Label;
+import mx.events.ListEvent;
+
+import com.whirled.contrib.EventHandlers;
 
 import com.whirled.contrib.platformer.piece.BoundData;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
@@ -91,6 +94,46 @@ public class BoundDetail extends Detail
         xml.@y = _y.text;
         xml.@type = _type.selectedItem.data | _proj.selectedItem.data;
         defxml.appendChild(xml);
+    }
+
+    public function createReactiveBox (changeListener :Function) :Box
+    {
+        // a lot of this setup is pretty hacky - if we move over to mouse mode only, this whole 
+        // probably just goes away, and the real createBox() is reactive instead.
+        var box :VBox = new VBox();
+        var row :HBox = new HBox();
+        box.addChild(row);
+        var label :Label = new Label();
+        label.text = "Actor Collision"
+        row.addChild(label);
+        var typeDup :ComboBox = new ComboBox();
+        typeDup.dataProvider = _type.dataProvider;
+        typeDup.selectedIndex = _type.selectedIndex;
+        row.addChild(typeDup);
+        row = new HBox();
+        box.addChild(row);
+        label = new Label();
+        label.text = "Projectile Collision";
+        row.addChild(label);
+        var projDup :ComboBox = new ComboBox();
+        projDup.dataProvider = _proj.dataProvider;
+        projDup.selectedIndex = _proj.selectedIndex;
+        row.addChild(projDup);
+
+        var myListener :Function = function (...ignored) :void {
+            _type.selectedIndex = typeDup.selectedIndex;
+            _proj.selectedIndex = projDup.selectedIndex;
+            changeListener();
+        }
+
+        typeDup.addEventListener(ListEvent.CHANGE, myListener);
+        projDup.addEventListener(ListEvent.CHANGE, myListener);
+        EventHandlers.registerOneShotCallback(box, Event.REMOVED_FROM_STAGE, function () :void {
+            typeDup.removeEventListener(ListEvent.CHANGE, myListener);
+            typeDup.removeEventListener(ListEvent.CHANGE, myListener);
+        });
+
+        return box;
     }
 
     public function getPosition () :Point

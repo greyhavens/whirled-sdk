@@ -70,7 +70,6 @@ public class BoundsDetail extends Detail
         updateNumberBox();
         _topBox.addChild(_numberBox);
 
-        // TODO
         _mouseBox = new VBox();
 
         return _topBox;
@@ -87,19 +86,42 @@ public class BoundsDetail extends Detail
 
     public function nodeSelected (pos :Point) :void
     {
-        log.debug("nodeSelected [" + pos + "]");
+        while(_mouseBox.numChildren > 0) {
+            _mouseBox.removeChildAt(0);
+        }
+
+        var bound :BoundDetail = findBound(pos);
+        if (bound == null) {
+            log.warning("bound not found to select [" + pos + "]");
+            return;
+        }
+
+        _mouseBox.addChild(bound.createReactiveBox(function (...ignored) :void {
+            _nodeMoveLayer.setBoundColor(bound.getPosition(), bound.getColor());
+            _pieceDetails.updatePiece();
+        }));
     }
 
     public function boundMoved (oldPos :Point, newPos :Point) :void
     {
+        var bound :BoundDetail = findBound(oldPos);
+        if (bound == null) {
+            log.warning("bound not found to move [" + oldPos + ", " + newPos + "]");
+            return;
+        }
+
+        bound.setPosition(newPos);
+        _pieceDetails.updatePiece();
+    }
+
+    protected function findBound (pos :Point) :BoundDetail
+    {
         for each (var bound :BoundDetail in _bounds) {
-            if (bound.getPosition().equals(oldPos)) {
-                bound.setPosition(newPos);
-                _pieceDetails.updatePiece();
-                return;
+            if (bound.getPosition().equals(pos)) {
+                return bound;
             }
         }
-        log.warning("bound not found to move [" + oldPos + ", " + newPos + "]");
+        return null;
     }
 
     protected function updateNumberBox () :void
