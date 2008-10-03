@@ -85,6 +85,23 @@ public class BoundsDetail extends Detail
         defxml.appendChild(xml);
     }
 
+    public function nodeSelected (pos :Point) :void
+    {
+        log.debug("nodeSelected [" + pos + "]");
+    }
+
+    public function boundMoved (oldPos :Point, newPos :Point) :void
+    {
+        for each (var bound :BoundDetail in _bounds) {
+            if (bound.getPosition().equals(oldPos)) {
+                bound.setPosition(newPos);
+                _pieceDetails.updatePiece();
+                return;
+            }
+        }
+        log.warning("bound not found to move [" + oldPos + ", " + newPos + "]");
+    }
+
     protected function updateNumberBox () :void
     {
         while(_numberBox.numChildren > 0) {
@@ -98,18 +115,6 @@ public class BoundsDetail extends Detail
         button.label = "+";
         button.addEventListener(FlexEvent.BUTTON_DOWN, addBound);
         _numberBox.addChild(button);
-    }
-
-    public function boundMoved (oldPos :Point, newPos :Point) :void
-    {
-        for each (var bound :BoundDetail in _bounds) {
-            if (bound.getPosition().equals(oldPos)) {
-                bound.setPosition(newPos);
-                _pieceDetails.updatePiece();
-                return;
-            }
-        }
-        log.warning("bound not found to move [" + oldPos + ", " + newPos + "]");
     }
 
     protected function addBound (event :FlexEvent) :void

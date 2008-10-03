@@ -42,6 +42,7 @@ public class NodeMoveLayer extends Layer
         mouseEnabled = false;
         mouseChildren = false;
         alpha = 0.5;
+
         var boundDisplay :Sprite = new Sprite();
         addChild(boundDisplay);
         _boundGraphics = boundDisplay.graphics;
@@ -49,6 +50,9 @@ public class NodeMoveLayer extends Layer
         highlightDisplay.blendMode = BlendMode.INVERT;
         addChild(highlightDisplay);
         _highlightGraphics = highlightDisplay.graphics;
+        var selectedDisplay :Sprite = new Sprite();
+        addChild(selectedDisplay);
+        _selectedGraphics = selectedDisplay.graphics;
     }
 
     public function mousePositionUpdated (mouseX :Number, mouseY :Number) :void
@@ -63,10 +67,12 @@ public class NodeMoveLayer extends Layer
             return;
         }
 
+        var draggingBound :Boolean = _mouseDown && _mouseBound != null;
+
         var distance :Number = Point.distance(
             new Point(mouseX - Metrics.TILE_SIZE, mouseY - Metrics.TILE_SIZE), 
             new Point(closestNode.x * Metrics.TILE_SIZE, closestNode.y * Metrics.TILE_SIZE));
-        if (distance > (HIGHLIGHT_RADIUS / scaleX) * 1.5) {
+        if (!draggingBound && distance > (HIGHLIGHT_RADIUS / scaleX) * 1.5) {
             _currentNode = null;
             _highlightGraphics.clear();
             return;
@@ -78,21 +84,21 @@ public class NodeMoveLayer extends Layer
             
         _highlightGraphics.clear();
         _currentNode = closestNode;
-        if (_mouseDown && _currentBound != null) {
+        if (draggingBound) {
             var newPos :Point = new Point(MathUtil.clamp(_currentNode.x, 0, _maxX),
                 MathUtil.clamp(_currentNode.y, 0, _maxY));
-            if (!_currentBound.pos.equals(newPos)) {
-                _boundsDetail.boundMoved(_currentBound.pos, newPos.clone());
-                _currentBound.pos = newPos;
+            if (!_mouseBound.pos.equals(newPos)) {
+                _boundsDetail.boundMoved(_mouseBound.pos, newPos.clone());
+                _mouseBound.pos = newPos;
             }
-            markNode(_highlightGraphics, _currentNode, BOUND_MARKER_RADIUS, _currentBound.color);
-            markNode(_highlightGraphics, _currentNode, HIGHLIGHT_RADIUS, HIGHLIGHT_COLOR);
+            markNode(_highlightGraphics, _currentNode, BOUND_MARKER_RADIUS, _mouseBound.color);
+            markNode(_highlightGraphics, _currentNode, HIGHLIGHT_RADIUS, SELECTED_COLOR);
 
         } else if (!_mouseDown) {
-            _currentBound = findBoundOnNode();
-            (parent as Sprite).buttonMode = _currentBound != null;
-            if (_currentBound != null) {
-                markNode(_highlightGraphics, _currentNode, HIGHLIGHT_RADIUS, HIGHLIGHT_COLOR);
+            _mouseBound = findBoundOnNode();
+            (parent as Sprite).buttonMode = _mouseBound != null;
+            if (_mouseBound != null) {
+                markNode(_highlightGraphics, _mouseBound.pos, HIGHLIGHT_RADIUS, MOUSE_BOUND_COLOR);
             }
         }
     }
@@ -100,13 +106,24 @@ public class NodeMoveLayer extends Layer
     public function mouseDown (down :Boolean) :void
     {
         regenerateBounds(!(_mouseDown = down));
+
+        if (_mouseBound == null) {
+            return;
+        }
+
+        if (down) {
+            markNode(_highlightGraphics, _mouseBound.pos, BOUND_MARKER_RADIUS, _mouseBound.color);
+
+        } else {
+            _boundsDetail.nodeSelected((_selectedBound = _mouseBound).pos);
+            _selectedGraphics.clear();
+            markNode(_selectedGraphics, _selectedBound.pos, HIGHLIGHT_RADIUS, SELECTED_COLOR);
+        }
     }
 
     public function mouseOut () :void
     {
         mouseDown(false);
-        _currentNode = null;
-        _highlightGraphics.clear();
     }
 
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void
@@ -132,7 +149,7 @@ public class NodeMoveLayer extends Layer
     {
         _boundGraphics.clear();
         for each (var bound :Object in _bounds) {
-            if (includeCurrent || bound != _currentBound) {
+            if (includeCurrent || bound != _mouseBound) {
                 markNode(_boundGraphics, bound.pos, BOUND_MARKER_RADIUS, bound.color);
             }
         }
@@ -158,19 +175,22 @@ public class NodeMoveLayer extends Layer
     }
 
     protected var _currentNode :Point;
-    protected var _currentBound :Object;
+    protected var _mouseBound :Object;
     protected var _bounds :Array = [];
-    protected var _boundGraphics :Graphics;
-    protected var _highlightGraphics :Graphics;
     protected var _mouseDown :Boolean = false;
     protected var _boundsDetail :BoundsDetail;
     protected var _maxX :int;
     protected var _maxY :int;
+    protected var _selectedBound :Object;
+    protected var _highlightGraphics :Graphics;
+    protected var _boundGraphics :Graphics;
+    protected var _selectedGraphics :Graphics;
 
     protected static const LINE_WEIGHT :int = 2;
     protected static const BOUND_MARKER_RADIUS :int = 3;
     protected static const HIGHLIGHT_RADIUS :int = 5;
-    protected static const HIGHLIGHT_COLOR :int = 0x000000;
+    protected static const SELECTED_COLOR :int = 0xDD00DD;
+    protected static const MOUSE_BOUND_COLOR :int = 0x000000;
 
     private static const log :Log = Log.getLog(NodeMoveLayer);
 }
