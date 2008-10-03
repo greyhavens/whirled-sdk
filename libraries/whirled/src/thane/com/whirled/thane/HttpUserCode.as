@@ -70,28 +70,32 @@ public class HttpUserCode
     // from UserCode
     public function release () :void
     {
-        // TODO: forcibly kill off the domain etc.
         log.info("Releasing " + this);
+        if (_domain != null) {
+            // TODO: new thanes: Thane.unspawnDomain(_domain);
+        }
         releaseReferences();
     }
 
     /** @inheritDoc */
     public function outputTrace (str :String, err :Error = null) :void
     {
-        // TODO: Domain.outputTrace
+        // TODO: new thanes: remove this
         trace(str);
         if (err != null) {
             trace(err.getStackTrace());
         }
+
+        // TODO: new thanes: Thane.outputToTrace(_domain, str, err);
     }
 
     /** @inheritDoc */
     // from Object
     public function toString () :String
     {
-        return "HttpUserCode [url: " + _url + ", className: " + _className + 
-            ", domain: " + _domain + ", class " + _class + 
-            ", instance: " + _instance + "]";
+        return "HttpUserCode [url=" + _url + ", className=" + _className + ", domainId=" +
+            _domainId + ", domain=" + _domain + ", class=" + _class + ", instance=" + _instance +
+            "]";
     }
 
     /** Generically report an event. */
@@ -116,11 +120,11 @@ public class HttpUserCode
 
         try {
             _bridge = new EventDispatcher();
-            // TODO: is there a less cheesy way to make a unique domain id?
-            var domainId :String = "UserCode-" + (++_lastId);
-            _domain = Thane.spawnDomain(domainId, _bridge);
-            // TODO: do we still need _bytes after this
+            _domainId = "UserCode-" + (++_lastId);
+            var consoleTracePrefix :String = _domainId + ": ";
+            _domain = Thane.spawnDomain(_domainId, /** TODO: new thanes: consoleTracePrefix, */ _bridge);
             _domain.loadBytes(_bytes);
+            _bytes = null;
             // log.debug("Successfully loaded!");
 
             _class = _domain.getClass(_className);
@@ -164,6 +168,7 @@ public class HttpUserCode
     protected var _callback :Function;
     protected var _bytes :ByteArray = new ByteArray();
     protected var _bridge :EventDispatcher;
+    protected var _domainId :String;
     protected var _domain :Domain;
     protected var _class :Class;
     protected var _instance :Object;
