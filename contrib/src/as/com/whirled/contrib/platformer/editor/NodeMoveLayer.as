@@ -105,7 +105,7 @@ public class NodeMoveLayer extends Layer
 
     public function mouseDown (down :Boolean) :void
     {
-        regenerateBounds(!(_mouseDown = down));
+        regenerateBounds();
 
         if (_mouseBound == null) {
             return;
@@ -154,11 +154,33 @@ public class NodeMoveLayer extends Layer
         }
 
         bound.color = markerColor;
-        regenerateBounds(!(_mouseDown && _mouseBound != null));
+        regenerateBounds();
     }
 
-    protected function regenerateBounds (includeCurrent :Boolean = true) :void
+    public function removeBound (position :Point) :void 
     {
+        var idx :int = findBoundIndex(position);
+        if (idx < 0) {
+            log.debug("bound not found to remove [" + position + "]");
+            return;
+        }
+
+        if (_bounds[idx] == _selectedBound) {
+            _boundsDetail.nodeSelected(null);
+            _selectedBound = null;
+            _selectedGraphics.clear();
+        }
+        if (_bounds[idx] == _mouseBound) {
+            _mouseBound = null;
+            _highlightGraphics.clear();
+        }
+        _bounds.splice(idx, 1);
+        regenerateBounds();
+    }
+
+    protected function regenerateBounds () :void
+    {
+        var includeCurrent :Boolean = !(_mouseDown && _mouseBound != null);
         _boundGraphics.clear();
         for each (var bound :Object in _bounds) {
             if (includeCurrent || bound != _mouseBound) {
@@ -178,13 +200,19 @@ public class NodeMoveLayer extends Layer
 
     protected function findBoundOnNode (node :Point = null) :Object
     {
+        var idx :int = findBoundIndex(node);
+        return idx < 0 ? null : _bounds[idx];
+    }
+
+    protected function findBoundIndex (node :Point = null) :int
+    {
         node = node == null ? _currentNode : node;
-        for each (var bound :Object in _bounds) {
-            if (bound.pos.equals(node)) {
-                return bound;
+        for (var ii :int = 0; ii < _bounds.length; ii++) {
+            if (_bounds[ii].pos.equals(node)) {
+                return ii;
             }
         }
-        return null;
+        return -1;
     }
 
     protected var _currentNode :Point;

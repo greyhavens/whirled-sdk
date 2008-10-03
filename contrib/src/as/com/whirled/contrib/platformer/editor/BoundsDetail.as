@@ -90,6 +90,10 @@ public class BoundsDetail extends Detail
             _mouseBox.removeChildAt(0);
         }
 
+        if (pos == null) {
+            return;
+        }
+
         var bound :BoundDetail = findBound(pos);
         if (bound == null) {
             log.warning("bound not found to select [" + pos + "]");
@@ -98,6 +102,16 @@ public class BoundsDetail extends Detail
 
         _mouseBox.addChild(bound.createReactiveBox(function (...ignored) :void {
             _nodeMoveLayer.setBoundColor(bound.getPosition(), bound.getColor());
+            _pieceDetails.updatePiece();
+        }, function (...ignored) :void {
+            var idx :int = _bounds.indexOf(bound);
+            if (idx < 0) {
+                log.warning("bound not found to remove [" + bound.getPosition() + "]");
+                return;
+            }
+
+            _bounds.splice(idx, 1);
+            _nodeMoveLayer.removeBound(bound.getPosition());
             _pieceDetails.updatePiece();
         }));
     }

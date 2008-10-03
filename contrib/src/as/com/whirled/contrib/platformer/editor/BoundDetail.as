@@ -22,11 +22,13 @@ package com.whirled.contrib.platformer.editor {
 
 import flash.geom.Point;
 import flash.events.Event;
+import flash.events.MouseEvent;
 
 import mx.collections.ArrayCollection;
 import mx.containers.Box;
 import mx.containers.HBox;
 import mx.containers.VBox;
+import mx.controls.Button;
 import mx.controls.ComboBox;
 import mx.controls.TextInput;
 import mx.controls.Label;
@@ -96,7 +98,7 @@ public class BoundDetail extends Detail
         defxml.appendChild(xml);
     }
 
-    public function createReactiveBox (changeListener :Function) :Box
+    public function createReactiveBox (changeListener :Function, deleteListener :Function) :Box
     {
         // a lot of this setup is pretty hacky - if we move over to mouse mode only, this whole 
         // probably just goes away, and the real createBox() is reactive instead.
@@ -119,6 +121,11 @@ public class BoundDetail extends Detail
         projDup.dataProvider = _proj.dataProvider;
         projDup.selectedIndex = _proj.selectedIndex;
         row.addChild(projDup);
+
+        var deleteButton :Button = new Button();
+        deleteButton.label = "Delete Bound";
+        deleteButton.addEventListener(MouseEvent.CLICK, deleteListener);
+        box.addChild(deleteButton);
 
         var myListener :Function = function (...ignored) :void {
             _type.selectedIndex = typeDup.selectedIndex;
