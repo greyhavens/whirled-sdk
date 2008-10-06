@@ -11,6 +11,16 @@ import com.whirled.TargetedSubControl;
 import com.whirled.net.MessageReceivedEvent;
 
 /**
+ * Dispatched when a message arrives with information that is not part of the shared game state.
+ *
+ * @eventType com.whirled.net.MessageReceivedEvent.MESSAGE_RECEIVED
+ * @see PlayerSubControlServer#sendMessage()
+ */
+[Event(name="MsgReceived", type="com.whirled.net.MessageReceivedEvent")]
+
+/**
+ * Provides services for the client's player of an AVRG.
+ * @see AVRGameControl#player
  */
 public class PlayerSubControlClient extends PlayerSubControlBase
 {
@@ -20,7 +30,9 @@ public class PlayerSubControlClient extends PlayerSubControlBase
         super(ctrl, 0);
     }
 
-    public function getPlayerId () :int
+    /** @inheritDoc */
+    // from PlayerSubControlBase
+    override public function getPlayerId () :int
     {
         return callHostCode("getPlayerId_v1");
     }

@@ -10,36 +10,41 @@ import flash.events.Event;
 import com.whirled.avrg.AVRGameControlEvent;
 
 /**
- * An event dispatched on a per-player AVRG sub control.
+ * Conveys information about a change to the state of a particular player in an AVR game.
+ * @see PlayerSubControlClient
+ * @see PlayerSubControlServer
  */
 public class AVRGamePlayerEvent extends AVRGameControlEvent
 {
-    /** An event type dispatched when the player receives some coins.
-     * name: the id of the task that was completed
-     * value: the amount of coins awarded
+    /**
+     * An event type dispatched when the player receives some coins.
+     * <br><b>name</b> - the id of the task that was completed
+     * <br><b>value :int</b> - the amount of coins awarded
      *
      * @eventType taskCompleted
      */
     public static const TASK_COMPLETED :String = "taskCompleted";
 
-    /** An event type dispatched when we've entered a new room.
-     * key: N/A
-     * value: the id of the scene we entered
+    /**
+     * An event type dispatched when the player has entered a new room.
+     * <br><b>name</b> - not used
+     * <br><b>value :int</b> - the id of the scene entered
      *
-     * @eventType playerEntered
+     * @eventType enteredRoom
      */
     public static const ENTERED_ROOM :String = "enteredRoom";
 
-    /** An event type dispatched when we leave our current room.
-     * key: N/A
-     * value: N/A
+    /**
+     * An event type dispatched when the player leaves a room.
+     * <br><b>key</b> - not used
+     * <br><b>value :int</b> - the id of the scene left
      *
-     * @eventType playerLeft
+     * @eventType leftRoom
      */
     public static const LEFT_ROOM :String = "leftRoom";
 
     /**
-     * Create a new AVRGamePlayerEvent.
+     * Creates a new AVRGamePlayerEvent.
      */
     public function AVRGamePlayerEvent (
         type :String, playerId :int, name :String = null, value :Object = null,
@@ -49,23 +54,30 @@ public class AVRGamePlayerEvent extends AVRGameControlEvent
         _playerId = playerId;
     }
 
+    /**
+     * Gets the id of the target player whose state is changing.
+     */
     public function get playerId () :int
     {
         return _playerId;
     }
 
+    /** @inheritDoc */
+    // from Event
     override public function toString () :String
     {
         return "AVRGamePlayerEvent [type=" + type + ", playerId=" + playerId + ", name=" + _name +
             ", value=" + _value + ", cancelable=" + cancelable + "]";
     }
 
+    /** @inheritDoc */
     // documentation inherited from Event
     override public function clone () :Event
     {
         return new AVRGamePlayerEvent(type, _playerId, _name, _value, cancelable);
     }
 
+    /** @private */
     protected var _playerId :int;
 }
 }

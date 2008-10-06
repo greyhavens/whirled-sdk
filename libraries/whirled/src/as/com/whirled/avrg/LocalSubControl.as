@@ -15,6 +15,7 @@ import com.whirled.AbstractSubControl;
  * Dispatched when the control has been resized.
  *
  * @eventType com.whirled.avrg.AVRGameControlEvent.SIZE_CHANGED
+ * @see #getPaintableArea()
  */
 [Event(name="sizeChanged", type="com.whirled.avrg.AVRGameControlEvent")]
 
@@ -51,7 +52,7 @@ public class LocalSubControl extends AbstractSubControl
      * @return a Rectangle containing the bounds of the paintable area, or null if the area is not
      * defined
      *
-     * @see AVRGameControlEvent#SIZE_CHANGED
+     * @see #event:SizeChanged
      */
     public function getPaintableArea (full :Boolean = true) :Rectangle
     {
@@ -116,24 +117,21 @@ public class LocalSubControl extends AbstractSubControl
 
     /**
      * Sets the function that will manufacture <code>DisplayObject</code> instances on the client
-     * when they are spawned by the server agent. The function must take the string type of the
+     * when mobs are spawned by the server agent. The function must take the string type of the
      * requested mob and return a <code>DisplayObject</code>:
      * 
      * <listing version="3.0">
      *    function createMobSprite (type :String) :DisplayObject;
      * </listing>
      *
-     * Once created, the mob will be drawn in the room until the server agent despawns it. Clients
+     * <p>Once created, the mob will be drawn in the room until the server agent despawns it. Clients
      * should not attempt to remove the sprite. Each mob in a room has a corresponding
      * <code>MobSubControlClient</code>. Games that use mobs should call this function during
      * initialization so that if the player is joining an in-progress game, all the previously
-     * spawned mobs will be created.
+     * spawned mobs will be created.</p>
      *
      * @see RoomSubControlServer#spawnMob()
-     * @see RoomSubControlServer#despawnMob()
-     * @see RoomSubControlBase#getSpawnedMobs()
      * @see RoomSubControlClient#getMobSubControl()
-     * @see MobSubControlClient
      * @see http://wiki.whirled.com/Mobs
      */
     public function setMobSpriteExporter (exporter :Function) :void

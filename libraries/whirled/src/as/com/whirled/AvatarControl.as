@@ -19,9 +19,10 @@ import com.threerings.util.Util;
 [Event(name="avatarSpoke", type="com.whirled.ControlEvent")]
 
 /**
- * Dispatched when the user controlling this avatar triggers an action.
+ * Dispatched when the user or game controlling this avatar triggers an action.
  * 
  * @eventType com.whirled.ControlEvent.ACTION_TRIGGERED
+ * @see com.whirled.avrg.PlayerSubControlBase#playAvatarAction()
  */
 [Event(name="actionTriggered", type="com.whirled.ControlEvent")]
 

@@ -8,17 +8,24 @@ package com.whirled.avrg {
 import com.whirled.AbstractControl;
 
 /**
- * Defines actions, accessors and callbacks available to MOBs on the server.
+ * Provides the server agent with a means of controlling a previously spawned MOB.
+ * @see AVRServerGameControl#spawnMob()
+ * @see RoomSubControlBase#event:mobControlAvailable
+ * @see RoomSubControlServer#getMobSubControl()
+ * @see http://wiki.whirled.com/Mobs
  */
 public class MobSubControlServer extends MobSubControlBase
 {
+    /** @private */
     public function MobSubControlServer (parent :AbstractControl, id :String)
     {
         super(parent, id);
     }
 
     /**
-     * Moves the mob to a new place in the room.
+     * Moves the mob to a new place in room coordinates.
+     * @see http://wiki.whirled.com/Coordinate_systems
+     * @see MobSubControlBase#event:mobAppearanceChanged
      */
     public function moveTo (x :Number, y :Number, z :Number) :void
     {

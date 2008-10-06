@@ -12,7 +12,7 @@ import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.MessageSubControl;
 
 /**
- * This subcontrol is used by an AVRG on the client to send messages to the server agent.
+ * Provides AVR game clients a way to communicate to their server agent.
  */
 public class AgentSubControl extends AbstractSubControl
     implements MessageSubControl
@@ -24,7 +24,9 @@ public class AgentSubControl extends AbstractSubControl
     }
 
     /**
-     * Sends a message to the agent.
+     * Sends a message to the agent. The agent receives messages by adding a
+     * <code>MESSAGE_RECEIVED</code> event listener to <code>GameSubControlServer</code>.
+     * @see GameSubControlBase#event:MsgReceived
      */
     public function sendMessage (name :String, value :Object = null) :void
     {
@@ -35,16 +37,6 @@ public class AgentSubControl extends AbstractSubControl
     override protected function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
-
-        o["agent_messageReceived_v1"] = messageReceived;
-    }
-
-    /**
-     * Private method to post a MessageReceivedEvent.
-     */
-    private function messageReceived (name :String, value :Object, sender :int) :void
-    {
-        dispatch(new MessageReceivedEvent(0, name, value, sender));
     }
 }
 }

@@ -8,33 +8,28 @@ package com.whirled.avrg {
 import flash.geom.Rectangle;
 
 /**
- * Desribes the current state of a players avatar for an AVRG client or server agent.
+ * Describes the current state of a player's avatar for an AVRG client or server agent.
+ * @see RoomSubControlBase#getAvatarInfo()
  */
 public class AVRGameAvatar
 {
-    /* The avatar's associated display name. */
+    /** The avatar's associated display name. */
     public var name :String;
 
-    /* The avatar's current state. These are the same states that appear on the avatar's "Change
+    /** The avatar's current state. These are the same states that appear on the avatar's "Change
      * state" menu. */
     public var state :String;
 
-    /** The x position of the avatar's registration point, measured in normalized room coordinates.
-     * A value of 0 means the avatar is along the far left of the room. A value of 1 means the
-     * avatar is on the far right.
-     * @see http://wiki.whirled.com/AVR_Games */
+    /** The x position of the avatar's registration point, measured in room coordinates.
+     * @see http://wiki.whirled.com/Coordinate_systems */
     public var x :Number;
 
-    /** The y position of the avatar's registration point, measured in normalized room coordinates.
-     * A value of 0 means the avatar is on the floor of the room. A value of 1 means the avatar is
-     * on the ceiling.
-     * @see http://wiki.whirled.com/AVR_Games */
+    /** The y position of the avatar's registration point, measured in room coordinates.
+     * @see http://wiki.whirled.com/Coordinate_systems */
     public var y :Number;
 
-    /** The z position of the avatar's registration point, measured in normalized room coordinates.
-     * A value of 0 means the avatar is in the front of the room. A value of 1 means the avatar is
-     * in the back of the room.
-     * @see http://wiki.whirled.com/AVR_Games */
+    /** The z position of the avatar's registration point, measured in room coordinates.
+     * @see http://wiki.whirled.com/Coordinate_systems */
     public var z :Number;
 
     /** The orientation of the avatar, measured in counter-clockwise degrees from front facing. If
@@ -61,7 +56,7 @@ public class AVRGameAvatar
     /** The bounding rectangle of the avatar, in pixels. This is in the same coodinates as the
      * paintable area returned by the <code>LocalSubControl</code>. For example an avatar on the
      * left side of a normal room will have a <code>bounds.left</code> near zero.
-     * @see LocalSubControl#getPaintableArea
+     * @see LocalSubControl#getPaintableArea()
      */
     public var bounds :Rectangle;
 }

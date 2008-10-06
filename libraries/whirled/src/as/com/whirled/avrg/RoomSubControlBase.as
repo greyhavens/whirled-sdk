@@ -19,38 +19,50 @@ import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
 
 /**
- * Dispatched either when somebody in our room entered our current game,
- * or somebody playing the game entered our current room.
+ * Dispatched either when somebody in this room entered our current game, or somebody playing the
+ * game entered this room. On the client, the event is only dispatched if the player entering the
+ * room is not the local player. On the server agent, it is always dispatched.
  *
  * @eventType com.whirled.avrg.AVRGameRoomEvent.PLAYER_ENTERED
  */
 [Event(name="playerEntered", type="com.whirled.avrg.AVRGameRoomEvent")]
 
 /**
- * Dispatched either when somebody in our room left our current game,
- * or somebody playing the game left our current room.
+ * Dispatched either when somebody in this room left our current game, or somebody playing the game
+ * left this room. On the client, the event is only dispatched if the player leaving the room is not
+ * the local player. On the server agent, it is always dispatched.
  *
  * @eventType com.whirled.avrg.AVRGameRoomEvent.PLAYER_LEFT
  */
 [Event(name="playerLeft", type="com.whirled.avrg.AVRGameRoomEvent")]
 
 /**
- * Dispatched when another player in our current room took up a new location.
+ * Dispatched when a player in this room takes up a new location. The event is dispatched
+ * immediately when the move is initiated, not when the avatar arrives at the location. The movement
+ * itself may take a potentially long time.
  *
  * @eventType com.whirled.avrg.AVRGameRoomEvent.PLAYER_MOVED
  */
 [Event(name="playerMoved", type="com.whirled.avrg.AVRGameRoomEvent")]
 
 /**
- * Dispatched when something has changed about a player's
- * avatar.
+ * Dispatched when something has changed about a player's avatar in this room.
  *
  * @eventType com.whirled.avrg.AVRGameRoomEvent.AVATAR_CHANGED
  */
 [Event(name="avatarChanged", type="com.whirled.avrg.AVRGameRoomEvent")]
 
 /**
- * Defines actions, accessors and callbacks available on the client only.
+ * Dispatched when a MOB has been created.
+ *
+ * @eventType com.whirled.avrg.AVRGameRoomEvent.MOB_CONTROL_AVAILABLE
+ * @see http://wiki.whirled.com/Mobs
+ * @see RoomSubControlServer#spawnMob()
+ */
+[Event(name="mobControlAvailable", type="com.whirled.avrg.AVRGameRoomEvent")]
+
+/**
+ * Provides AVR services for a single room to clients and server agents.
  */
 public class RoomSubControlBase extends TargetedSubControl
 {
@@ -60,16 +72,38 @@ public class RoomSubControlBase extends TargetedSubControl
         super(ctrl, targetId);
     }
 
+    /**
+     * Gets the id of this room. Room ids are the same as scene ids and are the same each time the
+     * room is visited. They may also be used directly to access a scene
+     * (www.whirled.com/#world-s{sceneId}).
+     */
+    public function getRoomId () :int
+    {
+        // subclasses take care of this
+        return 0;
+    }
+
+    /**
+     * Gets an array of the ids of all the players in this room.
+     */
     public function getPlayerIds () :Array
     {
         return callHostCode("room_getPlayerIds_v1") as Array;
     }
 
+    /**
+     * Tests if a player of a given id is in this room.
+     */
     public function isPlayerHere (id :int) :Boolean
     {
         return callHostCode("isPlayerHere_v1", id);
     }
 
+    /**
+     * Returns an array of <code>String</code>s corresponding to the ids of all the MOBs in this
+     * room.
+     * @see http://wiki.whirled.com/Mobs
+     */
     public function getSpawnedMobs () :Array
     {
         var mobIds :Array = [];
@@ -91,6 +125,10 @@ public class RoomSubControlBase extends TargetedSubControl
         return callHostCode("getRoomBounds_v1") as Rectangle;
     }
 
+    /**
+     * Gets all available information on the avatar of a player with the given id.
+     * @throws Error if the player is not here
+     */
     public function getAvatarInfo (playerId :int) :AVRGameAvatar
     {
         var data :Array = callHostCode("getAvatarInfo_v1", playerId);

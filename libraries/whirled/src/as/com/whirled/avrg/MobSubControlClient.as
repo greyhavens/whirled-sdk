@@ -14,16 +14,26 @@ import com.whirled.AbstractSubControl;
 import com.whirled.ControlEvent;
 
 /**
- * Defines actions, accessors and callbacks available to MOBs on the client.
+ * Provides clients with a means of accessing and controlling a previously spawned MOB.
+ * @see http://wiki.whirled.com/Mobs
+ * @see RoomSubControlServer#spawnMob()
+ * @see RoomSubControlBase#event:mobControlAvailable
+ * @see RoomSubControlClient#getMobSubControl()
  */
 public class MobSubControlClient extends MobSubControlBase
 {
+    /** @private */
     public function MobSubControlClient (parent :AbstractControl, id :String, sprite :DisplayObject)
     {
         super(parent, id);
         _sprite = sprite;
     }
 
+    /**
+     * Accesses the sprite object for this MOB. If non-null, this will return the value created by
+     * the mob sprite exporter assigned in the <code>LocalSubControl</code>.
+     * @see LocalSubControl#setMobSpriteExporter()
+     */
     public function getMobSprite () :DisplayObject
     {
         return _sprite;
@@ -41,6 +51,10 @@ public class MobSubControlClient extends MobSubControlBase
         callHostCode("setMobHotSpot_v1", _id, x, y, height);
     }
 
+    /**
+     * Assigns an object to decorate a mob.
+     */
+    // TODO: need to mention where the object will appear
     public function setDecoration (decoration :DisplayObject) :void
     {
         if (_decoration == null) {
@@ -49,6 +63,9 @@ public class MobSubControlClient extends MobSubControlBase
         }
     }
 
+    /**
+     * Removes the previously assigned decoration.
+     */
     public function removeDecoration () :void
     {
         if (_decoration != null) {

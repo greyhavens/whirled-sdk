@@ -19,11 +19,13 @@ import flash.utils.Dictionary;
  * Dispatched when a message arrives with information that is not part of the shared game state.
  *
  * @eventType com.whirled.net.MessageReceivedEvent.MESSAGE_RECEIVED
+ * @see RoomSubControlServer#sendMessage()
  */
 [Event(name="MsgReceived", type="com.whirled.net.MessageReceivedEvent")]
 
 /**
- * Defines actions, accessors and callbacks available on the client only.
+ * Provides AVR services for a client player's current room.
+ * @see AVRGameControl#room
  */
 public class RoomSubControlClient extends RoomSubControlBase
 {
@@ -33,16 +35,28 @@ public class RoomSubControlClient extends RoomSubControlBase
         super(ctrl, targetId);
     }
 
+    /**
+     * Accesses the read-only properties associated with this room. To change properties use your
+     * server agent's <code>RoomSubControlServer</code>'s <code>props</code>.
+     * @see RoomSubControlServer#props
+     */
     public function get props () :PropertyGetSubControl
     {
         return _props;
     }
 
-    public function getRoomId () :int
+    /** @inheritDoc */
+    // from RoomSubControlBase
+    override public function getRoomId () :int
     {
         return callHostCode("room_getRoomId_v1");
     }
 
+    /**
+     * Accesses a previosly spawned MOB in this room.
+     * @see http://wiki.whirled.com/Mobs
+     * @see RoomSubControlBase#event:mobControlAvailable
+     */
     public function getMobSubControl (id :String) :MobSubControlClient
     {
         return _mobControls[id] as MobSubControlClient;
@@ -85,6 +99,7 @@ public class RoomSubControlClient extends RoomSubControlBase
         _mobControls = new Dictionary();
     }
 
+    /** @private */
     protected var _props :PropertyGetSubControlImpl;
 }
 }

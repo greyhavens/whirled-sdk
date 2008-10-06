@@ -11,10 +11,21 @@ import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 
 /**
- * Defines actions, accessors and callbacks available to all MOBs.
+ * Dispatched when the location or orientation of a MOB changes.
+ *
+ * @eventType com.whirled.avrg.AVRGameControlEvent.MOB_APPEARANCE_CHANGED
+ */
+[Event(name="mobAppearanceChanged", type="com.whirled.avrg.AVRGameControlEvent")]
+
+/**
+ * Provides a means of accessing and controlling a previously spawned MOB.
+ * @see http://wiki.whirled.com/Mobs
+ * @see RoomSubControlServer#spawnMob()
+ * @see RoomSubControlBase#event:mobControlAvailable
  */
 public class MobSubControlBase extends AbstractSubControl
 {
+    /** @private */
     public function MobSubControlBase (parent :AbstractControl, id :String)
     {
         super(parent);

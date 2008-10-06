@@ -12,6 +12,7 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
 
 /**
  * Provides AVR client game services.
+ * @see AVRGameControl#game
  */
 public class GameSubControlClient extends GameSubControlBase
 {
@@ -22,7 +23,9 @@ public class GameSubControlClient extends GameSubControlBase
     }
 
     /**
-     * Accesses the properties associated with this game.
+     * Accesses the read-only properties associated with this game. To change properties use your
+     * server agent's <code>GameSubControlServer</code>'s <code>props</code>.
+     * @see GameSubControlServer#props
      */
     public function get props () :PropertyGetSubControl
     {

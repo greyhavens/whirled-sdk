@@ -16,21 +16,29 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
 import com.whirled.net.impl.PropertySubControlImpl;
 
 /**
- * Dispatched when a new player joins the game.
+ * Dispatched when a new player joins the game. This event is guaranteed to be the first event
+ * concerning a particular player during that player's session. It will normally be followed
+ * immediately by a <code>ENTERED_ROOM</code> event.
  *
  * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_JOINED_GAME
+ * @see com.whirled.avrg.AVRGamePlayerEvent#ENTERED_ROOM
  */
 [Event(name="playerJoinedGame", type="com.whirled.avrg.AVRGameControlEvent")]
 
 /**
- * Dispatched when a player leaves the game.
+ * Dispatched when a player leaves the game. This event is guaranteed to be the last event
+ * concerning a particular player during that player's session. Any requests related to the player
+ * will fail after the player has quit. The event will normally be immediately preceded by a
+ * <code>LEFT_ROOM</code> event.
  *
  * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_QUIT_GAME
+ * @see com.whirled.avrg.AVRGamePlayerEvent#LEFT_ROOM
  */
 [Event(name="playerQuitGame", type="com.whirled.avrg.AVRGameControlEvent")]
 
 /**
  * Provides services for AVR game server agents.
+ * @see AVRServerGameControl#game
  */
 public class GameSubControlServer extends GameSubControlBase
     implements MessageSubControl
@@ -42,7 +50,10 @@ public class GameSubControlServer extends GameSubControlBase
     }
 
     /**
-     * Accesses the global properties for this game.
+     * Accesses the global properties for this game. Properties may be persisted and will be
+     * restored when the server agent restarts. Persistent properties should only be used when
+     * genuinely necessary.
+     * @see com.whirled.net.NetConstants#makePersistent()
      */
     public function get props () :PropertySubControl
     {
@@ -52,7 +63,9 @@ public class GameSubControlServer extends GameSubControlBase
     /**
      * Sends a message to all players in this game. Use carefully since the resulting outgoing
      * message load could be significant. Games that overload the server are subject to
-     * discretionary action.
+     * discretionary action. Players receive game messages by adding a listener to the
+     * <code>GameSubControlClient</code>.
+     * @see GameSubControlClient#event:MsgReceived
      */
     public function sendMessage (name :String, value :Object = null) :void
     {

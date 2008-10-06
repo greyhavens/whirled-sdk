@@ -22,11 +22,13 @@ public class PropControl extends FurniControl
         super(disp);
     }
 
+    // TODO: document
     public function isGameActivated () :Boolean
     {
         return callHostCode("isGameActivated_v1") as Boolean;
     }
 
+    // TODO: document
     public function activateGame () :Boolean
     {
         return callHostCode("activateGame_v1") as Boolean;

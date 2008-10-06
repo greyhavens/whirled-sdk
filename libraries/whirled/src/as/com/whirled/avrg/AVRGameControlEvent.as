@@ -7,46 +7,55 @@ package com.whirled.avrg {
 
 import flash.events.Event;
 
+/**
+ * Conveys information about a change to the state of an AVR game.
+ */
 public class AVRGameControlEvent extends Event
 {
     /**
      * An event type dispatched when somebody joined the AVRG.
-     * key: N/A
-     * value: the memberId of the player
+     * <br/><b>name</b> - not used
+     * <br/><b>value :int</b> - the id of the player who has joined
      *
      * @eventType playerJoinedGame
+     * @see GameSubControlServer
      */
     public static const PLAYER_JOINED_GAME :String = "playerJoinedGame";
 
     /**
-     * An event type dispatched when somebody left the AVRG.
-     * key: N/A
-     * value: the memberId of the player
+     * An event type dispatched when somebody is leaving the AVRG.
+     * <br/><b>name</b> - not used
+     * <br/><b>value :int</b> - the memberId of the player
      *
      * @eventType playerQuitGame
+     * @see GameSubControlServer
      */
     public static const PLAYER_QUIT_GAME :String = "playerQuitGame";
 
     /**
      * An event type dispatched when the control has been resized.
-     * key: N/A
-     * value: N/A
+     * <br/><b>name</b> - not used
+     * <br/><b>value</b> - not used
      *
      * @eventType sizeChanged
+     * @see LocalSubControl
+     * @see LocalSubControl#getPaintableArea()
      */
     public static const SIZE_CHANGED :String = "sizeChanged";
 
     /**
-     * An event type dispatched when a mob has changed appearance.
-     * key: N/A
-     * value: N/A
+     * An event type dispatched when a spawned MOB has changed appearance.
+     * <br/><b>name</b> - not used
+     * <br/><b>value</b> - not used
      *
      * @eventType mobAppearanceChanged
+     * @see MobSubControlClient
+     * @see MobSubControlServer
      */
     public static const MOB_APPEARANCE_CHANGED :String = "mobAppearanceChanged";
 
     /**
-     * Retrieve the 'name' for this event, which is a String value
+     * Retrieves the 'name' for this event, which is a String value
      * whose meaning is determined by the event type.
      */
     public function get name () :String
@@ -55,7 +64,7 @@ public class AVRGameControlEvent extends Event
     }
 
     /**
-     * Retrieve the object 'value' for this event, which is a value
+     * Retrieves the object 'value' for this event, which is a value
      * whose meaning is determined by the event type.
      */
     public function get value () :Object
@@ -64,7 +73,7 @@ public class AVRGameControlEvent extends Event
     }
 
     /**
-     * Create a new AVRGameControlEvent.
+     * Creates a new AVRGameControlEvent.
      */
     public function AVRGameControlEvent (
         type :String, name :String = null, value :Object = null, cancelable :Boolean = false)
@@ -75,12 +84,15 @@ public class AVRGameControlEvent extends Event
         _value = value;
     }
 
+    /** @inheritDoc */
+    // from Event
     override public function toString () :String
     {
         return "AVRGameControlEvent [type=" + type + ", name=" + _name + ", value=" + _value +
             ", cancelable=" + cancelable + "]";
     }
 
+    /** @inheritDoc */
     // documentation inherited from Event
     override public function clone () :Event
     {
