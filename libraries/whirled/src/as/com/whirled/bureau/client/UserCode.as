@@ -9,7 +9,7 @@ public interface UserCode
 {
     /** Connects to the user code, assigning it the given host props and returning the user 
      *  props. */
-    function connect (connectListener :Function, traceListener :Function) :void;
+    function connect (connectListener :Function) :void;
 
     /** Releases this code. Once released, <code>connect</code> may no longer be used and 
      *  all references to the instance should be cleared. */

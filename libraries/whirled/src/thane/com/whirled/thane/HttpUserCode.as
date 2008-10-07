@@ -23,15 +23,23 @@ public class HttpUserCode
     /** Creates a new HttpUserCode and automatically starts downloading code.
      *  @param url the location of the code media (abc file)
      *  @param className the name of the class to look for in the library
-     *  @param callback the function to call when the class is found */
+     *  @param callback the function to call when the class is found 
+     *  @param traceListener the function to call to output messages */
     public function HttpUserCode (
-        url :String,
-        className :String,
-        callback :Function)
+        url :String, className :String, callback :Function, traceListener :Function)
     {
         _url = url;
         _className = className;
         _callback = callback;
+
+        _bridge = new EventDispatcher();
+        if (traceListener != null) {
+            _bridge.addEventListener(TraceEvent.TRACE, function (evt :TraceEvent) :void {
+                if (evt.trace != null) {
+                    traceListener(evt.trace.join(" "));
+                }
+            });
+        }
 
         // TODO: something meaningful on failure
         var client :HttpClient = new HttpClient();
@@ -47,17 +55,10 @@ public class HttpUserCode
 
     /** @inheritDoc */
     // from UserCode
-    public function connect (connectListener :Function, traceListener :Function) :void
+    public function connect (connectListener :Function) :void
     {
         try {
             _bridge.addEventListener("controlConnect", connectListener);
-            if (traceListener != null) {
-                _bridge.addEventListener(TraceEvent.TRACE, function (evt :TraceEvent) :void {
-                    if (evt.trace != null) {
-                        traceListener(evt.trace.join(" "));
-                    }
-                });
-            }
             _instance = new _class();
             log.info("New server instantiated!");
         }
@@ -123,7 +124,6 @@ public class HttpUserCode
         var success :Boolean = false;
 
         try {
-            _bridge = new EventDispatcher();
             _domainId = "UserCode-" + (++_lastId);
             var consoleTracePrefix :String = _domainId + ": ";
             _domain = Thane.spawnDomain(_domainId, /** TODO: new thanes: consoleTracePrefix, */ _bridge);

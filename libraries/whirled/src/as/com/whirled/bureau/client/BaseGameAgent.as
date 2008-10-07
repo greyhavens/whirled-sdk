@@ -55,7 +55,8 @@ public class BaseGameAgent extends Agent
         _subscriber.subscribe(_ctx.getDObjectManager());
 
         // download the code
-        _ctx.getUserCodeLoader().load(_agentObj.code, _agentObj.className, gotUserCode);
+        _ctx.getUserCodeLoader().load(
+            _agentObj.code, _agentObj.className, relayTrace, gotUserCode);
     }
 
     // from Agent
@@ -63,7 +64,7 @@ public class BaseGameAgent extends Agent
     {
         log.info("Stopping agent", "agentObj", _agentObj.which());
 
-        handleTimer(null);
+        flushTraceOutput();
         _traceTimer.stop();
         _traceTimer.removeEventListener(TimerEvent.TIMER, handleTimer);
         _traceTimer = null;
@@ -118,6 +119,7 @@ public class BaseGameAgent extends Agent
 
         // If the code didn't load for some reason, send the failure now that we have the game object
         if (_needToSendAgentFailedMessage) {
+            flushTraceOutput();
             _controller.agentFailed();
             _needToSendAgentFailedMessage = false;
             return;
@@ -150,6 +152,7 @@ public class BaseGameAgent extends Agent
 
             // We need to have a game object to send a failure
             if (_controller != null) {
+                flushTraceOutput();
                 _controller.agentFailed();
 
             } else {
@@ -171,7 +174,7 @@ public class BaseGameAgent extends Agent
      */
     protected function launchUserCode () :void
     {
-        _userCode.connect(_controller.getConnectListener(), relayTrace);
+        _userCode.connect(_controller.getConnectListener());
         
         if (!_controller.isConnected()) {
             log.info("Could not connect to user code", "agentObj", _agentObj.which());
@@ -208,9 +211,17 @@ public class BaseGameAgent extends Agent
         } else {
             if (_gameObj != null && _gameObj.manager != null) {
                 _gameObj.manager.invoke("agentTrace", _traceOutput);
+                _traceOutput.length = 0;
             }
-            _traceOutput.length = 0;
         }
+    }
+
+    /**
+     * Sends any pending trace output if possible.
+     */
+    protected function flushTraceOutput () :void
+    {
+        handleTimer(null);
     }
 
     /**

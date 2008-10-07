@@ -12,12 +12,12 @@ public class HttpUserCodeLoader
 
     /** @inheritDoc */
     // from UserCodeLoader
-    public function load (url :String, className :String, callback :Function) :void
+    public function load (
+        url :String, className :String, traceFn :Function, callback :Function) :void
     {
         // this will install its own socket callbacks and invoke the caller's 
         // callback when everything is ready.
-        new HttpUserCode(url, className, callback);
+        new HttpUserCode(url, className, callback, traceFn);
     }
 }
-
 }

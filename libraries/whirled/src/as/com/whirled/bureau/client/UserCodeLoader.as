@@ -17,9 +17,13 @@ public interface UserCodeLoader
      * 
      * <p>Each uccessful call to <code>load</code> must be paired with a corresponding 
      * <code>UserCode.release()</code> call.</p>
+     *
+     * The given <code>traceFn</code> takes a single string argument and is called with any
+     * messages output directly by the code or by the loading process.
+     *
      * @see UserCode
      */
-    function load (url :String, name :String, callback :Function) :void;
+    function load (url :String, name :String, traceFn :Function, callback :Function) :void;
 }
 
 }
