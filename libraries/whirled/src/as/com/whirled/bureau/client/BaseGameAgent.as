@@ -49,7 +49,7 @@ public class BaseGameAgent extends Agent
             new SubscriberAdapter(gameObjectAvailable, gameObjectRequestFailed);
 
         var gameOid :int = getGameOid();
-        log.info("Subscribing to game object", "oid", gameOid, "ctx", _ctx);
+        log.info("Subscribing to game object", "oid", gameOid);
 
         _subscriber = new SafeSubscriber(gameOid, delegator);
         _subscriber.subscribe(_ctx.getDObjectManager());
