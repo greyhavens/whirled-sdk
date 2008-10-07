@@ -24,6 +24,21 @@ public class ColorMatrix
         return new ColorMatrix(mat);
     }
 
+    public static function createHSB (... args) :ColorMatrix
+    {
+        var mat :ColorMatrix = new ColorMatrix();
+        if (args.length > 0) {
+            mat.adjustHue(args[0]);
+        }
+        if (args.length > 1) {
+            mat.adjustSaturation(args[1]);
+        }
+        if (args.length > 2) {
+            mat.adjustBrightness(args[2], args[2], args[2]);
+        }
+        return mat;
+    }
+
     /*
    Function: ColorMatrix
 
