@@ -117,7 +117,7 @@ public class EditorSprite extends Sprite
 
     protected function mouseOutHandler (event :MouseEvent) :void
     {
-        if (_hoverH != null) {
+        if (_hoverH != null && _hoverH.parent == _sprite) {
             _sprite.removeChild(_hoverH);
         }
     }
