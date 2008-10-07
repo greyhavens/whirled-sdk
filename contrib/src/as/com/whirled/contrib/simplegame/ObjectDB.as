@@ -34,7 +34,7 @@ import flash.events.IEventDispatcher;
 public class ObjectDB
 {
     /**
-     * Adds a SimObject to the database. The SimObject must not be owned by another database.
+     * Adds a SimObject to the ObjectDB. The SimObject must not be owned by another ObjectDB.
      * If displayParent is not null, obj's attached DisplayObject will be added as a child
      * of displayParent.
      */
@@ -109,7 +109,7 @@ public class ObjectDB
         return ref;
     }
 
-    /** Removes a SimObject from the mode. */
+    /** Removes a SimObject from the ObjectDB. */
     public function destroyObjectNamed (name :String) :void
     {
         var obj :SimObject = this.getObjectNamed(name);
@@ -118,7 +118,17 @@ public class ObjectDB
         }
     }
 
-    /** Removes a SimObject from the mode. */
+    /** Removes all SimObjects in the given group from the ObjectDB. */
+    public function destroyObjectsInGroup (groupName :String) :void
+    {
+        for each (var ref :SimObjectRef in this.getObjectRefsInGroup(groupName)) {
+            if (!ref.isNull) {
+                ref.object.destroySelf();
+            }
+        }
+    }
+
+    /** Removes a SimObject from the ObjectDB. */
     public function destroyObject (ref :SimObjectRef) :void
     {
         if (null == ref) {
@@ -185,7 +195,7 @@ public class ObjectDB
     {
         var refs :Array = (_groupedObjects.get(groupName) as Array);
 
-        return (null != refs ? refs : new Array());
+        return (null != refs ? refs : []);
     }
 
     /**
