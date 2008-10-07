@@ -133,7 +133,8 @@ public class HttpUserCode
             success = _class != null;
 
         } catch (err :Error) {
-            log.warning("Error loading user code: " + err.getStackTrace());
+            log.info("Error loading user code: " + err.getStackTrace());
+            outputTrace("Could not instantiate server class", err);
 
         } finally {
 
