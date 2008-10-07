@@ -35,7 +35,7 @@ public class TaskContainer
 
     public static const TYPE__LIMIT :uint = 3;
 
-    public function TaskContainer (type :uint, task1 :ObjectTask = null, task2 :ObjectTask = null)
+    public function TaskContainer (type :uint, subtasks :Array = null)
     {
         if (type >= TYPE__LIMIT) {
             throw new ArgumentError("invalid 'type' parameter");
@@ -43,11 +43,10 @@ public class TaskContainer
 
         _type = type;
 
-        if (null != task1) {
-            addTask(task1);
-        }
-        if (null != task2) {
-            addTask(task2);
+        if (subtasks != null) {
+            for each (var task :ObjectTask in subtasks) {
+                addTask(task);
+            }
         }
     }
 

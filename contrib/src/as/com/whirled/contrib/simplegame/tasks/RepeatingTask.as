@@ -24,9 +24,9 @@ import com.whirled.contrib.simplegame.ObjectTask;
 
 public class RepeatingTask extends TaskContainer
 {
-    public function RepeatingTask (task1 :ObjectTask = null, task2 :ObjectTask = null)
+    public function RepeatingTask (...subtasks)
     {
-        super(TaskContainer.TYPE_REPEATING, task1, task2);
+        super(TaskContainer.TYPE_REPEATING, subtasks);
     }
 }
 

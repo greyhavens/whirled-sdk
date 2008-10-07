@@ -24,9 +24,9 @@ import com.whirled.contrib.simplegame.ObjectTask;
 
 public class SerialTask extends TaskContainer
 {
-    public function SerialTask (task1 :ObjectTask = null, task2 :ObjectTask = null)
+    public function SerialTask (...subtasks)
     {
-        super(TaskContainer.TYPE_SERIAL, task1, task2);
+        super(TaskContainer.TYPE_SERIAL, subtasks);
     }
 }
 
