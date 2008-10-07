@@ -73,7 +73,7 @@ public class HttpUserCode
     {
         log.info("Releasing " + this);
         if (_domain != null) {
-            // TODO: new thanes: Thane.unspawnDomain(_domain);
+            Thane.unspawnDomain(_domain);
         }
         releaseReferences();
     }
@@ -81,13 +81,7 @@ public class HttpUserCode
     /** @inheritDoc */
     public function outputTrace (str :String, err :Error = null) :void
     {
-        // TODO: new thanes: remove this
-        trace(str);
-        if (err != null) {
-            trace(err.getStackTrace());
-        }
-
-        // TODO: new thanes: Thane.outputToTrace(_domain, str, err);
+        Thane.outputToTrace(_domain, str, err);
     }
 
     /** @inheritDoc */
@@ -126,7 +120,7 @@ public class HttpUserCode
         try {
             _domainId = "UserCode-" + (++_lastId);
             var consoleTracePrefix :String = _domainId + ": ";
-            _domain = Thane.spawnDomain(_domainId, /** TODO: new thanes: consoleTracePrefix, */ _bridge);
+            _domain = Thane.spawnDomain(_domainId, consoleTracePrefix, _bridge);
             _domain.loadBytes(_bytes);
             _bytes = null;
             _class = _domain.getClass(_className);
