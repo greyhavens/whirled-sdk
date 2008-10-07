@@ -27,6 +27,7 @@ public class Spawner extends RectDynamic
     public var maxConcurrent :int;
     public var spawnInterval :Number;
     public var spawnDelay :Number;
+    public var deathInterval :Number;
     public var destructable :Boolean;
     public var health :Number;
     public var spawning :Boolean;
@@ -54,6 +55,7 @@ public class Spawner extends RectDynamic
             height = insxml.hasOwnProperty("@height") ? insxml.@height : 1;
             spawnInterval = insxml.@spawnInterval;
             spawnDelay = insxml.@spawnDelay;
+            deathInterval = insxml.@deathInterval;
         }
         inter = Dynamic.ENEMY;
     }
@@ -75,6 +77,7 @@ public class Spawner extends RectDynamic
         xml.@height = height;
         xml.@spawnInterval = spawnInterval;
         xml.@spawnDelay = spawnDelay;
+        xml.@deathInterval = deathInterval;
         if (sprite != null) {
             xml.@sprite = sprite;
         }

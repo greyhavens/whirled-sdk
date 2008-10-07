@@ -95,6 +95,7 @@ public class SpawnerController extends RectDynamicController
             var a :Actor = _controller.getBoard().getActor(_spawner.spawns[ii]);
             if (a == null || !a.shouldSpawn()) {
                 _spawner.spawns.splice(ii, 1);
+                _spawnInterval = Math.max(_spawnInterval, _spawner.deathInterval);
             } else {
                 ii++;
             }
