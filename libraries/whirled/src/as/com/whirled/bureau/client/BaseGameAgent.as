@@ -116,6 +116,13 @@ public class BaseGameAgent extends Agent
         // This also initializes the controller
         _controller = createController();
 
+        // If the code didn't load for some reason, send the failure now that we have the game object
+        if (_needToSendAgentFailedMessage) {
+            _controller.agentFailed();
+            _needToSendAgentFailedMessage = false;
+            return;
+        }
+
         if (_userCode != null && _gameObj != null) {
             launchUserCode();
         }
@@ -127,7 +134,10 @@ public class BaseGameAgent extends Agent
     protected function gameObjectRequestFailed (oid :int, cause :ObjectAccessError) :void
     {
         log.warning("Could not subscribe to game object", "oid", oid, cause);
-        _controller.agentFailed();
+
+        // Hmm, we can't even let the server know about this (_controller is null)... so let's hope
+        // it doesn't happen
+        // _controller.agentFailed();
     }
 
     /**
@@ -136,8 +146,15 @@ public class BaseGameAgent extends Agent
     protected function gotUserCode (userCode :UserCode) :void
     {
         if (userCode == null) {
-            log.warning("Unable to load user code", "agentObj", _agentObj.which());
-            _controller.agentFailed();
+            log.info("Unable to load user code", "agentObj", _agentObj.which());
+
+            // We need to have a game object to send a failure
+            if (_controller != null) {
+                _controller.agentFailed();
+
+            } else {
+                _needToSendAgentFailedMessage = true;
+            }
             return;
         }
 
@@ -211,6 +228,7 @@ public class BaseGameAgent extends Agent
     protected var _controller :GameAgentController;
     protected var _traceOutput :TypedArray = TypedArray.create(String);
     protected var _traceTimer :Timer = new Timer(1000);
+    protected var _needToSendAgentFailedMessage :Boolean;
 }
 
 }
