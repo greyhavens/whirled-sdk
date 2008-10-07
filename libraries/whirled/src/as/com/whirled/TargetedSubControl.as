@@ -25,12 +25,11 @@ public class TargetedSubControl extends AbstractSubControl
     /** @private */
     override protected function callHostCode (name :String, ... args) :*
     {
-        args.unshift(_targetId);
-        args.unshift(name);
+        args.unshift(name, _targetId);
         return super.callHostCode.apply(null, args);
     }
 
     /** @private */
-    protected var _targetId :int = 0;
+    protected var _targetId :int;
 }
 }
