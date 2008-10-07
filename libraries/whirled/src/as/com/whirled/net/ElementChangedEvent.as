@@ -38,8 +38,7 @@ public class ElementChangedEvent extends PropertyChangedEvent
      * Constructor.
      */
     public function ElementChangedEvent (
-        type :String, _targetId :int, propName :String, newValue :Object,
-        oldValue :Object, key :int)
+        type :String, targetId :int, propName :String, newValue :Object, oldValue :Object, key :int)
     {
         super(type, targetId, propName, newValue, oldValue);
         _key = key;
@@ -47,8 +46,8 @@ public class ElementChangedEvent extends PropertyChangedEvent
 
     override public function toString () :String
     {
-        return "[ElementChangedEvent name=" + _name + ", value=" + _newValue + ", key=" +
-            _key + "]";
+        return "[ElementChangedEvent name=" + _name + ", value=" + _newValue +
+            ", key=" + _key + "]";
     }
 
     override public function clone () :Event
