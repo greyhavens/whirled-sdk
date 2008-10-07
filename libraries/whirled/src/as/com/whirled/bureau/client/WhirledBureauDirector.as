@@ -24,7 +24,7 @@ public class WhirledBureauDirector extends BureauDirector
     protected override function createAgent (agentObj :AgentObject) :Agent
     {
         if (agentObj is GameAgentObject) {
-            return new GameAgent(_ctx as WhirledBureauContext);
+            return new WhirledGameAgent(_ctx as WhirledBureauContext);
         }
 
         throw new Error("Unknown type");

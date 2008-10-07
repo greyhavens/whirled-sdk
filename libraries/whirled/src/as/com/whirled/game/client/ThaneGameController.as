@@ -11,7 +11,8 @@ import com.threerings.presents.dobj.AttributeChangedEvent;
 import com.threerings.bureau.util.BureauContext;
 import com.threerings.parlor.game.data.GameObject;
 import com.threerings.parlor.turn.client.TurnGameControllerDelegate;
-import com.whirled.bureau.client.GameAgent;
+import com.whirled.bureau.client.BaseGameAgent;
+import com.whirled.bureau.client.GameAgentController;
 import com.whirled.game.data.ThaneGameConfig;
 import com.whirled.game.data.WhirledGameObject;
 
@@ -19,7 +20,7 @@ import com.whirled.game.data.WhirledGameObject;
  * A controller for thane whirled games.
  */
 public class ThaneGameController extends Controller
-    implements AttributeChangeListener
+    implements AttributeChangeListener, GameAgentController
 {
     /** The backend we dispatch game events to. */
     public var backend :ThaneGameBackend;
@@ -32,7 +33,7 @@ public class ThaneGameController extends Controller
 
     /** Initializes the controller. */
     public function init (
-        ctx :BureauContext, gameObj :WhirledGameObject, gameAgent :GameAgent,
+        ctx :BureauContext, gameObj :WhirledGameObject, gameAgent :BaseGameAgent,
         config :ThaneGameConfig) :void
     {
         _ctx = ctx;
@@ -47,7 +48,8 @@ public class ThaneGameController extends Controller
         _thfield = _gameObj.getTurnHolderFieldName();
     }
 
-    /** Shuts down the game controller. */
+    /** @inheritDoc */
+    // from GameAgentController
     public function shutdown () :void
     {
         _gameObj.removeListener(this);
@@ -57,10 +59,8 @@ public class ThaneGameController extends Controller
         _gameObj = null;
     }
 
-    /**
-     * Called after we've entered the game and everything has initialized
-     * to notify the server that we, as an agent, are ready.
-     */
+    /** @inheritDoc */
+    // from GameAgentController
     public function agentReady () :void
     {
         _log.info("Reporting agent ready " + _gameObj.which() + ".");
@@ -68,9 +68,8 @@ public class ThaneGameController extends Controller
     }
 
 
-    /**
-     * Called if the user code could not be loaded for any reason.
-     */
+    /** @inheritDoc */
+    // from GameAgentController
     public function agentFailed () :void
     {
         _log.info("Reporting agent failed " + _gameObj.which() + ".");
@@ -132,6 +131,20 @@ public class ThaneGameController extends Controller
         if (_gameAgent != null) {
             _gameAgent.outputToUserCode(msg, error);
         }
+    }
+
+    /** @inheritDoc */
+    // from GameAgentController
+    public function getConnectListener () :Function
+    {
+        return backend.getConnectListener();
+    }
+
+    /** @inheritDoc */
+    // from GameAgentController
+    public function isConnected () :Boolean
+    {
+        return backend.isConnected();
     }
 
     /** Called when the turn holder field changes. */
@@ -214,7 +227,7 @@ public class ThaneGameController extends Controller
 
     protected var _ctx :BureauContext;
     protected var _gameObj :WhirledGameObject;
-    protected var _gameAgent :GameAgent;
+    protected var _gameAgent :BaseGameAgent;
     protected var _config :ThaneGameConfig;
 
     /** A local flag overriding the game over state for situations where

@@ -20,20 +20,19 @@ import com.threerings.presents.util.SafeSubscriber;
 
 import com.threerings.bureau.client.Agent;
 
+import com.threerings.crowd.data.PlaceObject;
+
 import com.whirled.bureau.util.WhirledBureauContext;
 
-import com.whirled.bureau.data.GameAgentObject;
-
-import com.whirled.game.client.ThaneGameController;
-
-import com.whirled.game.data.WhirledGameObject;
-
-/** The container for a user's game control code. */
-public class GameAgent extends Agent
+/**
+ * The container for a user's game control code. Base class to share code for server agents for
+ * any kind of game.
+ */
+public class BaseGameAgent extends Agent
 {
-    public static var log :Log = Log.getLog(GameAgent);
+    public static var log :Log = Log.getLog(BaseGameAgent);
 
-    public function GameAgent (ctx :WhirledBureauContext)
+    public function BaseGameAgent (ctx :WhirledBureauContext)
     {
         _ctx = ctx; 
 
@@ -47,18 +46,16 @@ public class GameAgent extends Agent
 
         // subscribe to the game object
         var delegator :Subscriber = 
-            new SubscriberAdapter(objectAvailable, requestFailed);
+            new SubscriberAdapter(gameObjectAvailable, gameObjectRequestFailed);
 
-        log.info("Subscribing to game object", "oid", gameAgentObj.gameOid);
+        var gameOid :int = getGameOid();
+        log.info("Subscribing to game object", "oid", gameOid, "ctx", _ctx);
 
-        _subscriber = new SafeSubscriber(gameAgentObj.gameOid, delegator);
+        _subscriber = new SafeSubscriber(gameOid, delegator);
         _subscriber.subscribe(_ctx.getDObjectManager());
 
         // download the code
-        _ctx.getUserCodeLoader().load(
-            _agentObj.code, 
-            _agentObj.className, 
-            gotUserCode);
+        _ctx.getUserCodeLoader().load(_agentObj.code, _agentObj.className, gotUserCode);
     }
 
     // from Agent
@@ -98,23 +95,26 @@ public class GameAgent extends Agent
         }
     }
 
-    /** Access the agent object, casted to a game agent object. */
-    protected function get gameAgentObj () :GameAgentObject
+    /**
+     * Gets the oid of the game object so that a subscription can be established when the agent
+     * starts.
+     */
+    protected function getGameOid () :int
     {
-        return _agentObj as GameAgentObject;
+        throw new Error("Abstract");
     }
 
     /**
      * Callback for when the request to subscribe to the game object finishes and the object is 
      * available.
      */
-    protected function objectAvailable (gameObj :WhirledGameObject) :void
+    protected function gameObjectAvailable (gameObj :PlaceObject) :void
     {
         log.info("Subscribed to game object", "gameObj", gameObj.which());
         _gameObj = gameObj;
 
+        // This also initializes the controller
         _controller = createController();
-        _controller.init(_ctx, _gameObj, this, gameAgentObj.config);
 
         if (_userCode != null && _gameObj != null) {
             launchUserCode();
@@ -124,7 +124,7 @@ public class GameAgent extends Agent
     /**
      * Callback for when the a request to subscribe to the game object fails.
      */
-    protected function requestFailed (oid :int, cause :ObjectAccessError) :void
+    protected function gameObjectRequestFailed (oid :int, cause :ObjectAccessError) :void
     {
         log.warning("Could not subscribe to game object", "oid", oid, cause);
         _controller.agentFailed();
@@ -154,9 +154,9 @@ public class GameAgent extends Agent
      */
     protected function launchUserCode () :void
     {
-        _userCode.connect(_controller.backend.getConnectListener(), relayTrace);
+        _userCode.connect(_controller.getConnectListener(), relayTrace);
         
-        if (!_controller.backend.isConnected()) {
+        if (!_controller.isConnected()) {
             log.info("Could not connect to user code", "agentObj", _agentObj.which());
             _controller.agentFailed();
             return;
@@ -197,18 +197,18 @@ public class GameAgent extends Agent
     }
 
     /**
-     * Creates the controller for this agent. 
+     * Creates and initializes the controller for this agent.
      */
-    protected function createController () :ThaneGameController
+    protected function createController () :GameAgentController
     {
-        return new ThaneGameController();
+        throw new Error("abstract");
     }
 
     protected var _subscriber :SafeSubscriber;
     protected var _ctx :WhirledBureauContext;
-    protected var _gameObj :WhirledGameObject;
+    protected var _gameObj :PlaceObject;
     protected var _userCode :UserCode;
-    protected var _controller :ThaneGameController;
+    protected var _controller :GameAgentController;
     protected var _traceOutput :TypedArray = TypedArray.create(String);
     protected var _traceTimer :Timer = new Timer(1000);
 }
