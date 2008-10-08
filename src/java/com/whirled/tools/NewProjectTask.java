@@ -114,12 +114,6 @@ public class NewProjectTask extends Task
             copyFile(input, new File(_templates, "Server.as"), new File(pdir, "Server.as"), subs);
         }
 
-        if ("Backdrop".equals(_type)) {
-            String propFile = "backdrop-properties.xml";
-            copyFile(input, new File(_templates, propFile), new File(pdir, propFile),
-                new HashMap<String, String>());
-        }
-
         System.out.println("Done! Your new project has been created in '" + pdir + "'.");
     }
 
