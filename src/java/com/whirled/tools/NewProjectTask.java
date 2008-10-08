@@ -65,12 +65,12 @@ public class NewProjectTask extends Task
                 System.out.println(entry.getKey() + " - " + entry.getValue());
             }
             do {
-                _type = _choiceMap.get(readInput(input, "Enter the number [1-6]?"));
+                _type = _choiceMap.get(readInput(input, "Enter the number [1-7]?"));
             } while (_type == null);
         }
 
         Boolean makeServerAgent = false;
-        if ("Game".equals(_type) && _serverAgentInfoUrl != null) {
+        if (GAME_TYPE.equals(_type) && _serverAgentInfoUrl != null) {
             System.out.println("Whirled games can optionally employ a server agent. This is");
             System.out.println("recommended for multi-player games, but is more complicated to ");
             System.out.println("write. For more information, see:");
@@ -83,6 +83,9 @@ public class NewProjectTask extends Task
                 String answer = readInput(input, "Enter [y/n]:");
                 makeServerAgent = _boolMap.get(answer.toLowerCase());
             } while (makeServerAgent == null);
+
+        } else if (AVRG_TYPE.equals(_type)) {
+            makeServerAgent = true;
         }
 
         String project;
@@ -111,7 +114,8 @@ public class NewProjectTask extends Task
         copyFile(input, new File(_templates, _type + ".as"), new File(pdir, project + ".as"), subs);
 
         if (makeServerAgent) {
-            copyFile(input, new File(_templates, "Server.as"), new File(pdir, "Server.as"), subs);
+            String tmpl = AVRG_TYPE.equals(_type) ? "AVRGServer.as" : "Server.as";
+            copyFile(input, new File(_templates, tmpl), new File(pdir, "Server.as"), subs);
         }
 
         System.out.println("Done! Your new project has been created in '" + pdir + "'.");
@@ -209,14 +213,18 @@ public class NewProjectTask extends Task
     protected Pattern _subre = Pattern.compile("@([A-Za-z0-9]+)@");
     protected String _serverAgentInfoUrl;
 
+    protected static final String AVRG_TYPE = "AVRG";
+    protected static final String GAME_TYPE = "Game";
+
     protected static TreeMap<String,String> _choiceMap = new TreeMap<String,String>();
     static {
         _choiceMap.put("1", "Avatar");
-        _choiceMap.put("2", "Game");
+        _choiceMap.put("2", GAME_TYPE);
         _choiceMap.put("3", "Pet");
         _choiceMap.put("4", "Furni");
         _choiceMap.put("5", "Toy");
         _choiceMap.put("6", "Backdrop");
+        _choiceMap.put("7", AVRG_TYPE);
     }
 
     protected static TreeMap<String,Boolean> _boolMap = new TreeMap<String,Boolean>();
