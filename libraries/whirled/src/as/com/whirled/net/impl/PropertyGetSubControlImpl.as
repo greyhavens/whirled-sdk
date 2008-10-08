@@ -50,10 +50,10 @@ public class PropertyGetSubControlImpl extends TargetedSubControl
     {
         if (key == null) {
             dispatch(new PropertyChangedEvent(PropertyChangedEvent.PROPERTY_CHANGED,
-                                              _targetId, name, newValue, oldValue));
+                                              name, newValue, oldValue));
         } else {
             dispatch(new ElementChangedEvent(ElementChangedEvent.ELEMENT_CHANGED,
-                                             _targetId, name, newValue, oldValue, int(key)));
+                                             name, newValue, oldValue, int(key)));
         }
     }
 

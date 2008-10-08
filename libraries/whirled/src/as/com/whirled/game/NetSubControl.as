@@ -232,13 +232,12 @@ public class NetSubControl extends AbstractSubControl
     private function propertyWasSet_v2 (
         name :String, newValue :Object, oldValue :Object, key :Object) :void
     {
-        var myId :int = int(callHostCode("getMyId_v1"));
         if (key == null) {
             dispatch(new PropertyChangedEvent(PropertyChangedEvent.PROPERTY_CHANGED,
-                myId, name, newValue, oldValue));
+                name, newValue, oldValue));
         } else {
             dispatch(new ElementChangedEvent(ElementChangedEvent.ELEMENT_CHANGED,
-                myId, name, newValue, oldValue, int(key)));
+                name, newValue, oldValue, int(key)));
         }
     }
 
@@ -247,8 +246,7 @@ public class NetSubControl extends AbstractSubControl
      */
     private function messageReceived_v2 (name :String, value :Object, sender :int) :void
     {
-        var myId :int = int(callHostCode("getMyId_v1"));
-        dispatch(new MessageReceivedEvent(myId, name, value, sender));
+        dispatch(new MessageReceivedEvent(name, value, sender));
     }
 
     /** Game properties. @private */

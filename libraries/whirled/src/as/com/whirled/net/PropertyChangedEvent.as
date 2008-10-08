@@ -45,21 +45,12 @@ public class PropertyChangedEvent extends Event
     }
 
     /**
-     * Access the id of the recipient of this message.
-     */
-    public function get targetId () :int
-    {
-        return _targetId;
-    }
-    
-    /**
      * Constructor.
      */
     public function PropertyChangedEvent (
-        type :String, targetId :int, propName :String, newValue :Object, oldValue :Object)
+        type :String, propName :String, newValue :Object, oldValue :Object)
     {
         super(type);
-        _targetId = targetId;
         _name = propName;
         _newValue = newValue;
         _oldValue = oldValue;
@@ -72,14 +63,11 @@ public class PropertyChangedEvent extends Event
 
     override public function clone () :Event
     {
-        return new PropertyChangedEvent(type, _targetId, _name, _newValue, _oldValue);
+        return new PropertyChangedEvent(type, _name, _newValue, _oldValue);
     }
 
     /** @private */
     protected var _name :String;
-
-    /** @private */
-    protected var _targetId :int;
 
     /** @private */
     protected var _newValue :Object;

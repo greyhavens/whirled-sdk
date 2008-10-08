@@ -44,14 +44,6 @@ public class MessageReceivedEvent extends Event
     }
 
     /**
-     * Access the id of the recipient of this message.
-     */
-    public function get targetId () :int
-    {
-        return _targetId;
-    }
-
-    /**
      * Returns true if the message was sent by the whirled game server or by the game's server 
      * agent.
      */
@@ -60,11 +52,9 @@ public class MessageReceivedEvent extends Event
         return _senderId == SERVER_ID || _senderId == SERVER_AGENT_ID;
     }
 
-    public function MessageReceivedEvent (
-        targetId :int, messageName :String, value :Object, senderId :int)
+    public function MessageReceivedEvent (messageName :String, value :Object, senderId :int)
     {
         super(MESSAGE_RECEIVED);
-        _targetId = targetId;
         _name = messageName;
         _value = value;
         _senderId = senderId;
@@ -73,12 +63,12 @@ public class MessageReceivedEvent extends Event
     override public function toString () :String
     {
         return "[MessageReceivedEvent name=" + _name + ", value=" + _value +
-            ", target=" + _targetId + ", sender=" + _senderId + "]";
+            ", sender=" + _senderId + "]";
     }
 
     override public function clone () :Event
     {
-        return new MessageReceivedEvent(_targetId, _name, _value, _senderId);
+        return new MessageReceivedEvent(_name, _value, _senderId);
     }
 
     /** @private */
@@ -89,9 +79,6 @@ public class MessageReceivedEvent extends Event
 
     /** @private */
     protected var _senderId :int;
-
-    /** @private */
-    protected var _targetId :int;
 
     /** 
      * Sender id indicating that the message is from the whirled game server.
@@ -104,6 +91,5 @@ public class MessageReceivedEvent extends Event
      * TODO: does this need to be public?
      */
     protected static const SERVER_AGENT_ID :int = int.MIN_VALUE;
-    
 }
 }

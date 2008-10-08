@@ -52,7 +52,7 @@ public class PlayerSubControlClient extends PlayerSubControlBase
 
     private function player_messageReceived_v1 (name :String, value :Object, sender :int) :void
     {
-        dispatch(new MessageReceivedEvent(_targetId, name, value, sender));
+        dispatch(new MessageReceivedEvent(name, value, sender));
     }
 }
 }

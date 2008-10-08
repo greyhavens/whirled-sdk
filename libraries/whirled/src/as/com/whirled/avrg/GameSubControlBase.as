@@ -80,7 +80,7 @@ public class GameSubControlBase extends AbstractSubControl
     /** @private */
     protected function messageReceived (name :String, value :Object, sender :int) :void
     {
-        dispatch(new MessageReceivedEvent(0, name, value, sender));
+        dispatch(new MessageReceivedEvent(name, value, sender));
     }
 }
 }
