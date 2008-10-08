@@ -71,6 +71,12 @@ public class NetSubControl extends AbstractSubControl
         super(parent);
     }
 
+    /** @private unused currently */
+    public function getTargetId () :int
+    {
+        return 0;
+    }
+
     /**
      * Provides a control with which to send messages to all the players of this game.
      * @see #sendMessage

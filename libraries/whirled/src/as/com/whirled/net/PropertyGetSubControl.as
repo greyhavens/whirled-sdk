@@ -27,5 +27,10 @@ public interface PropertyGetSubControl extends IEventDispatcher
      * Calling this method results in no network traffic.
      */
     function getPropertyNames (prefix :String = "") :Array;
+
+    /**
+     * Get the targetId on which this control operates.
+     */
+    function getTargetId () :int;
 }
 }
