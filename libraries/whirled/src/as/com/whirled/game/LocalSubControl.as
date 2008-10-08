@@ -220,7 +220,7 @@ public class LocalSubControl extends AbstractSubControl
 
     /**
      * Instructs the game client to open the appropriate location in the game's shop
-     * itemType string constants are defined on GameControl 
+     * @param itemType string constants are defined on GameControl 
      */
     public function showGameShop (itemType :String, catalogId :int = 0) :void
     {
