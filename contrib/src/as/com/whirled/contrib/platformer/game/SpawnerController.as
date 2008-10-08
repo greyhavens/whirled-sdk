@@ -71,9 +71,10 @@ public class SpawnerController extends RectDynamicController
         if (_spawnDelay > 0) {
             _spawnDelay -= delta;
         } else if (_spawner.spawning) {
-            var a :Actor = Board.loadDynamic(_spawner.spawnXML) as Actor;
-            a.x = _spawner.x + _spawner.width/2;
-            a.y = _spawner.y + 0.01;
+            var cxml :XML = _spawner.spawnXML.copy();
+            cxml.@x = _spawner.x + _spawner.width/2;
+            cxml.@y = _spawner.y;
+            var a :Actor = Board.loadDynamic(cxml) as Actor;
             _controller.getBoard().addActor(a);
             _spawner.spawns.push(a.id);
             _spawner.spawning = false;
