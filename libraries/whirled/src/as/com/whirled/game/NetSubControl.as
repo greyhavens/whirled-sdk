@@ -209,8 +209,6 @@ public class NetSubControl extends AbstractSubControl
         return [ _agentMsgCtrl, _playersMsgCtrl ];
     }
 
-
-
     /**
      * Look up or create a MessageSubControl for a specific player.
      * @private
@@ -219,6 +217,7 @@ public class NetSubControl extends AbstractSubControl
     {
         var ctrl :MessageSubControl = _playerCtrls[playerId];
         if (ctrl == null) {
+            // TODO: we should garbage collect these when a player has left the game
             ctrl = _playerCtrls[playerId] = new MessageSubControlAdapter(_parent,
                 function (name :String, value :Object) :void {
                     sendMessage(name, value, playerId);
