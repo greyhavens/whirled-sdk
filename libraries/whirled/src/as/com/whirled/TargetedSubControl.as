@@ -22,6 +22,14 @@ public class TargetedSubControl extends AbstractSubControl
         super(parent);
     }
 
+    /**
+     * Get the targetId on which this control operates.
+     */
+    public function getTargetId () :int
+    {
+        return _targetId;
+    }
+
     /** @private */
     override protected function callHostCode (name :String, ... args) :*
     {
