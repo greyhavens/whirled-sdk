@@ -48,7 +48,7 @@ public class ShotCollisionHandler extends CollisionHandler
     protected function pCollide (s :Shot, db :DynamicBounds, cd :ColliderDetails) :void
     {
         var sc :ShootableController = db.controller as ShootableController;
-        if (cd.alines[0] == null ||
+        if ((cd.alines[0] == null && sc.doesHit()) ||
                 (cd.alines[0] is LineData && sc.doesHit(cd.alines[0].x1, cd.alines[0].y1))) {
             s.hit = true;
             sc.doHit(s.damage);
