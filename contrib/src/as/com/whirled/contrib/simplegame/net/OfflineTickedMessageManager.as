@@ -54,18 +54,10 @@ public class OfflineTickedMessageManager
     public function update (dt :Number) :void
     {
         // convert seconds to milliseconds
-        var dtMS :int = (dt * 1000);
-
-        // create new tick timeslices as necessary
-        while (dtMS > 0) {
-            if (dtMS < _msTillNextTick) {
-                _msTillNextTick -= dtMS;
-                dtMS = 0;
-            } else {
-                dtMS -= _msTillNextTick;
-                _msTillNextTick = _tickIntervalMS;
-                _ticks.push(new Array());
-            }
+        _msTillNextTick -= (dt * 1000);
+        if (_msTillNextTick <= 0) {
+            _ticks.push(new Array());
+            _msTillNextTick = _tickIntervalMS;
         }
     }
 
