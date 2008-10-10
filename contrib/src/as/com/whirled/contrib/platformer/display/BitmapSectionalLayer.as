@@ -60,7 +60,7 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
             }
         }
 
-        //trace("adding piece: " + ps.getPiece() + " to section: " + idx);
+//        trace("adding piece: " + ps.getPiece() + " to section: " + idx);
     }
 
     override public function clear () :void
@@ -126,7 +126,7 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
                     rect.y = pt.y;
                     _bd.fillRect(rect, 0);
                 }
-                //trace("copy pixels " + idx + " r:" + rect + ", pt:" + pt);
+//                trace("copy pixels " + idx + " r:" + rect + ", pt:" + pt);
                 ox += rect.width;
             }
             oy += rect.height;
@@ -149,13 +149,14 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
             var p :Piece = ps.getPiece();
             var mat :Matrix = disp.transform.matrix.clone();
             mat.translate((p.x - offx) * Metrics.TILE_SIZE, (sh - p.y + offy) * Metrics.TILE_SIZE);
-            //trace("drawing piece (" + p.x + ", " + p.y + ") to translation (" + mat.tx + ", " + mat.ty + ")");
+//            trace("drawing piece (" + p.x + ", " + p.y + ") to translation (" + mat.tx + ", " + 
+//                mat.ty + ")");
             bd.draw(disp, mat);
         }
     }
 
-    protected var _oldnX :int;
-    protected var _oldnY :int;
+    protected var _oldnX :int = -1;
+    protected var _oldnY :int = -1;
 
     protected var _sindex :SectionalIndex;
     protected var _sections :Array = new Array();
