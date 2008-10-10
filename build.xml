@@ -47,6 +47,8 @@
     <file name="lib/slf4j-api.jar"/>
     <file name="lib/slf4j-jdk14.jar"/>
     <file name="lib/swfutils-ooo.jar"/>
+    <file name="lib/scala-library.jar"/>
+    <file name="lib/dependency-analyzer-ooo.jar"/>
     <file name="lib/velocity-1.5-dev.jar"/>
     <file name="lib/flexlib.swc"/>
     <file name="lib/tweener.swc"/>

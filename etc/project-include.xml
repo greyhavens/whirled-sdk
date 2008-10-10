@@ -12,6 +12,7 @@
   <property name="app.library-dir" value="."/>
   <property name="app.server-agent-package-dir" value="${app.package-dir}"/>
   <property name="app.server-agent" value="Server"/>
+  <property name="link-report.file" value="${build.root}/dist/link-report.xml"/>
 
   <!-- if the user specifies arg.source-extras, build a whole new argument       -->
   <!-- out of it. otherwise just use a dummy value (can't easily skip it, alas). -->
@@ -50,6 +51,7 @@
     <java jar="${flex.path}/lib/mxmlc.jar" fork="true" failonerror="true">
       <arg value="-load-config"/>
       <arg value="${etc.dir}/whirled-config.xml"/>
+      <arg value="-link-report=${link-report.file}"/>
       <arg value="-library-path+=${build.root}/dist/lib/flexlib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/tweener.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/player-env.swc"/>
@@ -314,4 +316,63 @@
     </exec>
   </target>
 
+    <!-- test the ant task we built by attempting to define it -->
+    <target name="define-dependency-task">
+        <taskdef name="dependencyanalysis" 
+            classname="com.threerings.tools.flex.dependency.DependencyAnalysis">
+            <classpath>
+              <fileset dir="${build.root}/dist/lib">
+                <include name="dependency-analyzer-ooo.jar"/>
+                <include name="scala-library.jar"/>
+              </fileset>
+            </classpath>
+        </taskdef>
+    </target>
+    
+    <!-- Analyze for potential dependencies on server side code. -->
+    <target name="server-dependencies" depends="define-dependency-task, build">
+        <dependencyanalysis 
+            diagnostic="false"
+            trace="false"
+            unknown="false"
+            linkReport="${link-report.file}"            
+            root="Server">
+
+            <!-- Fake classes are classes for which we have a server side stub, but not the full -->
+            <!-- functionality. -->
+            <fake>
+                flash.display.DisplayObject
+            </fake>
+            
+            <!-- Immune classes are allowed to use the fake classes.  -->
+            <immune>
+                com.whirled.game:GameControl,com.whirled:AbstractControl,
+                com.whirled:ServerObject
+            </immune>
+            
+            <!-- The available set lists the libraries that are available to the server side -->
+            <!-- code. -->
+            <available dir="/export/whirled/dist/lib">
+              <include name="thane.swc"/>
+              <include name="flexlib.swc"/>
+              <include name="naryalib.swc"/>
+              <include name="nenyalib.swc"/>
+              <include name="vilyalib.swc"/>
+              <include name="whirledlib.swc"/>
+            </available>
+            
+            <!-- The unavailable set lists libraries that may be used accidentally (because they -->
+            <!-- are used by the client, but are not available to server side code.  If these -->
+            <!-- overlap with the available set, the available set takes precedence. -->
+            <unavailable dir="/export/whirled/dist/lib">
+              <include name="flexlib.swc"/>
+              <include name="tweener.swc"/>
+              <include name="player-env.swc"/>
+              <include name="naryalib.swc"/>
+              <include name="nenyalib.swc"/>
+              <include name="vilyalib.swc"/>
+              <include name="whirledlib.swc"/>
+            </unavailable>
+        </dependencyanalysis>
+    </target>
 </project>
