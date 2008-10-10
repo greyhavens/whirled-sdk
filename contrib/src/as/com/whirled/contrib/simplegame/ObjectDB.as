@@ -188,8 +188,8 @@ public class ObjectDB
      * Returns an Array containing the object refs of all the objects in the given group.
      * This Array must not be modified by client code.
      *
-     * Note: because of the method that object destruction is implemented with,
-     * the returned Array may contain null object refs.
+     * Note: the returned Array will contain null object refs for objects that were destroyed
+     * this frame and haven't yet been cleaned up.
      */
     public function getObjectRefsInGroup (groupName :String) :Array
     {
