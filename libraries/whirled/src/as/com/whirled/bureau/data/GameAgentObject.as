@@ -62,7 +62,7 @@ public class GameAgentObject extends AgentObject
     {
         super.readObject(ins);
         gameOid = ins.readInt();
-        config = (ins.readObject() as ThaneGameConfig);
+        config = ThaneGameConfig(ins.readObject());
     }
 }
 }

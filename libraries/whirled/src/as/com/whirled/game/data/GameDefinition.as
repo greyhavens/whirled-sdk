@@ -94,8 +94,8 @@ public /*abstract*/ class GameDefinition
         controller = (ins.readField(String) as String);
         manager = (ins.readField(String) as String);
         digest = (ins.readField(String) as String);
-        match = (ins.readObject() as MatchConfig);
-        params = (ins.readObject() as TypedArray);
+        match = MatchConfig(ins.readObject());
+        params = TypedArray(ins.readObject());
         server = (ins.readField(String) as String);
     }
 

@@ -69,9 +69,9 @@ public class BaseGameConfig extends GameConfig
     override public function readObject (ins :ObjectInputStream) :void
     {
         super.readObject(ins);
-        params = (ins.readObject() as StreamableHashMap);
+        params = StreamableHashMap(ins.readObject());
         _gameId = ins.readInt();
-        _gameDef = (ins.readObject() as GameDefinition);
+        _gameDef = GameDefinition(ins.readObject());
     }
 
     // from interface Streamable

@@ -147,14 +147,14 @@ public class WhirledGameObject extends GameObject
     {
         roundId = ins.readInt();
         controllerOid = ins.readInt();
-        turnHolder = (ins.readObject() as Name);
-        userCookies = (ins.readObject() as DSet);
-        gameData = (ins.readObject() as TypedArray);
+        turnHolder = Name(ins.readObject());
+        userCookies = DSet(ins.readObject());
+        gameData = TypedArray(ins.readObject());
         agentState = ins.readInt();
-        whirledGameService = (ins.readObject() as WhirledGameMarshaller);
-        prizeService = (ins.readObject() as PrizeMarshaller);
-        propertyService = (ins.readObject() as PropertySpaceMarshaller);
-        messageService = (ins.readObject() as WhirledGameMessageMarshaller);
+        whirledGameService = WhirledGameMarshaller(ins.readObject());
+        prizeService = PrizeMarshaller(ins.readObject());
+        propertyService = PropertySpaceMarshaller(ins.readObject());
+        messageService = WhirledGameMessageMarshaller(ins.readObject());
     }
     
     /** The raw properties set by the game. */

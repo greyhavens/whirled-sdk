@@ -43,7 +43,7 @@ public class TestGameDefinition extends GameDefinition
     override public function readObject (ins :ObjectInputStream) :void
     {
         super.readObject(ins);
-        packs = (ins.readObject() as TypedArray);
+        packs = TypedArray(ins.readObject());
     }
 
     // from interface Streamable
