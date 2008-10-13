@@ -24,18 +24,18 @@ import com.whirled.contrib.simplegame.Updatable;
 
 public interface TickedMessageManager extends Updatable
 {
-    /** Should be called after the TickedMessageManager is created. */
-    function setup () :void;
-
-    /** Stops the TickedMessageManager from processing game ticks. */
-    function shutdown () :void;
-
     /**
      * Should be called when the the TickedMessageManager should start listening for and
      * and processing game ticks. In a multiplayer game, this is usually immediately after the
      * GAME_STARTED event is received.
      */
     function run () :void;
+
+    /**
+     * Stops the TickedMessageManager from processing game ticks. The manager can be restarted
+     * by calling run() again.
+     */
+    function stop () :void;
 
     /**
      * Returns true when the TickedMessageManager is ready to begin sending and receiving messages.

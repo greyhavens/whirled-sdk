@@ -37,17 +37,12 @@ public class OfflineTickedMessageManager
         _ticks.push(new Array());
     }
 
-    public function setup () :void
-    {
-        // no-op
-    }
-
-    public function shutdown () :void
-    {
-        // no-op
-    }
-
     public function run () :void
+    {
+        // no-op
+    }
+
+    public function stop () :void
     {
         // no-op
     }

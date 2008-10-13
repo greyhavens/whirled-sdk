@@ -22,9 +22,9 @@ package com.whirled.contrib.simplegame.net {
 
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.whirled.contrib.EventHandlerManager;
 import com.whirled.game.GameControl;
 import com.whirled.net.MessageReceivedEvent;
-import com.whirled.game.StateChangedEvent;
 
 import flash.utils.getTimer;
 
@@ -50,23 +50,27 @@ public class OnlineTickedMessageManager
         _messageFactories.put(messageName, factory);
     }
 
-    public function setup () :void
-    {
-        _gameCtrl.net.addEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, msgReceived);
-    }
-
-    public function shutdown () :void
-    {
-        _gameCtrl.net.removeEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, msgReceived);
-        _receivedFirstTick = false;
-    }
-
     public function run () :void
     {
+        _events.registerEventListener(_gameCtrl.net, MessageReceivedEvent.MESSAGE_RECEIVED,
+            msgReceived);
+
+        _ticks = [];
+        _pendingSends = [];
+
         // The first player is in charge of starting the ticker
         if (_isFirstPlayer) {
             _gameCtrl.services.startTicker(_tickName, _tickIntervalMS);
         }
+    }
+
+    public function stop () :void
+    {
+        _ticks = null;
+        _pendingSends = null;
+        _receivedFirstTick = false;
+
+        _events.freeAllHandlers();
     }
 
     public function get isReady () :Boolean
@@ -81,6 +85,7 @@ public class OnlineTickedMessageManager
         if (name == _tickName) {
             _ticks.push(new Array());
             _receivedFirstTick = true;
+
         } else {
             // add any actions received during this tick
             var array :Array = (_ticks[_ticks.length - 1] as Array);
@@ -132,7 +137,6 @@ public class OnlineTickedMessageManager
         }
 
         var serialized :Object = factory.serializeForNetwork(msg);
-
         if (null == serialized) {
             log.warning("Discarding outgoing '" + msg.name + "' message (failed to serialize)");
             return null;
@@ -150,7 +154,6 @@ public class OnlineTickedMessageManager
         }
 
         var msg :Message = factory.deserializeFromNetwork(serialized);
-
         if (null == msg) {
             log.warning("Discarding incoming '" + name + "' message (failed to deserialize)");
             return null;
@@ -201,12 +204,14 @@ public class OnlineTickedMessageManager
     protected var _gameCtrl :GameControl;
     protected var _tickName :String;
     protected var _receivedFirstTick :Boolean;
-    protected var _ticks :Array = [];
-    protected var _pendingSends :Array = [];
+    protected var _ticks :Array;
+    protected var _pendingSends :Array;
     protected var _maxPendingSends :uint = 10;
     protected var _minSendDelayMS :uint = 105;  // default to 10 sends/second
     protected var _lastSendTime :int;
     protected var _messageFactories :HashMap = new HashMap();
+
+    protected var _events :EventHandlerManager = new EventHandlerManager();
 
     protected static const log :Log = Log.getLog(OnlineTickedMessageManager);
 }
