@@ -36,7 +36,8 @@ import flash.utils.getTimer;
 public class OnlineTickedMessageManager
     implements TickedMessageManager
 {
-    public function OnlineTickedMessageManager (gameCtrl :GameControl, isFirstPlayer :Boolean, tickIntervalMS :int, tickMessageName :String = "t")
+    public function OnlineTickedMessageManager (gameCtrl :GameControl, isFirstPlayer :Boolean,
+        tickIntervalMS :int, tickMessageName :String = "t")
     {
         _gameCtrl = gameCtrl;
         _isFirstPlayer = isFirstPlayer;
@@ -52,34 +53,25 @@ public class OnlineTickedMessageManager
     public function setup () :void
     {
         _gameCtrl.net.addEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, msgReceived);
-
-        // the game will start when all players are ready
-        _gameCtrl.game.addEventListener(StateChangedEvent.GAME_STARTED, handleGameStarted);
-
-        // we're ready!
-        _gameCtrl.game.playerReady();
     }
 
     public function shutdown () :void
     {
-        _gameCtrl.game.removeEventListener(StateChangedEvent.GAME_STARTED, handleGameStarted);
-
-//        _gameCtrl.services.stopTicker(_tickName);
         _gameCtrl.net.removeEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, msgReceived);
         _receivedFirstTick = false;
+    }
+
+    public function run () :void
+    {
+        // The first player is in charge of starting the ticker
+        if (_isFirstPlayer) {
+            _gameCtrl.services.startTicker(_tickName, _tickIntervalMS);
+        }
     }
 
     public function get isReady () :Boolean
     {
         return _receivedFirstTick;
-    }
-
-    protected function handleGameStarted (...ignored) :void
-    {
-        // When the game starts, start the ticker
-        if (_isFirstPlayer) {
-            _gameCtrl.services.startTicker(_tickName, _tickIntervalMS);
-        }
     }
 
     protected function msgReceived (event :MessageReceivedEvent) :void

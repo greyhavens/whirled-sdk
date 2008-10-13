@@ -39,14 +39,15 @@ public class OfflineTickedMessageManager
 
     public function setup () :void
     {
-        // report that we're ready even in offline games, so that
-        // coins can be awarded at the end
-        if (_gameCtrl.isConnected()) {
-            _gameCtrl.game.playerReady();
-        }
+        // no-op
     }
 
     public function shutdown () :void
+    {
+        // no-op
+    }
+
+    public function run () :void
     {
         // no-op
     }
