@@ -5,22 +5,6 @@
 
 package com.whirled.net {
 
-/**
- * Dispatched when a property has changed in the shared game state. This event is a result
- * of calling set() or testAndSet().
- *
- * @eventType com.whirled.game.PropertyChangedEvent.PROPERTY_CHANGED
- */
-[Event(name="PropChanged", type="com.whirled.net.PropertyChangedEvent")]
-
-/**
- * Dispatched when an element inside a property has changed in the shared game state.
- * This event is a result of calling setIn() or setAt().
- *
- * @eventType com.whirled.game.ElementChangedEvent.ELEMENT_CHANGED
- */
-[Event(name="ElemChanged", type="com.whirled.net.ElementChangedEvent")]
-
 public interface PropertySubControl extends PropertyGetSubControl
 {
     /**

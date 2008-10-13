@@ -8,6 +8,22 @@ package com.whirled.net {
 import flash.events.IEventDispatcher;
 
 /**
+ * Dispatched when a property has changed in the shared game state. This event is a result
+ * of calling set() or testAndSet().
+ *
+ * @eventType com.whirled.game.PropertyChangedEvent.PROPERTY_CHANGED
+ */
+[Event(name="PropChanged", type="com.whirled.net.PropertyChangedEvent")]
+
+/**
+ * Dispatched when an element inside a property has changed in the shared game state.
+ * This event is a result of calling setIn() or setAt().
+ *
+ * @eventType com.whirled.game.ElementChangedEvent.ELEMENT_CHANGED
+ */
+[Event(name="ElemChanged", type="com.whirled.net.ElementChangedEvent")]
+
+/**
  * Provides the ability to read game state in the form of named properties which are
  * automatically shared between players and, potentially, the server agent.
  */
