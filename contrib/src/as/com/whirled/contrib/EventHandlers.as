@@ -78,6 +78,14 @@ public class EventHandlers
         _mgr.freeAllHandlers();
     }
 
+    /**
+     * Returns the global manager that is accessed by all of the static members of this class.
+     */
+    public static function getGlobalManager () :EventHandlerManager
+    {
+        return _mgr;
+    }
+
     protected static var _mgr :EventHandlerManager = new EventHandlerManager();
 }
 }
