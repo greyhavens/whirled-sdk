@@ -243,6 +243,7 @@
      <fileset dir="lib">
        <include name="viewer.swf"/>
        <include name="default-avatar.swf"/>
+       <include name="testing-furni.swf"/>
      </fileset>
     </copy>
     <mkdir dir="${sdk.build}/lib"/>
@@ -330,6 +331,7 @@
     <jar file="${deploy.dir}/${app.name}-tools.jar" basedir="${classes.dir}" includes="com/**"/>
     <copy file="lib/viewer.swf" todir="${deploy.dir}"/>
     <copy file="lib/default-avatar.swf" todir="${deploy.dir}"/>
+    <copy file="lib/testing-furni.swf" todir="${deploy.dir}"/>
 
     <mkdir dir="${deploy.dir}/bin"/>
     <copy todir="${deploy.dir}/bin" overwrite="true">
