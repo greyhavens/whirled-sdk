@@ -81,7 +81,7 @@ public class OfflineTickedMessageManager
         }
     }
 
-    public function addMessageFactory (messageName :String, factory :MessageFactory) :void
+    public function addMessageType (messageClass :Class) :void
     {
         // no-op - we never need to serialize or deserialize messages
     }

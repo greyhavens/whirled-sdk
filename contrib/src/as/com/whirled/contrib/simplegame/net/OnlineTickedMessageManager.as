@@ -26,6 +26,7 @@ import com.whirled.contrib.EventHandlerManager;
 import com.whirled.game.GameControl;
 import com.whirled.net.MessageReceivedEvent;
 
+import flash.utils.ByteArray;
 import flash.utils.getTimer;
 
 /**
@@ -45,15 +46,18 @@ public class OnlineTickedMessageManager
         _tickName = tickMessageName;
     }
 
-    public function addMessageFactory (messageName :String, factory :MessageFactory) :void
+    public function addMessageType (messageClass :Class) :void
     {
-        _messageFactories.put(messageName, factory);
+        var msg :Message = new messageClass();
+        if (_messageTypes.put(msg.name, messageClass) !== undefined) {
+            throw new Error("Message type '" + msg.name + "' already registered");
+        }
     }
 
     public function run () :void
     {
         _events.registerEventListener(_gameCtrl.net, MessageReceivedEvent.MESSAGE_RECEIVED,
-            msgReceived);
+            onMessageReceived);
 
         _ticks = [];
         _pendingSends = [];
@@ -78,7 +82,7 @@ public class OnlineTickedMessageManager
         return _receivedFirstTick;
     }
 
-    protected function msgReceived (event :MessageReceivedEvent) :void
+    protected function onMessageReceived (event :MessageReceivedEvent) :void
     {
         var name :String = event.name;
 
@@ -119,7 +123,7 @@ public class OnlineTickedMessageManager
         if (addToQueue) {
             _pendingSends.push(msg);
         } else {
-            sendMessageNow(msg);
+            this.sendMessageNow(msg);
         }
     }
 
@@ -128,34 +132,19 @@ public class OnlineTickedMessageManager
         return ((getTimer() - _lastSendTime) >= _minSendDelayMS);
     }
 
-    protected function serializeMessage (msg :Message) :Object
+    protected function deserializeMessage (name :String, val :Object) :Message
     {
-        var factory :MessageFactory = (_messageFactories.get(msg.name) as MessageFactory);
-        if (null == factory) {
-            log.warning("Discarding outgoing '" + msg.name + "' message (no factory)");
+        var messageClass :Class = _messageTypes.get(name) as Class;
+        if (null == messageClass) {
+            log.warning("Discarding incoming '" + name + "' message (message type not registered)");
             return null;
         }
 
-        var serialized :Object = factory.serializeForNetwork(msg);
-        if (null == serialized) {
-            log.warning("Discarding outgoing '" + msg.name + "' message (failed to serialize)");
-            return null;
-        }
-
-        return serialized;
-    }
-
-    protected function deserializeMessage (name :String, serialized :Object) :Message
-    {
-        var factory :MessageFactory = (_messageFactories.get(name) as MessageFactory);
-        if (null == factory) {
-            log.warning("Discarding incoming '" + name + "' message (no factory)");
-            return null;
-        }
-
-        var msg :Message = factory.deserializeFromNetwork(serialized);
-        if (null == msg) {
-            log.warning("Discarding incoming '" + name + "' message (failed to deserialize)");
+        var msg :Message = new messageClass();
+        try {
+            msg.fromBytes(ByteArray(val));
+        } catch (e :Error) {
+            log.warning("Discarding incoming '" + name + "' message (failed to deserialize)", e);
             return null;
         }
 
@@ -164,12 +153,7 @@ public class OnlineTickedMessageManager
 
     protected function sendMessageNow (msg :Message) :void
     {
-        var serialized :Object = serializeMessage(msg);
-        if (null == serialized) {
-            return;
-        }
-
-        _gameCtrl.net.sendMessage(msg.name, serialized);
+        _gameCtrl.net.sendMessage(msg.name, msg.toBytes());
         _lastSendTime = getTimer();
     }
 
@@ -209,7 +193,7 @@ public class OnlineTickedMessageManager
     protected var _maxPendingSends :uint = 10;
     protected var _minSendDelayMS :uint = 105;  // default to 10 sends/second
     protected var _lastSendTime :int;
-    protected var _messageFactories :HashMap = new HashMap();
+    protected var _messageTypes :HashMap = new HashMap();
 
     protected var _events :EventHandlerManager = new EventHandlerManager();
 

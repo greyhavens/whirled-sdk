@@ -20,10 +20,13 @@
 
 package com.whirled.contrib.simplegame.net {
 
+import flash.utils.ByteArray;
+
 public interface Message
 {
+    function fromBytes (ba :ByteArray) :void
+    function toBytes (ba :ByteArray = null) :ByteArray;
     function get name () :String;
-    function toString () :String;
 }
 
 }

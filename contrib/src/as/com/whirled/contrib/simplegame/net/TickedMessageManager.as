@@ -60,11 +60,8 @@ public interface TickedMessageManager extends Updatable
      * Registers a message type with the TickedMessageManager. Shortly after setup() is called,
      * this function should be called once for each message type that the game will send or
      * receive.
-     *
-     * @see Message
-     * @see MessageFactory
      */
-    function addMessageFactory (messageName :String, factory :MessageFactory) :void;
+    function addMessageType (messageClass :Class) :void;
 
     /**
      * Sends a message to all other players in the game.
