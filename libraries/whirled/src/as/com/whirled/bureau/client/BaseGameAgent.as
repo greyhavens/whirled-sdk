@@ -211,7 +211,7 @@ public class BaseGameAgent extends Agent
         } else {
             if (_gameObj != null && _gameObj.manager != null) {
                 _gameObj.manager.invoke("agentTrace", _traceOutput);
-                _traceOutput.length = 0;
+                _traceOutput = TypedArray.create(String);
             }
         }
     }
