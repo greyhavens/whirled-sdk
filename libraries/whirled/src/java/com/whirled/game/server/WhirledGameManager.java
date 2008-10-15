@@ -532,6 +532,13 @@ public abstract class WhirledGameManager extends GameManager
         return (playerId == 0) ? (BodyObject) caller : null;
     }
 
+    @Override // from GameManager
+    protected boolean shouldEndGame ()
+    {
+        // whirled games are never automatically ended, that's up to the per-game code to decide
+        return false;
+    }
+
     /**
      * Validate that the specified user has access to do things in the game.
      */
