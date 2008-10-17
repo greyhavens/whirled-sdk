@@ -82,6 +82,21 @@ public class EventHandlerManager
         registerEventListener(dispatcher, Event.UNLOAD, freeAllHandlers);
     }
 
+    /** 
+     * Will either call a given function now, or defer it based on the boolean parameter.  If the 
+     * parameter is false, the function will be registered as a one-shot callback on the dispatcher
+     */
+    public function conditionalCall (callback :Function, callNow :Boolean, 
+        dispatcher :IEventDispatcher, event :String, useCapture :Boolean = false, 
+        priority :int = 0) :void
+    {
+        if (callNow) {
+            callback();
+        } else {
+            registerOneShotCallback(dispatcher, event, callback, useCapture, priority);
+        }
+    }
+
     /**
      * Free all handlers that have been added via this registerEventListener() and have not been
      * freed already via unregisterEventListener()
