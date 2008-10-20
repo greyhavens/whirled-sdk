@@ -309,6 +309,8 @@ public final class MainLoop
 
             _modeStack.push(newMode);
             _hostSprite.addChild(newMode.modeSprite);
+
+            newMode.setupInternal();
         }
 
         function doInsertMode (newMode :AppMode, index :int) :void {
@@ -383,10 +385,6 @@ public final class MainLoop
             }
 
             if (null != topMode) {
-                if (!topMode._hasSetup) {
-                    topMode.setupInternal();
-                }
-
                 topMode.enterInternal();
             }
         }

@@ -68,7 +68,6 @@ public class AppMode extends ObjectDB
     internal function setupInternal () :void
     {
         setup();
-        _hasSetup = true;
     }
 
     internal function destroyInternal () :void
@@ -94,8 +93,6 @@ public class AppMode extends ObjectDB
     }
 
     protected var _modeSprite :Sprite = new Sprite();
-
-    internal var _hasSetup :Boolean;
 }
 
 }
