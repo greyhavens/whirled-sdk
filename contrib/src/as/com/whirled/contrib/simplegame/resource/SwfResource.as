@@ -35,10 +35,20 @@ import flash.utils.ByteArray;
 public class SwfResource
     implements Resource
 {
-    public static function instantiateMovieClip (resourceName :String, className :String) :MovieClip
+    public static function instantiateMovieClip (resourceName :String, className :String,
+        disableMouseInteraction :Boolean = false) :MovieClip
     {
         var theClass :Class = getClass(resourceName, className);
-        return (null != theClass ? new theClass() : null);
+        if (theClass != null) {
+            var movie :MovieClip = new theClass();
+            if (disableMouseInteraction) {
+                movie.mouseChildren = false;
+                movie.mouseEnabled = false;
+            }
+            return movie;
+        }
+
+        return null;
     }
 
     public static function instantiateButton (resourceName :String, className :String) :SimpleButton
