@@ -169,29 +169,40 @@ public final class MainLoop
     }
 
     /**
-     * Pushes a mode to the mode stack.
+     * Inserts a mode into the stack at the specified index. All modes
+     * at and above the specified index will move up in the stack.
      * (Mode changes take effect between game updates.)
+     *
+     * @param mode the AppMode to add
+     * @param index the stack position to add the mode at.
+     * You can use a negative integer to specify a position relative
+     * to the top of the stack (for example, -1 is the top of the stack).
      */
-    public function pushMode (mode :AppMode) :void
+    public function insertMode (mode :AppMode, index :int) :void
     {
         if (null == mode) {
             throw new ArgumentError("mode must be non-null");
         }
 
-        createModeTransition(mode, TRANSITION_PUSH);
+        createModeTransition(mode, TRANSITION_INSERT, index);
     }
 
     /**
-     * Pops the top mode from the mode stack.
+     * Removes a mode from the stack at the specified index. All
+     * modes above the specified index will move down in the stack.
      * (Mode changes take effect between game updates.)
+     *
+     * @param index the stack position to add the mode at.
+     * You can use a negative integer to specify a position relative
+     * to the top of the stack (for example, -1 is the top of the stack).
      */
-    public function popMode () :void
+    public function removeMode (index :int) :void
     {
-        createModeTransition(null, TRANSITION_POP);
+        createModeTransition(null, TRANSITION_REMOVE, index);
     }
 
     /**
-     * Pops the top mode from the stack, and pushes
+     * Pops the top mode from the stack, if the modestack is not empty, and pushes
      * a new mode in its place.
      * (Mode changes take effect between game updates.)
      */
@@ -205,25 +216,22 @@ public final class MainLoop
     }
 
     /**
-     * Inserts a mode into the stack at the given index.
+     * Pushes a mode to the mode stack.
      * (Mode changes take effect between game updates.)
-     *
-     * @param mode the AppMode to insert
-     * @param index the stack position to insert the mode into.
-     * Positive index values count up from the bottom of the stack,
-     * and negative values count down from the top.
-     * 0 is the bottom of the stack, -1 is the top.
-     *
-     * (This function is commented out until it gets tested.)
      */
-    /*public function insertMode (mode :AppMode, index :int) :void
+    public function pushMode (mode :AppMode) :void
     {
-        if (null == mode) {
-            throw new ArgumentError("mode must be non-null");
-        }
+        createModeTransition(mode, TRANSITION_PUSH);
+    }
 
-        createModeTransition(mode, TRANSITION_INSERT, index);
-    }*/
+    /**
+     * Pops the top mode from the mode stack.
+     * (Mode changes take effect between game updates.)
+     */
+    public function popMode () :void
+    {
+        removeMode(-1);
+    }
 
     /**
      * Pops all modes from the mode stack.
@@ -284,24 +292,6 @@ public final class MainLoop
 
         var initialTopMode :AppMode = this.topMode;
 
-        function doPopMode () :void {
-            var topMode :AppMode = thisMainLoop.topMode;
-            if (null == topMode) {
-                throw new Error("Can't pop from an empty mode stack");
-            }
-
-            // if the top mode is popped, make sure it's exited first
-            if (topMode == initialTopMode) {
-                initialTopMode.exitInternal();
-                initialTopMode = null;
-            }
-
-            topMode.destroyInternal();
-
-            _modeStack.pop();
-            _hostSprite.removeChild(topMode.modeSprite);
-        }
-
         function doPushMode (newMode :AppMode) :void {
             if (null == newMode) {
                 throw new Error("Can't push a null mode to the mode stack");
@@ -319,18 +309,40 @@ public final class MainLoop
             }
 
             if (index < 0) {
-                index = _modeStack.length - index + 1;
+                index = _modeStack.length + index;
             }
-
             index = Math.max(index, 0);
             index = Math.min(index, _modeStack.length);
 
-            if (index == _modeStack.length) {
-                doPushMode(newMode);
-            } else {
-                _modeStack.splice(index, 0, newMode);
-                _hostSprite.addChildAt(newMode.modeSprite, index);
+            _modeStack.splice(index, 0, newMode);
+            _hostSprite.addChildAt(newMode.modeSprite, index);
+
+            newMode.setupInternal();
+        }
+
+        function doRemoveMode (index :int) :void {
+            if (_modeStack.length == 0) {
+                throw new Error("Can't remove a mode from an empty stack");
             }
+
+            if (index < 0) {
+                index = _modeStack.length + index;
+            }
+
+            index = Math.max(index, 0);
+            index = Math.min(index, _modeStack.length - 1);
+
+            // if the top mode is removed, make sure it's exited first
+            var mode :AppMode = _modeStack[index];
+            if (mode == initialTopMode) {
+                initialTopMode.exitInternal();
+                initialTopMode = null;
+            }
+
+            mode.destroyInternal();
+
+            _modeStack.splice(index, 1);
+            _hostSprite.removeChildAt(index);
         }
 
         // create a new _pendingModeTransitionQueue right now
@@ -341,20 +353,23 @@ public final class MainLoop
 
         for each (var transition :ModeTransition in transitionQueue) {
             var mode :AppMode = transition.mode;
-
             switch (transition.type) {
             case TRANSITION_PUSH:
                 doPushMode(mode);
                 break;
 
-            case TRANSITION_POP:
-                doPopMode();
+            case TRANSITION_INSERT:
+                doInsertMode(mode, transition.index);
+                break;
+
+            case TRANSITION_REMOVE:
+                doRemoveMode(transition.index);
                 break;
 
             case TRANSITION_CHANGE:
                 // a pop followed by a push
                 if (null != this.topMode) {
-                    doPopMode();
+                    doRemoveMode(-1);
                 }
                 doPushMode(mode);
                 break;
@@ -362,7 +377,7 @@ public final class MainLoop
             case TRANSITION_UNWIND:
                 // pop modes until we find the one we're looking for
                 while (_modeStack.length > 0 && this.topMode != mode) {
-                    doPopMode();
+                    doRemoveMode(-1);
                 }
 
                 Assert.isTrue(this.topMode == mode || _modeStack.length == 0);
@@ -370,10 +385,6 @@ public final class MainLoop
                 if (_modeStack.length == 0 && null != mode) {
                     doPushMode(mode);
                 }
-                break;
-
-            case TRANSITION_INSERT:
-                doInsertMode(mode, transition.index);
                 break;
             }
         }
@@ -448,10 +459,10 @@ public final class MainLoop
 
     // mode transition constants
     internal static const TRANSITION_PUSH :int = 0;
-    internal static const TRANSITION_POP :int = 1;
-    internal static const TRANSITION_CHANGE :int = 2;
-    internal static const TRANSITION_UNWIND :int = 3;
-    internal static const TRANSITION_INSERT :int = 4;
+    internal static const TRANSITION_UNWIND :int = 1;
+    internal static const TRANSITION_INSERT :int = 2;
+    internal static const TRANSITION_REMOVE :int = 3;
+    internal static const TRANSITION_CHANGE :int = 4;
 }
 
 }
@@ -462,5 +473,5 @@ class ModeTransition
 {
     public var mode :AppMode;
     public var type :int;
-    public var index :int;  // for TRANSITION_INSERT transitions
+    public var index :int;
 }
