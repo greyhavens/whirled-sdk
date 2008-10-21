@@ -63,18 +63,60 @@ public class ServerModule
     public function ServerModule (ctrl :AVRServerGameControl)
     {
         _ctrl = ctrl;
-
         _defs = new ServerDefinitions(_ctrl);
+    }
 
-        _ctrl.game.addEventListener(
-            MessageReceivedEvent.MESSAGE_RECEIVED,
-            handleGameMessage);
+    public function activate () :void
+    {
+        if (_active) {
+            return;
+        }
 
+        _active = true;
+
+        _ctrl.game.addEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, handleGameMessage);
         _ctrl.game.addEventListener(AVRGameControlEvent.PLAYER_JOINED_GAME, handlePlayerJoin);
         _ctrl.game.addEventListener(AVRGameControlEvent.PLAYER_QUIT_GAME, handlePlayerQuit);
 
         addLogger(_ctrl.game, ServerDefinitions.GAME_EVENTS);
         addLogger(_ctrl.game.props, ServerDefinitions.NET_EVENTS);
+
+        for each (var playerId :int in _ctrl.game.getPlayerIds()) {
+            watchPlayer(playerId);
+        }
+
+        trace("ServerModule activated");
+    }
+
+    public function deactivate () :void
+    {
+        if (!_active) {
+            return;
+        }
+
+        _active = false;
+
+        _ctrl.game.removeEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, handleGameMessage);
+        _ctrl.game.removeEventListener(AVRGameControlEvent.PLAYER_JOINED_GAME, handlePlayerJoin);
+        _ctrl.game.removeEventListener(AVRGameControlEvent.PLAYER_QUIT_GAME, handlePlayerQuit);
+
+        removeLogger(_ctrl.game, ServerDefinitions.GAME_EVENTS);
+        removeLogger(_ctrl.game.props, ServerDefinitions.NET_EVENTS);
+
+        for each (var playerId :int in _ctrl.game.getPlayerIds()) {
+            unwatchPlayer(playerId);
+        }
+
+        for (var roomId :* in _roomOccupantCounts) {
+            if (_roomOccupantCounts[roomId] > 0) {
+                unwatchRoom(roomId as int);
+            }
+        }
+
+        _playerRooms = new Dictionary();
+        _roomOccupantCounts = new Dictionary();
+
+        trace("ServerModule deactivated");
     }
 
     protected function handleGameMessage (evt :MessageReceivedEvent) :void
@@ -123,7 +165,11 @@ public class ServerModule
 
     protected function handlePlayerJoin (event :AVRGameControlEvent) :void
     {
-        var playerId :int = event.value as int;
+        watchPlayer(event.value as int);
+    }
+
+    protected function watchPlayer (playerId :int) :void
+    {
         _ctrl.getPlayer(playerId).addEventListener(
             AVRGamePlayerEvent.ENTERED_ROOM, handleRoomEntry);
         _ctrl.getPlayer(playerId).addEventListener(
@@ -135,7 +181,11 @@ public class ServerModule
 
     protected function handlePlayerQuit (event :AVRGameControlEvent) :void
     {
-        var playerId :int = event.value as int;
+        unwatchPlayer(event.value as int);
+    }
+
+    protected function unwatchPlayer (playerId :int) :void
+    {
         _ctrl.getPlayer(playerId).removeEventListener(
             AVRGamePlayerEvent.ENTERED_ROOM, handleRoomEntry);
         _ctrl.getPlayer(playerId).removeEventListener(
@@ -153,9 +203,14 @@ public class ServerModule
         _roomOccupantCounts[roomId] = int(_roomOccupantCounts[roomId]) + 1;
         trace("Player entered room, occupant count is now " + _roomOccupantCounts[roomId]);
         if (_roomOccupantCounts[roomId] == 1) {
-            addLogger(_ctrl.getRoom(roomId), ServerDefinitions.ROOM_EVENTS);
-            addLogger(_ctrl.getRoom(roomId).props, ServerDefinitions.NET_EVENTS);
+            watchRoom(roomId);
         }
+    }
+
+    protected function watchRoom (roomId :int) :void
+    {
+        addLogger(_ctrl.getRoom(roomId), ServerDefinitions.ROOM_EVENTS);
+        addLogger(_ctrl.getRoom(roomId).props, ServerDefinitions.NET_EVENTS);
     }
 
     protected function handleRoomExit (event :AVRGamePlayerEvent) :void
@@ -166,9 +221,14 @@ public class ServerModule
         _roomOccupantCounts[roomId] = int(_roomOccupantCounts[roomId]) - 1;
         trace("Player left room, occupant count is now " + _roomOccupantCounts[roomId]);
         if (_roomOccupantCounts[roomId] == 0) {
-            removeLogger(_ctrl.getRoom(roomId), ServerDefinitions.ROOM_EVENTS);
-            removeLogger(_ctrl.getRoom(roomId).props, ServerDefinitions.NET_EVENTS);
+            unwatchRoom(roomId);
         }
+    }
+
+    protected function unwatchRoom (roomId :int) :void
+    {
+        removeLogger(_ctrl.getRoom(roomId), ServerDefinitions.ROOM_EVENTS);
+        removeLogger(_ctrl.getRoom(roomId).props, ServerDefinitions.NET_EVENTS);
     }
 
     protected function logEvent (event :Event) :void
@@ -209,6 +269,7 @@ public class ServerModule
 
     protected var _ctrl :AVRServerGameControl;
     protected var _defs :ServerDefinitions;
+    protected var _active :Boolean;
     protected var _playerRooms :Dictionary = new Dictionary();
     protected var _roomOccupantCounts :Dictionary = new Dictionary();
 }

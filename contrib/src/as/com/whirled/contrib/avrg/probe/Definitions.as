@@ -148,22 +148,40 @@ public class Definitions
      */
     public function addListenerToAll (listener :Function) :void
     {
-        function add (ctrl :EventDispatcher, names :Array) :void {
-            for each (var name :String in names) {
-                ctrl.addEventListener(name, listener);
+        function add (ctrl :EventDispatcher, type :String) :void {
+            ctrl.addEventListener(type, listener);
+        }
+
+        enumEvents(add);
+    }
+
+    /**
+     * Removes the given event listener function from all available event types and dispatchers.
+     */
+    public function removeListenerFromAll (listener :Function) :void
+    {
+        function remove (ctrl :EventDispatcher, type :String) :void {
+            ctrl.removeEventListener(type, listener);
+        }
+        
+        enumEvents(remove);
+    }
+
+    protected function enumEvents (functor :Function) :void
+    {
+        function forEach (ctrl :EventDispatcher, types :Array) :void {
+            for each (var type :String in types) {
+                functor(ctrl, type);
             }
         }
 
-        add(_ctrl.game, GAME_EVENTS);
-        add(_ctrl.game.props, NET_EVENTS);
-
-        add(_ctrl.room, ROOM_EVENTS);
-        add(_ctrl.room.props, NET_EVENTS);
-
-        add(_ctrl.player, PLAYER_EVENTS);
-        add(_ctrl.player.props, NET_EVENTS);
-
-        add(_ctrl.local, CLIENT_EVENTS);
+        forEach(_ctrl.game, GAME_EVENTS);
+        forEach(_ctrl.game.props, NET_EVENTS);
+        forEach(_ctrl.room, ROOM_EVENTS);
+        forEach(_ctrl.room.props, NET_EVENTS);
+        forEach(_ctrl.player, PLAYER_EVENTS);
+        forEach(_ctrl.player.props, NET_EVENTS);
+        forEach(_ctrl.local, CLIENT_EVENTS);
     }
 
     protected function createRoomFuncs () :Array

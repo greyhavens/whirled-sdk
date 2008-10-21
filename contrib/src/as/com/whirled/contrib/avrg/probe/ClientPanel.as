@@ -67,7 +67,7 @@ public class ClientPanel extends Sprite
         graphics.drawRect(0, 0, 350, 250);
         graphics.endFill();
 
-        var defs :Definitions = new Definitions(_ctrl, function () :Sprite {
+        _defs = new Definitions(_ctrl, function () :Sprite {
             return new DecorationSprite();
         });
 
@@ -75,27 +75,57 @@ public class ClientPanel extends Sprite
         _tabPanel.addTab("client", new Button("Client"), client);
 
         var key :String;
-        for each (key in defs.getFuncKeys(false)) {
+        for each (key in _defs.getFuncKeys(false)) {
             client.addTab(key, new Button(key.substr(0, 1).toUpperCase() + key.substr(1)), 
-                new FunctionPanel(_ctrl, defs.getFuncs(key), false));
+                new FunctionPanel(_ctrl, _defs.getFuncs(key), false));
         }
 
         var server :TabPanel = new TabPanel();
         _tabPanel.addTab("server", new Button("Server"), server);
 
-        for each (key in defs.getFuncKeys(true)) {
+        for each (key in _defs.getFuncKeys(true)) {
             server.addTab(key, new Button(key.substr(6)), 
-                new FunctionPanel(_ctrl, defs.getFuncs(key), true));
+                new FunctionPanel(_ctrl, _defs.getFuncs(key), true));
         }
 
-        defs.addListenerToAll(logEvent);
+        addEventListener(Event.ADDED_TO_STAGE, handleAdded);
+        addEventListener(Event.REMOVED_FROM_STAGE, handleRemoved);
+    }
 
-        _ctrl.player.addEventListener(
-            MessageReceivedEvent.MESSAGE_RECEIVED, 
-            handleGameMessage);
+    public function handleAdded (evt :Event) :void
+    {
+        trace("Added event " + evt + ", target: " + evt.target + ", currentTarget: " + evt.currentTarget);
+
+        if (evt.target != this) {
+            return;
+        }
+
+        trace("Adding client panel");
+        _defs.addListenerToAll(logEvent);
+
+        _ctrl.player.addEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, handleGameMessage);
 
         if (_ctrl.local.mobSpriteExporter == null) {
             _ctrl.local.setMobSpriteExporter(createMob);
+        }
+    }
+
+    public function handleRemoved (evt :Event) :void
+    {
+        trace("Removed event " + evt + ", target: " + evt.target + ", currentTarget: " + evt.currentTarget);
+
+        if (evt.target != this) {
+            return;
+        }
+
+        trace("Removing client panel");
+
+        _defs.removeListenerFromAll(logEvent);
+
+        _ctrl.player.removeEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, handleGameMessage);
+
+        if (_ctrl.local.mobSpriteExporter == createMob) {
+            _ctrl.local.setMobSpriteExporter(null);
         }
     }
 
@@ -124,6 +154,7 @@ public class ClientPanel extends Sprite
 
     protected var _ctrl :AVRGameControl;
     protected var _tabPanel :TabPanel;
+    protected var _defs :Definitions
 }
 
 }
