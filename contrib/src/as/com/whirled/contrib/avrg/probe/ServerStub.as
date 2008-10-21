@@ -20,7 +20,8 @@
 
 package com.whirled.contrib.avrg.probe {
 
-import com.whirled.avrg.AVRServerGameControl; 
+import com.whirled.avrg.AVRServerGameControl;
+import com.whirled.net.MessageReceivedEvent;
 
 /**
  * Class to quietly listen for the <code>ClientPanel</code> to notify that it is time to
@@ -37,7 +38,7 @@ public class ServerStub
     /** Message sent to deacticate our module. */
     public static const DEACTIVATE :String = "serverStub.deactivate";
 
-    public function ServerStub (ctrl: AVRGameControlServer)
+    public function ServerStub (ctrl: AVRServerGameControl)
     {
         _ctrl = ctrl;
         _ctrl.game.addEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, handleGameMessage);
@@ -58,7 +59,7 @@ public class ServerStub
         }
     }
 
-    protected var _ctrl :AVRGameControlServer;
+    protected var _ctrl :AVRServerGameControl;
     protected var _module :ServerModule;
 }
 
