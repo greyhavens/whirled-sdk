@@ -111,6 +111,11 @@ public class BaseGameAgent extends Agent
      */
     protected function gameObjectAvailable (gameObj :PlaceObject) :void
     {
+        if (_agentObj == null) {
+            log.info("Game object received after agent stop", "gameObj", gameObj.which());
+            return;
+        }
+
         log.info("Subscribed to game object", "gameObj", gameObj.which());
         _gameObj = gameObj;
 
@@ -125,9 +130,7 @@ public class BaseGameAgent extends Agent
             return;
         }
 
-        if (_userCode != null && _gameObj != null) {
-            launchUserCode();
-        }
+        maybeLaunchUserCode();
     }
 
     /**
@@ -161,19 +164,29 @@ public class BaseGameAgent extends Agent
             return;
         }
 
+        // If we have been stopped since the code was requested, release now
+        if (_agentObj == null) {
+            log.info("User code received after agent stop", "userCode", userCode);
+            userCode.release();
+            return;
+        }
+
         _userCode = userCode;
         log.info("Loaded agent user code", "code", _userCode, "agent", _agentObj.which());
 
-        if (_userCode != null && _gameObj != null) {
-            launchUserCode();
-        }
+        // Go for it
+        maybeLaunchUserCode();
     }
 
     /**
-     * Called once the game object and the user code (domain) are available.
+     * Instantiates the user code if the game object and the user code are available.
      */
-    protected function launchUserCode () :void
+    protected function maybeLaunchUserCode () :void
     {
+        if (_userCode == null || _gameObj == null) {
+            return;
+        }
+
         _userCode.connect(_controller.getConnectListener());
         
         if (!_controller.isConnected()) {
