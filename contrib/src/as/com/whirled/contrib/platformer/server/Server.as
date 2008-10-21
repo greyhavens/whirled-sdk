@@ -18,36 +18,15 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.game {
+package com.whirled.contrib.platformer.server {
 
-import com.threerings.util.ClassUtil;
+import com.whirled.ServerObject;
 
-public class EventAction
+public class Server extends ServerObject
 {
-    public static function createEventAction (gctrl :GameController, xml :XML) :EventAction
+    public function Server ()
     {
-        var cname :String = xml.@cname;
-        var actionClass :Class;
-        if (cname != null) {
-            actionClass = ClassUtil.getClassByName(cname);
-        }
-        if (cname == null || actionClass == null) {
-            trace("could not find class for event action " + cname);
-            return null;
-        }
-        return new actionClass(gctrl, xml) as EventAction;
+        new ServerController(this);
     }
-
-
-    public function EventAction (gctrl :GameController, xml :XML)
-    {
-        _gctrl = gctrl;
-    }
-
-    public function run () :void
-    {
-    }
-
-    protected var _gctrl :GameController;
 }
 }

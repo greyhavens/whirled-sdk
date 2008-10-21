@@ -45,6 +45,7 @@ import mx.events.SliderEvent;
 
 import com.threerings.flex.FlexWrapper;
 
+import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.board.Board;
 
 import com.whirled.contrib.platformer.display.Metrics;
@@ -71,12 +72,13 @@ public class EditView extends Canvas
      *
      * Also, it is required that Metrics.init() be called before creating this view.
      */
-    public function EditView (pfac :PieceFactory, dynamics :XML, level :XML, board :Board = null)
+    public function EditView (dynamics :XML, level :XML)
     {
-        _pfac = pfac;
-        _board = board == null ? new Board() : board;
+        _pfac = PlatformerContext.pfac;
+        _board = PlatformerContext.board;
         _boardSprite = new BoardEditSprite(this);
-        _board.loadFromXML(level, _pfac);
+        //_board.loadFromXML(level, _pfac);
+        _board.loadFromXML(level);
         _editSelector = new PieceSelector(_pfac);
         _dynamicSelector = new DynamicSelector(dynamics);
         _pieceTree = new PieceTree(_board);

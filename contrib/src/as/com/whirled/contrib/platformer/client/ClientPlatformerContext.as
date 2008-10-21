@@ -18,36 +18,14 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.game {
+package com.whirled.contrib.platformer.client {
 
-import com.threerings.util.ClassUtil;
+import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.display.BoardSprite;
 
-public class EventAction
+public class ClientPlatformerContext extends PlatformerContext
 {
-    public static function createEventAction (gctrl :GameController, xml :XML) :EventAction
-    {
-        var cname :String = xml.@cname;
-        var actionClass :Class;
-        if (cname != null) {
-            actionClass = ClassUtil.getClassByName(cname);
-        }
-        if (cname == null || actionClass == null) {
-            trace("could not find class for event action " + cname);
-            return null;
-        }
-        return new actionClass(gctrl, xml) as EventAction;
-    }
-
-
-    public function EventAction (gctrl :GameController, xml :XML)
-    {
-        _gctrl = gctrl;
-    }
-
-    public function run () :void
-    {
-    }
-
-    protected var _gctrl :GameController;
+    public static var keyboard :KeyboardController;
+    public static var boardSprite :BoardSprite;
 }
 }

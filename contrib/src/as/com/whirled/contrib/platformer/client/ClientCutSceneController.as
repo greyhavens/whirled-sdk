@@ -18,32 +18,27 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.game {
+package com.whirled.contrib.platformer.client {
 
+import com.whirled.contrib.platformer.game.CutSceneController;
+import com.whirled.contrib.platformer.game.GameController;
 import com.whirled.contrib.platformer.piece.CutScene;
 
-public class CutSceneController extends HoverController
-    implements PauseController
+public class ClientCutSceneController extends CutSceneController
 {
-    public function CutSceneController (cs :CutScene, controller :GameController)
+    public function ClientCutSceneController (cs :CutScene, controller :GameController)
     {
         super(cs, controller);
-        _cs = cs;
-        var tot :Number = 0;
-        for each (var len :Number in _cs.stageChanges) {
-            tot += len;
-            _stageChanges.push(tot);
-        }
     }
 
     override public function tick (delta :Number) :void
     {
         super.tick(delta);
-        /*
         if (!_cs.played || _cs.stage == _cs.stageChanges.length + 1) {
             if (_ignoreKeys) {
-                _ignoreKeys = _controller.shooting() || _controller.jumping();
-            } else if (_cs.hovered && _controller.shooting()) {
+                _ignoreKeys = ClientPlatformerContext.keyboard.shooting() ||
+                        ClientPlatformerContext.keyboard.jumping();
+            } else if (_cs.hovered && ClientPlatformerContext.keyboard.shooting()) {
                 _cs.stage = 0;
                 _tick = 0;
             } else if (_controller.isPaused()) {
@@ -54,7 +49,8 @@ public class CutSceneController extends HoverController
         _controller.setPause(true);
         if (_cs.stage == 0) {
             _cs.stage = 1;
-            _ignoreKeys = _controller.shooting() || _controller.jumping();
+            _ignoreKeys = ClientPlatformerContext.keyboard.shooting() ||
+                    ClientPlatformerContext.keyboard.jumping();
         } else {
             _tick += delta;
         }
@@ -62,42 +58,29 @@ public class CutSceneController extends HoverController
             _cs.stage++;
         }
         if (_ignoreKeys) {
-            _ignoreKeys = _controller.shooting() || _controller.jumping();
+            _ignoreKeys = ClientPlatformerContext.keyboard.shooting() ||
+                    ClientPlatformerContext.keyboard.jumping();
         } else if (_keyReset > 0) {
             _keyReset -= delta;
-        } else if (_controller.jumping()) {
+        } else if (ClientPlatformerContext.keyboard.jumping()) {
             _cs.stage = _cs.stageChanges.length + 1;
-        } else if (_controller.shooting()) {
+        } else if (ClientPlatformerContext.keyboard.shooting()) {
             _tick = _stageChanges[_cs.stage - 1];
             _cs.stage++;
             _keyReset = KEY_RESET;
         }
         if (_cs.stage == _cs.stageChanges.length + 1) {
-            _ignoreKeys = _controller.shooting() || _controller.jumping();
+            _ignoreKeys = ClientPlatformerContext.keyboard.shooting() ||
+                    ClientPlatformerContext.keyboard.jumping();
         }
-        */
     }
 
     override public function postTick () :void
     {
         super.postTick();
-        /*
         if (_cs.played && _cs.stage < _cs.stageChanges.length + 1) {
-            _controller.ensureCentered(_cs);
+            ClientPlatformerContext.boardSprite.ensureCentered(_cs);
         }
-        */
     }
-
-    override protected function addCollisionHandlers () :void
-    {
-        addCollisionHandler(new CutSceneCollisionHandler(this));
-    }
-
-    protected var _cs :CutScene;
-    protected var _tick :Number = 0;
-    protected var _keyReset :Number = 0;
-    protected var _ignoreKeys :Boolean;
-    protected var _stageChanges :Array = new Array();
-    protected static const KEY_RESET :Number = 0.3;
 }
 }

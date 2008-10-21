@@ -64,7 +64,7 @@ public class Editor extends TabNavigator
     }
 
     /**
-     * By default, this Editor will use PieceSpriteFactory.init.  If you wish to customize the 
+     * By default, this Editor will use PieceSpriteFactory.init.  If you wish to customize the
      * sprite factory loading procedure, you can pass a function in here of the following signature,
      * and it will be called instead:
      *
@@ -86,13 +86,13 @@ public class Editor extends TabNavigator
                 {label: LOAD_PROJECT},
                 {type: "separator"},
                 {label: QUIT}]}]);
-        _projectMenu = 
+        _projectMenu =
             {label: PROJECT_MENU, children: [
                 {label: EDIT_PROJECT},
                 {label: SAVE_PIECES},
                 {type: "separator"},
                 {label: CLOSE_PROJECT}]};
-        _levelMenu = 
+        _levelMenu =
             {label: LEVEL_MENU, children: [
                 {type: "separator"},
                 {label: ADD_LEVEL}]};
@@ -111,7 +111,7 @@ public class Editor extends TabNavigator
 
             var localSo :SharedObject = SharedObject.getLocal(EDITOR_SHARED_OBJECT);
             if (localSo.data[PROJECT_FILE_PROP] !== undefined) {
-                var projectFile :XmlFile = EditorFile.resolvePath(new File(), 
+                var projectFile :XmlFile = EditorFile.resolvePath(new File(),
                     localSo.data[PROJECT_FILE_PROP], "Project XML", EditorFile.XML_FILE) as XmlFile;
                 if (!projectFile.checkFileSanity(false)) {
                     FeedbackDialog.popError(
@@ -127,11 +127,11 @@ public class Editor extends TabNavigator
     protected function menuItemClicked (event :FlexNativeMenuEvent) :void
     {
         switch (event.label) {
-        case QUIT: 
+        case QUIT:
             closeCurrentProject();
             _window.close();
             break;
-        
+
         case CREATE_PROJECT: editProject(true); break;
         case CLOSE_PROJECT: closeCurrentProject(); break;
         case LOAD_PROJECT: loadProject(); break;
@@ -201,21 +201,21 @@ public class Editor extends TabNavigator
         }
         addLevelsToMenu(levels);
 
-        var pieceXmlFile :XmlFile = EditorFile.resolvePath(_projectFile.parent, 
+        var pieceXmlFile :XmlFile = EditorFile.resolvePath(_projectFile.parent,
             String(projectXml.pieceXml.@path), "Piece XML", EditorFile.XML_FILE) as XmlFile;
         var pieceSwfFile :SwfFile = EditorFile.resolvePath(_projectFile.parent,
             String(projectXml.pieceSwf.@path), "Piece SWF", EditorFile.SWF_FILE) as SwfFile;
         addPieceEditor(pieceXmlFile, pieceSwfFile);
 
         var localSo :SharedObject = SharedObject.getLocal(EDITOR_SHARED_OBJECT);
-        localSo.data[PROJECT_FILE_PROP] = _projectFile.nativePath; 
+        localSo.data[PROJECT_FILE_PROP] = _projectFile.nativePath;
     }
 
     protected function addPieceEditor (xmlFile :XmlFile, swfFile :SwfFile) :void
     {
         if (!xmlFile.checkFileSanity() || !swfFile.checkFileSanity()) {
             closeCurrentProject();
-            log.warning("closed project due to insanity in project files [" + 
+            log.warning("closed project due to insanity in project files [" +
                 xmlFile.nativePath + ", " + swfFile.nativePath + "]");
             return;
         }
@@ -273,11 +273,12 @@ public class Editor extends TabNavigator
             return true;
         }
 
-        // TODO: this should probably be using the same PieceFactory instance as the 
+        // TODO: this should probably be using the same PieceFactory instance as the
         // PieceEditView...
         var piecesXml :XML = getProjectXmlFile(projectXml.pieceXml.@path).readXml();
         var dynamicsXml :XML = getProjectXmlFile(projectXml.dynamicsXml.@path).readXml();
-        var editView :EditView = new EditView(new PieceFactory(piecesXml), dynamicsXml, levelXml);
+        PlatformerContext.pfac = new PieceFactory(piecesXML);
+        var editView :EditView = new EditView(dynamicsXml, levelXml);
         editView.label = levelName.replace("_", " ");
         addChild(editView);
         _openLevels.put(levelName, {editor: editView, file: levelFile});
@@ -328,14 +329,14 @@ public class Editor extends TabNavigator
             return;
         }
 
-        (level.file as XmlFile).writeXml((level.editor as EditView).getXML()); 
-        FeedbackDialog.popFeedback(levelName + "'s level file has been saved."); 
+        (level.file as XmlFile).writeXml((level.editor as EditView).getXML());
+        FeedbackDialog.popFeedback(levelName + "'s level file has been saved.");
     }
 
     protected function savePieceFile () :void
     {
         var projectXml :XML = _projectFile.readXml();
-        var pieceFile :XmlFile = EditorFile.resolvePath(_projectFile.parent, 
+        var pieceFile :XmlFile = EditorFile.resolvePath(_projectFile.parent,
             String(projectXml.pieceXml.@path), "Piece XML", EditorFile.XML_FILE) as XmlFile;
         if (!pieceFile.checkFileSanity()) {
             return;

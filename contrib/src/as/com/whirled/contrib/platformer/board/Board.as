@@ -24,10 +24,10 @@ import com.threerings.util.ArrayIterator;
 import com.threerings.util.ClassUtil;
 import com.threerings.util.HashMap;
 
+import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Piece;
-import com.whirled.contrib.platformer.piece.PieceFactory;
 import com.whirled.contrib.platformer.piece.Shot;
 
 /**
@@ -79,9 +79,8 @@ public class Board
         _groupNames.push(GENERICS);
     }
 
-    public function loadFromXML (level :XML, pfac :PieceFactory) :void
+    public function loadFromXML (level :XML) :void
     {
-        _pfac = pfac;
         if (level == null) {
             _xml = <platformer><board/></platformer>;
         } else {
@@ -491,12 +490,16 @@ public class Board
         arr.push(xml.@name.toString());
         for each (var node :XML in xml.children()) {
             if (node.localName() == "piece") {
-                var p :Piece = _pfac.getPiece(node);
-                arr.push(p);
-                if (_maxId < p.id) {
-                    _maxId = p.id;
+                var p :Piece = PlatformerContext.pfac.getPiece(node);
+                if (p == null) {
+                    trace("failed to load piece: " + node.toXMLString());
+                } else {
+                    arr.push(p);
+                    if (_maxId < p.id) {
+                        _maxId = p.id;
+                    }
+                    sendEvent(PIECE_LOADED, p, "");
                 }
-                sendEvent(PIECE_LOADED, p, "");
             } else {
                 var child :Array = new Array();
                 loadPieceTree(node, child);
@@ -626,7 +629,6 @@ public class Board
 
     protected var _listeners :HashMap = new HashMap();
 
-    protected var _pfac :PieceFactory;
     protected var _groupNames :Array;
 }
 }

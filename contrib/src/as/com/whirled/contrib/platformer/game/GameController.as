@@ -22,14 +22,15 @@ package com.whirled.contrib.platformer.game {
 
 import flash.utils.getTimer;
 
-import com.whirled.contrib.platformer.Controller;
+//import com.whirled.contrib.platformer.Controller;
+import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.board.Collider;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.CutScene;
 import com.whirled.contrib.platformer.piece.Dynamic;
-import com.whirled.contrib.platformer.piece.RectDynamic;
+//import com.whirled.contrib.platformer.piece.RectDynamic;
 import com.whirled.contrib.platformer.piece.Hover;
 import com.whirled.contrib.platformer.piece.LaserShot;
 import com.whirled.contrib.platformer.piece.Piece;
@@ -47,10 +48,9 @@ public class GameController
     public var colliderTicks :int;
     public var ticked :int;
 
-    public function GameController (board :Board, controller :Controller)
+    public function GameController ()
     {
-        _controller = controller;
-        _board = board;
+        _board = PlatformerContext.board;
         _collider = genCollider();
         initDynamicClasses();
         _board.addEventListener(Board.ACTOR_ADDED, handleActorAdded);
@@ -136,7 +136,7 @@ public class GameController
                 break;
             }
         }
-        _controller.getSprite().tick(usedDelta/1000);
+        updateDisplay(usedDelta/1000);
         for each (controller in _controllers) {
             if (controller is TickController && (!paused || controller is PauseController)) {
                 (controller as TickController).postTick();
@@ -164,42 +164,43 @@ public class GameController
         return _collider;
     }
 
+/*
     public function centerOn (ac :ActorController) :void
     {
         var a :Actor = ac.getActor();
-        _controller.getSprite().centerOn(a.x, a.y);
+        ClientPlatformerContext.boardSprite.centerOn(a.x, a.y);
     }
 
     public function ensureVisible (a :Actor) :void
     {
-        _controller.getSprite().ensureVisible(a, getDy());
+        ClientPlatformerContext.boardSprite.ensureVisible(a, getDy());
     }
 
     public function ensureCentered (rd :RectDynamic) :void
     {
-        _controller.getSprite().ensureCentered(rd);
+        ClientPlatformerContext.boardSprite.ensureCentered(rd);
     }
 
     public function getDx () :Number
     {
-        return _controller.getDx();
+        return ClientPlatformerContext.keyboard.getDx();
     }
 
     public function getDy () :Number
     {
-        return _controller.getDy();
+        return ClientPlatformerContext.keyboard.getDy();
     }
 
     public function shooting () :Boolean
     {
-        return _controller.isDown(KeyboardCodes.SHIFT);
+        return ClientPlatformerContext.keyboard.isDown(KeyboardCodes.SHIFT);
     }
 
     public function jumping () :Boolean
     {
-        return _controller.isDown(KeyboardCodes.SPACE);
+        return ClientPlatformerContext.keyboard.isDown(KeyboardCodes.SPACE);
     }
-
+*/
     public function addController (controller :Object) :void
     {
         _controllers.push(controller);
@@ -317,7 +318,10 @@ public class GameController
         removeDynamicController(d);
     }
 
-    protected var _controller :Controller;
+    protected function updateDisplay (delta :Number) :void
+    {
+        //ClientPlatformerContext.boardSprite.tick(delta);
+    }
 
     protected var _controllers :Array = new Array();
     protected var _actorMap :HashMap = new HashMap();

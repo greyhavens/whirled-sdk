@@ -20,8 +20,6 @@
 
 package com.whirled.contrib.platformer.piece {
 
-import flash.system.ApplicationDomain;
-
 import com.threerings.util.HashMap;
 import com.threerings.util.ClassUtil;
 
@@ -81,13 +79,13 @@ public class PieceFactory
             return null;
         }
         var cname :String = pdef.@cname;
-        if (cname == null || !ApplicationDomain.currentDomain.hasDefinition(cname)) {
+        if (cname == null || ClassUtil.getClassByName(cname) == null) {
             cname = _defaultClass;
         }
         if (cname == null) {
             throw new Error("Unable to instantiate piece");
         }
-        var cdef :Class = ApplicationDomain.currentDomain.getDefinition(cname) as Class;
+        var cdef :Class = ClassUtil.getClassByName(cname) as Class;
         return new cdef(pdef, xml) as Piece;
     }
 

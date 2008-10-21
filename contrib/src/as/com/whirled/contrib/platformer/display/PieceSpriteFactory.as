@@ -33,6 +33,7 @@ import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 import com.threerings.util.MultiLoader;
 
+import com.whirled.contrib.ZipMultiLoader;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.CutScene;
@@ -51,10 +52,24 @@ public class PieceSpriteFactory
     public static function init (
         sources :Array, onReady :Function, duplicate :Boolean = true) :void
     {
-        _duplicate = duplicate;
         MultiLoader.getLoaders(sources, function (result :Object) :void {
                 onReady();
             }, false, _contentDomain);
+        initClasses(duplicate);
+    }
+
+    public static function initZip (
+        source :Object, onReady :Function, duplicate :Boolean = true) :void
+    {
+        new ZipMultiLoader(source, function (result :Object) :void {
+                onReady();
+            }, _contentDomain);
+        initClasses(duplicate);
+    }
+
+    public static function initClasses (duplicate :Boolean) :void
+    {
+        _duplicate = duplicate;
         addPieceClass(Piece, PieceSprite, true);
         addPieceClass(BoundedPiece, BoundedPieceSprite);
         addDynamicClass(Actor, ActorSprite, true);

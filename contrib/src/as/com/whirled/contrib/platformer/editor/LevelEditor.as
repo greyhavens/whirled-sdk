@@ -33,7 +33,7 @@ import mx.events.IndexChangedEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 
-import com.whirled.contrib.platformer.board.Board;
+import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.editor.EditView;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 
@@ -52,14 +52,6 @@ public class LevelEditor extends Panel
         setStyle("paddingBottom", 0);
         setStyle("paddingLeft", 0);
         setStyle("paddingRight", 0);
-    }
-
-    /**
-     * Set the board to be used in the level editor.
-     */
-    public function setBoard (board :Board) :void
-    {
-        _board = board;
     }
 
     /**
@@ -165,12 +157,13 @@ public class LevelEditor extends Panel
         _xmlCode.addChild(_codeArea);
 
         var xmlPieces :XML = new XML(_piecesLoader.data);
+        PlatformerContext.pfac = new _pfClass(xmlPieces);
+
         var xmlLevel :XML = (_levelLoader == null ? null : new XML(_levelLoader.data));
         var xmlDynamics :XML =
             (_dynamicsLoader == null ? <dynamics/> : new XML(_dynamicsLoader.data));
 
-        _levelEdit.rawChildren.addChild(_editView = new EditView(
-            new _pfClass(xmlPieces), xmlDynamics, xmlLevel, _board));
+        _levelEdit.rawChildren.addChild(_editView = new EditView(xmlDynamics, xmlLevel));
     }
 
     protected function tabChanged (selected :Container) :void
@@ -191,7 +184,6 @@ public class LevelEditor extends Panel
     protected var _levelEdit :FocusContainer;
     protected var _xmlCode :VBox;
     protected var _factoryInitialized :Boolean = false;
-    protected var _board :Board;
     protected var _pfClass :Class = PieceFactory;
 }
 }

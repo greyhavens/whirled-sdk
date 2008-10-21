@@ -20,18 +20,21 @@
 
 package com.whirled.contrib.platformer.game {
 
-import flash.system.ApplicationDomain;
+import com.threerings.util.ClassUtil;
 
 public class EventTrigger
 {
     public static function createEventTrigger (gctrl :GameController, xml :XML) :EventTrigger
     {
         var cname :String = xml.@cname;
-        if (cname == null || !ApplicationDomain.currentDomain.hasDefinition(cname)) {
+        var triggerClass :Class;
+        if (cname != null) {
+            triggerClass = ClassUtil.getClassByName(cname);
+        }
+        if (cname == null || triggerClass == null) {
             trace("could not find class for event trigger " + cname);
             return null;
         }
-        var triggerClass :Class = ApplicationDomain.currentDomain.getDefinition(cname) as Class;
         return new triggerClass(gctrl, xml) as EventTrigger;
     }
 
