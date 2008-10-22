@@ -39,6 +39,8 @@ import mx.events.FlexNativeMenuEvent;
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 
+import com.whirled.contrib.platformer.PlatformerContext;
+
 import com.whirled.contrib.platformer.display.Metrics;
 import com.whirled.contrib.platformer.display.PieceSpriteFactory;
 import com.whirled.contrib.platformer.editor.EditView;
@@ -277,7 +279,7 @@ public class Editor extends TabNavigator
         // PieceEditView...
         var piecesXml :XML = getProjectXmlFile(projectXml.pieceXml.@path).readXml();
         var dynamicsXml :XML = getProjectXmlFile(projectXml.dynamicsXml.@path).readXml();
-        PlatformerContext.pfac = new PieceFactory(piecesXML);
+        PlatformerContext.pfac = new PieceFactory(piecesXml);
         var editView :EditView = new EditView(dynamicsXml, levelXml);
         editView.label = levelName.replace("_", " ");
         addChild(editView);
