@@ -175,6 +175,7 @@
   <!-- generate docus for our whirled stuff -->
   <target name="asdoc-whirled" depends="prepare">
     <mkdir dir="${sdk.build}/docs"/>
+    <delete dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/**"
                excludes="**/MessageBundle.as **/MessageManager.as **/HashObjectMap.as"/>
@@ -201,6 +202,7 @@
   <!-- generate docs for the contrib stuff -->
   <target name="asdoc-contrib" depends="prepare">
     <mkdir dir="${sdk.build}/contrib/docs"/>
+    <delete dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="contrib/src/as" includes="com/whirled/**/*.as"/>
     </copy>
