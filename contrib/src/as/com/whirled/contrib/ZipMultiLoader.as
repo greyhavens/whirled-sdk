@@ -20,10 +20,7 @@
 
 package com.whirled.contrib {
 
-import flash.events.ErrorEvent;
 import flash.events.Event;
-import flash.events.IOErrorEvent;
-import flash.events.SecurityErrorEvent;
 
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
@@ -66,12 +63,10 @@ public class ZipMultiLoader
         _appDom = appDom;
 
         if (req != null) {
-            _loader = new URLLoader();
-            _loader.dataFormat = URLLoaderDataFormat.BINARY;
-            _loader.addEventListener(Event.COMPLETE, handleLoadingComplete);
-            _loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handleLoadError);
-            _loader.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
-            _loader.load(req);
+            var loader :URLLoader = new URLLoader();
+            loader.dataFormat = URLLoaderDataFormat.BINARY;
+            loader.load(req);
+            new MultiLoader(loader, loaderLoaded);
 
         } else {
             bytesAvailable(bytes);
@@ -79,33 +74,16 @@ public class ZipMultiLoader
     }
 
     /**
-     * Handle some sort of problem loading the datapack.
-     *
-     * @private
-     */
-    protected function handleLoadError (event :ErrorEvent) :void
-    {
-        if (_loader != null) {
-            try {
-                _loader.close();
-            } catch (err :Error) {
-                // ignore
-            }
-            _loader = null;
-        }
-        dispatchError("Error loading zip file: " + event.text);
-    }
-
-    /**
      * Handle the successful completion of datapack loading.
-     *
-     * @private
      */
-    protected function handleLoadingComplete (event :Event) :void
+    protected function loaderLoaded (result :Object) :void
     {
-        var ba :ByteArray = ByteArray(_loader.data);
-        _loader = null;
-        bytesAvailable(ba);
+        if (result is Error) {
+            _completeCallback(result);
+
+        } else {
+            bytesAvailable(ByteArray(URLLoader(result).data));
+        }
     }
 
     /**
@@ -120,24 +98,16 @@ public class ZipMultiLoader
         try {
             zip = new ZipFile(bytes);
         } catch (zipError :ZipError) {
-            dispatchError("Unable to read datapack: " + zipError.message);
+            _completeCallback(zipError);
             return;
         }
 
-        var sources :Array = new Array();
-        for each (var entry :ZipEntry in zip.entries) {
-            sources.push(zip.getInput(entry));
-        }
-
+        var sources :Array = zip.entries.map(function (entry :ZipEntry, ... rest) :ByteArray {
+            return zip.getInput(entry);
+        });
         MultiLoader.getLoaders(sources, _completeCallback, false, _appDom);
     }
 
-    protected function dispatchError (error :String) :void
-    {
-        _completeCallback(new Error(error));
-    }
-
-    protected var _loader :URLLoader;
     protected var _completeCallback :Function;
     protected var _appDom :ApplicationDomain;
 }
