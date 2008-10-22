@@ -98,6 +98,29 @@ public class EventHandlerManager
     }
 
     /**
+     * Will register a set of callbacks on a set of dispatchers for a set of events until the 
+     * duration event has been thrown on the duration dispatcher.  Useful for attaching listeners
+     * until an object has been REMOVED_FROM_STAGE or UNLOADed.
+     */
+    public function registerDurationListeners (durationDispatcher :IEventDispatcher,
+        durationEvent :String, dispatchers :Array, events :Array, listeners :Array) :void
+    {
+        if (dispatchers.length != events.length || dispatchers.length != listeners.length) {
+            throw new Error("dispatchers, events and listeners all need to be the same size");
+        }
+
+        var ii :int;
+        for (ii = 0; ii < dispatchers.length; ii++) {
+            registerEventListener(dispatchers[ii], events[ii], listeners[ii]);
+        }
+        registerOneShotCallback(durationDispatcher, durationEvent, function () :void {
+            for (ii = 0; ii < dispatchers.length; ii++) {
+                unregisterEventListener(dispatchers[ii], events[ii], listeners[ii]);
+            }
+        });
+    }
+
+    /**
      * Free all handlers that have been added via this registerEventListener() and have not been
      * freed already via unregisterEventListener()
      */

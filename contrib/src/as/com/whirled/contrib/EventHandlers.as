@@ -81,6 +81,18 @@ public class EventHandlers
     }
 
     /**
+     * Will register a set of callbacks on a set of dispatchers for a set of events until the 
+     * duration event has been thrown on the duration dispatcher.  Useful for attaching listeners
+     * until an object has been REMOVED_FROM_STAGE or UNLOADed.
+     */
+    public static function registerDurationListeners (durationDispatcher :IEventDispatcher,
+        durationEvent :String, dispatchers :Array, events :Array, listeners :Array) :void
+    {
+        _mgr.registerDurationListeners(
+            durationDispatcher, durationEvent, dispatchers, events, listeners);
+    }
+
+    /**
      * Free all handlers that have been added via this registerEventListener() and have not been
      * freed already via unregisterEventListener()
      */
