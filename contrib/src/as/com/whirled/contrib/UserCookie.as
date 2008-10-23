@@ -113,6 +113,8 @@ public class UserCookie
      *                      cookie has been retrieved and validated.
      * @param cookieDef An array of cookie parameters that define the format of the user cookie.  
      *                  See the various get*Parameter() functions for more detail.
+     * @param eventMgr If an EventHandlerManager is provided, it will be used to register all event
+                       listeners.  If not provided, EventHandlers will be used instead.
      * @param enableDebugLogging Enable logging of some debug messages, including the values read
      *                           out of the user cookie in the initial read.  Logging is done via
      *                           com.threerings.util.Log.
@@ -121,9 +123,10 @@ public class UserCookie
      *              to set a value will generate an IllegalOperationError.
      */
     public static function getCookie (wgc :GameControl, validCallback :Function, 
-        cookieDef :Array, enableDebugLogging :Boolean = false, occId :int = -1) :void
+        cookieDef :Array, eventMgr :EventHandlerManager = null, enableDebugLogging :Boolean = false,
+        occId :int = -1) :void
     {
-        var cookie :UserCookie = new UserCookie();
+        var cookie :UserCookie = new UserCookie(eventMgr);
         cookie._control = wgc;
         cookie._cookieDef = cookieDef;
         cookie._readOnly = occId != -1 && occId != wgc.game.getMyId();
@@ -191,9 +194,10 @@ public class UserCookie
     /**
      * This function should not be called directly.  Instead, call UserCookie.getCookie().
      */
-    public function UserCookie ()
+    public function UserCookie (eventMgr :EventHandlerManager = null)
     {
-        EventHandlers.registerEventListener(_timer = new Timer(SEND_TIME), TimerEvent.TIMER, flush);
+        eventMgr = eventMgr != null ? eventMgr : EventHandlers.getGlobalManager()
+        eventMgr.registerListener(_timer = new Timer(SEND_TIME), TimerEvent.TIMER, flush);
         _timer.start();
     }
 

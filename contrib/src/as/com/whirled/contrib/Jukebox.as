@@ -51,9 +51,15 @@ public class Jukebox
      * init must be called before the Jukebox can handle crossfading and loading music correctly.
      * The frameDispatcher must be a display object that will remain on the display list, as this
      * class depends on constant ENTER_FRAME events to function properly.
+     *
+     * If an EventHandlerManager is provided, all event listeners will be registered using it.  
+     * Otherwise, EventHandlers is used statically.
      */
-    public static function init (frameDispatcher :IEventDispatcher) :void {
+    public static function init (frameDispatcher :IEventDispatcher, 
+        eventMgr :EventHandlerManager = null) :void 
+    {
         _frameDispatcher = frameDispatcher;
+        _eventMgr = eventMgr != null ? eventMgr : EventHandlers.getGlobalManager();
     }
 
     /**
@@ -112,8 +118,7 @@ public class Jukebox
                 if (time > startTime + FADE_TIME) {
                     _currentChannel.soundTransform = 
                         new SoundTransform((_volume = targetVolume) / 100);
-                    EventHandlers.unregisterEventListener(
-                        _frameDispatcher, Event.ENTER_FRAME, fadeInner);
+                    _eventMgr.unregisterListener(_frameDispatcher, Event.ENTER_FRAME, fadeInner);
                 } else {
                     _currentChannel.soundTransform = 
                         new SoundTransform((
@@ -121,7 +126,7 @@ public class Jukebox
                 }
             }
         }(getTimer(), realVolume);
-        EventHandlers.registerEventListener(_frameDispatcher, Event.ENTER_FRAME, fadeInner);
+        _eventMgr.registerListener(_frameDispatcher, Event.ENTER_FRAME, fadeInner);
     }
 
     /** 
@@ -135,8 +140,7 @@ public class Jukebox
                 return;
             }
 
-            EventHandlers.unregisterEventListener(
-                _currentChannel, Event.SOUND_COMPLETE, soundComplete);
+            _eventMgr.unregisterListener(_currentChannel, Event.SOUND_COMPLETE, soundComplete);
             var fadeOutter :Function;
             fadeOutter = function (startTime :int, channel :SoundChannel, 
                     startVolume :Number) :Function {
@@ -144,7 +148,7 @@ public class Jukebox
                     var time :int = getTimer();
                     if (time > startTime + FADE_TIME) {
                         channel.stop();
-                        EventHandlers.unregisterEventListener(
+                        _eventMgr.unregisterListener(
                             _frameDispatcher, Event.ENTER_FRAME, fadeOutter);
                     } else {
                         channel.soundTransform = 
@@ -152,7 +156,7 @@ public class Jukebox
                     }
                 }
             }(getTimer(), _currentChannel, _currentChannel.soundTransform.volume);
-            EventHandlers.registerEventListener(_frameDispatcher, Event.ENTER_FRAME, fadeOutter);
+            _eventMgr.registerListener(_frameDispatcher, Event.ENTER_FRAME, fadeOutter);
             _currentChannel = null;
         }
     }
@@ -164,8 +168,7 @@ public class Jukebox
     {
         if (_currentChannel != null) {
             _currentChannel.stop();
-            EventHandlers.unregisterEventListener(
-                _currentChannel, Event.SOUND_COMPLETE, soundComplete);
+            _eventMgr.unregisterListener(_currentChannel, Event.SOUND_COMPLETE, soundComplete);
             _currentChannel = null;
         }
     }
@@ -197,21 +200,18 @@ public class Jukebox
     protected static function loop () :void
     {
         if (_currentChannel != null) {
-            EventHandlers.unregisterEventListener(
-                _currentChannel, Event.SOUND_COMPLETE, soundComplete);
+            _eventMgr.unregisterListener(_currentChannel, Event.SOUND_COMPLETE, soundComplete);
         }
         _currentChannel = _currentSong.play(0, 0, new SoundTransform(_volume / 100));
         if (_currentChannel != null) {
-            EventHandlers.registerEventListener(
-                _currentChannel, Event.SOUND_COMPLETE, soundComplete);
+            _eventMgr.registerListener(_currentChannel, Event.SOUND_COMPLETE, soundComplete);
         }
     }
 
     protected static function soundComplete (event :Event) :void 
     {
         if (_currentChannel != null) {
-            EventHandlers.unregisterEventListener(
-                _currentChannel, Event.SOUND_COMPLETE, soundComplete);
+            _eventMgr.unregisterListener(_currentChannel, Event.SOUND_COMPLETE, soundComplete);
         }
         loop();
         if (_loopCallback != null) {
@@ -244,6 +244,7 @@ public class Jukebox
     protected static var _currentChannel :SoundChannel;
     protected static var _currentSong :Sound;
     protected static var _frameDispatcher :IEventDispatcher;
+    protected static var _eventMgr :EventHandlerManager;
 
     protected static var _sounds :HashMap = new HashMap();
 

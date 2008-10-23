@@ -56,7 +56,7 @@ public class OnlineTickedMessageManager
 
     public function run () :void
     {
-        _events.registerEventListener(_gameCtrl.net, MessageReceivedEvent.MESSAGE_RECEIVED,
+        _events.registerListener(_gameCtrl.net, MessageReceivedEvent.MESSAGE_RECEIVED,
             onMessageReceived);
 
         _ticks = [];

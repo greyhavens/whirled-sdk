@@ -33,7 +33,7 @@ public class EventHandlerManager
     /**
      * Adds the specified listener to the specified dispatcher for the specified event.
      */
-    public function registerEventListener (dispatcher :IEventDispatcher, event :String,
+    public function registerListener (dispatcher :IEventDispatcher, event :String,
         listener :Function, useCapture :Boolean = false, priority :int = 0,
         useWeakReference :Boolean = false) :void
     {
@@ -44,7 +44,7 @@ public class EventHandlerManager
     /**
      * Removes the specified listener from the specified dispatcher for the specified event.
      */
-    public function unregisterEventListener (dispatcher :IEventDispatcher, event :String,
+    public function unregisterListener (dispatcher :IEventDispatcher, event :String,
         listener :Function, useCapture :Boolean = false) :void
     {
         dispatcher.removeEventListener(event, listener, useCapture);
@@ -66,11 +66,11 @@ public class EventHandlerManager
         callback :Function, useCapture :Boolean = false, priority :int = 0) :void
     {
         var eventListener :Function = function (...ignored) :void {
-            unregisterEventListener(dispatcher, event, eventListener, useCapture);
+            unregisterListener(dispatcher, event, eventListener, useCapture);
             callback();
         };
 
-        registerEventListener(dispatcher, event, eventListener, useCapture, priority);
+        registerListener(dispatcher, event, eventListener, useCapture, priority);
     }
 
     /**
@@ -79,7 +79,7 @@ public class EventHandlerManager
      */
     public function registerUnload (dispatcher :IEventDispatcher) :void
     {
-        registerEventListener(dispatcher, Event.UNLOAD, freeAllHandlers);
+        registerListener(dispatcher, Event.UNLOAD, freeAllHandlers);
     }
 
     /** 
@@ -98,25 +98,25 @@ public class EventHandlerManager
     }
 
     /**
-     * Will register a listener on a set a dispatcher for a event until the duration event has 
-     * been dispatched on the duration dispatcher.  Useful for attaching listeners until an object 
+     * Will register a listener on a dispatcher for an event until the trigger event has been
+     * dispatched on the trigger dispatcher.  Useful for attaching listeners until an object 
      * has been REMOVED_FROM_STAGE or UNLOADed.
      *
      * All associated event listeners use the default useCapture and priority settings.
      */
-    public function registerDurationListener (durationDispatcher :IEventDispatcher,
-        durationEvent :String, dispatcher :IEventDispatcher, event :String, 
+    public function registerListenerUntil (triggerDispatcher :IEventDispatcher,
+        triggerEvent :String, dispatcher :IEventDispatcher, event :String, 
         listener :Function) :void
     {
-        registerEventListener(dispatcher, event, listener);
-        registerOneShotCallback(durationDispatcher, durationEvent, function () :void {
-            unregisterEventListener(dispatcher, event, listener);
+        registerListener(dispatcher, event, listener);
+        registerOneShotCallback(triggerDispatcher, triggerEvent, function () :void {
+            unregisterListener(dispatcher, event, listener);
         });
     }
 
     /**
-     * Free all handlers that have been added via this registerEventListener() and have not been
-     * freed already via unregisterEventListener()
+     * Free all handlers that have been added via this registerListener() and have not been
+     * freed already via unregisterListener()
      */
     public function freeAllHandlers (...ignored) :void
     {

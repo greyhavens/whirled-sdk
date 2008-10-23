@@ -182,19 +182,19 @@ public class SimObject extends EventDispatcher
      * Listeners registered in this way will be automatically unregistered when the SimObject is
      * destroyed.
      */
-    protected function registerEventListener (dispatcher :IEventDispatcher, event :String,
+    protected function registerListener (dispatcher :IEventDispatcher, event :String,
         listener :Function, useCapture :Boolean = false, priority :int = 0) :void
     {
-        _events.registerEventListener(dispatcher, event, listener, useCapture, priority);
+        _events.registerListener(dispatcher, event, listener, useCapture, priority);
     }
 
     /**
      * Removes the specified listener from the specified dispatcher for the specified event.
      */
-    protected function unregisterEventListener (dispatcher :IEventDispatcher, event :String,
+    protected function unregisterListener (dispatcher :IEventDispatcher, event :String,
         listener :Function, useCapture :Boolean = false) :void
     {
-        _events.unregisterEventListener(dispatcher, event, listener, useCapture);
+        _events.unregisterListener(dispatcher, event, listener, useCapture);
     }
 
     /**

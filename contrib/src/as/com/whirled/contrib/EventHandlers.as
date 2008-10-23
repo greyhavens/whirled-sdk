@@ -34,21 +34,21 @@ public class EventHandlers
     /**
      * Adds the specified listener to the specified dispatcher for the specified event.
      */
-    public static function registerEventListener (dispatcher :IEventDispatcher, event :String,
+    public static function registerListener (dispatcher :IEventDispatcher, event :String,
         listener :Function, useCapture :Boolean = false, priority :int = 0,
         useWeakReference :Boolean = false) :void
     {
-        _mgr.registerEventListener(dispatcher, event, listener, useCapture, priority,
+        _mgr.registerListener(dispatcher, event, listener, useCapture, priority,
             useWeakReference);
     }
 
     /**
      * Removes the specified listener from the specified dispatcher for the specified event.
      */
-    public static function unregisterEventListener (dispatcher :IEventDispatcher, event :String,
+    public static function unregisterListener (dispatcher :IEventDispatcher, event :String,
         listener :Function, useCapture :Boolean = false) :void
     {
-        _mgr.unregisterEventListener(dispatcher, event, listener, useCapture);
+        _mgr.unregisterListener(dispatcher, event, listener, useCapture);
     }
 
     /**
@@ -81,23 +81,22 @@ public class EventHandlers
     }
 
     /**
-     * Will register a listener on a set a dispatcher for a event until the duration event has 
-     * been dispatched on the duration dispatcher.  Useful for attaching listeners until an object 
+     * Will register a listener on a dispatcher for an event until the trigger event has been
+     * dispatched on the trigger dispatcher.  Useful for attaching listeners until an object 
      * has been REMOVED_FROM_STAGE or UNLOADed.
      *
      * All associated event listeners use the default useCapture and priority settings.
      */
-    public static function registerDurationListener (durationDispatcher :IEventDispatcher,
+    public static function registerListenerUntil (durationDispatcher :IEventDispatcher,
         durationEvent :String, dispatcher :IEventDispatcher, event :String, 
         listener :Function) :void
     {
-        _mgr.registerDurationListener(
-            durationDispatcher, durationEvent, dispatcher, event, listener);
+        _mgr.registerListenerUntil(durationDispatcher, durationEvent, dispatcher, event, listener);
     }
 
     /**
-     * Free all handlers that have been added via this registerEventListener() and have not been
-     * freed already via unregisterEventListener()
+     * Free all handlers that have been added via this registerListener() and have not been
+     * freed already via unregisterListener()
      */
     public static function freeAllHandlers (...ignored) :void
     {

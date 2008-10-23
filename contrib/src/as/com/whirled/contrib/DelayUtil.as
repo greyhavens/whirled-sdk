@@ -34,11 +34,16 @@ public class DelayUtil
     /** 
      * init must be called before DelayUtil can function.  The dispatcher that is passed in must
      * be a display object on that will remain on the display list, as the DisplayUtil needs
-     * constant ENTER_FRAME events in order to function.
+     * constant ENTER_FRAME events in order to function.  
+     *
+     * If an EventHandlerManager is provided, it will be used to register the event.  Otherwise
+     * EventHandlers is used statically.
      */
-    public static function init (dispatcher :IEventDispatcher) :void
+    public static function init (
+        dispatcher :IEventDispatcher, eventMgr :EventHandlerManager = null) :void
     {
-        EventHandlers.registerEventListener(dispatcher, Event.ENTER_FRAME, enterFrame);
+        eventMgr = eventMgr != null ? eventMgr : EventHandlers.getGlobalManager();
+        eventMgr.registerListener(dispatcher, Event.ENTER_FRAME, enterFrame);
     }
 
     /**
