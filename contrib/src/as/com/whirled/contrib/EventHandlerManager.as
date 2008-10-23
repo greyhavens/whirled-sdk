@@ -98,23 +98,6 @@ public class EventHandlerManager
     }
 
     /**
-     * Will register a listener on a dispatcher for an event until the trigger event has been
-     * dispatched on the trigger dispatcher.  Useful for attaching listeners until an object 
-     * has been REMOVED_FROM_STAGE or UNLOADed.
-     *
-     * All associated event listeners use the default useCapture and priority settings.
-     */
-    public function registerListenerUntil (triggerDispatcher :IEventDispatcher,
-        triggerEvent :String, dispatcher :IEventDispatcher, event :String, 
-        listener :Function) :void
-    {
-        registerListener(dispatcher, event, listener);
-        registerOneShotCallback(triggerDispatcher, triggerEvent, function () :void {
-            unregisterListener(dispatcher, event, listener);
-        });
-    }
-
-    /**
      * Free all handlers that have been added via this registerListener() and have not been
      * freed already via unregisterListener()
      */

@@ -87,11 +87,14 @@ public class EventHandlers
      *
      * All associated event listeners use the default useCapture and priority settings.
      */
-    public static function registerListenerUntil (durationDispatcher :IEventDispatcher,
-        durationEvent :String, dispatcher :IEventDispatcher, event :String, 
+    public static function registerListenerUntil (triggerDispatcher :IEventDispatcher,
+        triggerEvent :String, dispatcher :IEventDispatcher, event :String, 
         listener :Function) :void
     {
-        _mgr.registerListenerUntil(durationDispatcher, durationEvent, dispatcher, event, listener);
+        registerListener(dispatcher, event, listener);
+        registerOneShotCallback(triggerDispatcher, triggerEvent, function () :void {
+            unregisterListener(dispatcher, event, listener);
+        });
     }
 
     /**
