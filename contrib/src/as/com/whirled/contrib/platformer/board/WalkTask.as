@@ -20,7 +20,10 @@
 
 package com.whirled.contrib.platformer.board {
 
+import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.piece.Actor;
+import com.whirled.contrib.platformer.piece.Attachable;
+import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.util.Maths;
 
 import com.whirled.contrib.platformer.game.ActorController;
@@ -42,6 +45,12 @@ public class WalkTask extends ColliderTask
     {
         super.init(delta);
         var a :Actor = _sab.actor;
+        if (a.attachedId != -1) {
+            var d :Dynamic = PlatformerContext.board.getDynamic(a.attachedId);
+            if (d == null || !(d is Attachable) || !(d as Attachable).isAttachable()) {
+                a.setAttached(null);
+            }
+        }
         if (a.attached == null || a.accelY > 0) {
             a.dy += a.accelY * delta;
             a.dy -= 15 * delta;
@@ -135,7 +144,7 @@ public class WalkTask extends ColliderTask
     {
         _sab.move(_cd);
         if (_sab.actor.accelY > 0) {
-            _sab.actor.attached = null;
+            _sab.actor.setAttached(null);
         }
         if (_cd != null) {
             if (!isNaN(_lastDelta)) {

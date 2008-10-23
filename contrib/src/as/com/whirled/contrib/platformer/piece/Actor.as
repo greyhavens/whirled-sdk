@@ -51,7 +51,6 @@ public class Actor extends Dynamic
     public var justShot :Boolean = false;
     public var events :Array = new Array();
 
-    public var attached :LineData;
     public var health :Number;
     public var startHealth :Number;
 
@@ -86,6 +85,22 @@ public class Actor extends Dynamic
         orient = (orient & ORIENT_SHOOT_MASK) | shoot;
     }
 
+    public function get attached () :LineData
+    {
+        return _attached;
+    }
+
+    public function get attachedId () :int
+    {
+        return _attachedId;
+    }
+
+    public function setAttached (ld :LineData, id :int = -1) :void
+    {
+        _attached = ld;
+        _attachedId = id;
+    }
+
     override public function getBounds () :Rect
     {
         if (_bounds == null) {
@@ -102,5 +117,7 @@ public class Actor extends Dynamic
     }
 
     protected var _bounds :Rect;
+    protected var _attached :LineData;
+    protected var _attachedId :int;
 }
 }

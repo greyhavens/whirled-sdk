@@ -21,29 +21,31 @@
 package com.whirled.contrib.platformer.game {
 
 import com.whirled.contrib.platformer.board.ColliderDetails;
+import com.whirled.contrib.platformer.board.DynamicBounds;
 import com.whirled.contrib.platformer.board.SimpleActorBounds;
+import com.whirled.contrib.platformer.board.SimpleBounds;
 import com.whirled.contrib.platformer.board.LineData;
 
 public class WalkableCollisionHandler extends CollisionHandler
 {
-    public function WalkableCollisionHandler (ac :ActorController)
+    public function WalkableCollisionHandler (wc :WalkableController)
     {
         super(ActorController);
-        _ac = ac;
+        _wc = wc;
     }
 
     override public function handlesObject (o :Object) :Boolean
     {
-        return _ac.getActor().health > 0 && super.handlesObject(o);
+        return _wc.isWalkable() && super.handlesObject(o);
     }
 
     override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
-        sabCollide(source as SimpleActorBounds, target as SimpleActorBounds, cd);
+        sabCollide(source as DynamicBounds, target as SimpleActorBounds, cd);
     }
 
     protected function sabCollide (
-        source :SimpleActorBounds, target :SimpleActorBounds, cd :ColliderDetails) :void
+        source :DynamicBounds, target :SimpleActorBounds, cd :ColliderDetails) :void
     {
         var idx :int = cd.acolliders.indexOf(source);
         var attached :LineData;
@@ -65,12 +67,12 @@ public class WalkableCollisionHandler extends CollisionHandler
             }
         }
         if (!stopx && attached != null) {
-            target.actor.attached = attached;
+            target.actor.setAttached(attached, source.dyn.id);
         } else if (stopy && !stopx) {
             target.actor.dy = 0;
         }
     }
 
-    protected var _ac :ActorController;
+    protected var _wc :WalkableController;
 }
 }

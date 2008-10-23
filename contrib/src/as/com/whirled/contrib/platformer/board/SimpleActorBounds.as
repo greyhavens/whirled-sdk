@@ -381,7 +381,7 @@ public class SimpleActorBounds extends ActorBounds
                     }
                 }
                 log(actor.sprite + " new attached: " + attached + ", " + base);
-                actor.attached = attached;
+                actor.setAttached(attached);
             }
 
         // Possibly detach ourselves from our current ground line and possibly automatically
@@ -425,7 +425,7 @@ public class SimpleActorBounds extends ActorBounds
                 } else {
                     log(actor.sprite + " autoatached " + attached + ", " + getBottomLine());
                 }
-                actor.attached = attached;
+                actor.setAttached(attached);
             }
         }
 
@@ -493,7 +493,7 @@ public class SimpleActorBounds extends ActorBounds
                         ", " + getBottomLine());
                 //trace(actor.sprite + " detaching: " + actor.attached + " dist: " + dist +
                 //        ", " + getBottomLine());
-                actor.attached = null;
+                actor.setAttached(null);
             }
         }
         //log("new actor pos (" + actor.x + ", " + actor.y + ")");
