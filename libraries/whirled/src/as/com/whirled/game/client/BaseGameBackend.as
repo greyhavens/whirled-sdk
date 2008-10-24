@@ -1031,15 +1031,17 @@ public class BaseGameBackend
             createLoggingConfirmListener("endGameWithWinners"));
     }
 
+    // gameMode was added on Oct-23-2008, most games will continue to use the default mode, but new
+    // games may pass a non-zero value to make use of per-mode score distributions
     protected function endGameWithScores_v1 (playerIds :Array, scores :Array /* of int */,
-        payoutType :int) :void
+        payoutType :int, gameMode :int = 0) :void
     {
         validateConnected();
 
         // pass the buck straight on through, the server will validate everything
         _gameObj.whirledGameService.endGameWithScores(
             _ctx.getClient(), toTypedIntArray(playerIds), toTypedIntArray(scores), payoutType,
-            createLoggingConfirmListener("endGameWithWinners"));
+            gameMode, createLoggingConfirmListener("endGameWithWinners"));
     }
 
     protected function restartGameIn_v1 (seconds :int) :void

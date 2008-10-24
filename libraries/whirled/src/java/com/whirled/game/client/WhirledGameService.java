@@ -43,7 +43,7 @@ public interface WhirledGameService extends InvocationService
      * WhirledGame}).
      */
     public void endGameWithScores (Client client, int[] playerIds, int[] scores, int payoutType,
-                                   InvocationListener listener);
+                                   int gameMode, InvocationListener listener);
 
     /**
      * Requests to start the game again in the specified number of seconds. This should only be

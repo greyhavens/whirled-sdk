@@ -72,12 +72,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const END_GAME_WITH_SCORES :int = 4;
 
     // from interface WhirledGameService
-    public function endGameWithScores (arg1 :Client, arg2 :TypedArray /* of int */, arg3 :TypedArray /* of int */, arg4 :int, arg5 :InvocationService_InvocationListener) :void
+    public function endGameWithScores (arg1 :Client, arg2 :TypedArray /* of int */, arg3 :TypedArray /* of int */, arg4 :int, arg5 :int, arg6 :InvocationService_InvocationListener) :void
     {
-        var listener5 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener5.listener = arg5;
+        var listener6 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener6.listener = arg6;
         sendRequest(arg1, END_GAME_WITH_SCORES, [
-            arg2, arg3, Integer.valueOf(arg4), listener5
+            arg2, arg3, Integer.valueOf(arg4), Integer.valueOf(arg5), listener6
         ]);
     }
 

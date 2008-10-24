@@ -37,7 +37,7 @@ public interface WhirledGameProvider extends InvocationProvider
     /**
      * Handles a {@link WhirledGameService#endGameWithScores} request.
      */
-    void endGameWithScores (ClientObject caller, int[] arg1, int[] arg2, int arg3, InvocationService.InvocationListener arg4)
+    void endGameWithScores (ClientObject caller, int[] arg1, int[] arg2, int arg3, int arg4, InvocationService.InvocationListener arg5)
         throws InvocationException;
 
     /**

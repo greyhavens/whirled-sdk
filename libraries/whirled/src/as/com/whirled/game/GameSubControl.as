@@ -359,11 +359,17 @@ public class GameSubControl extends AbstractSubControl
      * <p> Note that if a game is ended with all players scores equal of zero, it will be assumed
      * that the players in question abandoned the game and no coins will be paid out, nor will
      * their ratings be updated. </p>
+     *
+     * <p> The <code>gameMode</code> parameter allows you to maintain separate score distributions
+     * for different game modes. If your game contains different modes which use scores that are
+     * not comparable to one another, or you have various game levels for which you would like to
+     * track individual score distributions, you can assign each an integer value between 0 and 99.
+     * Only 100 game modes are allowed. </p>
      */
     public function endGameWithScores (
-        playerIds :Array, scores :Array /* of int */, payoutType :int) :void
+        playerIds :Array, scores :Array /* of int */, payoutType :int, gameMode :int = 0) :void
     {
-        callHostCode("endGameWithScores_v1", playerIds, scores, payoutType);
+        callHostCode("endGameWithScores_v1", playerIds, scores, payoutType, gameMode);
     }
 
     /**

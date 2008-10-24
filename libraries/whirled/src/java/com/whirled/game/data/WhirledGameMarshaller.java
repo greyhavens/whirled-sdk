@@ -63,12 +63,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static final int END_GAME_WITH_SCORES = 4;
 
     // from interface WhirledGameService
-    public void endGameWithScores (Client arg1, int[] arg2, int[] arg3, int arg4, InvocationService.InvocationListener arg5)
+    public void endGameWithScores (Client arg1, int[] arg2, int[] arg3, int arg4, int arg5, InvocationService.InvocationListener arg6)
     {
-        ListenerMarshaller listener5 = new ListenerMarshaller();
-        listener5.listener = arg5;
+        ListenerMarshaller listener6 = new ListenerMarshaller();
+        listener6.listener = arg6;
         sendRequest(arg1, END_GAME_WITH_SCORES, new Object[] {
-            arg2, arg3, Integer.valueOf(arg4), listener5
+            arg2, arg3, Integer.valueOf(arg4), Integer.valueOf(arg5), listener6
         });
     }
 
