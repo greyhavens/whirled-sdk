@@ -45,7 +45,8 @@ public class TestGameManager extends WhirledGameManager
 
     // from interface WhirledGameProvider
     public void endGameWithScores (ClientObject caller, int[] playerIds, int[] scores,
-                                   int payoutType, WhirledGameService.InvocationListener listener)
+                                   int payoutType, int gameMode,
+                                   WhirledGameService.InvocationListener listener)
         throws InvocationException
     {
         validateCanEndGame(caller);
