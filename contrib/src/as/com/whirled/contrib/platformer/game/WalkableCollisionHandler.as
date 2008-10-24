@@ -23,7 +23,6 @@ package com.whirled.contrib.platformer.game {
 import com.whirled.contrib.platformer.board.ColliderDetails;
 import com.whirled.contrib.platformer.board.DynamicBounds;
 import com.whirled.contrib.platformer.board.SimpleActorBounds;
-import com.whirled.contrib.platformer.board.SimpleBounds;
 import com.whirled.contrib.platformer.board.LineData;
 
 public class WalkableCollisionHandler extends CollisionHandler

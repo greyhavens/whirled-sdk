@@ -225,7 +225,7 @@ public class EditSprite extends Sprite
             moveView(0, -SCROLL_INCREMENT * _scale);
         }
     }
-    
+
     protected function getMouseX () :int
     {
         return _bX + mouseX * _scale;
@@ -259,7 +259,7 @@ import flash.display.Shape;
 import mx.core.UIComponent;
 
 import com.whirled.contrib.platformer.editor.EditSprite;
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 
 class Wrapper extends UIComponent
 {
