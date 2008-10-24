@@ -41,7 +41,7 @@ import com.threerings.util.Log;
 
 import com.whirled.contrib.platformer.PlatformerContext;
 
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 import com.whirled.contrib.platformer.display.PieceSpriteFactory;
 import com.whirled.contrib.platformer.editor.EditView;
 import com.whirled.contrib.platformer.editor.PieceEditView;

@@ -26,7 +26,7 @@ import flash.display.Sprite;
 import flash.events.Event;
 
 import com.whirled.contrib.platformer.piece.Spawner;
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 
 public class SpawnerSprite extends DynamicSprite
 {

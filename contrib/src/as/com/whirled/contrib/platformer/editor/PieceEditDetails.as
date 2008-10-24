@@ -43,7 +43,7 @@ import com.threerings.util.HashMap;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 
 public class PieceEditDetails extends Canvas
 {

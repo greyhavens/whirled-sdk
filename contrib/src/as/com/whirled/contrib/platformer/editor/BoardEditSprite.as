@@ -26,7 +26,7 @@ import flash.display.Sprite;
 import flash.events.MouseEvent;
 
 import com.whirled.contrib.platformer.display.Layer;
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 import com.whirled.contrib.platformer.display.PieceSprite;
 import com.whirled.contrib.platformer.display.PieceSpriteFactory;
 

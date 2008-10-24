@@ -39,7 +39,7 @@ import mx.controls.HSlider;
 import mx.controls.Label;
 import mx.events.SliderEvent;
 
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 

@@ -24,8 +24,8 @@ import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundData;
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.util.Maths;
+import com.whirled.contrib.platformer.util.Metrics;
 
-import com.whirled.contrib.platformer.display.Metrics;
 import com.whirled.contrib.platformer.game.ActorController;
 import com.whirled.contrib.platformer.game.CollisionHandler;
 

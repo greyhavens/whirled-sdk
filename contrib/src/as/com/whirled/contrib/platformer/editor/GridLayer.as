@@ -23,7 +23,7 @@ package com.whirled.contrib.platformer.editor {
 import com.threerings.util.Log;
 
 import com.whirled.contrib.platformer.display.Layer;
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 
 /**
  * A layer that displays the tile grid.

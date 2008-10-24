@@ -24,7 +24,7 @@ import flash.display.Shape;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
 
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 
 public class EditorSprite extends Sprite
 {

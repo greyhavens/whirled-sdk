@@ -31,7 +31,7 @@ import com.threerings.util.Log;
 import com.threerings.flash.MathUtil;
 
 import com.whirled.contrib.platformer.display.Layer;
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 
 public class NodeMoveLayer extends Layer
 {

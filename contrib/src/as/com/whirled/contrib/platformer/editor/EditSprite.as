@@ -38,7 +38,7 @@ import com.threerings.flash.MathUtil;
 
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.display.Layer;
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 import com.whirled.contrib.platformer.piece.Piece;
 
 public class EditSprite extends Sprite

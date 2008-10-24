@@ -26,7 +26,7 @@ import flash.display.Sprite;
 
 import com.threerings.util.Log;
 
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 import com.whirled.contrib.platformer.display.Layer;
 
 public class EditorSpriteLayer extends Layer

@@ -48,7 +48,7 @@ import com.threerings.flex.FlexWrapper;
 import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.board.Board;
 
-import com.whirled.contrib.platformer.display.Metrics;
+import com.whirled.contrib.platformer.util.Metrics;
 
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Piece;
