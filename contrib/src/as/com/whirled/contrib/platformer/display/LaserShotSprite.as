@@ -24,6 +24,7 @@ import flash.display.DisplayObject;
 import flash.display.Sprite;
 
 import com.whirled.contrib.platformer.piece.LaserShot;
+import com.whirled.contrib.platformer.util.Metrics;
 
 public class LaserShotSprite extends ShotSprite
 {

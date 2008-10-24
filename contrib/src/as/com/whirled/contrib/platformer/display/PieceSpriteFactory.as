@@ -43,6 +43,7 @@ import com.whirled.contrib.platformer.piece.LaserShot;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.Shot;
 import com.whirled.contrib.platformer.piece.Spawner;
+import com.whirled.contrib.platformer.util.Metrics;
 
 /**
  * Generates a piece sprite from the supplied piece.

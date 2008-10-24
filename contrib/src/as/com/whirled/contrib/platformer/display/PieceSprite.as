@@ -25,6 +25,7 @@ import flash.display.Sprite;
 import flash.display.Shape;
 
 import com.whirled.contrib.platformer.piece.Piece;
+import com.whirled.contrib.platformer.util.Metrics;
 
 /**
  * Visualizer for the base piece object.

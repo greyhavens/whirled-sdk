@@ -23,8 +23,8 @@ package com.whirled.contrib.platformer.display {
 import flash.display.Shape;
 import flash.display.Sprite;
 
-import com.whirled.contrib.platformer.display.Metrics;
 import com.whirled.contrib.platformer.piece.Piece;
+import com.whirled.contrib.platformer.util.Metrics;
 import com.whirled.contrib.platformer.util.SectionalIndex;
 
 /**

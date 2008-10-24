@@ -23,6 +23,7 @@ package com.whirled.contrib.platformer.display {
 import flash.display.DisplayObject;
 
 import com.whirled.contrib.platformer.piece.CutScene;
+import com.whirled.contrib.platformer.util.Metrics;
 
 public class CutSceneSprite extends DynamicSprite
 {

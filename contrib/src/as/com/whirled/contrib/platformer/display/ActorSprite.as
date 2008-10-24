@@ -32,6 +32,7 @@ import flash.filters.ColorMatrixFilter;
 
 import com.whirled.contrib.ColorMatrix;
 import com.whirled.contrib.platformer.piece.Actor;
+import com.whirled.contrib.platformer.util.Metrics;
 
 public class ActorSprite extends DynamicSprite
 {

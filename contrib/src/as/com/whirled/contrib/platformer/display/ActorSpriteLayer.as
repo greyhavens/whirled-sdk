@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer.display {
 
+import com.whirled.contrib.platformer.util.Metrics;
+
 public class ActorSpriteLayer extends DynamicSpriteLayer
 {
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void

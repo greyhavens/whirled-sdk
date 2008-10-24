@@ -18,10 +18,10 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.display {
+package com.whirled.contrib.platformer.util {
 
 /**
- * Various global display metrics.
+ * Various global metrics.
  */
 public class Metrics
 {

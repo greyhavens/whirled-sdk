@@ -24,6 +24,8 @@ import flash.display.DisplayObject;
 
 import com.whirled.contrib.platformer.piece.Hover;
 
+import com.whirled.contrib.platformer.util.Metrics;
+
 public class HoverSprite extends DynamicSprite
 {
     public static const IDLE :String = "idle";

@@ -28,6 +28,7 @@ import flash.geom.Point;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.BoundData;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
+import com.whirled.contrib.platformer.util.Metrics;
 
 public class BoundedPieceSprite extends PieceSprite
 {

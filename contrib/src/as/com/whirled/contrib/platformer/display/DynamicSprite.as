@@ -35,6 +35,7 @@ import flash.geom.Transform;
 
 import com.whirled.contrib.ColorMatrix;
 import com.whirled.contrib.platformer.piece.Dynamic;
+import com.whirled.contrib.platformer.util.Metrics;
 
 public class DynamicSprite extends Sprite
 {

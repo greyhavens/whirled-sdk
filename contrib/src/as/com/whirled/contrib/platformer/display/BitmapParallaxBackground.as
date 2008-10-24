@@ -24,6 +24,8 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
 
+import com.whirled.contrib.platformer.util.Metrics;
+
 public class BitmapParallaxBackground extends Layer
 {
     public function BitmapParallaxBackground ()

@@ -30,6 +30,8 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
+import com.whirled.contrib.platformer.util.Metrics;
+
 public class ParallaxBitmap extends Layer
 {
     public function ParallaxBitmap (sX :int = 1, sY :int = 1, oX :int = 0, oY :int = 0)

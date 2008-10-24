@@ -29,6 +29,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 
 import com.whirled.contrib.platformer.piece.Piece;
+import com.whirled.contrib.platformer.util.Metrics;
 import com.whirled.contrib.platformer.util.SectionalIndex;
 
 public class BitmapSectionalLayer extends PieceSpriteLayer
@@ -149,7 +150,7 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
             var p :Piece = ps.getPiece();
             var mat :Matrix = disp.transform.matrix.clone();
             mat.translate((p.x - offx) * Metrics.TILE_SIZE, (sh - p.y + offy) * Metrics.TILE_SIZE);
-//            trace("drawing piece (" + p.x + ", " + p.y + ") to translation (" + mat.tx + ", " + 
+//            trace("drawing piece (" + p.x + ", " + p.y + ") to translation (" + mat.tx + ", " +
 //                mat.ty + ")");
             bd.draw(disp, mat);
         }

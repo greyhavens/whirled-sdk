@@ -41,6 +41,7 @@ import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.RectDynamic;
 import com.whirled.contrib.platformer.piece.Shot;
+import com.whirled.contrib.platformer.util.Metrics;
 
 /**
  * Displays a board.

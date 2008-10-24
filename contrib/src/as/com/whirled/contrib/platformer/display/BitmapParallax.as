@@ -26,6 +26,8 @@ import flash.display.DisplayObject;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
+import com.whirled.contrib.platformer.util.Metrics;
+
 public class BitmapParallax
 {
     public var updated :Boolean = true;

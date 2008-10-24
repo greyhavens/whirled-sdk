@@ -22,6 +22,8 @@ package com.whirled.contrib.platformer.display {
 
 import flash.display.Sprite;
 
+import com.whirled.contrib.platformer.util.Metrics;
+
 public class Layer extends Sprite
 {
     public function update (nX :Number, nY :Number, scale :Number = 1) :void
