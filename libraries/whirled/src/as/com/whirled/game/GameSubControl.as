@@ -380,9 +380,9 @@ public class GameSubControl extends AbstractSubControl
      * that the player in question abandoned the game and no coins will be paid out, nor will
      * their rating be updated. </p>
      */
-    public function endGameWithScore (score :int) :void
+    public function endGameWithScore (score :int, gameMode :int = 0) :void
     {
-        endGameWithScores([ getMyId() ], [ score ], TO_EACH_THEIR_OWN);
+        endGameWithScores([ getMyId() ], [ score ], TO_EACH_THEIR_OWN, gameMode);
     }
 
     /**
