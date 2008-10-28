@@ -467,15 +467,6 @@ public abstract class WhirledGameManager extends GameManager
 
     /**
      * Called privately by the ThaneGameController when anything in the agent's code domain
-     * causes a line of debug or error tracing.
-     */
-    @Deprecated public void agentTrace (ClientObject caller, String trace)
-    {
-        // do nothing, subclasses may implement something interesting here
-    }
-
-    /**
-     * Called privately by the ThaneGameController when anything in the agent's code domain
      * causes some lines of debug or error tracing to be spit out.
      */
     public void agentTrace (ClientObject caller, String[] trace)
@@ -734,7 +725,7 @@ public abstract class WhirledGameManager extends GameManager
         GameAgentObject gameAgentObj = new GameAgentObject();
         gameAgentObj.gameOid = _gameObj.getOid();
         gameAgentObj.config = new ThaneGameConfig(id, def, cfg.params);
-        gameAgentObj.bureauId = BureauTypes.GAME_BUREAU_ID_PREFIX + def.getBureauId(id);
+        gameAgentObj.bureauId = getBureauId();
         // We assume this is a thane/tamarin abc pacakage. TODO: do we need to check that?
         gameAgentObj.bureauType = BureauTypes.THANE_BUREAU_TYPE;
         gameAgentObj.code = code;
@@ -746,6 +737,17 @@ public abstract class WhirledGameManager extends GameManager
         return gameAgentObj;
     }
 
+    /**
+     * Get the id that will be assigned to this game's bureau, if any.
+     */
+    protected String getBureauId ()
+    {
+        WhirledGameConfig cfg = (WhirledGameConfig)_gameconfig;
+        GameDefinition def = cfg.getGameDefinition();
+        int id = cfg.getGameId();
+        return BureauTypes.GAME_BUREAU_ID_PREFIX + def.getBureauId(id);
+    }
+    
     @Override // from PlaceManager
     protected void bodyEntered (int bodyOid)
     {
