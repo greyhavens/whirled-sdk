@@ -37,7 +37,8 @@ public class Actor extends Dynamic
     public static const ORIENT_SHOOT_MASK :int = ~(7 << 4);
 
     public static const HIT_FRONT :int = 1;
-    public static const HIT_BACK :int = 2;
+    public static const HIT_BACK :int = 1 << 2;
+    public static const HIT_BIG :int = 1 << 5;
 
     public var width :Number = 0;
     public var height :Number = 0;

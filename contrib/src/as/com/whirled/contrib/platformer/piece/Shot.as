@@ -28,6 +28,7 @@ public class Shot extends Dynamic
     public var damage :Number = 0;
     public var ttl :Number = 0;
     public var hit :Boolean = false;
+    public var bigHit :Boolean = false;
     public var hitEffect :String;
     public var missEffect :String;
     public var force :Number = 0;
