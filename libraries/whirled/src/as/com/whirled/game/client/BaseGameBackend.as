@@ -974,14 +974,18 @@ public class BaseGameBackend
             return;
         }
 
+        // we'll call it loaded even when it's just loading
+        _loadedPacks[data.mediaURL] = true;
+
         var loader :URLLoader = new URLLoader();
         loader.addEventListener(IOErrorEvent.IO_ERROR, function (evt :IOErrorEvent) :void {
             if (onFailure != null) {
                 onFailure(new IOError("I/O Error: " + evt.text));
             }
+            // give the game a chance to try again
+            delete _loadedPacks[data.mediaURL];
         });
         loader.addEventListener(Event.COMPLETE, function (evt :Event) :void {
-            _loadedPacks[data.mediaURL] = true;
             onLoaded(ByteArray(loader.data));
         });
         loader.load(new URLRequest(data.mediaURL));
