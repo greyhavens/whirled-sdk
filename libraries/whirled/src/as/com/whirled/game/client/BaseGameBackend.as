@@ -3,8 +3,12 @@
 
 package com.whirled.game.client {
 
+import flash.errors.IOError;
 import flash.events.Event;
 import flash.events.IEventDispatcher;
+import flash.events.IOErrorEvent;
+import flash.net.URLRequest;
+import flash.net.URLLoader;
 
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
@@ -601,6 +605,8 @@ public class BaseGameBackend
         o["getControllerId_v1"] = getControllerId_v1;
         o["getLevelPacks_v2"] = getLevelPacks_v2;
         o["getItemPacks_v1"] = getItemPacks_v1;
+        o["loadLevelPackData_v1"] = loadLevelPackData_v1;
+        o["loadItemPackData_v1"] = loadItemPackData_v1;
         o["getOccupants_v1"] = getOccupants_v1;
         o["getOccupantName_v1"] = getOccupantName_v1;
         o["getRound_v1"] = getRound_v1;
@@ -935,6 +941,60 @@ public class BaseGameBackend
                             mediaURL: data.mediaURL });
         }
         return packs;
+    }
+
+    protected function loadLevelPackData_v1 (
+        ident :String, onLoaded :Function, onFailure :Function) :void
+    {
+        loadPackData(ident, GameData.LEVEL_DATA, onLoaded, onFailure);
+    }
+
+    protected function loadItemPackData_v1 (
+        ident :String, onLoaded :Function, onFailure :Function) :void
+    {
+        loadPackData(ident, GameData.ITEM_DATA, onLoaded, onFailure);
+    }
+
+    protected function loadPackData (
+        ident :String, type :int, onLoaded :Function, onFailure :Function) :void
+    {
+        var data :GameData = getGameData(ident, type);
+        if (data == null) {
+            if (onFailure != null) {
+                onFailure(new Error("Unknown data pack: " + ident));
+            }
+            return;
+        }
+
+        if (_loadedPacks[data.mediaURL]) {
+            // TODO: too draconian? should we cache these on the server?
+            if (onFailure != null) {
+                onFailure(new Error("Data pack has already been loaded this session: " + ident));
+            }
+            return;
+        }
+
+        var loader :URLLoader = new URLLoader();
+        loader.addEventListener(IOErrorEvent.IO_ERROR, function (evt :IOErrorEvent) :void {
+            if (onFailure != null) {
+                onFailure(new IOError("I/O Error: " + evt.text));
+            }
+        });
+        loader.addEventListener(Event.COMPLETE, function (evt :Event) :void {
+            _loadedPacks[data.mediaURL] = true;
+            onLoaded(ByteArray(loader.data));
+        });
+        loader.load(new URLRequest(data.mediaURL));
+    }
+
+    protected function getGameData (ident :String, type :int) :GameData
+    {
+        for each (var data :GameData in _gameObj.gameData) {
+            if (data.getType() != GameData.ITEM_DATA || data.ident == ident) {
+                return data;
+            }
+        }
+        return null;
     }
 
     protected function getOccupants_v1 () :Array
@@ -1370,6 +1430,9 @@ public class BaseGameBackend
 
     /** playerIndex -> callback functions waiting for the cookie. */
     protected var _cookieCallbacks :Dictionary;
+
+    /** URL -> boolean for data packs that have been loaded */
+    protected var _loadedPacks :Dictionary = new Dictionary();
 
     protected static const MAX_USER_COOKIE :int = 4096;
 
