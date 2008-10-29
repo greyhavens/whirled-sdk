@@ -69,6 +69,42 @@ public class GameSubControlBase extends AbstractSubControl
         return (callHostCode("getItemPacks_v1") as Array);
     }
 
+    /**
+     * Loads the binary data for the level pack with the specified ident.
+     *
+     * @param ident the identifier of the level pack to be loaded.
+     * @param onLoaded a function with the signature: function (data :ByteArray) :void
+     * that will be called with the level pack data if it loads successfully.
+     * @param onFailure a function with the signature: function (error :Error) :void
+     * that will be called if the pack loading fails.
+     */
+    public function loadLevelPackData (
+        ident :String, onLoaded :Function, onFailure :Function) :void
+    {
+        if (onLoaded == null) {
+            throw new Error("The onLoaded callback may not be null");
+        }
+        callHostCode("loadLevelPackData_v1", ident, onLoaded, onFailure);
+    }
+
+    /**
+     * Loads the binary data for the item pack with the specified ident.
+     *
+     * @param ident the identifier of the item pack to be loaded.
+     * @param onLoaded a function with the signature: function (data :ByteArray) :void
+     * that will be called with the item pack data if it loads successfully.
+     * @param onFailure a function with the signature: function (error :Error) :void
+     * that will be called if the pack loading fails.
+     */
+    public function loadItemPackData (
+        ident :String, onLoaded :Function, onFailure :Function) :void
+    {
+        if (onLoaded == null) {
+            throw new Error("The onLoaded callback may not be null");
+        }
+        callHostCode("loadItemPackData_v1", ident, onLoaded, onFailure);
+    }
+
     /** @private */
     override protected function setUserProps (o :Object) :void
     {
