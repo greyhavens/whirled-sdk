@@ -3,13 +3,12 @@ package com.whirled.thane {
 import avmplus.Domain;
 import flash.events.Event;
 import flash.events.EventDispatcher;
+import flash.events.IOErrorEvent;
+import flash.events.ProgressEvent;
+import flash.net.URLLoader;
+import flash.net.URLRequest;
 import flash.utils.ByteArray;
 import com.adobe.net.URI;
-import org.httpclient.HttpClient;
-import org.httpclient.http.Get;
-import org.httpclient.events.HttpDataEvent;
-import org.httpclient.events.HttpErrorEvent;
-import org.httpclient.events.HttpStatusEvent;
 import com.threerings.util.Log;
 import com.whirled.bureau.client.UserCodeLoader;
 import com.whirled.bureau.client.UserCode;
@@ -41,16 +40,11 @@ public class HttpUserCode
             });
         }
 
-        // TODO: something meaningful on failure
-        var client :HttpClient = new HttpClient();
-        client.addEventListener(Event.CLOSE, event);
-        client.addEventListener(Event.COMPLETE, handleComplete);
-        client.addEventListener(Event.CONNECT, event);
-        client.addEventListener(HttpDataEvent.DATA, handleData);
-        client.addEventListener(HttpErrorEvent.ERROR, handleError);
-        client.addEventListener(HttpStatusEvent.STATUS, event);
+        _loader = new URLLoader();
+        _loader.addEventListener(IOErrorEvent.IO_ERROR, handleError);
+        _loader.addEventListener(Event.COMPLETE, handleComplete);
 
-        client.request(new URI(_url), new Get());
+        _loader.load(new URLRequest(_url));
     }
 
     /** @inheritDoc */
@@ -93,23 +87,11 @@ public class HttpUserCode
             "]";
     }
 
-    /** Generically report an event. */
-    protected function event (evt :Event) :void
-    {
-        log.debug("Got an event from the HTTP client", "type", evt.type);
-    }
-
     /** Receive some data from teh intarnets. */
-    protected function handleError (evt :HttpErrorEvent) :void
+    protected function handleError (evt :IOErrorEvent) :void
     {
         log.warning("Error while downloading code", "code", this, "evt", evt);
-        // TODO: will handleComplete be called too? If not, we need to invoke _callback(null)
-    }
-
-    /** Receive some data from teh intarnets. */
-    protected function handleData (evt :HttpDataEvent) :void
-    {
-        _bytes.writeBytes(evt.bytes);
+        _callback(null);
     }
 
     /** Finished receiving data. */
@@ -121,8 +103,8 @@ public class HttpUserCode
             _domainId = "UserCode-" + (++_lastId);
             var consoleTracePrefix :String = _domainId + ": ";
             _domain = Thane.spawnDomain(_domainId, consoleTracePrefix, _bridge);
-            _domain.loadBytes(_bytes);
-            _bytes = null;
+            _domain.loadBytes(_loader.data);
+            _loader = null;
             _class = _domain.getClass(_className);
             success = _class != null;
 
@@ -151,7 +133,7 @@ public class HttpUserCode
     /** Set everything we've used to null. */
     protected function releaseReferences () :void
     {
-        _bytes = null;
+        _loader = null;
         _bridge = null;
         _domain = null;
         _class = null;
@@ -161,7 +143,7 @@ public class HttpUserCode
     protected var _url :String;
     protected var _className :String;
     protected var _callback :Function;
-    protected var _bytes :ByteArray = new ByteArray();
+    protected var _loader :URLLoader;
     protected var _bridge :EventDispatcher;
     protected var _domainId :String;
     protected var _domain :Domain;
