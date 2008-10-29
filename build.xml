@@ -130,7 +130,6 @@
       <arg value="-compiler.external-library-path"/>
       <arg value="${deploy.dir}/lib/thane.swc"/>
       <arg value="-compiler.library-path"/>
-      <arg value="${deploy.dir}/lib/http.swc"/>
       <arg value="${deploy.dir}/lib/thane-env.swc"/>
       <arg value="${deploy.dir}/lib/naryalib.swc"/>
       <arg value="${deploy.dir}/lib/nenyalib.swc"/>
