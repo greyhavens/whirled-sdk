@@ -12,6 +12,7 @@ import flash.utils.Dictionary;
 import nochump.util.zip.ZipEntry;
 import nochump.util.zip.ZipOutput;
 
+import com.whirled.BaseDataPack;
 import com.whirled.DataPack;
 
 import com.threerings.util.ArrayUtil;
@@ -38,7 +39,7 @@ import com.threerings.util.ValueEvent;
 public class EditableDataPack extends DataPack
 {
     /** Exposed: the metadata filename (_data.xml) */
-    public static const METADATA_FILENAME :String = DataPack.METADATA_FILENAME;
+    public static const METADATA_FILENAME :String = BaseDataPack.METADATA_FILENAME;
 
     /**
      * @eventType dataChanged
