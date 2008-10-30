@@ -136,7 +136,7 @@ public class OnlineTickedMessageManager
     {
         var messageClass :Class = _messageTypes.get(name) as Class;
         if (null == messageClass) {
-            log.warning("Discarding incoming '" + name + "' message (message type not registered)");
+            //log.info("Discarding incoming '" + name + "' message (message type not registered)");
             return null;
         }
 
