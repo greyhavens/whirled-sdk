@@ -18,22 +18,14 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer {
+package com.whirled.contrib.platformer.net {
 
-import com.whirled.game.GameControl;
+import flash.utils.ByteArray;
 
-import com.whirled.contrib.platformer.board.Board;
-import com.whirled.contrib.platformer.game.GameController;
-import com.whirled.contrib.platformer.net.MessageManager;
-import com.whirled.contrib.platformer.piece.PieceFactory;
-
-public class PlatformerContext
+public interface GameMessage
 {
-    public static var platformer :PlatformerController;
-    public static var controller :GameController;
-    public static var gctrl :GameControl;
-    public static var board :Board;
-    public static var pfac :PieceFactory;
-    public static var net :MessageManager;
+    function get name () :String;
+    function fromBytes (bytes :ByteArray) :void;
+    function toBytes (bytes :ByteArray = null) :ByteArray;
 }
 }

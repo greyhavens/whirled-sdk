@@ -27,6 +27,7 @@ import com.whirled.game.StateChangedEvent;
 
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.game.GameController;
+import com.whirled.contrib.platformer.net.MessageManager;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 
 public class PlatformerController
@@ -35,6 +36,7 @@ public class PlatformerController
     {
         PlatformerContext.gctrl = new GameControl(disp);
         PlatformerContext.platformer = this;
+        PlatformerContext.net = new MessageManager(PlatformerContext.gctrl);
     }
 
     public function shutdown () :void
