@@ -31,16 +31,29 @@ import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
 import flash.utils.ByteArray;
+import flash.utils.Dictionary;
+
+import com.threerings.util.ClassUtil;
 
 public class SwfResource
     implements Resource
 {
     public static function instantiateMovieClip (resourceName :String, className :String,
-        disableMouseInteraction :Boolean = false) :MovieClip
+        disableMouseInteraction :Boolean = false, fromCache :Boolean = false) :MovieClip
     {
         var theClass :Class = getClass(resourceName, className);
         if (theClass != null) {
-            var movie :MovieClip = new theClass();
+            var movie :MovieClip;
+            if (fromCache) {
+                var cache :Array = getCache(theClass);
+                if (cache.length > 0) {
+                    movie = cache.pop();
+                    movie.gotoAndPlay(1);
+                }
+            }
+            if (movie == null) {
+                movie = new theClass();
+            }
             if (disableMouseInteraction) {
                 movie.mouseChildren = false;
                 movie.mouseEnabled = false;
@@ -49,6 +62,18 @@ public class SwfResource
         }
 
         return null;
+    }
+
+    public static function releaseMovieClip (mc :MovieClip) :void
+    {
+        if (mc.parent != null) {
+            mc.parent.removeChild(mc);
+        }
+        mc.stop();
+        var cache :Array = getCache(ClassUtil.getClass(mc));
+        if (cache.indexOf(mc) == -1) {
+            cache.push(mc);
+        }
     }
 
     public static function instantiateButton (resourceName :String, className :String) :SimpleButton
@@ -78,6 +103,11 @@ public class SwfResource
     {
         var swf :SwfResource = get(resourceName);
         return (null != swf ? swf.getClass(className) : null);
+    }
+
+    protected static function getCache (c :Class) :Array
+    {
+        return (_mcCache[c] == null ? _mcCache[c] = new Array() : _mcCache[c]);
     }
 
     public function SwfResource (resourceName :String, loadParams :Object)
@@ -188,6 +218,8 @@ public class SwfResource
     protected var _loader :Loader;
     protected var _completeCallback :Function;
     protected var _errorCallback :Function;
+
+    protected static var _mcCache :Dictionary = new Dictionary();
 }
 
 }
