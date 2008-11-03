@@ -24,7 +24,7 @@ public class SimObjectRef
 {
     public static function Null () :SimObjectRef
     {
-        return new SimObjectRef();
+        return g_null;
     }
 
     public function get object () :SimObject
@@ -36,6 +36,8 @@ public class SimObjectRef
     {
         return (null == _obj);
     }
+
+    protected static var g_null :SimObjectRef = new SimObjectRef();
 
     // managed by ObjectDB
     internal var _obj :SimObject;
