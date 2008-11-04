@@ -83,11 +83,11 @@ public class ObjectSet
 
         return arr;
     }
-    
-    public function forEach (callback :Function, thisObject :* = null) :void
+
+    public function forEach (callback :Function) :void
     {
         for (var key :* in _dict) {
-            callback.call(thisObject, key);
+            callback(key);
         }
     }
 
