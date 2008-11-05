@@ -57,7 +57,7 @@ public class AudioControls
     public function volumeTo (targetVal :Number, time :Number) :AudioControls
     {
         if (time <= 0) {
-            this.volume(targetVal);
+            volume(targetVal);
             _targetVolumeTotalTime = 0;
         } else {
             _initialVolume = _localState.volume;
@@ -73,12 +73,12 @@ public class AudioControls
 
     public function fadeOut (time :Number) :AudioControls
     {
-        return this.volumeTo(0, time);
+        return volumeTo(0, time);
     }
 
     public function fadeIn (time :Number) :AudioControls
     {
-        return this.volumeTo(1, time);
+        return volumeTo(1, time);
     }
 
     public function pan (val :Number) :AudioControls
@@ -91,7 +91,7 @@ public class AudioControls
     public function panTo (targetVal :Number, time :Number) :AudioControls
     {
         if (time <= 0) {
-            this.pan(targetVal);
+            pan(targetVal);
             _targetPanTotalTime = 0;
         } else {
             _initialPan = _localState.pan;
@@ -116,7 +116,7 @@ public class AudioControls
     public function pauseAfter (time :Number) :AudioControls
     {
         if (time <= 0) {
-            this.pause(true);
+            pause(true);
         } else {
             _pauseCountdown = time;
         }
@@ -127,7 +127,7 @@ public class AudioControls
     public function unpauseAfter (time :Number) :AudioControls
     {
         if (time <= 0) {
-            this.pause(false);
+            pause(false);
         } else {
             _unpauseCountdown = time;
         }
@@ -146,7 +146,7 @@ public class AudioControls
     public function muteAfter (time :Number) :AudioControls
     {
         if (time <= 0) {
-            this.mute(true);
+            mute(true);
         } else {
             _muteCountdown = time;
         }
@@ -157,7 +157,7 @@ public class AudioControls
     public function unmuteAfter (time :Number) :AudioControls
     {
         if (time <= 0) {
-            this.mute(false);
+            mute(false);
         } else {
             _unmuteCountdown = time;
         }
@@ -176,7 +176,7 @@ public class AudioControls
     public function stopAfter (time :Number) :AudioControls
     {
         if (time <= 0) {
-            this.stop(true);
+            stop(true);
         } else {
             _stopCountdown = time;
         }
@@ -187,7 +187,7 @@ public class AudioControls
     public function playAfter (time :Number) :AudioControls
     {
         if (time <= 0) {
-            this.stop(false);
+            stop(false);
         } else {
             _playCountdown = time;
         }

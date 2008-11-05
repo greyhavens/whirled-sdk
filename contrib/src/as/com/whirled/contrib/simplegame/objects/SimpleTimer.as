@@ -52,7 +52,7 @@ public class SimpleTimer extends SimObject
                 repeatingTask.addTask(new FunctionTask(callback));
             }
 
-            this.addTask(repeatingTask);
+            addTask(repeatingTask);
 
         } else {
             var serialTask :SerialTask = new SerialTask();
@@ -68,7 +68,7 @@ public class SimpleTimer extends SimObject
             // self-destruct when complete
             serialTask.addTask(new SelfDestructTask());
 
-            this.addTask(serialTask);
+            addTask(serialTask);
         }
     }
 

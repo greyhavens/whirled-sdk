@@ -123,7 +123,7 @@ public class OnlineTickedMessageManager
         if (addToQueue) {
             _pendingSends.push(msg);
         } else {
-            this.sendMessageNow(msg);
+            sendMessageNow(msg);
         }
     }
 

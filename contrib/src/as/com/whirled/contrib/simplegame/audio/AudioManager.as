@@ -50,7 +50,7 @@ public class AudioManager
             // create a channel
             var channel :AudioChannel = new AudioChannel();
             channel.id = i;
-            channel.completeHandler = this.createChannelCompleteHandler(channel);
+            channel.completeHandler = createChannelCompleteHandler(channel);
 
             // stick it in the channel list
             _channels[i] = channel;
@@ -71,7 +71,9 @@ public class AudioManager
 
     protected function createChannelCompleteHandler (channel :AudioChannel) :Function
     {
-        return function (...ignored) :void { handleComplete(channel); }
+        return function (...ignored) :void {
+            handleComplete(channel);
+        }
     }
 
     public function get masterControls () :AudioControls
@@ -105,11 +107,11 @@ public class AudioManager
                 var audioState :AudioState = channel.controls.state;
                 var channelPaused :Boolean = channel.isPaused;
                 if (audioState.stopped) {
-                    this.stop(channel);
+                    stop(channel);
                 } else if (audioState.paused && !channelPaused) {
-                    this.pause(channel);
+                    pause(channel);
                 } else if (!audioState.paused && channelPaused) {
-                    this.resume(channel);
+                    resume(channel);
                 } else if (!channelPaused) {
                     var curTransform :SoundTransform = channel.channel.soundTransform;
                     var curVolume :Number = curTransform.volume;
@@ -133,7 +135,7 @@ public class AudioManager
             return new AudioChannel();
         }
 
-        return this.playSound(rsrc, parentControls, loopCount);
+        return playSound(rsrc, parentControls, loopCount);
     }
 
     public function playSound (soundResource :SoundResource, parentControls :AudioControls = null,
@@ -146,7 +148,7 @@ public class AudioManager
 
         // get the appropriate parent controls
         if (null == parentControls) {
-            parentControls = this.getControlsForSoundType(soundResource.type);
+            parentControls = getControlsForSoundType(soundResource.type);
             if (null == parentControls) {
                 parentControls = _masterControls;
             }
@@ -189,7 +191,7 @@ public class AudioManager
             // Steal another channel from a lower-priority sound
             log.info("Interrupting sound '" + lowestPriorityChannel.sound.resourceName +
                 "' for higher-priority sound '" + soundResource.resourceName + "'");
-            this.stop(lowestPriorityChannel);
+            stop(lowestPriorityChannel);
             channel = _channels[int(_freeChannelIds.pop())];
 
         } else {
@@ -209,7 +211,7 @@ public class AudioManager
 
         // start playing
         if (!audioState.paused) {
-            this.playChannel(channel, audioState, 0);
+            playChannel(channel, audioState, 0);
 
             // Flash must've run out of sound channels
             if (null == channel.channel) {
@@ -227,7 +229,7 @@ public class AudioManager
         // shutdown all sounds
         for each (var channel :AudioChannel in _channels) {
             if (channel.isPlaying) {
-                this.stop(channel);
+                stop(channel);
             }
         }
     }
@@ -267,7 +269,7 @@ public class AudioManager
     public function resume (channel :AudioChannel) :void
     {
         if (channel.isPlaying && channel.isPaused) {
-            this.playChannel(channel, channel.controls.state, channel.playPosition);
+            playChannel(channel, channel.controls.state, channel.playPosition);
         }
     }
 
@@ -275,8 +277,8 @@ public class AudioManager
     {
         // does the sound need to loop?
         if (channel.loopCount == 0) {
-            this.stop(channel);
-        } else if (this.playChannel(channel, channel.controls.state, 0)) {
+            stop(channel);
+        } else if (playChannel(channel, channel.controls.state, 0)) {
             channel.loopCount--;
         }
     }
@@ -294,7 +296,7 @@ public class AudioManager
             return true;
 
         } else {
-            this.stop(channel);
+            stop(channel);
             return false;
         }
     }

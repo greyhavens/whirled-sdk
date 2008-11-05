@@ -79,7 +79,7 @@ public class TaskContainer
 
     public function update (dt :Number, obj :SimObject) :Boolean
     {
-        var result :Boolean = this.applyFunction(
+        var result :Boolean = applyFunction(
             function (task :ObjectTask) :Boolean {
                 return task.update(dt, obj);
             });
@@ -107,7 +107,7 @@ public class TaskContainer
     /** Returns a clone of the TaskContainer. */
     public function clone () :ObjectTask
     {
-        var clonedSubtasks :Array = this.cloneSubtasks();
+        var clonedSubtasks :Array = cloneSubtasks();
 
         var theClone :TaskContainer = new TaskContainer(_type);
         theClone._tasks = clonedSubtasks;
@@ -119,7 +119,7 @@ public class TaskContainer
 
     public function receiveMessage (msg :ObjectMessage) :Boolean
     {
-        return this.applyFunction(
+        return applyFunction(
             function (task :ObjectTask) :Boolean {
                 return task.receiveMessage(msg);
             }
@@ -176,7 +176,7 @@ public class TaskContainer
             _completedTasks = new Array();
 
             for each (var completedTask :ObjectTask in completedTasks) {
-                this.addTask(completedTask.clone());
+                addTask(completedTask.clone());
             }
         }
 

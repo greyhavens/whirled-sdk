@@ -61,9 +61,9 @@ public class XmlResource
         _errorCallback = errorCallback;
 
         if (_loadParams.hasOwnProperty("url")) {
-            this.loadFromURL(_loadParams["url"]);
+            loadFromURL(_loadParams["url"]);
         } else if (_loadParams.hasOwnProperty("embeddedClass")) {
-            this.loadFromEmbeddedClass(_loadParams["embeddedClass"]);
+            loadFromEmbeddedClass(_loadParams["embeddedClass"]);
         } else {
             throw new Error("XmlResourceLoader: either 'url' or 'embeddedClass' must be specified in loadParams");
         }
@@ -82,7 +82,7 @@ public class XmlResource
     protected function loadFromEmbeddedClass (theClass :Class) :void
     {
         var ba :ByteArray = ByteArray(new theClass());
-        this.instantiateXml(ba.readUTFBytes(ba.length));
+        instantiateXml(ba.readUTFBytes(ba.length));
     }
 
     public function unload () :void
@@ -98,7 +98,7 @@ public class XmlResource
 
     protected function onComplete (...ignored) :void
     {
-        this.instantiateXml(_urlLoader.data);
+        instantiateXml(_urlLoader.data);
     }
 
     protected function instantiateXml (data :*) :void
@@ -107,7 +107,7 @@ public class XmlResource
         try {
             _xml = Util.newXML(data);
         } catch (e :Error) {
-            this.onError(e.message);
+            onError(e.message);
             return;
         }
 
@@ -116,7 +116,7 @@ public class XmlResource
             try {
                 _generatedObject = _objectGenerator(_xml);
             } catch (e :Error) {
-                this.onError(e.message);
+                onError(e.message);
                 return;
             }
         }
@@ -126,7 +126,7 @@ public class XmlResource
 
     protected function handleLoadError (e :ErrorEvent) :void
     {
-        this.onError(e.text);
+        onError(e.text);
     }
 
     protected function onError (errText :String) :void

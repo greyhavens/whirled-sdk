@@ -47,7 +47,7 @@ public final class MainLoop
 
         g_instance = this;
 
-        this.reset(hostSprite, keyDispatcher);
+        reset(hostSprite, keyDispatcher);
     }
 
     public function reset (hostSprite :Sprite, keyDispatcher :IEventDispatcher = null) :void
@@ -56,9 +56,9 @@ public final class MainLoop
             throw new ArgumentError("hostSprite must be non-null");
         }
 
-        this.stop();
-        this.popAllModes();
-        this.handleModeTransitions();
+        stop();
+        popAllModes();
+        handleModeTransitions();
 
         _hostSprite = hostSprite;
         _keyDispatcher = (null != keyDispatcher ? keyDispatcher : _hostSprite);
@@ -121,10 +121,10 @@ public final class MainLoop
      */
     public function shutdown () :void
     {
-        this.stop();
+        stop();
 
-        this.popAllModes();
-        this.handleModeTransitions();
+        popAllModes();
+        handleModeTransitions();
 
         if (_hasSetup) {
             AudioManager.instance.shutdown();
@@ -403,7 +403,7 @@ public final class MainLoop
 
     protected function update (e :Event) :void
     {
-        this.handleModeTransitions();
+        handleModeTransitions();
 
         // how much time has elapsed since last frame?
         var newTime :Number = this.elapsedSeconds;

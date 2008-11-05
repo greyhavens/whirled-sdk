@@ -38,7 +38,8 @@ public class ObjectDB
      * If displayParent is not null, obj's attached DisplayObject will be added as a child
      * of displayParent.
      */
-    public function addObject (obj :SimObject, displayParent :DisplayObjectContainer = null) :SimObjectRef
+    public function addObject (obj :SimObject, displayParent :DisplayObjectContainer = null)
+        :SimObjectRef
     {
         if (null == obj || null != obj._ref) {
             throw new ArgumentError("obj must be non-null, and must never have belonged to another ObjectDB");
@@ -112,16 +113,16 @@ public class ObjectDB
     /** Removes a SimObject from the ObjectDB. */
     public function destroyObjectNamed (name :String) :void
     {
-        var obj :SimObject = this.getObjectNamed(name);
+        var obj :SimObject = getObjectNamed(name);
         if (null != obj) {
-            this.destroyObject(obj.ref);
+            destroyObject(obj.ref);
         }
     }
 
     /** Removes all SimObjects in the given group from the ObjectDB. */
     public function destroyObjectsInGroup (groupName :String) :void
     {
-        for each (var ref :SimObjectRef in this.getObjectRefsInGroup(groupName)) {
+        for each (var ref :SimObjectRef in getObjectRefsInGroup(groupName)) {
             if (!ref.isNull) {
                 ref.object.destroySelf();
             }
@@ -207,7 +208,7 @@ public class ObjectDB
      */
     public function getObjectsInGroup (groupName :String) :Array
     {
-        var refs :Array = this.getObjectRefsInGroup(groupName);
+        var refs :Array = getObjectRefsInGroup(groupName);
 
         // Array.map would be appropriate here, except that the resultant
         // Array might contain fewer entries than the source.
@@ -225,8 +226,8 @@ public class ObjectDB
     /** Called once per update tick. Updates all objects in the mode. */
     public function update (dt :Number) :void
     {
-        this.beginUpdate(dt);
-        this.endUpdate(dt);
+        beginUpdate(dt);
+        endUpdate(dt);
     }
 
     /** Sends a message to every object in the database. */
@@ -253,7 +254,7 @@ public class ObjectDB
     /** Sends a message to the object with the given name. */
     public function sendMessageToNamedObject (msg :ObjectMessage, objectName :String) :void
     {
-        var target :SimObject = this.getObjectNamed(objectName);
+        var target :SimObject = getObjectNamed(objectName);
         if (null != target) {
             target.receiveMessageInternal(msg);
         }
@@ -262,9 +263,9 @@ public class ObjectDB
     /** Sends a message to each object in the given group. */
     public function sendMessageToGroup (msg :ObjectMessage, groupName :String) :void
     {
-        var refs :Array = this.getObjectRefsInGroup(groupName);
+        var refs :Array = getObjectRefsInGroup(groupName);
         for each (var ref :SimObjectRef in refs) {
-            this.sendMessageTo(msg, ref);
+            sendMessageTo(msg, ref);
         }
     }
 
@@ -329,7 +330,7 @@ public class ObjectDB
 
         if (null != _objectsPendingRemoval) {
             for each (var obj :SimObject in _objectsPendingRemoval) {
-                this.finalizeObjectRemoval(obj);
+                finalizeObjectRemoval(obj);
             }
 
             _objectsPendingRemoval = null;

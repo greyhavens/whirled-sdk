@@ -29,7 +29,7 @@ public class ObjectSet
 {
     public function add (o :Object) :Boolean
     {
-        if (this.contains(o)) {
+        if (contains(o)) {
             return false;
         } else {
             _dict[o] = null;
@@ -40,7 +40,7 @@ public class ObjectSet
 
     public function remove (o :Object) :Boolean
     {
-        if (this.contains(o)) {
+        if (contains(o)) {
             delete _dict[o];
             --_size;
             return true;

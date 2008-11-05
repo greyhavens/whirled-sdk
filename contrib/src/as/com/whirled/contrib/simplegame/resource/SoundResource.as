@@ -93,7 +93,7 @@ public class SoundResource
             // issue as long as they download quickly enough.
             if (completeImmediately) {
                 _sound = new Sound(new URLRequest(url));
-                this.onInit();
+                onInit();
             } else {
                 _sound = new Sound(new URLRequest(_loadParams["url"]));
                 _sound.addEventListener(Event.COMPLETE, onInit);
@@ -104,10 +104,10 @@ public class SoundResource
             try {
                 _sound = Sound(new _loadParams["embeddedClass"]());
             } catch (e :Error) {
-                this.onError(e.message);
+                onError(e.message);
                 return;
             }
-            this.onInit();
+            onInit();
         } else {
             throw new Error("SoundResourceLoader: either 'url' or 'embeddedClass' must be specified in loadParams");
         }
@@ -131,7 +131,7 @@ public class SoundResource
 
     protected function onIOError (e :IOErrorEvent) :void
     {
-        this.onError(e.text);
+        onError(e.text);
     }
 
     protected function onError (errString :String) :void

@@ -148,12 +148,12 @@ public class SwfResource
 
     public function getFunction (name :String) :Function
     {
-        return this.getSymbol(name) as Function;
+        return getSymbol(name) as Function;
     }
 
     public function getClass (name :String) :Class
     {
-        return this.getSymbol(name) as Class;
+        return getSymbol(name) as Class;
     }
 
     public function load (completeCallback :Function, errorCallback :Function) :void

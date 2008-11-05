@@ -42,7 +42,7 @@ public class ResourceManager
 
     public function shutdown () :void
     {
-        this.unloadAll();
+        unloadAll();
         g_instance = null;
     }
 
@@ -74,7 +74,7 @@ public class ResourceManager
             throw new Error("A resource named '" + resourceName + "' is already loaded");
         }
 
-        var rsrc :Resource = this.createResource(resourceType, resourceName, loadParams);
+        var rsrc :Resource = createResource(resourceType, resourceName, loadParams);
         if (null == rsrc) {
             throw new Error("No ResourceLoader for '" + resourceType + "' resource type");
         }
@@ -146,12 +146,12 @@ public class ResourceManager
 
         _resources = new HashMap();
 
-        this.cancelLoad();
+        cancelLoad();
     }
 
     public function isResourceLoaded (name :String) :Boolean
     {
-        return (null != this.getResource(name));
+        return (null != getResource(name));
     }
 
     public function get isLoading () :Boolean
@@ -179,7 +179,7 @@ public class ResourceManager
         log.warning("Resource load error: " + err);
 
         // upon error, cancel all pending loads
-        this.cancelLoad();
+        cancelLoad();
 
         if (null != _errorCallback) {
             _errorCallback(err);

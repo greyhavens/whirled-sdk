@@ -34,15 +34,15 @@ public class Checksum
     {
         // figure out the type of object to add
         if (val is int) {
-            return this.addInt(val as int);
+            return addInt(val as int);
         } else if (val is uint) {
-            return this.addUint(val as uint);
+            return addUint(val as uint);
         } else if (val is Number) {
-            return this.addNumber(val as Number);
+            return addNumber(val as Number);
         } else if (val is Boolean) {
-            return this.addBoolean(val as Boolean);
+            return addBoolean(val as Boolean);
         } else if (val is String) {
-            return this.addString(val as String);
+            return addString(val as String);
         } else {
             throw new ArgumentError("unsupported object type");
         }
@@ -76,7 +76,7 @@ public class Checksum
     {
         var n :uint;
         for (var i :uint = 0; i < n; ++i) {
-            this.addUint(val.charCodeAt(i));
+            addUint(val.charCodeAt(i));
         }
 
         return this;
