@@ -8,14 +8,14 @@ package com.whirled.server;
 import com.google.inject.Inject;
 
 import com.threerings.presents.server.ShutdownManager;
-import com.threerings.crowd.server.CrowdClient;
+import com.threerings.crowd.server.CrowdSession;
 
 /**
  * Handles shutting down the test server when all users have logged off or disconnected.
  */
-public class WhirledTestClient extends CrowdClient
+public class WhirledTestSession extends CrowdSession
 {
-    @Override // from CrowdClient
+    @Override // from CrowdSession
     protected void sessionConnectionClosed ()
     {
         super.sessionConnectionClosed();

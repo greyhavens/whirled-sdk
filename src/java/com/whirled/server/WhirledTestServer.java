@@ -34,11 +34,11 @@ import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationCodes;
 import com.threerings.presents.dobj.RootDObjectManager;
 import com.threerings.presents.net.AuthRequest;
-import com.threerings.presents.server.ClientFactory;
 import com.threerings.presents.server.ClientManager;
 import com.threerings.presents.server.ClientResolver;
 import com.threerings.presents.server.InvocationManager;
-import com.threerings.presents.server.PresentsClient;
+import com.threerings.presents.server.PresentsSession;
+import com.threerings.presents.server.SessionFactory;
 import com.threerings.presents.server.ShutdownManager;
 
 import com.threerings.crowd.data.BodyObject;
@@ -110,9 +110,9 @@ public class WhirledTestServer extends CrowdServer
         _shutmgr.registerShutdowner(this);
 
         // configure the client manager to use the appropriate client class
-        _clmgr.setClientFactory(new ClientFactory() {
-            public Class<? extends PresentsClient> getClientClass (AuthRequest areq) {
-                return WhirledTestClient.class;
+        _clmgr.setSessionFactory(new SessionFactory() {
+            public Class<? extends PresentsSession> getSessionClass (AuthRequest areq) {
+                return WhirledTestSession.class;
             }
             public Class<? extends ClientResolver> getClientResolverClass (Name username) {
                 return WhirledTestClientResolver.class;
@@ -142,7 +142,7 @@ public class WhirledTestServer extends CrowdServer
         _invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
 
         _bureauReg.init();
-        _bureauReg.setDefaultClientFactory();
+        _bureauReg.setDefaultSessionFactory();
         _bureauReg.setLauncher(BureauTypes.THANE_BUREAU_TYPE, new BureauRegistry.Launcher() {
             public void launchBureau (String bureauId, String token) throws IOException {
                 ABCLibs abcLibs = new ABCLibs();
@@ -164,15 +164,15 @@ public class WhirledTestServer extends CrowdServer
         });
 
         _clmgr.addClientObserver(new ClientManager.ClientObserver () {
-            public void clientSessionDidEnd (PresentsClient client) {
+            public void clientSessionDidEnd (PresentsSession client) {
                 // shut down the server when the last non-buraeu disconnects
                 if (_clmgr.getConnectionCount() == _bureauClients) {
                     _shutmgr.shutdown();
                 }
             }
-            public void clientSessionDidStart (PresentsClient client) {
+            public void clientSessionDidStart (PresentsSession client) {
                 // increment our bureau counter if not a test client
-                if (!(client instanceof WhirledTestClient)) {
+                if (!(client instanceof WhirledTestSession)) {
                     _bureauClients++;
                 }
             }
