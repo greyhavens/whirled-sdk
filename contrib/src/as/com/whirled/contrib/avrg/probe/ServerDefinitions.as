@@ -147,6 +147,8 @@ public class ServerDefinitions
     {
         var funcs :Array = [
             new FunctionSpec("getPlayerIds", _ctrl.game.getPlayerIds),
+            new FunctionSpec("getItemPacks", _ctrl.game.getItemPacks),
+            new FunctionSpec("getLevelPacks", _ctrl.game.getLevelPacks),
             new FunctionSpec("sendMessage", _ctrl.game.sendMessage, [
                 new Parameter("name", String),
                 new ObjectParameter("value")])];

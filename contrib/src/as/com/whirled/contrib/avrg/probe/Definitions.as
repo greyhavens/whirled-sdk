@@ -365,6 +365,8 @@ public class Definitions
     {
         return [
             new FunctionSpec("getPlayerIds", proxy("game", "getPlayerIds")),
+            new FunctionSpec("getItemPacks", proxy("game", "getItemPacks")),
+            new FunctionSpec("getLevelPacks", proxy("game", "getLevelPacks")),
             new FunctionSpec("sendMessage", proxy("game", "sendMessage"), [
                 new Parameter("name", String),
                 new ObjectParameter("value")]),
