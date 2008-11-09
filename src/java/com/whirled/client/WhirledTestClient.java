@@ -4,7 +4,6 @@
 package com.whirled.client;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.io.FileReader;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -43,7 +42,6 @@ import static com.whirled.Log.log;
  * Provides the necessary framework and classloading for the Java game test client.
  */
 public class WhirledTestClient
-    implements RunQueue
 {
     /**
      * Initializes a new client and provides it with a frame in which to display everything.
@@ -94,19 +92,6 @@ public class WhirledTestClient
         _root.repaint();
     }
 
-    // documentation inherited from interface RunQueue
-    public void postRunnable (Runnable run)
-    {
-        // queue it on up on the awt thread
-        EventQueue.invokeLater(run);
-    }
-
-    // documentation inherited from interface RunQueue
-    public boolean isDispatchThread ()
-    {
-        return EventQueue.isDispatchThread();
-    }
-
     /**
      * Called once we're logged on to start up the test game.
      */
@@ -153,7 +138,7 @@ public class WhirledTestClient
         throws Exception
     {
         // create the handles on our various services
-        _client = new Client(null, this);
+        _client = new Client(null, RunQueue.AWT);
 
         // create our managers
         _rsrcmgr = new ResourceManager("rsrc");
