@@ -56,7 +56,8 @@ public class ActorControl extends EntityControl
 
     /**
      * Set this actor's movement speed, in pixels per second. The default value if unset is 500
-     * pixels per second. The minimum possible speed currently is 50 pixels per second.
+     * pixels per second. The minimum possible speed currently is 50 pixels per second. This only
+     * sets the local move speed for this instance, and is not propogated out to other clients.
      */
     public function setMoveSpeed (pixelsPerSecond :Number) :void
     {
