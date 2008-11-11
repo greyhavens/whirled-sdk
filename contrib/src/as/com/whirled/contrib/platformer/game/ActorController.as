@@ -60,7 +60,7 @@ public class ActorController extends DynamicController
 
     public function getCenterY () :Number
     {
-        return _actor.x + _actor.height/2;
+        return _actor.y + _actor.height/2;
     }
 
     override public function postTick () :void

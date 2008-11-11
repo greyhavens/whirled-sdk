@@ -35,6 +35,7 @@ public class Dynamic
     public static const PLAYER :int = 1;
     public static const ENEMY :int = 2;
     public static const DEAD :int = 3;
+    public static const SPAWN :int = 4;
 
     public static const U_POS :int = 1 << 0;
 
