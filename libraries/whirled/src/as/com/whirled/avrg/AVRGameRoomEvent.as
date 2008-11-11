@@ -66,6 +66,9 @@ public class AVRGameRoomEvent extends AVRGameControlEvent
      */
     public static const MOB_CONTROL_AVAILABLE :String = "mobControlAvailable";
 
+    /** TODO: Doc. */
+    public static const SIGNAL_RECEIVED :String = "signalReceived";
+
     /**
      * Creates a new AVRGameRoomEvent.
      */

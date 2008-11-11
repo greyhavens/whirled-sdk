@@ -128,6 +128,12 @@ public class RoomSubControlServer extends RoomSubControlBase
         setMobSubControl(mobId, new MobSubControlServer(this, mobId), delayEvent);
     }
 
+    /** @private -- relayed from AVRServerGameControl when signal received. */
+    internal function signalReceived_v1 (name :String, arg :Object) :void
+    {
+        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.SIGNAL_RECEIVED, _targetId, name, arg));
+    }
+
     /** @private */
     override protected function createSubControls () :Array
     {

@@ -61,6 +61,9 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
  */
 [Event(name="mobControlAvailable", type="com.whirled.avrg.AVRGameRoomEvent")]
 
+/** TODO: Doc. */
+[Event(name="signalReceived", type="com.whirled.avrg.AVRGameRoomEvent")]
+
 /**
  * Provides AVR services for a single room to clients and server agents.
  */
