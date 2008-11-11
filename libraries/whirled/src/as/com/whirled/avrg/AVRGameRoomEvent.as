@@ -70,6 +70,8 @@ public class AVRGameRoomEvent extends AVRGameControlEvent
      * An event type dispatched when a signal has been received in this room.
      * <br/><b>name</b> - The name of the signal.
      * <br/><b>value</b> - The arg sent with the signal, or null.
+     *
+     * @eventType signalReceived
      * @see com.whirled.EntityControl#sendSignal()
      */
     public static const SIGNAL_RECEIVED :String = "signalReceived";

@@ -63,6 +63,8 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
 
 /**
  * Dispatched when a signal has been received in this room.
+ *
+ * @eventType com.whirled.avrg.AVRGameRoomEvent.SIGNAL_RECEIVED
  * @see com.whirled.EntityControl#sendSignal()
  */
 [Event(name="signalReceived", type="com.whirled.avrg.AVRGameRoomEvent")]
