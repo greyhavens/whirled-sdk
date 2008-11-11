@@ -33,9 +33,8 @@ public class WrapperMessage
     public static function wrap (msg :GameMessage) :void
     {
         var wmsg :WrapperMessage = new WrapperMessage;
-        wmsg.name = msg.name;
+        wmsg.messageName = msg.name;
         wmsg.bytes = msg.toBytes();
-        return wmsg;
     }
 
     public function get name () :String
@@ -53,8 +52,9 @@ public class WrapperMessage
 
     public function fromBytes (ba :ByteArray) :void
     {
-        name = ba.readUTF();
+        messageName = ba.readUTF();
         bytes = new ByteArray();
         ba.readBytes(bytes);
     }
+}
 }
