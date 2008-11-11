@@ -89,6 +89,16 @@ public class RoomSubControlServer extends RoomSubControlBase
         callHostCode("room_sendMessage_v1", name, value);
     }
 
+    /**
+     * Sends a signal to all instances of all entities in the room. The same size restrictions as
+     * EntityControl.sendSignal() apply here too.
+     * @see com.whirled.EntityControl#sendSignal
+     */
+    public function sendSignal (name :String, value :Object = null) :void
+    {
+        callHostCode("room_sendSignal_v1", name, value);
+    }
+
     /** @private */
     internal function gotHostPropsFriend (o :Object) :void
     {
