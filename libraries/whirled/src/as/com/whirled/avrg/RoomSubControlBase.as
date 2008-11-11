@@ -61,7 +61,10 @@ import com.whirled.net.impl.PropertyGetSubControlImpl;
  */
 [Event(name="mobControlAvailable", type="com.whirled.avrg.AVRGameRoomEvent")]
 
-/** TODO: Doc. */
+/**
+ * Dispatched when a signal has been received in this room.
+ * @see com.whirled.EntityControl#sendSignal()
+ */
 [Event(name="signalReceived", type="com.whirled.avrg.AVRGameRoomEvent")]
 
 /**

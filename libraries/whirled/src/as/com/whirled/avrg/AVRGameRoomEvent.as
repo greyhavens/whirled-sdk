@@ -66,7 +66,12 @@ public class AVRGameRoomEvent extends AVRGameControlEvent
      */
     public static const MOB_CONTROL_AVAILABLE :String = "mobControlAvailable";
 
-    /** TODO: Doc. */
+    /**
+     * An event type dispatched when a signal has been received in this room.
+     * <br/><b>name</b> - The name of the signal.
+     * <br/><b>value</b> - The arg sent with the signal, or null.
+     * @see com.whirled.EntityControl#sendSignal()
+     */
     public static const SIGNAL_RECEIVED :String = "signalReceived";
 
     /**
