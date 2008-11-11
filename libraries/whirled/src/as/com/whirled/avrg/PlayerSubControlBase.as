@@ -126,13 +126,23 @@ public class PlayerSubControlBase extends TargetedSubControl
     }
 
     /**
-     * Marks this player as having achieved a task. The server will process this information and
-     * generate a coin payout based on a number of factors, including how long it takes players
-     * on average to complete the task. Games should call this after a milestone is reached such as
-     * completion of a level. The task id is arbitrary and is only used for record keeping.
-     * @see #event:taskCompleted
+     * This method calculates and awards a coin payout for the player. The actual amount is not
+     * under the direct control of the developer, but is calculated by Whirled from factors such
+     * as the number of people playing the game and the frequency and size of payouts the game
+     * makes.
+     *
+     * The payout factor is a number that should lie between 0 and 1, and the coin payout is a
+     * multiple of this amount. This means if the game calls this method with a factor of 0.3 for
+     * one player and 0.6 for another, the second player is guaranteed to get twice as many coins
+     * as the first. Use this guarantee to develop a fair payout structure for your game.
+     *
+     * The taskId is not used by the server at all. Its only purpose is to be echoed back in the
+     * AVRGamePlayerEvent.TASK_COMPLETED event that is dispatched as a result of this call. This
+     * event contains the taskId that was sent in along with the precise number of coins that were
+     * actually awarded to the player. The typical use of this event would be to display a nice
+     * popup window or graphical effect to salute the player's achivement, optionally including
+     * the coin amount.
      */
-    // TODO: can we be more exact on the use of taskId?
     public function completeTask (taskId :String, payout :Number) :void
     {
         callHostCode("completeTask_v1", taskId, payout);
