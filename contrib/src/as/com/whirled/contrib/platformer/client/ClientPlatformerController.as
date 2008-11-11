@@ -36,7 +36,7 @@ public class ClientPlatformerController extends PlatformerController
         source.root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
 
         ClientPlatformerContext.keyboard = new KeyboardController();
-        //ClientPlatformerContext.keyboard.init(PlatformerContext.gctrl.local);
+        ClientPlatformerContext.keyboard.init(PlatformerContext.gctrl.local);
     }
 
     protected function handleUnload (...ignored) :void
