@@ -31,13 +31,15 @@ public class KeyboardController
     public function init (ed :EventDispatcher) :void
     {
         if (_ed != ed) {
-            ed.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
-            ed.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
+            if (_ed != null) {
+                shutdown();
+            }
+            _ed = ed;
+            if (_ed != null) {
+                _ed.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
+                _ed.addEventListener(KeyboardEvent.KEY_UP, keyReleased);
+            }
         }
-        if (_ed != null) {
-            shutdown();
-        }
-        _ed = ed;
     }
 
     public function shutdown () :void

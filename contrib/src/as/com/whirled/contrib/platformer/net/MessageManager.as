@@ -22,6 +22,7 @@ package com.whirled.contrib.platformer.net {
 
 import flash.events.EventDispatcher;
 import flash.utils.ByteArray;
+import flash.utils.getTimer;
 
 import com.threerings.util.HashMap;
 
@@ -34,6 +35,12 @@ public class MessageManager extends EventDispatcher
     {
         _gameCtrl = gameCtrl;
         _gameCtrl.net.addEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, onMessageReceived);
+        addMessageType(QueueMessage);
+        _lastRec = getTimer();
+    }
+
+    public function shutdown () :void
+    {
     }
 
     public function addMessageType (messageClass :Class) :void
@@ -45,24 +52,58 @@ public class MessageManager extends EventDispatcher
 
     public function sendMessage (msg :GameMessage) :void
     {
-        if (_msgTypes.get(msg.name) == null) {
-            throw new Error("can't send unrecognized message type '" + msg.name + "'");
-        }
+        checkSend(msg);
 
         _gameCtrl.net.sendMessage(msg.name, msg.toBytes());
     }
 
+    public function getMessage (name :String, bytes :ByteArray) :GameMessage
+    {
+        var msgClass :Class = _msgTypes.get(name);
+        var msg :GameMessage;
+        if (msgClass != null) {
+            msg = new msgClass();
+            msg.fromBytes(bytes);
+        }
+        return msg;
+    }
+
     protected function onMessageReceived (e :MessageReceivedEvent) :void
     {
-        var msgClass :Class = _msgTypes.get(e.name);
-        if (msgClass != null) {
-            var msg :GameMessage = new msgClass();
-            msg.fromBytes(ByteArray(e.value));
+        var msg :GameMessage = getMessage(e.name, ByteArray(e.value));
+        if (msg == null) {
+            return;
+        }
+        if (msg is QueueMessage) {
+            var queue :QueueMessage = msg as QueueMessage;
+            while (queue.hasMessages()) {
+                msg = queue.nextMessage(getMessage);
+                dispatchEvent(new MessageReceivedEvent(msg.name, msg, e.senderId));
+            }
+            /*
+            _rec++;
+            if (_rec == 10) {
+                var now :int = getTimer();
+                trace("got 10 messages in " + (now - _lastRec));
+                _lastRec = now;
+                _rec = 0;
+            }
+            */
+        } else {
             dispatchEvent(new MessageReceivedEvent(e.name, msg, e.senderId));
+        }
+    }
+
+    protected function checkSend (msg :GameMessage) :void
+    {
+        if (_msgTypes.get(msg.name) == null) {
+            throw new Error("can't send unrecognized message type '" + msg.name + "'");
         }
     }
 
     protected var _gameCtrl :GameControl;
     protected var _msgTypes :HashMap = new HashMap();
+    protected var _lastRec :int;
+    protected var _rec :int;
 }
 }

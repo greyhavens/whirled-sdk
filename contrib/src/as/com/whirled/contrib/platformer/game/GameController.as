@@ -101,6 +101,10 @@ public class GameController
         }
     }
 
+    public function shutdown () :void
+    {
+    }
+
     public function setPause (pause :Boolean) :void
     {
         _pause = pause;
@@ -201,9 +205,10 @@ public class GameController
         return ClientPlatformerContext.keyboard.isDown(KeyboardCodes.SPACE);
     }
 */
-    public function addController (controller :Object) :void
+    public function addController (controller :Object) :Boolean
     {
         _controllers.push(controller);
+        return true;
     }
 
     public function removeDynamicController (d :Dynamic) :DynamicController
@@ -272,22 +277,25 @@ public class GameController
     protected function handleActorAdded (actor :Actor, group :String) :void
     {
         var ac :ActorController = getController(actor) as ActorController;
-        addController(ac);
-        _collider.addDynamic(ac);
+        if (addController(ac)) {
+            _collider.addDynamic(ac);
+        }
     }
 
     protected function handleShotAdded (shot :Shot, group :String) :void
     {
         var sc :ShotController = getController(shot) as ShotController;
-        addController(sc);
-        _collider.addShot(sc);
+        if (addController(sc)) {
+            _collider.addShot(sc);
+        }
     }
 
     protected function handleDynamicAdded (d :Dynamic, group :String) :void
     {
         var dc :DynamicController = getController(d);
-        addController(dc);
-        _collider.addDynamic(dc);
+        if (addController(dc)) {
+            _collider.addDynamic(dc);
+        }
     }
 
     protected function getController (d :Dynamic) :DynamicController

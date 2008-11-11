@@ -124,6 +124,11 @@ public class Board
         return _dynamicIns[group];
     }
 
+    public function getDynamicInsById (id :int) :Dynamic
+    {
+        return _globalDynamicIns[id];
+    }
+
     public function getActors () :Object
     {
         return _actors;
@@ -177,7 +182,7 @@ public class Board
 
     public function addDynamicIns (d :Dynamic, group :String) :void
     {
-        _dynamicIns[group][d.id] = d;
+        setDynamicIns(group, d);
         //_dynamicIns[group].push(d);
         adjustMaxId(d);
         sendEvent(DYNAMIC_ADDED, d, "root." + group);
@@ -185,7 +190,7 @@ public class Board
 
     public function updateDynamicIns (d :Dynamic, group :String) :void
     {
-        _dynamicIns[group][d.id] = d;
+        setDynamicIns(group, d);
         sendEvent(ITEM_UPDATED, d, "root." + group);
     }
 
@@ -273,6 +278,7 @@ public class Board
             }
         } else {
             delete arr[name];
+            delete _globalDynamicIns[name];
         }
         sendEvent(ITEM_REMOVED, name, tree);
     }
@@ -516,6 +522,7 @@ public class Board
             if (d != null) {
                 adjustMaxId(d);
                 arr[d.id] = d;
+                _globalDynamicIns[d.id] = d;
                 //arr.push(d);
             }
         }
@@ -613,6 +620,12 @@ public class Board
         }
     }
 
+    protected function setDynamicIns (group :String, d :Dynamic) :void
+    {
+        _dynamicIns[group][d.id] = d;
+        _globalDynamicIns[d.id] = d;
+    }
+
     /** The XML definition. */
     protected var _xml :XML;
 
@@ -624,6 +637,7 @@ public class Board
     protected var _actors :Object = new Object();
     protected var _dynamics :Object = new Object();
     protected var _dynamicIns :Array = new Array();
+    protected var _globalDynamicIns :Object = new Object();
     protected var _shots :Object = new Object();
     protected var _bound :Array = new Array();
 

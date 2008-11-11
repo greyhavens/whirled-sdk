@@ -28,6 +28,7 @@ import com.whirled.game.StateChangedEvent;
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.game.GameController;
 import com.whirled.contrib.platformer.net.MessageManager;
+import com.whirled.contrib.platformer.net.DynamicMessage;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 
 public class PlatformerController
@@ -36,11 +37,13 @@ public class PlatformerController
     {
         PlatformerContext.gctrl = new GameControl(disp);
         PlatformerContext.platformer = this;
-        PlatformerContext.net = new MessageManager(PlatformerContext.gctrl);
+        PlatformerContext.net = createMessageManager();
+        PlatformerContext.net.addMessageType(DynamicMessage);
     }
 
     public function shutdown () :void
     {
+        PlatformerContext.net.shutdown();
     }
 
     protected function run () :void
@@ -88,6 +91,11 @@ public class PlatformerController
     protected function createBoard () :Board
     {
         throw new Error("createBoard must be implemented in subclass");
+    }
+
+    protected function createMessageManager () :MessageManager
+    {
+        return new MessageManager(PlatformerContext.gctrl);
     }
 }
 }

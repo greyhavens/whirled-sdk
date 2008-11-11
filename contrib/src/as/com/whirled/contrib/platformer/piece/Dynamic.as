@@ -20,8 +20,12 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import flash.utils.ByteArray;
+
 import com.threerings.util.ClassUtil;
 import com.threerings.util.Hashable;
+
+import com.whirled.contrib.platformer.net.GameMessage;
 
 /**
  * Base class for any object that can move in the world.
@@ -34,6 +38,8 @@ public class Dynamic
     public static const ENEMY :int = 2;
     public static const DEAD :int = 3;
 
+    public static const U_POS :int = 1 << 0;
+
     public var x :Number = 0;
     public var y :Number = 0;
     public var dx :Number = 0;
@@ -44,6 +50,8 @@ public class Dynamic
     public var inter :int;
 
     public var sprite :String;
+
+    public var updateState :int;
 
     public function Dynamic (insxml :XML = null)
     {
@@ -83,5 +91,31 @@ public class Dynamic
     {
         return true;
     }
+
+    public function toBytes (bytes :ByteArray = null) :ByteArray
+    {
+        bytes = (bytes != null ? bytes : new ByteArray());
+        _inState = updateState;
+        updateState = 0;
+        bytes.writeInt(_inState);
+        if ((_inState & U_POS) > 0) {
+            bytes.writeFloat(x);
+            bytes.writeFloat(y);
+            //trace("toBytes pos (" + x + ", " + y + ")");
+        }
+        return bytes;
+    }
+
+    public function fromBytes (bytes :ByteArray) :void
+    {
+        _inState = bytes.readInt();
+        if ((_inState & U_POS) > 0) {
+            x = bytes.readFloat();
+            y = bytes.readFloat();
+            //trace("fromBytes pos (" + x + ", " + y + ")");
+        }
+    }
+
+    protected var _inState :int;
 }
 }

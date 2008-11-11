@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import flash.utils.ByteArray;
+
 import com.whirled.contrib.platformer.board.LineData;
 
 /**
@@ -40,6 +42,8 @@ public class Actor extends Dynamic
     public static const HIT_BACK :int = 1 << 2;
     public static const HIT_BIG :int = 1 << 5;
 
+    public static const U_HEALTH :int = 1 << 8;
+
     public var width :Number = 0;
     public var height :Number = 0;
     public var orient :int = ORIENT_RIGHT | ORIENT_SHOOT_F;
@@ -52,7 +56,6 @@ public class Actor extends Dynamic
     public var justShot :Boolean = false;
     public var events :Array = new Array();
 
-    public var health :Number;
     public var startHealth :Number;
 
     public var maxAttachable :Number = -1;
@@ -96,6 +99,17 @@ public class Actor extends Dynamic
         return _attachedId;
     }
 
+    public function get health () :Number
+    {
+        return _health;
+    }
+
+    public function set health (health :Number) :void
+    {
+        _health = health;
+        updateState |= U_HEALTH;
+    }
+
     public function setAttached (ld :LineData, id :int = -1) :void
     {
         _attached = ld;
@@ -117,8 +131,28 @@ public class Actor extends Dynamic
         return health > 0;
     }
 
+    override public function toBytes (bytes :ByteArray = null) :ByteArray
+    {
+        bytes = super.toBytes(bytes);
+        if ((_inState & U_HEALTH) > 0) {
+            bytes.writeFloat(health);
+            //trace("toBytes health (" + health + ")");
+        }
+        return bytes;
+    }
+
+    override public function fromBytes (bytes :ByteArray) :void
+    {
+        super.fromBytes(bytes);
+        if ((_inState & U_HEALTH) > 0) {
+            health = bytes.readFloat();
+            //trace("fromBytes health (" + health + ")");
+        }
+    }
+
     protected var _bounds :Rect;
     protected var _attached :LineData;
     protected var _attachedId :int;
+    protected var _health :Number;
 }
 }
