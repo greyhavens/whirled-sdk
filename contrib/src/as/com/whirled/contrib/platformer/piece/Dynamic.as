@@ -25,8 +25,6 @@ import flash.utils.ByteArray;
 import com.threerings.util.ClassUtil;
 import com.threerings.util.Hashable;
 
-import com.whirled.contrib.platformer.net.GameMessage;
-
 /**
  * Base class for any object that can move in the world.
  */
