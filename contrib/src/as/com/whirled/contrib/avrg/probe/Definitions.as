@@ -65,6 +65,7 @@ public class Definitions
         AVRGameRoomEvent.PLAYER_MOVED,
         AVRGameRoomEvent.AVATAR_CHANGED,
         AVRGameRoomEvent.MOB_CONTROL_AVAILABLE,
+        AVRGameRoomEvent.SIGNAL_RECEIVED,
         MessageReceivedEvent.MESSAGE_RECEIVED
     ];
 
