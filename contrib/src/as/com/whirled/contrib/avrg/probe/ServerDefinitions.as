@@ -221,6 +221,10 @@ public class ServerDefinitions
             return room.sendMessage;
         }
 
+        function sendSignal (room :RoomSubControlServer) :Function {
+            return room.sendSignal;
+        }
+
         var idParam :Parameter = new Parameter("roomId", int);
 
         var funcs :Array = [
@@ -239,6 +243,8 @@ public class ServerDefinitions
                 idParam, new Parameter("id", String)]),
             new FunctionSpec("getSpawnedMobs", proxy(getInstance, getSpawnedMobs), [idParam]),
             new FunctionSpec("sendMessage", proxy(getInstance, sendMessage), [
+                idParam, new Parameter("name", String), new ObjectParameter("value")]),
+            new FunctionSpec("sendSignal", proxy(getInstance, sendSignal), [
                 idParam, new Parameter("name", String), new ObjectParameter("value")]),
         ];
 

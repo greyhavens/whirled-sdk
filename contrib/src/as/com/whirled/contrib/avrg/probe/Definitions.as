@@ -498,6 +498,10 @@ public class Definitions
                 new Parameter("roomId", int),
                 new Parameter("name", String),
                 new ObjectParameter("value")]),
+            new FunctionSpec("sendSignal", proxy("room", "sendSignal"), [
+                new Parameter("roomId", int),
+                new Parameter("name", String),
+                new ObjectParameter("value")]),
             new FunctionSpec("props.get", proxy("room", "props.get"), [
                 new Parameter("roomId", int),
                 new Parameter("propName", String)]),
