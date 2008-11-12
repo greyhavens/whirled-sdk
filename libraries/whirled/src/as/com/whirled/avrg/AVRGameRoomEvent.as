@@ -77,6 +77,16 @@ public class AVRGameRoomEvent extends AVRGameControlEvent
     public static const SIGNAL_RECEIVED :String = "signalReceived";
 
     /**
+     * Dispatched when a room has unloaded and is no longer accessible. Note that once this has
+     * happened, any further API methods called (except getRoomId()) will throw errors and no
+     * further events will be dispatched on it. The purpose of this event is for local cleanup,
+     * deregistration of event listeners, clearing out data structures and the like.
+     *
+     * @eventType com.whirled.avrg.AVRGameRoomEvent.ROOM_UNLOADED
+     */
+    public static const ROOM_UNLOADED :String = "roomUnloaded";
+
+    /**
      * Creates a new AVRGameRoomEvent.
      */
     public function AVRGameRoomEvent (

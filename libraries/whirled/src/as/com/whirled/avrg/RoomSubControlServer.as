@@ -15,6 +15,16 @@ import com.whirled.net.PropertySubControl;
 import com.whirled.net.impl.PropertySubControlImpl;
 
 /**
+ * Dispatched when a room has unloaded and is no longer accessible. Note that once this has
+ * happened, any further API methods called (except getRoomId()) will throw errors and no
+ * further events will be dispatched on it. The purpose of this event is for local cleanup,
+ * deregistration of event listeners, clearing out data structures and the like.
+ *
+ * @eventType com.whirled.avrg.AVRGameRoomEvent.ROOM_UNLOADED
+ */
+[Event(name="roomUnloaded", type="com.whirled.avrg.AVRGameRoomEvent")]
+
+/**
  * Provides AVR services for a single room to server agents only.
  * @see AVRServerGameControl#getRoom()
  */
@@ -132,6 +142,12 @@ public class RoomSubControlServer extends RoomSubControlBase
     internal function signalReceived_v1 (name :String, arg :Object) :void
     {
         dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.SIGNAL_RECEIVED, _targetId, name, arg));
+    }
+
+    /** @private -- relayed from AVRServerGameControl when signal received. */
+    internal function roomUnloaded_v1 () :void
+    {
+        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.ROOM_UNLOADED, _targetId));
     }
 
     /** @private */
