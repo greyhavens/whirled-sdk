@@ -156,8 +156,7 @@ public abstract class WhirledGameManager extends GameManager
             throw new InvocationException("Not enough players");
         }
 
-        log.info("Ending turn", "nextPlayerId", nextPlayerId,
-                 "players", StringUtil.toString(_gameObj.players));
+        log.info("Ending turn", "nextPlayerId", nextPlayerId, "players", _gameObj.players);
 
         _turnDelegate.endTurn(nextPlayerId);
     }
