@@ -29,6 +29,7 @@ public class SpawnerDeathEventTrigger extends DeathEventTrigger
     {
         super(gctrl, xml);
         _id = xml.@id;
+        _ignoreSpawns = xml.@ignoreSpawns == "true";
     }
 
     override protected function testTriggered () :Boolean
@@ -44,6 +45,9 @@ public class SpawnerDeathEventTrigger extends DeathEventTrigger
         }
         var s :Spawner = d as Spawner;
         if (s.destructable && s.health <= 0) {
+            if (_ignoreSpawns) {
+                return true;
+            }
             _ids = s.spawns;
         } else if (!s.destructable && s.spawnCount == s.totalSpawns) {
             _ids = s.spawns;
@@ -52,5 +56,6 @@ public class SpawnerDeathEventTrigger extends DeathEventTrigger
     }
 
     protected var _id :int;
+    protected var _ignoreSpawns :Boolean;
 }
 }
