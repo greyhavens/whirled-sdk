@@ -153,7 +153,7 @@ public abstract class WhirledGameManager extends GameManager
 //        }
 
         if (nextPlayerId == 0 && _gameObj.getActivePlayerCount() < 2) {
-            throw new InvocationException("m.not_enough_players");
+            throw new InvocationException("e.not_enough_players");
         }
 
         log.info("Ending turn", "nextPlayerId", nextPlayerId, "players", _gameObj.players);
