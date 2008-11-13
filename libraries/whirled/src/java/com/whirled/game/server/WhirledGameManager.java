@@ -155,9 +155,10 @@ public abstract class WhirledGameManager extends GameManager
         if (nextPlayerId == 0 && _gameObj.getActivePlayerCount() < 2) {
             throw new InvocationException("Not enough players");
         }
-        
-        log.info("Ending turn", "nextPlayerId", nextPlayerId, "players", StringUtil.toString(_gameObj.players));
-        
+
+        log.info("Ending turn", "nextPlayerId", nextPlayerId,
+                 "players", StringUtil.toString(_gameObj.players));
+
         _turnDelegate.endTurn(nextPlayerId);
     }
 
@@ -306,7 +307,7 @@ public abstract class WhirledGameManager extends GameManager
                     _propertySpaceHandler.setProperty(
                         null, msgOrPropName, result, null, false, false, null, null);
                 } else {
-                    _messageHandler.sendPrivateMessage(caller, msgOrPropName, result, 
+                    _messageHandler.sendPrivateMessage(caller, msgOrPropName, result,
                         new int[] {playerId}, null);
                 }
                 listener.requestProcessed(); // SUCCESS!
@@ -451,7 +452,7 @@ public abstract class WhirledGameManager extends GameManager
     {
         log.info("Agent ready for " + caller);
         _gameAgentReady = true;
-        
+
         _gameObj.setAgentState(WhirledGameObject.AGENT_READY);
 
         if (allPlayersReady()) {
@@ -465,7 +466,7 @@ public abstract class WhirledGameManager extends GameManager
     public void agentFailed (ClientObject caller)
     {
         log.info("Agent failed for " + caller);
-        
+
         _gameObj.setAgentState(WhirledGameObject.AGENT_FAILED);
 
         // TODO: abort the game or let the client do it?
@@ -649,12 +650,12 @@ public abstract class WhirledGameManager extends GameManager
 
         // we need to retain a reference to this
         _propertySpaceHandler = new PropertySpaceHandler(_gameObj) {
-            @Override protected void validateUser (ClientObject caller) 
+            @Override protected void validateUser (ClientObject caller)
                 throws InvocationException {
                 WhirledGameManager.this.validateUser(caller);
             }
         };
-        
+
         _messageHandler = new WhirledGameMessageHandler(_gameObj) {
             @Override protected void validateSender (ClientObject caller)
                 throws InvocationException {
@@ -695,7 +696,7 @@ public abstract class WhirledGameManager extends GameManager
         if (_gameAgent != null) {
             _bureauReg.startAgent(_gameAgent);
         }
-        
+
         // set agent state to ready if the game doesn't require one
         if (_gameAgent == null) {
             _gameObj.setAgentState(WhirledGameObject.AGENT_READY);
@@ -753,7 +754,7 @@ public abstract class WhirledGameManager extends GameManager
         int id = cfg.getGameId();
         return BureauTypes.GAME_BUREAU_ID_PREFIX + def.getBureauId(id);
     }
-    
+
     @Override // from PlaceManager
     protected void bodyEntered (int bodyOid)
     {
@@ -955,11 +956,11 @@ public abstract class WhirledGameManager extends GameManager
     /** A nice casted reference to the game object. */
     protected WhirledGameObject _gameObj;
 
-    /** We need a direct reference to this in order to set a property as a result of one of our 
+    /** We need a direct reference to this in order to set a property as a result of one of our
      * service calls ({@link #getFromcollection}). */
     protected PropertySpaceHandler _propertySpaceHandler;
 
-    /** We need a direct reference to this in order to send a message as a result of one of our 
+    /** We need a direct reference to this in order to send a message as a result of one of our
      * service calls ({@link #getFromcollection}). */
     protected WhirledGameMessageHandler _messageHandler;
 
