@@ -1,6 +1,7 @@
 package com.whirled.game.client {
 
 import flash.display.DisplayObject;
+import flash.display.Sprite;
 import flash.display.Stage;
 import flash.display.StageQuality;
 import flash.events.Event;
@@ -337,8 +338,8 @@ public class WhirledGameBackend extends BaseGameBackend
     {
         validateConnected();
 
-        // in here, we just return a dummy value
-        return new HeadSpriteShim();
+        // in here, we just return a blank
+        return new HeadShot();
     }
 
     //---- .game -----------------------------------------------------------
@@ -392,11 +393,8 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function getHeadShot_v1 (occupant :int, callback :Function) :void
     {
-        // this callback was defined to return a Sprite, so to preserve
-        // backwards compatibility we wrap the new headshot in a sprite
-        var s :HeadSpriteShim = new HeadSpriteShim();
-        s.addChild(getHeadShot_v2(occupant));
-        callback(s, true);
+        // this callback was defined to return a Sprite, and HeadShot is one, so this is safe
+        callback(Sprite(getHeadShot_v2(occupant)), true);
     }
 
     /**
@@ -426,33 +424,4 @@ public class WhirledGameBackend extends BaseGameBackend
      * user's game. */
     protected var _keyDispatcher :Function;
 }
-
-}
-
-import flash.display.Sprite;
-
-class HeadSpriteShim extends Sprite
-{
-    override public function get width () :Number
-    {
-        return WIDTH * scaleX;
-    }
-
-    override public function set width (newVal :Number) :void
-    {
-        scaleX = newVal / WIDTH;
-    }
-
-    override public function get height () :Number
-    {
-        return HEIGHT * scaleY;
-    }
-
-    override public function set height (newVal :Number) :void
-    {
-        scaleY = newVal / HEIGHT;
-    }
-
-    protected static const WIDTH :int = 80;
-    protected static const HEIGHT :int = 60;
 }
