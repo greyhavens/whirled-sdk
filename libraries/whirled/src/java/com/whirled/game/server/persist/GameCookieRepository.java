@@ -8,9 +8,9 @@ import java.util.Set;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import com.samskivert.jdbc.depot.DepotRepository;
-import com.samskivert.jdbc.depot.PersistenceContext;
-import com.samskivert.jdbc.depot.PersistentRecord;
+import com.samskivert.depot.DepotRepository;
+import com.samskivert.depot.PersistenceContext;
+import com.samskivert.depot.PersistentRecord;
 
 /**
  * Provides storage services for user cookies used in games.
