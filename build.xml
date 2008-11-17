@@ -11,7 +11,7 @@
 
   <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"   value="libraries"/>
-  <property name="projects"       value="samskivert,thane,narya,nenya,vilya,whirled"/>
+  <property name="projects"       value="samskivert,depot,thane,narya,nenya,vilya,whirled"/>
   <import file="build/etc/build-support.xml"/>
 
   <!-- include bits to do the necessary Flex SDK path jockeying -->
