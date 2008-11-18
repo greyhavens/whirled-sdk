@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.simplegame.util {
 
+import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
 import com.threerings.util.Random;
 
@@ -90,6 +91,11 @@ public class Rand
     public static function nextNumberRange (low :Number, high :Number, streamId :uint) :Number
     {
         return low + (getStream(streamId).nextNumber() * (high - low));
+    }
+
+    public static function shuffleArray (arr :Array, streamId :uint) :void
+    {
+        ArrayUtil.shuffle(arr, getStream(streamId));
     }
 
     protected static var _hasSetup :Boolean = false;
