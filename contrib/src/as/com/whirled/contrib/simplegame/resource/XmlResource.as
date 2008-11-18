@@ -116,7 +116,7 @@ public class XmlResource
             try {
                 _generatedObject = _objectGenerator(_xml);
             } catch (e :Error) {
-                onError(e.message);
+                onError(e.message + "\n\n" + e.getStackTrace());
                 return;
             }
         }
