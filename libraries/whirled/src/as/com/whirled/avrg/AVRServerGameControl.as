@@ -88,6 +88,29 @@ public class AVRServerGameControl extends AbstractControl
         return ctrl;
     }
 
+    /**
+     * Loads the property space of an offline player and calls your function with it as an
+     * argument. Within this callback, you may read and write persistent properties as you
+     * see fit. Note: To preserve some semblance of sanity, you can only load the properties
+     * of a player who has already had at least one persistent property set.
+     *
+     * An example, whereby one player may leave an offline message for another player:
+     *
+     *    _ctrl.loadOfflinePlayer(opponentPlayerId, function (props :PropertySpaceObject) :void {
+     *        props.setIn("messages", myPlayerId, myMessage);
+     *    }, function (failureCause :String) :void {
+     *        log.warn("Eek! Sending message to offline player failed!", "cause", failureCause);
+     *   });
+     */
+    public function loadOfflinePlayer (playerId :int, success :Function, failure :Function) :void
+    {
+        var thisControl :AbstractControl = this;
+
+        callHostCode("loadOfflinePlayer_v1", playerId, function (props :Object) :void {
+            success(new OfflinePlayerPropertyControl(thisControl, playerId, props));
+        }, failure);
+    }
+
     /** @private */
     override protected function setUserProps (o :Object) :void
     {
