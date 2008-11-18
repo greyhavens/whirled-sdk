@@ -24,7 +24,6 @@ import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
 import com.whirled.contrib.simplegame.audio.*;
 import com.whirled.contrib.simplegame.resource.*;
-import com.whirled.contrib.simplegame.util.Rand;
 
 import flash.display.Sprite;
 import flash.events.Event;
@@ -88,8 +87,7 @@ public final class MainLoop
     }
 
     /**
-     * Initializes structures required by the framework, including the
-     * ResourceLoaderRegistry and the Rand utility.
+     * Initializes structures required by the framework.
      */
     public function setup () :void
     {
