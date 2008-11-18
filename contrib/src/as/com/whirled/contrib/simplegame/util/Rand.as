@@ -21,25 +21,12 @@
 package com.whirled.contrib.simplegame.util {
 
 import com.threerings.util.ArrayUtil;
-import com.threerings.util.Assert;
 import com.threerings.util.Random;
 
 public class Rand
 {
     public static const STREAM_GAME :uint = 0;
     public static const STREAM_COSMETIC :uint = 1;
-
-    public static function setup () :void
-    {
-        if (_hasSetup) {
-            return;
-        }
-
-        _hasSetup = true;
-
-        _randStreams.push(new Random());    // STREAM_GAME
-        _randStreams.push(new Random());    // STREAM_COSMETIC
-    }
 
     public static function addStream (seed :uint = 0) :uint
     {
@@ -49,8 +36,6 @@ public class Rand
 
     public static function getStream (streamId :uint) :Random
     {
-        Assert.isTrue(_hasSetup);
-
         return (_randStreams[streamId] as Random);
     }
 
@@ -98,8 +83,8 @@ public class Rand
         ArrayUtil.shuffle(arr, getStream(streamId));
     }
 
-    protected static var _hasSetup :Boolean = false;
-    protected static var _randStreams :Array = new Array();
+    // We always have the STREAM_GAME and STREAM_COSMETIC streams
+    protected static var _randStreams :Array = [ new Random(), new Random() ];
 }
 
 }

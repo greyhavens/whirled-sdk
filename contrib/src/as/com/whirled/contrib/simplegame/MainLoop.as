@@ -97,8 +97,6 @@ public final class MainLoop
             return;
         }
 
-        Rand.setup();
-
         // instantiate singletons
         new ResourceManager();
         new AudioManager();
