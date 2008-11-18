@@ -8,13 +8,6 @@ package com.whirled {
 import flash.display.DisplayObject;
 
 /**
- * Dispatched to pets, when they overhear chatter in the room.
- * 
- * @eventType com.whirled.ControlEvent.RECEIVED_CHAT
- */
-[Event(name="receivedChat", type="com.whirled.ControlEvent")]
-
-/**
  * Defines actions, accessors and callbacks available to all Pets.
  */
 public class PetControl extends ActorControl
@@ -47,16 +40,11 @@ public class PetControl extends ActorControl
         o["receivedChat_v2"] = receivedChat_v2;
     }
 
-    /**
-     * Called when the pet is overhearing a line of chatter in the room.
-     * If this instance of the pet has control, it will dispatch a new receivedChat event,
-     * otherwise the line will be ignored.
-     * @private
-     */
-    protected function receivedChat_v2 (entityId :String, message :String) :void
+    // the pet only reacts to chat when it has control
+    override protected function receivedChat_v2 (entityId :String, message :String) :void
     {
         if (_hasControl) {
-            dispatchCtrlEvent(ControlEvent.RECEIVED_CHAT, entityId, message);
+            super.receivedChat_v2(entityId, message);
         }
     }
 }

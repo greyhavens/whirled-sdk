@@ -47,6 +47,13 @@ import flash.utils.Timer;
 [Event(name="memoryChanged", type="com.whirled.ControlEvent")]
 
 /**
+ * Dispatched to entities when they overhear chatter in the room.
+ * 
+ * @eventType com.whirled.ControlEvent.RECEIVED_CHAT
+ */
+[Event(name="receivedChat", type="com.whirled.ControlEvent")]
+
+/**
  * Dispatched when the instance in control updates a room property.
  *
  * @eventType com.whirled.ControlEvent.ROOM_PROPERTY_CHANGED
@@ -516,6 +523,7 @@ public class EntityControl extends AbstractControl
         o["gotControl_v1"] = gotControl_v1;
         o["messageReceived_v1"] = messageReceived_v1;
         o["signalReceived_v1"] = signalReceived_v1;
+        o["receivedChat_v2"] = receivedChat_v2;
 
         o["entityEntered_v1"] = entityEntered_v1;
         o["entityLeft_v1"] = entityLeft_v1;
@@ -642,6 +650,17 @@ public class EntityControl extends AbstractControl
 
         // possibly set up a ticker now
         recheckTicker();
+    }
+
+    /**
+     * Called when this entity is overhearing a line of chatter in the room.
+     * If this instance of the pet has control, it will dispatch a new receivedChat event,
+     * otherwise the line will be ignored.
+     * @private
+     */
+    protected function receivedChat_v2 (entityId :String, message :String) :void
+    {
+        dispatchCtrlEvent(ControlEvent.RECEIVED_CHAT, entityId, message);
     }
 
     /**
