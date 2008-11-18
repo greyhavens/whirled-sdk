@@ -27,7 +27,8 @@ public abstract class PropertySpaceDelegate extends PlayManagerDelegate
         if (plobj instanceof PropertySpaceObject) {
             _psObj = (PropertySpaceObject) plobj;
 
-            PropertySpaceHelper.initWithStateFromStore(_psObj, initialStateFromStore());
+            PropertySpaceHelper.initWithProperties(
+                _psObj, PropertySpaceHelper.recordsToProperties(initialStateFromStore()));
 
         } else {
             log.warning("This delegate needs a PropertySpaceObject to work on");

@@ -141,18 +141,19 @@ public abstract class PropertySpaceHelper
      */
     public static boolean isOnServer (PropertySpaceObject psObj)
     {
-        DObjectManager mgr = ((DObject) psObj).getManager();
-        return mgr != null && mgr.isManager((DObject) psObj);
+        if (psObj instanceof DObject) {
+            DObjectManager mgr = ((DObject) psObj).getManager();
+            return mgr != null && mgr.isManager((DObject) psObj);
+        }
+        // TODO: This is a hack. But so is the whole isOnServer() thing?
+        return true;
     }
 
     /**
-     * Initializes the given {@link PropertySpaceObject} with data from persistent store.
-     * The incoming property values are byte arrays that were created with
-     * {@link #encodeForStore(Object)} and they will be passed through
-     * {@link #decodeFromStore(byte[])} to recreate the original property value.
+     * Converts and returns a mapping of property records from store to a mapping of
+     * property values, suitable for the dobject system.
      */
-    public static void initWithStateFromStore (
-        PropertySpaceObject psObj, Map<String, byte[]> fromStore)
+    public static Map<String, Object> recordsToProperties (Map<String, byte[]> fromStore)
     {
         Map<String, Object> state = new HashMap<String, Object>();
         for (Map.Entry<String, byte[]> entry : fromStore.entrySet()) {
@@ -160,26 +161,38 @@ public abstract class PropertySpaceHelper
                 state.put(entry.getKey(), decodeFromStore(entry.getValue()));
 
             } catch (Exception e) {
-                log.warning("Failed to decode property", "psObj", psObj, "key", entry.getKey(), 
+                log.warning("Failed to decode property", "key", entry.getKey(), 
                     "value", StringUtil.toString(entry.getValue()), e);
             }
         }
+        return state;
+    }
 
+    /**
+     * Initializes the given {@link PropertySpaceObject} with a previously existing mapping
+     * of property names to property values, as e.g. created by the {@link #recordsToProperties}
+     * method.
+     */
+    public static void initWithProperties (
+        PropertySpaceObject psObj, Map<String, Object> properties)
+    {
         // clear the data structures
         psObj.getUserProps().clear();
         psObj.getDirtyProps().clear();
 
         // copy the initial properties over
-        psObj.getUserProps().putAll(state);
+        psObj.getUserProps().putAll(properties);
 
-        // then catch all our listeners up on the initial state
-        DObject plObj = (DObject) psObj;
-        plObj.startTransaction();
-        for (Map.Entry<String, Object> entry : state.entrySet()) {
-            plObj.postEvent(new PropertySetEvent(
-                plObj.getOid(), entry.getKey(), entry.getValue(), null, false, null));
+        // if this is a distributed object, catch all our listeners up on the initial state
+        if (psObj instanceof DObject) {
+            DObject plObj = (DObject) psObj;
+            plObj.startTransaction();
+            for (Map.Entry<String, Object> entry : properties.entrySet()) {
+                plObj.postEvent(new PropertySetEvent(
+                    plObj.getOid(), entry.getKey(), entry.getValue(), null, false, null));
+            }
+            plObj.commitTransaction();
         }
-        plObj.commitTransaction();
     }
 
     /**
