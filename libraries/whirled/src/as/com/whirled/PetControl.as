@@ -39,13 +39,5 @@ public class PetControl extends ActorControl
 
         o["receivedChat_v2"] = receivedChat_v2;
     }
-
-    // the pet only reacts to chat when it has control
-    override protected function receivedChat_v2 (entityId :String, message :String) :void
-    {
-        if (_hasControl) {
-            super.receivedChat_v2(entityId, message);
-        }
-    }
 }
 }

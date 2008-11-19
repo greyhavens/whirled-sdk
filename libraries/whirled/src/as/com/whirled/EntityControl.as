@@ -47,7 +47,8 @@ import flash.utils.Timer;
 [Event(name="memoryChanged", type="com.whirled.ControlEvent")]
 
 /**
- * Dispatched to entities when they overhear chatter in the room.
+ * Dispatched to entities when they overhear chatter in the room. Only
+ * the instance in control receives this event.
  * 
  * @eventType com.whirled.ControlEvent.RECEIVED_CHAT
  */
@@ -660,7 +661,9 @@ public class EntityControl extends AbstractControl
      */
     protected function receivedChat_v2 (entityId :String, message :String) :void
     {
-        dispatchCtrlEvent(ControlEvent.RECEIVED_CHAT, entityId, message);
+        if (_hasControl) {
+            dispatchCtrlEvent(ControlEvent.RECEIVED_CHAT, entityId, message);
+        }
     }
 
     /**

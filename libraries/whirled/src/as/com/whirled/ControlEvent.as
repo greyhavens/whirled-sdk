@@ -92,7 +92,7 @@ public class ControlEvent extends Event
     public static const ROOM_PROPERTY_CHANGED :String = "roomPropertyChanged";
 
     /** An event type dispatched to all entities when someone chats.
-     * Note that for pets, only the instance "in control" will receive this event.
+     * Note that only the instance in control receives this event.
      * name: the speaker's entity ID
      * value: chat message
      *
