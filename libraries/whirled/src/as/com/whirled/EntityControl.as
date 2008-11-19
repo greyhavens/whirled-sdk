@@ -56,13 +56,6 @@ import flash.utils.Timer;
 [Event(name="chatReceived", type="com.whirled.ControlEvent")]
 
 /**
- * Dispatched when the instance in control updates a room property.
- *
- * @eventType com.whirled.ControlEvent.ROOM_PROPERTY_CHANGED
- */
-[Event(name="roomPropertyChanged", type="com.whirled.ControlEvent")]
-
-/**
  * Dispatched when this instance gains control. See the <code>hasControl</code> method.
  *
  * @eventType com.whirled.ControlEvent.CONTROL_ACQUIRED
@@ -521,7 +514,6 @@ public class EntityControl extends AbstractControl
         super.setUserProps(o);
 
         o["memoryChanged_v1"] = memoryChanged_v1;
-        o["roomPropertyChanged_v1"] = roomPropertyChanged_v1;
         o["gotControl_v1"] = gotControl_v1;
         o["messageReceived_v1"] = messageReceived_v1;
         o["signalReceived_v1"] = signalReceived_v1;
@@ -600,15 +592,6 @@ public class EntityControl extends AbstractControl
     protected function memoryChanged_v1 (key :String, value :Object) :void
     {
         dispatchCtrlEvent(ControlEvent.MEMORY_CHANGED, key, value);
-    }
-
-    /**
-     * Called when one of this item's memory entries has changed.
-     * @private
-     */
-    protected function roomPropertyChanged_v1 (key :String, value :Object) :void
-    {
-        dispatchCtrlEvent(ControlEvent.ROOM_PROPERTY_CHANGED, key, value);
     }
 
     /** @private */

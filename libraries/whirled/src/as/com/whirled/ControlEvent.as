@@ -84,14 +84,6 @@ public class ControlEvent extends Event
      */
     public static const MEMORY_CHANGED :String = "memoryChanged";
 
-    /** An event type dispatched when a room property has changed.
-     * name: property key
-     * value: property value
-     *
-     * @eventType roomPropertyChanged
-     */
-    public static const ROOM_PROPERTY_CHANGED :String = "roomPropertyChanged";
-
     /** An event type dispatched to all entities when someone chats.
      * Note that only the instance in control receives this event.
      * name: the speaker's entity ID
