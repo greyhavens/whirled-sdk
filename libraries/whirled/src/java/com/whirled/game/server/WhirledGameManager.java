@@ -23,6 +23,8 @@ import com.threerings.presents.data.InvocationCodes;
 import com.threerings.presents.dobj.DObjectManager;
 import com.threerings.presents.dobj.DSet;
 import com.threerings.presents.dobj.MessageEvent;
+import com.threerings.presents.dobj.ObjectDeathListener;
+import com.threerings.presents.dobj.ObjectDestroyedEvent;
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.server.InvocationException;
 
@@ -692,6 +694,16 @@ public abstract class WhirledGameManager extends GameManager
         _gameAgent = createAgent();
         if (_gameAgent != null) {
             _bureauReg.startAgent(_gameAgent);
+            
+            // if the agent dies and we didn't destroy it, notify the client
+            _gameAgent.addListener(new ObjectDeathListener() {
+                public void objectDestroyed (ObjectDestroyedEvent event) {
+                    if (_gameAgent != null) {
+                        log.info("Game agent destroyed", "gameObj", _gameObj.which());
+                        _gameObj.setAgentState(WhirledGameObject.AGENT_FAILED);
+                    }
+                }
+            });
         }
 
         // set agent state to ready if the game doesn't require one
@@ -825,7 +837,9 @@ public abstract class WhirledGameManager extends GameManager
         stopTickers();
 
         if (_gameAgent != null) {
-            _bureauReg.destroyAgent(_gameAgent);
+            if (_gameAgent.isActive()) {
+                _bureauReg.destroyAgent(_gameAgent);
+            }
             _gameAgent = null;
         }
 

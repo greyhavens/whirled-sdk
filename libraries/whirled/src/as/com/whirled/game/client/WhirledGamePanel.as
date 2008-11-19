@@ -8,6 +8,7 @@ import flash.display.Loader;
 import mx.containers.Canvas;
 
 import com.threerings.util.Name;
+import com.threerings.util.Log;
 
 import com.threerings.flex.CommandButton;
 import com.threerings.flex.FlexUtil;
@@ -22,6 +23,7 @@ import com.threerings.crowd.util.CrowdContext;
 
 import com.threerings.parlor.game.data.GameConfig;
 
+import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.WhirledGameObject;
 
@@ -66,17 +68,29 @@ public class WhirledGamePanel extends Canvas
         // Crank up the media loader only after the agent is ready
         if (_gameObj.agentState == WhirledGameObject.AGENT_READY) {
             initiateLoading();
-        } else {
-            _gameObj.addListener(new AttributeChangeAdapter(
+
+        } else if (_gameObj.agentState == WhirledGameObject.AGENT_PENDING) {
+            var agentStateListener :AttributeChangeAdapter;
+            agentStateListener = new AttributeChangeAdapter(
                 function (event :AttributeChangedEvent) :void {
                     if (event.getName() == WhirledGameObject.AGENT_STATE) {
                         if (event.getValue() == WhirledGameObject.AGENT_READY) {
                             initiateLoading();
+                            _gameObj.removeListener(agentStateListener);
                         } else if (event.getValue() == WhirledGameObject.AGENT_FAILED) {
-                            abortLoading();
+                            reportAgentFailure();
+                            _gameObj.removeListener(agentStateListener);
                         }
                     }
-                }));
+                });
+            _gameObj.addListener(agentStateListener);
+
+        } else if (_gameObj.agentState == WhirledGameObject.AGENT_FAILED) {
+            reportAgentFailure();
+
+        } else {
+            Log.getLog(this).warning("Unexpected agent state", "state", _gameObj.agentState);
+            initiateLoading();
         }
     }
 
@@ -144,11 +158,12 @@ public class WhirledGamePanel extends Canvas
     }
 
     /**
-     * Called if there was a problem launching the game's agent.
+     * Called if the agent was aborted or could not be started.
      */
-    protected function abortLoading () :void
+    protected function reportAgentFailure () :void
     {
-        // TODO: show the "server has encountered an error" message
+        _ctx.getChatDirector().displayAttention(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
+                                                "e.agent_failed");
     }
 
     /**
