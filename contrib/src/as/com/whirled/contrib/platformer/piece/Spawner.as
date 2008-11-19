@@ -91,5 +91,11 @@ public class Spawner extends RectDynamic
     {
         return (!destructable || health > 0) && spawnXML != null;
     }
+
+    override public function isAlive () :Boolean
+    {
+        return destructable ? super.isAlive() :
+            (spawnCount < totalSpawns || spawns == null || spawns.length == 0);
+    }
 }
 }

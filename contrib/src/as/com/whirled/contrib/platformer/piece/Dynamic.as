@@ -25,6 +25,8 @@ import flash.utils.ByteArray;
 import com.threerings.util.ClassUtil;
 import com.threerings.util.Hashable;
 
+import com.whirled.contrib.platformer.PlatformerContext;
+
 /**
  * Base class for any object that can move in the world.
  */
@@ -38,15 +40,15 @@ public class Dynamic
     public static const SPAWN :int = 4;
 
     public static const U_POS :int = 1 << 0;
+    public static const U_VEL :int = 1 << 1;
 
     public var x :Number = 0;
     public var y :Number = 0;
-    public var dx :Number = 0;
-    public var dy :Number = 0;
 
     public var id :int;
 
     public var inter :int;
+    public var owner :int;
 
     public var sprite :String;
 
@@ -59,6 +61,28 @@ public class Dynamic
             y = insxml.@y;
             id = insxml.@id;
         }
+    }
+
+    public function get dx () :Number
+    {
+        return _dx;
+    }
+
+    public function set dx (dx :Number) :void
+    {
+        _dx = dx;
+        updateState |= U_VEL;
+    }
+
+    public function get dy () :Number
+    {
+        return _dy;
+    }
+
+    public function set dy (dy :Number) :void
+    {
+        _dy = dy;
+        updateState |= U_VEL;
     }
 
     public function xmlInstance () :XML
@@ -91,6 +115,16 @@ public class Dynamic
         return true;
     }
 
+    public function isAlive () :Boolean
+    {
+        return shouldSpawn();
+    }
+
+    public function amOwner () :Boolean
+    {
+        return PlatformerContext.gctrl.game.getMyId() == owner;
+    }
+
     public function toBytes (bytes :ByteArray = null) :ByteArray
     {
         bytes = (bytes != null ? bytes : new ByteArray());
@@ -101,6 +135,10 @@ public class Dynamic
             bytes.writeFloat(x);
             bytes.writeFloat(y);
             //trace("toBytes pos (" + x + ", " + y + ")");
+        }
+        if ((_inState & U_VEL) > 0) {
+            bytes.writeFloat(dx);
+            bytes.writeFloat(dy);
         }
         return bytes;
     }
@@ -113,8 +151,15 @@ public class Dynamic
             y = bytes.readFloat();
             //trace("fromBytes pos (" + x + ", " + y + ")");
         }
+
+        if ((_inState & U_VEL) > 0) {
+            dx = bytes.readFloat();
+            dy = bytes.readFloat();
+        }
     }
 
     protected var _inState :int;
+    protected var _dx :Number = 0;
+    protected var _dy :Number = 0;
 }
 }

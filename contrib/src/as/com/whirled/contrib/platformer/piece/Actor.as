@@ -43,10 +43,10 @@ public class Actor extends Dynamic
     public static const HIT_BIG :int = 1 << 5;
 
     public static const U_HEALTH :int = 1 << 8;
+    public static const U_ORIENT :int = 1 << 9;
 
     public var width :Number = 0;
     public var height :Number = 0;
-    public var orient :int = ORIENT_RIGHT | ORIENT_SHOOT_F;
 
     public var accelX :Number = 0;
     public var accelY :Number = 0;
@@ -110,6 +110,19 @@ public class Actor extends Dynamic
         updateState |= U_HEALTH;
     }
 
+    public function get orient () :int
+    {
+        return _orient;
+    }
+
+    public function set orient (orient :int) :void
+    {
+        if (orient != _orient) {
+            _orient = orient;
+            updateState |= U_ORIENT;
+        }
+    }
+
     public function setAttached (ld :LineData, id :int = -1) :void
     {
         _attached = ld;
@@ -138,6 +151,9 @@ public class Actor extends Dynamic
             bytes.writeFloat(health);
             //trace("toBytes health (" + health + ")");
         }
+        if ((_inState & U_ORIENT) > 0) {
+            bytes.writeInt(orient);
+        }
         return bytes;
     }
 
@@ -145,8 +161,11 @@ public class Actor extends Dynamic
     {
         super.fromBytes(bytes);
         if ((_inState & U_HEALTH) > 0) {
-            health = bytes.readFloat();
+            _health = bytes.readFloat();
             //trace("fromBytes health (" + health + ")");
+        }
+        if ((_inState & U_ORIENT) > 0) {
+            _orient = bytes.readInt();
         }
     }
 
@@ -154,5 +173,6 @@ public class Actor extends Dynamic
     protected var _attached :LineData;
     protected var _attachedId :int;
     protected var _health :Number;
+    protected var _orient :int = ORIENT_RIGHT | ORIENT_SHOOT_F;
 }
 }
