@@ -71,9 +71,9 @@ public class ControlEvent extends Event
      * name: unused
      * value: unused
      *
-     * @eventType gotControl
+     * @eventType controlAcquired
      */
-    public static const GOT_CONTROL :String = "gotControl";
+    public static const CONTROL_ACQUIRED :String = "controlAcquired";
 
     /** An event type dispatched when the memory has changed.
      * name: memory name
@@ -96,9 +96,9 @@ public class ControlEvent extends Event
      * name: the speaker's entity ID
      * value: chat message
      *
-     * @eventType receivedChat
+     * @eventType chatReceived
      */
-    public static const RECEIVED_CHAT :String = "receivedChat";
+    public static const CHAT_RECEIVED :String = "chatReceived";
 
     /** An event type dispatched to Furniture and Toys when the mouse is over them.
      * Note that the normal MouseEvents will be blocked if the furniture has an action,

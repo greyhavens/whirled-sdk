@@ -50,9 +50,9 @@ import flash.utils.Timer;
  * Dispatched to entities when they overhear chatter in the room. Only
  * the instance in control receives this event.
  * 
- * @eventType com.whirled.ControlEvent.RECEIVED_CHAT
+ * @eventType com.whirled.ControlEvent.CHAT_RECEIVED
  */
-[Event(name="receivedChat", type="com.whirled.ControlEvent")]
+[Event(name="chatReceived", type="com.whirled.ControlEvent")]
 
 /**
  * Dispatched when the instance in control updates a room property.
@@ -64,9 +64,9 @@ import flash.utils.Timer;
 /**
  * Dispatched when this instance gains control. See the <code>hasControl</code> method.
  *
- * @eventType com.whirled.ControlEvent.GOT_CONTROL
+ * @eventType com.whirled.ControlEvent.CONTROL_ACQUIRED
  */
-[Event(name="gotControl", type="com.whirled.ControlEvent")]
+[Event(name="controlAcquired", type="com.whirled.ControlEvent")]
 
 /**
  * Dispatched once per tick, only when this instance has control and only if tick interval is
@@ -370,7 +370,7 @@ public class EntityControl extends AbstractControl
      *
      * <p>Note: control is <em>not</em> automatically assigned. If an entity wishes to obtain
      * control, it should first call <code>requestControl</code> and it will then receive a
-     * <code>GOT_CONTROL</code> event if and when control has been assigned to this client.
+     * <code>CONTROL_ACQUIRED</code> event if and when control has been assigned to this client.
      * There are no guarantees which of the requesting clients will receive it, or when.</p>
      */
     public function hasControl () :Boolean
@@ -647,7 +647,7 @@ public class EntityControl extends AbstractControl
         _hasControl = true;
 
         // dispatch to user code..
-        dispatchCtrlEvent(ControlEvent.GOT_CONTROL);
+        dispatchCtrlEvent(ControlEvent.CONTROL_ACQUIRED);
 
         // possibly set up a ticker now
         recheckTicker();
@@ -662,7 +662,7 @@ public class EntityControl extends AbstractControl
     protected function receivedChat_v2 (entityId :String, message :String) :void
     {
         if (_hasControl) {
-            dispatchCtrlEvent(ControlEvent.RECEIVED_CHAT, entityId, message);
+            dispatchCtrlEvent(ControlEvent.CHAT_RECEIVED, entityId, message);
         }
     }
 
