@@ -33,7 +33,8 @@ import flash.utils.Timer;
 [Event(name="messageReceived", type="com.whirled.ControlEvent")]
 
 /**
- * Dispatched when any instance sends a message to all instances of all entities.
+ * Dispatched when any entity sends a message to all other entities.
+ * Note: this is only dispatched to the instance in control.
  * 
  * @eventType com.whirled.ControlEvent.SIGNAL_RECEIVED
  */
@@ -323,8 +324,8 @@ public class EntityControl extends AbstractControl
     }
 
     /**
-     * Looks up and returns the specified property for the specified entity. Returns null if the entity
-     * does not exist or the entity has no such property.
+     * Looks up and returns the specified property for the specified entity.
+     * Returns null if the entity does not exist or the entity has no such property.
      */
     public function getEntityProperty (key :String, entityId :String = null) :Object
     {
@@ -587,7 +588,9 @@ public class EntityControl extends AbstractControl
      */
     protected function signalReceived_v1 (name :String, arg :Object) :void
     {
-        dispatchCtrlEvent(ControlEvent.SIGNAL_RECEIVED, name, arg);
+        if (_hasControl) {
+            dispatchCtrlEvent(ControlEvent.SIGNAL_RECEIVED, name, arg);
+        }
     }
 
     /**
@@ -611,19 +614,25 @@ public class EntityControl extends AbstractControl
     /** @private */
     protected function entityEntered_v1 (entityId :String) :void
     {
-        dispatchCtrlEvent(ControlEvent.ENTITY_ENTERED, entityId);
+        if (_hasControl) {
+            dispatchCtrlEvent(ControlEvent.ENTITY_ENTERED, entityId);
+        }
     }
 
     /** @private */
     protected function entityLeft_v1 (entityId :String) :void
     {
-        dispatchCtrlEvent(ControlEvent.ENTITY_LEFT, entityId);
+        if (_hasControl) {
+            dispatchCtrlEvent(ControlEvent.ENTITY_LEFT, entityId);
+        }
     }
 
     /** @private */
     protected function entityMoved_v1 (entityId :String) :void
     {
-        dispatchCtrlEvent(ControlEvent.ENTITY_MOVED, entityId);
+        if (_hasControl) {
+            dispatchCtrlEvent(ControlEvent.ENTITY_MOVED, entityId);
+        }
     }
 
     /**

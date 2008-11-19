@@ -34,6 +34,7 @@ public class ControlEvent extends Event
     public static const MESSAGE_RECEIVED :String = "messageRecieved";
 
     /** An event type dispatched when a signal is received.
+     * Dispatched only to the instance in control.
      * name: signal name
      * value: signal value
      *
@@ -122,6 +123,7 @@ public class ControlEvent extends Event
 
     /**
      * An event dispatched when a new entity has been added to the room.
+     * Note: only the instance in control receives this event.
      * name: The new entity ID
      * value: unused
      *
@@ -131,6 +133,7 @@ public class ControlEvent extends Event
 
     /**
      * An event dispatched when an entity has moved around within the room.
+     * Note: only the instance in control receives this event.
      * name: The moving entity's ID
      * value: unused
      *
@@ -140,6 +143,7 @@ public class ControlEvent extends Event
 
     /**
      * An event dispatched when an entity has been removed from the room.
+     * Note: only the instance in control receives this event.
      * name: The entity ID. Note that this will no longer exist in the room.
      * value: unused
      *
