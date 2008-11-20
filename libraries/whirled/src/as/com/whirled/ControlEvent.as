@@ -124,13 +124,16 @@ public class ControlEvent extends Event
     public static const ENTITY_ENTERED :String = "entityEntered";
 
     /**
-     * An event dispatched when an entity has moved around within the room.
+     * An event dispatched when an actor begins and ends walking within the room.
      * Note: only the instance in control receives this event.
      * name: The moving entity's ID
-     * value: unused
+     * value: If the actor has started moving, this is an array containing the logical location it
+     *   is moving to. Null when this event fires in response to the actor arriving at its
+     *   destination.
      *
      * @eventType entityMoved
      */
+    // TODO: Rename to ACTOR_MOVED
     public static const ENTITY_MOVED :String = "entityMoved";
 
     /**

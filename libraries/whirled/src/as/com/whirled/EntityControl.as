@@ -135,6 +135,12 @@ public class EntityControl extends AbstractControl
      * Querying this on non-avatars returns null. Use with getEntityProperty(). */
     public static const PROP_MEMBER_ID :String = "std:member_id";
 
+    /** The current movement speed of an actor (Number). */
+    public static const PROP_MOVE_SPEED :String = "std:move_speed";
+
+//    /** Whether or not the entity is moving (Boolean). Always false for non-actors. */
+//    public static const PROP_IS_MOVING :String = "std:is_moving";
+
     /**
      * @private
      */
@@ -521,7 +527,7 @@ public class EntityControl extends AbstractControl
 
         o["entityEntered_v1"] = entityEntered_v1;
         o["entityLeft_v1"] = entityLeft_v1;
-        o["entityMoved_v1"] = entityMoved_v1;
+        o["entityMoved_v2"] = entityMoved_v2;
         o["lookupEntityProperty_v1"] = lookupEntityProperty_v1;
     }
 
@@ -611,10 +617,10 @@ public class EntityControl extends AbstractControl
     }
 
     /** @private */
-    protected function entityMoved_v1 (entityId :String) :void
+    protected function entityMoved_v2 (entityId :String, destination :Array) :void
     {
         if (_hasControl) {
-            dispatchCtrlEvent(ControlEvent.ENTITY_MOVED, entityId);
+            dispatchCtrlEvent(ControlEvent.ENTITY_MOVED, entityId, destination);
         }
     }
 
