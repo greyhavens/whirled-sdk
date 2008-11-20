@@ -979,11 +979,7 @@ public class BaseGameBackend
         _loadedPacks[data.mediaURL] = true;
 
         var loader :URLLoader = new URLLoader();
-        // TODO: after the next thane release, this needs to be uncommented.  Unfortunately, the 
-        // current setter implementation will throw an error with this line in server code.  This
-        // setting is required for this method to work in client code however, since URLLoader
-        // defaults to URLLoaderDataFormat.TEXT in the flash player.
-//        loader.dataFormat = URLLoaderDataFormat.BINARY;
+        loader.dataFormat = URLLoaderDataFormat.BINARY;
         loader.addEventListener(IOErrorEvent.IO_ERROR, function (evt :IOErrorEvent) :void {
             if (onFailure != null) {
                 onFailure(new IOError("I/O Error: " + evt.text));
