@@ -86,6 +86,12 @@ public class RemoteEntity
         return get(EntityControl.PROP_TYPE) as String;
     }
 
+    /** @see EntityControl#PROP_MOVE_SPEED */
+    public function getMoveSpeed () :Number
+    {
+        return get(EntityControl.PROP_MOVE_SPEED) as Number;
+    }
+
     /** Your code's EntityControl. */
     protected var _ctrl :EntityControl;
 
