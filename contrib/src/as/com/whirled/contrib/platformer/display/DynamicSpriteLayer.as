@@ -43,10 +43,12 @@ public class DynamicSpriteLayer extends Layer
         }
     }
 
-    public function updateSprites (delta :Number) :void
+    public function updateSprites (delta :Number, ids :Array = null) :void
     {
         for each (var ds :DynamicSprite in _dynamics) {
-            ds.update(delta);
+            if (ids == null || ids.indexOf(ds.getDynamic().id) != -1) {
+                ds.update(delta);
+            }
         }
     }
 

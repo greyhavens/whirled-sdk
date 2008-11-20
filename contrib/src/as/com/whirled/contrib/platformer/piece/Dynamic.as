@@ -41,13 +41,14 @@ public class Dynamic
 
     public static const U_POS :int = 1 << 0;
     public static const U_VEL :int = 1 << 1;
+    public static const U_INTER :int = 1 << 2;
+    public static const DYN_COUNT :int = 2;
 
     public var x :Number = 0;
     public var y :Number = 0;
 
     public var id :int;
 
-    public var inter :int;
     public var owner :int;
 
     public var sprite :String;
@@ -83,6 +84,17 @@ public class Dynamic
     {
         _dy = dy;
         updateState |= U_VEL;
+    }
+
+    public function get inter () :int
+    {
+        return _inter;
+    }
+
+    public function set inter (inter :int) :void
+    {
+        _inter = inter;
+        updateState |= U_INTER;
     }
 
     public function xmlInstance () :XML
@@ -137,8 +149,11 @@ public class Dynamic
             //trace("toBytes pos (" + x + ", " + y + ")");
         }
         if ((_inState & U_VEL) > 0) {
-            bytes.writeFloat(dx);
-            bytes.writeFloat(dy);
+            bytes.writeFloat(_dx);
+            bytes.writeFloat(_dy);
+        }
+        if ((_inState & U_INTER) > 0) {
+            bytes.writeByte(_inter);
         }
         return bytes;
     }
@@ -151,15 +166,18 @@ public class Dynamic
             y = bytes.readFloat();
             //trace("fromBytes pos (" + x + ", " + y + ")");
         }
-
         if ((_inState & U_VEL) > 0) {
-            dx = bytes.readFloat();
-            dy = bytes.readFloat();
+            _dx = bytes.readFloat();
+            _dy = bytes.readFloat();
+        }
+        if ((_inState & U_INTER) > 0) {
+            _inter = bytes.readByte();
         }
     }
 
     protected var _inState :int;
     protected var _dx :Number = 0;
     protected var _dy :Number = 0;
+    protected var _inter :int;
 }
 }

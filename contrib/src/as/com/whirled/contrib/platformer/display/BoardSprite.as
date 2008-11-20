@@ -192,11 +192,11 @@ public class BoardSprite extends Sprite
         _lastY += delta;
     }
 
-    public function updateActors (delta :Number) :void
+    public function updateActors (delta :Number, ids :Array = null) :void
     {
-        _layers[BACK_DYNAMIC_LAYER].updateSprites(delta);
-        _layers[ACTOR_LAYER].updateSprites(delta);
-        _layers[SHOT_LAYER].updateSprites(delta);
+        _layers[BACK_DYNAMIC_LAYER].updateSprites(delta, ids);
+        _layers[ACTOR_LAYER].updateSprites(delta, ids);
+        _layers[SHOT_LAYER].updateSprites(delta, ids);
     }
 
     protected function addPieces (pieces :Array, layer :int = -1) :void

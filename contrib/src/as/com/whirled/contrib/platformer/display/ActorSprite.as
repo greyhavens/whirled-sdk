@@ -70,7 +70,6 @@ public class ActorSprite extends DynamicSprite
         super.update(delta);
         _oldDx = _actor.dx;
         _oldDy = _actor.dy;
-        _wasAttached = _actor.attached != null;
         if (_hitLeft <= 0 && _actor.wasHit > 0 && stage != null) {
             showHit();
         }
@@ -108,6 +107,5 @@ public class ActorSprite extends DynamicSprite
 
     protected var _oldDx :Number = 0;
     protected var _oldDy :Number = 0;
-    protected var _wasAttached :Boolean = false;
 }
 }
