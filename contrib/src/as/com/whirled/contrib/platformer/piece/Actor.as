@@ -45,7 +45,8 @@ public class Actor extends Dynamic
     public static const U_HEALTH :int = 1 << (DYN_COUNT + 1);
     public static const U_ORIENT :int = 1 << (DYN_COUNT + 2);
     public static const U_SHOOT :int = 1 << (DYN_COUNT + 3);
-    public static const ACT_COUNT :int = DYN_COUNT + 3;
+    public static const U_HIT :int = 1 << (DYN_COUNT + 4);
+    public static const ACT_COUNT :int = DYN_COUNT + 4;
 
     public var width :Number = 0;
     public var height :Number = 0;
@@ -53,8 +54,6 @@ public class Actor extends Dynamic
     public var accelX :Number = 0;
     public var accelY :Number = 0;
 
-    public var wasHit :int;
-    public var justShot :Boolean = false;
     public var events :Array = new Array();
 
     public var startHealth :Number;
@@ -135,6 +134,28 @@ public class Actor extends Dynamic
         updateState |= U_SHOOT;
     }
 
+    public function get justShot () :Boolean
+    {
+        return _justShot;
+    }
+
+    public function set justShot (justShot :Boolean) :void
+    {
+        _justShot = justShot;
+        updateState |= U_SHOOT;
+    }
+
+    public function get wasHit () :int
+    {
+        return _wasHit;
+    }
+
+    public function set wasHit (wasHit :int) :void
+    {
+        _wasHit = wasHit;
+        updateState |= U_HIT;
+    }
+
     public function setAttached (ld :LineData, id :int = -1) :void
     {
         _attached = ld;
@@ -168,6 +189,10 @@ public class Actor extends Dynamic
         }
         if ((_inState & U_SHOOT) > 0) {
             bytes.writeBoolean(_shooting);
+            bytes.writeBoolean(_justShot);
+        }
+        if ((_inState & U_HIT) > 0) {
+            bytes.writeByte(_wasHit);
         }
         return bytes;
     }
@@ -184,6 +209,10 @@ public class Actor extends Dynamic
         }
         if ((_inState & U_SHOOT) > 0) {
             _shooting = bytes.readBoolean();
+            _justShot = bytes.readBoolean();
+        }
+        if ((_inState & U_HIT) > 0) {
+            _wasHit = bytes.readByte();
         }
     }
 
@@ -193,5 +222,7 @@ public class Actor extends Dynamic
     protected var _health :Number;
     protected var _orient :int = ORIENT_RIGHT | ORIENT_SHOOT_F;
     protected var _shooting :Boolean = false;
+    protected var _justShot :Boolean = false;
+    protected var _wasHit :int;
 }
 }
