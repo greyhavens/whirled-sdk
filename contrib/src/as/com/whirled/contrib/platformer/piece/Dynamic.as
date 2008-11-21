@@ -49,8 +49,6 @@ public class Dynamic
 
     public var id :int;
 
-    public var owner :int;
-
     public var sprite :String;
 
     public var updateState :int;
@@ -95,6 +93,17 @@ public class Dynamic
     {
         _inter = inter;
         updateState |= U_INTER;
+    }
+
+    public function get owner () :int
+    {
+        return _owner;
+    }
+
+    public function set owner (owner :int) :void
+    {
+        _owner = owner;
+        updateState = 0;
     }
 
     public function xmlInstance () :XML
@@ -179,5 +188,6 @@ public class Dynamic
     protected var _dx :Number = 0;
     protected var _dy :Number = 0;
     protected var _inter :int;
+    protected var _owner :int;
 }
 }
