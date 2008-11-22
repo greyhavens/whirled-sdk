@@ -29,6 +29,7 @@ import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.game.GameController;
 import com.whirled.contrib.platformer.net.MessageManager;
 import com.whirled.contrib.platformer.net.DynamicMessage;
+import com.whirled.contrib.platformer.net.ShotMessage;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 
 public class PlatformerController
@@ -39,6 +40,7 @@ public class PlatformerController
         PlatformerContext.platformer = this;
         PlatformerContext.net = createMessageManager();
         PlatformerContext.net.addMessageType(DynamicMessage);
+        PlatformerContext.net.addMessageType(ShotMessage);
     }
 
     public function shutdown () :void

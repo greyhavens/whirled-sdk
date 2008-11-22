@@ -20,9 +20,10 @@
 
 package com.whirled.contrib.platformer.game {
 
-import com.whirled.contrib.platformer.piece.Actor;
-
+import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.board.ColliderTask;
+import com.whirled.contrib.platformer.piece.Actor;
+import com.whirled.contrib.platformer.net.ShotMessage;
 
 public class ActorController extends DynamicController
     implements ShootableController
@@ -48,9 +49,16 @@ public class ActorController extends DynamicController
         return true;
     }
 
-    public function doHit (damage :Number) :void
+    public function doHit (damage :Number, owner :int) :void
     {
-        _actor.health -= damage;
+        if (owner == PlatformerContext.gctrl.game.getMyId()) {
+            if (_actor.amOwner()) {
+                _actor.health -= damage;
+            } else {
+                trace("sending hit message actor: " + _actor.id + " damage " + damage);
+                PlatformerContext.net.sendMessage(ShotMessage.shotHit(_actor.id, damage));
+            }
+        }
     }
 
     public function getCenterX () :Number

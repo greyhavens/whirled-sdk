@@ -41,7 +41,7 @@ public class SpawnerController extends RectDynamicController
         return _spawner.destructable && _spawner.health > 0;
     }
 
-    public function doHit (damage :Number) :void
+    public function doHit (damage :Number, owner :int) :void
     {
         _spawner.health -= damage;
         _spawner.wasHit = true;
