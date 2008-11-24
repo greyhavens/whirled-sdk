@@ -196,6 +196,11 @@ public class Definitions
             new FunctionSpec("getAvatarInfo", room.getAvatarInfo, [
                 new Parameter("playerId", int)]),
             new FunctionSpec("getRoomBounds", room.getRoomBounds),
+            new FunctionSpec("getEntityIds", room.getEntityIds, [
+                new Parameter("type", String)]),
+            new FunctionSpec("getEntityProperty", room.getEntityProperty, [
+                new Parameter("key", String),
+                new Parameter("entityId", String)])
         ];
 
         pushPropsFuncs(funcs, room.props);
