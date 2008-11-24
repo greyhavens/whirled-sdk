@@ -377,11 +377,6 @@ public class EntityControl extends AbstractControl
      *
      * <p>Control is a mutually exclusive lock across all instances of the entity (i.e. running in
      * other browsers across the network). Only one client can hold the lock at any time.</p>
-     *
-     * <p>Note: control is <em>not</em> automatically assigned. If an entity wishes to obtain
-     * control, it should first call <code>requestControl</code> and it will then receive a
-     * <code>CONTROL_ACQUIRED</code> event if and when control has been assigned to this client.
-     * There are no guarantees which of the requesting clients will receive it, or when.</p>
      */
     public function hasControl () :Boolean
     {
@@ -389,19 +384,9 @@ public class EntityControl extends AbstractControl
     }
 
     /**
-     * Request to have this client control all the instances of this entity. The other instances
-     * are the same code, but running in other browsers. See the <code>hasControl</code> method.
-     */
-    public function requestControl () :void
-    {
-        callHostCode("requestControl_v1");
-    }
-
-    /**
      * Configures the interval on which this item is "ticked" in milliseconds. If the client
      * setting this interval is in control, it will get a <code>timer</code> event at the
-     * specified interval. Otherwise, the entity will request control from the server, and only
-     * set the timer once control was granted (if ever).
+     * specified interval.
      *
      * <p>Ticking mechanism is turned off by default. Application needs to set the interval
      * explicitly to start receiving tick events. The tick interval can be no smaller than 100ms
@@ -417,9 +402,6 @@ public class EntityControl extends AbstractControl
 
         if (_hasControl) {
             recheckTicker();
-
-        } else if (_tickInterval > 0) {
-            requestControl();
         }
     }
 
