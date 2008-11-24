@@ -140,7 +140,7 @@ public class EntityControl extends AbstractControl
     public static const PROP_NAME :String = "std:name";
 
     /**
-     * The unique Whirled player ID of the owner of an avatar or pet (int).
+     * The unique Whirled player ID (int) of the wearer of the avatar, or the owner of the pet.
      * Use with getEntityProperty().
      */
     public static const PROP_MEMBER_ID :String = "std:member_id";
