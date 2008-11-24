@@ -53,6 +53,27 @@ public class RoomSubControlClient extends RoomSubControlBase
     }
 
     /**
+     * Enumerates the ids of all entities in this room.
+     *
+     * @param type an optional filter to restrict the results to a particular type of entity,
+     * currently one of 'furni', 'avatar' or 'pet'.
+     */
+    public function getEntityIds (type :String = null) :Array
+    {
+        var entities :Array = callHostCode("getEntityIds_v1", type);
+        return (entities == null) ? [] : entities;
+    }
+
+    /**
+     * Looks up and returns the specified property for the specified entity.
+     * Returns null if the entity does not exist or the entity has no such property.
+     */
+    public function getEntityProperty (key :String, entityId :String = null) :Object
+    {
+        return callHostCode("getEntityProperty_v1", entityId, key);
+    }
+
+    /**
      * Accesses a previosly spawned MOB in this room.
      * @see http://wiki.whirled.com/Mobs
      * @see RoomSubControlBase#event:mobControlAvailable
