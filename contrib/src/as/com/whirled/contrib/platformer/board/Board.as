@@ -196,7 +196,7 @@ public class Board
 
     public function addShot (s :Shot) :void
     {
-        s.id = ++_maxId;
+        s.id = ++_shotId;
         _shots[s.id] = s;
         //_shots.push(s);
         sendEvent(SHOT_ADDED, s, "");
@@ -637,11 +637,12 @@ public class Board
     /** All the pieces on the board. */
     protected var _pieceTree :Array = new Array();
     protected var _maxId :int;
+    protected var _shotId :int = 100000;
     protected var _name :String;
 
     protected var _actors :Object = new Object();
     protected var _dynamics :Object = new Object();
-    protected var _dynamicIns :Array = new Array();
+    protected var _dynamicIns :Object = new Object();
     protected var _globalDynamicIns :Object = new Object();
     protected var _shots :Object = new Object();
     protected var _bound :Array = new Array();

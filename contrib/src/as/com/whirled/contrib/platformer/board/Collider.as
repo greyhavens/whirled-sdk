@@ -198,7 +198,7 @@ public class Collider
 
     public function getDynamicBounds (d :Dynamic) :DynamicBounds
     {
-        return _dynamics.get(d);
+        return _dynamics[d.id];
     }
 
     public function addDynamic (dc :DynamicController) :void
@@ -206,9 +206,12 @@ public class Collider
         var d :Dynamic = dc.getDynamic();
         var db :DynamicBounds = getBounds(dc);
         if (db != null) {
-            _dynamics.put(d, db);
+            _dynamics[d.id] = db;
             var arr :Array = getDynamicBoundsByType(d.inter);
             arr.push(db);
+            trace("bounds added for dynamiccontroller " + d.id);
+        } else {
+            trace("found no bounds for dynamiccontroller " + d.id);
         }
         var task :ColliderTask = dc.getTask();
         if (task != null) {
@@ -250,12 +253,13 @@ public class Collider
         var d :Dynamic = dc.getDynamic();
         var db :DynamicBounds = getDynamicBounds(d);
         if (db != null) {
-            _dynamics.remove(d);
+            delete _dynamics[d.id];
             var arr :Array = getDynamicBoundsByType(d.inter);
             var idx :int = arr.indexOf(db);
             if (idx != -1) {
                 arr.splice(idx, 1);
             }
+            trace("removing bounds for: " + d.id);
             debug("dynamic removed inter: " + d.inter + " remaining bounds: " + arr.length);
         }
         for (var ii :int = 0; ii < _tasks.length; ii++) {
@@ -341,7 +345,7 @@ public class Collider
 
     public function translateDynamic (d :Dynamic, dX :Number, dY :Number) :void
     {
-        var db :DynamicBounds = _dynamics.get(d);
+        var db :DynamicBounds = _dynamics[d.id];
         db.translate(dX, dY);
     }
 
@@ -456,7 +460,7 @@ public class Collider
     }
 
     protected var _lines :Array = new Array();
-    protected var _dynamics :HashMap = new HashMap();
+    protected var _dynamics :Object = new Object();
     protected var _dynamicBounds :Array = new Array();
     protected var _tasks :Array = new Array();
     protected var _boundLines :Array = new Array();
