@@ -209,9 +209,6 @@ public class Collider
             _dynamics[d.id] = db;
             var arr :Array = getDynamicBoundsByType(d.inter);
             arr.push(db);
-            trace("bounds added for dynamiccontroller " + d.id);
-        } else {
-            trace("found no bounds for dynamiccontroller " + d.id);
         }
         var task :ColliderTask = dc.getTask();
         if (task != null) {
@@ -259,7 +256,6 @@ public class Collider
             if (idx != -1) {
                 arr.splice(idx, 1);
             }
-            trace("removing bounds for: " + d.id);
             debug("dynamic removed inter: " + d.inter + " remaining bounds: " + arr.length);
         }
         for (var ii :int = 0; ii < _tasks.length; ii++) {
