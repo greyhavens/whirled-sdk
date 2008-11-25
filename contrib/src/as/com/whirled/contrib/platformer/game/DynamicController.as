@@ -36,6 +36,10 @@ public class DynamicController
         _controller = controller;
     }
 
+    public function shutdown () :void
+    {
+    }
+
     public function tick (delta :Number) :void
     {
     }

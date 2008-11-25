@@ -573,6 +573,11 @@ public class Board
         return _maxId;
     }
 
+    public function reserveId () :int
+    {
+        return ++_maxId;
+    }
+
     public function addEventListener (eventName :String, callback :Function) :void
     {
         var _callbacks :Array = _listeners.get(eventName);

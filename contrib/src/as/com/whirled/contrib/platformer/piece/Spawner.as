@@ -20,8 +20,13 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import flash.utils.ByteArray;
+
 public class Spawner extends RectDynamic
 {
+    public static const U_HEALTH :int = 1 << (DYN_COUNT + 1);
+    public static const U_SPAWN :int = 1 << (DYN_COUNT + 2);
+
     public var spawnXML :XML;
     public var totalSpawns :int;
     public var maxConcurrent :int;
@@ -29,13 +34,9 @@ public class Spawner extends RectDynamic
     public var spawnDelay :Number;
     public var deathInterval :Number;
     public var destructable :Boolean;
-    public var health :Number;
-    public var spawning :Boolean;
-    public var spawns :Array;
-    public var spawnCount :int;
     public var deathEffect :String;
-    public var wasHit :Boolean;
     public var offX :Number;
+    public var spawns :Array;
 
     public function Spawner (insxml :XML = null)
     {
@@ -60,6 +61,52 @@ public class Spawner extends RectDynamic
             offX = insxml.hasOwnProperty("@offX") ? insxml.@offX : 0;
         }
         inter = Dynamic.ENEMY;
+    }
+
+    public function get health () :Number
+    {
+        return _health;
+    }
+
+    public function set health (health :Number) :void
+    {
+        _health = health;
+        updateState |= U_HEALTH;
+    }
+
+    public function get wasHit () :Boolean
+    {
+        return _wasHit;
+    }
+
+    public function set wasHit (wasHit :Boolean) :void
+    {
+        if (_wasHit != wasHit) {
+            _wasHit = wasHit;
+            updateState |= U_HEALTH;
+        }
+    }
+
+    public function get spawning () :int
+    {
+        return _spawning;
+    }
+
+    public function set spawning (spawning :int) :void
+    {
+        _spawning = spawning;
+        updateState |= U_SPAWN;
+    }
+
+    public function get spawnCount () :int
+    {
+        return _spawnCount;
+    }
+
+    public function set spawnCount (spawnCount :int) :void
+    {
+        _spawnCount = spawnCount;
+        updateState |= U_SPAWN;
     }
 
     override public function xmlInstance () :XML
@@ -97,5 +144,42 @@ public class Spawner extends RectDynamic
         return destructable ? super.isAlive() :
             (spawnCount < totalSpawns || spawns == null || spawns.length == 0);
     }
+
+    override public function ownerType () :int
+    {
+        return OWN_SERVER;
+    }
+
+    override public function toBytes (bytes :ByteArray = null) :ByteArray
+    {
+        bytes = super.toBytes(bytes);
+        if ((_inState & U_HEALTH) > 0) {
+            bytes.writeFloat(_health);
+            bytes.writeBoolean(_wasHit);
+        }
+        if ((_inState & U_SPAWN) > 0) {
+            bytes.writeInt(_spawning);
+            bytes.writeByte(_spawnCount);
+        }
+        return bytes;
+    }
+
+    override public function fromBytes (bytes :ByteArray) :void
+    {
+        super.fromBytes(bytes);
+        if ((_inState & U_HEALTH) > 0) {
+            _health = bytes.readFloat();
+            _wasHit = bytes.readBoolean();
+        }
+        if ((_inState & U_SPAWN) > 0) {
+            _spawning = bytes.readInt();
+            _spawnCount = bytes.readByte();
+        }
+    }
+
+    protected var _health :Number;
+    protected var _spawning :int;
+    protected var _spawnCount :int;
+    protected var _wasHit :Boolean;
 }
 }

@@ -39,6 +39,10 @@ public class Dynamic
     public static const DEAD :int = 3;
     public static const SPAWN :int = 4;
 
+    public static const OWN_PLAYER :int = 1;
+    public static const OWN_SERVER :int = 2;
+    public static const OWN_ALL :int = 3;
+
     public static const U_POS :int = 1 << 0;
     public static const U_VEL :int = 1 << 1;
     public static const U_INTER :int = 1 << 2;
@@ -144,6 +148,11 @@ public class Dynamic
     public function amOwner () :Boolean
     {
         return PlatformerContext.gctrl.game.getMyId() == owner;
+    }
+
+    public function ownerType () :int
+    {
+        return OWN_PLAYER;
     }
 
     public function toBytes (bytes :ByteArray = null) :ByteArray

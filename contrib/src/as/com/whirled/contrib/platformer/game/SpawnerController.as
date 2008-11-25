@@ -20,7 +20,12 @@
 
 package com.whirled.contrib.platformer.game {
 
+import com.whirled.net.MessageReceivedEvent;
+
+import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.board.Board;
+import com.whirled.contrib.platformer.net.ShotMessage;
+import com.whirled.contrib.platformer.net.SpawnMessage;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.Spawner;
 
@@ -34,6 +39,14 @@ public class SpawnerController extends RectDynamicController
         if (_spawner.spawns == null) {
             _spawner.spawns = new Array();
         }
+        PlatformerContext.net.addEventListener(
+            MessageReceivedEvent.MESSAGE_RECEIVED, messageReceived);
+    }
+
+    override public function shutdown () :void
+    {
+        PlatformerContext.net.removeEventListener(
+            MessageReceivedEvent.MESSAGE_RECEIVED, messageReceived);
     }
 
     public function doesHit (x :Number = NaN, y :Number = NaN) :Boolean
@@ -43,8 +56,12 @@ public class SpawnerController extends RectDynamicController
 
     public function doHit (damage :Number, owner :int) :void
     {
-        _spawner.health -= damage;
-        _spawner.wasHit = true;
+        if (_spawner.amOwner()) {
+            _spawner.health -= damage;
+            _spawner.wasHit = true;
+        } else {
+            PlatformerContext.net.sendMessage(ShotMessage.shotHit(_spawner.id, damage));
+        }
     }
 
     public function doesCollide () :Boolean
@@ -68,45 +85,83 @@ public class SpawnerController extends RectDynamicController
         if (!_spawner.shouldSpawn()) {
             return;
         }
-        if (_spawnDelay > 0) {
-            _spawnDelay -= delta;
-        } else if (_spawner.spawning) {
-            var cxml :XML = _spawner.spawnXML.copy();
-            cxml.@x = _spawner.x + _spawner.width/2 + _spawner.offX;
-            cxml.@y = _spawner.y;
-            var a :Actor = Board.loadDynamic(cxml) as Actor;
-            _controller.getBoard().addActor(a);
-            _spawner.spawns.push(a.id);
-            _spawner.spawning = false;
-            _spawnInterval = _spawner.spawnInterval;
-            _spawner.spawnCount++;
-        } else if (_spawnInterval > 0) {
-            _spawnInterval -= delta;
-        } else if ((_spawner.totalSpawns == 0 || _spawner.spawnCount < _spawner.totalSpawns) &&
-                (_spawner.maxConcurrent == 0 || _spawner.maxConcurrent > _spawner.spawns.length)) {
-            _spawner.spawning = true;
-            _spawnDelay = _spawner.spawnDelay;
+        if (!_spawner.amOwner()) {
+            if (_spawnDelay > 0) {
+                _spawnDelay -= delta;
+                if (_spawnDelay <= 0) {
+                    spawn();
+                }
+            } else if (_spawner.spawning > 0) {
+                trace("spawner (" + _spawner.id + ") is spawning (" + _spawner.spawning + ")");
+                _spawnDelay = _spawner.spawnDelay;
+                _spawnId = _spawner.spawning;
+            }
+        } else {
+            if (_spawnDelay > 0) {
+                _spawnDelay -= delta;
+            } else if (_spawner.spawning > 0) {
+                spawn();
+                _spawnInterval = _spawner.spawnInterval;
+            } else if (_spawnInterval > 0) {
+                _spawnInterval -= delta;
+            } else if ((_spawner.totalSpawns == 0 || _spawner.spawnCount < _spawner.totalSpawns) &&
+                    (_spawner.maxConcurrent == 0 ||
+                     _spawner.maxConcurrent > _spawner.spawns.length)) {
+                _spawner.spawning = _controller.getBoard().reserveId();
+                _spawnId = _spawner.spawning;
+                _spawnDelay = _spawner.spawnDelay;
+            }
         }
     }
 
     override public function postTick () :void
     {
-        var ii :int;
-        while (ii < _spawner.spawns.length) {
-            var a :Actor = _controller.getBoard().getActor(_spawner.spawns[ii]);
-            if (a == null || !a.shouldSpawn()) {
-                _spawner.spawns.splice(ii, 1);
-                _spawnInterval = Math.max(_spawnInterval, _spawner.deathInterval);
-            } else {
-                ii++;
+        if (_spawner.amOwner()) {
+            var ii :int;
+            while (ii < _spawner.spawns.length) {
+                var a :Actor = _controller.getBoard().getActor(_spawner.spawns[ii]);
+                if (a == null || !a.shouldSpawn()) {
+                    _spawner.spawns.splice(ii, 1);
+                    _spawnInterval = Math.max(_spawnInterval, _spawner.deathInterval);
+                } else {
+                    ii++;
+                }
             }
         }
         _spawner.wasHit = false;
         super.postTick();
     }
 
+    protected function spawn () :void
+    {
+        var cxml :XML = _spawner.spawnXML.copy();
+        cxml.@x = _spawner.x + _spawner.width/2 + _spawner.offX;
+        cxml.@y = _spawner.y;
+        var a :Actor = Board.loadDynamic(cxml) as Actor;
+        a.id = _spawnId;
+        a.owner = _spawnOwner;
+        _controller.getBoard().addActor(a);
+        _spawner.spawns.push(a.id);
+        _spawner.spawning = 0;
+        _spawnOwner = 0;
+        _spawner.spawnCount++;
+        trace("spawner spawned dynamic " + a.id);
+    }
+
+    protected function messageReceived (event :MessageReceivedEvent) :void
+    {
+        if (event.value is SpawnMessage) {
+            var spawnMsg :SpawnMessage = event.value as SpawnMessage;
+            if (spawnMsg.state == SpawnMessage.OWNER && spawnMsg.id == _spawnId) {
+                _spawnOwner = spawnMsg.idx;
+            }
+        }
+    }
+
     protected var _spawner :Spawner;
     protected var _spawnInterval :Number;
     protected var _spawnDelay :Number;
+    protected var _spawnId :int;
+    protected var _spawnOwner :int;
 }
 }

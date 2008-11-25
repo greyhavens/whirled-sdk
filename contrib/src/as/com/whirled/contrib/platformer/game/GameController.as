@@ -26,6 +26,8 @@ import flash.utils.getTimer;
 import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.board.Collider;
+import com.whirled.contrib.platformer.net.DynamicMessage;
+import com.whirled.contrib.platformer.net.TickMessage;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.CutScene;
@@ -141,6 +143,7 @@ public class GameController
             }
         }
         updateDisplay(usedDelta/1000);
+        sendUpdates();
         for each (controller in _controllers) {
             if (controller is TickController && (!paused || controller is PauseController)) {
                 (controller as TickController).postTick();
@@ -219,6 +222,7 @@ public class GameController
                 dc = _controllers[ii];
                 _controllers.splice(ii, 1);
                 _collider.removeDynamic(dc);
+                dc.shutdown();
                 break;
             }
         }
@@ -329,6 +333,26 @@ public class GameController
     protected function updateDisplay (delta :Number) :void
     {
         //ClientPlatformerContext.boardSprite.tick(delta);
+    }
+
+    protected function sendUpdates () :void
+    {
+        for each (var d :Dynamic in PlatformerContext.board.getActors()) {
+            if (!d.amOwner()) {
+                continue;
+            }
+            d.updateState |= Dynamic.U_POS;
+            PlatformerContext.net.sendMessage(DynamicMessage.wrap(d));
+        }
+        for each (d in PlatformerContext.board.getDynamics()) {
+            if (!d.amOwner()) {
+                continue;
+            }
+            if (d.updateState != 0) {
+                PlatformerContext.net.sendMessage(DynamicMessage.wrap(d));
+            }
+        }
+        PlatformerContext.net.sendMessage(new TickMessage());
     }
 
     protected var _controllers :Array = new Array();

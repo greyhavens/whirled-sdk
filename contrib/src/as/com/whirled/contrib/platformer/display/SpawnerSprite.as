@@ -60,7 +60,7 @@ public class SpawnerSprite extends DynamicSprite
             (_disp as DisplayObjectContainer).addChild(node);
             generateParticleEffect(_spawner.deathEffect, node);
             _state = DEAD;
-        } else if (_spawner.spawning) {
+        } else if (_spawner.spawning > 0) {
             changeState(SPAWN);
         } else if (_state == SPAWN) {
             _state = IDLE;

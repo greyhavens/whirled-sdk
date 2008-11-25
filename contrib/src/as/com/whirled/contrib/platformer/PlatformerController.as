@@ -30,6 +30,8 @@ import com.whirled.contrib.platformer.game.GameController;
 import com.whirled.contrib.platformer.net.MessageManager;
 import com.whirled.contrib.platformer.net.DynamicMessage;
 import com.whirled.contrib.platformer.net.ShotMessage;
+import com.whirled.contrib.platformer.net.SpawnMessage;
+import com.whirled.contrib.platformer.net.TickMessage;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 
 public class PlatformerController
@@ -41,6 +43,8 @@ public class PlatformerController
         PlatformerContext.net = createMessageManager();
         PlatformerContext.net.addMessageType(DynamicMessage);
         PlatformerContext.net.addMessageType(ShotMessage);
+        PlatformerContext.net.addMessageType(SpawnMessage);
+        PlatformerContext.net.addMessageType(TickMessage);
     }
 
     public function shutdown () :void
