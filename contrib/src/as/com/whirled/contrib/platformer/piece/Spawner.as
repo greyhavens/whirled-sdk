@@ -106,7 +106,7 @@ public class Spawner extends RectDynamic
     public function set spawnCount (spawnCount :int) :void
     {
         _spawnCount = spawnCount;
-        updateState |= U_SPAWN;
+        //updateState |= U_SPAWN;
     }
 
     override public function xmlInstance () :XML
@@ -159,7 +159,7 @@ public class Spawner extends RectDynamic
         }
         if ((_inState & U_SPAWN) > 0) {
             bytes.writeInt(_spawning);
-            bytes.writeByte(_spawnCount);
+            //bytes.writeByte(_spawnCount);
         }
         return bytes;
     }
@@ -173,7 +173,7 @@ public class Spawner extends RectDynamic
         }
         if ((_inState & U_SPAWN) > 0) {
             _spawning = bytes.readInt();
-            _spawnCount = bytes.readByte();
+            //_spawnCount = bytes.readByte();
         }
     }
 

@@ -95,6 +95,7 @@ public class SpawnerController extends RectDynamicController
                 trace("spawner (" + _spawner.id + ") is spawning (" + _spawner.spawning + ")");
                 _spawnDelay = _spawner.spawnDelay;
                 _spawnId = _spawner.spawning;
+                _spawnOwner = 0;
             }
         } else {
             if (_spawnDelay > 0) {
@@ -110,22 +111,21 @@ public class SpawnerController extends RectDynamicController
                 _spawner.spawning = _controller.getBoard().reserveId();
                 _spawnId = _spawner.spawning;
                 _spawnDelay = _spawner.spawnDelay;
+                _spawnOwner = 0;
             }
         }
     }
 
     override public function postTick () :void
     {
-        if (_spawner.amOwner()) {
-            var ii :int;
-            while (ii < _spawner.spawns.length) {
-                var a :Actor = _controller.getBoard().getActor(_spawner.spawns[ii]);
-                if (a == null || !a.shouldSpawn()) {
-                    _spawner.spawns.splice(ii, 1);
-                    _spawnInterval = Math.max(_spawnInterval, _spawner.deathInterval);
-                } else {
-                    ii++;
-                }
+        var ii :int;
+        while (ii < _spawner.spawns.length) {
+            var a :Actor = _controller.getBoard().getActor(_spawner.spawns[ii]);
+            if (a == null || !a.shouldSpawn()) {
+                _spawner.spawns.splice(ii, 1);
+                _spawnInterval = Math.max(_spawnInterval, _spawner.deathInterval);
+            } else {
+                ii++;
             }
         }
         _spawner.wasHit = false;
@@ -143,7 +143,6 @@ public class SpawnerController extends RectDynamicController
         _controller.getBoard().addActor(a);
         _spawner.spawns.push(a.id);
         _spawner.spawning = 0;
-        _spawnOwner = 0;
         _spawner.spawnCount++;
         trace("spawner spawned dynamic " + a.id);
     }
