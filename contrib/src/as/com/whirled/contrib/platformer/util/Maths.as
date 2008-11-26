@@ -48,5 +48,15 @@ public class Maths
     {
         return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
     }
+
+    /**
+     * Compares two numbers to be within minimal difference.
+     */
+    public static function equalsy (a :Number, b :Number) :Boolean
+    {
+        return Math.abs(a - b) < EPSILON;
+    }
+
+    protected static const EPSILON :Number = 0.0001;
 }
 }
