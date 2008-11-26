@@ -112,7 +112,9 @@ public class KeyboardController
     {
         if (_downKeys[keyCode] == null || _downKeys[keyCode] == false) {
             var now :int = getTimer();
-            if (_lastDown[keyCode] != null && _lastDown[keyCode] + DOUBLE_TAP > now) {
+            if (_lastUp[keyCode] != null && _lastUp[keyCode] + IGNORE_DOUBLE > now) {
+                _doubleTap[keyCode] = false;
+            } else if (_lastDown[keyCode] != null && _lastDown[keyCode] + DOUBLE_TAP > now) {
                 _doubleTap[keyCode] = true;
                 //trace("doubleTap: " + keyCode);
             } else {
@@ -162,6 +164,7 @@ public class KeyboardController
                 _dx = 0;
             }
         }
+        _lastUp[event.keyCode] = getTimer();
         _downKeys[event.keyCode] = false;
         updateACS(event);
         //trace("keyReleased: " + event.keyCode);
@@ -174,9 +177,11 @@ public class KeyboardController
 
     protected var _downKeys :Array = new Array();
     protected var _lastDown :Array = new Array();
+    protected var _lastUp :Array = new Array();
     protected var _doubleTap :Array = new Array();
     protected var _wasRead :Array = new Array();
 
     protected static const DOUBLE_TAP :int = 250;
+    protected static const IGNORE_DOUBLE :int = 40;
 }
 }
