@@ -36,7 +36,8 @@ public class Actor extends Dynamic
     public static const ORIENT_SHOOT_F :int = 1 << 4;
     public static const ORIENT_SHOOT_U :int = 1 << 5;
     public static const ORIENT_SHOOT_D :int = 1 << 6;
-    public static const ORIENT_SHOOT_MASK :int = ~(7 << 4);
+    public static const ORIENT_SHOOT_B :int = 1 << 7;
+    public static const ORIENT_SHOOT_MASK :int = ~(15 << 4);
 
     public static const HIT_FRONT :int = 1;
     public static const HIT_BACK :int = 1 << 2;

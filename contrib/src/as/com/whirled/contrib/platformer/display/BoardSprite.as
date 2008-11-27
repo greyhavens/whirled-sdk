@@ -120,6 +120,16 @@ public class BoardSprite extends Sprite
         updateDisplay();
     }
 
+    public function get centerX () :Number
+    {
+        return _centerX;
+    }
+
+    public function get centerY () :Number
+    {
+        return _centerY;
+    }
+
     public function ensureVisible (actor :Actor, yshift :Number = 0) :void
     {
         var lxbuffer :int = BUFFER * (1 + (actor.dx < 0 ? -actor.dx : 0) / 5);
