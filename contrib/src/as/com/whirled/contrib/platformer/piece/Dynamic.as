@@ -147,7 +147,7 @@ public class Dynamic
 
     public function amOwner () :Boolean
     {
-        return PlatformerContext.gctrl.game.getMyId() == owner;
+        return PlatformerContext.gctrl.game.getMyId() == owner || ownerType() == OWN_ALL;
     }
 
     public function ownerType () :int

@@ -338,14 +338,14 @@ public class GameController
     protected function sendUpdates () :void
     {
         for each (var d :Dynamic in PlatformerContext.board.getActors()) {
-            if (!d.amOwner()) {
+            if (!d.amOwner() || d.ownerType() == Dynamic.OWN_ALL) {
                 continue;
             }
             d.updateState |= Dynamic.U_POS;
             PlatformerContext.net.sendMessage(DynamicMessage.wrap(d));
         }
         for each (d in PlatformerContext.board.getDynamics()) {
-            if (!d.amOwner()) {
+            if (!d.amOwner() || d.ownerType() == Dynamic.OWN_ALL) {
                 continue;
             }
             if (d.updateState != 0) {
