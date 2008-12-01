@@ -48,9 +48,11 @@ public class PlayerSubControlBase extends TargetedSubControl
     }
 
     /**
-     * Accesses the read-write properties of this player. Properties may be persisted and will be
-     * restored when the player rejoins the game. Persistent properties should only be used when
-     * genuinely necessary. Persisting properties on a guest player will have no effect.
+     * Accesses the read-write properties of this player. Properties marked as such will be
+     * persisted and restored whenever the player joins the game. Persistent properties should
+     * only be used when genuinely necessary. Persisting properties on a guest player will have
+     * no effect.
+     *
      * @see com.whirled.net.NetConstants#makePersistent()
      */
     public function get props () :PropertySubControl

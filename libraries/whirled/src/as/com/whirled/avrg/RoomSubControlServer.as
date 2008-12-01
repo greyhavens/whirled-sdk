@@ -38,8 +38,9 @@ public class RoomSubControlServer extends RoomSubControlBase
     }
 
     /**
-     * Accesses the properties for this room. Properties may be persisted and will be restored
-     * whenever the room is occupied anew.
+     * Accesses the properties for this room. Room properties marked as such will be persisted
+     * and restored whenever the room is occupied anew.
+     *
      * @see com.whirled.net.NetConstants#makePersistent()
      */
     public function get props () :PropertySubControl
