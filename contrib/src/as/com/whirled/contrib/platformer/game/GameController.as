@@ -105,6 +105,11 @@ public class GameController
 
     public function shutdown () :void
     {
+        for each (var o :Object in _controllers) {
+            if (o is DynamicController) {
+                o.shutdown();
+            }
+        }
     }
 
     public function setPause (pause :Boolean) :void
