@@ -47,13 +47,12 @@ public class Actor extends Dynamic
     public static const U_ORIENT :int = 1 << (DYN_COUNT + 2);
     public static const U_SHOOT :int = 1 << (DYN_COUNT + 3);
     public static const U_HIT :int = 1 << (DYN_COUNT + 4);
-    public static const ACT_COUNT :int = DYN_COUNT + 4;
+    public static const U_ACCEL :int = 1 << (DYN_COUNT + 5);
+    public static const ACT_COUNT :int = DYN_COUNT + 5;
 
     public var width :Number = 0;
     public var height :Number = 0;
 
-    public var accelX :Number = 0;
-    public var accelY :Number = 0;
 
     public var events :Array = new Array();
 
@@ -157,6 +156,32 @@ public class Actor extends Dynamic
         updateState |= U_HIT;
     }
 
+    public function get accelX () :Number
+    {
+        return _accelX;
+    }
+
+    public function set accelX (accelX :Number) :void
+    {
+        if (_accelX != accelX) {
+            _accelX = accelX;
+            updateState |= U_ACCEL;
+        }
+    }
+
+    public function get accelY () :Number
+    {
+        return _accelY;
+    }
+
+    public function set accelY (accelY :Number) :void
+    {
+        if (_accelY != accelY) {
+            _accelY = accelY;
+            updateState |= U_ACCEL;
+        }
+    }
+
     public function setAttached (ld :LineData, id :int = -1) :void
     {
         _attached = ld;
@@ -195,6 +220,10 @@ public class Actor extends Dynamic
         if ((_inState & U_HIT) > 0) {
             bytes.writeByte(_wasHit);
         }
+        if ((_inState & U_ACCEL) > 0) {
+            bytes.writeFloat(_accelX);
+            bytes.writeFloat(_accelY);
+        }
         return bytes;
     }
 
@@ -215,6 +244,10 @@ public class Actor extends Dynamic
         if ((_inState & U_HIT) > 0) {
             _wasHit = bytes.readByte();
         }
+        if ((_inState & U_ACCEL) > 0) {
+            _accelX = bytes.readFloat();
+            _accelY = bytes.readFloat();
+        }
     }
 
     protected var _bounds :Rect;
@@ -225,5 +258,7 @@ public class Actor extends Dynamic
     protected var _shooting :Boolean = false;
     protected var _justShot :Boolean = false;
     protected var _wasHit :int;
+    protected var _accelX :Number = 0;
+    protected var _accelY :Number = 0;
 }
 }
