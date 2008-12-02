@@ -225,11 +225,12 @@ public class EntityControl extends AbstractControl
     }
 
     /**
-     * Returns true if the local client has editing privileges in the current room.  Note that this
-     * may change without notice. This value should be re-checked prior to persisting any sort of
-     * setting in the entity memory.
+     * Returns true if the local client has management privileges in the current room.
+     * A user with management permissions can edit the room, among other things.
+     * Note that this may change without notice, meaning that you shouldn't just check it once
+     * for a user and assume they still have management permissions later.
      */
-    public function canEditRoom () :Boolean
+    public function canManageRoom () :Boolean
     {
         return callHostCode("canEditRoom_v1") as Boolean;
     }
