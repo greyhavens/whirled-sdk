@@ -141,8 +141,10 @@ public class Actor extends Dynamic
 
     public function set justShot (justShot :Boolean) :void
     {
-        _justShot = justShot;
-        updateState |= U_SHOOT;
+        if (_justShot != justShot) {
+            _justShot = justShot;
+            updateState |= U_SHOOT;
+        }
     }
 
     public function get wasHit () :int

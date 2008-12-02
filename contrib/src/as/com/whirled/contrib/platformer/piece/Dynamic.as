@@ -95,8 +95,10 @@ public class Dynamic
 
     public function set inter (inter :int) :void
     {
-        _inter = inter;
-        updateState |= U_INTER;
+        if (_inter != inter) {
+            _inter = inter;
+            updateState |= U_INTER;
+        }
     }
 
     public function get owner () :int

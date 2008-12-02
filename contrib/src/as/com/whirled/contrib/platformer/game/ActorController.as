@@ -75,6 +75,7 @@ public class ActorController extends DynamicController
     {
         super.postTick();
         _actor.wasHit = 0;
+        _actor.justShot = false;
         if (_actor.events.length > 0) {
             _actor.events = new Array();
         }

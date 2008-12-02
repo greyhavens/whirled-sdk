@@ -220,20 +220,24 @@ public class Collider
         }
     }
 
-    public function updateInter (ac :ActorController, inter :int) :void
+    public function updateInter (dc :DynamicController, inter :int) :void
     {
-        var a :Actor = ac.getActor();
-        if (a.inter == inter) {
-            return;
+        var d :Dynamic = dc.getDynamic();
+        if (d.inter != inter && d.amOwner()) {
+            updateInterTo(d, d.inter, inter);
         }
-        var db :DynamicBounds = getDynamicBounds(a);
-        var arr :Array = getDynamicBoundsByType(a.inter);
+    }
+
+    public function updateInterTo (d :Dynamic, oldInter :int, newInter :int) :void
+    {
+        var db :DynamicBounds = getDynamicBounds(d);
+        var arr :Array = getDynamicBoundsByType(oldInter);
         var idx :int = arr.indexOf(db);
         if (idx != -1) {
             arr.splice(idx, 1);
         }
-        a.inter = inter;
-        arr = getDynamicBoundsByType(a.inter);
+        d.inter = newInter;
+        arr = getDynamicBoundsByType(newInter);
         arr.push(db);
     }
 
