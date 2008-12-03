@@ -109,6 +109,14 @@ public class Spawner extends RectDynamic
         //updateState |= U_SPAWN;
     }
 
+    override public function get enemyCount () :int
+    {
+        if (destructable) {
+            return super.enemyCount;
+        }
+        return totalSpawns - spawnCount + (spawns == null ? 0 : spawns.length);
+    }
+
     override public function xmlInstance () :XML
     {
         var xml :XML = super.xmlInstance();
@@ -142,7 +150,7 @@ public class Spawner extends RectDynamic
     override public function isAlive () :Boolean
     {
         return destructable ? super.isAlive() :
-            (spawnCount < totalSpawns || spawns == null || spawns.length == 0);
+            (spawnCount < totalSpawns || spawns != null || spawns.length > 0);
     }
 
     override public function ownerType () :int

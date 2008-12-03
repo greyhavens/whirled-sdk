@@ -112,6 +112,11 @@ public class Dynamic
         updateState = 0;
     }
 
+    public function get enemyCount () :int
+    {
+        return isAlive() ? 1 : 0;
+    }
+
     public function xmlInstance () :XML
     {
         var xml :XML = <dynamicdef/>;
