@@ -20,6 +20,10 @@
 
 package com.whirled.contrib.platformer.game {
 
+import com.whirled.net.MessageReceivedEvent;
+
+import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.net.CutSceneMessage;
 import com.whirled.contrib.platformer.piece.CutScene;
 
 public class CutSceneController extends HoverController
@@ -34,70 +38,81 @@ public class CutSceneController extends HoverController
             tot += len;
             _stageChanges.push(tot);
         }
+        if (_cs.played) {
+            _state = END;
+        } else {
+            PlatformerContext.net.addEventListener(
+                    MessageReceivedEvent.MESSAGE_RECEIVED, messageReceived);
+        }
+    }
+
+    override public function shutdown () :void
+    {
+        super.shutdown();
+        PlatformerContext.net.removeEventListener(
+                    MessageReceivedEvent.MESSAGE_RECEIVED, messageReceived);
     }
 
     override public function tick (delta :Number) :void
     {
         super.tick(delta);
-        /*
-        if (!_cs.played || _cs.stage == _cs.stageChanges.length + 1) {
-            if (_ignoreKeys) {
-                _ignoreKeys = _controller.shooting() || _controller.jumping();
-            } else if (_cs.hovered && _controller.shooting()) {
-                _cs.stage = 0;
-                _tick = 0;
-            } else if (_controller.isPaused()) {
-                _controller.setPause(false);
+        if (_cs.amOwner()) {
+            switch (_state) {
+            case OFF:
+                if (_cs.hovered) {
+                    _state = INIT;
+                    PlatformerContext.net.sendMessage(CutSceneMessage.create(CutSceneMessage.INIT));
+                }
+                break;
+            case END:
+                if (!_cs.played) {
+                    PlatformerContext.net.sendMessage(
+                            CutSceneMessage.create(CutSceneMessage.CLOSE));
+                    PlatformerContext.net.removeEventListener(
+                            MessageReceivedEvent.MESSAGE_RECEIVED, messageReceived);
+                    _cs.played = true;
+                }
             }
-            return;
         }
-        _controller.setPause(true);
-        if (_cs.stage == 0) {
-            _cs.stage = 1;
-            _ignoreKeys = _controller.shooting() || _controller.jumping();
-        } else {
-            _tick += delta;
-        }
-        while (_stageChanges[_cs.stage - 1] < _tick) {
-            _cs.stage++;
-        }
-        if (_ignoreKeys) {
-            _ignoreKeys = _controller.shooting() || _controller.jumping();
-        } else if (_keyReset > 0) {
-            _keyReset -= delta;
-        } else if (_controller.jumping()) {
-            _cs.stage = _cs.stageChanges.length + 1;
-        } else if (_controller.shooting()) {
-            _tick = _stageChanges[_cs.stage - 1];
-            _cs.stage++;
-            _keyReset = KEY_RESET;
-        }
-        if (_cs.stage == _cs.stageChanges.length + 1) {
-            _ignoreKeys = _controller.shooting() || _controller.jumping();
-        }
-        */
     }
 
-    override public function postTick () :void
+    protected function messageReceived (event :MessageReceivedEvent) :void
     {
-        super.postTick();
-        /*
-        if (_cs.played && _cs.stage < _cs.stageChanges.length + 1) {
-            _controller.ensureCentered(_cs);
+        if (event.value is CutSceneMessage) {
+            var msg :CutSceneMessage = event.value as CutSceneMessage;
+            gotMessage(msg.type, event.senderId);
         }
-        */
     }
 
+    protected function gotMessage (type :int, id :int) :void
+    {
+        if (_state == INIT && type == CutSceneMessage.START) {
+            _state = PLAY;
+            PlatformerContext.net.sendMessage(CutSceneMessage.create(CutSceneMessage.PLAY));
+        } else if (_state == PLAY && type == CutSceneMessage.END) {
+            _state = END;
+        }
+    }
+
+/*
     override protected function addCollisionHandlers () :void
     {
         addCollisionHandler(new CutSceneCollisionHandler(this));
     }
+*/
 
     protected var _cs :CutScene;
     protected var _tick :Number = 0;
     protected var _keyReset :Number = 0;
     protected var _ignoreKeys :Boolean;
     protected var _stageChanges :Array = new Array();
+    protected var _state :int;
     protected static const KEY_RESET :Number = 0.3;
+
+    protected static const OFF :int = 0;
+    protected static const INIT :int = 1;
+    protected static const PLAY :int = 2;
+    protected static const END :int = 3;
+
 }
 }

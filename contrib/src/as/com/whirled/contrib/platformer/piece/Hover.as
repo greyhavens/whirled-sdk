@@ -45,5 +45,10 @@ public class Hover extends RectDynamic
         xml.@sprite = sprite;
         return xml;
     }
+
+    override public function ownerType () :int
+    {
+        return OWN_ALL;
+    }
 }
 }

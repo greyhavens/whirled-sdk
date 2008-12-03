@@ -53,5 +53,10 @@ public class CutScene extends Hover
         xml.@spawnY = spawnY;
         return xml;
     }
+
+    override public function ownerType () :int
+    {
+        return OWN_SERVER;
+    }
 }
 }
