@@ -35,6 +35,16 @@ public class Rect
         this.height = height;
     }
 
+    public function get centerX () :Number
+    {
+        return x + width/2;
+    }
+
+    public function get centerY () :Number
+    {
+        return y + height/2;
+    }
+
     public function clone () :Rect
     {
         return new Rect(x, y, width, height);
