@@ -132,7 +132,7 @@ public class ForkingToyState extends EventDispatcher
      */
     protected function isSaving () :Boolean
     {
-        return (_ctrl != null && (_nonOwnersCanSave || _ctrl.canEditRoom()));
+        return (_ctrl != null && (_nonOwnersCanSave || _ctrl.canManageRoom()));
     }
 
     protected function setTimeout () :void
