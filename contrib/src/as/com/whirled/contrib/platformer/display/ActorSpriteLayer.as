@@ -20,25 +20,55 @@
 
 package com.whirled.contrib.platformer.display {
 
+import flash.display.Sprite;
+
 import com.whirled.contrib.platformer.util.Metrics;
 
 public class ActorSpriteLayer extends DynamicSpriteLayer
 {
+    public function ActorSpriteLayer ()
+    {
+        super();
+        _deathLayer = new Sprite();
+        addChild(_deathLayer);
+    }
+
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         super.update(nX, nY);
         for each (var acts :ActorSprite in _dynamics) {
             //trace("x: " + x + ", acts.x: " + acts.x);
             if (acts.x < -x - acts.width || acts.x > -x + Metrics.DISPLAY_WIDTH + acts.width) {
-                if (acts.parent != null) {
-                    removeChild(acts);
-                }
+                removeDS(acts);
             } else {
                 if (acts.parent == null) {
-                    addChild(acts);
+                    addDS(acts);
+                } else if ((acts.parent == this) != acts.getDynamic().isAlive()) {
+                    removeDS(acts);
+                    addDS(acts);
                 }
             }
         }
     }
+
+    override protected function removeDS (ds :DynamicSprite) :void
+    {
+        if (ds.parent == _deathLayer) {
+            _deathLayer.removeChild(ds);
+        } else {
+            super.removeDS(ds);
+        }
+    }
+
+    protected function addDS (ds :DynamicSprite) :void
+    {
+        if (ds.getDynamic().isAlive()) {
+            addChild(ds);
+        } else {
+            _deathLayer.addChild(ds);
+        }
+    }
+
+    protected var _deathLayer :Sprite;
 }
 }

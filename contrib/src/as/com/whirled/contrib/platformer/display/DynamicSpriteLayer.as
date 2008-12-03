@@ -34,9 +34,7 @@ public class DynamicSpriteLayer extends Layer
     {
         for (var ii :int = 0; ii < _dynamics.length; ii++) {
             if (_dynamics[ii].getDynamic() == d) {
-                if (_dynamics[ii].parent == this) {
-                    removeChild(_dynamics[ii]);
-                }
+                removeDS(_dynamics[ii]);
                 _dynamics.splice(ii, 1);
                 break;
             }
@@ -49,6 +47,13 @@ public class DynamicSpriteLayer extends Layer
             if (ids == null || ids.indexOf(ds.getDynamic().id) != -1) {
                 ds.update(delta);
             }
+        }
+    }
+
+    protected function removeDS (ds :DynamicSprite) :void
+    {
+        if (ds.parent == this) {
+            removeChild(ds);
         }
     }
 
