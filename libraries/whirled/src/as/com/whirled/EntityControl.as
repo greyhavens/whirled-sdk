@@ -227,12 +227,13 @@ public class EntityControl extends AbstractControl
     /**
      * Returns true if the local client has management privileges in the current room.
      * A user with management permissions can edit the room, among other things.
+     * Passing 0 for the memberId indicates that this instance's viewing user should be checked.
      * Note that this may change without notice, meaning that you shouldn't just check it once
      * for a user and assume they still have management permissions later.
      */
-    public function canManageRoom () :Boolean
+    public function canManageRoom (memberId :int = 0) :Boolean
     {
-        return callHostCode("canEditRoom_v1") as Boolean;
+        return callHostCode("canEditRoom_v1", memberId) as Boolean;
     }
 
     /**
