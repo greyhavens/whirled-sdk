@@ -917,6 +917,14 @@ public abstract class WhirledGameManager extends GameManager
         return 0;
     }
 
+    @Override // from GameManager
+    protected boolean needsNoShowTimer ()
+    {
+        // we are proxying for action script games here so have no idea if they can cope with
+        // a premature start, don't do it.
+        return false;
+    }
+
     /**
      * A timer that fires message events to a game.
      */
