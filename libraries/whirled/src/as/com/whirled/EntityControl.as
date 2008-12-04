@@ -292,8 +292,6 @@ public class EntityControl extends AbstractControl
      * Returns the value associated with the supplied key in this item's memory. If no value is
      * mapped in the item's memory, the supplied default value will be returned.
      *
-     * NOTE: Avatar memories are inconsistent at the moment and should not be used.
-     *
      * @return the value for the specified key from this item's memory or the supplied default.
      */
     public function getMemory (key :String, defval :Object = null) :Object
@@ -309,8 +307,6 @@ public class EntityControl extends AbstractControl
      *
      * Setting the memory for a key to null clears that key; subsequent lookups will return the
      * default value.
-     *
-     * NOTE: Avatar memories are inconsistent at the moment and should not be used.
      *
      * @param callback An optional function that is passed a Boolean indicating whether the
      * memory was successfully updated or not. True if the memory was safely persisted, or false
