@@ -1391,9 +1391,7 @@ public class BaseGameBackend
     /**
      * Called when the players of the game are updated.
      */
-    protected function occupantRoleChanged (
-        occInfo :OccupantInfo, 
-        isPlayerNow :Boolean) :void
+    protected function occupantRoleChanged (occInfo :OccupantInfo, isPlayerNow :Boolean) :void
     {
         // let the user code know about this by sending a "left" message followed by
         // an "entered" message 
