@@ -604,14 +604,15 @@ public abstract class WhirledGameManager extends GameManager
      */
     protected void setAsInitialized (BodyObject body)
     {
-        WhirledGameOccupantInfo info = (WhirledGameOccupantInfo) getOccupantInfo(body.getOid());
-        if (info == null) {
-            log.warning("Asked to set as initialized a non-occupant? [game=" + where() +
-                        ", who=" + body.who() + "].");
-        } else if (!info.initialized) {
-            info.initialized = true;
-            updateOccupantInfo(info);
-        }
+        updateOccupantInfo(body.getOid(), new OccupantInfo.Updater<WhirledGameOccupantInfo>() {
+            public boolean update (WhirledGameOccupantInfo info) {
+                if (info.initialized) {
+                    return false;
+                }
+                info.initialized = true;
+                return true;
+            }
+        });
     }
 
     @Override
