@@ -40,11 +40,14 @@ public class PlatformerController
     {
         PlatformerContext.gctrl = new GameControl(disp);
         PlatformerContext.platformer = this;
+        PlatformerContext.local = PlatformerContext.gctrl.game.seating.getPlayerIds().length == 1;
         PlatformerContext.net = createMessageManager();
-        PlatformerContext.net.addMessageType(DynamicMessage);
-        PlatformerContext.net.addMessageType(ShotMessage);
-        PlatformerContext.net.addMessageType(SpawnMessage);
-        PlatformerContext.net.addMessageType(TickMessage);
+        if (PlatformerContext.net != null) {
+            PlatformerContext.net.addMessageType(DynamicMessage);
+            PlatformerContext.net.addMessageType(ShotMessage);
+            PlatformerContext.net.addMessageType(SpawnMessage);
+            PlatformerContext.net.addMessageType(TickMessage);
+        }
     }
 
     public function shutdown () :void

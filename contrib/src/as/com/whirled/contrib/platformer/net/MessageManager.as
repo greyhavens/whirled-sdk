@@ -29,6 +29,8 @@ import com.threerings.util.HashMap;
 import com.whirled.game.GameControl;
 import com.whirled.net.MessageReceivedEvent;
 
+import com.whirled.contrib.platformer.PlatformerContext;
+
 public class MessageManager extends EventDispatcher
 {
     public function MessageManager (gameCtrl :GameControl)
@@ -58,6 +60,26 @@ public class MessageManager extends EventDispatcher
         _gameCtrl.net.sendMessage(msg.name, msg.toBytes());
     }
 
+    /**
+     * Sends the GameMessage if the game isn't run locally.
+     */
+    public function notLocalSend (createMsg :Function, ...args) :void
+    {
+        if (!PlatformerContext.local) {
+            sendMessage(createMessage(createMsg, args));
+        }
+    }
+
+    /**
+     * Sends the GameMessage only if being run on the server.
+     */
+    public function ifServerSend (createMsg :Function, ...args) :void
+    {
+        if (PlatformerContext.gctrl.game.amServerAgent()) {
+            sendMessage(createMessage(createMsg, args));
+        }
+    }
+
     public function getMessage (name :String, bytes :ByteArray) :GameMessage
     {
         var msgClass :Class = _msgTypes.get(name);
@@ -67,6 +89,11 @@ public class MessageManager extends EventDispatcher
             msg.fromBytes(bytes);
         }
         return msg;
+    }
+
+    protected function createMessage (createMsg :Function, ...args) :GameMessage
+    {
+        return createMsg.apply(NaN, args);
     }
 
     protected function onMessageReceived (e :MessageReceivedEvent) :void

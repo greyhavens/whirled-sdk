@@ -28,6 +28,8 @@ import com.whirled.game.GameControl;
 
 public class ThrottlingMessageManager extends MessageManager
 {
+    public static const DEBUG :Boolean = false;
+
     public function ThrottlingMessageManager (gameCtrl :GameControl, rate :int)
     {
         super(gameCtrl);
@@ -55,15 +57,15 @@ public class ThrottlingMessageManager extends MessageManager
         if (_queue.msgs != null) {
             super.sendMessage(_queue);
             _queue = new QueueMessage();
-            /*
-            _sent++;
-            if (_sent == 10) {
-                var now :int = getTimer();
-                trace("sent 10 messages in " + (now - _lastSent));
-                _lastSent = now;
-                _sent = 0;
+            if (DEBUG) {
+                _sent++;
+                if (_sent == 10) {
+                    var now :int = getTimer();
+                    trace("sent 10 messages in " + (now - _lastSent));
+                    _lastSent = now;
+                    _sent = 0;
+                }
             }
-            */
         }
     }
 

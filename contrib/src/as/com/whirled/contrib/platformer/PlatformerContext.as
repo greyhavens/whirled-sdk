@@ -35,5 +35,11 @@ public class PlatformerContext
     public static var board :Board;
     public static var pfac :PieceFactory;
     public static var net :MessageManager;
+    public static var local :Boolean;
+
+    public static function get inControl () :Boolean
+    {
+        return local || PlatformerContext.gctrl.game.amServerAgent();
+    }
 }
 }

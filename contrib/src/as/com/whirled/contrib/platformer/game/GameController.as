@@ -311,6 +311,9 @@ public class GameController
 
     protected function sendUpdates () :void
     {
+        if (PlatformerContext.local) {
+            return;
+        }
         for each (var d :Dynamic in PlatformerContext.board.getActors()) {
             if (!d.amOwner() || d.ownerType() == Dynamic.OWN_ALL) {
                 continue;
