@@ -66,7 +66,7 @@ public class MessageManager extends EventDispatcher
     public function notLocalSend (createMsg :Function, ...args) :void
     {
         if (!PlatformerContext.local) {
-            sendMessage(createMessage(createMsg, args));
+            sendMessage(createMsg.apply(NaN, args));
         }
     }
 
@@ -76,7 +76,7 @@ public class MessageManager extends EventDispatcher
     public function ifServerSend (createMsg :Function, ...args) :void
     {
         if (PlatformerContext.gctrl.game.amServerAgent()) {
-            sendMessage(createMessage(createMsg, args));
+            sendMessage(createMsg.apply(NaN, args));
         }
     }
 
@@ -89,11 +89,6 @@ public class MessageManager extends EventDispatcher
             msg.fromBytes(bytes);
         }
         return msg;
-    }
-
-    protected function createMessage (createMsg :Function, ...args) :GameMessage
-    {
-        return createMsg.apply(NaN, args);
     }
 
     protected function onMessageReceived (e :MessageReceivedEvent) :void
