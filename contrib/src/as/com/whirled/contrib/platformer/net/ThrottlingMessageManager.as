@@ -40,6 +40,7 @@ public class ThrottlingMessageManager extends MessageManager
     override public function shutdown () :void
     {
         _timer.stop();
+        _timer.removeEventListener(TimerEvent.TIMER, onTimer);
     }
 
     override public function sendMessage (msg :GameMessage) :void

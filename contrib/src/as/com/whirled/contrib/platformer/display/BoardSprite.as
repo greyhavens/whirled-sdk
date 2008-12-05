@@ -99,6 +99,14 @@ public class BoardSprite extends Sprite
         centerOn(0, 0);
     }
 
+    public function shutdown () :void
+    {
+        _board.removeEventListener(Board.ACTOR_ADDED, handleDynamicAdded);
+        _board.removeEventListener(Board.SHOT_ADDED, handleDynamicAdded);
+        _board.removeEventListener(Board.DYNAMIC_ADDED, handleDynamicAdded);
+        _board.removeEventListener(Board.DYNAMIC_REMOVED, handleDynamicRemoved);
+    }
+
     public function moveDelta (dX :Number, dY :Number) :void
     {
         _centerX += dX;

@@ -106,6 +106,11 @@ public class GameController
                 o.shutdown();
             }
         }
+        _board.removeEventListener(Board.ACTOR_ADDED, handleActorAdded);
+        _board.removeEventListener(Board.PIECE_LOADED, handlePieceLoaded);
+        _board.removeEventListener(Board.SHOT_ADDED, handleShotAdded);
+        _board.removeEventListener(Board.DYNAMIC_REMOVED, handleDynamicRemoved);
+        _board.removeEventListener(Board.DYNAMIC_ADDED, handleDynamicAdded);
     }
 
     public function setPause (pause :Boolean) :void

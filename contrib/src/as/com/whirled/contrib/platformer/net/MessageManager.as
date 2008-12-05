@@ -41,6 +41,7 @@ public class MessageManager extends EventDispatcher
 
     public function shutdown () :void
     {
+        _gameCtrl.net.removeEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, onMessageReceived);
     }
 
     public function addMessageType (messageClass :Class) :void

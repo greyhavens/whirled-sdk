@@ -47,6 +47,12 @@ public class DynamicSprite extends Sprite
         addEventListener(Event.REMOVED, handleRemoved);
     }
 
+    public function shutdown () :void
+    {
+        removeEventListener(Event.ADDED, handleAdded);
+        removeEventListener(Event.REMOVED, handleRemoved);
+    }
+
     public function getDynamic () :Dynamic
     {
         return _dynamic;

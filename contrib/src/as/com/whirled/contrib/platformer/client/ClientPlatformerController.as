@@ -32,8 +32,10 @@ public class ClientPlatformerController extends PlatformerController
     {
         super(source);
 
-        source.addEventListener(Event.UNLOAD, handleUnload);
-        source.root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
+        _source = source;
+
+        _source.addEventListener(Event.UNLOAD, handleUnload);
+        _source.root.loaderInfo.addEventListener(Event.UNLOAD, handleUnload);
 
         ClientPlatformerContext.keyboard = new KeyboardController();
         ClientPlatformerContext.keyboard.init(PlatformerContext.gctrl.local);
@@ -42,6 +44,11 @@ public class ClientPlatformerController extends PlatformerController
     protected function handleUnload (...ignored) :void
     {
         shutdown();
+        ClientPlatformerContext.keyboard.shutdown();
+        _source.removeEventListener(Event.UNLOAD, handleUnload);
+        _source.root.loaderInfo.removeEventListener(Event.UNLOAD, handleUnload);
     }
+
+    protected var _source :Sprite;
 }
 }

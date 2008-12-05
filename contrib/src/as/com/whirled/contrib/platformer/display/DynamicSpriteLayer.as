@@ -35,6 +35,7 @@ public class DynamicSpriteLayer extends Layer
         for (var ii :int = 0; ii < _dynamics.length; ii++) {
             if (_dynamics[ii].getDynamic() == d) {
                 removeDS(_dynamics[ii]);
+                _dynamics[ii].shutdown();
                 _dynamics.splice(ii, 1);
                 break;
             }

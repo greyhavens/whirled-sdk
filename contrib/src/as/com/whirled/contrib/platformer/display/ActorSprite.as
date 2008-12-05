@@ -65,6 +65,14 @@ public class ActorSprite extends DynamicSprite
         return _actor;
     }
 
+    override public function shutdown () :void
+    {
+        super.shutdown();
+        if (_disp != null) {
+            _disp.removeEventListener(Event.COMPLETE, actionComplete);
+        }
+    }
+
     override public function update (delta :Number) :void
     {
         super.update(delta);

@@ -82,6 +82,7 @@ public class ParallaxBitmap extends Layer
     {
         _source.draw(event.target as DisplayObject);
         _bd.copyPixels(_source, _rect, _pt);
+        event.target.removeEventListener(Event.COMPLETE, arguments.callee);
     }
 
     protected var _curX :int;

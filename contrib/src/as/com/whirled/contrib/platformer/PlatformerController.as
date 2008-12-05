@@ -50,6 +50,7 @@ public class PlatformerController
     public function shutdown () :void
     {
         PlatformerContext.net.shutdown();
+        removeGameListeners();
     }
 
     protected function run () :void
