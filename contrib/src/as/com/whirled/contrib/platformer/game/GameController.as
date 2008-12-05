@@ -83,7 +83,7 @@ public class GameController
     {
         for each (var d :Dynamic in _board.getDynamicIns(Board.ACTORS)) {
             var dc :DynamicController = getController(d);
-            if (dc is InitController) {
+            if (dc != null && dc is InitController) {
                 (dc as InitController).init();
             }
         }
@@ -172,43 +172,6 @@ public class GameController
         return _collider;
     }
 
-/*
-    public function centerOn (ac :ActorController) :void
-    {
-        var a :Actor = ac.getActor();
-        ClientPlatformerContext.boardSprite.centerOn(a.x, a.y);
-    }
-
-    public function ensureVisible (a :Actor) :void
-    {
-        ClientPlatformerContext.boardSprite.ensureVisible(a, getDy());
-    }
-
-    public function ensureCentered (rd :RectDynamic) :void
-    {
-        ClientPlatformerContext.boardSprite.ensureCentered(rd);
-    }
-
-    public function getDx () :Number
-    {
-        return ClientPlatformerContext.keyboard.getDx();
-    }
-
-    public function getDy () :Number
-    {
-        return ClientPlatformerContext.keyboard.getDy();
-    }
-
-    public function shooting () :Boolean
-    {
-        return ClientPlatformerContext.keyboard.isDown(KeyboardCodes.SHIFT);
-    }
-
-    public function jumping () :Boolean
-    {
-        return ClientPlatformerContext.keyboard.isDown(KeyboardCodes.SPACE);
-    }
-*/
     public function addController (controller :Object) :Boolean
     {
         _controllers.push(controller);
@@ -217,6 +180,9 @@ public class GameController
 
     public function removeDynamicController (d :Dynamic) :DynamicController
     {
+        if (!d.needServerController() && PlatformerContext.gctrl.game.amServerAgent()) {
+            return null;
+        }
         var dc :DynamicController;
         for (var ii :int = 0; ii < _controllers.length; ii++) {
             if (_controllers[ii] is DynamicController && _controllers[ii].getDynamic() == d) {
@@ -281,30 +247,33 @@ public class GameController
 
     protected function handleActorAdded (actor :Actor, group :String) :void
     {
-        var ac :ActorController = getController(actor) as ActorController;
-        if (addController(ac)) {
-            _collider.addDynamic(ac);
+        var dc :DynamicController = getController(actor);
+        if (dc != null && addController(dc)) {
+            _collider.addDynamic(dc);
         }
     }
 
     protected function handleShotAdded (shot :Shot, group :String) :void
     {
-        var sc :ShotController = getController(shot) as ShotController;
-        if (addController(sc)) {
-            _collider.addShot(sc);
+        var dc :DynamicController = getController(shot);
+        if (dc != null && addController(dc)) {
+            _collider.addShot(dc as ShotController);
         }
     }
 
     protected function handleDynamicAdded (d :Dynamic, group :String) :void
     {
         var dc :DynamicController = getController(d);
-        if (addController(dc)) {
+        if (dc != null && addController(dc)) {
             _collider.addDynamic(dc);
         }
     }
 
     protected function getController (d :Dynamic) :DynamicController
     {
+        if (!d.needServerController() && PlatformerContext.gctrl.game.amServerAgent()) {
+            return null;
+        }
         var className :String = ClassUtil.getClassName(d);
         var dclass :Class;
         if (d is Actor) {
@@ -333,7 +302,6 @@ public class GameController
 
     protected function updateDisplay (delta :Number) :void
     {
-        //ClientPlatformerContext.boardSprite.tick(delta);
     }
 
     protected function sendUpdates () :void

@@ -162,6 +162,11 @@ public class Dynamic
         return OWN_PLAYER;
     }
 
+    public function needServerController () :Boolean
+    {
+        return ownerType() == OWN_SERVER;
+    }
+
     public function toBytes (bytes :ByteArray = null) :ByteArray
     {
         bytes = (bytes != null ? bytes : new ByteArray());
