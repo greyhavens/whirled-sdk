@@ -46,7 +46,7 @@ public class BitmapParallax
         bd.draw(disp);
         rect = new Rectangle(-1, -1, Math.min(bd.width, Metrics.DISPLAY_WIDTH),
             Math.min(bd.height, Metrics.DISPLAY_HEIGHT));
-        trace("BP: " + rect + " source: (" + bd.width + ", " + bd.height + ")");
+        //trace("BP: " + rect + " source: (" + bd.width + ", " + bd.height + ")");
         pt.x = Metrics.DISPLAY_WIDTH - rect.width + pt.x;
         pt.y = Metrics.DISPLAY_HEIGHT - rect.height - pt.y;
     }

@@ -28,7 +28,7 @@ import com.whirled.contrib.platformer.piece.Dynamic;
 import com.threerings.util.ClassUtil;
 
 public class DynamicController
-    implements TickController, CollisionController
+    implements TickController, CollisionController, ShutdownController
 {
     public function DynamicController (d :Dynamic, controller :GameController)
     {

@@ -36,7 +36,6 @@ import com.threerings.util.MultiLoader;
 import com.whirled.contrib.ZipMultiLoader;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
-import com.whirled.contrib.platformer.piece.CutScene;
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Hover;
 import com.whirled.contrib.platformer.piece.LaserShot;
@@ -77,7 +76,6 @@ public class PieceSpriteFactory
         addDynamicClass(Shot, ShotSprite);
         addDynamicClass(LaserShot, LaserShotSprite);
         addDynamicClass(Hover, HoverSprite);
-        addDynamicClass(CutScene, CutSceneSprite);
         addDynamicClass(Spawner, SpawnerSprite);
     }
 

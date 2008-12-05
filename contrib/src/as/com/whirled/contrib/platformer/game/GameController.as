@@ -30,7 +30,6 @@ import com.whirled.contrib.platformer.net.DynamicMessage;
 import com.whirled.contrib.platformer.net.TickMessage;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
-import com.whirled.contrib.platformer.piece.CutScene;
 import com.whirled.contrib.platformer.piece.Dynamic;
 //import com.whirled.contrib.platformer.piece.RectDynamic;
 import com.whirled.contrib.platformer.piece.Hover;
@@ -77,7 +76,6 @@ public class GameController
         addShotClass(LaserShot, LaserShotController);
         addDynamicClass(Dynamic, DynamicController, true);
         addDynamicClass(Hover, HoverController);
-        addDynamicClass(CutScene, CutSceneController);
         addDynamicClass(Spawner, SpawnerController);
     }
 
@@ -94,19 +92,17 @@ public class GameController
             for each (var node :XML in eventsXML.child("event")) {
                 var event :GameEvent = GameEvent.create(this, node);
                 if (event != null) {
-                    trace("adding event: " + node.toXMLString());
+                    //trace("adding event: " + node.toXMLString());
                     _events.push(event);
                 }
             }
-        } else {
-            trace("no events xml");
         }
     }
 
     public function shutdown () :void
     {
         for each (var o :Object in _controllers) {
-            if (o is DynamicController) {
+            if (o is ShutdownController) {
                 o.shutdown();
             }
         }

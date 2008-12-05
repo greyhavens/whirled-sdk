@@ -51,12 +51,40 @@ public class KeyboardController
 
     public function getDx () :Number
     {
-        return _dx;
+        var last :int = 0;
+        var ret :int = 0;
+        if (isDown(KeyboardCodes.RIGHT)) {
+            ret = 1;
+            last = _lastDown[KeyboardCodes.RIGHT];
+        } else if (isDown(KeyboardCodes.D)) {
+            ret = 1;
+            last = _lastDown[KeyboardCodes.D];
+        }
+
+        if ((isDown(KeyboardCodes.LEFT) && _lastDown[KeyboardCodes.LEFT] > last) ||
+            (isDown(KeyboardCodes.A) && _lastDown[KeyboardCodes.A] > last)) {
+            ret = -1;
+        }
+        return ret;
     }
 
     public function getDy () :Number
     {
-        return _dy;
+        var last :int = 0;
+        var ret :int = 0;
+        if (isDown(KeyboardCodes.UP)) {
+            ret = 1;
+            last = _lastDown[KeyboardCodes.UP];
+        } else if (isDown(KeyboardCodes.W)) {
+            ret = 1;
+            last = _lastDown[KeyboardCodes.W];
+        }
+
+        if ((isDown(KeyboardCodes.DOWN) && _lastDown[KeyboardCodes.DOWN] > last) ||
+            (isDown(KeyboardCodes.S) && _lastDown[KeyboardCodes.S] > last)) {
+            ret = -1;
+        }
+        return ret;
     }
 
     public function shooting () :Boolean

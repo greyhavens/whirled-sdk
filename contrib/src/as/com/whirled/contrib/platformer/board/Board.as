@@ -64,7 +64,7 @@ public class Board
     {
         var dclass :Class = ClassUtil.getClassByName(xml.@cname);
         if (dclass != null) {
-            trace("creating dynamic: " + xml.@cname);
+            //trace("creating dynamic: " + xml.@cname);
             return new dclass(xml);
         }
         return null;
@@ -178,6 +178,11 @@ public class Board
     {
         return _actors[a.id] != undefined;
         //return _actors.indexOf(a) != -1;
+    }
+
+    public function hasDynamic (d :Dynamic) :Boolean
+    {
+        return _dynamics[d.id] != undefined;
     }
 
     public function addDynamicIns (d :Dynamic, group :String) :void
@@ -516,7 +521,7 @@ public class Board
 
     protected function loadDynamics (xml :XML, arr :Object) :void
     {
-        trace("Loading dynamics");
+        //trace("Loading dynamics");
         for each (var node :XML in xml.children()) {
             var d :Dynamic = loadDynamic(node);
             if (d != null) {

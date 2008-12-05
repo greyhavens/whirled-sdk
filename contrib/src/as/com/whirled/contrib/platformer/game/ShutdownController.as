@@ -20,23 +20,8 @@
 
 package com.whirled.contrib.platformer.game {
 
-import com.whirled.contrib.platformer.board.ColliderDetails;
-import com.whirled.contrib.platformer.piece.CutScene;
-
-public class CutSceneCollisionHandler extends HoverCollisionHandler
+public interface ShutdownController
 {
-    public function CutSceneCollisionHandler (csc: CutSceneController)
-    {
-        super(csc);
-        _cs = csc.getDynamic() as CutScene;
-    }
-
-    override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
-    {
-        super.collide(source, target, cd);
-        _cs.played = true;
-    }
-
-    protected var _cs :CutScene;
+    function shutdown () :void;
 }
 }
