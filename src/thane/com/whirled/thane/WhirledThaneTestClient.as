@@ -9,7 +9,12 @@ import com.whirled.thane.HttpUserCodeLoader;
 
 public class WhirledThaneTestClient
 {
-    WhirledBureauClient.main(
-        System.argv, "0", new HttpUserCodeLoader(), null);
+    WhirledBureauClient.main(System.argv, "0", new HttpUserCodeLoader(), cleanup);
+
+    protected static function cleanup (client :WhirledBureauClient) :void
+    {
+        trace("Exiting bureau");
+        System.exit(0);
+    }
 }
 }
