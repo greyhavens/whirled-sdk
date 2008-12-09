@@ -50,10 +50,6 @@ public class Actor extends Dynamic
     public static const U_ACCEL :int = 1 << (DYN_COUNT + 5);
     public static const ACT_COUNT :int = DYN_COUNT + 5;
 
-    public var width :Number = 0;
-    public var height :Number = 0;
-
-
     public var events :Array = new Array();
 
     public var startHealth :Number;
@@ -87,6 +83,26 @@ public class Actor extends Dynamic
     public function orientShoot (shoot :int) :void
     {
         orient = (orient & ORIENT_SHOOT_MASK) | shoot;
+    }
+
+    public function get width () :Number
+    {
+        return _width;
+    }
+
+    public function set width (width :Number) :void
+    {
+        _width = width;
+    }
+
+    public function get height () :Number
+    {
+        return _height;
+    }
+
+    public function set height (height :Number) :void
+    {
+        _height = height;
     }
 
     public function get attached () :LineData
@@ -262,5 +278,7 @@ public class Actor extends Dynamic
     protected var _wasHit :int;
     protected var _accelX :Number = 0;
     protected var _accelY :Number = 0;
+    protected var _height :Number = 0;
+    protected var _width :Number = 0;
 }
 }
