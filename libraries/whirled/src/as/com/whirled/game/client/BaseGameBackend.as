@@ -368,12 +368,12 @@ public class BaseGameBackend
         service :String, failure :Function = null,
         success :Function = null) :InvocationService_ConfirmListener
     {
-        return new ConfirmAdapter(function (cause :String) :void {
+        return new ConfirmAdapter(success, function (cause :String) :void {
             reportServiceFailure(service, cause);
             if (failure != null) {
                 failure();
             }
-        }, success);
+        });
     }
 
     /**
@@ -383,12 +383,12 @@ public class BaseGameBackend
         service :String, failure :Function = null,
         success :Function = null) :InvocationService_ResultListener
     {
-        return new ResultAdapter(function (cause :String) :void {
+        return new ResultAdapter(success, function (cause :String) :void {
             reportServiceFailure(service, cause);
             if (failure != null) {
                 failure();
             }
-        }, success);
+        });
     }
 
     /**
