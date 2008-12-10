@@ -85,6 +85,16 @@ public class Actor extends Dynamic
         orient = (orient & ORIENT_SHOOT_MASK) | shoot;
     }
 
+    public function isOrientShootDown () :Boolean
+    {
+        return (orient & (ORIENT_SHOOT_D | ORIENT_SHOOT_F)) == ORIENT_SHOOT_D;
+    }
+
+    public function isOrientShootUp () :Boolean
+    {
+        return (orient & (ORIENT_SHOOT_U | ORIENT_SHOOT_F)) == ORIENT_SHOOT_U;
+    }
+
     public function get width () :Number
     {
         return _width;
