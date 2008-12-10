@@ -130,10 +130,11 @@ public class GameController
         while (_rdelta > 0) {
             var paused :Boolean = isPaused();
             var tdelta :int = Math.min(MAX_TICK, _rdelta);
+            var sdelta :Number = tdelta / 1000;
             for each (var controller :Object in _controllers) {
                 if (controller is TickController &&
                         (!paused || controller is PauseController)) {
-                    (controller as TickController).tick(tdelta / 1000);
+                    tickController(controller as TickController, sdelta);
                 }
             }
             if (!paused) {
@@ -142,14 +143,14 @@ public class GameController
                 colliderTicks += getTimer() - now;
             }
             ticked++;
-            usedDelta += tdelta;
             _rdelta -= tdelta;
+            usedDelta += tdelta;
+            sendUpdates();
             if (_rdelta < MAX_TICK) {
                 break;
             }
         }
         updateDisplay(usedDelta/1000);
-        sendUpdates();
         for each (controller in _controllers) {
             if (controller is TickController && (!paused || controller is PauseController)) {
                 (controller as TickController).postTick();
@@ -307,6 +308,11 @@ public class GameController
 
     protected function updateDisplay (delta :Number) :void
     {
+    }
+
+    protected function tickController (tc :TickController, delta :Number) :void
+    {
+        tc.tick(delta);
     }
 
     protected function sendUpdates () :void

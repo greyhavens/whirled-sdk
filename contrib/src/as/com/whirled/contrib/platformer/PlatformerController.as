@@ -39,14 +39,17 @@ public class PlatformerController
     public function PlatformerController (disp :DisplayObject)
     {
         PlatformerContext.gctrl = new GameControl(disp);
-        PlatformerContext.platformer = this;
-        PlatformerContext.local = PlatformerContext.gctrl.game.seating.getPlayerIds().length == 1;
-        PlatformerContext.net = createMessageManager();
-        if (PlatformerContext.net != null) {
-            PlatformerContext.net.addMessageType(DynamicMessage);
-            PlatformerContext.net.addMessageType(ShotMessage);
-            PlatformerContext.net.addMessageType(SpawnMessage);
-            PlatformerContext.net.addMessageType(TickMessage);
+        if (PlatformerContext.gctrl.isConnected()) {
+            PlatformerContext.platformer = this;
+            PlatformerContext.local =
+                    PlatformerContext.gctrl.game.seating.getPlayerIds().length == 1;
+            PlatformerContext.net = createMessageManager();
+            if (PlatformerContext.net != null) {
+                PlatformerContext.net.addMessageType(DynamicMessage);
+                PlatformerContext.net.addMessageType(ShotMessage);
+                PlatformerContext.net.addMessageType(SpawnMessage);
+                PlatformerContext.net.addMessageType(TickMessage);
+            }
         }
     }
 
