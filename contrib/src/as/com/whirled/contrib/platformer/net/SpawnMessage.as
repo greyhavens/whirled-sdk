@@ -43,9 +43,7 @@ public class SpawnMessage
 
     public static function spawnPlayer (id :int, idx :int, x :Number, y :Number) :SpawnMessage
     {
-        var msg :SpawnMessage = create(PLAYER, id, idx);
-        msg.x = x;
-        msg.y = y;
+        var msg :SpawnMessage = create(PLAYER, id, idx, x, y);
         return msg;
     }
 
@@ -59,9 +57,9 @@ public class SpawnMessage
         return create(REMOVE, id, store ? 1 : 0);
     }
 
-    public static function spawnIndex (idx :int) :SpawnMessage
+    public static function spawnIndex (idx :int, x :Number = 0, y :Number = 0) :SpawnMessage
     {
-        return create(SPAWN, 0, idx);
+        return create(SPAWN, 0, idx, x, y);
     }
 
     public static function changeOwner (id :int, owner :int) :SpawnMessage
@@ -69,12 +67,15 @@ public class SpawnMessage
         return create(OWNER, id, owner);
     }
 
-    public static function create (state :int, id :int, idx :int = 0) :SpawnMessage
+    public static function create (
+            state :int, id :int, idx :int = 0, x :Number = 0, y :Number = 0) :SpawnMessage
     {
         var msg :SpawnMessage = new SpawnMessage();
         msg.state = state;
         msg.id = id;
         msg.idx = idx;
+        msg.x = x;
+        msg.y = y;
         return msg;
     }
 
@@ -89,7 +90,7 @@ public class SpawnMessage
         bytes.writeByte(state);
         bytes.writeInt(id);
         bytes.writeInt(idx);
-        if (state == PLAYER) {
+        if (state == PLAYER || (state == SPAWN && idx == 0)) {
             bytes.writeFloat(x);
             bytes.writeFloat(y);
         }
@@ -101,7 +102,7 @@ public class SpawnMessage
         state = bytes.readByte();
         id = bytes.readInt();
         idx = bytes.readInt();
-        if (state == PLAYER) {
+        if (state == PLAYER || (state == SPAWN && idx == 0)) {
             x = bytes.readFloat();
             y = bytes.readFloat();
         }

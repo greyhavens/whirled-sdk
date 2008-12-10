@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.platformer.board {
 
+import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundData;
 import com.whirled.contrib.platformer.piece.Dynamic;
@@ -188,6 +189,10 @@ public class SimpleActorBounds extends ActorBounds
             fcCalls++;
             var cdX :Number = actor.dx * delta;
             var cdY :Number = actor.dy * delta;
+            if (PlatformerContext.gctrl.game.amServerAgent() && !actor.amOwner()) {
+                cdX = 0;
+                cdY = 0;
+            }
             var verify :Array = new Array();
             genMovementBounds(cdX, cdY);
 

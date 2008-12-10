@@ -26,6 +26,8 @@ import flash.utils.getTimer;
 import com.threerings.util.HashMap;
 import com.threerings.util.ClassUtil;
 
+import com.whirled.contrib.platformer.PlatformerContext;
+
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundData;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
@@ -128,6 +130,9 @@ public class Collider
 
     public function getLines (d :Dynamic) :Array
     {
+        if (PlatformerContext.gctrl.game.amServerAgent() && !d.amOwner()) {
+            return new Array();
+        }
         return getLinesPt(d.x, d.y);
     }
 
