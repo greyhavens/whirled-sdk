@@ -54,8 +54,10 @@ public class ShotSprite extends DynamicSprite
             generateParticleEffect(_shot.hitEffect, this);
             _dead = true;
         } else if (_shot.ttl <= 0 && _disp != null) {
-            rotation += 180;
-            generateParticleEffect(_shot.missEffect, this);
+            if (_shot.miss) {
+                rotation += 180;
+                generateParticleEffect(_shot.missEffect, this);
+            }
             _dead = true;
         }
     }

@@ -80,6 +80,7 @@ public class ShotCollisionHandler extends CollisionHandler
             }
         } else {
             s.ttl = 0;
+            s.miss = true;
         }
     }
 }

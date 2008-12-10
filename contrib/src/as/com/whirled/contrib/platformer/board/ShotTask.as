@@ -114,6 +114,7 @@ public class ShotTask extends ColliderTask
         var closehit :Number = _collider.findLineCloseHit(line);
         if (closehit < 1 && closehit > 0) {
             _s.ttl *= closehit;
+            _s.miss = true;
         }
     }
 
