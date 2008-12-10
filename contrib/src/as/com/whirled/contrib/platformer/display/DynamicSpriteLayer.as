@@ -21,6 +21,7 @@
 package com.whirled.contrib.platformer.display {
 
 import com.whirled.contrib.platformer.piece.Dynamic;
+import com.whirled.contrib.platformer.util.Metrics;
 
 public class DynamicSpriteLayer extends Layer
 {
@@ -51,10 +52,29 @@ public class DynamicSpriteLayer extends Layer
         }
     }
 
+    override public function update (nX :Number, nY :Number, scale :Number = 1) :void
+    {
+        super.update(nX, nY);
+        for each (var ds :DynamicSprite in _dynamics) {
+            if (ds.x < -x - ds.width || ds.x > -x + Metrics.DISPLAY_WIDTH + ds.width) {
+                removeDS(ds);
+            } else {
+                addDS(ds);
+            }
+        }
+    }
+
     protected function removeDS (ds :DynamicSprite) :void
     {
         if (ds.parent == this) {
             removeChild(ds);
+        }
+    }
+
+    protected function addDS (ds :DynamicSprite) :void
+    {
+        if (ds.parent == null) {
+            addChild(ds);
         }
     }
 

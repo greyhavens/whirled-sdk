@@ -26,17 +26,22 @@ import flash.events.Event;
 import flash.geom.Point;
 import flash.utils.getTimer;
 
+import com.whirled.contrib.platformer.util.Metrics;
+
 public class ParticleLayer extends Layer
 {
     public function addParticleEffect (disp :DisplayObject, pt :Point) :void
     {
         var newpt :Point = globalToLocal(pt);
-        disp.x = newpt.x;
-        disp.y = newpt.y;
-        disp.addEventListener(Event.COMPLETE, effectComplete);
-        addChild(disp);
-        if (disp is MovieClip) {
-            (disp as MovieClip).gotoAndPlay(1);
+        if (newpt.x > -x - BUFFER && newpt.x < -x + Metrics.DISPLAY_WIDTH + BUFFER &&
+                newpt.y > -y - BUFFER && newpt.y < -y + Metrics.DISPLAY_HEIGHT + BUFFER) {
+            disp.x = newpt.x;
+            disp.y = newpt.y;
+            disp.addEventListener(Event.COMPLETE, effectComplete);
+            addChild(disp);
+            if (disp is MovieClip) {
+                (disp as MovieClip).gotoAndPlay(1);
+            }
         }
     }
 
@@ -49,5 +54,7 @@ public class ParticleLayer extends Layer
             (disp as MovieClip).stop();
         }
     }
+
+    protected static const BUFFER :Number = Metrics.DISPLAY_HEIGHT/2;
 }
 }

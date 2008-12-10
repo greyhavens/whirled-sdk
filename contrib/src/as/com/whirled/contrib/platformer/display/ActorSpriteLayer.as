@@ -22,8 +22,6 @@ package com.whirled.contrib.platformer.display {
 
 import flash.display.Sprite;
 
-import com.whirled.contrib.platformer.util.Metrics;
-
 public class ActorSpriteLayer extends DynamicSpriteLayer
 {
     public function ActorSpriteLayer ()
@@ -31,24 +29,6 @@ public class ActorSpriteLayer extends DynamicSpriteLayer
         super();
         _deathLayer = new Sprite();
         addChild(_deathLayer);
-    }
-
-    override public function update (nX :Number, nY :Number, scale :Number = 1) :void
-    {
-        super.update(nX, nY);
-        for each (var acts :ActorSprite in _dynamics) {
-            //trace("x: " + x + ", acts.x: " + acts.x);
-            if (acts.x < -x - acts.width || acts.x > -x + Metrics.DISPLAY_WIDTH + acts.width) {
-                removeDS(acts);
-            } else {
-                if (acts.parent == null) {
-                    addDS(acts);
-                } else if ((acts.parent == this) != acts.getDynamic().isAlive()) {
-                    removeDS(acts);
-                    addDS(acts);
-                }
-            }
-        }
     }
 
     override protected function removeDS (ds :DynamicSprite) :void
@@ -60,7 +40,17 @@ public class ActorSpriteLayer extends DynamicSpriteLayer
         }
     }
 
-    protected function addDS (ds :DynamicSprite) :void
+    override protected function addDS (ds :DynamicSprite) :void
+    {
+        if (ds.parent == null) {
+            addAS(ds);
+        } else if ((ds.parent == this) != ds.getDynamic().isAlive()) {
+            removeDS(ds);
+            addAS(ds);
+        }
+    }
+
+    protected function addAS (ds :DynamicSprite) :void
     {
         if (ds.getDynamic().isAlive()) {
             addChild(ds);
