@@ -56,7 +56,10 @@ public class DynamicSpriteLayer extends Layer
     {
         super.update(nX, nY);
         for each (var ds :DynamicSprite in _dynamics) {
-            if (ds.x < -x - ds.width || ds.x > -x + Metrics.DISPLAY_WIDTH + ds.width) {
+            if (ds.x < -x - ds.width - BUFFER ||
+                    ds.x > -x + Metrics.DISPLAY_WIDTH + ds.width + BUFFER ||
+                    ds.y < -y - ds.height - BUFFER ||
+                    ds.y > -y + Metrics.DISPLAY_HEIGHT + ds.height + BUFFER) {
                 removeDS(ds);
             } else {
                 addDS(ds);
@@ -79,5 +82,7 @@ public class DynamicSpriteLayer extends Layer
     }
 
     protected var _dynamics :Array = new Array();
+
+    protected static const BUFFER :int = Metrics.DISPLAY_HEIGHT/2;
 }
 }
