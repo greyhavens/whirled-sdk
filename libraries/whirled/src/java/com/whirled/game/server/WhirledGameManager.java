@@ -20,6 +20,7 @@ import com.samskivert.util.StringUtil;
 
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationCodes;
+import com.threerings.presents.dobj.AccessController;
 import com.threerings.presents.dobj.DObjectManager;
 import com.threerings.presents.dobj.DSet;
 import com.threerings.presents.dobj.MessageEvent;
@@ -27,6 +28,7 @@ import com.threerings.presents.dobj.ObjectDeathListener;
 import com.threerings.presents.dobj.ObjectDestroyedEvent;
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.server.InvocationException;
+import com.threerings.presents.server.PresentsObjectAccess;
 
 import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.OccupantInfo;
@@ -103,6 +105,15 @@ public abstract class WhirledGameManager extends GameManager
         }
 
         super.playerReady(caller);
+    }
+
+    @Override
+    protected AccessController getAccessController ()
+    {
+        // TODO: Turn off CrowdObjectAccess's restrictive policing of subscription until we have
+        // TODO: breathing room to give bureaus their own ClientObject subclasses, making it a
+        // TODO: bit easier to detect when the agent is attempting to snoop on the game object.
+        return PresentsObjectAccess.DEFAULT;
     }
 
     /**
@@ -695,7 +706,7 @@ public abstract class WhirledGameManager extends GameManager
         _gameAgent = createAgent();
         if (_gameAgent != null) {
             _bureauReg.startAgent(_gameAgent);
-            
+
             // if the agent dies and we didn't destroy it, notify the client
             _gameAgent.addListener(new ObjectDeathListener() {
                 public void objectDestroyed (ObjectDestroyedEvent event) {
