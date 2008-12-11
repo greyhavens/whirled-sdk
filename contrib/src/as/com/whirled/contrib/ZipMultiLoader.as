@@ -21,6 +21,8 @@
 package com.whirled.contrib {
 
 import flash.events.Event;
+import flash.events.EventDispatcher;
+import flash.events.ProgressEvent;
 
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
@@ -39,7 +41,7 @@ import nochump.util.zip.ZipFile;
 /**
  * Utility class for MultiLoading all the files contained in a zip.
  */
-public class ZipMultiLoader
+public class ZipMultiLoader extends EventDispatcher
 {
     public function ZipMultiLoader (
         source :Object, completeCallback :Function, appDom :ApplicationDomain = null)
@@ -63,22 +65,15 @@ public class ZipMultiLoader
         _appDom = appDom;
 
         if (req != null) {
-            _loader = new URLLoader();
-            _loader.dataFormat = URLLoaderDataFormat.BINARY;
-            _loader.load(req);
-            new MultiLoader(_loader, loaderLoaded);
+            var loader :URLLoader = new URLLoader();
+            loader.addEventListener(ProgressEvent.PROGRESS, dispatchEvent);
+            loader.dataFormat = URLLoaderDataFormat.BINARY;
+            loader.load(req);
+            new MultiLoader(loader, loaderLoaded);
 
         } else {
             bytesAvailable(bytes);
         }
-    }
-
-    public function getLoadPercent () :int
-    {
-        if (_loader == null || _loader.bytesTotal == 0) {
-            return 0;
-        }
-        return _loader.bytesLoaded * 100 / _loader.bytesTotal;
     }
 
     /**
