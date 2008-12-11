@@ -60,11 +60,13 @@ public class Board
     public static const BOTTOM_BOUND :int = 2;
     public static const LEFT_BOUND :int = 3;
 
+    public static const DEBUG :Boolean = false;
+
     public static function loadDynamic (xml :XML) :Dynamic
     {
         var dclass :Class = ClassUtil.getClassByName(xml.@cname);
         if (dclass != null) {
-            //trace("creating dynamic: " + xml.@cname);
+            debug("creating dynamic: " + xml.@cname);
             return new dclass(xml);
         }
         return null;
@@ -159,7 +161,7 @@ public class Board
         }
         _actors[a.id] = a;
         //_actors.push(a);
-        trace("adding actor " + a.sprite + "(" + a.id + ") at (" + a.x + ", " + a.y + ")");
+        debug("adding actor " + a.sprite + "(" + a.id + ") at (" + a.x + ", " + a.y + ")");
         sendEvent(ACTOR_ADDED, a, "");
     }
 
@@ -170,7 +172,7 @@ public class Board
         }
         _dynamics[d.id] = d;
         //_dynamics.push(d);
-        trace("adding dynamic " + d.id + " at (" + d.x + ", " + d.y + ")");
+        debug("adding dynamic " + d.id + " at (" + d.x + ", " + d.y + ")");
         sendEvent(DYNAMIC_ADDED, d, "");
     }
 
@@ -215,7 +217,7 @@ public class Board
         } else if (d is Shot) {
             arr = _shots;
         } else {
-            trace("removing dynamic " + d.id);
+            debug("removing dynamic " + d.id);
         }
         delete arr[d.id];
         /*
@@ -503,7 +505,7 @@ public class Board
             if (node.localName() == "piece") {
                 var p :Piece = PlatformerContext.pfac.getPiece(node);
                 if (p == null) {
-                    trace("failed to load piece: " + node.toXMLString());
+                    debug("failed to load piece: " + node.toXMLString());
                 } else {
                     arr.push(p);
                     if (_maxId < p.id) {
@@ -521,7 +523,7 @@ public class Board
 
     protected function loadDynamics (xml :XML, arr :Object) :void
     {
-        //trace("Loading dynamics");
+        debug("Loading dynamics");
         for each (var node :XML in xml.children()) {
             var d :Dynamic = loadDynamic(node);
             if (d != null) {
@@ -634,6 +636,13 @@ public class Board
     {
         _dynamicIns[group][d.id] = d;
         _globalDynamicIns[d.id] = d;
+    }
+
+    protected static function debug (msg :String) :void
+    {
+        if (DEBUG) {
+            trace(msg);
+        }
     }
 
     /** The XML definition. */
