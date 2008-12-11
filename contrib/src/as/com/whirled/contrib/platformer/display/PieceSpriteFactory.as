@@ -59,12 +59,13 @@ public class PieceSpriteFactory
     }
 
     public static function initZip (
-        source :Object, onReady :Function, duplicate :Boolean = true) :void
+        source :Object, onReady :Function, duplicate :Boolean = true) :Function
     {
-        new ZipMultiLoader(source, function (result :Object) :void {
+        var loader :ZipMultiLoader = new ZipMultiLoader(source, function (result :Object) :void {
                 onReady();
             }, _contentDomain);
         initClasses(duplicate);
+        return loader.getLoadPercent;
     }
 
     public static function initClasses (duplicate :Boolean) :void

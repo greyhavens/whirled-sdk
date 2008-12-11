@@ -63,12 +63,14 @@ public class BoardSprite extends Sprite
 
     public function initDisplay () :void
     {
+        /*
         var masker :Shape = new Shape();
         masker.graphics.beginFill(0x000000);
         masker.graphics.drawRect(0, 0, Metrics.DISPLAY_WIDTH, Metrics.DISPLAY_HEIGHT);
         masker.graphics.endFill();
         mask = masker;
         addChild(masker);
+        */
 
         _layers = new Array(NUM_LAYERS);
         var bxml :XML = _board.getBackgroundXML();
