@@ -63,14 +63,22 @@ public class ZipMultiLoader
         _appDom = appDom;
 
         if (req != null) {
-            var loader :URLLoader = new URLLoader();
-            loader.dataFormat = URLLoaderDataFormat.BINARY;
-            loader.load(req);
-            new MultiLoader(loader, loaderLoaded);
+            _loader = new URLLoader();
+            _loader.dataFormat = URLLoaderDataFormat.BINARY;
+            _loader.load(req);
+            new MultiLoader(_loader, loaderLoaded);
 
         } else {
             bytesAvailable(bytes);
         }
+    }
+
+    public function getLoadPercent () :int
+    {
+        if (_loader == null || _loader.bytesTotal == 0) {
+            return 0;
+        }
+        return _loader.bytesLoaded * 100 / _loader.bytesTotal;
     }
 
     /**
@@ -110,5 +118,6 @@ public class ZipMultiLoader
 
     protected var _completeCallback :Function;
     protected var _appDom :ApplicationDomain;
+    protected var _loader :URLLoader;
 }
 }
