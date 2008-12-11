@@ -24,6 +24,7 @@ import flash.display.DisplayObject;
 import flash.display.GradientType;
 import flash.display.MovieClip;
 import flash.display.Shape;
+import flash.events.ProgressEvent;
 import flash.geom.Matrix;
 import flash.system.ApplicationDomain;
 import flash.utils.ByteArray;
@@ -58,14 +59,16 @@ public class PieceSpriteFactory
         initClasses(duplicate);
     }
 
-    public static function initZip (
-        source :Object, onReady :Function, duplicate :Boolean = true) :Function
+    public static function initZip (source :Object, onReady :Function, duplicate :Boolean = true,
+        progressListener :Function = null) :void
     {
         var loader :ZipMultiLoader = new ZipMultiLoader(source, function (result :Object) :void {
                 onReady();
             }, _contentDomain);
+        if (progressListener != null) {
+            loader.addEventListener(ProgressEvent.PROGRESS, progressListener);
+        }
         initClasses(duplicate);
-        return loader.getLoadPercent;
     }
 
     public static function initClasses (duplicate :Boolean) :void
