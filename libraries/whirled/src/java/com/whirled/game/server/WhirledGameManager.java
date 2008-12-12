@@ -28,11 +28,11 @@ import com.threerings.presents.dobj.ObjectDeathListener;
 import com.threerings.presents.dobj.ObjectDestroyedEvent;
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.server.InvocationException;
-import com.threerings.presents.server.PresentsObjectAccess;
 
 import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
+import com.threerings.crowd.server.CrowdObjectAccess;
 
 import com.threerings.bureau.server.BureauRegistry;
 
@@ -110,10 +110,7 @@ public abstract class WhirledGameManager extends GameManager
     @Override
     protected AccessController getAccessController ()
     {
-        // TODO: Turn off CrowdObjectAccess's restrictive policing of subscription until we have
-        // TODO: breathing room to give bureaus their own ClientObject subclasses, making it a
-        // TODO: bit easier to detect when the agent is attempting to snoop on the game object.
-        return PresentsObjectAccess.DEFAULT;
+        return CrowdObjectAccess.BUREAU_ACCESS_PLACE;
     }
 
     /**
