@@ -59,6 +59,10 @@ public class PlatformerController
         removeGameListeners();
     }
 
+    public function endGame () :void
+    {
+    }
+
     protected function run () :void
     {
         PlatformerContext.pfac = createPieceFactory();
