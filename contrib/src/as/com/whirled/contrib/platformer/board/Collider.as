@@ -28,7 +28,6 @@ import com.threerings.util.ClassUtil;
 
 import com.whirled.contrib.platformer.PlatformerContext;
 
-import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundData;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.Dynamic;
