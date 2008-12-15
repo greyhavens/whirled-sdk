@@ -23,6 +23,7 @@ package com.whirled.contrib.platformer {
 import flash.display.DisplayObject;
 
 import com.whirled.game.GameControl;
+import com.whirled.game.OccupantChangedEvent;
 import com.whirled.game.StateChangedEvent;
 
 import com.whirled.contrib.platformer.board.Board;
@@ -50,6 +51,7 @@ public class PlatformerController
                 PlatformerContext.net.addMessageType(SpawnMessage);
                 PlatformerContext.net.addMessageType(TickMessage);
             }
+            addOccupantListeners();
         }
     }
 
@@ -92,6 +94,22 @@ public class PlatformerController
     }
 
     protected function handleGameEnded (...ignored) :void
+    {
+    }
+
+    protected function addOccupantListeners () :void
+    {
+        PlatformerContext.gctrl.game.addEventListener(
+                OccupantChangedEvent.OCCUPANT_LEFT, handleOccupantLeft);
+    }
+
+    protected function removeOccupantListeners () :void
+    {
+        PlatformerContext.gctrl.game.removeEventListener(
+                OccupantChangedEvent.OCCUPANT_LEFT, handleOccupantLeft);
+    }
+
+    protected function handleOccupantLeft (event :OccupantChangedEvent) :void
     {
     }
 
