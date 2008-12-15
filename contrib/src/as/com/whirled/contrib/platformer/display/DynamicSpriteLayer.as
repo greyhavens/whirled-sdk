@@ -28,7 +28,7 @@ public class DynamicSpriteLayer extends Layer
     public function addDynamicSprite (ds :DynamicSprite) :void
     {
         _dynamics.push(ds);
-        addChild(ds);
+        showDS(ds);
     }
 
     public function removeDynamicSprite (d :Dynamic) :void
@@ -56,14 +56,19 @@ public class DynamicSpriteLayer extends Layer
     {
         super.update(nX, nY);
         for each (var ds :DynamicSprite in _dynamics) {
-            if (ds.x < -x - ds.width - BUFFER ||
-                    ds.x > -x + Metrics.DISPLAY_WIDTH + ds.width + BUFFER ||
-                    ds.y < -y - ds.height - BUFFER ||
-                    ds.y > -y + Metrics.DISPLAY_HEIGHT + ds.height + BUFFER) {
-                removeDS(ds);
-            } else {
-                addDS(ds);
-            }
+            showDS(ds);
+        }
+    }
+
+    protected function showDS (ds :DynamicSprite) :void
+    {
+        if (!ds.showAlways() && (ds.x < -x - ds.width - BUFFER ||
+                ds.x > -x + Metrics.DISPLAY_WIDTH + ds.width + BUFFER ||
+                ds.y < -y - ds.height - BUFFER ||
+                ds.y > -y + Metrics.DISPLAY_HEIGHT + ds.height + BUFFER)) {
+            removeDS(ds);
+        } else {
+            addDS(ds);
         }
     }
 

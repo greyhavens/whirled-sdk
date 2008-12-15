@@ -89,6 +89,11 @@ public class DynamicSprite extends Sprite
         return _dynamic;
     }
 
+    public function showAlways () :Boolean
+    {
+        return false;
+    }
+
     public function update (delta :Number) :void
     {
         this.x = _dynamic.x * Metrics.TILE_SIZE;
