@@ -227,6 +227,7 @@ public class Definitions
         var funcs :Array = [
             new FunctionSpec("getPlayerId", player.getPlayerId),
             new FunctionSpec("deactivateGame", player.deactivateGame),
+            new FunctionSpec("getAvatarMasterItemId", player.getAvatarMasterItemId),
             new FunctionSpec("holdsTrophy", player.holdsTrophy, [new Parameter("ident", String)]),
             new FunctionSpec("getPlayerItemPacks", player.getPlayerItemPacks),
             new FunctionSpec("getPlayerLevelPacks", player.getPlayerLevelPacks),
