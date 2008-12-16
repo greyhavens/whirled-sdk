@@ -22,5 +22,19 @@ public class PlayerInfo
     
     /** The group name (not unique) of the party, or null. */
     public var groupName :String;
+
+    /** Constructor @private */
+    public function PlayerInfo (src :Object)
+    {
+        // copy anything matching our variable names out of the source object (future-n-past proof)
+        for (var key :String in this) {
+            this[key] = src[key];
+        }
+    }
+
+    public function toString () :String
+    {
+        return name + " (" + id + ")";
+    }
 }
 }

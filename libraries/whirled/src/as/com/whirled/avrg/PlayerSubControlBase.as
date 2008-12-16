@@ -71,6 +71,18 @@ public class PlayerSubControlBase extends TargetedSubControl
     }
 
     /**
+     * TODO doc
+     */
+    public function getPlayerInfo () :PlayerInfo
+    {
+        var inf :Object = callHostCode("getPlayerInfo_v1");
+        if (inf == null) {
+            return null;
+        }
+        return new PlayerInfo(inf);
+    }
+
+    /**
      * Accesses the id of the room that this player is in.
      */
     public function getRoomId () :int

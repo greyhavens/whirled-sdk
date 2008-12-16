@@ -39,6 +39,32 @@ public class GameSubControlBase extends AbstractSubControl
     }
 
     /**
+     * TODO doc
+     */
+    public function getPlayerInfos () :Array /* of PlayerInfo */
+    {
+        var infs :Array = callHostCode("game_getPlayerInfos_v1") as Array;
+        if (infs == null) {
+            return [];
+        }
+        return infs.map(function (inf :Object, ... rest) :PlayerInfo {
+            return new PlayerInfo(inf);
+        });
+    }
+
+    /**
+     * TODO doc
+     */
+    public function getPlayerInfo (id :int) :PlayerInfo
+    {
+        var inf :Object = callHostCode("getPlayerInfo_v1", id);
+        if (inf == null) {
+            return null;
+        }
+        return new PlayerInfo(inf);
+    }
+
+    /**
      * Returns the set of all level packs available to this game as an array of objects with the
      * following properties:
      *
