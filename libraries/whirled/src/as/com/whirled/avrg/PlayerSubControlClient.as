@@ -37,6 +37,17 @@ public class PlayerSubControlClient extends PlayerSubControlBase
         return callHostCode("getPlayerId_v1");
     }
 
+    /**
+     * Returns the master item id of the avatar being worn by the player, or zero for
+     * guests (ghosts) or people wearing the default tofu. The master id will be the
+     * same for all purchased copies of a particular catalog avatar and will be a
+     * unique value for every original (non-catalog purchased) avatar item.
+     */
+    public function getAvatarMasterItemId () :int
+    {
+        return callHostCode("getAvatarMasterItemId_v1");
+    }
+
     /** @private */
     override protected function setUserProps (o :Object) :void
     {
