@@ -38,6 +38,7 @@ import com.whirled.contrib.ZipMultiLoader;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.Dynamic;
+import com.whirled.contrib.platformer.piece.Gate;
 import com.whirled.contrib.platformer.piece.Hover;
 import com.whirled.contrib.platformer.piece.LaserShot;
 import com.whirled.contrib.platformer.piece.Piece;
@@ -81,6 +82,7 @@ public class PieceSpriteFactory
         addDynamicClass(LaserShot, LaserShotSprite);
         addDynamicClass(Hover, HoverSprite);
         addDynamicClass(Spawner, SpawnerSprite);
+        addDynamicClass(Gate, GateSprite);
     }
 
     public static function addPieceClass (

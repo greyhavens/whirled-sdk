@@ -54,6 +54,7 @@ public class Board
     public static const SPAWNERS :String = "spawners";
     public static const PLATFORMS :String = "platforms";
     public static const GENERICS :String = "generics";
+    public static const GATES :String = "gates";
 
     public static const TOP_BOUND :int = 0;
     public static const RIGHT_BOUND :int = 1;
@@ -79,6 +80,7 @@ public class Board
         _groupNames.push(SPAWNERS);
         _groupNames.push(PLATFORMS);
         _groupNames.push(GENERICS);
+        _groupNames.push(GATES);
     }
 
     public function loadFromXML (level :XML) :void

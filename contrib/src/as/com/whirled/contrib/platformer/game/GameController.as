@@ -32,6 +32,7 @@ import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
 import com.whirled.contrib.platformer.piece.Dynamic;
 //import com.whirled.contrib.platformer.piece.RectDynamic;
+import com.whirled.contrib.platformer.piece.Gate;
 import com.whirled.contrib.platformer.piece.Hover;
 import com.whirled.contrib.platformer.piece.LaserShot;
 import com.whirled.contrib.platformer.piece.Piece;
@@ -68,6 +69,7 @@ public class GameController
         c = MultiEventAction;
         c = SpawnerDeathEventTrigger;
         c = MultiEventTrigger;
+        c = OpenGateEventAction;
     }
 
     public function initDynamicClasses () :void
@@ -77,6 +79,7 @@ public class GameController
         addDynamicClass(Dynamic, DynamicController, true);
         addDynamicClass(Hover, HoverController);
         addDynamicClass(Spawner, SpawnerController);
+        addDynamicClass(Gate, GateController);
     }
 
     public function run () :void
