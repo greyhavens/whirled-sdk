@@ -24,7 +24,7 @@ public interface ShootableController
 {
     function doesHit (x :Number = NaN, y :Number = NaN) :Boolean;
 
-    function doHit (damage :Number, owner :int) :void
+    function doHit (damage :Number, owner :int, inter :int) :void
 
     function doesCollide () :Boolean;
 

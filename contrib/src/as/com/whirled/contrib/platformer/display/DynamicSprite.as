@@ -247,7 +247,7 @@ public class DynamicSprite extends Sprite
 
     protected function showHit (filter :ColorMatrixFilter = null, length :Number = HIT_LENGTH) :void
     {
-        if (_hitLeft <= 0) {
+        if (_hitLeft <= 0 && stage != null) {
             _hitLeft = length;
             if (filter == null) {
                 if (_hitFilter == null) {

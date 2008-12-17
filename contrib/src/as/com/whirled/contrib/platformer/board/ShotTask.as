@@ -22,6 +22,7 @@ package com.whirled.contrib.platformer.board {
 
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundData;
+import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Shot;
 
 import com.whirled.contrib.platformer.game.CollisionHandler;
@@ -72,6 +73,8 @@ public class ShotTask extends ColliderTask
     protected function collide (line :LineData) :Number
     {
         var dynamics :Array = _collider.getDynamicBoundsByType(_s.inter);
+        dynamics = dynamics.concat(_collider.getDynamicBoundsByType(Dynamic.GLOBAL));
+
         var closehit :Number = int.MAX_VALUE;
         if (dynamics != null && dynamics.length > 0) {
             for each (var db :DynamicBounds in dynamics) {

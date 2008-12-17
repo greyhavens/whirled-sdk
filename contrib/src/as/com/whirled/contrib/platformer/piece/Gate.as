@@ -48,5 +48,10 @@ public class Gate extends RectDynamic
         }
         return xml;
     }
+
+    override public function ownerType () :int
+    {
+        return OWN_ALL;
+    }
 }
 }

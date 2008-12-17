@@ -22,50 +22,46 @@ package com.whirled.contrib.platformer.display {
 
 import flash.display.DisplayObject;
 
-import com.whirled.contrib.platformer.piece.Gate;
+import com.whirled.contrib.platformer.piece.DestructableGate;
 
-public class GateSprite extends DynamicSprite
+public class DestructableGateSprite extends GateSprite
 {
-    public static const IDLE :String = "idle";
-    public static const DEATH :String = "death";
-    public static const DEAD :String = "dead";
+    public static const DAMAGE_1 :String = "damage1";
+    public static const DAMAGED_1 :String = "damaged1";
+    public static const DAMAGE_2 :String = "damage2";
+    public static const DAMAGED_2 :String = "damaged2";
 
-    public function GateSprite (g :Gate, disp :DisplayObject = null)
+    public function DestructableGateSprite (dg :DestructableGate, disp :DisplayObject = null)
     {
-        _gate = g;
-        super(g, disp);
-        if (disp != null) {
-            addChild(disp);
-            update(0);
-        }
+        _dg = dg;
+        super(dg, disp);
     }
 
     override public function update (delta :Number) :void
     {
         super.update(delta);
-        if (_disp == null) {
-            return;
+        if (_dg.wasHit) {
+            showHit();
         }
-        if (_gate.open) {
-            if (!isDead(_state)) {
-                changeState(DEATH);
-                _state = DEAD;
+    }
+
+    override protected function idle () :void
+    {
+        if (_dg.health < _dg.startHealth/3) {
+            if (_state != DAMAGED_2) {
+                changeState(DAMAGE_2);
+                _state == DAMAGED_2;
+            }
+        } else if (_dg.health < 2 * _dg.startHealth / 3) {
+            if (_state != DAMAGED_1) {
+                changeState(DAMAGE_1);
+                _state == DAMAGED_1;
             }
         } else {
-            idle();
+            super.idle();
         }
     }
 
-    protected function idle () :void
-    {
-        changeState(IDLE);
-    }
-
-    protected function isDead (state :String) :Boolean
-    {
-        return state == DEATH || state == DEAD;
-    }
-
-    protected var _gate :Gate;
+    protected var _dg :DestructableGate;
 }
 }

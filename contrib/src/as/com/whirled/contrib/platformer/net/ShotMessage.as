@@ -35,23 +35,26 @@ public class ShotMessage
     public var type :int;
     public var id :int;
     public var damage :Number;
+    public var inter :int;
     public var bytes :ByteArray;
 
-    public static function shotHit (id :int, damage :Number) :ShotMessage
+    public static function shotHit (id :int, damage :Number, inter :int) :ShotMessage
     {
         var msg :ShotMessage = new ShotMessage();
         msg.type = HIT;
         msg.id = id;
         msg.damage = damage;
+        msg.inter = inter;
         return msg;
     }
 
-    public static function shotDamage (id :int, damage :Number) :ShotMessage
+    public static function shotDamage (id :int, damage :Number, inter :int) :ShotMessage
     {
         var msg :ShotMessage = new ShotMessage();
         msg.type = DAMAGE;
         msg.id = id;
         msg.damage = damage;
+        msg.inter = inter;
         return msg;
     }
 
@@ -66,6 +69,7 @@ public class ShotMessage
         ba.writeByte(type);
         ba.writeInt(id);
         ba.writeFloat(damage);
+        ba.writeByte(inter);
         return ba;
     }
 
@@ -74,6 +78,7 @@ public class ShotMessage
         type = ba.readByte();
         id = ba.readInt();
         damage = ba.readFloat();
+        inter = ba.readByte();
     }
 }
 }

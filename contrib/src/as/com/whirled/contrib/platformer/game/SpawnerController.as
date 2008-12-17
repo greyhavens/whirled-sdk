@@ -54,14 +54,14 @@ public class SpawnerController extends RectDynamicController
         return _spawner.destructable && _spawner.health > 0;
     }
 
-    public function doHit (damage :Number, owner :int) :void
+    public function doHit (damage :Number, owner :int, inter :int) :void
     {
         if (_spawner.amOwner()) {
             _spawner.health -= damage;
-            _spawner.wasHit = true;
         } else {
-            PlatformerContext.net.sendMessage(ShotMessage.shotHit(_spawner.id, damage));
+            PlatformerContext.net.sendMessage(ShotMessage.shotHit(_spawner.id, damage, inter));
         }
+        _spawner.wasHit = true;
     }
 
     public function doesCollide () :Boolean

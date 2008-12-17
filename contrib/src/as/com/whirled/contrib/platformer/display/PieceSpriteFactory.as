@@ -37,6 +37,7 @@ import com.threerings.util.MultiLoader;
 import com.whirled.contrib.ZipMultiLoader;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
+import com.whirled.contrib.platformer.piece.DestructableGate;
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Gate;
 import com.whirled.contrib.platformer.piece.Hover;
@@ -83,6 +84,7 @@ public class PieceSpriteFactory
         addDynamicClass(Hover, HoverSprite);
         addDynamicClass(Spawner, SpawnerSprite);
         addDynamicClass(Gate, GateSprite);
+        addDynamicClass(DestructableGate, DestructableGateSprite);
     }
 
     public static function addPieceClass (

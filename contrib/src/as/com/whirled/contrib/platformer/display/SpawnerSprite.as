@@ -67,7 +67,7 @@ public class SpawnerSprite extends DynamicSprite
         } else {
             changeState(IDLE);
         }
-        if (_hitLeft <= 0 && _spawner.wasHit && stage != null) {
+        if (_spawner.wasHit) {
             showHit();
         }
     }

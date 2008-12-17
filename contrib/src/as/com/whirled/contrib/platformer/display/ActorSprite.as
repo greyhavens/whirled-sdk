@@ -78,7 +78,7 @@ public class ActorSprite extends DynamicSprite
         super.update(delta);
         _oldDx = _actor.dx;
         _oldDy = _actor.dy;
-        if (_hitLeft <= 0 && _actor.wasHit > 0 && stage != null) {
+        if (_actor.wasHit > 0) {
             showHit();
         }
     }

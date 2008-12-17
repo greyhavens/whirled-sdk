@@ -30,6 +30,7 @@ import com.whirled.contrib.platformer.net.DynamicMessage;
 import com.whirled.contrib.platformer.net.TickMessage;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundedPiece;
+import com.whirled.contrib.platformer.piece.DestructableGate;
 import com.whirled.contrib.platformer.piece.Dynamic;
 //import com.whirled.contrib.platformer.piece.RectDynamic;
 import com.whirled.contrib.platformer.piece.Gate;
@@ -80,6 +81,7 @@ public class GameController
         addDynamicClass(Hover, HoverController);
         addDynamicClass(Spawner, SpawnerController);
         addDynamicClass(Gate, GateController);
+        addDynamicClass(DestructableGate, DestructableGateController);
     }
 
     public function run () :void

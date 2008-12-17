@@ -49,14 +49,14 @@ public class ActorController extends DynamicController
         return true;
     }
 
-    public function doHit (damage :Number, owner :int) :void
+    public function doHit (damage :Number, owner :int, inter :int) :void
     {
         if (owner == PlatformerContext.gctrl.game.getMyId()) {
             if (_actor.amOwner()) {
                 _actor.health -= damage;
             } else {
                 trace("sending hit message actor: " + _actor.id + " damage " + damage);
-                PlatformerContext.net.sendMessage(ShotMessage.shotHit(_actor.id, damage));
+                PlatformerContext.net.sendMessage(ShotMessage.shotHit(_actor.id, damage, inter));
             }
         }
     }
