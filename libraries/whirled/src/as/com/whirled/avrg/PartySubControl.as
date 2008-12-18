@@ -46,20 +46,11 @@ public class PartySubControl extends AbstractSubControl
     }
 
     /**
-     * Get the leader of this party.
-     */
-    public function getLeaderId () :int
-    {
-        return 0; // TODO
-    }
-
-    /**
      * Get the player ids in this party.
      */
     public function getPlayerIds () :Array /* of int */
     {
         return []; // TODO
-        // TODO: sort? So leader is first?
     }
 }
 }
