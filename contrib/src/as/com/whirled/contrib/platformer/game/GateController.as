@@ -33,7 +33,7 @@ public class GateController extends RectDynamicController
 
     public function isWalkable () :Boolean
     {
-        return !(_dynamic as Gate).open;
+        return (_dynamic as Gate).isAttachable();
     }
 }
 }

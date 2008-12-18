@@ -24,6 +24,7 @@ package com.whirled.contrib.platformer.piece {
  * A walkable solid dynamic that can be removed.
  */
 public class Gate extends RectDynamic
+    implements Attachable
 {
     public var open :Boolean;
 
@@ -35,6 +36,11 @@ public class Gate extends RectDynamic
             height = insxml.@height;
             sprite = insxml.@sprite;
         }
+    }
+
+    public function isAttachable () :Boolean
+    {
+        return !open;
     }
 
     override public function xmlInstance () :XML

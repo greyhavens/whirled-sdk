@@ -86,7 +86,7 @@ public class GameController
 
     public function run () :void
     {
-        for each (var d :Dynamic in _board.getDynamicIns(Board.ACTORS)) {
+        for each (var d :Dynamic in _board.getDynamicIns()) {
             var dc :DynamicController = getController(d);
             if (dc != null && dc is InitController) {
                 (dc as InitController).init();
@@ -95,11 +95,7 @@ public class GameController
         var eventsXML :XML = _board.getEventXML();
         if (eventsXML != null) {
             for each (var node :XML in eventsXML.child("event")) {
-                var event :GameEvent = GameEvent.create(this, node);
-                if (event != null) {
-                    //trace("adding event: " + node.toXMLString());
-                    _events.push(event);
-                }
+                addGameEvent(GameEvent.create(this, node));
             }
         }
     }
@@ -217,6 +213,14 @@ public class GameController
         if (bound != _board.getBound(idx)) {
             _board.setBound(idx, bound);
             _collider.setBound(idx, bound);
+        }
+    }
+
+    public function addGameEvent (ge :GameEvent) :void
+    {
+        if (ge != null) {
+            //trace("adding event: " + node.toXMLString());
+            _events.push(ge);
         }
     }
 

@@ -56,7 +56,7 @@ public class DestructableGate extends Gate
     override public function xmlInstance() :XML
     {
         var xml :XML = super.xmlInstance();
-        xml.@health = startHealth;
+        xml.@health = health;
         return xml;
     }
 

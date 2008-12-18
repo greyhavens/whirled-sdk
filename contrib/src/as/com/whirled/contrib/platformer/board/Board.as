@@ -123,8 +123,11 @@ public class Board
         return _groupNames;
     }
 
-    public function getDynamicIns (group :String) :Object
+    public function getDynamicIns (group :String = null) :Object
     {
+        if (group == null) {
+            return _globalDynamicIns;
+        }
         return _dynamicIns[group];
     }
 

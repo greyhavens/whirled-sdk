@@ -115,6 +115,17 @@ public class DynamicBounds
         }
     }
 
+    protected function dynLD (x1 :Number, y1 :Number, x2 :Number, y2 :Number, type :int) :LineData
+    {
+        return new LineData(dyn.x + x1, dyn.y + y1, dyn.x + x2, dyn.y + y2, type);
+    }
+
+    protected function dynUpdateLD (
+            line :LineData, x1 :Number, y1 :Number, x2 :Number, y2 :Number) :void
+    {
+        line.update(dyn.x + x1, dyn.y + y1, dyn.x + x2, dyn.y + y2);
+    }
+
     protected var _collider : Collider;
 }
 }

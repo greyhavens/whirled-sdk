@@ -69,15 +69,15 @@ public class SimpleActorBounds extends ActorBounds
     {
         if (lines == null) {
             lines = new Array();
-            lines.push(actorLD(0, 0, 0, actor.height, ACTOR_BOUND));
-            lines.push(actorLD(0, actor.height, actor.width, actor.height, ACTOR_BOUND));
-            lines.push(actorLD(actor.width, actor.height, actor.width, 0, ACTOR_BOUND));
-            lines.push(actorLD(actor.width, 0, 0, 0, ACTOR_BOUND));
+            lines.push(dynLD(0, 0, 0, actor.height, ACTOR_BOUND));
+            lines.push(dynLD(0, actor.height, actor.width, actor.height, ACTOR_BOUND));
+            lines.push(dynLD(actor.width, actor.height, actor.width, 0, ACTOR_BOUND));
+            lines.push(dynLD(actor.width, 0, 0, 0, ACTOR_BOUND));
         } else {
-            actorUpdateLD(lines[0], 0, 0, 0, actor.height);
-            actorUpdateLD(lines[1], 0, actor.height, actor.width, actor.height);
-            actorUpdateLD(lines[2], actor.width, actor.height, actor.width, 0);
-            actorUpdateLD(lines[3], actor.width, 0, 0, 0);
+            dynUpdateLD(lines[0], 0, 0, 0, actor.height);
+            dynUpdateLD(lines[1], 0, actor.height, actor.width, actor.height);
+            dynUpdateLD(lines[2], actor.width, actor.height, actor.width, 0);
+            dynUpdateLD(lines[3], actor.width, 0, 0, 0);
         }
     }
 
@@ -529,36 +529,25 @@ public class SimpleActorBounds extends ActorBounds
         //log("new movement bounds (" + cdX + ", " + cdY + ")");
         if (mlines == null) {
             mlines = new Array();
-            mlines.push(actorLD(x1, y1, x2, y2, ACTOR_BOUND));
-            mlines.push(actorLD(x2, y2, x3, y3, ACTOR_BOUND));
-            mlines.push(actorLD(x3, y3, x4, y4, ACTOR_BOUND));
-            mlines.push(actorLD(x4, y4, x5, y5, ACTOR_BOUND));
-            mlines.push(actorLD(x5, y5, x6, y6, ACTOR_BOUND));
-            mlines.push(actorLD(x6, y6, x1, y1, ACTOR_BOUND));
+            mlines.push(dynLD(x1, y1, x2, y2, ACTOR_BOUND));
+            mlines.push(dynLD(x2, y2, x3, y3, ACTOR_BOUND));
+            mlines.push(dynLD(x3, y3, x4, y4, ACTOR_BOUND));
+            mlines.push(dynLD(x4, y4, x5, y5, ACTOR_BOUND));
+            mlines.push(dynLD(x5, y5, x6, y6, ACTOR_BOUND));
+            mlines.push(dynLD(x6, y6, x1, y1, ACTOR_BOUND));
         } else {
-            actorUpdateLD(mlines[0], x1, y1, x2, y2);
-            actorUpdateLD(mlines[1], x2, y2, x3, y3);
-            actorUpdateLD(mlines[2], x3, y3, x4, y4);
-            actorUpdateLD(mlines[3], x4, y4, x5, y5);
-            actorUpdateLD(mlines[4], x5, y5, x6, y6);
-            actorUpdateLD(mlines[5], x6, y6, x1, y1);
+            dynUpdateLD(mlines[0], x1, y1, x2, y2);
+            dynUpdateLD(mlines[1], x2, y2, x3, y3);
+            dynUpdateLD(mlines[2], x3, y3, x4, y4);
+            dynUpdateLD(mlines[3], x4, y4, x5, y5);
+            dynUpdateLD(mlines[4], x5, y5, x6, y6);
+            dynUpdateLD(mlines[5], x6, y6, x1, y1);
         }
         /*
         for each (var mline :LineData in mlines) {
             trace("  " + mline);
         }
         */
-    }
-
-    protected function actorLD (x1 :Number, y1 :Number, x2 :Number, y2 :Number, type :int) :LineData
-    {
-        return new LineData(actor.x + x1, actor.y + y1, actor.x + x2, actor.y + y2, type);
-    }
-
-    protected function actorUpdateLD (
-            line :LineData, x1 :Number, y1 :Number, x2 :Number, y2 :Number) :void
-    {
-        line.update(actor.x + x1, actor.y + y1, actor.x + x2, actor.y + y2);
     }
 
     protected function inYBounds (line :LineData) :Boolean

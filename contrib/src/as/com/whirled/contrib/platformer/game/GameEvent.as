@@ -36,13 +36,15 @@ public class GameEvent
         if (trigger == null || action == null) {
             return null;
         }
-        return new GameEvent(trigger, action);
+        return new GameEvent(trigger, action,
+                xml.hasOwnProperty("@continuous") ? xml.@continous == "true" : false);
     }
 
-    public function GameEvent (trigger :EventTrigger, action :EventAction)
+    public function GameEvent (trigger :EventTrigger, action :EventAction, continuous :Boolean)
     {
         _trigger = trigger;
         _action = action;
+        _continuous = continuous;
     }
 
     public function isComplete () :Boolean
@@ -54,12 +56,13 @@ public class GameEvent
     {
         if (_trigger.checkTriggered()) {
             _action.run();
-            return true;
+            return !_continuous;
         }
         return false;
     }
 
     protected var _trigger :EventTrigger;
     protected var _action :EventAction;
+    protected var _continuous :Boolean;
 }
 }
