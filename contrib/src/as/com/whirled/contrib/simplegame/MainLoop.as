@@ -283,9 +283,6 @@ public final class MainLoop
             return;
         }
 
-        // save 'this' for local functions
-        var thisMainLoop :MainLoop = this;
-
         var initialTopMode :AppMode = this.topMode;
 
         function doPushMode (newMode :AppMode) :void {
