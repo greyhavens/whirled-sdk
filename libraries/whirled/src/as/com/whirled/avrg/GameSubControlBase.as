@@ -39,29 +39,22 @@ public class GameSubControlBase extends AbstractSubControl
     }
 
     /**
-     * TODO doc
+     * Return the ids of all parties presently in this game.
      */
-    public function getPlayerInfos () :Array /* of PlayerInfo */
+    public function getPartyIds () :Array /* of int */
     {
-        var infs :Array = callHostCode("game_getPlayerInfos_v1") as Array;
-        if (infs == null) {
-            return [];
-        }
-        return infs.map(function (inf :Object, ... rest) :PlayerInfo {
-            return new PlayerInfo(inf);
-        });
+        return []; // TODO
     }
 
     /**
-     * TODO doc
+     * Get the party control for the specified party, or null if there is no such party.
      */
-    public function getPlayerInfo (id :int) :PlayerInfo
+    public function getPartyControl (partyId :int) :PartySubControl
     {
-        var inf :Object = callHostCode("getPlayerInfo_v1", id);
-        if (inf == null) {
-            return null;
-        }
-        return new PlayerInfo(inf);
+        // TODO
+        // retrieve the party info from the host. If valid, populate and return a PartySubControl
+        // We may want to cache each party's subcontrol until the party leaves
+        return null;
     }
 
     /**

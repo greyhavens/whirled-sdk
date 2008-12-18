@@ -71,15 +71,11 @@ public class PlayerSubControlBase extends TargetedSubControl
     }
 
     /**
-     * TODO doc
+     * Get the party id of this player.
      */
-    public function getPlayerInfo () :PlayerInfo
+    public function getPartyId () :int
     {
-        var inf :Object = callHostCode("getPlayerInfo_v1");
-        if (inf == null) {
-            return null;
-        }
-        return new PlayerInfo(inf);
+        return callHostCode("player_getPartyId_v1") as int;
     }
 
     /**
