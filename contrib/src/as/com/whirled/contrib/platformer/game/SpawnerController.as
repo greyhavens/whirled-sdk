@@ -45,6 +45,7 @@ public class SpawnerController extends RectDynamicController
 
     override public function shutdown () :void
     {
+        super.shutdown();
         PlatformerContext.net.removeEventListener(
             MessageReceivedEvent.MESSAGE_RECEIVED, messageReceived);
     }

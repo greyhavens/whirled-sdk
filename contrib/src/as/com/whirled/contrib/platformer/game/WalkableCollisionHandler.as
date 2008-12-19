@@ -24,6 +24,7 @@ import com.whirled.contrib.platformer.board.ColliderDetails;
 import com.whirled.contrib.platformer.board.DynamicBounds;
 import com.whirled.contrib.platformer.board.SimpleActorBounds;
 import com.whirled.contrib.platformer.board.LineData;
+import com.whirled.contrib.platformer.piece.Actor;
 
 public class WalkableCollisionHandler extends CollisionHandler
 {
@@ -66,10 +67,15 @@ public class WalkableCollisionHandler extends CollisionHandler
             }
         }
         if (!stopx && attached != null) {
-            target.actor.setAttached(attached, source.dyn.id);
+            setAttached(target.actor, attached, source.dyn.id);
         } else if (stopy && !stopx) {
             target.actor.dy = 0;
         }
+    }
+
+    protected function setAttached (actor :Actor, line :LineData, id :int) :void
+    {
+        actor.setAttached(line, id);
     }
 
     protected var _wc :WalkableController;
