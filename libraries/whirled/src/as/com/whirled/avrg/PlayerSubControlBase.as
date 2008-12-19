@@ -79,7 +79,9 @@ public class PlayerSubControlBase extends TargetedSubControl
     }
 
     /**
-     * Accesses the id of the room that this player is in.
+     * Accesses the id of the room that this player is in. Returns 0 if the player is not in
+     * any room. This may happen immediately after the player joins the game or just after
+     * the player leaves another room.
      */
     public function getRoomId () :int
     {
