@@ -53,9 +53,14 @@ public class Collider
         _sindex = new SectionalIndex(sx, sy);
     }
 
-    public function getStartDelta () :Number
+    public function get tickCounter () :int
     {
-        return _tickCounter / 1000;
+        return _tickCounter;
+    }
+
+    public function getStartDelta (offset :int = 0) :Number
+    {
+        return (_tickCounter - offset) / 1000;
     }
 
     public function addBoundedPiece (p :BoundedPiece) :void

@@ -37,7 +37,7 @@ public class GameEvent
             return null;
         }
         return new GameEvent(trigger, action,
-                xml.hasOwnProperty("@continuous") ? xml.@continous == "true" : false);
+                xml.hasOwnProperty("@continuous") ? xml.@continuous == "true" : false);
     }
 
     public function GameEvent (trigger :EventTrigger, action :EventAction, continuous :Boolean)
