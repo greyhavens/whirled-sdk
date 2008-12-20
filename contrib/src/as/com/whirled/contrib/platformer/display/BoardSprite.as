@@ -123,10 +123,13 @@ public class BoardSprite extends Sprite
         updateDisplay();
     }
 
-    public function ensureCentered (rd :RectDynamic) :void
+    public function ensureCentered (rd :RectDynamic, yBuffer :Boolean = true) :void
     {
         _centerX = (rd.x + rd.width/2) * Metrics.TILE_SIZE - Metrics.DISPLAY_WIDTH/2;
-        _centerY = rd.y * Metrics.TILE_SIZE - LBUFFER;
+        _centerY = rd.y * Metrics.TILE_SIZE;
+        if (yBuffer) {
+            _centerY -= LBUFFER;
+        }
         updateDisplay();
     }
 

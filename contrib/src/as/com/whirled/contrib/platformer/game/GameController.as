@@ -95,7 +95,9 @@ public class GameController
         var eventsXML :XML = _board.getEventXML();
         if (eventsXML != null) {
             for each (var node :XML in eventsXML.child("event")) {
-                addGameEvent(GameEvent.create(this, node));
+                if (addGameEvent(GameEvent.create(this, node))) {
+                    //trace("adding event: " + node.toXMLString());
+                }
             }
         }
     }
@@ -216,12 +218,13 @@ public class GameController
         }
     }
 
-    public function addGameEvent (ge :GameEvent) :void
+    public function addGameEvent (ge :GameEvent) :Boolean
     {
         if (ge != null) {
-            //trace("adding event: " + node.toXMLString());
             _events.push(ge);
+            return true;
         }
+        return false;
     }
 
     protected function genCollider () :Collider
