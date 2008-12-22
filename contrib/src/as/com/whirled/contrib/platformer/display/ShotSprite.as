@@ -63,6 +63,9 @@ public class ShotSprite extends DynamicSprite
 
     protected function displayHit () :void
     {
+        if (_shot.rotateHit) {
+            rotation += 180;
+        }
         generateParticleEffect(_shot.hitEffect, this);
     }
 

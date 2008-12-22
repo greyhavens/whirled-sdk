@@ -49,12 +49,15 @@ public class ShotCollisionHandler extends CollisionHandler
     {
         var sc :ShootableController = db.controller as ShootableController;
         if ((cd.alines[0] == null && sc.doesHit()) ||
-                (cd.alines[0] is LineData && sc.doesHit(cd.alines[0].x1, cd.alines[0].y1))) {
+                (cd.alines[0] is LineData && sc.doesHit(cd.alines[0].x1, cd.alines[0].y1)) ||
+                (cd.alines[0] is Number && sc.doesHit())) {
             s.hit = true;
             sc.doHit(s.damage, s.owner, s.inter);
             if (db is ActorBounds) {
                 var ab :ActorBounds = db as ActorBounds;
-                if (cd.alines[0] != null && Math.abs(cd.alines[0].nx) > 0) {
+                if (cd.alines[0] is Number) {
+                    ab.actor.wasHit = Actor.HIT_FRONT;
+                } else if (cd.alines[0] != null && Math.abs(cd.alines[0].nx) > 0) {
                     ab.actor.wasHit =
                         ((cd.alines[0].nx > 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) > 0) ||
                          (cd.alines[0].nx < 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) == 0)) ?

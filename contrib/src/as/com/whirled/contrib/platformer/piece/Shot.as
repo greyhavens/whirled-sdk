@@ -34,6 +34,7 @@ public class Shot extends Dynamic
     public var missEffect :String;
     public var force :Number = 0;
     public var source :int = 0;
+    public var rotateHit :Boolean = false;
 
     override public function shouldSpawn () :Boolean
     {
