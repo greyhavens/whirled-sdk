@@ -198,8 +198,8 @@ public class AbstractControl extends EventDispatcher
                     return func.apply(null, args);
                 }
             } catch (err :Error) {
-                trace("Error! Unable to call host code. Maybe we've been shut down? " +
-                    "You should fix this. [msg=" + err.message +
+                trace("Error! Your code is broken! Unable to call a host method, perhaps " +
+                    "you've been shut down? [msg=" + err.message +
                     ", trace=" + err.getStackTrace() + "].");
             }
 
