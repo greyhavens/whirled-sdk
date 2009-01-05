@@ -98,7 +98,7 @@ public class LocalSubControl extends AbstractSubControl
      *    function testHitPoint(x :Number, y :Number, shapeFlag :Boolean) :Boolean
      * </listing>
      *
-     * @see flash.display.DisplayObject#testHitPoint()
+     * @see flash.display.DisplayObject#hitTestPoint()
      */
     public function setHitPointTester (tester :Function) :void
     {
