@@ -204,6 +204,7 @@ public class WhirledGameBackend extends BaseGameBackend
         o["setShowReplay_v1"] = setShowReplay_v1;
         o["setStageQuality_v1"] = setStageQuality_v1;
         o["showGameShop_v1"] = showGameShop_v1;
+        o["showTrophies_v1"] = showTrophies_v1;
 
         // .game
         o["isMyTurn_v1"] = isMyTurn_v1;
@@ -331,6 +332,16 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function showGameShop_v1 (itemType :String, catalogId :int = 0) :void
     {
         displayInfo(null, "Open game shop failed because game is not connected to Whirled.", 
+           WhirledGameCodes.USERGAME_CHAT_TYPE);
+    }
+
+    /**
+     * Displays the trophies awarded by this game in a popup.  This will be overridden and
+     * completed by a subclass with access to the rest of Whirled.
+     */
+    protected function showTrophies_v1 () :void
+    {
+        displayInfo(null, "Would display trophies popup, but we're in the test environment.", 
            WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
 

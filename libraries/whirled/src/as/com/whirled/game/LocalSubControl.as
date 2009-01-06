@@ -219,12 +219,25 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
-     * Instructs the game client to open the appropriate location in the game's shop
-     * @param itemType string constants are defined on GameControl 
+     * Opens the web page for this game's shop. The game will be shrunk to sidebar width while the
+     * game shop is showing.
+     *
+     * @param itemType the type of item to select by default. Valid constants are defined in
+     * GameControl.
+     * @param catalogId the catalog id of a specific item to show or 0 to display the overview page
+     * of all items of the specified type.
      */
     public function showGameShop (itemType :String, catalogId :int = 0) :void
     {
         callHostCode("showGameShop_v1", itemType, catalogId);
+    }
+
+    /**
+     * Opens a popup displaying the trophies awarded by this game.
+     */
+    public function showTrophies () :void
+    {
+        callHostCode("showTrophies_v1");
     }
 
     /**
