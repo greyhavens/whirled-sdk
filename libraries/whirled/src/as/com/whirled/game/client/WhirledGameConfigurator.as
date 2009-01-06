@@ -66,7 +66,7 @@ public class WhirledGameConfigurator extends FlexGameConfigurator
                         if (ii == range.start) {
                             rstartDex = ii;
                         }
-                        values.push(ii);
+                        values.push(new Integer(ii));
                     }
                     rcombo.dataProvider = values;
                     rcombo.selectedIndex = rstartDex;
@@ -135,7 +135,7 @@ public class WhirledGameConfigurator extends FlexGameConfigurator
                     params.put(ident, new langBoolean((control as CheckBox).selected));
 
                 } else if (control is ComboBox) {
-                    params.put(ident, (control as ComboBox).value);
+                    params.put(ident, (control as ComboBox).selectedItem);
 
                 } else {
                     Log.getLog(this).warning("Unknow custom config type " + control);
