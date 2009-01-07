@@ -88,8 +88,13 @@ public class GameController
     {
         for each (var d :Dynamic in _board.getDynamicIns()) {
             var dc :DynamicController = getController(d);
-            if (dc != null && dc is InitController) {
-                (dc as InitController).init();
+            if (dc != null) {
+                if (dc is InitController) {
+                    (dc as InitController).init();
+                }
+                if (dc is ShutdownController) {
+                    (dc as ShutdownController).shutdown();
+                }
             }
         }
         var eventsXML :XML = _board.getEventXML();
