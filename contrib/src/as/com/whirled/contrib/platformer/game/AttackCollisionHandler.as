@@ -48,7 +48,7 @@ public class AttackCollisionHandler extends CollisionHandler
             ac.startAttack();
         } else {
             var hit :Boolean = false;
-            if (tab.actor.doesHit(tab.actor.x, tab.actor.y)) {
+            if (tab.actor.doesHit(NaN, NaN)) {
                 var diff :Number =
                         tab.actor.x + tab.actor.width/2 - sab.actor.x - sab.actor.width/2;
                 tab.actor.wasHit = ((diff > 0 && (tab.actor.orient & Actor.ORIENT_RIGHT) == 0) ||

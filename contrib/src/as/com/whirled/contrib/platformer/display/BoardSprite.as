@@ -143,7 +143,7 @@ public class BoardSprite extends Sprite
         return _centerY;
     }
 
-    public function ensureVisible (actor :Actor, yshift :Number = 0) :void
+    public function ensureVisible (actor :Actor, xshift :Number = 0, yshift :Number = 0) :void
     {
         var lxbuffer :int = BUFFER * (1 + (actor.dx < 0 ? -actor.dx : 0) / 5);
         var rxbuffer :int = BUFFER * (1 + (actor.dx > 0 ? actor.dx : 0) / 5);

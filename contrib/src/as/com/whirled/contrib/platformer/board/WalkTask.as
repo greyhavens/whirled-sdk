@@ -90,7 +90,7 @@ public class WalkTask extends ColliderTask
     {
         var a :Actor = _sab.actor;
 
-        if (a.attached != null && a.attached != _attached && a.accelY == 0) {
+        if (a.attached != null && a.attached != _attached && a.accelY <= 0) {
             _attached = a.attached;
             // Newly attached to a walkable tile, preserve our momentum
             if (Math.abs(a.attached.iy) < a.maxWalkable) {
