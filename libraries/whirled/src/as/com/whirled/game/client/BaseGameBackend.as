@@ -776,12 +776,6 @@ public class BaseGameBackend
     protected function testAndSetProperty_v1 (
         propName :String, value :Object, testValue :Object, index :int = -1) :void
     {
-        // very naughty hack to support old setProperty semantics for auto-sizing arrays,
-        // since Defense relies on them. TODO: robert, remove after your game is fixed up!
-        if (value is Array && value.length == 0 && provideArrayCompatibility()) {
-            value.length = 1000; 
-        }
-
         if (index != -1) {
             throw new Error("Sorry, using testAndSet with an index value is no longer supported. " +
                 "Update your SDK.");
@@ -1341,12 +1335,6 @@ public class BaseGameBackend
     protected function setProperty_v1 (
         propName :String, value :Object, index :int, immediate :Boolean = true) :void
     {
-        // very naughty hack to support old setProperty semantics for auto-sizing arrays,
-        // since Defense relies on them. TODO: robert, remove after your game is fixed up!
-        if (value is Array && value.length == 0 && provideArrayCompatibility()) {
-            value.length = 1000; 
-        }
-        
         var key :Object = (index < 0) ? null : index;
         var isArray :Boolean = (key != null);
         setProperty_v2(propName, value, key, isArray, immediate);
@@ -1410,16 +1398,6 @@ public class BaseGameBackend
             playerIds.push(isInited(occInfo) ? occInfo.bodyOid : 0);
         }
         return playerIds;
-    }
-
-    // TEMP TODO REMOVE XXX
-    protected function provideArrayCompatibility () :Boolean
-    {
-        var cfg :BaseGameConfig = getConfig();
-        var url :String = cfg.getGameDefinition().getMediaPath(cfg.getGameId());
-
-        // Tree house defense
-        return (url === "http://media.whirled.com/6c7fa832bd422899ffea685adadbf55c184edb2e.swf");
     }
 
     protected var _ctx :PresentsContext;
