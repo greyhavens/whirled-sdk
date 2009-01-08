@@ -27,7 +27,7 @@ public class GameEvent
 {
     public static function create (gctrl :GameController, xml :XML) :GameEvent
     {
-        if (xml.child("trigger").length() == 0 || xml.child("action").length == 0) {
+        if (xml.child("trigger").length() == 0 || xml.child("action").length() == 0) {
             trace("no trigger or action children to game event");
             return null;
         }
