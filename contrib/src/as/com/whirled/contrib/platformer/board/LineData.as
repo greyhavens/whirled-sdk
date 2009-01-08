@@ -247,6 +247,23 @@ public class LineData
     }
 
     /**
+     * Determins the minimal distance between a polygon and line.
+     */
+    public function getMinimalPolyDist (lines :Array) :Array
+    {
+        var min :Number = Number.MAX_VALUE;
+        var minLd :LineData;
+        for each (var ld :LineData in lines) {
+            var dist :Number = getLineDist(ld);
+            if (dist < min) {
+                min = dist;
+                minLd = ld;
+            }
+        }
+        return [ min, minLd ];
+    }
+
+    /**
      * Returns true if this point is outside the line.
      */
     public function isOutside (x :Number, y :Number) :Boolean
@@ -404,7 +421,7 @@ public class LineData
      */
     public function polyIntersect (lines :Array) :Array
     {
-        var closehit :Number = int.MAX_VALUE;
+        var closehit :Number = Number.MAX_VALUE;
         var p1inside :Boolean = true;
         var l :LineData;
         for each (var line :LineData in lines) {

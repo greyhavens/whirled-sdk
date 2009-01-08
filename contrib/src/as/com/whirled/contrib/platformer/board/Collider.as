@@ -378,7 +378,7 @@ public class Collider
     public function findLineCloseHit (line :LineData) :Number
     {
         var lines :Array = getLinesFromLine(line);
-        var closehit :Number = int.MAX_VALUE;
+        var closehit :Number = Number.MAX_VALUE;
         for each (var ld :LineData in lines) {
             if (ld.isIntersecting(line) &&
                     (BoundData.blockInner(ld.type, true) && ld.isInside(line.x1, line.y1) ||

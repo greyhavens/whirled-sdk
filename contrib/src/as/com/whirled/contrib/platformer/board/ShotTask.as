@@ -75,7 +75,7 @@ public class ShotTask extends ColliderTask
         var dynamics :Array = _collider.getDynamicBoundsByType(_s.inter);
         dynamics = dynamics.concat(_collider.getDynamicBoundsByType(Dynamic.GLOBAL));
 
-        var closehit :Number = int.MAX_VALUE;
+        var closehit :Number = Number.MAX_VALUE;
         if (dynamics != null && dynamics.length > 0) {
             for each (var db :DynamicBounds in dynamics) {
                 if (db is ActorBounds && (db as ActorBounds).actor.health <= 0) {
