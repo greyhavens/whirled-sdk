@@ -20,7 +20,7 @@
 
 package com.whirled.contrib.platformer.game {
 
-import com.whirled.contrib.platformer.piece.Actor;
+import com.whirled.contrib.platformer.piece.Dynamic;
 
 /**
  * An event trigger that occurs when all the supplied actor ids are dead.
@@ -46,8 +46,8 @@ public class DeathEventTrigger extends EventTrigger
         }
         var ii :int;
         while (ii < _ids.length) {
-            var a :Actor = _gctrl.getBoard().getActor(_ids[ii]);
-            if (a == null || a.health <= 0) {
+            var d :Dynamic = _gctrl.getBoard().getDynamicInsById(_ids[ii]);
+            if (d == null || d.enemyCount == 0) {
                 _ids.splice(ii, 1);
             } else {
                 ii++;

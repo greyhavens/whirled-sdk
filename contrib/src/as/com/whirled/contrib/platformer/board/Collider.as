@@ -360,7 +360,8 @@ public class Collider
 
     public function doesInteract (sinter :int, tinter :int) :Boolean
     {
-        if (sinter == Dynamic.DEAD || tinter == Dynamic.DEAD) {
+        if ((sinter == Dynamic.DEAD && tinter != Dynamic.GLOBAL) ||
+                (tinter == Dynamic.DEAD && sinter != Dynamic.GLOBAL)) {
             return false;
         }
         return sinter != tinter;
