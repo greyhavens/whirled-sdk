@@ -41,7 +41,7 @@ public class DestructableGateController extends GateController
 
     public function doHit (damage :Number, owner :int, inter :int) :void
     {
-        if (inter == Dynamic.ENEMY) {
+        if (inter == Dynamic.ENEMY || inter == Dynamic.GLOBAL) {
             if (_dg.amOwner()) {
                 _dg.health -= damage;
             } else {

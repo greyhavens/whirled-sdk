@@ -100,12 +100,7 @@ public class SimpleActorBounds extends ActorBounds
 
     public function simpleCollideLines (olines :Array) :Boolean
     {
-        for each (var line :LineData in lines) {
-            if (line.polyIntersecting(olines)) {
-                return true;
-            }
-        }
-        return false;
+        return LineData.doPolygonsCollide(lines, olines);
     }
 
     /**

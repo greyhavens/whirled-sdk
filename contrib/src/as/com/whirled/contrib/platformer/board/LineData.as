@@ -47,6 +47,16 @@ public class LineData
         return new LineData(p1.x, p1.y, p2.x, p2.y, type);
     }
 
+    public static function doPolygonsCollide (lines :Array, olines :Array) :Boolean
+    {
+        for each (var ld :LineData in lines) {
+            if (ld.polyIntersecting(olines)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function LineData (x1 :Number, y1 :Number, x2 :Number, y2: Number, type :int)
     {
         this.x1 = x1;
