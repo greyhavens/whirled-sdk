@@ -25,6 +25,7 @@ import com.whirled.contrib.platformer.util.Maths;
 import com.whirled.contrib.platformer.game.ActorController;
 
 import com.whirled.contrib.platformer.piece.Actor;
+import com.whirled.contrib.platformer.piece.Dynamic;
 
 public class FlyTask extends ColliderTask
 {
@@ -97,7 +98,8 @@ public class FlyTask extends ColliderTask
                     _cd.rdelta = 0;
                 }
             }
-            if (_cd.colliders != null && _cd.colliders.length > 0) {
+            if ((_cd.colliders != null && _cd.colliders.length > 0) ||
+                    (_sab.actor.inter == Dynamic.DEAD && (_hitX || _hitY))) {
                 _sab.actor.events.push("hit_ground");
             }
             _lastDelta = _delta;
