@@ -32,6 +32,7 @@ public class DestructableGate extends Gate
 
     public var startHealth :Number;
     public var wasHit :Boolean;
+    public var playerImpervious :Boolean;
 
     public function DestructableGate (insxml :XML = null)
     {
@@ -39,6 +40,7 @@ public class DestructableGate extends Gate
         if (insxml != null) {
             health = insxml.@health;
             startHealth = insxml.@health;
+            playerImpervious = insxml.@playerImpervious == "true";
         }
     }
 
@@ -57,6 +59,7 @@ public class DestructableGate extends Gate
     {
         var xml :XML = super.xmlInstance();
         xml.@health = health;
+        xml.@playerImpervious = playerImpervious;
         return xml;
     }
 
