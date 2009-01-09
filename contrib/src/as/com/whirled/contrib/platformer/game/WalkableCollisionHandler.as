@@ -57,7 +57,6 @@ public class WalkableCollisionHandler extends CollisionHandler
             }
             if (target.didCross(col, cd.fcdX, cd.fcdY)) {
                 if (col.nx != 0) {
-                    target.actor.dx = 0;
                     stopx = true;
                 } else if (col.ny < 0) {
                     stopy = true;
@@ -66,13 +65,20 @@ public class WalkableCollisionHandler extends CollisionHandler
                 }
             }
         }
+        if (stopx) {
+            if (target.actor.attachedId == source.dyn.id) {
+                stopx = false;
+            } else {
+                target.actor.dx = 0;
+            }
+        }
         if (!stopx && attached != null) {
             if (target.actor.maxAttachable != -1) {
                 setAttached(target.actor, attached, source.dyn.id);
             } else {
                 target.actor.dx = 0;
             }
-        } else if (stopy && !stopx) {
+        } else if (!stopx && stopy) {
             target.actor.dy = 0;
         }
     }
