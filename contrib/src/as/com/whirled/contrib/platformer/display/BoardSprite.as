@@ -148,6 +148,20 @@ public class BoardSprite extends Sprite
         var lxbuffer :int = BUFFER * (1 + (actor.dx < 0 ? -actor.dx : 0) / 5);
         var rxbuffer :int = BUFFER * (1 + (actor.dx > 0 ? actor.dx : 0) / 5);
         //var xbuffer :int = Math.min(Metrics.DISPLAY_WIDTH/2, BUFFER * (1 + Math.abs(actor.dx) / 5));
+        if (xshift != 0) {
+            if (((actor.orient & Actor.ORIENT_RIGHT) > 0) == (xshift > 0)) {
+                xshift += actor.dx / 2;
+            }
+            _centerX += Metrics.TILE_SIZE * _lastDelta * xshift * 3;
+        }
+        if (actor.x * Metrics.TILE_SIZE < _centerX + BUFFER) {
+            _centerX = actor.x * Metrics.TILE_SIZE - BUFFER;
+        } else if ((actor.x + actor.width) * Metrics.TILE_SIZE >
+                    _centerX + Metrics.DISPLAY_WIDTH - BUFFER) {
+            _centerX = (actor.x + actor.width) * Metrics.TILE_SIZE +
+                    BUFFER - Metrics.DISPLAY_WIDTH;
+        }
+        /*
         if (actor.x * Metrics.TILE_SIZE < _centerX + lxbuffer) {
             _centerX = actor.x * Metrics.TILE_SIZE - lxbuffer;
         } else if ((actor.x + actor.width) * Metrics.TILE_SIZE >
@@ -155,6 +169,7 @@ public class BoardSprite extends Sprite
             _centerX = (actor.x + actor.width) * Metrics.TILE_SIZE +
                     rxbuffer - Metrics.DISPLAY_WIDTH;
         }
+        */
         var x :int = Math.floor(_centerX / Metrics.TILE_SIZE);
         var minX :int = _board.getBound(Board.LEFT_BOUND) > 0 ?
                 Math.max(_minX, _board.getBound(Board.LEFT_BOUND)) : _minX;
