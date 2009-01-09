@@ -12,7 +12,7 @@ import com.threerings.io.SimpleStreamableObject;
  */
 public abstract class GameData extends SimpleStreamableObject
 {
-    public static final byte RESOLVED_MARKER = 0;
+    public static final byte RESOLUTION_MARKER = 0;
     public static final byte LEVEL_DATA = 1;
     public static final byte ITEM_DATA = 2;
     public static final byte TROPHY_DATA = 3;

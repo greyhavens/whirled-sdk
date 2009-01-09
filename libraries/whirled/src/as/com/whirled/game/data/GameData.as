@@ -14,7 +14,7 @@ import com.threerings.io.SimpleStreamableObject;
  */
 public /*abstract*/ class GameData extends SimpleStreamableObject
 {
-    public static const RESOLVED_MARKER :int = 0;
+    public static const RESOLUTION_MARKER :int = 0;
 
     public static const LEVEL_DATA :int = 1;
 
