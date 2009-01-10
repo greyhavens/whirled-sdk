@@ -18,30 +18,38 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer {
+package com.whirled.contrib.platformer.persist {
 
 import com.whirled.game.GameControl;
 
-import com.whirled.contrib.platformer.board.Board;
-import com.whirled.contrib.platformer.game.GameController;
-import com.whirled.contrib.platformer.net.MessageManager;
-import com.whirled.contrib.platformer.piece.PieceFactory;
-import com.whirled.contrib.platformer.persist.PersistenceManager;
-
-public class PlatformerContext
+public class TrophyProperty extends PersistentProperty
 {
-    public static var platformer :PlatformerController;
-    public static var controller :GameController;
-    public static var gctrl :GameControl;
-    public static var board :Board;
-    public static var pfac :PieceFactory;
-    public static var net :MessageManager;
-    public static var local :Boolean;
-    public static var persist :PersistenceManager;
-
-    public static function get inControl () :Boolean
+    public function TrophyProperty (name :String, gameCtrl :GameControl)
     {
-        return local || PlatformerContext.gctrl.game.amServerAgent();
+        super(name);
+
+        _gameCtrl = gameCtrl;
     }
+
+    override public function get value () :Object
+    {
+        return hasTrophy();
+    }
+
+    public function awardTrophy () :void
+    {
+        if (hasTrophy()) {
+            throw new Error("This player already holds this trophy [" + _name + "]");
+        }
+
+        _gameCtrl.player.awardTrophy(_name, _gameCtrl.game.getMyId());
+    }
+
+    public function hasTrophy () :Boolean
+    {
+        return _gameCtrl.player.holdsTrophy(_name, _gameCtrl.game.getMyId());
+    }
+
+    protected var _gameCtrl :GameControl;
 }
 }

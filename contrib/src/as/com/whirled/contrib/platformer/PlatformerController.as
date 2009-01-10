@@ -34,6 +34,7 @@ import com.whirled.contrib.platformer.net.ShotMessage;
 import com.whirled.contrib.platformer.net.SpawnMessage;
 import com.whirled.contrib.platformer.net.TickMessage;
 import com.whirled.contrib.platformer.piece.PieceFactory;
+import com.whirled.contrib.platformer.persist.PersistenceManager;
 
 public class PlatformerController
 {
@@ -51,6 +52,7 @@ public class PlatformerController
                 PlatformerContext.net.addMessageType(SpawnMessage);
                 PlatformerContext.net.addMessageType(TickMessage);
             }
+            PlatformerContext.persist = createPersistenceManager();
             addOccupantListeners();
         }
     }
@@ -131,6 +133,11 @@ public class PlatformerController
     protected function createMessageManager () :MessageManager
     {
         return new MessageManager(PlatformerContext.gctrl);
+    }
+
+    protected function createPersistenceManager () :PersistenceManager
+    {
+        return null;
     }
 }
 }
