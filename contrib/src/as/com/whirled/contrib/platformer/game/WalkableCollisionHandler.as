@@ -72,11 +72,11 @@ public class WalkableCollisionHandler extends CollisionHandler
                 target.actor.dx = 0;
             }
         }
-        if (!stopx && attached != null) {
+        if (!stopx && attached != null && target.actor.attachedId != source.dyn.id) {
             if (target.actor.maxAttachable != -1) {
                 setAttached(target.actor, attached, source.dyn.id);
             } else {
-                target.actor.dx = 0;
+                target.actor.dy = 0;
             }
         } else if (!stopx && stopy) {
             target.actor.dy = 0;

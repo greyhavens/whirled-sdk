@@ -47,6 +47,9 @@ public class WalkTask extends ColliderTask
         var a :Actor = _sab.actor;
         if (a.attachedId != -1) {
             var d :Dynamic = PlatformerContext.board.getDynamic(a.attachedId);
+            if (d == null) {
+                d = PlatformerContext.board.getActor(a.attachedId);
+            }
             if (d == null || !(d is Attachable) || !(d as Attachable).isAttachable()) {
                 a.setAttached(null);
             }
