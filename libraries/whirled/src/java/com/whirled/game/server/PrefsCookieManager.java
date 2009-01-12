@@ -16,11 +16,12 @@ import com.samskivert.util.ResultListener;
  * used for developer testing.
  */
 @Singleton
-public class PrefsCookieManager implements GameCookieManager
+public class PrefsCookieManager
+    implements GameCookieManager
 {
     public PrefsCookieManager ()
     {
-        _prefs = Preferences.userRoot().node("gameCookieManager");
+        _prefs = Preferences.userRoot().node("gameCookieManager/" + System.getProperty("gameName"));
     }
 
     // from interface GameCookieManager
