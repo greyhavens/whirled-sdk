@@ -205,6 +205,8 @@
       <os family="Windows"/>
     </condition>
 
+    <echo>Game name: ${ant.project.name}</echo>
+
     <!-- then let Windows machines get away with their silly .exe thing -->
     <condition property="thane.path"
                value="${build.root}/dist/bin/${arch.id}/avmthane.exe"
@@ -226,6 +228,7 @@
       <sysproperty key="remotePlayers" value="${remotePlayers}"/>
       <sysproperty key="party" value="${party}"/>
       <sysproperty key="flash.player" value="${player.path}"/>
+      <sysproperty key="gameName" value="${ant.project.name}"/>
 
       <!-- stuff to run the agent -->
       <sysproperty key="thane.path" value="${thane.path}"/>
