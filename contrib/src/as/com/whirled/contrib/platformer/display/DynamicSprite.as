@@ -245,7 +245,7 @@ public class DynamicSprite extends Sprite
         }
     }
 
-    protected function showHit (filter :ColorMatrixFilter = null, length :Number = HIT_LENGTH) :void
+    protected function showHit (filter :ColorMatrixFilter = null, length :Number = HIT_LENGTH) :Boolean
     {
         if (_hitLeft <= 0 && stage != null) {
             _hitLeft = length;
@@ -266,7 +266,9 @@ public class DynamicSprite extends Sprite
                 filters.push(filter);
                 _disp.filters = filters;
             }
+            return true;
         }
+        return false;
     }
 
     protected var _state :String = "";
