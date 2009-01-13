@@ -27,7 +27,7 @@ import com.whirled.contrib.platformer.piece.Actor;
 
 public class AttackCollisionHandler extends CollisionHandler
 {
-    public function AttackCollisionHandler (ac :ActorController)
+    public function AttackCollisionHandler (ac :AttackController)
     {
         super(ActorController);
         _ac = ac;
@@ -36,30 +36,27 @@ public class AttackCollisionHandler extends CollisionHandler
     override public function handlesObject (o :Object) :Boolean
     {
         return (_ac.canAttack() || _ac.inAttack(o)) && super.handlesObject(o) &&
-            ((o as ActorController).getActor().health > 0);
+            ((o as DynamicController).getDynamic().isAlive() > 0);
     }
 
     override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
-        var sab :ActorBounds = source as ActorBounds;
-        var ac :ActorController = sab.controller as ActorController;
         var tab :ActorBounds = target as ActorBounds;
         if (_ac.canAttack()) {
-            ac.startAttack();
+            _ac.startAttack();
         } else {
             var hit :Boolean = false;
             if (tab.actor.doesHit(NaN, NaN)) {
-                var diff :Number =
-                        tab.actor.x + tab.actor.width/2 - sab.actor.x - sab.actor.width/2;
+                var diff :Number = tab.actor.x + tab.actor.width/2 - _ac.getSourceX();
                 tab.actor.wasHit = ((diff > 0 && (tab.actor.orient & Actor.ORIENT_RIGHT) == 0) ||
                         (diff < 0 && (tab.actor.orient & Actor.ORIENT_RIGHT) > 0)) ?
                     Actor.HIT_FRONT : Actor.HIT_BACK;
                 hit = true;
             }
-            ac.doAttack(tab.controller as ActorController, hit);
+            _ac.doAttack(tab.controller as ActorController, hit);
         }
     }
 
-    protected var _ac :ActorController;
+    protected var _ac :AttackController;
 }
 }

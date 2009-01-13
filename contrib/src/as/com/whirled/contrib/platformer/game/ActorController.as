@@ -26,7 +26,7 @@ import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.net.ShotMessage;
 
 public class ActorController extends DynamicController
-    implements ShootableController
+    implements ShootableController, AttackController
 {
     public function ActorController (actor :Actor, controller :GameController)
     {
@@ -97,6 +97,11 @@ public class ActorController extends DynamicController
 
     public function doAttack (target :ActorController, doesHit :Boolean) :void
     {
+    }
+
+    public function getSourceX () :Number
+    {
+        return _actor.x + _actor.width/2;
     }
 
     protected var _actor :Actor;
