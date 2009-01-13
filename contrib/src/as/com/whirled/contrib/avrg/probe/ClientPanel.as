@@ -138,6 +138,9 @@ public class ClientPanel extends Sprite
         } else if (evt.name == ServerModule.CALLBACK_INVOKED) {
             _ctrl.local.feedback(
                 "Callback invoked on server agent: " + ClientPanel.toString(evt.value));
+
+        } else if (evt.name == ServerStub.ACKNOWLEDGED) {
+            _ctrl.local.feedback("Server stub now active: " + evt.value);
         }
     }
 

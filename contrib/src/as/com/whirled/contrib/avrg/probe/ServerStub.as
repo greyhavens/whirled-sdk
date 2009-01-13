@@ -26,7 +26,7 @@ import com.whirled.net.MessageReceivedEvent;
 /**
  * Class to quietly listen for the <code>ClientPanel</code> to notify that it is time to
  * instantiate a full <code>ServerModule</code> and later shut it down on request. This allows
- * the server side of the prove to lie in waiting for the client to be invoked via hidden
+ * the server side of the probe to lie in waiting for the client to be invoked via hidden
  * keystrokes or whatever. It is not necessary if the containing application wants to have
  * an active <code>ServerModule</code> at all times.
  */
@@ -37,6 +37,9 @@ public class ServerStub
 
     /** Message sent to deacticate our module. */
     public static const DEACTIVATE :String = "serverStub.deactivate";
+
+    /** Message sent to acknowledge the activation or deactivation. */
+    public static const ACKNOWLEDGED :String = "serverStub.acknowledged";
 
     public function ServerStub (ctrl: AVRServerGameControl)
     {
@@ -51,10 +54,12 @@ public class ServerStub
                 _module = new ServerModule(_ctrl);
             }
             _module.activate();
+            _ctrl.getPlayer(evt.senderId).sendMessage(ACKNOWLEDGED, true);
 
         } else if (evt.name == DEACTIVATE) {
             if (_module != null) {
                 _module.deactivate();
+                _ctrl.getPlayer(evt.senderId).sendMessage(ACKNOWLEDGED, false);
             }
         }
     }
