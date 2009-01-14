@@ -27,10 +27,15 @@ import com.whirled.game.GameControl;
 
 import com.threerings.util.HashMap;
 
+import com.whirled.contrib.EventHandlerManager;
+
 public class PersistenceManager extends EventDispatcher
 {
     public function PersistenceManager (gameCtrl :GameControl, properties :Array)
     {
+        _eventMgr = new EventHandlerManager();
+        _eventMgr.registerUnload(gameCtrl);
+
         _trophyProperties = new HashMap();
         var cookieProperties :HashMap = new HashMap();
         for each (var prototype :PropertyPrototype in properties) {
@@ -46,13 +51,22 @@ public class PersistenceManager extends EventDispatcher
         _cookieManager = new CookieManager(gameCtrl, cookieProperties);
         _loaded = _cookieManager.loaded;
         if (!_loaded) {
-            _cookieManager.addEventListener(Event.COMPLETE, loadingComplete);
+            _eventMgr.registerListener(_cookieManager, Event.COMPLETE, loadingComplete);
         }
     }
 
     public function get loaded () :Boolean
     {
         return _loaded;
+    }
+
+    /**
+     * Call the given function when this manager is loaded.  If this manager is already loaded,
+     * the given function will be called immediately.
+     */
+    public function whenLoaded (callback :Function) :void 
+    {
+        _eventMgr.conditionalCall(callback, loaded, this, Event.COMPLETE);
     }
 
     public function getProperty (name :String) :PersistentProperty
@@ -64,12 +78,13 @@ public class PersistenceManager extends EventDispatcher
     protected function loadingComplete (...ignored) :void
     {
         _loaded = true;
-        _cookieManager.removeEventListener(Event.COMPLETE, loadingComplete);
+        _eventMgr.unregisterListener(_cookieManager, Event.COMPLETE, loadingComplete);
         dispatchEvent(new Event(Event.COMPLETE));
     }
 
     protected var _cookieManager :CookieManager;
     protected var _loaded :Boolean = false;
     protected var _trophyProperties :HashMap;
+    protected var _eventMgr :EventHandlerManager;
 }
 }

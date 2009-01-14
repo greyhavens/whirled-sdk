@@ -32,7 +32,7 @@ public class IntCookieProperty extends CookieProperty
         // This should not simply call value = defaultValue because the value setter tells the 
         // CookieManager that this property was updated, and a new version was pushed out, but 
         // we don't want to push default values out in the cookie.
-        if (!(defaultValue is int)) {
+        if (defaultValue != null && !(defaultValue is int)) {
             throw new Error("IntCookieProperty can only accept int values [" + value + "]");
         }
         _value = defaultValue;

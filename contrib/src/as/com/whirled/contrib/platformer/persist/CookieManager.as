@@ -39,7 +39,7 @@ public class CookieManager extends EventDispatcher
         _propertyDefaults = properties;
         _properties = new HashMap();
 
-        _gameCtrl.player.getCookie(gotCookie, _gameCtrl.game.getMyId());
+        _gameCtrl.player.getCookie(gotCookie);
     }
 
     public function get loaded () :Boolean
@@ -151,7 +151,7 @@ public class CookieManager extends EventDispatcher
         }
 
         bytes.compress();
-        _gameCtrl.player.setCookie(bytes, _gameCtrl.game.getMyId());
+        _gameCtrl.player.setCookie(bytes);
         _lastWrite = getTimer();
     }
 
