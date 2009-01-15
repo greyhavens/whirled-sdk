@@ -83,7 +83,7 @@ public class SpawnerController extends RectDynamicController
     override public function tick (delta :Number) :void
     {
         super.tick(delta);
-        if (!_spawner.shouldSpawn()) {
+        if (!_spawner.shouldSpawn() || _spawner.disabled) {
             return;
         }
         if (!_spawner.amOwner()) {
