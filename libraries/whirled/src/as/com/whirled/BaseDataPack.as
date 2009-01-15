@@ -82,6 +82,14 @@ public class BaseDataPack extends EventDispatcher
     }
 
     /**
+     * Convenience function to access some data as an int.
+     */
+    public function getInt (name :String) :int
+    {
+        return getData(name) as int;
+    }
+
+    /**
      * Convenience function to access some data as a Boolean.
      */
     public function getBoolean (name :String) :Boolean
@@ -172,7 +180,20 @@ public class BaseDataPack extends EventDispatcher
         if (str === undefined) {
             return str;
         }
+
         var type :String = (typeOverride != null) ? typeOverride : String(datum.@type);
+        // do some special jockying for "Choice" datums, since the value is an index into choices
+        if (type == "Choice" && valueField == "value") {
+            var idx :int = parseValueFromString(str, "int") as int;
+            var choices :Array = parseValue(datum, "choices", "Array");
+            if (idx < 0 || idx >= choices.length) {
+                trace("Invalid choice index: " + idx);
+                return undefined;
+            }
+            str = String(choices[idx]);
+            type = "String";
+        }
+
         return parseValueFromString(str, type);
     }
 
@@ -186,12 +207,8 @@ public class BaseDataPack extends EventDispatcher
             return undefined;
         }
 
-        // TODO: is this extra null check necessary?
         var value :String = String(val[0]);
 //        trace("Raw " + valueField + " for data '" + name + "' is '" + value + "'");
-        if (value == null) {
-            return undefined;
-        }
         return value;
     }
 
@@ -207,6 +224,9 @@ public class BaseDataPack extends EventDispatcher
 
         case "Number":
             return parseFloat(string);
+
+        case "int":
+            return parseInt(string);
 
         case "Boolean":
             return "true" == string.toLowerCase();

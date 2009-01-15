@@ -107,9 +107,11 @@ public class EditableDataPack extends DataPack
      *    fromString: [function] (str :String) :Object // parses the value
      *
      * Additional optional fields:
-     *    Type: Number
+     *    Type: Number and int
      *       min: [minimumValue]:Number
      *       max: [maximumValue]:Number
+     *    Type: Choice
+     *       choices: [stringValues]:Array
      */
     public function getDataEntry (name :String) :Object
     {
@@ -138,8 +140,13 @@ public class EditableDataPack extends DataPack
 
         switch (entry.type) {
         case "Number":
+        case "int":
             entry.min = parseValue(datum, "min", "Number");
             entry.max = parseValue(datum, "max", "Number");
+            break;
+
+        case "Choice":
+            entry.choices = parseValue(datum, "choices", "Array");
             break;
         }
 
@@ -278,6 +285,18 @@ public class EditableDataPack extends DataPack
         }
 
         var type :String = (typeOverride != null) ? typeOverride : String(datum.@type);
+        // do special jockying for "Choice" datums, since the value is an index into choices
+        if (type == "Choice" && valueField == "value") {
+            value = formatValueToString(value, "String");
+            var choices :Array = parseValue(datum, "choices", "Array");
+            var idx :int = choices.indexOf(value);
+            if (idx == -1) {
+                throw new Error("Invalid choice");
+            }
+            value = idx;
+            type = "int";
+        }
+
         datum.@[valueField] = formatValueToString(value, type);
     }
 
@@ -291,6 +310,7 @@ public class EditableDataPack extends DataPack
             return escape(String(value));
 
         case "Number":
+        case "int":
             return String(value);
 
         case "Boolean":
