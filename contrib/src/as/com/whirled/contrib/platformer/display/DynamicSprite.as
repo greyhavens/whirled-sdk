@@ -124,6 +124,11 @@ public class DynamicSprite extends Sprite
         _static = s;
     }
 
+    public function forceBack () :Boolean
+    {
+        return false;
+    }
+
     protected function handleAdded (event :Event) :void
     {
         if (event.target != this) {

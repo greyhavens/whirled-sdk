@@ -53,7 +53,11 @@ public class ActorSpriteLayer extends DynamicSpriteLayer
     protected function addAS (ds :DynamicSprite) :void
     {
         if (ds.getDynamic().isAlive()) {
-            addChild(ds);
+            if (ds.forceBack()) {
+                addChildAt(ds, 0);
+            } else {
+                addChild(ds);
+            }
         } else {
             _deathLayer.addChild(ds);
         }
