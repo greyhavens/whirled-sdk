@@ -182,17 +182,17 @@ public class BaseDataPack extends EventDispatcher
         }
 
         var type :String = (typeOverride != null) ? typeOverride : String(datum.@type);
-        // do some special jockying for "Choice" datums, since the value is an index into choices
-        if (type == "Choice" && valueField == "value") {
-            var idx :int = parseValueFromString(str, "int") as int;
-            var choices :Array = parseValue(datum, "choices", "Array");
-            if (idx < 0 || idx >= choices.length) {
-                trace("Invalid choice index: " + idx);
-                return undefined;
-            }
-            str = String(choices[idx]);
-            type = "String";
-        }
+//        // do some special jockying for "Choice" datums, since the value is an index into choices
+//        if (type == "Choice" && valueField == "value") {
+//            var idx :int = parseValueFromString(str, "int") as int;
+//            var choices :Array = parseValue(datum, "choices", "Array");
+//            if (idx < 0 || idx >= choices.length) {
+//                trace("Invalid choice index: " + idx);
+//                return undefined;
+//            }
+//            str = String(choices[idx]);
+//            type = "String";
+//        }
 
         return parseValueFromString(str, type);
     }
@@ -220,6 +220,7 @@ public class BaseDataPack extends EventDispatcher
         var bits :Array;
         switch (type) {
         case "String":
+        case "Choice": // parse as a string, but 
             return unescape(string);
 
         case "Number":
