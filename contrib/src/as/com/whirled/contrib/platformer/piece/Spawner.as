@@ -37,6 +37,7 @@ public class Spawner extends RectDynamic
     public var deathEffect :String;
     public var offX :Number;
     public var spawns :Array;
+    public var disabled :Boolean;
 
     public function Spawner (insxml :XML = null)
     {
@@ -59,6 +60,7 @@ public class Spawner extends RectDynamic
             spawnDelay = insxml.@spawnDelay;
             deathInterval = insxml.@deathInterval;
             offX = insxml.hasOwnProperty("@offX") ? insxml.@offX : 0;
+            disabled = insxml.@disabled == "true";
         }
         inter = Dynamic.ENEMY;
     }
@@ -136,6 +138,7 @@ public class Spawner extends RectDynamic
         xml.@spawnDelay = spawnDelay;
         xml.@deathInterval = deathInterval;
         xml.@offX = offX;
+        xml.@disabled = disabled;
         if (sprite != null) {
             xml.@sprite = sprite;
         }

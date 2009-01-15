@@ -71,6 +71,7 @@ public class GameController
         c = SpawnerDeathEventTrigger;
         c = MultiEventTrigger;
         c = OpenGateEventAction;
+        c = EnableSpawnerEventAction;
     }
 
     public function initDynamicClasses () :void
