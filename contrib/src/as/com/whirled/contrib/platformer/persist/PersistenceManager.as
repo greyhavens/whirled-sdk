@@ -31,7 +31,8 @@ import com.whirled.contrib.EventHandlerManager;
 
 public class PersistenceManager extends EventDispatcher
 {
-    public function PersistenceManager (gameCtrl :GameControl, properties :Array)
+    public function PersistenceManager (gameCtrl :GameControl, properties :Array, 
+        debugLogging :Boolean = false)
     {
         _eventMgr = new EventHandlerManager();
         _eventMgr.registerUnload(gameCtrl);
@@ -48,7 +49,7 @@ public class PersistenceManager extends EventDispatcher
             }
         }
 
-        _cookieManager = new CookieManager(gameCtrl, cookieProperties);
+        _cookieManager = new CookieManager(gameCtrl, cookieProperties, debugLogging);
         _loaded = _cookieManager.loaded;
         if (!_loaded) {
             _eventMgr.registerListener(_cookieManager, Event.COMPLETE, loadingComplete);

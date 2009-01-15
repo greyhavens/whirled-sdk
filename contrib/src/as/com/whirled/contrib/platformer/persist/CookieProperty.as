@@ -22,6 +22,8 @@ package com.whirled.contrib.platformer.persist {
 
 import flash.utils.ByteArray;
 
+import com.threerings.util.ClassUtil;
+
 public class CookieProperty extends PersistentProperty
 {
     public function CookieProperty (manager :CookieManager, name :String)
@@ -39,6 +41,11 @@ public class CookieProperty extends PersistentProperty
     {
         _value = value;
         _manager.cookiePropertyUpdated(this);
+    }
+
+    public function toString () :String
+    {
+        return ClassUtil.tinyClassName(this) + " [name=" + _name + ", value=" + value + "]";
     }
 
     public /* abstract */ function get typeId () :int

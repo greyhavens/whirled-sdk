@@ -28,15 +28,18 @@ import flash.utils.Timer;
 import flash.utils.getTimer; // function import
 
 import com.threerings.util.HashMap;
+import com.threerings.util.Log;
 
 import com.whirled.game.GameControl;
 
 public class CookieManager extends EventDispatcher
 {
-    public function CookieManager (gameCtrl :GameControl, properties :HashMap)
+    public function CookieManager (gameCtrl :GameControl, properties :HashMap, 
+        debugLogging :Boolean = false)
     {
         _gameCtrl = gameCtrl;
         _propertyDefaults = properties;
+        _debug = debugLogging;
         _properties = new HashMap();
 
         _gameCtrl.player.getCookie(gotCookie);
@@ -124,6 +127,10 @@ public class CookieManager extends EventDispatcher
             var property :CookieProperty = new typeClass(this) as CookieProperty;
             property.deserialize(bytes);
             _properties.put(property.name, property);
+
+            if (_debug) {
+                log.debug("Read property out of cookie [" + property + "]");
+            }
         }
 
         dispatchLoaded();
@@ -161,6 +168,7 @@ public class CookieManager extends EventDispatcher
     protected var _loaded :Boolean = false;
     protected var _lastWrite :int = 0;
     protected var _timer :Timer = null;
+    protected var _debug :Boolean;
 
     /** Version bumps are not required when adding new data types.  Only if another form of 
      * storing data in the cookie is fashioned should a version bump be necessary. */
@@ -169,5 +177,7 @@ public class CookieManager extends EventDispatcher
     /** Write out the cookie at most every 2 seconds, in order to prevent this manager from 
      * sucking up network resources */
     protected static const WRITE_DELAY :int = 2000; // in ms.
+
+    protected static const log :Log = Log.getLog(CookieManager);
 }
 }
