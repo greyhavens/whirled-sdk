@@ -185,7 +185,7 @@ public class PieceSpriteFactory
     {
         try {
             var symbolClass :Class = _contentDomain.getDefinition(name) as Class;
-            return (new symbolClass() as MovieClip);
+            return (new symbolClass as DisplayObject);
         } catch (e :Error) {
             log.warning("Failed to load sprite [" + e + "]. Stack trace follows");
             log.logStackTrace(e);
