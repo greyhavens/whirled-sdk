@@ -116,6 +116,41 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
+     * Finds the projection of mouse coordinates onto a plane in the room, parallel with the
+     * front wall, intersecting the room at specified depth. This type of functionality is useful
+     * for converting mouse position into room position at some constant depth. The result is
+     * not constrained to be inside the room unit box.
+     *
+     *   @param p            location in room coordinate space
+     *   @param depth        Z position of the intersection wall, in room coordinate space.
+     *
+     *   @return an array containing [ x, y, z ] (with z value equal to depth), or null
+     *   if no valid location was found.
+     */
+    public function roomToLocationAtDepth (p :Point, depth :Number) :Array
+    {
+        return callHostCode("roomToLocationAtDepth_v1", p, depth);
+    }
+
+     /**
+     * Finds the projection of mouse coordinates onto a plane in the room, parallel with the
+     * floor, intersecting the room at specified height. This type of functionality is useful
+     * for converting mouse position into room position at some constant height. The result is
+     * not constrained to be inside the room unit box.
+     *
+     *   @param p            location in room coordinate space
+     *   @param height       Y position of the intersection wall, in room coordinate space.
+     *
+     * @return an array containing [ x, y, z ] (with y value equal to height) or null if
+     * no valid location was found.
+     *
+     */
+    public function roomToLocationAtHeight (p :Point, height :Number) :Array
+    {
+        return callHostCode("roomToLocationAtHeight_v1", p, height);
+    }
+
+    /**
      * Configures the AVRG with a function to call to determine which pixels are alive for mouse
      * purposes and which are not. By default, all non-transparent pixels will capture the mouse.
      * The prototype for this method is identical to what the Flash API establishes in
@@ -146,7 +181,7 @@ public class LocalSubControl extends AbstractSubControl
      * Sets the function that will manufacture <code>DisplayObject</code> instances on the client
      * when mobs are spawned by the server agent. The function must take the string type of the
      * requested mob and return a <code>DisplayObject</code>:
-     * 
+     *
      * <listing version="3.0">
      *    function createMobSprite (type :String) :DisplayObject;
      * </listing>
