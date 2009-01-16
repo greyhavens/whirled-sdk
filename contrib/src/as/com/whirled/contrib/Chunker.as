@@ -157,7 +157,9 @@ public class Chunker extends EventDispatcher
         // if we're actually done, clear the outdata
         if (newPosition == _outData.length) {
             _outData = null;
-            _timer.stop();
+            if (_timer != null) {
+                _timer.reset();
+            }
         }
     }
 
