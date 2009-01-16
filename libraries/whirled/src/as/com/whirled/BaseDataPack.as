@@ -70,7 +70,9 @@ public class BaseDataPack extends EventDispatcher
      */
     public function getString (name :String) :String
     {
-        return getData(name) as String;
+        var data :* = getData(name);
+        // avoid turning null into "null", but otherwise String-ify any other type
+        return (data == null) ? null : String(data);
     }
 
     /**
@@ -78,7 +80,7 @@ public class BaseDataPack extends EventDispatcher
      */
     public function getNumber (name :String) :Number
     {
-        return getData(name) as Number;
+        return Number(getData(name, "Number")); // coerce to a Number
     }
 
     /**
@@ -86,7 +88,7 @@ public class BaseDataPack extends EventDispatcher
      */
     public function getInt (name :String) :int
     {
-        return getData(name) as int;
+        return int(getData(name, "int")); // coerce to an int
     }
 
     /**
@@ -94,7 +96,7 @@ public class BaseDataPack extends EventDispatcher
      */
     public function getBoolean (name :String) :Boolean
     {
-        return getData(name) as Boolean;
+        return Boolean(getData(name, "Boolean")); // coerce to a Boolean
     }
 
     /**
@@ -102,7 +104,7 @@ public class BaseDataPack extends EventDispatcher
      */
     public function getColor (name :String) :uint
     {
-        return getData(name) as uint;
+        return uint(getData(name, "Color")); // coerce to a uint
     }
 
     /**
@@ -110,7 +112,20 @@ public class BaseDataPack extends EventDispatcher
      */
     public function getArray (name :String) :Array
     {
-        return getData(name) as Array;
+        var data :* = getData(name, "Array");
+        if (data is Array) {
+            return data as Array;
+
+        } else if (data == null) {
+            return null; // keep null as-is: do not wrap in an Array!
+
+        } else {
+            // hoopjump to always return a filled-in single-element array
+            // (If we coerced, and the value was numeric, it would set the length of the array)
+            var retval :Array = new Array();
+            retval.push(data);
+            return retval;
+        }
     }
 
     /**
@@ -118,7 +133,7 @@ public class BaseDataPack extends EventDispatcher
      */
     public function getPoint (name :String) :Point
     {
-        return getData(name) as Point;
+        return (getData(name, "Point") as Point); // as Point or null
     }
 
     /**
@@ -126,13 +141,13 @@ public class BaseDataPack extends EventDispatcher
      */
     public function getRectangle (name :String) :Rectangle
     {
-        return getData(name) as Rectangle;
+        return (getData(name, "Rectangle") as Rectangle); // as Rectangle or null
     }
 
     /**
-     * Get some data.
+     * Get some data, optionally formatted as a different type than that specified in the data xml.
      */
-    public function getData (name :String) :*
+    public function getData (name :String, formatType :String = null) :*
     {
         name = validateAccess(name);
 
@@ -141,7 +156,11 @@ public class BaseDataPack extends EventDispatcher
             return undefined;
         }
 
-        return parseValue(datum);
+        var data :* = parseValue(datum);
+        if ((formatType != null) && (formatType != "String") && (data is String)) {
+            data = parseValueFromString(String(data), formatType);
+        }
+        return data;
     }
 
     /**
@@ -182,18 +201,6 @@ public class BaseDataPack extends EventDispatcher
         }
 
         var type :String = (typeOverride != null) ? typeOverride : String(datum.@type);
-//        // do some special jockying for "Choice" datums, since the value is an index into choices
-//        if (type == "Choice" && valueField == "value") {
-//            var idx :int = parseValueFromString(str, "int") as int;
-//            var choices :Array = parseValue(datum, "choices", "Array");
-//            if (idx < 0 || idx >= choices.length) {
-//                trace("Invalid choice index: " + idx);
-//                return undefined;
-//            }
-//            str = String(choices[idx]);
-//            type = "String";
-//        }
-
         return parseValueFromString(str, type);
     }
 
@@ -230,7 +237,7 @@ public class BaseDataPack extends EventDispatcher
             return parseInt(string);
 
         case "Boolean":
-            return "true" == string.toLowerCase();
+            return ("true" == string.toLowerCase());
 
         case "Color":
             return parseInt(string, 16);

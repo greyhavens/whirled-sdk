@@ -285,18 +285,6 @@ public class EditableDataPack extends DataPack
         }
 
         var type :String = (typeOverride != null) ? typeOverride : String(datum.@type);
-//        // do special jockying for "Choice" datums, since the value is an index into choices
-//        if (type == "Choice" && valueField == "value") {
-//            value = formatValueToString(value, "String");
-//            var choices :Array = parseValue(datum, "choices", "Array");
-//            var idx :int = choices.indexOf(value);
-//            if (idx == -1) {
-//                throw new Error("Invalid choice");
-//            }
-//            value = idx;
-//            type = "int";
-//        }
-
         datum.@[valueField] = formatValueToString(value, type);
     }
 
