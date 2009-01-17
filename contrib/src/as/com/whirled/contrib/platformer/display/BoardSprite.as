@@ -228,6 +228,14 @@ public class BoardSprite extends Sprite
         updateActors(delta);
         _lastDelta = delta;
         _lastY += delta;
+        if (_cameraCtrl != null) {
+            _cameraCtrl.tick(delta);
+        }
+    }
+
+    public function setCameraController (cc :CameraController) :void
+    {
+        _cameraCtrl = cc;
     }
 
     public function updateActors (delta :Number, ids :Array = null) :void
@@ -325,8 +333,18 @@ public class BoardSprite extends Sprite
 
     protected function updateDisplay () :void
     {
+        var oldX :Number = _centerX;
+        var oldY :Number = _centerY;
+        if (_cameraCtrl != null) {
+            _centerX += _cameraCtrl.getOffX();
+            _centerY += _cameraCtrl.getOffY();
+        }
         for each (var layer :Layer in _layers) {
             layer.update(_centerX, _centerY);
+        }
+        if (_cameraCtrl != null) {
+            _centerX = oldX;
+            _centerY = oldY;
         }
     }
 
@@ -346,6 +364,8 @@ public class BoardSprite extends Sprite
     protected var _maxX :int = 0;
     protected var _lastY :Number = 0;
     protected var _lastDelta :Number = 0;
+
+    protected var _cameraCtrl :CameraController;
 
     protected static const PARALLAX :int = 5;
 
