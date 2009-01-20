@@ -39,9 +39,9 @@ public class ActorController extends DynamicController
         return _actor;
     }
 
-    public function doesHit (x :Number = NaN, y :Number = NaN) :Boolean
+    public function doesHit (x :Number = NaN, y :Number = NaN, source :Object = null) :Boolean
     {
-        return _actor.doesHit(x, y);
+        return _actor.doesHit(x, y, source);
     }
 
     public function doesCollide () :Boolean

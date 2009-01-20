@@ -34,7 +34,7 @@ public class DestructableGateController extends GateController
         _dg = dg;
     }
 
-    public function doesHit (x :Number = NaN, y :Number = NaN) :Boolean
+    public function doesHit (x :Number = NaN, y :Number = NaN, source :Object = null) :Boolean
     {
         return _dg.health > 0;
     }

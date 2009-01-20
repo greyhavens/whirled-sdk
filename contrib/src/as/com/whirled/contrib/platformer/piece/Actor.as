@@ -70,7 +70,7 @@ public class Actor extends Dynamic
             ") d:(" + dx.toFixed(3) + ", " + dy.toFixed(3) + ")" + at;
     }
 
-    public function doesHit (x :Number, y :Number) :Boolean
+    public function doesHit (x :Number, y :Number, source :Object) :Boolean
     {
         return true;
     }

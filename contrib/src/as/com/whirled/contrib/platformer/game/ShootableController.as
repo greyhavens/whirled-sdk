@@ -22,7 +22,7 @@ package com.whirled.contrib.platformer.game {
 
 public interface ShootableController
 {
-    function doesHit (x :Number = NaN, y :Number = NaN) :Boolean;
+    function doesHit (x :Number = NaN, y :Number = NaN, source :Object = null) :Boolean;
 
     function doHit (damage :Number, owner :int, inter :int) :void
 
