@@ -195,7 +195,7 @@ public class DynamicSprite extends Sprite
             apt = apt.subtract(opt);
             apt.normalize(1);
             disp.rotation = -90 + (Math.atan2(apt.y, apt.x) - Math.atan2(0, -1)) * 180 / Math.PI;
-            if (recolor != null) {
+            if (recolor != null && filter != null) {
                 recolorNodes(recolor, disp, filter);
             }
             _particleCallback(disp, pt, back);
