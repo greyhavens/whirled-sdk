@@ -1101,7 +1101,7 @@ public class BaseGameBackend
         // pass the buck straight on through, the server will validate everything
         _gameObj.whirledGameService.endGameWithScores(
             _ctx.getClient(), toTypedIntArray(playerIds), toTypedIntArray(scores), payoutType,
-            gameMode, createLoggingConfirmListener("endGameWithWinners"));
+            gameMode, createLoggingConfirmListener("endGameWithScores"));
     }
 
     protected function restartGameIn_v1 (seconds :int) :void
