@@ -48,7 +48,8 @@ public class Actor extends Dynamic
     public static const U_SHOOT :int = 1 << (DYN_COUNT + 3);
     public static const U_HIT :int = 1 << (DYN_COUNT + 4);
     public static const U_ACCEL :int = 1 << (DYN_COUNT + 5);
-    public static const ACT_COUNT :int = DYN_COUNT + 5;
+    public static const U_ATTACH :int = 1 << (DYN_COUNT + 6);
+    public static const ACT_COUNT :int = DYN_COUNT + 6;
 
     public var events :Array = new Array();
 
@@ -213,7 +214,10 @@ public class Actor extends Dynamic
     public function setAttached (ld :LineData, id :int = -1) :void
     {
         _attached = ld;
-        _attachedId = id;
+        if (_attachedId != id) {
+            updateState |= U_ATTACH;
+            _attachedId = id;
+        }
     }
 
     override public function getBounds () :Rect
@@ -252,6 +256,9 @@ public class Actor extends Dynamic
             bytes.writeFloat(_accelX);
             bytes.writeFloat(_accelY);
         }
+        if ((_inState & U_ATTACH) > 0) {
+            bytes.writeInt(_attachedId);
+        }
         return bytes;
     }
 
@@ -276,11 +283,14 @@ public class Actor extends Dynamic
             _accelX = bytes.readFloat();
             _accelY = bytes.readFloat();
         }
+        if ((_inState & U_ATTACH) > 0) {
+            _attachedId = bytes.readInt();
+        }
     }
 
     protected var _bounds :Rect;
     protected var _attached :LineData;
-    protected var _attachedId :int;
+    protected var _attachedId :int = -1;
     protected var _health :Number;
     protected var _orient :int = ORIENT_RIGHT | ORIENT_SHOOT_F;
     protected var _shooting :Boolean = false;
