@@ -37,9 +37,6 @@ import com.whirled.contrib.platformer.game.CollisionHandler;
 public class SimpleActorBounds extends ActorBounds
     implements SimpleBounds
 {
-    public var lines :Array;
-    public var mlines :Array = null;
-
     public static const DEBUG :Boolean = false;
 
     public static var fcCalls :int = 0;
@@ -52,32 +49,32 @@ public class SimpleActorBounds extends ActorBounds
 
     public function getBoundLines () :Array
     {
-        return lines;
+        return _lines;
     }
 
     public function getMovementBoundLines () :Array
     {
-        return mlines;
+        return _mlines;
     }
 
     public function getBottomLine () :LineData
     {
-        return lines[3];
+        return _lines[3];
     }
 
     override public function updateBounds () :void
     {
-        if (lines == null) {
-            lines = new Array();
-            lines.push(dynLD(0, 0, 0, actor.height, ACTOR_BOUND));
-            lines.push(dynLD(0, actor.height, actor.width, actor.height, ACTOR_BOUND));
-            lines.push(dynLD(actor.width, actor.height, actor.width, 0, ACTOR_BOUND));
-            lines.push(dynLD(actor.width, 0, 0, 0, ACTOR_BOUND));
+        if (_lines == null) {
+            _lines = new Array();
+            _lines.push(dynLD(0, 0, 0, actor.height, ACTOR_BOUND));
+            _lines.push(dynLD(0, actor.height, actor.width, actor.height, ACTOR_BOUND));
+            _lines.push(dynLD(actor.width, actor.height, actor.width, 0, ACTOR_BOUND));
+            _lines.push(dynLD(actor.width, 0, 0, 0, ACTOR_BOUND));
         } else {
-            dynUpdateLD(lines[0], 0, 0, 0, actor.height);
-            dynUpdateLD(lines[1], 0, actor.height, actor.width, actor.height);
-            dynUpdateLD(lines[2], actor.width, actor.height, actor.width, 0);
-            dynUpdateLD(lines[3], actor.width, 0, 0, 0);
+            dynUpdateLD(_lines[0], 0, 0, 0, actor.height);
+            dynUpdateLD(_lines[1], 0, actor.height, actor.width, actor.height);
+            dynUpdateLD(_lines[2], actor.width, actor.height, actor.width, 0);
+            dynUpdateLD(_lines[3], actor.width, 0, 0, 0);
         }
     }
 
@@ -95,12 +92,12 @@ public class SimpleActorBounds extends ActorBounds
      */
     public function simpleCollide (ab :SimpleActorBounds) :Boolean
     {
-        return simpleCollideLines (ab.lines);
+        return simpleCollideLines (ab.getBoundLines());
     }
 
     public function simpleCollideLines (olines :Array) :Boolean
     {
-        return LineData.doPolygonsCollide(lines, olines);
+        return LineData.doPolygonsCollide(_lines, olines);
     }
 
     /**
@@ -108,7 +105,7 @@ public class SimpleActorBounds extends ActorBounds
      */
     public function didCross (ld :LineData, xd :Number, yd :Number) :Boolean
     {
-        for each (var line :LineData in lines) {
+        for each (var line :LineData in _lines) {
             if (ld.didCrossDelta(line, xd, yd)) {
                 return true;
             }
@@ -122,7 +119,7 @@ public class SimpleActorBounds extends ActorBounds
     public function crossers (ld :LineData, xd :Number, yd :Number) :Array
     {
         var ret :Array = new Array();
-        for each (var line :LineData in lines) {
+        for each (var line :LineData in _lines) {
             if (ld.didCrossDelta(line, xd, yd)) {
                 ret.push(line);
             }
@@ -135,7 +132,7 @@ public class SimpleActorBounds extends ActorBounds
      */
     public function isContained (ld0 :LineData, ld1 :LineData, sides :Array) :Boolean
     {
-        for each (var line :LineData in lines) {
+        for each (var line :LineData in _lines) {
             if (((sides[0] > 0 && ld0.isOutside(line.x1, line.y1)) ||
                  (sides[0] < 0 && ld0.isInside(line.x1, line.y1))) && (
                  (sides[1] > 0 && ld1.isOutside(line.x1, line.y1)) ||
@@ -154,7 +151,7 @@ public class SimpleActorBounds extends ActorBounds
             if (actor.attached == ld || !BoundData.doesBound(ld.type, actor.projCollider)) {
                 continue;
             }
-            if (ld.polyIntersecting(lines)) {
+            if (ld.polyIntersecting(_lines)) {
                 return true;
             }
         }
@@ -163,7 +160,7 @@ public class SimpleActorBounds extends ActorBounds
 
     public function findColliders (delta :Number, cd :ColliderDetails = null) :ColliderDetails
     {
-        mlines = null;
+        _mlines = null;
         if (delta <= 0) {
             return new ColliderDetails(null, null, 0);
         }
@@ -199,7 +196,7 @@ public class SimpleActorBounds extends ActorBounds
                     if (actor.attached == ld || !BoundData.doesBound(ld.type, actor.projCollider)) {
                         continue;
                     }
-                    if (ld.polyIntersecting(mlines))  {
+                    if (ld.polyIntersecting(_mlines))  {
                         cd.colliders.push(ld);
                         //log("adding intersecting " + ld);
                     } else {
@@ -235,10 +232,10 @@ public class SimpleActorBounds extends ActorBounds
                                 logs += "ignoring contained collider: " + verify[ii] + "\n";
                                 break;
                             }
-                            if (((sides[1] > 0 && !verify[jj].anyOutside(lines)) ||
-                                 (sides[1] < 0 && !verify[jj].anyInside(lines))) &&
-                                !((sides[0] > 0 && !verify[ii].anyOutside(lines)) ||
-                                  (sides[0] < 0 && !verify[ii].anyInside(lines)))) {
+                            if (((sides[1] > 0 && !verify[jj].anyOutside(_lines)) ||
+                                 (sides[1] < 0 && !verify[jj].anyInside(_lines))) &&
+                                !((sides[0] > 0 && !verify[ii].anyOutside(_lines)) ||
+                                  (sides[0] < 0 && !verify[ii].anyInside(_lines)))) {
                                 ignored[ii] = true;
                                 logs += "ignoring unreachable collider: " + verify[ii] + "\n";
                                 break;
@@ -246,8 +243,8 @@ public class SimpleActorBounds extends ActorBounds
                         }
                     }
                     if (!connected && !ignored[ii] &&
-                        ((!BoundData.blockOuter(verify[ii].type) && verify[ii].anyOutside(lines)) ||
-                         (!BoundData.blockInner(verify[ii].type) && verify[ii].anyInside(lines)))) {
+                        ((!BoundData.blockOuter(verify[ii].type) && verify[ii].anyOutside(_lines)) ||
+                         (!BoundData.blockInner(verify[ii].type) && verify[ii].anyInside(_lines)))) {
                         ignored[ii] = true;
                         logs += "ignoring unconnected collider: " + verify[ii] + "\n";
                     }
@@ -314,7 +311,7 @@ public class SimpleActorBounds extends ActorBounds
         if (logs != "") {
             log(logs);
         }
-        mlines = null;
+        _mlines = null;
         return cd;
     }
 
@@ -522,21 +519,21 @@ public class SimpleActorBounds extends ActorBounds
         var x6 :Number = actor.width + (cdY < 0 ? cdX : 0);
         var y6 :Number = (cdY < 0 ? cdY : 0);
         //log("new movement bounds (" + cdX + ", " + cdY + ")");
-        if (mlines == null) {
-            mlines = new Array();
-            mlines.push(dynLD(x1, y1, x2, y2, ACTOR_BOUND));
-            mlines.push(dynLD(x2, y2, x3, y3, ACTOR_BOUND));
-            mlines.push(dynLD(x3, y3, x4, y4, ACTOR_BOUND));
-            mlines.push(dynLD(x4, y4, x5, y5, ACTOR_BOUND));
-            mlines.push(dynLD(x5, y5, x6, y6, ACTOR_BOUND));
-            mlines.push(dynLD(x6, y6, x1, y1, ACTOR_BOUND));
+        if (_mlines == null) {
+            _mlines = new Array();
+            _mlines.push(dynLD(x1, y1, x2, y2, ACTOR_BOUND));
+            _mlines.push(dynLD(x2, y2, x3, y3, ACTOR_BOUND));
+            _mlines.push(dynLD(x3, y3, x4, y4, ACTOR_BOUND));
+            _mlines.push(dynLD(x4, y4, x5, y5, ACTOR_BOUND));
+            _mlines.push(dynLD(x5, y5, x6, y6, ACTOR_BOUND));
+            _mlines.push(dynLD(x6, y6, x1, y1, ACTOR_BOUND));
         } else {
-            dynUpdateLD(mlines[0], x1, y1, x2, y2);
-            dynUpdateLD(mlines[1], x2, y2, x3, y3);
-            dynUpdateLD(mlines[2], x3, y3, x4, y4);
-            dynUpdateLD(mlines[3], x4, y4, x5, y5);
-            dynUpdateLD(mlines[4], x5, y5, x6, y6);
-            dynUpdateLD(mlines[5], x6, y6, x1, y1);
+            dynUpdateLD(_mlines[0], x1, y1, x2, y2);
+            dynUpdateLD(_mlines[1], x2, y2, x3, y3);
+            dynUpdateLD(_mlines[2], x3, y3, x4, y4);
+            dynUpdateLD(_mlines[3], x4, y4, x5, y5);
+            dynUpdateLD(_mlines[4], x5, y5, x6, y6);
+            dynUpdateLD(_mlines[5], x6, y6, x1, y1);
         }
         /*
         for each (var mline :LineData in mlines) {
@@ -560,6 +557,9 @@ public class SimpleActorBounds extends ActorBounds
     }
 
     //protected var _collider :Collider;
+
+    protected var _lines :Array;
+    protected var _mlines :Array;
 
     protected static const MIN_ATTACH_DIST :Number = 0.1;
 

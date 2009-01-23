@@ -233,18 +233,37 @@ public class DynamicSprite extends Sprite
     protected function recolorNodes (
         node :String, disp :DisplayObject, filter :ColorMatrixFilter) :void
     {
+        if (disp == null) {
+            return;
+        }
         if (disp.name == node) {
             var filters :Array = disp.filters;
             if (filters == null) {
-                disp.filters = [filter];
+                if (filter != null) {
+                    disp.filters = [filter];
+                }
             } else {
-                filters.push(filter);
+                if (filter != null) {
+                    filters.push(filter);
+                } else {
+                    var ii :int;
+                    while (ii < filters.length) {
+                        if (filters[ii] is ColorMatrixFilter) {
+                            filters.splice(ii, 1);
+                        } else {
+                            ii++;
+                        }
+                    }
+                    if (filters.length == 0) {
+                        filters = null;
+                    }
+                }
                 disp.filters = filters;
             }
         }
         if (disp is DisplayObjectContainer) {
             var cont :DisplayObjectContainer = disp as DisplayObjectContainer;
-            for (var ii :int = 0; ii < cont.numChildren; ii++) {
+            for (ii = 0; ii < cont.numChildren; ii++) {
                 recolorNodes(node, cont.getChildAt(ii), filter);
             }
         }

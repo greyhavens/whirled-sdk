@@ -78,7 +78,7 @@ public class BounceCollisionHandler extends CollisionHandler
             if (crosser.didCross(col, cd.fcdX, cd.fcdY)) {
                 ay += col.ny;
                 ax += col.nx;
-            } else if (col.polyIntersecting(crosser.lines)) {
+            } else if (col.polyIntersecting(crosser.getBoundLines())) {
                 by += col.ny;
                 bx += col.nx;
             }

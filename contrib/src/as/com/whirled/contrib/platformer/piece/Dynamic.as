@@ -147,6 +147,11 @@ public class Dynamic
         return true;
     }
 
+    public function alwaysSpawn () :Boolean
+    {
+        return false;
+    }
+
     public function isAlive () :Boolean
     {
         return shouldSpawn();
