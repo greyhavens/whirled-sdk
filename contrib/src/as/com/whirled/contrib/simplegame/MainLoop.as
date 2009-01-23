@@ -33,20 +33,33 @@ import flash.utils.getTimer;
 
 public final class MainLoop
 {
-    public static function get instance () :MainLoop
+    public function MainLoop (ctx :SGContext, hostSprite :Sprite,
+        keyDispatcher :IEventDispatcher = null)
     {
-        return g_instance;
+        _ctx = ctx;
+        reset(hostSprite, keyDispatcher);
     }
 
-    public function MainLoop (hostSprite :Sprite, keyDispatcher :IEventDispatcher = null)
+    /**
+     * Initializes structures required by the framework.
+     */
+    public function setup () :void
     {
-        if (null != g_instance) {
-            throw new Error("only one MainLoop may exist at a time");
-        }
+    }
 
-        g_instance = this;
+    /**
+     * Call this function before the application shuts down to release
+     * memory and disconnect event handlers.
+     *
+     * Most applications will want to install an Event.REMOVED_FROM_STAGE
+     * handler on the main sprite, and call shutdown from there.
+     */
+    public function shutdown () :void
+    {
+        stop();
 
-        reset(hostSprite, keyDispatcher);
+        popAllModes();
+        handleModeTransitions();
     }
 
     public function reset (hostSprite :Sprite, keyDispatcher :IEventDispatcher = null) :void
@@ -84,52 +97,6 @@ public final class MainLoop
         } else {
             return ((_modeStack[_modeStack.length - 1]) as AppMode);
         }
-    }
-
-    /**
-     * Initializes structures required by the framework.
-     */
-    public function setup () :void
-    {
-        if (_hasSetup) {
-            return;
-        }
-
-        // instantiate singletons
-        new ResourceManager();
-        new AudioManager();
-
-        // add resource factories
-        ResourceManager.instance.registerResourceType("image", ImageResource);
-        ResourceManager.instance.registerResourceType("swf", SwfResource);
-        ResourceManager.instance.registerResourceType("xml", XmlResource);
-        ResourceManager.instance.registerResourceType("sound", SoundResource);
-
-        _hasSetup = true;
-    }
-
-    /**
-     * Call this function before the application shuts down to release
-     * memory and disconnect event handlers.
-     *
-     * Most applications will want to install an Event.REMOVED_FROM_STAGE
-     * handler on the main sprite, and call shutdown from there.
-     */
-    public function shutdown () :void
-    {
-        stop();
-
-        popAllModes();
-        handleModeTransitions();
-
-        if (_hasSetup) {
-            AudioManager.instance.shutdown();
-            ResourceManager.instance.shutdown();
-
-            _hasSetup = false;
-        }
-
-        g_instance = null;
     }
 
     /**
@@ -294,6 +261,7 @@ public final class MainLoop
             _modeStack.push(newMode);
             _hostSprite.addChild(newMode.modeSprite);
 
+            newMode._ctx = _ctx;
             newMode.setupInternal();
         }
 
@@ -311,6 +279,7 @@ public final class MainLoop
             _modeStack.splice(index, 0, newMode);
             _hostSprite.addChildAt(newMode.modeSprite, index);
 
+            newMode._ctx = _ctx;
             newMode.setupInternal();
         }
 
@@ -334,6 +303,7 @@ public final class MainLoop
             }
 
             mode.destroyInternal();
+            mode._ctx = null;
 
             _modeStack.splice(index, 1);
             _hostSprite.removeChildAt(index);
@@ -416,9 +386,6 @@ public final class MainLoop
             theTopMode.update(dt);
         }
 
-        // update audio
-        AudioManager.instance.update(dt);
-
         _lastTime = newTime;
     }
 
@@ -438,8 +405,7 @@ public final class MainLoop
         }
     }
 
-    protected static var g_instance :MainLoop;
-
+    protected var _ctx :SGContext;
     protected var _hostSprite :Sprite;
     protected var _keyDispatcher :IEventDispatcher;
     protected var _hasSetup :Boolean = false;
@@ -448,7 +414,6 @@ public final class MainLoop
     protected var _modeStack :Array = [];
     protected var _pendingModeTransitionQueue :Array = [];
     protected var _updatables :Array = [];
-
     protected var _fps :Number = 0;
 
     // mode transition constants

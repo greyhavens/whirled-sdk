@@ -38,7 +38,7 @@ public class PlaySoundTask
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         if (null == _channel) {
-            _channel = AudioManager.instance.playSoundNamed(_soundName, _parentControls);
+            _channel = obj.ctx.audio.playSoundNamed(_soundName, _parentControls);
         }
 
         return (!_waitForComplete || !_channel.isPlaying);

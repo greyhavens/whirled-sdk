@@ -63,6 +63,7 @@ public class ObjectDB
         // initialize object
         obj._parentDB = this;
         obj._ref = ref;
+        obj._ctx = _ctx;
 
         // does the object have a name?
         var objectName :String = obj.objectName;
@@ -274,9 +275,16 @@ public class ObjectDB
         }
     }
 
+    /** Returns the number of live SimObjects in this ObjectDB. */
     public function get objectCount () :uint
     {
         return _objectCount;
+    }
+
+    /** Returns the SGContext associated with this ObjectDB. */
+    public final function get ctx () :SGContext
+    {
+        return _ctx;
     }
 
     /**
@@ -428,6 +436,8 @@ public class ObjectDB
     protected var _groupedObjects :HashMap = new HashMap();
 
     protected var _events :EventHandlerManager = new EventHandlerManager();
+
+    internal var _ctx :SGContext; // Managed by MainLoop
 }
 
 }

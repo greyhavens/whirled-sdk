@@ -21,6 +21,8 @@
 package com.whirled.contrib.simplegame.audio {
 
 import com.threerings.util.Log;
+import com.whirled.contrib.simplegame.SGContext;
+import com.whirled.contrib.simplegame.Updatable;
 import com.whirled.contrib.simplegame.resource.*;
 
 import flash.events.Event;
@@ -28,22 +30,13 @@ import flash.media.SoundTransform;
 import flash.utils.getTimer;
 
 public class AudioManager
+    implements Updatable
 {
     public static const LOOP_FOREVER :int = -1;
 
-    public static function get instance () :AudioManager
+    public function AudioManager (ctx :SGContext, maxChannels :int = 25)
     {
-        return g_instance;
-    }
-
-    public function AudioManager (maxChannels :int = 25)
-    {
-        if (null != g_instance) {
-            throw new Error("AudioManager instance already exists");
-        }
-
-        g_instance = this;
-
+        _ctx = ctx;
         _channels = new Array(maxChannels);
         _freeChannelIds = new Array(maxChannels);
         for (var i :int = 0; i < maxChannels; ++i) {
@@ -93,8 +86,6 @@ public class AudioManager
     public function shutdown () :void
     {
         stopAllSounds();
-
-        g_instance = null;
     }
 
     public function update (dt :Number) :void
@@ -129,7 +120,7 @@ public class AudioManager
     public function playSoundNamed (name :String, parentControls :AudioControls = null,
         loopCount :int = 0) :AudioChannel
     {
-        var rsrc :SoundResource = ResourceManager.instance.getResource(name) as SoundResource;
+        var rsrc :SoundResource = _ctx.rsrcs.getResource(name) as SoundResource;
         if (null == rsrc) {
             log.info("Discarding sound '" + name + "' (sound does not exist)");
             return new AudioChannel();
@@ -302,12 +293,12 @@ public class AudioManager
         }
     }
 
+    protected var _ctx :SGContext;
     protected var _channels :Array; // of AudioChannels
     protected var _freeChannelIds :Array; // of ints
     protected var _masterControls :AudioControls;
     protected var _soundTypeControls :Array; // of AudioControls
 
-    protected static var g_instance :AudioManager;
     protected static var log :Log = Log.getLog(AudioManager);
 
     protected static const DEFAULT_AUDIO_STATE :AudioState = AudioState.defaultState();

@@ -23,43 +23,23 @@ package com.whirled.contrib.simplegame.resource {
 import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.whirled.contrib.simplegame.SGContext;
 
 public class ResourceManager
 {
-    public static function get instance () :ResourceManager
+    public function ResourceManager (ctx :SGContext)
     {
-        return g_instance;
-    }
-
-    public function ResourceManager ()
-    {
-        if (null != g_instance) {
-            throw new Error("ResourceManager instance already exists");
-        }
-
-        g_instance = this;
+        _ctx = ctx;
     }
 
     public function shutdown () :void
     {
         unloadAll();
-        g_instance = null;
     }
 
     public function registerResourceType (resourceType :String, theClass :Class) :void
     {
         _resourceClasses.put(resourceType, theClass);
-    }
-
-    protected function createResource (resourceType :String, resourceName :String, loadParams :*)
-        :Resource
-    {
-        var loaderClass :Class = _resourceClasses.get(resourceType);
-        if (null != loaderClass) {
-            return (new loaderClass(resourceName, loadParams) as Resource);
-        }
-
-        return null;
     }
 
     public function queueResourceLoad (resourceType :String, resourceName: String, loadParams :*)
@@ -159,6 +139,17 @@ public class ResourceManager
         return _loading;
     }
 
+    protected function createResource (resourceType :String, resourceName :String, loadParams :*)
+        :Resource
+    {
+        var loaderClass :Class = _resourceClasses.get(resourceType);
+        if (null != loaderClass) {
+            return (new loaderClass(resourceName, loadParams) as Resource);
+        }
+
+        return null;
+    }
+
     protected function onSingleResourceLoaded (rsrc :Resource) :void
     {
         var removedObj :Resource = _pendingResources.remove(rsrc.resourceName);
@@ -186,6 +177,7 @@ public class ResourceManager
         }
     }
 
+    protected var _ctx :SGContext;
     protected var _loading :Boolean;
     protected var _completeCallback :Function;
     protected var _errorCallback :Function;
@@ -194,8 +186,6 @@ public class ResourceManager
     protected var _pendingResources :HashMap = new HashMap();
 
     protected var _resourceClasses :HashMap = new HashMap();
-
-    protected static var g_instance :ResourceManager;
 
     protected static var log :Log = Log.getLog(ResourceManager);
 }

@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.simplegame.resource {
 
+import com.threerings.util.ClassUtil;
+
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.Loader;
@@ -33,15 +35,14 @@ import flash.system.LoaderContext;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
-import com.threerings.util.ClassUtil;
-
 public class SwfResource
     implements Resource
 {
-    public static function instantiateMovieClip (resourceName :String, className :String,
+    public static function instantiateMovieClip (
+        rsrcs :ResourceManager, resourceName :String, className :String,
         disableMouseInteraction :Boolean = false, fromCache :Boolean = false) :MovieClip
     {
-        var theClass :Class = getClass(resourceName, className);
+        var theClass :Class = getClass(rsrcs, resourceName, className);
         if (theClass != null) {
             var movie :MovieClip;
             if (fromCache) {
@@ -76,33 +77,36 @@ public class SwfResource
         }
     }
 
-    public static function instantiateButton (resourceName :String, className :String) :SimpleButton
+    public static function instantiateButton (rsrcs :ResourceManager, resourceName :String,
+        className :String) :SimpleButton
     {
-        var theClass :Class = getClass(resourceName, className);
+        var theClass :Class = getClass(rsrcs, resourceName, className);
         return (null != theClass ? new theClass() : null);
     }
 
-    public static function getBitmapData (resourceName :String, className :String, width :int,
-        height :int) :BitmapData
+    public static function getBitmapData (rsrcs :ResourceManager, resourceName :String,
+        className :String, width :int, height :int) :BitmapData
     {
-        var theClass :Class = getClass(resourceName, className);
+        var theClass :Class = getClass(rsrcs, resourceName, className);
         return (null != theClass ? new theClass(width, height) : null);
     }
 
-    public static function getSwfDisplayRoot (resourceName :String) :DisplayObject
+    public static function getSwfDisplayRoot (rsrcs :ResourceManager, resourceName :String)
+        :DisplayObject
     {
-        var swf :SwfResource = get(resourceName);
+        var swf :SwfResource = getSwf(rsrcs, resourceName);
         return (null != swf ? swf.displayRoot : null);
     }
 
-    public static function get (resourceName :String) :SwfResource
+    public static function getSwf (rsrcs :ResourceManager, resourceName :String) :SwfResource
     {
-        return ResourceManager.instance.getResource(resourceName) as SwfResource;
+        return rsrcs.getResource(resourceName) as SwfResource;
     }
 
-    protected static function getClass (resourceName :String, className :String) :Class
+    protected static function getClass (rsrcs :ResourceManager, resourceName :String,
+        className :String) :Class
     {
-        var swf :SwfResource = get(resourceName);
+        var swf :SwfResource = getSwf(rsrcs, resourceName);
         return (null != swf ? swf.getClass(className) : null);
     }
 

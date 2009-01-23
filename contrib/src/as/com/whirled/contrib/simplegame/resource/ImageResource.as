@@ -31,10 +31,9 @@ import flash.utils.ByteArray;
 public class ImageResource
     implements Resource
 {
-    public static function instantiateBitmap (resourceName :String) :Bitmap
+    public static function instantiateBitmap (rsrcs :ResourceManager, resourceName :String) :Bitmap
     {
-        var img :ImageResource =
-            ResourceManager.instance.getResource(resourceName) as ImageResource;
+        var img :ImageResource = rsrcs.getResource(resourceName) as ImageResource;
         if (null != img) {
             return img.createBitmap();
         }
