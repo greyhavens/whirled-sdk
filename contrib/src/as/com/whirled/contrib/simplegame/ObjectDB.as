@@ -32,6 +32,7 @@ import flash.display.DisplayObjectContainer;
 import flash.events.IEventDispatcher;
 
 public class ObjectDB
+    implements Updatable
 {
     /**
      * Adds a SimObject to the ObjectDB. The SimObject must not be owned by another ObjectDB.
