@@ -23,5 +23,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/samskivert"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/vilya"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/toybox"/>
+	<classpathentry kind="lib" path="lib/mina-core.jar"/>
 	<classpathentry kind="output" path="dist/classes"/>
 </classpath>
