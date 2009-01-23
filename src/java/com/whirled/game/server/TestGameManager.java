@@ -4,31 +4,66 @@
 package com.whirled.game.server;
 
 import java.util.ArrayList;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import com.samskivert.util.ArrayIntSet;
 
 import com.threerings.presents.data.ClientObject;
+import com.threerings.presents.data.InvocationCodes;
+
 import com.threerings.presents.server.InvocationException;
 
 import com.threerings.parlor.data.Parameter;
+import com.threerings.parlor.server.PlayManagerDelegate;
 
 import com.whirled.game.client.WhirledGameService;
 import com.whirled.game.data.ContentPackParameter;
+import com.whirled.game.data.GameContentOwnership;
 import com.whirled.game.data.GameData;
 import com.whirled.game.data.TestGameDefinition;
 import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.WhirledGameObject;
+import com.whirled.game.data.WhirledPlayerObject;
+
+import static com.whirled.Log.log;
 
 public class TestGameManager extends WhirledGameManager
 {
+    public TestGameManager ()
+    {
+        _prefs = Preferences.userRoot().node("testGameManager/" + System.getProperty("gameName"));
+    }
+
     // from interface WhirledGameProvider
     public void awardTrophy (ClientObject caller, String ident, int playerId,
                              WhirledGameService.InvocationListener listener)
         throws InvocationException
     {
-        // TODO: add the awarded trophy to something the client can see so that holdsTrophy() can
-        // return the correct value
+        // TODO: let games specify their trophies in their config.xml so that we have something
+        // to validate their requested trophy awarding against.
+
+        WhirledPlayerObject plobj = (WhirledPlayerObject)checkWritePermission(caller, playerId);
+        if (plobj == null) {
+            throw new InvocationException(InvocationCodes.ACCESS_DENIED);
+        }
+
+        int gameId = _gameconfig.getGameId();
+        if (!plobj.isContentResolved(gameId)) {
+            throw new InvocationException(InvocationCodes.E_INTERNAL_ERROR);
+        }
+
+        // if the player already has this trophy, ignore the request
+        if (plobj.ownsGameContent(gameId, GameData.TROPHY_DATA, ident)) {
+            return;
+        }
+
+        // add it to the runtime and announce it to the player.
+        plobj.addToGameContent(new GameContentOwnership(gameId, GameData.TROPHY_DATA, ident));
         systemMessage(null, "Trophy awarded: " + ident);
+
+        // persist it in java preferences
+        _prefs.putBoolean(getPlayerPersistentId(plobj) + ":" + ident, true);
     }
 
     // from interface WhirledGameProvider
@@ -106,4 +141,49 @@ public class TestGameManager extends WhirledGameManager
             }
         }
     }
+
+    @Override
+    protected void didInit ()
+    {
+        super.didInit();
+
+        TrophyDelegate del = new TrophyDelegate();
+        addDelegate(del);
+        del.didInit(_config);
+    }
+
+    protected class TrophyDelegate extends PlayManagerDelegate
+    {
+        @Override // from PlaceManagerDelegate
+        public void bodyEntered (int bodyOid)
+        {
+            super.bodyEntered(bodyOid);
+
+            WhirledPlayerObject plobj = (WhirledPlayerObject)_omgr.getObject(bodyOid);
+
+            // if this person is a player, load up their trophies
+            if (isPlayer(plobj)) {
+                String pidPrefix = getPlayerPersistentId(plobj) + ":";
+                plobj.startTransaction();
+                try {
+                    for (String key : _prefs.keys()) {
+                        if (key.startsWith(pidPrefix)) {
+                            plobj.addToGameContent(new GameContentOwnership(
+                                _gameconfig.getGameId(), GameData.TROPHY_DATA,
+                                key.substring(pidPrefix.length())));
+                        }
+                    }
+                    plobj.addToGameContent(new GameContentOwnership(
+                        _gameconfig.getGameId(), GameData.RESOLUTION_MARKER,
+                        WhirledPlayerObject.RESOLVED));
+                } catch (BackingStoreException bse) {
+                    log.warning("Error attempting to resolve player trophies", bse);
+                } finally {
+                    plobj.commitTransaction();
+                }
+            }
+        }
+    }
+
+    protected Preferences _prefs;
 }
