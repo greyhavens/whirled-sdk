@@ -42,12 +42,12 @@ public class TrophyProperty extends PersistentProperty
             throw new Error("This player already holds this trophy [" + _name + "]");
         }
 
-        _gameCtrl.player.awardTrophy(_name, _gameCtrl.game.getMyId());
+        _gameCtrl.player.awardTrophy(_name);
     }
 
     public function hasTrophy () :Boolean
     {
-        return _gameCtrl.player.holdsTrophy(_name, _gameCtrl.game.getMyId());
+        return _gameCtrl.player.holdsTrophy(_name);
     }
 
     protected var _gameCtrl :GameControl;
