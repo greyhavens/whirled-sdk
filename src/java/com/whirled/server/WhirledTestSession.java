@@ -5,9 +5,6 @@
 
 package com.whirled.server;
 
-import com.google.inject.Inject;
-
-import com.threerings.presents.server.ShutdownManager;
 import com.threerings.crowd.server.CrowdSession;
 
 /**

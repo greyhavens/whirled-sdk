@@ -15,7 +15,6 @@ import java.io.Reader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
 import org.apache.mina.common.IoAcceptor;
 
@@ -32,21 +31,16 @@ import com.samskivert.util.StringUtil;
 
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationCodes;
-import com.threerings.presents.dobj.RootDObjectManager;
 import com.threerings.presents.net.AuthRequest;
 import com.threerings.presents.server.ClientManager;
 import com.threerings.presents.server.ClientResolver;
-import com.threerings.presents.server.InvocationManager;
 import com.threerings.presents.server.PresentsSession;
 import com.threerings.presents.server.SessionFactory;
 import com.threerings.presents.server.ShutdownManager;
 
 import com.threerings.crowd.data.BodyObject;
-import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.server.CrowdServer;
-import com.threerings.crowd.server.PlaceManagerDelegate;
 
-import com.threerings.bureau.data.BureauCredentials;
 import com.threerings.bureau.server.BureauRegistry;
 
 import com.threerings.parlor.data.Parameter;
@@ -66,7 +60,6 @@ import com.whirled.game.server.TestDispatcher;
 import com.whirled.game.server.TestProvider;
 import com.whirled.game.server.WhirledGameManager;
 import com.whirled.game.xml.TestGameParser;
-import com.whirled.game.xml.WhirledGameParser;
 
 import static com.whirled.Log.log;
 
@@ -291,7 +284,7 @@ public class WhirledTestServer extends CrowdServer
         File thanePath = new File(System.getProperty("thane.path"));
         File serverCodePath = new File(
             getDocRoot() + File.separator + "game.abc");
-        return thanePath.length() != 0 && serverCodePath.exists() && 
+        return thanePath.length() != 0 && serverCodePath.exists() &&
             thanePath.exists();
     }
 
@@ -381,7 +374,7 @@ public class WhirledTestServer extends CrowdServer
             addLibs(new File(getDocRoot(), "lib"));
         }
 
-        /** Returns a list of strings consisting of the absolute paths of abc files that start 
+        /** Returns a list of strings consisting of the absolute paths of abc files that start
          *  with each of the given prefixes, in order. */
         public List<String> getLibs (String ... prefixes)
         {
@@ -395,7 +388,7 @@ public class WhirledTestServer extends CrowdServer
             return libs;
         }
 
-        /** Finds an abc file with the given prefix in our set of libs and return its 
+        /** Finds an abc file with the given prefix in our set of libs and return its
          *  absolute path. */
         protected String getLib (String prefix)
         {
@@ -407,7 +400,7 @@ public class WhirledTestServer extends CrowdServer
             log.warning("Could not find libary '" + prefix + "*.abc'");
             return null;
         }
-        
+
         /* Scans the given directory for abc files and adds each one to our collection. */
         protected void addLibs (File dir)
         {
@@ -416,7 +409,7 @@ public class WhirledTestServer extends CrowdServer
                 log.warning("Could not open dist/lib directory in " + dir.getAbsolutePath());
                 return;
             }
-            
+
             for (File file : contents) {
                 if (file.getName().endsWith(".abc")) {
                     _libs.add(file);

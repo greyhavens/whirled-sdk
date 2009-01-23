@@ -3,9 +3,6 @@
 
 package com.whirled.client;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 

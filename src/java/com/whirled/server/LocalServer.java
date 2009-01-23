@@ -3,12 +3,7 @@
 
 package com.whirled.server;
 
-import java.util.List;
-import java.util.logging.Level;
-
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 import com.threerings.util.Name;
 
@@ -17,15 +12,11 @@ import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.net.BootstrapData;
 
 import com.threerings.presents.server.ClientResolutionListener;
-import com.threerings.presents.server.InvocationException;
 import com.threerings.presents.server.LocalDObjectMgr;
 import com.threerings.presents.server.PresentsDObjectMgr;
 
 import com.threerings.crowd.server.CrowdServer;
-import com.threerings.crowd.server.PlaceManager;
-import com.threerings.crowd.server.PlaceManagerDelegate;
 
-import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.server.ParlorManager;
 
 import com.whirled.client.WhirledTestClient;

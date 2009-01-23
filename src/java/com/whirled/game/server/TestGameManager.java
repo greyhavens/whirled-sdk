@@ -10,18 +10,14 @@ import com.samskivert.util.ArrayIntSet;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.server.InvocationException;
 
-import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.data.Parameter;
 
 import com.whirled.game.client.WhirledGameService;
 import com.whirled.game.data.ContentPackParameter;
 import com.whirled.game.data.GameData;
-import com.whirled.game.data.GameDefinition;
 import com.whirled.game.data.TestGameDefinition;
 import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.WhirledGameObject;
-
-import static com.whirled.Log.log;
 
 public class TestGameManager extends WhirledGameManager
 {
@@ -69,7 +65,7 @@ public class TestGameManager extends WhirledGameManager
     }
 
     // from interface WhirledGameProvider
-    public void endGameWithWinners (ClientObject caller, int[] winnerIds, int[] loserIds, 
+    public void endGameWithWinners (ClientObject caller, int[] winnerIds, int[] loserIds,
                                     int payoutType, WhirledGameService.InvocationListener listener)
         throws InvocationException
     {

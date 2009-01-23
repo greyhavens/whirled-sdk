@@ -7,7 +7,6 @@ package com.whirled.game.data;
 
 import com.threerings.presents.client.Client;
 import com.threerings.presents.data.InvocationMarshaller;
-import com.threerings.presents.net.Transport;
 import com.whirled.game.client.TestService;
 
 /**
@@ -27,7 +26,7 @@ public class TestMarshaller extends InvocationMarshaller
     public void clientReady (Client arg1)
     {
         sendRequest(arg1, CLIENT_READY, new Object[] {
-            
+
         });
     }
 }

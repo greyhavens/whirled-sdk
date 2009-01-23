@@ -6,7 +6,6 @@
 package com.whirled.game.server;
 
 import com.threerings.presents.data.ClientObject;
-import com.threerings.presents.data.InvocationMarshaller;
 import com.threerings.presents.server.InvocationDispatcher;
 import com.threerings.presents.server.InvocationException;
 import com.whirled.game.data.TestMarshaller;
@@ -31,7 +30,6 @@ public class TestDispatcher extends InvocationDispatcher<TestMarshaller>
         return new TestMarshaller();
     }
 
-    @SuppressWarnings("unchecked")
     @Override // documentation inherited
     public void dispatchRequest (
         ClientObject source, int methodId, Object[] args)
@@ -40,7 +38,7 @@ public class TestDispatcher extends InvocationDispatcher<TestMarshaller>
         switch (methodId) {
         case TestMarshaller.CLIENT_READY:
             ((TestProvider)provider).clientReady(
-                source                
+                source
             );
             return;
 

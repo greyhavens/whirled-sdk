@@ -63,7 +63,6 @@ public class AssignIdTask extends Task
 
         int maxValue = 0;
         for (Map.Entry<Object,Object> entry : props.entrySet()) {
-            String name = (String)entry.getKey();
             Integer value = Integer.parseInt((String)entry.getValue());
             maxValue = Math.max(maxValue, value);
         }
@@ -71,7 +70,6 @@ public class AssignIdTask extends Task
         boolean modified = false;
         for (FileSet fs : _filesets) {
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-            File fromDir = fs.getDir(getProject());
             for (String file : ds.getIncludedFiles()) {
                 if (!props.containsKey(file)) {
                     props.setProperty(file, String.valueOf(++maxValue));

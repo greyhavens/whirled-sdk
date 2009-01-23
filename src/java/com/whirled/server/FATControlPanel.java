@@ -8,7 +8,6 @@ package com.whirled.server;
 import java.io.File;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.logging.Level;
 
 import java.awt.EventQueue;
 import java.awt.Font;

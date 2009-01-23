@@ -12,8 +12,6 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.ServletHolder;
 
-import static com.whirled.Log.log;
-
 /**
  * Handles HTTP requests from the Flash client to load the game SWF.
  */
