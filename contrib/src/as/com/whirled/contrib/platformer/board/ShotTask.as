@@ -78,7 +78,7 @@ public class ShotTask extends ColliderTask
         var closehit :Number = Number.MAX_VALUE;
         if (dynamics != null && dynamics.length > 0) {
             for each (var db :DynamicBounds in dynamics) {
-                if (db is ActorBounds && (db as ActorBounds).actor.health <= 0) {
+                if (db is ActorBounds && !(db as ActorBounds).actor.isAlive()) {
                     continue;
                 }
                 if (db is SimpleBounds) {
