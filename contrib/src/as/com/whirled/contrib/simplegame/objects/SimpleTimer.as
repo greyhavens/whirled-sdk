@@ -20,15 +20,15 @@
 
 package com.whirled.contrib.simplegame.objects {
 
-import com.whirled.contrib.simplegame.SGContext;
+import com.whirled.contrib.simplegame.MainLoop;
 import com.whirled.contrib.simplegame.SimObject;
 import com.whirled.contrib.simplegame.tasks.*;
 
 public class SimpleTimer extends SimObject
 {
-    public static function getTimeLeft (ctx :SGContext, timerName :String) :Number
+    public static function getTimeLeft (mainLoop :MainLoop, timerName :String) :Number
     {
-        var timer :SimpleTimer = ctx.mainLoop.topMode.getObjectNamed(timerName) as SimpleTimer;
+        var timer :SimpleTimer = mainLoop.topMode.getObjectNamed(timerName) as SimpleTimer;
         return (timer != null ? timer.timeLeft : 0);
     }
 

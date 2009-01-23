@@ -26,6 +26,7 @@ public class SimpleGame
 
     public function run () :void
     {
+        _ctx.mainLoop.setup();
         _ctx.mainLoop.run();
     }
 

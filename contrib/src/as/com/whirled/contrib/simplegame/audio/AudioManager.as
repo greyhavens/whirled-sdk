@@ -62,13 +62,6 @@ public class AudioManager
         }
     }
 
-    protected function createChannelCompleteHandler (channel :AudioChannel) :Function
-    {
-        return function (...ignored) :void {
-            handleComplete(channel);
-        }
-    }
-
     public function get masterControls () :AudioControls
     {
         return _masterControls;
@@ -262,6 +255,13 @@ public class AudioManager
     {
         if (channel.isPlaying && channel.isPaused) {
             playChannel(channel, channel.controls.state, channel.playPosition);
+        }
+    }
+
+    protected function createChannelCompleteHandler (channel :AudioChannel) :Function
+    {
+        return function (...ignored) :void {
+            handleComplete(channel);
         }
     }
 
