@@ -75,7 +75,8 @@ public class SimObject extends EventDispatcher
      *     switch (groupNum) {
      *     case 0: return "Group0";
      *     case 1: return "Group1";
-     *     default: return super.getObjectGroup(groupNum - 2); // 2 is the number of groups this class defines
+     *     // 2 is the number of groups this class defines
+     *     default: return super.getObjectGroup(groupNum - 2);
      *     }
      * }
      */
@@ -101,7 +102,8 @@ public class SimObject extends EventDispatcher
     }
 
     /** Adds a named task to this SimObject. */
-    public function addNamedTask (name :String, task :ObjectTask, removeExistingTasks :Boolean = false) :void
+    public function addNamedTask (name :String, task :ObjectTask,
+        removeExistingTasks :Boolean = false) :void
     {
         if (null == task) {
             throw new ArgumentError("task must be non-null");

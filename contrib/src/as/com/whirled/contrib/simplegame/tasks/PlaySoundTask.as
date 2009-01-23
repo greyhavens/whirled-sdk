@@ -27,7 +27,8 @@ import com.whirled.contrib.simplegame.resource.SoundResource;
 public class PlaySoundTask
     implements ObjectTask
 {
-    public function PlaySoundTask (soundName :String, waitForComplete :Boolean = false, parentControls :AudioControls = null)
+    public function PlaySoundTask (soundName :String, waitForComplete :Boolean = false,
+        parentControls :AudioControls = null)
     {
         _soundName = soundName;
         _waitForComplete = waitForComplete;

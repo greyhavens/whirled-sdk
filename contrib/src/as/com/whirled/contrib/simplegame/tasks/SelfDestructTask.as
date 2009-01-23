@@ -28,10 +28,6 @@ import com.whirled.contrib.simplegame.ObjectMessage;
 public class SelfDestructTask
     implements ObjectTask
 {
-    public function SelfDestructTask ()
-    {
-    }
-
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         obj.destroySelf();

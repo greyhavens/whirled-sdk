@@ -69,7 +69,8 @@ public class LocationTask
             new MXInterpolatorAdapter(mx.effects.easing.Cubic.easeOut));
     }
 
-    public static function CreateWithFunction (x :Number, y:Number, time :Number, fn :Function) :LocationTask
+    public static function CreateWithFunction (x :Number, y:Number, time :Number, fn :Function)
+        :LocationTask
     {
         return new LocationTask(
            x, y,
@@ -97,9 +98,10 @@ public class LocationTask
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         var lc :LocationComponent = (obj as LocationComponent);
-        
+
         if (null == lc) {
-            throw new Error("LocationTask can only be applied to SimObjects that implement LocationComponent");
+            throw new Error("LocationTask can only be applied to SimObjects that implement " +
+                            "LocationComponent");
         }
 
         if (0 == _elapsedTime) {

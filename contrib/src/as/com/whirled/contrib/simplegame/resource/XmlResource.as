@@ -33,7 +33,8 @@ import flash.utils.ByteArray;
 public class XmlResource
     implements Resource
 {
-    public function XmlResource (resourceName :String, loadParams :Object, objectGenerator :Function = null)
+    public function XmlResource (resourceName :String, loadParams :Object,
+        objectGenerator :Function = null)
     {
         _resourceName = resourceName;
         _loadParams = loadParams;
@@ -65,7 +66,8 @@ public class XmlResource
         } else if (_loadParams.hasOwnProperty("embeddedClass")) {
             loadFromEmbeddedClass(_loadParams["embeddedClass"]);
         } else {
-            throw new Error("XmlResourceLoader: either 'url' or 'embeddedClass' must be specified in loadParams");
+            throw new Error("XmlResourceLoader: either 'url' or 'embeddedClass' must be " +
+                            "specified in loadParams");
         }
     }
 

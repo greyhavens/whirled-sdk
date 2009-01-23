@@ -198,7 +198,8 @@ public class AudioControls
     public function update (dt :Number, parentState :AudioState) :void
     {
         if (_targetVolumeTotalTime > 0) {
-            _targetVolumeElapsedTime = Math.min(_targetVolumeElapsedTime + dt, _targetVolumeTotalTime);
+            _targetVolumeElapsedTime =
+                Math.min(_targetVolumeElapsedTime + dt, _targetVolumeTotalTime);
             var volumeTransition :Number = _targetVolumeElapsedTime / _targetVolumeTotalTime;
             _localState.volume = _initialVolume + (_targetVolumeDelta * volumeTransition);
 
@@ -275,7 +276,8 @@ public class AudioControls
     public function updateStateNow () :AudioState
     {
         if (null != _parentControls) {
-            _globalState = AudioState.combine(_localState, _parentControls.updateStateNow(), _globalState);
+            _globalState =
+                AudioState.combine(_localState, _parentControls.updateStateNow(), _globalState);
             return _globalState;
         } else {
             return _localState;

@@ -33,7 +33,8 @@ public class ImageResource
 {
     public static function instantiateBitmap (resourceName :String) :Bitmap
     {
-        var img :ImageResource = ResourceManager.instance.getResource(resourceName) as ImageResource;
+        var img :ImageResource =
+            ResourceManager.instance.getResource(resourceName) as ImageResource;
         if (null != img) {
             return img.createBitmap();
         }
@@ -61,7 +62,8 @@ public class ImageResource
         return (_loader.content as Bitmap).bitmapData;
     }
 
-    public function createBitmap (pixelSnapping :String = "auto", smoothing :Boolean = false) :Bitmap
+    public function createBitmap (pixelSnapping :String = "auto", smoothing :Boolean = false)
+        :Bitmap
     {
         return new Bitmap(this.bitmapData, pixelSnapping, smoothing);
     }
@@ -79,7 +81,8 @@ public class ImageResource
         } else if (_loadParams.hasOwnProperty("embeddedClass")) {
             _loader.loadBytes(ByteArray(new _loadParams["embeddedClass"]()));
         } else {
-            throw new Error("ImageResourceLoader: one of 'url', 'bytes', or 'embeddedClass' must be specified in loadParams");
+            throw new Error("ImageResourceLoader: one of 'url', 'bytes', or 'embeddedClass' " +
+                            "must be specified in loadParams");
         }
     }
 

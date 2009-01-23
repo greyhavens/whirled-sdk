@@ -51,11 +51,13 @@ public class WaitForFrameTask implements ObjectTask
             movieClip = (null != sc ? sc.displayObject as MovieClip : null);
 
             if (null == movieClip) {
-                throw new Error("WaitForFrameTask can only operate on SceneComponents with MovieClip DisplayObjects");
+                throw new Error("WaitForFrameTask can only operate on SceneComponents " +
+                                "with MovieClip DisplayObjects");
             }
         }
 
-        return (null != _frameLabel ? movieClip.currentLabel == _frameLabel : movieClip.currentFrame == _frameNumber);
+        return (null != _frameLabel ? movieClip.currentLabel == _frameLabel :
+                                      movieClip.currentFrame == _frameNumber);
     }
 
     public function clone () :ObjectTask

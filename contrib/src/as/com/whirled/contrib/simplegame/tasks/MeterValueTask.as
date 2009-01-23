@@ -67,7 +67,8 @@ public class MeterValueTask
             new MXInterpolatorAdapter(mx.effects.easing.Cubic.easeOut));
     }
 
-    public static function CreateWithFunction (value :Number, time :Number, fn :Function) :MeterValueTask
+    public static function CreateWithFunction (value :Number, time :Number, fn :Function)
+        :MeterValueTask
     {
         return new MeterValueTask(
            value,
@@ -93,9 +94,10 @@ public class MeterValueTask
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         var meterComponent :MeterComponent = (obj as MeterComponent);
-        
+
         if (null == meterComponent) {
-            throw new Error("MeterValueTask can only be applied to SimObjects that implement MeterComponent");
+            throw new Error("MeterValueTask can only be applied to SimObjects that implement " +
+                            "MeterComponent");
         }
 
         if (0 == _elapsedTime) {

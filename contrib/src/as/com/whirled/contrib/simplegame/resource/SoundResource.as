@@ -109,7 +109,8 @@ public class SoundResource
             }
             onInit();
         } else {
-            throw new Error("SoundResourceLoader: either 'url' or 'embeddedClass' must be specified in loadParams");
+            throw new Error("SoundResourceLoader: either 'url' or 'embeddedClass' must be " +
+                            "specified in loadParams");
         }
     }
 

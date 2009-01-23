@@ -31,7 +31,8 @@ import com.whirled.contrib.simplegame.components.VisibleComponent;
 import flash.display.DisplayObject;
 
 public class SceneObject extends SimObject
-    implements AlphaComponent, BoundsComponent, ScaleComponent, SceneComponent, VisibleComponent, RotationComponent
+    implements AlphaComponent, BoundsComponent, ScaleComponent, SceneComponent, VisibleComponent,
+               RotationComponent
 {
     public function get displayObject () :DisplayObject
     {

@@ -43,7 +43,8 @@ public class ObjectDB
         :SimObjectRef
     {
         if (null == obj || null != obj._ref) {
-            throw new ArgumentError("obj must be non-null, and must never have belonged to another ObjectDB");
+            throw new ArgumentError("obj must be non-null, and must never have belonged to " +
+                                    "another ObjectDB");
         }
 
         // create a new SimObjectRef
@@ -68,7 +69,8 @@ public class ObjectDB
         if (null != objectName) {
             var oldObj :* = _namedObjects.put(objectName, obj);
             if (undefined !== oldObj) {
-                throw new Error("two objects with the same name ('" + objectName + "') added to the ObjectDB");
+                throw new Error("two objects with the same name ('" + objectName + "') " +
+                                "added to the ObjectDB");
             }
         }
 
@@ -93,12 +95,14 @@ public class ObjectDB
         if (null != displayParent) {
             var sc :SceneComponent = (obj as SceneComponent);
             if (null == sc) {
-                throw new Error("only objects implementing SceneComponent can be attached to a display parent");
+                throw new Error("only objects implementing SceneComponent can be attached to " +
+                                "a display parent");
             }
 
             var displayObj :DisplayObject = sc.displayObject;
             if (null == displayObj) {
-                throw new Error("object must return a non-null displayObject to be attached to a display parent");
+                throw new Error("object must return a non-null displayObject to be attached " +
+                                "to a display parent");
             }
 
             displayParent.addChild(displayObj);
@@ -371,12 +375,14 @@ public class ObjectDB
             if (null != groupName) {
                 var groupArray :Array = (_groupedObjects.get(groupName) as Array);
                 if (null == groupArray) {
-                    throw new Error("destroyed SimObject is returning different object groups than it did on creation");
+                    throw new Error("destroyed SimObject is returning different object groups " +
+                                    "than it did on creation");
                 }
 
                 var wasInArray :Boolean = ArrayUtil.removeFirst(groupArray, ref);
                 if (!wasInArray) {
-                    throw new Error("destroyed SimObject is returning different object groups than it did on creation");
+                    throw new Error("destroyed SimObject is returning different object groups " +
+                                    "than it did on creation");
                 }
             }
         } while (null != groupName);

@@ -89,9 +89,10 @@ public class ScaleTask
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         var sc :ScaleComponent = (obj as ScaleComponent);
-        
+
         if (null == sc) {
-            throw new Error("ScaleTask can only be applied to SimObjects that implement ScaleComponent");
+            throw new Error("ScaleTask can only be applied to SimObjects that implement " +
+                            "ScaleComponent");
         }
 
         if (0 == _elapsedTime) {

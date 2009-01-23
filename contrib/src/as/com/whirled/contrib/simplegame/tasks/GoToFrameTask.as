@@ -28,7 +28,8 @@ import flash.display.MovieClip;
 
 public class GoToFrameTask implements ObjectTask
 {
-    public function GoToFrameTask (frame :Object, scene :String = null, gotoAndPlay :Boolean = true, movie :MovieClip = null)
+    public function GoToFrameTask (frame :Object, scene :String = null,
+        gotoAndPlay :Boolean = true, movie :MovieClip = null)
     {
         _frame = frame;
         _scene = scene;
@@ -46,7 +47,8 @@ public class GoToFrameTask implements ObjectTask
             movieClip = (null != sc ? sc.displayObject as MovieClip : null);
 
             if (null == movieClip) {
-                throw new Error("GoToFrameTask can only operate on SceneComponents with MovieClip DisplayObjects");
+                throw new Error("GoToFrameTask can only operate on SceneComponents with " +
+                                "MovieClip DisplayObjects");
             }
         }
 

@@ -96,7 +96,8 @@ public class TaskContainer
         // clone each child task and put it in the cloned container
         var n :int = _tasks.length;
         for (var i :int = 0; i < n; ++i) {
-            var task :ObjectTask = (null != _tasks[i] ? _tasks[i] as ObjectTask : _completedTasks[i] as ObjectTask);
+            var task :ObjectTask =
+                (null != _tasks[i] ? _tasks[i] as ObjectTask : _completedTasks[i] as ObjectTask);
             Assert.isNotNull(task);
             out[i] = task.clone();
         }

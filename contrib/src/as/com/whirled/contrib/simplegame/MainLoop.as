@@ -268,7 +268,8 @@ public final class MainLoop
         return _fps;
     }
 
-    protected function createModeTransition (mode :AppMode, transitionType :uint, index :int = 0) :void
+    protected function createModeTransition (mode :AppMode, transitionType :uint, index :int = 0)
+        :void
     {
         var transition :ModeTransition = new ModeTransition();
         transition.mode = mode;

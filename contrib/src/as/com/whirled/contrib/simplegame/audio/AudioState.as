@@ -38,7 +38,8 @@ public class AudioState
         return new AudioState();
     }
 
-    public static function combine (a :AudioState, b :AudioState, into :AudioState = null) :AudioState
+    public static function combine (a :AudioState, b :AudioState, into :AudioState = null)
+        :AudioState
     {
         if (null == into) {
             into = new AudioState();

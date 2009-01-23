@@ -40,9 +40,10 @@ public class VisibleTask
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         var vc :VisibleComponent = (obj as VisibleComponent);
-        
+
         if (null == vc) {
-            throw new Error("VisibleTask can only be applied to SimObjects that implement VisibleComponent");
+            throw new Error("VisibleTask can only be applied to SimObjects that implement " +
+                            "VisibleComponent");
         }
 
         vc.visible = _visible;

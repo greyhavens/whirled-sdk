@@ -31,7 +31,8 @@ import mx.effects.easing.*;
 public class AnimateValueTask
     implements ObjectTask
 {
-    public static function CreateLinear (boxedValue :Object, targetValue :Number, time :Number) :AnimateValueTask
+    public static function CreateLinear (boxedValue :Object, targetValue :Number, time :Number)
+        :AnimateValueTask
     {
         return new AnimateValueTask(
             boxedValue,
@@ -40,7 +41,8 @@ public class AnimateValueTask
             new MXInterpolatorAdapter(mx.effects.easing.Linear.easeNone));
     }
 
-    public static function CreateSmooth (boxedValue :Object, targetValue :Number, time :Number) :AnimateValueTask
+    public static function CreateSmooth (boxedValue :Object, targetValue :Number, time :Number)
+        :AnimateValueTask
     {
         return new AnimateValueTask(
             boxedValue,
@@ -49,7 +51,8 @@ public class AnimateValueTask
             new MXInterpolatorAdapter(mx.effects.easing.Cubic.easeInOut));
     }
 
-    public static function CreateEaseIn (boxedValue :Object, targetValue :Number, time :Number) :AnimateValueTask
+    public static function CreateEaseIn (boxedValue :Object, targetValue :Number, time :Number)
+        :AnimateValueTask
     {
         return new AnimateValueTask(
             boxedValue,
@@ -58,7 +61,8 @@ public class AnimateValueTask
             new MXInterpolatorAdapter(mx.effects.easing.Cubic.easeIn));
     }
 
-    public static function CreateEaseOut (boxedValue :Object, targetValue :Number, time :Number) :AnimateValueTask
+    public static function CreateEaseOut (boxedValue :Object, targetValue :Number, time :Number)
+        :AnimateValueTask
     {
         return new AnimateValueTask(
             boxedValue,
@@ -76,7 +80,7 @@ public class AnimateValueTask
         if (null == boxedValue || !boxedValue.hasOwnProperty("value")) {
             throw new Error("boxedValue must be non null, and must contain a 'value' property");
         }
-        
+
         // default to linear interpolation
         if (null == interpolator) {
             interpolator = new MXInterpolatorAdapter(mx.effects.easing.Linear.easeNone);

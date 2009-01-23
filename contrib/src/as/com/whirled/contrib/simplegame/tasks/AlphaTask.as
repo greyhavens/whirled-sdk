@@ -83,11 +83,12 @@ public class AlphaTask
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         var alphaComponent :AlphaComponent = (obj as AlphaComponent);
-        
+
         if (null == alphaComponent) {
-            throw new Error("AlphaTask can only be applied to SimObjects that implement AlphaComponent");
+            throw new Error("AlphaTask can only be applied to SimObjects that implement " +
+                            "AlphaComponent");
         }
-        
+
         if (0 == _elapsedTime) {
             _from = alphaComponent.alpha;
         }

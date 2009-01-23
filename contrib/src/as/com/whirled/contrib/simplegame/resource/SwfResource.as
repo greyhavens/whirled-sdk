@@ -82,7 +82,8 @@ public class SwfResource
         return (null != theClass ? new theClass() : null);
     }
 
-    public static function getBitmapData (resourceName :String, className :String, width :int, height :int) :BitmapData
+    public static function getBitmapData (resourceName :String, className :String, width :int,
+        height :int) :BitmapData
     {
         var theClass :Class = getClass(resourceName, className);
         return (null != theClass ? new theClass(width, height) : null);
@@ -178,7 +179,8 @@ public class SwfResource
         } else if (_loadParams.hasOwnProperty("embeddedClass")) {
             _loader.loadBytes(ByteArray(new _loadParams["embeddedClass"]()), context);
         } else {
-            throw new Error("SwfResourceLoader: one of 'url', 'bytes', or 'embeddedClass' must be specified in loadParams");
+            throw new Error("SwfResourceLoader: one of 'url', 'bytes', or 'embeddedClass' must " +
+                            "be specified in loadParams");
         }
     }
 

@@ -35,7 +35,8 @@ public class IntRange
 
     public function next (randStreamId :int = -1) :Number
     {
-        return Rand.nextIntRange(min, max, (randStreamId >= 0 ? randStreamId : defaultRandStreamId));
+        return Rand.nextIntRange(
+            min, max, (randStreamId >= 0 ? randStreamId : defaultRandStreamId));
     }
 
     public function clone () :IntRange

@@ -88,9 +88,10 @@ public class RotationTask
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         var rotationComponent :RotationComponent = (obj as RotationComponent);
-        
+
         if (null == rotationComponent) {
-            throw new Error("RotationTask can only be applied to SimObjects that implement RotationComponent");
+            throw new Error("RotationTask can only be applied to SimObjects that implement " +
+                            "RotationComponent");
         }
 
         if (0 == _elapsedTime) {
@@ -99,7 +100,8 @@ public class RotationTask
 
         _elapsedTime += dt;
 
-        rotationComponent.rotation = _interpolator.interpolate(_from, _to, _elapsedTime, _totalTime);
+        rotationComponent.rotation =
+            _interpolator.interpolate(_from, _to, _elapsedTime, _totalTime);
 
         return (_elapsedTime >= _totalTime);
     }
