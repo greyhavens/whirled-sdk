@@ -20,7 +20,9 @@ import com.threerings.crowd.util.CrowdContext;
 
 import com.whirled.game.data.BaseGameConfig;
 import com.whirled.game.data.WhirledGameCodes;
+import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.WhirledGameObject;
+import com.whirled.game.data.WhirledPlayerObject;
 
 /**
  * Manages the backend of the game on a flash client.
@@ -101,6 +103,18 @@ public class WhirledGameBackend extends BaseGameBackend
     override protected function getConfig () :BaseGameConfig
     {
         return _ctrl.getPlaceConfig() as BaseGameConfig;
+    }
+
+    // from BaseGameBackend
+    override protected function playerOwnsData (type :int, ident :String, playerId :int) :Boolean
+    {
+        if (playerId != CURRENT_USER && playerId != getMyId_v1()) {
+            throw new Error("Query of other user data not allowed");
+        }
+        var cfg :WhirledGameConfig = (_ctrl.getPlaceConfig() as WhirledGameConfig);
+        var plobj :WhirledPlayerObject = 
+            _ctx.getClient().getClientObject() as WhirledPlayerObject;
+        return plobj.ownsGameContent(cfg.getGameId(), type, ident);
     }
 
     /**
