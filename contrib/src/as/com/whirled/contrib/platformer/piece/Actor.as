@@ -49,11 +49,10 @@ public class Actor extends Dynamic
     public static const U_HIT :int = 1 << (DYN_COUNT + 4);
     public static const U_ACCEL :int = 1 << (DYN_COUNT + 5);
     public static const U_ATTACH :int = 1 << (DYN_COUNT + 6);
-    public static const ACT_COUNT :int = DYN_COUNT + 6;
+    public static const U_UPGRADE :int = 1 << (DYN_COUNT + 7);
+    public static const ACT_COUNT :int = DYN_COUNT + 7;
 
     public var events :Array = new Array();
-
-    public var startHealth :Number;
 
     public var maxAttachable :Number = -1;
     public var maxWalkable :Number = -1;
@@ -135,6 +134,17 @@ public class Actor extends Dynamic
     {
         _health = health;
         updateState |= U_HEALTH;
+    }
+
+    public function get startHealth () :Number
+    {
+        return _startHealth;
+    }
+
+    public function set startHealth (startHealth :Number) :void
+    {
+        _startHealth = startHealth;
+        updateState |= U_UPGRADE;
     }
 
     public function get orient () :int
@@ -259,6 +269,9 @@ public class Actor extends Dynamic
         if ((_inState & U_ATTACH) > 0) {
             bytes.writeInt(_attachedId);
         }
+        if ((_inState & U_UPGRADE) > 0) {
+            bytes.writeFloat(_startHealth);
+        }
         return bytes;
     }
 
@@ -286,12 +299,16 @@ public class Actor extends Dynamic
         if ((_inState & U_ATTACH) > 0) {
             _attachedId = bytes.readInt();
         }
+        if ((_inState & U_UPGRADE) > 0) {
+            _startHealth = bytes.readFloat();
+        }
     }
 
     protected var _bounds :Rect;
     protected var _attached :LineData;
     protected var _attachedId :int = -1;
     protected var _health :Number;
+    protected var _startHealth :Number;
     protected var _orient :int = ORIENT_RIGHT | ORIENT_SHOOT_F;
     protected var _shooting :Boolean = false;
     protected var _justShot :Boolean = false;
@@ -300,5 +317,6 @@ public class Actor extends Dynamic
     protected var _accelY :Number = 0;
     protected var _height :Number = 0;
     protected var _width :Number = 0;
+
 }
 }
