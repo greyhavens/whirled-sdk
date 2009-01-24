@@ -193,6 +193,29 @@ public class PieceSpriteFactory
         return null;
     }
 
+    public static function loadCacheClip (name :String) :CacheWrapper
+    {
+        var cache :Array = _clipCache[name];
+        if (cache == null || cache.length == 0) {
+            var disp :DisplayObject = instantiateClip(name);
+            if (disp == null) {
+                return null;
+            }
+            return new CacheWrapper(name, disp);
+        }
+        return cache.pop();
+    }
+
+    public static function returnCacheClip (cw :CacheWrapper) :void
+    {
+        var cache :Array = _clipCache[cw.name];
+        if (cache == null) {
+            cache = new Array();
+            _clipCache[cw.name] = cache;
+        }
+        cache.push(cw);
+    }
+
     protected static var _duplicate :Boolean;
     protected static var _spriteMap :HashMap = new HashMap();
     protected static var _instanceMap :HashMap = new HashMap();
@@ -200,6 +223,8 @@ public class PieceSpriteFactory
     protected static var _defaultDynamicSprite :Class;
 
     protected static var _contentDomain :ApplicationDomain = new ApplicationDomain(null);
+
+    protected static var _clipCache :Object = new Object();
 
     private static const log :Log = Log.getLog(PieceSpriteFactory);
 }

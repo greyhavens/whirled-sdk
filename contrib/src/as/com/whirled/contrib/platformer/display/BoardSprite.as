@@ -325,10 +325,10 @@ public class BoardSprite extends Sprite
         }
     }
 
-    protected function addParticleEffect (disp :DisplayObject, pt :Point, back :Boolean) :void
+    protected function addParticleEffect (cw :CacheWrapper, pt :Point, back :Boolean) :void
     {
         var layer :int = back ? BACK_PARTICLE_LAYER : FRONT_PARTICLE_LAYER;
-        _layers[layer].addParticleEffect(disp, pt);
+        _layers[layer].addParticleEffect(cw, pt);
     }
 
     protected function updateDisplay () :void

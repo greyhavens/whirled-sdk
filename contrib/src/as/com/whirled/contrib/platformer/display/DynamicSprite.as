@@ -184,21 +184,20 @@ public class DynamicSprite extends Sprite
             recolor :String = null, filter :ColorMatrixFilter = null, scaleY :Number = 1) :void
     {
         if (_particleCallback != null && stage != null && node != null && name != null) {
-            var disp :DisplayObject = PieceSpriteFactory.instantiateClip(name);
-            if (disp == null) {
+            var cw :CacheWrapper = PieceSpriteFactory.loadCacheClip(name);
+            //var disp :DisplayObject = PieceSpriteFactory.instantiateClip(name);
+            if (cw == null) {
                 return;
             }
-            disp.scaleY = scaleY;
+            cw.disp.scaleY = scaleY;
             var pt :Point = node.localToGlobal(new Point());
             var opt :Point = node.localToGlobal(new Point(0, 0));
             var apt :Point = node.localToGlobal(new Point(0, -1));
             apt = apt.subtract(opt);
             apt.normalize(1);
-            disp.rotation = -90 + (Math.atan2(apt.y, apt.x) - Math.atan2(0, -1)) * 180 / Math.PI;
-            if (recolor != null && filter != null) {
-                recolorNodes(recolor, disp, filter);
-            }
-            _particleCallback(disp, pt, back);
+            cw.disp.rotation = -90 + (Math.atan2(apt.y, apt.x) - Math.atan2(0, -1)) * 180 / Math.PI;
+            cw.recolor(recolor, filter);
+            _particleCallback(cw, pt, back);
         }
     }
 
@@ -223,50 +222,13 @@ public class DynamicSprite extends Sprite
     protected function recolorNodesToColor (
         node :String, disp :DisplayObject, color :int) :ColorMatrixFilter
     {
-        var matrix :ColorMatrix = new ColorMatrix();
-        matrix.colorize(color);
-        var filter :ColorMatrixFilter = matrix.createFilter();
-        recolorNodes(node, disp, filter);
-        return filter;
+        return DisplayUtils.recolorNodesToColor(node, disp, color);
     }
 
     protected function recolorNodes (
         node :String, disp :DisplayObject, filter :ColorMatrixFilter) :void
     {
-        if (disp == null) {
-            return;
-        }
-        if (disp.name == node) {
-            var filters :Array = disp.filters;
-            if (filters == null) {
-                if (filter != null) {
-                    disp.filters = [filter];
-                }
-            } else {
-                if (filter != null) {
-                    filters.push(filter);
-                } else {
-                    var ii :int;
-                    while (ii < filters.length) {
-                        if (filters[ii] is ColorMatrixFilter) {
-                            filters.splice(ii, 1);
-                        } else {
-                            ii++;
-                        }
-                    }
-                    if (filters.length == 0) {
-                        filters = null;
-                    }
-                }
-                disp.filters = filters;
-            }
-        }
-        if (disp is DisplayObjectContainer) {
-            var cont :DisplayObjectContainer = disp as DisplayObjectContainer;
-            for (ii = 0; ii < cont.numChildren; ii++) {
-                recolorNodes(node, cont.getChildAt(ii), filter);
-            }
-        }
+        DisplayUtils.recolorNodes(node, disp, filter);
     }
 
     protected function showHit (filter :ColorMatrixFilter = null, length :Number = HIT_LENGTH) :Boolean

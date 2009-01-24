@@ -30,28 +30,20 @@ import com.whirled.contrib.platformer.util.Metrics;
 
 public class ParticleLayer extends Layer
 {
-    public function addParticleEffect (disp :DisplayObject, pt :Point) :void
+    public function addParticleEffect (cw :CacheWrapper, pt :Point) :void
     {
         var newpt :Point = globalToLocal(pt);
         if (newpt.x > -x - BUFFER && newpt.x < -x + Metrics.DISPLAY_WIDTH + BUFFER &&
                 newpt.y > -y - BUFFER && newpt.y < -y + Metrics.DISPLAY_HEIGHT + BUFFER) {
-            disp.x = newpt.x;
-            disp.y = newpt.y;
-            disp.addEventListener(Event.COMPLETE, effectComplete);
-            addChild(disp);
-            if (disp is MovieClip) {
-                (disp as MovieClip).gotoAndPlay(1);
+            cw.disp.x = newpt.x;
+            cw.disp.y = newpt.y;
+            cw.resetOnComplete();
+            addChild(cw.disp);
+            if (cw.disp is MovieClip) {
+                (cw.disp as MovieClip).gotoAndPlay(1);
             }
-        }
-    }
-
-    protected function effectComplete (event :Event) :void
-    {
-        var disp :DisplayObject = event.target as DisplayObject;
-        disp.removeEventListener(Event.COMPLETE, arguments.callee);
-        removeChild(disp);
-        if (disp is MovieClip) {
-            (disp as MovieClip).stop();
+        } else {
+            cw.reset();
         }
     }
 
