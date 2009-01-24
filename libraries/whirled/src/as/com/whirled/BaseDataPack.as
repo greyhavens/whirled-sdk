@@ -55,15 +55,15 @@ public class BaseDataPack extends EventDispatcher
         return (_metadata != null);
     }
 
-    /**
-     * TODO
-     * @private
-     */
-    public function getNamespace () :String
-    {
-        validateComplete();
-        return unescape(String(_metadata.attribute("namespace")));
-    }
+//    /**
+//     * TODO
+//     * @private
+//     */
+//    public function getNamespace () :String
+//    {
+//        validateComplete();
+//        return unescape(String(_metadata.attribute("namespace")));
+//    }
 
     /**
      * Convenience function to access some data as a String.
@@ -151,7 +151,7 @@ public class BaseDataPack extends EventDispatcher
     {
         name = validateAccess(name);
 
-        var datum :XML = _metadata..data.(@name == name)[0];
+        var datum :XML = getDatum(_metadata..data, name);
         if (datum == null) {
             return undefined;
         }
@@ -305,12 +305,31 @@ public class BaseDataPack extends EventDispatcher
     {
         name = validateAccess(name);
 
-        var datum :XML = _metadata..file.(@name == name)[0];
+        var datum :XML = getDatum(_metadata..file, name);
         if (datum == null) {
             return null;
         }
 
         return parseValue(datum, "value", "String");
+    }
+
+    /**
+     * Fucking hell.
+     *
+     * var datum :XML = getDatum(_metadata..data, value);
+     * This should be:
+     * var datum :XML = _metadata..data(@name == value)[0];
+     * But the (@name == value) selector doesn't work if we're compiled in CS4,
+     * so this method is a workaround.
+     */ 
+    protected function getDatum (list :XMLList, name :String) :XML
+    {
+        for each (var x :XML in list) {
+            if (x.attribute("name") == name) {
+                return x;
+            }
+        }
+        return null;
     }
 
     /**

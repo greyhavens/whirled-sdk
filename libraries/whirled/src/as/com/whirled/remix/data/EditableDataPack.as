@@ -117,7 +117,7 @@ public class EditableDataPack extends DataPack
     {
         name = validateAccess(name);
 
-        var datum :XML = _metadata..data.(@name == name)[0];
+        var datum :XML = getDatum(_metadata..data, name);
         if (datum == null) {
             return null;
         }
@@ -173,7 +173,7 @@ public class EditableDataPack extends DataPack
     {
         name = validateAccess(name);
 
-        var datum :XML = _metadata..file.(@name == name)[0];
+        var datum :XML = getDatum(_metadata..file, name);
         if (datum == null) {
             return null;
         }
@@ -238,7 +238,7 @@ public class EditableDataPack extends DataPack
     {
         var cleanName :String = validateAccess(name);
 
-        var datum :XML = _metadata..data.(@name == cleanName)[0];
+        var datum :XML = getDatum(_metadata..data, cleanName);
         if (datum == null) {
             throw new Error("No such data name");
         }
@@ -259,7 +259,7 @@ public class EditableDataPack extends DataPack
     {
         var cleanName :String = validateAccess(name);
 
-        var datum :XML = _metadata..file.(@name == cleanName)[0];
+        var datum :XML = getDatum(_metadata..file, cleanName);
         if (datum == null) {
             throw new Error("No such file name");
         }
