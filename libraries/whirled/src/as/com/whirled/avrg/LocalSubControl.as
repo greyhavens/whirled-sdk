@@ -48,6 +48,72 @@ public class LocalSubControl extends AbstractSubControl
         callHostCode("localChat_v1", msg);
     }
 
+//    /**
+//     * Return a Rectangle defining the paintable area of the AVRG media on this client.
+//     * This will be in "screen" coordinates and this Rectangle should always start at 0,0.
+//     */
+//    public function getPaintableArea () :Rectangle
+//    {
+//    }
+//
+//    // event: PAINTABLE_SIZE_CHANGED
+//
+//    /**
+//     * Return a Rectangle defining the paintable area that is on-screen on this client.
+//     * This will be a sub-rectangle of getPaintableArea(), in the same coordinate system.
+//     */
+//    public function getVisiblePaintableArea () :Rectangle
+//    {
+//    }
+//
+//    // event: SCREEN_AREA_CHANGED
+//
+//    /**
+//     * Return a Rectangle defining the paintable area that is over the "room".
+//     * Drawing in all other areas but this Rectangle allows you to "theme" the client a bit.
+//     */
+//    public function getRoomPaintableArea () :Rectangle
+//    {
+//    }
+//
+//    // event: ROOM_AREA_CHANGED
+
+    /**
+     * Get the room bounds in "room pixels".
+     * This will be a 3-element array corresponding to [ width, height, depth ].
+     * These values are *not* real pixels. Rather, if an avatar is 100 pixels wide
+     * and a room is 700 pixels wide, then the avatar should be able to span 7 across, whether
+     * it's in the front of the room or the rear.
+     *
+     * TODO: This is not yet here. It's @private.
+     */
+    public function getRoomBounds () :Array
+    {
+        return callHostCode("getRoomBounds_vRay") as Array;
+    }
+
+//
+//    /**
+//     * Turn a logical room coordinate into a screen coordinate.
+//     */
+//    public function locationToPaintable (array :Array) :Point
+//    {
+//    }
+//
+//    /**
+//     * Turn a screen coordinate back into a logical room coordinate.
+//     */
+//    public function paintableToLocationAtDepth (p :Point, depth :Number = 1) :Array
+//    {
+//    }
+//
+//    /**
+//     * Turn a screen coordinate back into a logical room coordinate.
+//     */
+//    public function paintableToLocationAtHeight (p :Point, height :Number = 0) :Array
+//    {
+//    }
+
     /**
      * Returns the bounds of the area on which the AVRG will be drawn. This value changes when the
      * browser is resized, and when the player moves to another room. A null value may be returned
