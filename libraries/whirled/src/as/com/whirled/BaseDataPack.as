@@ -318,7 +318,7 @@ public class BaseDataPack extends EventDispatcher
      *
      * var datum :XML = getDatum(_metadata..data, value);
      * This should be:
-     * var datum :XML = _metadata..data(@name == value)[0];
+     * var datum :XML = _metadata..data.(@name == value)[0];
      * But the (@name == value) selector doesn't work if we're compiled in CS4,
      * so this method is a workaround.
      */ 
