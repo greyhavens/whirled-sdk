@@ -43,6 +43,17 @@ public class CacheWrapper
         return _name;
     }
 
+    public function start () :void
+    {
+        if (_disp is MovieClip) {
+            (_disp as MovieClip).gotoAndPlay(1);
+        }
+        if (_recolor != null && _filter != null) {
+            DisplayUtils.recolorNodes(_recolor, _disp, _filter);
+            _filter = null;
+        }
+    }
+
     public function reset (...ignored) :void
     {
         _disp.removeEventListener(Event.COMPLETE, onComplete);
@@ -62,11 +73,11 @@ public class CacheWrapper
 
     public function recolor (node :String, filter :ColorMatrixFilter) :void
     {
-        if (_recolor != null) {
+        if (_recolor != null && _filter == null) {
             DisplayUtils.recolorNodes(_recolor, _disp, null);
         }
         if (node != null && filter != null) {
-            DisplayUtils.recolorNodes(node, _disp, filter);
+            _filter = filter;
         } else {
             node = null;
         }
@@ -81,5 +92,6 @@ public class CacheWrapper
     protected var _disp :DisplayObject;
     protected var _name :String;
     protected var _recolor :String;
+    protected var _filter :ColorMatrixFilter;
 }
 }

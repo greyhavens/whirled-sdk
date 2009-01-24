@@ -54,7 +54,7 @@ public class DisplayUtils
                 if (filter != null) {
                     filters.push(filter);
                 } else {
-                    var ii :int;
+                    var ii :int = 0;
                     while (ii < filters.length) {
                         if (filters[ii] is ColorMatrixFilter) {
                             filters.splice(ii, 1);

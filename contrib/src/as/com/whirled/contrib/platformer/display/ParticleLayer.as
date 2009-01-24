@@ -39,9 +39,7 @@ public class ParticleLayer extends Layer
             cw.disp.y = newpt.y;
             cw.resetOnComplete();
             addChild(cw.disp);
-            if (cw.disp is MovieClip) {
-                (cw.disp as MovieClip).gotoAndPlay(1);
-            }
+            cw.start();
         } else {
             cw.reset();
         }
