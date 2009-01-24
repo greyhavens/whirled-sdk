@@ -84,6 +84,9 @@ public class SpawnerController extends RectDynamicController
     {
         super.tick(delta);
         if (!_spawner.shouldSpawn() || _spawner.disabled) {
+            if (_spawner.spawning != 0) {
+                _spawner.spawning = 0;
+            }
             return;
         }
         if (!_spawner.amOwner()) {
