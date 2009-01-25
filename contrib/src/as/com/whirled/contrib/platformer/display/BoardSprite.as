@@ -211,7 +211,17 @@ public class BoardSprite extends Sprite
         }
 
         if (offY < lowBound1 || offY < lowBound1) {
-            _centerY = (lowBound1 + (lowBound2 - lowBound1) * offX) * Metrics.TILE_SIZE;
+            var newY :Number;
+            if (lowBound1 == lowBound2) {
+                newY = lowBound1 * Metrics.TILE_SIZE;
+            } else if (lowBound1 < lowBound2) {
+                newY = (lowBound1 + (lowBound2 - lowBound1) * offX) * Metrics.TILE_SIZE;
+            } else {
+                newY = (lowBound2 + (lowBound1 - lowBound2) * (1 - offX)) * Metrics.TILE_SIZE;
+            }
+            if (newY > _centerY) {
+                _centerY = newY;
+            }
             _lastY = 0;
         } else if (_board.getBound(Board.TOP_BOUND) > 0 &&
                 offY + Metrics.WINDOW_HEIGHT >= _board.getBound(Board.TOP_BOUND)) {
@@ -294,6 +304,9 @@ public class BoardSprite extends Sprite
             }
         }
         for (xx = _maxX - 1; xx >= _minX; xx--) {
+            if (xx > _minX && _lowBounds[xx - 1] > _lowBounds[xx]) {
+                _lowBounds[xx] = _lowBounds[xx - 1];
+            }
             if (_lowBounds[xx + 1] - 1 > _lowBounds[xx]) {
                 _lowBounds[xx] = _lowBounds[xx + 1] - 1;
             }
