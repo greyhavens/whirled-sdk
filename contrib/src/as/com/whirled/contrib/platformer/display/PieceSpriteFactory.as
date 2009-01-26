@@ -165,7 +165,7 @@ public class PieceSpriteFactory
         if (d.sprite == null || d.sprite == "") {
             return null;
         }
-        var ret :DisplayObject = instantiateClip(d.sprite);
+        var ret :DisplayObject = d.useCache() ? loadCacheDisp(d.sprite) : instantiateClip(d.sprite);
         if (ret == null) {
             if (d is Actor) {
                 var a :Actor = d as Actor;
@@ -193,27 +193,50 @@ public class PieceSpriteFactory
         return null;
     }
 
-    public static function loadCacheClip (name :String) :CacheWrapper
+    public static function loadCache (name :String) :Object
     {
         var cache :Array = _clipCache[name];
         if (cache == null || cache.length == 0) {
-            var disp :DisplayObject = instantiateClip(name);
-            if (disp == null) {
-                return null;
-            }
-            return new CacheWrapper(name, disp);
+            return null;
         }
         return cache.pop();
     }
 
-    public static function returnCacheClip (cw :CacheWrapper) :void
+    public static function loadCacheDisp (name :String) :DisplayObject
     {
-        var cache :Array = _clipCache[cw.name];
+        var disp :DisplayObject = loadCache(name) as DisplayObject;
+        if (disp == null) {
+            return instantiateClip(name);
+        }
+        return disp;
+
+    }
+
+    public static function loadCacheWrapper (name :String) :CacheWrapper
+    {
+        var cw :CacheWrapper = loadCache(name) as CacheWrapper;
+        if (cw == null) {
+            var disp :DisplayObject = instantiateClip(name);
+            if (disp != null) {
+                cw = new CacheWrapper(name, disp);
+            }
+        }
+        return cw;
+    }
+
+    public static function pushCache (name :String, o :Object) :void
+    {
+        var cache :Array = _clipCache[name];
         if (cache == null) {
             cache = new Array();
-            _clipCache[cw.name] = cache;
+            _clipCache[name] = cache;
         }
-        cache.push(cw);
+        cache.push(o);
+    }
+
+    public static function returnCacheWrapper (cw :CacheWrapper) :void
+    {
+        pushCache(cw.name, cw);
     }
 
     protected static var _duplicate :Boolean;

@@ -82,6 +82,7 @@ public class DynamicSprite extends Sprite
     {
         removeEventListener(Event.ADDED, handleAdded);
         removeEventListener(Event.REMOVED, handleRemoved);
+        clearDisp();
     }
 
     public function getDynamic () :Dynamic
@@ -184,7 +185,7 @@ public class DynamicSprite extends Sprite
             recolor :String = null, filter :ColorMatrixFilter = null, scaleY :Number = 1) :void
     {
         if (_particleCallback != null && stage != null && node != null && name != null) {
-            var cw :CacheWrapper = PieceSpriteFactory.loadCacheClip(name);
+            var cw :CacheWrapper = PieceSpriteFactory.loadCacheWrapper(name);
             //var disp :DisplayObject = PieceSpriteFactory.instantiateClip(name);
             if (cw == null) {
                 return;
@@ -255,6 +256,19 @@ public class DynamicSprite extends Sprite
             return true;
         }
         return false;
+    }
+
+    protected function clearDisp () :void
+    {
+        if (_disp != null) {
+            if (_disp.parent == this) {
+                removeChild(_disp);
+            }
+            if (_dynamic.useCache()) {
+                PieceSpriteFactory.pushCache(_dynamic.sprite, _disp);
+            }
+            _disp = null;
+        }
     }
 
     protected var _state :String = "";

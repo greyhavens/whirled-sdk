@@ -40,5 +40,10 @@ public class Shot extends Dynamic
     {
         return false;
     }
+
+    override public function useCache () :Boolean
+    {
+        return true;
+    }
 }
 }

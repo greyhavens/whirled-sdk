@@ -152,6 +152,11 @@ public class Dynamic
         return false;
     }
 
+    public function useCache () :Boolean
+    {
+        return false;
+    }
+
     public function isAlive () :Boolean
     {
         return shouldSpawn();

@@ -63,7 +63,7 @@ public class CacheWrapper
         if (_disp is MovieClip) {
             (_disp as MovieClip).stop();
         }
-        PieceSpriteFactory.returnCacheClip(this);
+        PieceSpriteFactory.returnCacheWrapper(this);
     }
 
     public function resetOnComplete () :void
