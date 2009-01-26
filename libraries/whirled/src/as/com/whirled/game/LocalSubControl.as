@@ -219,6 +219,20 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
+     * Opens the game's multiplayer lobby on this player's machine. Please note this is only 
+     * meaningful for games that support multiplayer.
+     * 
+     * @param multiplayerOnly Optional parameter: if this game supports both single- and 
+     * multi-player games, a true value will only show multiplayer options (create table 
+     * or join existing tables), and a false value will show the default
+     * single- and multi-player options. Default value is true. 
+     */
+    public function showGameLobby (multiplayerOnly :Boolean = true) :void
+    {
+        callHostCode("showGameLobby_v1", multiplayerOnly);
+    }
+
+    /**
      * Opens the web page for this game's shop. The game will be shrunk to sidebar width while the
      * game shop is showing.
      *

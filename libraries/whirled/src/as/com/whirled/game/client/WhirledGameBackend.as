@@ -217,6 +217,7 @@ public class WhirledGameBackend extends BaseGameBackend
         o["setFrameRate_v1"] = setFrameRate_v1;
         o["setShowReplay_v1"] = setShowReplay_v1;
         o["setStageQuality_v1"] = setStageQuality_v1;
+        o["showGameLobby_v1"] = showGameLobby_v1;
         o["showGameShop_v1"] = showGameShop_v1;
         o["showTrophies_v1"] = showTrophies_v1;
 
@@ -346,6 +347,16 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function showGameShop_v1 (itemType :String, catalogId :int = 0) :void
     {
         displayInfo(null, "Open game shop failed because game is not connected to Whirled.", 
+           WhirledGameCodes.USERGAME_CHAT_TYPE);
+    }
+
+    /**
+     * Display a feedback message, since we're not connected. This will be overridden and
+     * completed by a subclass with access to the rest of Whirled.
+     */
+    protected function showGameLobby_v1 (multiplayer :Boolean) :void
+    {
+        displayInfo(null, "Would display a game lobby, but we're in the test environment.", 
            WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
 
