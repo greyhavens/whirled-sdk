@@ -220,7 +220,10 @@ public class WhirledGameBackend extends BaseGameBackend
         o["showGameLobby_v1"] = showGameLobby_v1;
         o["showGameShop_v1"] = showGameShop_v1;
         o["showTrophies_v1"] = showTrophies_v1;
-
+        o["showSharePage_v1"] = showSharePage_v1;
+        o["getShareToken_v1"] = getShareToken_v1;
+        o["getShareMemberId_v1"] = getShareMemberId_v1;
+        
         // .game
         o["isMyTurn_v1"] = isMyTurn_v1;
         o["playerReady_v1"] = playerReady_v1;
@@ -349,7 +352,40 @@ public class WhirledGameBackend extends BaseGameBackend
         displayInfo(null, "Open game shop failed because game is not connected to Whirled.", 
            WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
-
+    
+    /**
+     * Opens the Share Game page with the given token.  At this point there is no access to the
+     * rest of Whirled, so display a message for testing purposes.  This will be overridden and
+     * completed by a subclass with access to the rest of Whirled.
+     */
+    protected function showSharePage_v1 (defmsg :String, token :String = "") :void
+    {
+    	displayInfo(null, "Open share game page failed because game is not connected to Whirled.", 
+           WhirledGameCodes.USERGAME_CHAT_TYPE);
+    }
+    
+    /**
+     * Retrieves the share token.  At this point, there is no way to retrieve the token, so a
+     * message is displayed indicating they must be in Whirled.
+     */
+    protected function getShareToken_v1 () :String
+    {
+    	displayInfo(null, "Cannot retrieve share token because game is not connected to Whirled.",
+    	   WhirledGameCodes.USERGAME_CHAT_TYPE);
+    	return null;
+    }
+    
+    /**
+     * Retrieves the ID of the member who shared this game.  At this point, there is no way to
+     * retrieve this ID, so a message is displayed indicating they must be in Whirled.
+     */
+    protected function getShareMemberId_v1 () :int
+    {
+    	displayInfo(null, "Cannot retrieve share member ID because game is not connected to Whirled.",
+           WhirledGameCodes.USERGAME_CHAT_TYPE);
+        return 0;
+    }
+    
     /**
      * Display a feedback message, since we're not connected. This will be overridden and
      * completed by a subclass with access to the rest of Whirled.

@@ -245,6 +245,20 @@ public class LocalSubControl extends AbstractSubControl
     {
         callHostCode("showGameShop_v1", itemType, catalogId);
     }
+    
+    /**
+     * Instructs the game client to open the Share Game page, allowing the player to invite friends
+     * to play this game.
+     * @param defmsg Default message that will be included along with the game's URL when sent
+     * to the player's friends.
+     * @param token Optional token that will be included on the URL and eventually passed back to
+     * the game when an invited friend goes to the URL.  This allows the game to start in
+     * a different state than usual.
+     */ 
+    public function showSharePage (defmsg :String, token :String = "") :void
+    {
+        callHostCode("showSharePage_v1", defmsg, token);
+    }
 
     /**
      * Opens a popup displaying the trophies awarded by this game.
@@ -252,6 +266,25 @@ public class LocalSubControl extends AbstractSubControl
     public function showTrophies () :void
     {
         callHostCode("showTrophies_v1");
+    }
+    
+    /**
+     * Retrieves the share token that was passed to the game.  If the player entered into the game
+     * via a URL that contained a token (provided by the game via showSharePage), this will return
+     * that token, otherwise null.
+     */
+    public function getShareToken () :String
+    {
+    	return callHostCode("getShareToken_v1");
+    }
+    
+    /**
+     * Retrieves the ID of the member who shared this game to the current player.  Returns 0 if the
+     * player did not start the game via a shared link.
+     */
+    public function getShareMemberId () :int
+    {
+    	return callHostCode("getShareMemberId_v1");
     }
 
     /**
