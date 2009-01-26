@@ -31,18 +31,20 @@ import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 
 import com.whirled.game.GameControl;
+import com.whirled.game.PlayerSubControl;
 
 public class CookieManager extends EventDispatcher
 {
     public function CookieManager (gameCtrl :GameControl, properties :HashMap, 
-        debugLogging :Boolean = false)
+        playerId :int = PlayerSubControl.CURRENT_USER, debugLogging :Boolean = false)
     {
         _gameCtrl = gameCtrl;
         _propertyDefaults = properties;
+        _playerId = playerId;
         _debug = debugLogging;
         _properties = new HashMap();
 
-        _gameCtrl.player.getCookie(gotCookie);
+        _gameCtrl.player.getCookie(gotCookie, _playerId);
     }
 
     public function get loaded () :Boolean
@@ -97,11 +99,6 @@ public class CookieManager extends EventDispatcher
 
     protected function gotCookie (cookie :Object, occupantId :int) :void
     {
-        if (occupantId != _gameCtrl.game.getMyId()) {
-            throw new Error("Unexpectedly received the cookie for another player [" + 
-                _gameCtrl.game.getMyId() + ", " + occupantId + "]");
-        }
-
         if (cookie == null) {
             dispatchLoaded();
             return;
@@ -158,7 +155,7 @@ public class CookieManager extends EventDispatcher
         }
 
         bytes.compress();
-        _gameCtrl.player.setCookie(bytes);
+        _gameCtrl.player.setCookie(bytes, _playerId);
         _lastWrite = getTimer();
     }
 
@@ -169,6 +166,7 @@ public class CookieManager extends EventDispatcher
     protected var _lastWrite :int = 0;
     protected var _timer :Timer = null;
     protected var _debug :Boolean;
+    protected var _playerId :int;
 
     /** Version bumps are not required when adding new data types.  Only if another form of 
      * storing data in the cookie is fashioned should a version bump be necessary. */

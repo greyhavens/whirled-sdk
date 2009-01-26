@@ -20,14 +20,17 @@
 
 package com.whirled.contrib.platformer.persist {
 
+import com.whirled.game.PlayerSubControl;
+
 public class PropertyPrototype 
 {
     public function PropertyPrototype (name :String, type :PropertyType, 
-        defaultValue :Object = null)
+        defaultValue :Object = null, playerId :int = PlayerSubControl.CURRENT_USER)
     {
         _name = name;
         _type = type;
         _defaultValue = defaultValue;
+        _playerId = playerId;
     }
 
     public function get name () :String
@@ -45,8 +48,14 @@ public class PropertyPrototype
         return _defaultValue;
     }
 
+    public function get playerId () :int
+    {
+        return _playerId;
+    }
+
     protected var _name :String;
     protected var _type :PropertyType;
     protected var _defaultValue :Object;
+    protected var _playerId :int;
 }
 }

@@ -21,19 +21,27 @@
 package com.whirled.contrib.platformer.persist {
 
 import com.whirled.game.GameControl;
+import com.whirled.game.PlayerSubControl;
 
 public class TrophyProperty extends PersistentProperty
 {
-    public function TrophyProperty (name :String, gameCtrl :GameControl)
+    public function TrophyProperty (name :String, gameCtrl :GameControl, 
+        playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/)
     {
         super(name);
 
         _gameCtrl = gameCtrl;
+        _playerId = playerId;
     }
 
     override public function get value () :Object
     {
         return hasTrophy();
+    }
+
+    public function get playerId () :int
+    {
+        return _playerId;
     }
 
     public function awardTrophy () :void
@@ -42,7 +50,12 @@ public class TrophyProperty extends PersistentProperty
             throw new Error("This player already holds this trophy [" + _name + "]");
         }
 
-        _awardedThisSession = _gameCtrl.player.awardTrophy(_name);
+        if (_playerId != PlayerSubControl.CURRENT_USER || _gameCtrl.game.amServerAgent()) {
+            throw new Error("This game instance does not have permission to grant that user " +
+                "trophies [" + _playerId + "]");
+        }
+
+        _awardedThisSession = _gameCtrl.player.awardTrophy(_name, _playerId);
     }
 
     public function hasTrophy () :Boolean
@@ -53,6 +66,7 @@ public class TrophyProperty extends PersistentProperty
     }
 
     protected var _gameCtrl :GameControl;
+    protected var _playerId :int;
     protected var _awardedThisSession :Boolean = false;
 }
 }
