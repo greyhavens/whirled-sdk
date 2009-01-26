@@ -5,6 +5,11 @@
 
 package com.whirled.server;
 
+import com.threerings.presents.dobj.AccessController;
+import com.threerings.presents.dobj.DEvent;
+import com.threerings.presents.dobj.DObject;
+import com.threerings.presents.dobj.Subscriber;
+
 import com.threerings.crowd.server.CrowdSession;
 
 /**
@@ -22,5 +27,23 @@ public class WhirledTestSession extends CrowdSession
         if (_clobj != null) {
             safeEndSession();
         }
+    }
+
+    @Override // from PresentsSession
+    protected void sessionWillStart ()
+    {
+        super.sessionWillStart();
+
+        // Let everyone have full access to our test client object
+        _clobj.setAccessController(new AccessController () {
+            public boolean allowSubscribe (DObject object, Subscriber<?> subscriber) {
+                return true;
+            }
+
+            public boolean allowDispatch (DObject object, DEvent event) {
+                return true;
+            }
+        });
+
     }
 }
