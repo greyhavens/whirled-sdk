@@ -123,6 +123,11 @@ public class LocalSubControl extends AbstractSubControl
      * The DisplayObject returned is always 80x60 pixels large. If the player's actual headshot
      * is smaller than 80x60, it will be centered inside the 80x60 area.
      *
+     * Note: There is a weird flash security issue/bug that may prevent you from removing
+     * this object from a parent. addChild(headshot) works, removeChild(headshot) works, but
+     * calling getChildAt(index) or removeChildAt(index) using the index of the headshot will
+     * throw a security error. Weird!
+     *
      * @param occupantId the player for which to get a headshot.
      */
     public function getHeadShot (occupantId :int) :DisplayObject
