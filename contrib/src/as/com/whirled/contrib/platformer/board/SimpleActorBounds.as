@@ -143,19 +143,37 @@ public class SimpleActorBounds extends ActorBounds
         return false;
     }
 
-    public function isStuck () :Boolean
+    public function adjustHeight (newHeight :Number) :Boolean
     {
+        var oldHeight :Number = actor.height;
+        actor.height = newHeight;
         updateBounds();
+        if (newHeight <= actor.height) {
+            return true;
+        }
+        var delta :Number = oldHeight - newHeight;
         var clines :Array = _collider.getLines(actor);
         for each (var ld :LineData in clines) {
-            if (actor.attached == ld || !BoundData.doesBound(ld.type, actor.projCollider)) {
+            if (actor.attached == ld || !BoundData.doesBound(ld.type, actor.projCollider) ||
+                !ld.polyIntersecting(_lines)) {
                 continue;
             }
-            if (ld.polyIntersecting(_lines)) {
-                return true;
+            if ((BoundData.blockOuter(ld.type, actor.projCollider) &&
+                    ld.isOutside(_lines[1].x1, _lines[1].y1 + delta) &&
+                    ld.isOutside(_lines[1].x2, _lines[1].y2 + delta) &&
+                    !ld.isLineOutside(_lines[1])) ||
+                    (BoundData.blockInner(ld.type, actor.projCollider) &&
+                    ld.isInside(_lines[1].x1, _lines[1].y1 + delta) &&
+                    ld.isInside(_lines[1].x2, _lines[1].y2 + delta) &&
+                    !ld.isLineInside(_lines[1]))) {
+                actor.height = oldHeight;
+                updateBounds();
+                return false;
             }
         }
-        return false;
+        actor.height = newHeight;
+        updateBounds();
+        return true;
     }
 
     public function findColliders (delta :Number, cd :ColliderDetails = null) :ColliderDetails

@@ -25,7 +25,7 @@ import com.whirled.game.PlayerSubControl;
 
 public class TrophyProperty extends PersistentProperty
 {
-    public function TrophyProperty (name :String, gameCtrl :GameControl, 
+    public function TrophyProperty (name :String, gameCtrl :GameControl,
         playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/)
     {
         super(name);
@@ -47,7 +47,8 @@ public class TrophyProperty extends PersistentProperty
     public function awardTrophy () :void
     {
         if (hasTrophy()) {
-            throw new Error("This player already holds this trophy [" + _name + "]");
+            trace("This player already holds this trophy [" + _name + "]");
+            return;
         }
 
         if (_playerId != PlayerSubControl.CURRENT_USER || _gameCtrl.game.amServerAgent()) {
