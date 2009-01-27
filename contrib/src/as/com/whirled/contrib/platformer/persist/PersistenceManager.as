@@ -29,57 +29,19 @@ import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 
 import com.whirled.game.PlayerSubControl;
+import com.whirled.game.StateChangedEvent;
 
 import com.whirled.contrib.EventHandlerManager;
 
 public class PersistenceManager extends EventDispatcher
 {
-    public function PersistenceManager (gameCtrl :GameControl, properties :Array, 
-        debugLogging :Boolean = false)
+    public function PersistenceManager (gameCtrl :GameControl, debugLogging :Boolean = false)
     {
+        _debugLogging = debugLogging;
         _eventMgr = new EventHandlerManager();
-        _eventMgr.registerUnload(gameCtrl);
-
-        _trophyProperties = new HashMap();
-        var cookiePropertyMaps :HashMap = new HashMap();
-        for each (var prototype :PropertyPrototype in properties) {
-            switch (prototype.type) {
-            case PropertyType.TROPHY:
-                _trophyProperties.put(getPropertyKey(prototype.name, prototype.playerId),
-                    new TrophyProperty(prototype.name, gameCtrl, prototype.playerId));
-                break;
-
-            case PropertyType.COOKIE:
-                var cookieProperties :HashMap = cookiePropertyMaps.get(prototype.playerId);
-                if (cookieProperties == null) {
-                    cookiePropertyMaps.put(prototype.playerId, cookieProperties = new HashMap());
-                }
-                cookieProperties.put(prototype.name, prototype.defaultValue);
-                break;
-
-            default:
-                if (debugLogging) {
-                    log.debug("Unknown prototype type [" + prototype.type + "]");
-                }
-            }
-        }
-
-        _loaded = true;
-        _cookieManagers = new HashMap();
-        for each (var playerId :int in cookiePropertyMaps.keys()) {
-            if (debugLogging) {
-                log.debug("adding CookieManager [" + playerId + "]");
-            }
-
-            cookieProperties = cookiePropertyMaps.get(playerId);
-            var cookieManager :CookieManager = new CookieManager(
-                gameCtrl, cookieProperties, playerId, debugLogging);
-            _loaded = _loaded && cookieManager.loaded;
-            if (!cookieManager.loaded) {
-                _eventMgr.registerOneShotCallback(cookieManager, Event.COMPLETE, loadingComplete);
-            }
-            _cookieManagers.put(playerId, cookieManager);
-        }
+        _eventMgr.registerUnload(_gameCtrl = gameCtrl);
+        _eventMgr.conditionalCall(
+            init, _gameCtrl.game.isInPlay(), _gameCtrl.game, StateChangedEvent.GAME_STARTED);
     }
 
     public function get loaded () :Boolean
@@ -91,7 +53,7 @@ public class PersistenceManager extends EventDispatcher
      * Call the given function when this manager is loaded.  If this manager is already loaded,
      * the given function will be called immediately.
      */
-    public function whenLoaded (callback :Function) :void 
+    public function whenLoaded (callback :Function) :void
     {
         _eventMgr.conditionalCall(callback, loaded, this, Event.COMPLETE);
     }
@@ -101,7 +63,7 @@ public class PersistenceManager extends EventDispatcher
      * start, and are currently not updated afterwards.  We'd need to add "refresh" functionality
      * to CookieManagers to deal with this - and we still wouldn't know when we have dirty data.
      */
-    public function getProperty (name :String, 
+    public function getProperty (name :String,
         playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/) :PersistentProperty
     {
         var trophyProperty :TrophyProperty = _trophyProperties.get(getPropertyKey(name, playerId));
@@ -114,6 +76,55 @@ public class PersistenceManager extends EventDispatcher
             throw new Error("Unrecognized player! [" + playerId + "]");
         }
         return cookieManager.getProperty(name);
+    }
+
+    protected function init () :void
+    {
+        _trophyProperties = new HashMap();
+        var cookiePropertyMaps :HashMap = new HashMap();
+        for each (var prototype :PropertyPrototype in getPrototypes()) {
+            switch (prototype.type) {
+            case PropertyType.TROPHY:
+                _trophyProperties.put(getPropertyKey(prototype.name, prototype.playerId),
+                    new TrophyProperty(prototype.name, _gameCtrl, prototype.playerId));
+                break;
+
+            case PropertyType.COOKIE:
+                var cookieProperties :HashMap = cookiePropertyMaps.get(prototype.playerId);
+                if (cookieProperties == null) {
+                    cookiePropertyMaps.put(prototype.playerId, cookieProperties = new HashMap());
+                }
+                cookieProperties.put(prototype.name, prototype.defaultValue);
+                break;
+
+            default:
+                if (_debugLogging) {
+                    log.debug("Unknown prototype type [" + prototype.type + "]");
+                }
+            }
+        }
+
+        _loaded = true;
+        _cookieManagers = new HashMap();
+        for each (var playerId :int in cookiePropertyMaps.keys()) {
+            if (_debugLogging) {
+                log.debug("adding CookieManager [" + playerId + "]");
+            }
+
+            cookieProperties = cookiePropertyMaps.get(playerId);
+            var cookieManager :CookieManager = new CookieManager(
+                _gameCtrl, cookieProperties, playerId, _debugLogging);
+            _loaded = _loaded && cookieManager.loaded;
+            if (!cookieManager.loaded) {
+                _eventMgr.registerOneShotCallback(cookieManager, Event.COMPLETE, loadingComplete);
+            }
+            _cookieManagers.put(playerId, cookieManager);
+        }
+    }
+
+    protected function getPrototypes () :Array
+    {
+        throw new Error("getPrototypes() in PersistenceManager is abstract");
     }
 
     protected function loadingComplete () :void
@@ -136,6 +147,8 @@ public class PersistenceManager extends EventDispatcher
 
     private static const log :Log = Log.getLog(PersistenceManager);
 
+    protected var _gameCtrl :GameControl;
+    protected var _debugLogging :Boolean;
     protected var _loaded :Boolean = false;
     protected var _trophyProperties :HashMap;
     protected var _cookieManagers :HashMap;
