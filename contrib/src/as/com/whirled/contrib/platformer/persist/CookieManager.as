@@ -36,7 +36,7 @@ import com.whirled.game.PlayerSubControl;
 public class CookieManager extends EventDispatcher
 {
     public function CookieManager (gameCtrl :GameControl, properties :HashMap, 
-        playerId :int = PlayerSubControl.CURRENT_USER, debugLogging :Boolean = false)
+        playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/, debugLogging :Boolean = false)
     {
         _gameCtrl = gameCtrl;
         _propertyDefaults = properties;

@@ -25,7 +25,7 @@ import com.whirled.game.PlayerSubControl;
 public class PropertyPrototype 
 {
     public function PropertyPrototype (name :String, type :PropertyType, 
-        defaultValue :Object = null, playerId :int = PlayerSubControl.CURRENT_USER)
+        defaultValue :Object = null, playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/)
     {
         _name = name;
         _type = type;

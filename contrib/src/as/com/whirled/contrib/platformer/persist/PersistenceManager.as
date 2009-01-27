@@ -67,11 +67,15 @@ public class PersistenceManager extends EventDispatcher
         _loaded = true;
         _cookieManagers = new HashMap();
         for each (var playerId :int in cookiePropertyMaps.keys()) {
+            if (debugLogging) {
+                log.debug("adding CookieManager [" + playerId + "]");
+            }
+
             cookieProperties = cookiePropertyMaps.get(playerId);
             var cookieManager :CookieManager = new CookieManager(
                 gameCtrl, cookieProperties, playerId, debugLogging);
             _loaded = _loaded && cookieManager.loaded;
-            if (!_loaded) {
+            if (!cookieManager.loaded) {
                 _eventMgr.registerOneShotCallback(cookieManager, Event.COMPLETE, loadingComplete);
             }
             _cookieManagers.put(playerId, cookieManager);
@@ -98,7 +102,7 @@ public class PersistenceManager extends EventDispatcher
      * to CookieManagers to deal with this - and we still wouldn't know when we have dirty data.
      */
     public function getProperty (name :String, 
-        playerId :int = PlayerSubControl.CURRENT_USER) :PersistentProperty
+        playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/) :PersistentProperty
     {
         var trophyProperty :TrophyProperty = _trophyProperties.get(getPropertyKey(name, playerId));
         if (trophyProperty != null) {
