@@ -195,11 +195,14 @@ public class PieceSpriteFactory
 
     public static function loadCache (name :String) :Object
     {
+        /*
         var cache :Array = _clipCache[name];
         if (cache == null || cache.length == 0) {
             return null;
         }
         return cache.pop();
+        */
+        return null;
     }
 
     public static function loadCacheDisp (name :String) :DisplayObject
@@ -226,12 +229,14 @@ public class PieceSpriteFactory
 
     public static function pushCache (name :String, o :Object) :void
     {
+        /*
         var cache :Array = _clipCache[name];
         if (cache == null) {
             cache = new Array();
             _clipCache[name] = cache;
         }
         cache.push(o);
+        */
     }
 
     public static function returnCacheWrapper (cw :CacheWrapper) :void

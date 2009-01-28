@@ -56,6 +56,8 @@ public class ShotSprite extends DynamicSprite
         } else if (_shot.ttl <= 0 && _disp != null) {
             if (_shot.miss) {
                 displayMiss();
+            } else {
+                displayAir();
             }
             _dead = true;
         }
@@ -65,6 +67,8 @@ public class ShotSprite extends DynamicSprite
     {
         if (_shot.rotateHit) {
             rotation += 180;
+        } else {
+            rotation = 0;
         }
         generateParticleEffect(_shot.hitEffect, this);
     }
@@ -73,6 +77,11 @@ public class ShotSprite extends DynamicSprite
     {
         rotation += 180;
         generateParticleEffect(_shot.missEffect, this);
+    }
+
+    protected function displayAir () :void
+    {
+        generateParticleEffect("miss_air", this);
     }
 
     protected var _shot :Shot;

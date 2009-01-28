@@ -43,7 +43,7 @@ public class Shot extends Dynamic
 
     override public function useCache () :Boolean
     {
-        return true;
+        return false;
     }
 }
 }
