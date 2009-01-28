@@ -31,6 +31,15 @@ public class PetControl extends ActorControl
     }
 
     /**
+     * Get the memberId of this pet's owner.
+     * This is just a convenience function to point out the rich API offered by getEntityPropery().
+     */
+    public function getOwnerId () :int
+    {
+        return int(getEntityProperty(PROP_MEMBER_ID));
+    }
+
+    /**
      * @private
      */
     override protected function setUserProps (o :Object) :void
