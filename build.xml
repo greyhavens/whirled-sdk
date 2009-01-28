@@ -185,6 +185,8 @@
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/avrg/*.as"/>
     </copy>
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
+      <arg value="-load-config"/>
+      <arg value="etc/whirled-config.xml"/>
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
       <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/player-env.swc"/>
