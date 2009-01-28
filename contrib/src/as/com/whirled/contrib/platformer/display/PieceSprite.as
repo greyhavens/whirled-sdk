@@ -32,8 +32,6 @@ import com.whirled.contrib.platformer.util.Metrics;
  */
 public class PieceSprite extends Sprite
 {
-    public var z :int;
-
     public function PieceSprite (piece :Piece, disp :DisplayObject = null)
     {
         _piece = piece;
