@@ -48,14 +48,12 @@ public class BitmapParallax
         rect = new Rectangle(-1, -1, Math.min(bd.width, Metrics.DISPLAY_WIDTH),
             Math.min(bd.height, Metrics.DISPLAY_HEIGHT));
         //trace("BP: " + rect + " source: (" + bd.width + ", " + bd.height + ")");
-        pt.x = Metrics.DISPLAY_WIDTH - rect.width + pt.x;
-        pt.y = Metrics.DISPLAY_HEIGHT - rect.height - pt.y;
     }
 
     public function update (nX :Number, nY :Number) :void
     {
-        var newX :int = (_scaleX == 0) ? 0 : Math.floor(nX / _scaleX) % bd.width;
-        var newY :int = (_scaleY == 0) ? 0 : Math.floor(nY / _scaleY);
+        var newX :int = (pt.x + (_scaleX == 0 ? 0 : Math.floor(nX / _scaleX))) % bd.width;
+        var newY :int = pt.y - (_scaleY == 0 ? 0 : Math.floor(nY / _scaleY));
         if (_tileY) {
             newY = newY % bd.height;
         }
@@ -74,18 +72,39 @@ public class BitmapParallax
     {
         updated = false;
         var r :Rectangle = rect.clone();
-        var p :Point = pt.clone();
-        if (_scaleY != 0 && !_tileY) {
-            p.y += r.y;
-            r.y = 0;
+        var p :Point = new Point();
+        p.y = Metrics.DISPLAY_HEIGHT - rect.height - r.y;
+        r.y = 0;
+        if (_tileY) {
+            while (p.y > 0) {
+                p.y -= r.height;
+            }
+            while (p.y < 0) {
+                if (p.y + r.height > 0) {
+                    r.y = -p.y;
+                    r.height += p.y;
+                    p.y = 0;
+                } else {
+                    p.y += r.height;
+                }
+            }
+        } else if (_scaleY != 0) {
             if (p.y > Metrics.DISPLAY_HEIGHT) {
+                var diff :int = p.y - Metrics.DISPLAY_HEIGHT;
+                if (diff > r.height) {
+                    return;
+                }
+                p.y -= diff;
+                r.y += diff;
+            } else if (p.y < 0) {
                 return;
             }
         }
-        r.width = Math.min(r.width, bd.width - r.x);
         r.height = Math.min(Math.min(r.height, bd.height - r.y), Metrics.DISPLAY_HEIGHT - p.y);
         do {
-            p.x = pt.x;
+            p.x = 0;
+            r.x = rect.x;
+            r.width = Math.min(rect.width, bd.width - r.x);
             do {
                 dest.copyPixels(bd, r, p, null, null, blend);
                 p.x += r.width;
