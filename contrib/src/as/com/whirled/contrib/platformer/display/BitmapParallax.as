@@ -36,11 +36,12 @@ public class BitmapParallax
     public var bd :BitmapData;
     public var blend :Boolean = true;
 
-    public function BitmapParallax (
-        disp :DisplayObject, sX :int = 1, sY :int = 1, oX :int = 0, oY :int = 0)
+    public function BitmapParallax (disp :DisplayObject, sX :int = 1, sY :int = 1, oX :int = 0,
+            oY :int = 0, tileY :Boolean = false)
     {
         _scaleX = sX;
         _scaleY = sY;
+        _tileY = tileY;
         pt = new Point(oX, oY);
         bd = new BitmapData(Math.floor(disp.width), Math.floor(disp.height), true, 0x00000000);
         bd.draw(disp);
@@ -54,7 +55,11 @@ public class BitmapParallax
     public function update (nX :Number, nY :Number) :void
     {
         var newX :int = (_scaleX == 0) ? 0 : Math.floor(nX / _scaleX) % bd.width;
-        var newY :int = (_scaleY == 0) ? 0 : Math.floor(nY / _scaleY) % bd.height;
+        var newY :int = (_scaleY == 0) ? 0 : Math.floor(nY / _scaleY);
+        if (_tileY) {
+            newY = newY % bd.height;
+        }
+
         if (rect.x != newX) {
             rect.x = newX;
             updated = true;
@@ -67,11 +72,18 @@ public class BitmapParallax
 
     public function redraw (dest :BitmapData) :void
     {
-        var r :Rectangle = rect.clone();
-        r.width = Math.min(r.width, bd.width - r.x);
-        r.height = Math.min(r.height, bd.height - r.y);
-        var p :Point = pt.clone();
         updated = false;
+        var r :Rectangle = rect.clone();
+        var p :Point = pt.clone();
+        if (_scaleY != 0 && !_tileY) {
+            p.y += r.y;
+            r.y = 0;
+            if (p.y > Metrics.DISPLAY_HEIGHT) {
+                return;
+            }
+        }
+        r.width = Math.min(r.width, bd.width - r.x);
+        r.height = Math.min(Math.min(r.height, bd.height - r.y), Metrics.DISPLAY_HEIGHT - p.y);
         do {
             p.x = pt.x;
             do {
@@ -83,10 +95,11 @@ public class BitmapParallax
             p.y += r.height;
             r.height = Math.min(bd.height, Metrics.DISPLAY_HEIGHT - p.y);
             r.y = 0;
-        } while (_scaleY > 0 && p.y < Metrics.DISPLAY_HEIGHT);
+        } while (_tileY && _scaleY > 0 && p.y < Metrics.DISPLAY_HEIGHT);
     }
 
     protected var _scaleX :Number;
     protected var _scaleY :Number;
+    protected var _tileY :Boolean;
 }
 }

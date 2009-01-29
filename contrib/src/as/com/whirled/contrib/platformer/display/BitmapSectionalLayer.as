@@ -38,8 +38,12 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
     {
         _sindex = new SectionalIndex(secWidth, secHeight);
         _bd = new BitmapData(Metrics.DISPLAY_WIDTH, Metrics.DISPLAY_HEIGHT, true, 0x00000000);
+        var width :int = Math.ceil(secWidth / Metrics.WINDOW_WIDTH);
+        var height :int = Math.ceil(secHeight / Metrics.WINDOW_HEIGHT);
+        var poolSize :int = width * height * 9 + 1;
         _pool = new BitmapPool(
-                10, secWidth * Metrics.TILE_SIZE, secHeight * Metrics.TILE_SIZE, generateBitmap);
+                40, secWidth * Metrics.TILE_SIZE, secHeight * Metrics.TILE_SIZE, generateBitmap);
+        //        10, secWidth * Metrics.TILE_SIZE, secHeight * Metrics.TILE_SIZE, generateBitmap);
         addChild(new Bitmap(_bd));
     }
 

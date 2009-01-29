@@ -77,14 +77,14 @@ public class BoardSprite extends Sprite
         if (bxml != null) {
             _layers[BG_LAYER] = new BitmapParallaxBackground();
             for each (var l:XML in bxml.layer) {
-                _layers[BG_LAYER].addNewLayer(PieceSpriteFactory.instantiateClip(
-                        l.resource[0].@name), l.@scrollX, l.@scrollY, l.@x, l.@y);
+                _layers[BG_LAYER].addNewLayer(
+                        PieceSpriteFactory.instantiateClip(l.resource[0].@name),
+                        l.@scrollX, l.@scrollY, l.@x, l.@y, l.@tileY == "true");
             }
             addChild(_layers[BG_LAYER]);
         }
 
-        _layers[LEVEL_LAYER] =
-            new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
+        _layers[LEVEL_LAYER] = new BitmapSectionalLayer(4, 4);
         //_layers[LEVEL_LAYER] = new PieceSpriteLayer();
         addChild(_layers[LEVEL_LAYER]);
         addChild(_layers[BACK_DYNAMIC_LAYER] = new DynamicSpriteLayer());
@@ -93,8 +93,7 @@ public class BoardSprite extends Sprite
         addChild(_layers[ACTOR_LAYER]);
         addChild(_layers[SHOT_LAYER] = new DynamicSpriteLayer());
         addChild(_layers[FRONT_PARTICLE_LAYER] = new ParticleLayer());
-        _layers[FRONT_LEVEL_LAYER] =
-            new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
+        _layers[FRONT_LEVEL_LAYER] = new BitmapSectionalLayer(3, 3);
         addChild(_layers[FRONT_LEVEL_LAYER]);
         addPieces(_board.getPieces());
         initBounds();
