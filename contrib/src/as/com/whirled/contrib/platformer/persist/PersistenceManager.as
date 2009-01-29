@@ -40,8 +40,10 @@ public class PersistenceManager extends EventDispatcher
         _debugLogging = debugLogging;
         _eventMgr = new EventHandlerManager();
         _eventMgr.registerUnload(_gameCtrl = gameCtrl);
-        _eventMgr.conditionalCall(
-            init, _gameCtrl.game.isInPlay(), _gameCtrl.game, StateChangedEvent.GAME_STARTED);
+        trace("PersistenceManager [" + gameCtrl.game.isInPlay() + "]");
+        _gameCtrl.game.addEventListener(StateChangedEvent.GAME_STARTED, init);
+        //_eventMgr.conditionalCall(
+            //init, _gameCtrl.game.isInPlay(), _gameCtrl.game, StateChangedEvent.GAME_STARTED);
     }
 
     public function get loaded () :Boolean
@@ -78,7 +80,7 @@ public class PersistenceManager extends EventDispatcher
         return cookieManager.getProperty(name);
     }
 
-    protected function init () :void
+    protected function init (event :StateChangedEvent) :void
     {
         _trophyProperties = new HashMap();
         var cookiePropertyMaps :HashMap = new HashMap();
