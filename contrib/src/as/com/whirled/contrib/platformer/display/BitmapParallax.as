@@ -26,6 +26,7 @@ import flash.display.DisplayObject;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
+import com.whirled.contrib.platformer.client.ClientPlatformerContext;
 import com.whirled.contrib.platformer.util.Metrics;
 
 public class BitmapParallax
@@ -52,6 +53,7 @@ public class BitmapParallax
 
     public function update (nX :Number, nY :Number) :void
     {
+        nY -= ClientPlatformerContext.boardSprite.minY * Metrics.TILE_SIZE;
         var newX :int = (pt.x + (_scaleX == 0 ? 0 : Math.floor(nX / _scaleX))) % bd.width;
         var newY :int = pt.y - (_scaleY == 0 ? 0 : Math.floor(nY / _scaleY));
         if (_tileY) {

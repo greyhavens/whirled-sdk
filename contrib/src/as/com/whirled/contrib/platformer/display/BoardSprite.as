@@ -142,6 +142,11 @@ public class BoardSprite extends Sprite
         return _centerY;
     }
 
+    public function get minY () :int
+    {
+        return _minY;
+    }
+
     public function ensureVisible (actor :Actor, xshift :Number = 0, yshift :Number = 0) :void
     {
         var lxbuffer :int = BUFFER * (1 + (actor.dx < 0 ? -actor.dx : 0) / 5);
@@ -309,6 +314,9 @@ public class BoardSprite extends Sprite
             if (_lowBounds[xx + 1] - 1 > _lowBounds[xx]) {
                 _lowBounds[xx] = _lowBounds[xx + 1] - 1;
             }
+            if (_lowBounds[xx] < _minY) {
+                _minY = _lowBounds[xx];
+            }
         }
         _maxX = Math.max(_maxX, _minX + Metrics.WINDOW_WIDTH);
     }
@@ -376,6 +384,7 @@ public class BoardSprite extends Sprite
     protected var _maxX :int = 0;
     protected var _lastY :Number = 0;
     protected var _lastDelta :Number = 0;
+    protected var _minY :int = int.MAX_VALUE;
 
     protected var _cameraCtrl :CameraController;
 
