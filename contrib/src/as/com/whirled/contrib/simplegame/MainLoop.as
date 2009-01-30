@@ -115,8 +115,8 @@ public final class MainLoop
         _running = true;
 
         _hostSprite.addEventListener(Event.ENTER_FRAME, update);
-        _keyDispatcher.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false);
-        _keyDispatcher.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false);
+        _keyDispatcher.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+        _keyDispatcher.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 
         _lastTime = this.elapsedSeconds;
     }
@@ -125,8 +125,8 @@ public final class MainLoop
     {
         if (_running) {
             _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
-            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false);
-            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp, false);
+            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
             _running = false;
         }
     }
