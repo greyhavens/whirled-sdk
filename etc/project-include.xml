@@ -258,7 +258,6 @@
   </target>
 
   <target name="test-furni">
-    <echo>NOTE: furni projects do not currently have a test environment.</echo>
     <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/furni.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
@@ -287,7 +286,6 @@
   </target>
 
   <target name="test-toy">
-    <echo>NOTE: toy projects do not currently have a test environment.</echo>
     <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/toy.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
