@@ -10,8 +10,10 @@ import com.threerings.presents.util.SafeObjectManager;
 import com.threerings.presents.util.PresentsContext;
 import com.threerings.util.Log;
 import com.threerings.util.Name;
-import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.BaseGameConfig;
+import com.whirled.game.data.ThaneGameConfig;
+import com.whirled.game.data.WhirledGameObject;
+import com.whirled.game.data.WhirledPlayerObject;
 
 /**
  * Manages the backend of the game on a thane client.
@@ -89,7 +91,7 @@ public class ThaneGameBackend extends BaseGameBackend
     }
 
     override protected function occupantRoleChanged (
-        occInfo :OccupantInfo, 
+        occInfo :OccupantInfo,
         isPlayerNow :Boolean) :void
     {
         super.occupantRoleChanged(occInfo, isPlayerNow);
@@ -101,6 +103,22 @@ public class ThaneGameBackend extends BaseGameBackend
         } else {
             _somgr.unsubscribe(occInfo.bodyOid);
         }
+    }
+
+    // from BaseGameBackend
+    override protected function playerOwnsData (type :int, ident :String, playerId :int) :Boolean
+    {
+        if (playerId == CURRENT_USER) {
+            throw new Error("Server agent has no current user");
+        }
+
+        var cfg :ThaneGameConfig = _ctrl.getConfig();
+        var player :WhirledPlayerObject = getPlayer(playerId) as WhirledPlayerObject;
+        if (player == null) {
+            log.warning("Player " + playerId + " not found");
+            return false;
+        }
+        return player.ownsGameContent(cfg.getGameId(), type, ident)
     }
 
     protected var _ctrl :ThaneGameController;
