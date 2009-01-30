@@ -90,14 +90,13 @@ public class BitmapParallax
             }
         } else if (_scaleY != 0) {
             if (p.y > Metrics.DISPLAY_HEIGHT) {
-                var diff :int = p.y - Metrics.DISPLAY_HEIGHT;
-                if (diff > r.height) {
+                return;
+            } else if (p.y < 0) {
+                if (-p.y > r.height) {
                     return;
                 }
-                p.y -= diff;
-                r.y += diff;
-            } else if (p.y < 0) {
-                return;
+                r.y = -p.y;
+                p.y = 0;
             }
         }
         r.height = Math.min(Math.min(r.height, bd.height - r.y), Metrics.DISPLAY_HEIGHT - p.y);
