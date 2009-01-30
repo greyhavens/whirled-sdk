@@ -215,7 +215,9 @@ public class SimpleActorBounds extends ActorBounds
                         continue;
                     }
                     if (ld.polyIntersecting(_mlines))  {
-                        cd.colliders.push(ld);
+                        if (!ld.polyIntersecting(_lines)) {
+                            cd.colliders.push(ld);
+                        }
                         //log("adding intersecting " + ld);
                     } else {
                         //log("ignoring non intersecting " + ld);
