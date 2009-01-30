@@ -37,6 +37,9 @@ public class BitmapParallaxBackground extends Layer
     public function addNewLayer (disp :DisplayObject, scaleX :int = 1, scaleY :int = 1, offX :int = 0,
             offY :int = 0, tileY :Boolean = false) :void
     {
+        if (disp == null) {
+            return;
+        }
         _layers.push(new BitmapParallax(disp, scaleX, scaleY, offX, offY, tileY));
         if (_layers.length == 1) {
             _layers[0].blend = false;
