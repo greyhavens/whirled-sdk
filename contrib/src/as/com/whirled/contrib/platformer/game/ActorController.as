@@ -49,14 +49,18 @@ public class ActorController extends DynamicController
         return true;
     }
 
-    public function doHit (damage :Number, owner :int, inter :int) :void
+    public function doHit (damage :Number, owner :int, inter :int, sowner :int) :void
     {
         if (owner == PlatformerContext.gctrl.game.getMyId()) {
             if (_actor.amOwner()) {
-                _actor.health -= damage;
+                if (_actor.health > 0) {
+                    _actor.health -= damage;
+                    _actor.killer = sowner;
+                }
             } else {
                 trace("sending hit message actor: " + _actor.id + " damage " + damage);
-                PlatformerContext.net.sendMessage(ShotMessage.shotHit(_actor.id, damage, inter));
+                PlatformerContext.net.sendMessage(
+                        ShotMessage.shotHit(_actor.id, damage, inter, sowner));
             }
         }
     }
@@ -69,6 +73,11 @@ public class ActorController extends DynamicController
     public function getCenterY () :Number
     {
         return _actor.y + _actor.height/2;
+    }
+
+    public function getLastDamager () :int
+    {
+        return _actor.killer;
     }
 
     override public function postTick () :void

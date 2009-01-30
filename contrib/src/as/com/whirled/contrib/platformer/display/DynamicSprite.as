@@ -76,6 +76,8 @@ public class DynamicSprite extends Sprite
         _disp = disp;
         addEventListener(Event.ADDED, handleAdded);
         addEventListener(Event.REMOVED, handleRemoved);
+        this.x = _dynamic.x * Metrics.TILE_SIZE;
+        this.y = -_dynamic.y * Metrics.TILE_SIZE;
     }
 
     public function shutdown () :void

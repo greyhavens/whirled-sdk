@@ -36,25 +36,27 @@ public class ShotMessage
     public var id :int;
     public var damage :Number;
     public var inter :int;
-    public var bytes :ByteArray;
+    public var owner :int;
 
-    public static function shotHit (id :int, damage :Number, inter :int) :ShotMessage
+    public static function shotHit (id :int, damage :Number, inter :int, owner :int) :ShotMessage
     {
         var msg :ShotMessage = new ShotMessage();
         msg.type = HIT;
         msg.id = id;
         msg.damage = damage;
         msg.inter = inter;
+        msg.owner = owner;
         return msg;
     }
 
-    public static function shotDamage (id :int, damage :Number, inter :int) :ShotMessage
+    public static function shotDamage (id :int, damage :Number, inter :int, owner :int) :ShotMessage
     {
         var msg :ShotMessage = new ShotMessage();
         msg.type = DAMAGE;
         msg.id = id;
         msg.damage = damage;
         msg.inter = inter;
+        msg.owner = owner;
         return msg;
     }
 

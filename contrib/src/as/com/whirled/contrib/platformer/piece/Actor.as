@@ -195,6 +195,17 @@ public class Actor extends Dynamic
         updateState |= U_HIT;
     }
 
+    public function get killer () :int
+    {
+        return _killer;
+    }
+
+    public function set killer (killer :int) :void
+    {
+        _killer = killer;
+        updateState |= U_HIT;
+    }
+
     public function get accelX () :Number
     {
         return _accelX;
@@ -261,6 +272,7 @@ public class Actor extends Dynamic
         }
         if ((_inState & U_HIT) > 0) {
             bytes.writeByte(_wasHit);
+            bytes.writeInt(_killer);
         }
         if ((_inState & U_ACCEL) > 0) {
             bytes.writeFloat(_accelX);
@@ -291,6 +303,7 @@ public class Actor extends Dynamic
         }
         if ((_inState & U_HIT) > 0) {
             _wasHit = bytes.readByte();
+            _killer = bytes.readInt();
         }
         if ((_inState & U_ACCEL) > 0) {
             _accelX = bytes.readFloat();
@@ -317,6 +330,6 @@ public class Actor extends Dynamic
     protected var _accelY :Number = 0;
     protected var _height :Number = 0;
     protected var _width :Number = 0;
-
+    protected var _killer :int;
 }
 }

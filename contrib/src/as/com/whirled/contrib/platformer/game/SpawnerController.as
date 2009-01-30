@@ -55,12 +55,13 @@ public class SpawnerController extends RectDynamicController
         return _spawner.destructable && _spawner.health > 0;
     }
 
-    public function doHit (damage :Number, owner :int, inter :int) :void
+    public function doHit (damage :Number, owner :int, inter :int, sowner :int) :void
     {
         if (_spawner.amOwner()) {
             _spawner.health -= damage;
         } else {
-            PlatformerContext.net.sendMessage(ShotMessage.shotHit(_spawner.id, damage, inter));
+            PlatformerContext.net.sendMessage(
+                    ShotMessage.shotHit(_spawner.id, damage, inter, sowner));
         }
         _spawner.wasHit = true;
     }
@@ -78,6 +79,11 @@ public class SpawnerController extends RectDynamicController
     public function getCenterY () :Number
     {
         return _spawner.y + _spawner.height/2;
+    }
+
+    public function getLastDamager () :int
+    {
+        return _spawner.killer;
     }
 
     override public function tick (delta :Number) :void

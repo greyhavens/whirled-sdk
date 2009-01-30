@@ -32,5 +32,10 @@ public class RectDynamic extends Dynamic
     {
         super(insxml);
     }
+
+    override public function getBounds () :Rect
+    {
+        return new Rect(x, y, width, height);
+    }
 }
 }

@@ -89,6 +89,17 @@ public class Spawner extends RectDynamic
         }
     }
 
+    public function get killer () :int
+    {
+        return _killer;
+    }
+
+    public function set killer (killer :int) :void
+    {
+        _killer = killer;
+        updateState |= U_HEALTH;
+    }
+
     public function get spawning () :int
     {
         return _spawning;
@@ -167,6 +178,7 @@ public class Spawner extends RectDynamic
         if ((_inState & U_HEALTH) > 0) {
             bytes.writeFloat(_health);
             bytes.writeBoolean(_wasHit);
+            bytes.writeInt(_killer);
         }
         if ((_inState & U_SPAWN) > 0) {
             bytes.writeInt(_spawning);
@@ -181,6 +193,7 @@ public class Spawner extends RectDynamic
         if ((_inState & U_HEALTH) > 0) {
             _health = bytes.readFloat();
             _wasHit = bytes.readBoolean();
+            _killer = bytes.readInt();
         }
         if ((_inState & U_SPAWN) > 0) {
             _spawning = bytes.readInt();
@@ -192,5 +205,6 @@ public class Spawner extends RectDynamic
     protected var _spawning :int;
     protected var _spawnCount :int;
     protected var _wasHit :Boolean;
+    protected var _killer :int;
 }
 }

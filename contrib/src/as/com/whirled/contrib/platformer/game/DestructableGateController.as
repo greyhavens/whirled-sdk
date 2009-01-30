@@ -39,13 +39,14 @@ public class DestructableGateController extends GateController
         return _dg.health > 0;
     }
 
-    public function doHit (damage :Number, owner :int, inter :int) :void
+    public function doHit (damage :Number, owner :int, inter :int, sowner :int) :void
     {
         if ((!_dg.playerImpervious && inter == Dynamic.ENEMY) || inter == Dynamic.GLOBAL) {
             if (_dg.amOwner()) {
                 _dg.health -= damage;
             } else {
-                PlatformerContext.net.sendMessage(ShotMessage.shotHit(_dg.id, damage, inter));
+                PlatformerContext.net.sendMessage(
+                        ShotMessage.shotHit(_dg.id, damage, inter, sowner));
             }
             _dg.wasHit = true;
         }
@@ -64,6 +65,11 @@ public class DestructableGateController extends GateController
     public function getCenterY () :Number
     {
         return _dg.y + _dg.height/2;
+    }
+
+    public function getLastDamager () :int
+    {
+        return 0;
     }
 
     override public function tick (delta :Number) :void
