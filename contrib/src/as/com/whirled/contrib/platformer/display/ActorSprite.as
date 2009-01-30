@@ -103,7 +103,7 @@ public class ActorSprite extends DynamicSprite
 
     override protected function changeState (newState :String) :void
     {
-        if (_state != newState) {
+        if (_state != newState && _disp != null) {
             if (_state == TURN) {
                 _disp.scaleX *= -1;
             }
