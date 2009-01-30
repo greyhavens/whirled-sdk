@@ -63,7 +63,7 @@ public class TrophyProperty extends PersistentProperty
     {
         // The game API does not return true from holdsTrophy() immediately after awardTrophy()
         // is called, so we're caching trophies awarded this session.
-        return _awardedThisSession || _gameCtrl.player.holdsTrophy(_name);
+        return _awardedThisSession || _gameCtrl.player.holdsTrophy(_name, _playerId);
     }
 
     protected var _gameCtrl :GameControl;
