@@ -69,9 +69,9 @@ public class ActorControl extends EntityControl
      * APPEARANCE_CHANGED event when the mobile starts moving and another when the mobile arrives
      * at its destination and stops moving.
      *
-     * x, y, and z are Numbers between 0 and 1 indicating a percentage of the room's width, height
-     * and depth respectively.  orient is a number between 0 (facing straight ahead) and 359, going
-     * counter-clockwise.
+     * <p>x, y, and z are Numbers between 0 and 1 indicating a percentage of the room's width,
+     * height and depth respectively.  orient is a number between 0 (facing straight ahead) and 359,
+     * going counter-clockwise.</p>
      *
      * @see com.whirled.ControlEvent#APPEARANCE_CHANGED
      */
@@ -94,11 +94,12 @@ public class ActorControl extends EntityControl
      * Requests that our orientation be updated. This will result in a dispatch of the
      * APPEARANCE_CHANGED event.
      *
-     * @param orient an orientation between 0 (facing straight ahead) and going to 359, counter-clockwise.
+     * <p>NOTE: this is currently not working.</p>
+     *
+     * @param orient an orientation between 0 (facing straight ahead) and going to 359,
+     * counter-clockwise.
      *
      * @see com.whirled.ControlEvent#APPEARANCE_CHANGED
-     *
-     * NOTE: this is currently not working.
      */
     public function setOrientation (orient :Number) :void
     {
@@ -109,10 +110,11 @@ public class ActorControl extends EntityControl
      * Set the state of this actor. An actor can only be in one state at a time, but it is
      * persistent across rooms.
      *
-     * @param state A String identifier, which may be null, indicating the state.  The maximum length is
-     * 64 characters.
+     * <p>Note: only the instance "in control" may set states.</p>
      *
-     * Note: only the instance "in control" may set states.
+     * @param state A String identifier, which may be null, indicating the state. The maximum
+     * length is 64 characters.
+     *
      */
     public function setState (state :String) :void
     {

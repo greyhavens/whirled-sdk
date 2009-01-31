@@ -103,7 +103,7 @@ public class RoomSubControlServer extends RoomSubControlBase
     /**
      * Sends a signal to all instances of all entities in the room. The same size restrictions as
      * EntityControl.sendSignal() apply here too.
-     * @see com.whirled.EntityControl#sendSignal
+     * @see com.whirled.EntityControl#sendSignal()
      */
     public function sendSignal (name :String, value :Object = null) :void
     {

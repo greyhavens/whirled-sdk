@@ -33,10 +33,11 @@ import flash.utils.Timer;
 [Event(name="messageReceived", type="com.whirled.ControlEvent")]
 
 /**
- * Dispatched when any entity sends a message to all other entities.
- * Note: this is only dispatched to the instance in control.
+ * Dispatched when any entity or AVR game sends a message to all other entities.
+ * <p>Note: this is only dispatched to the instance in control.</p>
  * 
  * @eventType com.whirled.ControlEvent.SIGNAL_RECEIVED
+ * @see com.whirled.avrg.RoomSubControlServer#sendSignal()
  */
 [Event(name="signalReceived", type="com.whirled.ControlEvent")]
 
@@ -92,14 +93,18 @@ import flash.utils.Timer;
 [Event(name="entityMoved", type="com.whirled.ControlEvent")]
 
 /**
- * Handles services that are available to all entities in a room.  This includes dispatching
+ * Handles services that are available to all entities in a room. This includes dispatching
  * trigger events and maintaining memory.
  */
 public class EntityControl extends AbstractControl
 {
-    /** Encompasses furniture, backdrops and toys. */
+    /** The type of furniture entities. */
     public static const TYPE_FURNI :String = "furni";
+
+    /** The type of avatar entities. */
     public static const TYPE_AVATAR :String = "avatar";
+
+    /** The type of pet entities. */
     public static const TYPE_PET :String = "pet";
 
     /**
@@ -181,8 +186,8 @@ public class EntityControl extends AbstractControl
 
     /**
      * Returns our current logical location in the scene.  Note that if y is nonzero, you are
-     * *flying*. If applicable, an avatar should animate appropriately. <code>isMoving()</code>
-     * may return true or false when flying, depending on whether you're
+     * <b>flying</b>. If applicable, an avatar should animate appropriately. The actor method
+     * <code>isMoving()</code> may return true or false when flying, depending on whether you're
      * floating or actually moving between locations.
      *
      * @return an array containing [ x, y, z ]. x, y, and z are Numbers between 0 and 1 or null if
@@ -240,11 +245,11 @@ public class EntityControl extends AbstractControl
      * Triggers an action on this scene object. The action will be properly distributed to the
      * object running in every client in the scene, resulting in a ACTION_TRIGGERED event.
      *
-     * Note: the name must be a String and may be up to 64 characters. The argument may be up
-     * to 1024 bytes after being AMF3 encoded.
+     * <p>Note: the name must be a String and may be up to 64 characters. The argument may be up
+     * to 1024 bytes after being AMF3 encoded.</p>
      *
-     * Note: Only the instance "in control" can trigger actions. If you want any instance to be
-     * able to communicate, use sendMessage().
+     * <p>Note: Only the instance "in control" can trigger actions. If you want any instance to be
+     * able to communicate, use <code>sendMessage()</code>.</p>
      */
     public function triggerAction (name :String, arg :Object = null) :void
     {
@@ -254,9 +259,10 @@ public class EntityControl extends AbstractControl
     /**
      * Send a message to other instances of this entity, resulting in a MESSAGE_RECEIVED event.
      *
-     * Note: the name must be a String and may be up to 64 characters. The argument may be up
-     * to 1024 bytes after being AMF3 encoded.
-     * Note: Any instance can send messages. Compare with triggerAction.
+     * <p>Note: the name must be a String and may be up to 64 characters. The argument may be up
+     * to 1024 bytes after being AMF3 encoded.</p>
+     *
+     * <p>Note: Any instance can send messages. Compare with triggerAction.</p>
      */
     public function sendMessage (name :String, arg :Object = null) :void
     {
@@ -268,8 +274,8 @@ public class EntityControl extends AbstractControl
      * resulting in a SIGNAL_RECEIVED event. All instances of the entity can initiate a
      * signal, so the user must take care to check for control when appropriate.
      *
-     * Note: the name must be a String and may be up to 64 characters. The argument may be up
-     * to 1024 bytes after being AMF3 encoded.
+     * <p>Note: the name must be a String and may be up to 64 characters. The argument may be up
+     * to 1024 bytes after being AMF3 encoded.</p>
      */
     public function sendSignal (name :String, arg :Object = null) :void
     {
@@ -278,8 +284,7 @@ public class EntityControl extends AbstractControl
 
     /**
      * Return an associative hash of all the memories. This is not a cheap operation. Use
-     * lookupMemory if you know what you want. NOTE: Avatar memories are inconsistent at
-     * the moment and should not be used.
+     * lookupMemory if you know what you want.
      */
     public function getMemories () :Object
     {
@@ -305,14 +310,14 @@ public class EntityControl extends AbstractControl
      * value must be a simple object (Integer, Number, String) or an Array of simple objects. The
      * contents of the Pet's memory (keys and values) must not exceed 4096 bytes when AMF3 encoded.
      *
-     * Setting the memory for a key to null clears that key; subsequent lookups will return the
-     * default value.
+     * <p>Setting the memory for a key to null clears that key; subsequent lookups will return the
+     * default value.</p>
+     *
+     * <p>Note: any instance can update memories!</p>
      *
      * @param callback An optional function that is passed a Boolean indicating whether the
      * memory was successfully updated or not. True if the memory was safely persisted, or false
      * if the memory update failed due to size or other restrictions.
-     *
-     * Note: any instance can update memories!
      */
     public function setMemory (key :String, value :Object, callback :Function = null) :void
     {
@@ -352,8 +357,10 @@ public class EntityControl extends AbstractControl
      * Registers a function that provides custom entity properties. This should be done immediately
      * after creating your EntityControl, for example:
      *
+     * <listing version="3.0">
      * var ctrl :FurniControl = new FurniControl(this);
      * ctrl.registerPropertyProvider(getEntityProperty);
+     * </listing>
      *
      * @param func signature: function (key :String) :Object
      */
@@ -371,7 +378,7 @@ public class EntityControl extends AbstractControl
     //}
 
     /**
-     * Is this client in control?
+     * Detects whether this client is in control.
      *
      * <p>Control is a mutually exclusive lock across all instances of the entity (i.e. running in
      * other browsers across the network). Only one client can hold the lock at any time.</p>
@@ -481,8 +488,9 @@ public class EntityControl extends AbstractControl
 
     /**
      * Access the local user's camera.
-     * Calling Camera.getCamera() does not work inside whirled due to security restrictions.
-     * For convenience, this method works even when you're not connected.
+     *
+     * <p>Calling Camera.getCamera() does not work inside whirled due to security restrictions.
+     * For convenience, this method works even when you're not connected.</p>
      */
     public function getCamera (index :String = null) :Camera
     {
@@ -491,9 +499,10 @@ public class EntityControl extends AbstractControl
     }
 
     /**
-     * Access the local user's camera.
-     * Calling Microphone.getMicrophone() does not work inside whirled due to security restrictions.
-     * For convenience, this method works even when you're not connected.
+     * Access the local user's microphone.
+     *
+     * <p>Calling Microphone.getMicrophone() does not work inside whirled due to security
+     * restrictions. For convenience, this method works even when you're not connected.</p>
      */
     public function getMicrophone (index :int = 0) :Microphone
     {

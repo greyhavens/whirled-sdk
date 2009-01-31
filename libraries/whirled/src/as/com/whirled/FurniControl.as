@@ -40,16 +40,16 @@ public class FurniControl extends EntityControl
     /** An action triggered when someone arrives at the location at which
      * this furniture is placed, if this piece of furniture is a doorway.
      *
-     * This will arrive via an ACTION_TRIGGERED event with the name property set
-     * to BODY_ENTERED.
+     * <p>This will arrive via an ACTION_TRIGGERED event with the name property set
+     * to BODY_ENTERED.</p>
      */
     public static const BODY_ENTERED :String = "bodyEntered";
 
     /** An action triggered when someone leaves via this piece of doorway
      * furniture.
      *
-     * This will arrive via an ACTION_TRIGGERED event with the name property set
-     * to BODY_LEFT.
+     * <p>This will arrive via an ACTION_TRIGGERED event with the name property set
+     * to BODY_LEFT.</p>
      */
     public static const BODY_LEFT :String = "bodyLeft";
 
@@ -69,10 +69,11 @@ public class FurniControl extends EntityControl
      * be called when this piece of furniture is being edited inside whirled.
      *
      * @param func signature: function () :DisplayObject
-     * Your function should return a DisplayObject as a configuration panel.
+     * <p>Your function should return a DisplayObject as a configuration panel.
      * The width/height of the object at return time will be used to configure the amount
      * of space given it. Any changes made by the user should effect immediately, or
-     * you should provide buttons to apply the change, if absolutely necessary.
+     * you should provide buttons to apply the change, if absolutely necessary.</p>
+     *
      */
     public function registerCustomConfig (func :Function) :void
     {
