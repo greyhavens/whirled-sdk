@@ -47,6 +47,16 @@ public class SimpleActorBounds extends ActorBounds
         updateBounds();
     }
 
+    public function get hitX () :Boolean
+    {
+        return _hitX;
+    }
+
+    public function get hitY () :Boolean
+    {
+        return _hitY;
+    }
+
     public function getBoundLines () :Array
     {
         return _lines;
@@ -189,7 +199,8 @@ public class SimpleActorBounds extends ActorBounds
         } else {
             cd.reset(delta);
         }
-        //log("found " + cd.acolliders.length + " interesting bounds");
+        log("found " + cd.colliders.length + " lines and " +
+                cd.acolliders.length + " interesting bounds");
         var logs :String = "";
         var beforeX :Number = actor.x;
         var beforeY :Number = actor.y;
@@ -214,13 +225,11 @@ public class SimpleActorBounds extends ActorBounds
                     if (actor.attached == ld || !BoundData.doesBound(ld.type, actor.projCollider)) {
                         continue;
                     }
-                    if (ld.polyIntersecting(_mlines))  {
-                        if (!ld.polyIntersecting(_lines)) {
-                            cd.colliders.push(ld);
-                        }
-                        //log("adding intersecting " + ld);
+                    if (ld.polyIntersecting(_mlines) && !ld.polyIntersecting(_lines)) {
+                        cd.colliders.push(ld);
+                        log("adding intersecting " + ld);
                     } else {
-                        //log("ignoring non intersecting " + ld);
+                        log("ignoring non intersecting " + ld);
                     }
                 }
             }
@@ -344,7 +353,10 @@ public class SimpleActorBounds extends ActorBounds
      */
     public function move (cd :ColliderDetails) :Number
     {
+        _hitX = false;
+        _hitY = false;
         if (cd == null || cd.colliders == null) {
+            log("no cd or colliders");
             return 0;
         }
 
@@ -447,8 +459,6 @@ public class SimpleActorBounds extends ActorBounds
         }
 
         // Make any movement vector adjustments based on the remaining collisions
-        var hitX :Boolean = false;
-        var hitY :Boolean = false;
         // First we check any lines that are crossed
         if (cd.colliders.length > 0) {
             for each (col in cd.colliders) {
@@ -458,20 +468,20 @@ public class SimpleActorBounds extends ActorBounds
                 }
                 if (didCross(col, cd.fcdX, cd.fcdY)) {
                     if (col.iy != 0) {
-                        hitX = true;
+                        _hitX = true;
                     }
                     if (col.ix != 0) {
                         if (col.xIntersecting(getBottomLine())) {
-                            hitY = true;
+                            _hitY = true;
                         } else {
-                            hitX = true;
+                            _hitX = true;
                         }
                     }
                 }
             }
         }
         // If no lines were crossed, we next check the intersecting lines
-        if (!hitX && !hitY && cd.colliders.length > 0) {
+        if (!_hitX && !_hitY && cd.colliders.length > 0) {
             for each (col in cd.colliders) {
                 if (actor.attached == col || (col.isConnected(actor.attached, false) != null &&
                             Math.abs(col.iy) < actor.maxWalkable)) {
@@ -479,23 +489,23 @@ public class SimpleActorBounds extends ActorBounds
                 }
                 if (!didCross(col, cd.fcdX, cd.fcdY)) {
                     if (col.iy != 0) {
-                        hitX = true;
+                        _hitX = true;
                     }
                     if (col.ix != 0) {
                         if (col.xIntersecting(getBottomLine())) {
-                            hitY = true;
+                            _hitY = true;
                         } else {
-                            hitX = true;
+                            _hitX = true;
                         }
                     }
                 }
             }
         }
         // update the movement vector
-        if (hitX) {
+        if (_hitX) {
             actor.dx = 0;
         }
-        if (hitY) {
+        if (_hitY) {
             actor.dy = 0;
         }
         if (cd.acolliders.length == 0) {
@@ -556,8 +566,8 @@ public class SimpleActorBounds extends ActorBounds
             dynUpdateLD(_mlines[5], x6, y6, x1, y1);
         }
         /*
-        for each (var mline :LineData in mlines) {
-            trace("  " + mline);
+        for each (var mline :LineData in _mlines) {
+            log("  " + mline);
         }
         */
     }
@@ -580,6 +590,8 @@ public class SimpleActorBounds extends ActorBounds
 
     protected var _lines :Array;
     protected var _mlines :Array;
+    protected var _hitX :Boolean;
+    protected var _hitY :Boolean;
 
     protected static const MIN_ATTACH_DIST :Number = 0.1;
 

@@ -36,6 +36,16 @@ public class WalkTask extends ColliderTask
         _sab = col.getDynamicBounds(ac.getActor()) as SimpleActorBounds;
     }
 
+    public function get hitX () :Boolean
+    {
+        return _hitX;
+    }
+
+    public function get hitY () :Boolean
+    {
+        return _hitY;
+    }
+
     public function setMaxDx (dx :Number) :void
     {
         _maxDx = dx;
@@ -43,6 +53,8 @@ public class WalkTask extends ColliderTask
 
     override public function init (delta :Number) :void
     {
+        _hitX = false;
+        _hitY = false;
         super.init(delta);
         var a :Actor = _sab.actor;
         if (a.attachedId != -1) {
@@ -146,6 +158,8 @@ public class WalkTask extends ColliderTask
     override protected function runTask () :void
     {
         _sab.move(_cd);
+        _hitX ||= _sab.hitX;
+        _hitY ||= _sab.hitY;
         if (_sab.actor.accelY > 0) {
             _sab.actor.setAttached(null);
         }
@@ -167,5 +181,7 @@ public class WalkTask extends ColliderTask
     protected var _lastDelta :Number;
     protected var _sab :SimpleActorBounds;
     protected var _maxDx :Number = Collider.MAX_DX;
+    protected var _hitX :Boolean;
+    protected var _hitY :Boolean;
 }
 }
