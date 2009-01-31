@@ -8,14 +8,16 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import com.samskivert.util.ArrayIntSet;
+import com.samskivert.util.ResultListener;
 
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationCodes;
 
+import com.threerings.crowd.data.BodyObject;
+
 import com.threerings.presents.server.InvocationException;
 
 import com.threerings.parlor.data.Parameter;
-import com.threerings.parlor.server.PlayManagerDelegate;
 
 import com.whirled.game.client.WhirledGameService;
 import com.whirled.game.data.ContentPackParameter;
@@ -143,46 +145,28 @@ public class TestGameManager extends WhirledGameManager
     }
 
     @Override
-    protected void didInit ()
+    protected void resolveContentOwnership (BodyObject body, ResultListener<Void> listener)
     {
-        super.didInit();
-
-        TrophyDelegate del = new TrophyDelegate();
-        addDelegate(del);
-        del.didInit(_config);
-    }
-
-    protected class TrophyDelegate extends PlayManagerDelegate
-    {
-        @Override // from PlaceManagerDelegate
-        public void bodyEntered (int bodyOid)
-        {
-            super.bodyEntered(bodyOid);
-
-            WhirledPlayerObject plobj = (WhirledPlayerObject)_omgr.getObject(bodyOid);
-
-            // if this person is a player, load up their trophies
-            if (isPlayer(plobj)) {
-                String pidPrefix = getPlayerPersistentId(plobj) + ":";
-                plobj.startTransaction();
-                try {
-                    for (String key : _prefs.keys()) {
-                        if (key.startsWith(pidPrefix)) {
-                            plobj.addToGameContent(new GameContentOwnership(
-                                _gameconfig.getGameId(), GameData.TROPHY_DATA,
-                                key.substring(pidPrefix.length())));
-                        }
-                    }
+        WhirledPlayerObject plobj = (WhirledPlayerObject)body;
+        String pidPrefix = getPlayerPersistentId(plobj) + ":";
+        plobj.startTransaction();
+        try {
+            for (String key : _prefs.keys()) {
+                if (key.startsWith(pidPrefix)) {
                     plobj.addToGameContent(new GameContentOwnership(
-                        _gameconfig.getGameId(), GameData.RESOLUTION_MARKER,
-                        WhirledPlayerObject.RESOLVED));
-                } catch (BackingStoreException bse) {
-                    log.warning("Error attempting to resolve player trophies", bse);
-                } finally {
-                    plobj.commitTransaction();
+                        _gameconfig.getGameId(), GameData.TROPHY_DATA,
+                        key.substring(pidPrefix.length())));
                 }
             }
+            plobj.addToGameContent(new GameContentOwnership(
+                _gameconfig.getGameId(), GameData.RESOLUTION_MARKER,
+                WhirledPlayerObject.RESOLVED));
+        } catch (BackingStoreException bse) {
+            log.warning("Error attempting to resolve player trophies", bse);
+        } finally {
+            plobj.commitTransaction();
         }
+        listener.requestCompleted(null);
     }
 
     protected Preferences _prefs;
