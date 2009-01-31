@@ -84,9 +84,16 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     @Override
-    public void occupantInRoom (BodyObject caller)
+    public void occupantInRoom (final BodyObject caller)
     {
-        setAsInitialized(caller);
+        resolveContentOwnership(caller, new ResultListener<Void>() {
+            public void requestCompleted(Void result) {
+                setAsInitialized(caller);
+            }
+            public void requestFailed(Exception cause) {
+                // NOOP
+            }
+        });
 
         super.occupantInRoom(caller);
     }
@@ -932,6 +939,12 @@ public abstract class WhirledGameManager extends GameManager
         // we are proxying for action script games here so have no idea if they can cope with
         // a premature start, don't do it.
         return false;
+    }
+
+    protected void resolveContentOwnership (BodyObject body, ResultListener<Void> listener)
+    {
+        // This base class knows nothing about ownership.
+        listener.requestCompleted(null);
     }
 
     /**
