@@ -142,7 +142,7 @@
   <target name="clean">
     <delete>
        <fileset file="${app.name}.swf"/>
-	   <fileset file="${app.name}.abc"/>
+       <fileset file="${app.name}.abc"/>
        <fileset file="${app.name}.zip"/> <!-- danger? -->
     </delete>
   </target>
