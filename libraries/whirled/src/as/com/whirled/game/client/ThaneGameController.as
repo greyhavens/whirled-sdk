@@ -25,7 +25,7 @@ public class ThaneGameController extends Controller
     /** The backend we dispatch game events to. */
     public var backend :ThaneGameBackend;
 
-    /** Creates a new controller. The controller is not usable until <code>init</code> is 
+    /** Creates a new controller. The controller is not usable until <code>init</code> is
      *  called. */
     public function ThaneGameController ()
     {

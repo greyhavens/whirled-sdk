@@ -34,7 +34,7 @@ public class WhirledGameBackend extends BaseGameBackend
     {
         super(ctx, gameObj);
         _ctrl = ctrl;
-        
+
         (_ctx as CrowdContext).getChatDirector().addChatDisplay(this);
     }
 
@@ -112,13 +112,13 @@ public class WhirledGameBackend extends BaseGameBackend
             throw new Error("Query of other user data not allowed");
         }
         var cfg :WhirledGameConfig = (_ctrl.getPlaceConfig() as WhirledGameConfig);
-        var plobj :WhirledPlayerObject = 
+        var plobj :WhirledPlayerObject =
             _ctx.getClient().getClientObject() as WhirledPlayerObject;
         return plobj.ownsGameContent(cfg.getGameId(), type, ident);
     }
 
     /**
-     * Displays an info message to the player. Default does nothing, so subclasses should 
+     * Displays an info message to the player. Default does nothing, so subclasses should
      * override.
      */
     protected function displayInfo (bundle :String, msg :String, localType :String = null) :void
@@ -127,7 +127,7 @@ public class WhirledGameBackend extends BaseGameBackend
     }
 
     /**
-     * Displays a feedback message to the player. Default does nothing, so subclasses should 
+     * Displays a feedback message to the player. Default does nothing, so subclasses should
      * override.
      */
     protected function displayFeedback (bundle :String, msg :String) :void
@@ -223,7 +223,7 @@ public class WhirledGameBackend extends BaseGameBackend
         o["showSharePage_v1"] = showSharePage_v1;
         o["getShareToken_v1"] = getShareToken_v1;
         o["getShareMemberId_v1"] = getShareMemberId_v1;
-        
+
         // .game
         o["isMyTurn_v1"] = isMyTurn_v1;
         o["playerReady_v1"] = playerReady_v1;
@@ -349,10 +349,10 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function showGameShop_v1 (itemType :String, catalogId :int = 0) :void
     {
-        displayInfo(null, "Open game shop failed because game is not connected to Whirled.", 
+        displayInfo(null, "Open game shop failed because game is not connected to Whirled.",
            WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
-    
+
     /**
      * Opens the Share Game page with the given token.  At this point there is no access to the
      * rest of Whirled, so display a message for testing purposes.  This will be overridden and
@@ -360,10 +360,10 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function showSharePage_v1 (defmsg :String, token :String = "") :void
     {
-    	displayInfo(null, "Open share game page failed because game is not connected to Whirled.", 
+    	displayInfo(null, "Open share game page failed because game is not connected to Whirled.",
            WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
-    
+
     /**
      * Retrieves the share token.  At this point, there is no way to retrieve the token, so a
      * message is displayed indicating they must be in Whirled.
@@ -374,25 +374,26 @@ public class WhirledGameBackend extends BaseGameBackend
     	   WhirledGameCodes.USERGAME_CHAT_TYPE);
     	return null;
     }
-    
+
     /**
      * Retrieves the ID of the member who shared this game.  At this point, there is no way to
      * retrieve this ID, so a message is displayed indicating they must be in Whirled.
      */
     protected function getShareMemberId_v1 () :int
     {
-    	displayInfo(null, "Cannot retrieve share member ID because game is not connected to Whirled.",
-           WhirledGameCodes.USERGAME_CHAT_TYPE);
+    	displayInfo(null,
+            "Cannot retrieve share member ID because game is not connected to Whirled.",
+            WhirledGameCodes.USERGAME_CHAT_TYPE);
         return 0;
     }
-    
+
     /**
      * Display a feedback message, since we're not connected. This will be overridden and
      * completed by a subclass with access to the rest of Whirled.
      */
     protected function showGameLobby_v1 (multiplayer :Boolean) :void
     {
-        displayInfo(null, "Would display a game lobby, but we're in the test environment.", 
+        displayInfo(null, "Would display a game lobby, but we're in the test environment.",
            WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
 
@@ -402,7 +403,7 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function showTrophies_v1 () :void
     {
-        displayInfo(null, "Would display trophies popup, but we're in the test environment.", 
+        displayInfo(null, "Would display trophies popup, but we're in the test environment.",
            WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
 
@@ -460,7 +461,7 @@ public class WhirledGameBackend extends BaseGameBackend
         return new Rectangle(0, 0, size.x, size.y);
     }
 
-    /** 
+    /**
      * A backwards compatible method.
      */
     protected function getHeadShot_v1 (occupant :int, callback :Function) :void

@@ -28,15 +28,15 @@ public class WhirledPlayerObject extends BodyObject
 
     /** Contains information on player's ownership of game content (populated lazily). */
     public var gameContent :DSet; /* of */ GameContentOwnership;
-    
-    /** 
+
+    /**
      * Computes the name for private user messages for a given game id.
      */
     public static function getMessageName (gameId :int) :String
     {
         return PRIVATE_USER_MESSAGE_PREFIX + gameId;
     }
-    
+
     /**
      * Checks if a the name of a private user message is from the given game id.
      */

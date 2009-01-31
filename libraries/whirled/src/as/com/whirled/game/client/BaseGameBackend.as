@@ -73,13 +73,13 @@ import com.whirled.game.data.WhirledPlayerObject;
 public class BaseGameBackend
     implements MessageListener, SetListener, ElementUpdateListener, PropertySetListener, ChatDisplay
 {
-    /** 
-     * Magic number for <code>getMyId</code> to return if this is the server agent's backend. 
-     * @see #getMyId() 
+    /**
+     * Magic number for <code>getMyId</code> to return if this is the server agent's backend.
+     * @see #getMyId()
      */
     public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
 
-    /** 
+    /**
      * Magic number for sending a message to all players.
      */
     public static const TO_ALL :int = 0;
@@ -167,6 +167,12 @@ public class BaseGameBackend
             // yet be set up if the user is still downloading the game media.
             return;
         }
+        if (started && !allPlayersInited()) {
+            // We're waiting to dispatch GAME_STARTED until the API is prepared to give out valid
+            // player data for the current players.
+            return;
+        }
+        _gameStarted = started;
         if (started && _userFuncs["gameDidStart_v1"] != null) {
             callUserCode("gameDidStart_v1"); // backwards compatibility
         } else if (!started && _userFuncs["gameDidEnd_v1"] != null) {
@@ -197,6 +203,9 @@ public class BaseGameBackend
             var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo)
             if (isInited(occInfo)) {
                 occupantAdded(occInfo);
+                if (!_gameStarted && _gameObj.isInPlay()) {
+                    gameStateChanged(true);
+                }
             }
             break;
         }
@@ -218,6 +227,9 @@ public class BaseGameBackend
             // Note that our own occupantInfo will never pass this test, that is correct.
             if (!isInited(oldInfo) && isInited(occInfo)) {
                 occupantAdded(occInfo);
+                if (!_gameStarted && _gameObj.isInPlay()) {
+                    gameStateChanged(true);
+                }
             }
             break;
         }
@@ -422,6 +434,17 @@ public class BaseGameBackend
         return (occInfo != null) &&
             ((occInfo as WhirledGameOccupantInfo).initialized ||
              (occInfo.bodyOid == _ctx.getClient().getClientOid()));
+    }
+
+    protected function allPlayersInited () :Boolean
+    {
+        for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
+            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
+            if (!isInited(_gameObj.getOccupantInfo(_gameObj.players[ii] as Name))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -732,7 +755,7 @@ public class BaseGameBackend
         else {
             var players :TypedArray = TypedArray.create(int);
             players.push(playerId);
-            _gameObj.messageService.sendPrivateMessage(_ctx.getClient(), messageName, encoded, 
+            _gameObj.messageService.sendPrivateMessage(_ctx.getClient(), messageName, encoded,
                 players, logger);
         }
     }
@@ -1038,7 +1061,7 @@ public class BaseGameBackend
     protected function isInPlay_v1 () :Boolean
     {
         validateConnected();
-        return _gameObj.isInPlay();
+        return _gameStarted;
     }
 
     protected function startNextTurn_v1 (nextPlayerId :int) :void
@@ -1323,7 +1346,7 @@ public class BaseGameBackend
         return getLevelPacks_v2()
     }
 
-    /** 
+    /**
      * A backwards compatible method.
      *
      * Note: immediate defaults to true, even though immediate=false is the general case. We are
@@ -1358,12 +1381,12 @@ public class BaseGameBackend
     }
 
     /**
-     * Called when the occupant set gets a new initialized entry (or an exisiting entry gets 
+     * Called when the occupant set gets a new initialized entry (or an exisiting entry gets
      * initialized)
      */
     protected function occupantAdded (occInfo :OccupantInfo) :void
     {
-        callUserCode("occupantChanged_v1", occInfo.bodyOid, 
+        callUserCode("occupantChanged_v1", occInfo.bodyOid,
             isPlayer(occInfo.username), true);
     }
 
@@ -1372,7 +1395,7 @@ public class BaseGameBackend
      */
     protected function occupantRemoved (occInfo :OccupantInfo) :void
     {
-        callUserCode("occupantChanged_v1", occInfo.bodyOid, 
+        callUserCode("occupantChanged_v1", occInfo.bodyOid,
             isPlayer(occInfo.username), false);
     }
 
@@ -1382,7 +1405,7 @@ public class BaseGameBackend
     protected function occupantRoleChanged (occInfo :OccupantInfo, isPlayerNow :Boolean) :void
     {
         // let the user code know about this by sending a "left" message followed by
-        // an "entered" message 
+        // an "entered" message
         callUserCode("occupantChanged_v1", occInfo.bodyOid, !isPlayerNow, false);
         callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayerNow, true);
     }
@@ -1415,6 +1438,10 @@ public class BaseGameBackend
 
     /** URL -> boolean for data packs that have been loaded */
     protected var _loadedPacks :Dictionary = new Dictionary();
+
+    /** A flag for whether we've been told we've been started, which is not precisely the same
+     * as _gameObj.isInPlay() */
+    protected var _gameStarted :Boolean = false;
 
     protected static const MAX_USER_COOKIE :int = 4096;
 
