@@ -87,11 +87,12 @@ public abstract class WhirledGameManager extends GameManager
     public void occupantInRoom (final BodyObject caller)
     {
         resolveContentOwnership(caller, new ResultListener<Void>() {
-            public void requestCompleted(Void result) {
+            public void requestCompleted (Void result) {
                 setAsInitialized(caller);
             }
-            public void requestFailed(Exception cause) {
-                // NOOP
+            public void requestFailed (Exception cause) {
+                log.warning(
+                    "Ownership content resolution failed!", "caller", caller.username, cause);
             }
         });
 
