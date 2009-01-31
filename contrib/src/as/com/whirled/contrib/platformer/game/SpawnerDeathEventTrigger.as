@@ -48,9 +48,9 @@ public class SpawnerDeathEventTrigger extends DeathEventTrigger
             if (_ignoreSpawns) {
                 return true;
             }
-            _ids = s.spawns;
+            _ids = s.spawns.concat();
         } else if (!s.destructable && s.spawnCount == s.totalSpawns) {
-            _ids = s.spawns;
+            _ids = s.spawns.concat();
         }
         return false;
     }

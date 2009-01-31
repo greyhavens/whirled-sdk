@@ -47,6 +47,9 @@ public class DeathEventTrigger extends EventTrigger
         var ii :int;
         while (ii < _ids.length) {
             var d :Dynamic = _gctrl.getBoard().getDynamicInsById(_ids[ii]);
+            if (d == null) {
+                d = _gctrl.getBoard().getActor(_ids[ii]);
+            }
             if (d == null || d.enemyCount == 0) {
                 _ids.splice(ii, 1);
             } else {

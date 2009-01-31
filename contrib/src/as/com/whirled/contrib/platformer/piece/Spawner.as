@@ -22,6 +22,8 @@ package com.whirled.contrib.platformer.piece {
 
 import flash.utils.ByteArray;
 
+import com.whirled.contrib.platformer.PlatformerContext;
+
 public class Spawner extends RectDynamic
 {
     public static const U_HEALTH :int = 1 << (DYN_COUNT + 1);
@@ -128,6 +130,19 @@ public class Spawner extends RectDynamic
             return super.enemyCount;
         }
         return totalSpawns - spawnCount + (spawns == null ? 0 : spawns.length);
+    }
+
+    override public function alwaysSpawn () :Boolean
+    {
+        if (spawns == null || spawns.length == 0) {
+            return false;
+        }
+        for each (var id :int in spawns) {
+            if (PlatformerContext.board.getActors()[id] == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     override public function xmlInstance () :XML

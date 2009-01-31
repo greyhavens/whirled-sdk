@@ -155,7 +155,6 @@ public class SpawnerController extends RectDynamicController
         _spawner.spawns.push(a.id);
         _spawner.spawning = 0;
         _spawner.spawnCount++;
-        trace("spawner spawned dynamic " + a.id);
     }
 
     protected function messageReceived (event :MessageReceivedEvent) :void
