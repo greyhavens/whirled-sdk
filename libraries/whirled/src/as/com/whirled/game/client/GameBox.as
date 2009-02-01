@@ -39,19 +39,18 @@ import com.threerings.crowd.chat.client.ChatCantStealFocus;
 
 import com.threerings.flash.MediaContainer;
 
-public class GameContainer extends VBox
+public class GameBox extends VBox
     implements ChatCantStealFocus
 {
     /**
      * Creates a new game container to load the given url but does not actually start loading it.
      */
-    public function GameContainer (url :String)
+    public function GameBox (url :String, container :MediaContainer)
     {
-        _url = url;
-
-        // TODO: start loading the bytes here
-
         tabEnabled = true; // turned off by Container
+
+        _url = url;
+        _container = container;
     }
 
     /**
@@ -60,16 +59,15 @@ public class GameContainer extends VBox
     public function initiateLoading () :void
     {
         // TODO: instantiate the byte array after completion
+        // Note from Ray: This is not as easy as you think, because loading bytes places the
+        // content in your own security domain. I think we might be able to load the media stub
+        // and ask it to instantiate the bytes, and that might work.
 
-        rawChildren.addChild(_game = new MediaContainer(_url));
+        _container.setMedia(_url);
+        rawChildren.addChild(_container);
     }
 
-    public function getMediaContainer () :MediaContainer
-    {
-        return _game;
-    }
-
-    protected var _game :MediaContainer;
     protected var _url :String;
+    protected var _container :MediaContainer;
 }
 }

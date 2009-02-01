@@ -73,7 +73,7 @@ public class TestGamePanel extends WhirledGamePanel
         return (gameObj.players.length == 1) ? "Play again" : "Request a rematch";
     }
 
-    override protected function configureGameView (view :GameContainer) :void
+    override protected function configureGameView (view :GameBox) :void
     {
         // we don't call super because super sets percentWidth and percentHeight which fucks things
         // right on up; force games to 700x500 as that's what we want for whirled

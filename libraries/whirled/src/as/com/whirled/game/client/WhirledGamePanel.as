@@ -10,6 +10,8 @@ import mx.containers.Canvas;
 import com.threerings.util.Name;
 import com.threerings.util.Log;
 
+import com.threerings.flash.MediaContainer;
+
 import com.threerings.flex.CommandButton;
 import com.threerings.flex.FlexUtil;
 
@@ -53,13 +55,14 @@ public class WhirledGamePanel extends Canvas
         // Important: The playerList needs to be a listener before the backend..
         _playerList.startup(plobj);
 
-        var cfg :WhirledGameConfig = (_ctrl.getPlaceConfig() as WhirledGameConfig);
-
         _gameObj = (plobj as WhirledGameObject);
 
-        _gameView = new GameContainer(cfg.getGameDefinition().getMediaPath(cfg.getGameId()));
+        const cfg :WhirledGameConfig = (_ctrl.getPlaceConfig() as WhirledGameConfig);
+        const url :String = cfg.getGameDefinition().getMediaPath(cfg.getGameId());
+        _gameContainer = createGameContainer();
+        _gameView = new GameBox(url, _gameContainer);
         configureGameView(_gameView);
-        (_ctrl.backend as WhirledGameBackend).setContainer(_gameView);
+        (_ctrl.backend as WhirledGameBackend).setGameView(_gameView);
         addChild(_gameView);
 
         _rematch.label = getRematchLabel(plobj);
@@ -99,7 +102,7 @@ public class WhirledGamePanel extends Canvas
     {
         _playerList.shutdown();
 
-        _gameView.getMediaContainer().shutdown(true);
+        _gameContainer.shutdown(true);
         removeChild(_gameView);
     }
 
@@ -154,7 +157,7 @@ public class WhirledGamePanel extends Canvas
     {
         _gameView.initiateLoading();
         _ctrl.backend.setSharedEvents(
-            Loader(_gameView.getMediaContainer().getMedia()).contentLoaderInfo.sharedEvents);
+            Loader(_gameContainer.getMedia()).contentLoaderInfo.sharedEvents);
     }
 
     /**
@@ -232,7 +235,12 @@ public class WhirledGamePanel extends Canvas
         return new GamePlayerList();
     }
 
-    protected function configureGameView (view :GameContainer) :void
+    protected function createGameContainer () :MediaContainer
+    {
+        return new MediaContainer();
+    }
+
+    protected function configureGameView (view :GameBox) :void
     {
         view.percentWidth = 100;
         view.percentHeight = 100;
@@ -240,7 +248,8 @@ public class WhirledGamePanel extends Canvas
 
     protected var _ctx :CrowdContext;
     protected var _ctrl :WhirledGameController;
-    protected var _gameView :GameContainer;
+    protected var _gameView :GameBox;
+    protected var _gameContainer :MediaContainer;
     protected var _gameObj :WhirledGameObject;
 
     /** The player list. */

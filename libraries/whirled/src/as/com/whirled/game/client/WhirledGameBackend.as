@@ -38,12 +38,12 @@ public class WhirledGameBackend extends BaseGameBackend
         (_ctx as CrowdContext).getChatDirector().addChatDisplay(this);
     }
 
-    public function setContainer (container :GameContainer) :void
+    public function setGameView (gameView :GameBox) :void
     {
-        _container = container;
-        _stage = container.stage;
+        _gameView = gameView;
+        _stage = _gameView.stage;
         if (_stage == null) {
-            _container.addEventListener(Event.ADDED_TO_STAGE, handleGrabStage);
+            _gameView.addEventListener(Event.ADDED_TO_STAGE, handleGrabStage);
         }
     }
 
@@ -255,7 +255,7 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function focusContainer_v1 () :void
     {
         validateConnected();
-        _container.setFocus();
+        _gameView.setFocus();
     }
 
     //---- .local ----------------------------------------------------------
@@ -264,9 +264,9 @@ public class WhirledGameBackend extends BaseGameBackend
     {
         validateConnected();
         if (add) {
-            _container.addEventListener(keyEventType, handleKeyEvent);
+            _gameView.addEventListener(keyEventType, handleKeyEvent);
         } else {
-            _container.removeEventListener(keyEventType, handleKeyEvent);
+            _gameView.removeEventListener(keyEventType, handleKeyEvent);
         }
     }
 
@@ -287,7 +287,7 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function getSize_v1 () :Point
     {
-        return new Point(_container.width, _container.height);
+        return new Point(_gameView.width, _gameView.height);
     }
 
     protected function setShowReplay_v1 (show :Boolean) :void
@@ -489,7 +489,7 @@ public class WhirledGameBackend extends BaseGameBackend
 
     protected var _ctrl :WhirledGameController;
 
-    protected var _container :GameContainer;
+    protected var _gameView :GameBox;
 
     protected var _stage :Stage;
 
