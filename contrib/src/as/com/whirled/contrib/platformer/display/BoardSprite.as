@@ -214,7 +214,7 @@ public class BoardSprite extends Sprite
             lowBound2 = Math.max(lowBound2, _board.getBound(Board.BOTTOM_BOUND));
         }
 
-        if (offY < lowBound1 || offY < lowBound1) {
+        if (offY < lowBound1 || offY < lowBound2) {
             var newY :Number;
             if (lowBound1 == lowBound2) {
                 newY = lowBound1 * Metrics.TILE_SIZE;
