@@ -50,12 +50,8 @@ public class TestGameManager extends WhirledGameManager
             throw new InvocationException(InvocationCodes.ACCESS_DENIED);
         }
 
-        int gameId = _gameconfig.getGameId();
-        if (!plobj.isContentResolved(gameId)) {
-            throw new InvocationException(InvocationCodes.E_INTERNAL_ERROR);
-        }
-
         // if the player already has this trophy, ignore the request
+        int gameId = _gameconfig.getGameId();
         if (plobj.ownsGameContent(gameId, GameData.TROPHY_DATA, ident)) {
             return;
         }
