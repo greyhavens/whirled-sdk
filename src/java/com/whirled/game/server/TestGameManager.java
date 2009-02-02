@@ -154,9 +154,6 @@ public class TestGameManager extends WhirledGameManager
                         key.substring(pidPrefix.length())));
                 }
             }
-            plobj.addToGameContent(new GameContentOwnership(
-                _gameconfig.getGameId(), GameData.RESOLUTION_MARKER,
-                WhirledPlayerObject.RESOLVED));
         } catch (BackingStoreException bse) {
             log.warning("Error attempting to resolve player trophies", bse);
         } finally {
