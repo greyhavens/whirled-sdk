@@ -36,7 +36,7 @@ public class AttackCollisionHandler extends CollisionHandler
     override public function handlesObject (o :Object) :Boolean
     {
         return (_ac.canAttack() || _ac.inAttack(o)) && super.handlesObject(o) &&
-            ((o as DynamicController).getDynamic().isAlive() > 0);
+            (o as DynamicController).getDynamic().isAlive();
     }
 
     override public function collide (source :Object, target :Object, cd :ColliderDetails) :void

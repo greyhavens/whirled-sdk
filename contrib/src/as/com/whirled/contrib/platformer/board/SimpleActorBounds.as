@@ -158,7 +158,7 @@ public class SimpleActorBounds extends ActorBounds
         var oldHeight :Number = actor.height;
         actor.height = newHeight;
         updateBounds();
-        if (newHeight <= actor.height) {
+        if (newHeight <= oldHeight) {
             return true;
         }
         var delta :Number = oldHeight - newHeight;
