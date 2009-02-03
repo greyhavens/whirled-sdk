@@ -151,7 +151,7 @@ public class WalkTask extends ColliderTask
             a.dy = a.attached.iy * mag;
         }
         if (a.attached.isIntersecting(_sab.getBottomLine()) ||
-                (a.attached.iy == 0 && a.attached.x1 >= _sab.getBottomLine().x1)) {
+                (a.attached.iy == 0 && a.attached.y1 >= _sab.getBottomLine().y1)) {
             a.dy += 1;
             trace(a.sprite + " is intersecting attached " + a.attached +
                     ", " + _sab.getBottomLine());
