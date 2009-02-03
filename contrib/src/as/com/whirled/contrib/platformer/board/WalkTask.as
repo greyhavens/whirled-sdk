@@ -149,7 +149,10 @@ public class WalkTask extends ColliderTask
             var mag :Number = a.attached.dot(a.dx, a.dy);
             a.dx = a.attached.ix * mag;
             a.dy = a.attached.iy * mag;
-        } else if (a.attached.isIntersecting(_sab.getBottomLine())) {
+        }
+        if (a.attached.isIntersecting(_sab.getBottomLine()) ||
+                (a.attached.iy == 0 && a.attached.x1 >= _sab.getBottomLine().x1)) {
+            a.dy += 1;
             trace(a.sprite + " is intersecting attached " + a.attached +
                     ", " + _sab.getBottomLine());
         }
