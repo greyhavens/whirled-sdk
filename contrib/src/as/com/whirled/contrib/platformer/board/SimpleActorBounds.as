@@ -115,12 +115,7 @@ public class SimpleActorBounds extends ActorBounds
      */
     public function didCross (ld :LineData, xd :Number, yd :Number) :Boolean
     {
-        for each (var line :LineData in _lines) {
-            if (ld.didCrossDelta(line, xd, yd)) {
-                return true;
-            }
-        }
-        return false;
+        return ld.didPolyCrossDelta(_lines, xd, yd);
     }
 
     /**

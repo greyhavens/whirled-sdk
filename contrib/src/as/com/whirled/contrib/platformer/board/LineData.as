@@ -376,6 +376,19 @@ public class LineData
     }
 
     /**
+     * Returns true if any line in the polygon crosses this line after translation.
+     */
+    public function didPolyCrossDelta (lines :Array, xd :Number, yd :Number) :Boolean
+    {
+        for each (var line :LineData in lines) {
+            if (didCrossDelta(line, xd, yd)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns true if x,y is on the line segment.
      */
     public function isOn (x :Number, y :Number) :Boolean
@@ -409,8 +422,8 @@ public class LineData
      */
     public function polyIntersecting (lines :Array) :Boolean
     {
-        var p1inside :Boolean = true;
-        var p2inside :Boolean = true;
+        var p1inside :Boolean = lines.length > 1;
+        var p2inside :Boolean = lines.length > 1;
         for each (var line :LineData in lines) {
             if (isIntersecting(line)) {
                 return true;
