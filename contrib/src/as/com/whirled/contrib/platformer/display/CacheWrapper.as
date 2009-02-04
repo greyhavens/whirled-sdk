@@ -45,12 +45,12 @@ public class CacheWrapper
 
     public function start () :void
     {
-        if (_disp is MovieClip) {
-            (_disp as MovieClip).gotoAndPlay(1);
-        }
         if (_recolor != null && _filter != null) {
             DisplayUtils.recolorNodes(_recolor, _disp, _filter);
             _filter = null;
+        }
+        if (_disp is MovieClip) {
+            (_disp as MovieClip).gotoAndPlay(1);
         }
     }
 

@@ -340,9 +340,9 @@ public class Collider
             task.finish();
         }
         var finishTime :int = getTimer() - time - initTime - runTime;
-        if (runTime > 10) {
+        if (runTime + initTime > 9) {
             debug("collider quick: " + quickTasks + ", slow: " + runTasks.length +
-                    " runs: " + runs + " runTime: " + runTime);
+                    ", runs: " + runs + ", runTime: " + runTime + ", initTime: " + initTime);
             return true;
         }
         return false;

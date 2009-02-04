@@ -70,6 +70,7 @@ public class WalkableCollisionHandler extends CollisionHandler
                 stopx = false;
             } else {
                 target.actor.dx = 0;
+                target.hitX = true;
             }
         }
         if (!stopx && attached != null && target.actor.attachedId != source.dyn.id) {
@@ -77,9 +78,11 @@ public class WalkableCollisionHandler extends CollisionHandler
                 setAttached(target.actor, attached, source.dyn.id);
             } else {
                 target.actor.dy = 0;
+                target.hitY = true;
             }
         } else if (!stopx && stopy) {
             target.actor.dy = 0;
+            target.hitY = true;
         }
     }
 

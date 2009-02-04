@@ -47,6 +47,16 @@ public class SimpleActorBounds extends ActorBounds
         updateBounds();
     }
 
+    public function set hitX (hitX :Boolean) :void
+    {
+        _hitX = hitX;
+    }
+
+    public function set hitY (hitY :Boolean) :void
+    {
+        _hitY = hitY;
+    }
+
     public function get hitX () :Boolean
     {
         return _hitX;
@@ -289,8 +299,10 @@ public class SimpleActorBounds extends ActorBounds
                              db.controller.getCollisionHandler(controller) != null)) {
                         cd.alines[cd.acolliders.length] = acols;
                         cd.acolliders.push(db);
+                    /*
                     } else if (acols.length > 0) {
                         log("no collision handler found for collider");
+                    */
                     }
                 }
             }

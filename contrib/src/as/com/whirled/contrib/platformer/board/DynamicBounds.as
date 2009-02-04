@@ -93,6 +93,13 @@ public class DynamicBounds
             if (_collider.doesInteract(dyn.inter, db.dyn.inter) && isInteresting(db)) {
                 cd.pushActor(db);
             }
+            /*
+            var c :int = cd.colliders.length;
+            var a :int = (cd.acolliders == null ? 0 : cd.acolliders.length);
+            if (c + a > 0) {
+                trace("updatedDB to " + c + " and " + a);
+            }
+            */
         }
     }
 
