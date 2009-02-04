@@ -162,18 +162,23 @@ public class BaseGameBackend
      */
     public function gameStateChanged (started :Boolean) :void
     {
+        if (started && !allPlayersInited()) {
+            // We're waiting to dispatch GAME_STARTED until the API is prepared to give out valid
+            // player data for the current players. See entryUpdated/entryAdded.
+            return;
+        }
+
+        // Since all the player data is ready, we "officially" go into play now, regardless of
+        // whether the user code has connected.
+        _gameStarted = started;
+
         if (_userFuncs == null) {
             // Normally this is not needed, because callUserCode will fail gracefully if we're
             // not connected. However, this method accesses _userFuncs directly, and it may not
             // yet be set up if the user is still downloading the game media.
             return;
         }
-        if (started && !allPlayersInited()) {
-            // We're waiting to dispatch GAME_STARTED until the API is prepared to give out valid
-            // player data for the current players.
-            return;
-        }
-        _gameStarted = started;
+
         if (started && _userFuncs["gameDidStart_v1"] != null) {
             callUserCode("gameDidStart_v1"); // backwards compatibility
         } else if (!started && _userFuncs["gameDidEnd_v1"] != null) {
