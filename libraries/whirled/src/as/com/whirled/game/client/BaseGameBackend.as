@@ -91,6 +91,7 @@ public class BaseGameBackend
     {
         _ctx = ctx;
         _gameObj = gameObj;
+        _gameStarted = _gameObj.isInPlay();
         _gameData = _gameObj.getUserProps();
 
         _gameObj.addListener(this);
