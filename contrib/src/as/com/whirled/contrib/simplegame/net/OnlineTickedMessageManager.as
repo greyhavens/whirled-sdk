@@ -37,11 +37,11 @@ import flash.utils.getTimer;
 public class OnlineTickedMessageManager
     implements TickedMessageManager
 {
-    public function OnlineTickedMessageManager (gameCtrl :GameControl, isFirstPlayer :Boolean,
+    public function OnlineTickedMessageManager (gameCtrl :GameControl, isInControl :Boolean,
         tickIntervalMS :int, tickMessageName :String = "t")
     {
         _gameCtrl = gameCtrl;
-        _isFirstPlayer = isFirstPlayer;
+        _isInControl = isInControl;
         _tickIntervalMS = tickIntervalMS;
         _tickName = tickMessageName;
     }
@@ -62,8 +62,8 @@ public class OnlineTickedMessageManager
         _ticks = [];
         _pendingSends = [];
 
-        // The first player is in charge of starting the ticker
-        if (_isFirstPlayer) {
+        // The in-control player (or server) is in charge of starting the ticker
+        if (_isInControl) {
             _gameCtrl.services.startTicker(_tickName, _tickIntervalMS);
         }
     }
@@ -182,7 +182,7 @@ public class OnlineTickedMessageManager
         _minSendDelayMS = (0 == val ? 0 : (1000 / val) + 5);
     }
 
-    protected var _isFirstPlayer :Boolean;
+    protected var _isInControl :Boolean;
     protected var _tickIntervalMS :uint;
 
     protected var _gameCtrl :GameControl;

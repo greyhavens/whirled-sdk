@@ -28,17 +28,20 @@ public class Rand
     public static const STREAM_GAME :uint = 0;
     public static const STREAM_COSMETIC :uint = 1;
 
+    /** Adds a new random stream, and returns its streamId. */
     public static function addStream (seed :uint = 0) :uint
     {
         _randStreams.push(new Random(seed));
         return (_randStreams.length - 1);
     }
 
+    /** Returns the Random object associated with the given streamId. */
     public static function getStream (streamId :uint) :Random
     {
         return (_randStreams[streamId] as Random);
     }
 
+    /** Sets a new seed for the given stream. */
     public static function seedStream (streamId :uint, seed :uint) :void
     {
         getStream(streamId).setSeed(seed);
@@ -62,11 +65,13 @@ public class Rand
         return low + getStream(streamId).nextInt(high - low);
     }
 
+    /** Returns a Boolean. */
     public static function nextBoolean (streamId :uint) :Boolean
     {
         return getStream(streamId).nextBoolean();
     }
 
+    /** Returns a Number in the range [0.0, 1.0) */
     public static function nextNumber (streamId :uint) :Number
     {
         return getStream(streamId).nextNumber();
@@ -78,6 +83,7 @@ public class Rand
         return low + (getStream(streamId).nextNumber() * (high - low));
     }
 
+    /** Randomizes the order of the elements in the given Array, in place. */
     public static function shuffleArray (arr :Array, streamId :uint) :void
     {
         ArrayUtil.shuffle(arr, getStream(streamId));
