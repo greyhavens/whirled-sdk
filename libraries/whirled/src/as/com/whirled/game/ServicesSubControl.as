@@ -88,6 +88,8 @@ public class ServicesSubControl extends AbstractSubControl
      * (resulting in a MessageReceivedEvent being dispatched on the 'net' control)
      * to all connected clients, at the specified delay. The value of each message is
      * a single integer, starting with 0 and increasing by 1 with each messsage.
+     *
+     * Note: you may have a maximum of 3 tickers, and the minimum delay is 50ms.
      */
     public function startTicker (tickerName :String, msOfDelay :int) :void
     {
