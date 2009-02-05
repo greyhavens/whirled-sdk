@@ -376,7 +376,7 @@ public abstract class WhirledGameManager extends GameManager
 
             if (t == null) {
                 if (_tickers.size() >= MAX_TICKERS) {
-                    throw new InvocationException(ACCESS_DENIED);
+                    throw new InvocationException("e.too_many_tickers");
                 }
                 t = new Ticker(tickerName, _gameObj);
                 _tickers.put(tickerName, t);
@@ -392,7 +392,7 @@ public abstract class WhirledGameManager extends GameManager
             }
 
         } else {
-            throw new InvocationException(ACCESS_DENIED);
+            throw new InvocationException("e.delay_too_short");
         }
     }
 
