@@ -160,8 +160,15 @@ public class Collider
                 Math.min(Math.floor(line.y1), Math.floor(line.y2)));
         var y2 :int = _sindex.getSectionYFromTile(
                 Math.max(Math.ceil(line.y1), Math.ceil(line.y2)));
-        for (var yy :int = y1; yy <= y2; yy++) {
-            for (var xx :int = x1; xx <= x2; xx++) {
+        if ((y2 - y1) % 2 == 0) {
+            y2++;
+        }
+        if ((x2 - x1) % 2 == 0) {
+            x2++;
+        }
+        // Each line is duplicated in adjacent indices so we only need to check every other one
+        for (var yy :int = y1; yy <= y2; yy += 2) {
+            for (var xx :int = x1; xx <= x2; xx += 2) {
                 var index :int = _sindex.getSectionIndex(xx, yy);
                 updateBoundLines(index);
                 if (_lines[index] != null) {

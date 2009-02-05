@@ -230,7 +230,8 @@ public class SimpleActorBounds extends ActorBounds
                     if (actor.attached == ld || !BoundData.doesBound(ld.type, actor.projCollider)) {
                         continue;
                     }
-                    if (ld.polyIntersecting(_mlines) && !ld.polyIntersecting(_lines)) {
+                    if (ld.polyIntersecting(_mlines)) {
+                            //&& !ld.polyIntersecting(_lines)) {
                         cd.colliders.push(ld);
                         log("adding intersecting ", ld);
                     } else {

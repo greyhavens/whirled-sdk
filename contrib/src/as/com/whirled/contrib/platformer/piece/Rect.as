@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import com.whirled.contrib.platformer.board.LineData;
+
 public class Rect
 {
     public var x :Number;
@@ -78,6 +80,12 @@ public class Rect
     {
         return x - grow <= other.x + other.width + grow && x + width + grow >= other.x - grow &&
                 y - grow <= other.y + other.height + grow && y + height + grow >= other.y - grow;
+    }
+
+    public function overlapsLine (line :LineData) :Boolean
+    {
+        return x <= Math.max(line.x1, line.x2) && x + width >= Math.min(line.x1, line.x2) &&
+            y <= Math.max(line.y1, line.y2) && y + height >= Math.min(line.y1, line.y2);
     }
 
     public function contains (other :Rect) :Boolean
