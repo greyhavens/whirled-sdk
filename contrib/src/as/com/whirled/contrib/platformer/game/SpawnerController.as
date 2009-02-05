@@ -50,6 +50,11 @@ public class SpawnerController extends RectDynamicController
             MessageReceivedEvent.MESSAGE_RECEIVED, messageReceived);
     }
 
+    override public function hasBounds () :Boolean
+    {
+        return _spawner.destructable;
+    }
+
     public function doesHit (x :Number = NaN, y :Number = NaN, source :Object = null) :Boolean
     {
         return _spawner.destructable && _spawner.health > 0;

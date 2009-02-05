@@ -438,6 +438,9 @@ public class Collider
 
     protected function getBounds (dc :DynamicController) :DynamicBounds
     {
+        if (!dc.hasBounds()) {
+            return null;
+        }
         if (dc is ActorController) {
             return new SimpleActorBounds(dc as ActorController, this);
         } else if (dc is RectDynamicController) {

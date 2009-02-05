@@ -40,6 +40,11 @@ public class DynamicController
     {
     }
 
+    public function hasBounds () :Boolean
+    {
+        return true;
+    }
+
     public function tick (delta :Number) :void
     {
     }
