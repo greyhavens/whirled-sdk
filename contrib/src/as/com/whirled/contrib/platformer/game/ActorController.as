@@ -51,7 +51,7 @@ public class ActorController extends DynamicController
 
     public function doHit (damage :Number, owner :int, inter :int, sowner :int) :void
     {
-        if (owner == PlatformerContext.gctrl.game.getMyId()) {
+        if (owner == PlatformerContext.myId) {
             if (_actor.amOwner()) {
                 if (_actor.health > 0) {
                     _actor.health -= damage;

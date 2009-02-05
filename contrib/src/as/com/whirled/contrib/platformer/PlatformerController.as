@@ -42,6 +42,7 @@ public class PlatformerController
     {
         PlatformerContext.gctrl = new GameControl(disp);
         if (PlatformerContext.gctrl.isConnected()) {
+            PlatformerContext.myId = PlatformerContext.gctrl.game.getMyId();
             PlatformerContext.platformer = this;
             PlatformerContext.local =
                     PlatformerContext.gctrl.game.seating.getPlayerIds().length == 1;

@@ -38,6 +38,7 @@ public class PlatformerContext
     public static var net :MessageManager;
     public static var local :Boolean;
     public static var persist :PersistenceManager;
+    public static var myId :int;
 
     public static function get inControl () :Boolean
     {

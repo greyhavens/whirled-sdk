@@ -62,10 +62,10 @@ public class DynamicSpriteLayer extends Layer
 
     protected function showDS (ds :DynamicSprite) :void
     {
-        if (!ds.showAlways() && (ds.x < -x - ds.width - BUFFER ||
-                ds.x > -x + Metrics.DISPLAY_WIDTH + ds.width + BUFFER ||
-                ds.y < -y - ds.height - BUFFER ||
-                ds.y > -y + Metrics.DISPLAY_HEIGHT + ds.height + BUFFER)) {
+        if (!ds.showAlways() && (ds.x < -x - ds.width - IN_BUFFER ||
+                ds.x > -x + Metrics.DISPLAY_WIDTH + ds.width + IN_BUFFER ||
+                ds.y < -y - ds.height - IN_BUFFER ||
+                ds.y > -y + Metrics.DISPLAY_HEIGHT + ds.height + IN_BUFFER)) {
             removeDS(ds);
         } else {
             addDS(ds);
@@ -88,6 +88,8 @@ public class DynamicSpriteLayer extends Layer
 
     protected var _dynamics :Array = new Array();
 
-    protected static const BUFFER :int = Metrics.DISPLAY_HEIGHT/2;
+    protected static const IN_BUFFER :int = Metrics.DISPLAY_HEIGHT/3;
+    protected static const OUT_BUFFER :int = IN_BUFFER * 2;
+
 }
 }

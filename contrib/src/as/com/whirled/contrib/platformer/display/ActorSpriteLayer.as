@@ -35,7 +35,7 @@ public class ActorSpriteLayer extends DynamicSpriteLayer
     {
         if (ds.parent == _deathLayer) {
             _deathLayer.removeChild(ds);
-        } else {
+        } else if (ds.parent == this) {
             super.removeDS(ds);
         }
     }

@@ -73,6 +73,10 @@ public class BoardSprite extends Sprite
         */
 
         _layers = new Array(NUM_LAYERS);
+        _layerEnabled = new Array(NUM_LAYERS);
+        for (var ii :int = 0; ii < NUM_LAYERS; ii++) {
+            _layerEnabled[ii] = true;
+        }
         var bxml :XML = _board.getBackgroundXML();
         if (bxml != null) {
             _layers[BG_LAYER] = new BitmapParallaxBackground();
@@ -84,7 +88,9 @@ public class BoardSprite extends Sprite
             addChild(_layers[BG_LAYER]);
         }
 
-        _layers[LEVEL_LAYER] = new BitmapSectionalLayer(4, 4);
+        _layers[LEVEL_LAYER] =
+                new BitmapSectionalLayer(4, 4);
+                //new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
         //_layers[LEVEL_LAYER] = new PieceSpriteLayer();
         addChild(_layers[LEVEL_LAYER]);
         addChild(_layers[BACK_DYNAMIC_LAYER] = new DynamicSpriteLayer());
@@ -93,7 +99,9 @@ public class BoardSprite extends Sprite
         addChild(_layers[ACTOR_LAYER]);
         addChild(_layers[SHOT_LAYER] = new DynamicSpriteLayer());
         addChild(_layers[FRONT_PARTICLE_LAYER] = new ParticleLayer());
-        _layers[FRONT_LEVEL_LAYER] = new BitmapSectionalLayer(3, 3);
+        _layers[FRONT_LEVEL_LAYER] =
+                new BitmapSectionalLayer(3, 3);
+                //new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
         addChild(_layers[FRONT_LEVEL_LAYER]);
         addPieces(_board.getPieces());
         initBounds();
@@ -130,6 +138,25 @@ public class BoardSprite extends Sprite
             _centerY -= LBUFFER;
         }
         updateDisplay();
+    }
+
+    public function toggleLayer (layer :int) :void
+    {
+        if (layer >= 0 && layer < NUM_LAYERS) {
+            if (_layerEnabled[layer]) {
+                _layerEnabled[layer] = false;
+                removeChild(_layers[layer]);
+            } else {
+                _layerEnabled[layer] = true;
+                var idx :int;
+                for (var ii :int = 0; ii < layer; ii++) {
+                    if (_layerEnabled[ii]) {
+                        idx++;
+                    }
+                }
+                addChildAt(_layers[layer], idx);
+            }
+        }
     }
 
     public function get centerX () :Number
@@ -359,8 +386,10 @@ public class BoardSprite extends Sprite
             _centerX += _cameraCtrl.getOffX();
             _centerY += _cameraCtrl.getOffY();
         }
-        for each (var layer :Layer in _layers) {
-            layer.update(_centerX, _centerY);
+        for (var ii :int = 0; ii < _layers.length; ii++) {
+            if (_layerEnabled[ii]) {
+                _layers[ii].update(_centerX, _centerY);
+            }
         }
         if (_cameraCtrl != null) {
             _centerX = oldX;
@@ -373,6 +402,7 @@ public class BoardSprite extends Sprite
 
     /** The board layer. */
     protected var _layers :Array;
+    protected var _layerEnabled :Array;
 
     protected var _centerX :Number = 0;
     protected var _centerY :Number = 0;

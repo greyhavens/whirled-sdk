@@ -121,8 +121,7 @@ public class SpawnerController extends RectDynamicController
                 _spawner.spawning = _controller.getBoard().reserveId();
                 _spawnId = _spawner.spawning;
                 _spawnDelay = _spawner.spawnDelay;
-                _spawnOwner =
-                        (PlatformerContext.local ? PlatformerContext.gctrl.game.getMyId() : 0);
+                _spawnOwner = (PlatformerContext.local ? PlatformerContext.myId : 0);
             }
         }
     }
