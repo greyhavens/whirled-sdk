@@ -221,13 +221,15 @@ public class LineData
      */
     public function getSegmentDist2 (x :Number, y :Number) :Number
     {
-        var r :Number = relDot(x, y);
+        //var r :Number = relDot(x, y);
+        var r :Number = (x - x1) * ix + (y - y1) * iy;
         if (r < 0) {
             return (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y);
         } else if (r > mag) {
             return (x2 - x) * (x2 - x) + (y2 - y) * (y2 - y);
         }
-        r = getDist(x, y);
+        //r = getDist(x, y);
+        r = x * nx + y * ny + D;
         return r * r;
     }
 
@@ -288,7 +290,8 @@ public class LineData
      */
     public function isOutside (x :Number, y :Number) :Boolean
     {
-        return getDist(x, y) > 0;
+        //return getDist(x, y) > 0;
+        return x * nx + y * ny + D > 0;
     }
 
     /**
@@ -296,7 +299,8 @@ public class LineData
      */
     public function isInside (x :Number, y :Number) :Boolean
     {
-        return getDist(x, y) <= 0;
+        //return getDist(x, y) <= 0;
+        return x * nx + y * ny + D <= 0;
     }
 
     /**
@@ -304,7 +308,8 @@ public class LineData
      */
     public function isLineOutside (line :LineData) :Boolean
     {
-        return isOutside(line.x1, line.y1) && isOutside(line.x2, line.y2);
+        //return isOutside(line.x1, line.y1) && isOutside(line.x2, line.y2);
+        return (line.x1 * nx + line.y1 * ny + D > 0) && (line.x2 * nx + line.y2 * ny + D > 0);
     }
 
     /**
@@ -312,7 +317,8 @@ public class LineData
      */
     public function isLineInside (line :LineData) :Boolean
     {
-        return isInside(line.x1, line.y1) && isInside(line.x2, line.y2);
+        //return isInside(line.x1, line.y1) && isInside(line.x2, line.y2);
+        return (line.x1 * nx + line.y1 * ny + D <= 0) && (line.x2 * nx + line.y2 * ny + D <= 0);
     }
 
     /**
@@ -321,7 +327,8 @@ public class LineData
     public function anyOutside (lines :Array) :Boolean
     {
         for each (var line :LineData in lines) {
-            if (isOutside(line.x1, line.y1)) {
+            //if (isOutside(line.x1, line.y1)) {
+            if (line.x1 * nx + line.y1 * ny + D > 0) {
                 return true;
             }
         }
@@ -334,7 +341,8 @@ public class LineData
     public function anyInside (lines :Array) :Boolean
     {
         for each (var line :LineData in lines) {
-            if (isInside(line.x1, line.y1)) {
+            //if (isInside(line.x1, line.y1)) {
+            if (line.x1 * nx + line.y1 * ny + D <= 0) {
                 return true;
             }
         }
@@ -346,27 +354,27 @@ public class LineData
      */
     public function didCross (l1 :LineData, l2 :LineData) :Boolean
     {
-        var start :Boolean = isOutside(l1.x1, l1.y1);
-        if (start != isOutside(l1.x2, l1.y2)) {
+        var start :Boolean = isInside(l1.x1, l1.y1);
+        if (start != isInside(l1.x2, l1.y2)) {
             return false;
         }
-        var end :Boolean = isOutside(l2.x1, l2.y1);
-        if (end != isOutside(l2.x2, l2.y2)) {
+        var end :Boolean = isInside(l2.x1, l2.y1);
+        if (end != isInside(l2.x2, l2.y2)) {
             return false;
         }
         return start != end;
     }
 
     /**
-     * Returns true if l2 is intersecting of on the opposide of the line as l1.
+     * Returns true if l2 is intersecting or on the opposite of the line as l1.
      */
     public function didSimpleCross (l1 :LineData, l2 :LineData) :Boolean
     {
-        var start :Boolean = isOutside(l1.x1, l1.y1);
-        if (start != isOutside(l1.x2, l1.y2)) {
+        var start :Boolean = isInside(l1.x1, l1.y1);
+        if (start != isInside(l1.x2, l1.y2)) {
             return false;
         }
-        return start != isOutside(l2.x1, l2.y1) || start != isOutside(l2.x2, l2.y2);
+        return start != isInside(l2.x1, l2.y1) || start != isInside(l2.x2, l2.y2);
     }
 
     /**
@@ -374,12 +382,12 @@ public class LineData
      */
     public function didCrossDelta (l1 :LineData, xd :Number, yd :Number) :Boolean
     {
-        var start :Boolean = isOutside(l1.x1, l1.y1);
-        if (start != isOutside(l1.x2, l1.y2)) {
+        var start :Boolean = isInside(l1.x1, l1.y1);
+        if (start != isInside(l1.x2, l1.y2)) {
             return false;
         }
-        var end :Boolean = isOutside(l1.x1 + xd, l1.y1 + yd);
-        if (end != isOutside(l1.x2 + xd, l1.y2 + yd)) {
+        var end :Boolean = isInside(l1.x1 + xd, l1.y1 + yd);
+        if (end != isInside(l1.x2 + xd, l1.y2 + yd)) {
             return false;
         }
         return start != end;
@@ -435,9 +443,13 @@ public class LineData
         var p1inside :Boolean = lines.length > 2;
         var p2inside :Boolean = lines.length > 2;
         for each (var line :LineData in lines) {
-            var o1 :Boolean = line.isInside(x1, y1);
-            var o2 :Boolean = line.isInside(x2, y2);
-            if (o1 != o2 && isInside(line.x1, line.y1) != isInside(line.x2, line.y2)) {
+            //var o1 :Boolean = line.isInside(x1, y1);
+            //var o2 :Boolean = line.isInside(x2, y2);
+            var o1 :Boolean = x1 * line.nx + y1 * line.ny + line.D <= 0;
+            var o2 :Boolean = x2 * line.nx + y2 * line.ny + line.D <= 0;
+            //if (o1 != o2 && isInside(line.x1, line.y1) != isInside(line.x2, line.y2)) {
+            if (o1 != o2 && ((line.x1 * nx + line.y1 * ny + D <= 0) !=
+                    (line.x2 * nx + line.y2 * ny + D <= 0))) {
                 return true;
             }
             p1inside &&= !o1;
@@ -478,8 +490,12 @@ public class LineData
      */
     public function isIntersecting (line :LineData) :Boolean
     {
-        return !(isOutside(line.x1, line.y1) == isOutside(line.x2, line.y2) ||
-            line.isOutside(x1, y1) == line.isOutside(x2, y2));
+        //return !(isOutside(line.x1, line.y1) == isOutside(line.x2, line.y2) ||
+        //    line.isOutside(x1, y1) == line.isOutside(x2, y2));
+        return !(((line.x1 * nx + line.y1 * ny + D <= 0) ==
+                (line.x2 * nx + line.y2 * ny + D <= 0)) ||
+            ((x1 * line.nx + y1 * line.ny + line.D <= 0) ==
+                (x2 * line.nx + y2 * line.ny + line.D <= 0)));
     }
 
     /**
