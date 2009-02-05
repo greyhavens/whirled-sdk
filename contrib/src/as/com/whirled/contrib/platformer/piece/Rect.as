@@ -74,10 +74,10 @@ public class Rect
         height += value*2;
     }
 
-    public function overlaps (other :Rect) :Boolean
+    public function overlaps (other :Rect, grow :Number = 0) :Boolean
     {
-        return x <= other.x + other.width && x + width >= other.x &&
-                y <= other.y + other.height && y + height >= other.y;
+        return x - grow <= other.x + other.width + grow && x + width + grow >= other.x - grow &&
+                y - grow <= other.y + other.height + grow && y + height + grow >= other.y - grow;
     }
 
     public function contains (other :Rect) :Boolean

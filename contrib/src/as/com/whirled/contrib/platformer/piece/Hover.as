@@ -35,6 +35,7 @@ public class Hover extends RectDynamic
             width = insxml.@width;
             sprite = insxml.@sprite;
         }
+        inter = Dynamic.ENEMY;
     }
 
     override public function xmlInstance () :XML

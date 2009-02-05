@@ -35,6 +35,7 @@ public class DynamicBounds
         controller = dc;
         dyn = dc.getDynamic();
         _collider = c;
+        _rect = new Rect(dyn.x, dyn.y);
     }
 
     public function updateBounds () :void
@@ -48,11 +49,13 @@ public class DynamicBounds
     {
         dyn.x += dX;
         dyn.y += dY;
+        _rect.x = dyn.x;
+        _rect.y = dyn.y;
     }
 
     public function getRect () :Rect
     {
-        return new Rect(dyn.x, dyn.y, 0, 0);
+        return _rect;
     }
 
     public function getInteractingBounds () :Array
@@ -127,12 +130,13 @@ public class DynamicBounds
         return new LineData(dyn.x + x1, dyn.y + y1, dyn.x + x2, dyn.y + y2, type);
     }
 
-    protected function dynUpdateLD (
-            line :LineData, x1 :Number, y1 :Number, x2 :Number, y2 :Number) :void
+    protected function dynUpdateLD (line :LineData, x1 :Number, y1 :Number, x2 :Number, y2 :Number,
+            reset :Boolean = false) :void
     {
-        line.update(dyn.x + x1, dyn.y + y1, dyn.x + x2, dyn.y + y2);
+        line.update(dyn.x + x1, dyn.y + y1, dyn.x + x2, dyn.y + y2, reset);
     }
 
-    protected var _collider : Collider;
+    protected var _collider :Collider;
+    protected var _rect :Rect;
 }
 }

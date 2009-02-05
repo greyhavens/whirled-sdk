@@ -74,7 +74,7 @@ public class SimpleActorBounds extends ActorBounds
 
     public function getMovementBoundLines () :Array
     {
-        return _mlines;
+        return (_resetMLines ? null : _mlines);
     }
 
     public function getBottomLine () :LineData
@@ -164,6 +164,7 @@ public class SimpleActorBounds extends ActorBounds
         actor.height = newHeight;
         updateBounds();
         if (newHeight <= oldHeight) {
+            _rect.height = newHeight;
             return true;
         }
         var delta :Number = oldHeight - newHeight;
@@ -187,13 +188,14 @@ public class SimpleActorBounds extends ActorBounds
             }
         }
         actor.height = newHeight;
+        _rect.height = newHeight;
         updateBounds();
         return true;
     }
 
     public function findColliders (delta :Number, cd :ColliderDetails = null) :ColliderDetails
     {
-        _mlines = null;
+        _resetMLines = true;
         if (delta <= 0) {
             return new ColliderDetails(null, null, 0);
         }
@@ -204,9 +206,7 @@ public class SimpleActorBounds extends ActorBounds
         } else {
             cd.reset(delta);
         }
-        log("found " + cd.colliders.length + " lines and " +
-                cd.acolliders.length + " interesting bounds");
-        var logs :String = "";
+        log("found", cd.colliders.length, "lines and", cd.acolliders.length, "interesting bounds");
         var beforeX :Number = actor.x;
         var beforeY :Number = actor.y;
         var didCollide :Boolean = false;
@@ -232,23 +232,22 @@ public class SimpleActorBounds extends ActorBounds
                     }
                     if (ld.polyIntersecting(_mlines) && !ld.polyIntersecting(_lines)) {
                         cd.colliders.push(ld);
-                        log("adding intersecting " + ld);
+                        log("adding intersecting ", ld);
                     } else {
-                        log("ignoring non intersecting " + ld);
+                        log("ignoring non intersecting ", ld);
                     }
                 }
             }
 
             // Filter out those lines which don't block our movement direction
             if (cd.colliders.length > 0) {
-                logs = "";
                 verify = cd.colliders;
                 cd.colliders = new Array();
                 var ignored :Array = new Array();
                 for (var ii :int = 0; ii < verify.length; ii++) {
                     if (!BoundData.doesBound(verify[ii].type)) {
                         cd.colliders.push(verify[ii]);
-                        logs += "ignoring non bounding collider: " + verify[ii] + "\n";
+                        log("ignoring non bounding collider:", verify[ii]);
                         continue;
                     }
                     var ignore :Boolean = false;
@@ -263,7 +262,7 @@ public class SimpleActorBounds extends ActorBounds
                             if (BoundData.getNormalBound(verify[ii].type) != BoundData.ALL &&
                                     isContained(verify[ii], verify[jj], sides)) {
                                 ignored[ii] = true;
-                                logs += "ignoring contained collider: " + verify[ii] + "\n";
+                                log("ignoring contained collider:", verify[ii]);
                                 break;
                             }
                             if (((sides[1] > 0 && !verify[jj].anyOutside(_lines)) ||
@@ -271,7 +270,7 @@ public class SimpleActorBounds extends ActorBounds
                                 !((sides[0] > 0 && !verify[ii].anyOutside(_lines)) ||
                                   (sides[0] < 0 && !verify[ii].anyInside(_lines)))) {
                                 ignored[ii] = true;
-                                logs += "ignoring unreachable collider: " + verify[ii] + "\n";
+                                log("ignoring unreachable collider:", verify[ii]);
                                 break;
                             }
                         }
@@ -280,7 +279,7 @@ public class SimpleActorBounds extends ActorBounds
                         ((!BoundData.blockOuter(verify[ii].type) && verify[ii].anyOutside(_lines)) ||
                          (!BoundData.blockInner(verify[ii].type) && verify[ii].anyInside(_lines)))) {
                         ignored[ii] = true;
-                        logs += "ignoring unconnected collider: " + verify[ii] + "\n";
+                        log("ignoring unconnected collider:", verify[ii]);
                     }
                     if (!ignored[ii]) {
                         cd.colliders.push(verify[ii]);
@@ -327,27 +326,20 @@ public class SimpleActorBounds extends ActorBounds
                 cd.colliders = verify;
                 cd.acolliders = averify;
             }
-            if (logs != "") {
-                //log(logs);
-            }
             if (cd.colliders.length > 0) {
-                //log("found " + cd.colliders.length + " colliders, now halving delta, actor (" +
-                //        actor.x + ", " + actor.y + ")");
+                //log("found", cd.colliders.length, "colliders, now halving delta, actor (",
+                //        actor.x, ",", actor.y, ")");
                 didCollide = true;
             } else if (didCollide) {
-                //log("no colliders found, now halving delta, actor (" +
-                //    actor.x + ", " + actor.y + ")");
+                //log("no colliders found, now halving delta, actor (", actor.x, ",", actor.y, ")");
             }
             delta /= 2;
         } while (Math.abs(cdX) > 1/Metrics.TILE_SIZE || Math.abs(cdY) > 1/Metrics.TILE_SIZE);
 
         translate(-cd.oX, -cd.oY);
-        //log("actor adjust is (" + cd.oX + ", " + cd.oY + ") pos (" + actor.x + ", " + actor.y + ")");
+        //log("actor adjust is (", cd.oX, ",", cd.oY, ") pos (", actor.x, ",", actor.y, ")");
 
-        if (logs != "") {
-            log(logs);
-        }
-        _mlines = null;
+        _resetMLines = true;
         return cd;
     }
 
@@ -367,9 +359,9 @@ public class SimpleActorBounds extends ActorBounds
             return 0;
         }
 
-        //log("translating actor (" + cd.oX + ", " + cd.oY + ")");
+        //log("translating actor (", cd.oX, ",", cd.oY, ")");
         translate(cd.oX, cd.oY);
-        //log("post trans actor pos (" + actor.x + ", " + actor.y + ")");
+        //log("post trans actor pos (", actor.x, ",", actor.y, ")");
 
         var base :LineData = getBottomLine().clone();
         if (!isNaN(cd.fcdX)) {
@@ -378,16 +370,16 @@ public class SimpleActorBounds extends ActorBounds
 
         // Possibly attach ourselves to a new ground line
         if (cd.colliders.length > 0 && actor.maxWalkable >= 0) {
-            log(actor.sprite + " found " + cd.colliders.length + " colliders")
-            log("base " + base);
-            log("getBottomLine() " + getBottomLine());
+            log(actor.sprite, "found", cd.colliders.length, "colliders")
+            log("base", base);
+            log("getBottomLine()", getBottomLine());
             for each (var col :LineData in cd.colliders) {
                 log("  " + col);
             }
             var maxY :Number = -1;
             var attached :LineData;
             if (actor.attached != null && actor.attached.xIntersecting(base)) {
-                log(actor.sprite + " still hovering attached: " + actor.attached + ", " + base);
+                log(actor.sprite, "still hovering attached:", actor.attached, ",", base);
                 maxY = Math.max(actor.attached.y1, actor.attached.y2);
                 attached = actor.attached;
             }
@@ -416,14 +408,14 @@ public class SimpleActorBounds extends ActorBounds
                             attached.x2 + 0.00001, attached.y2, BoundData.ALL);
                     }
                 }
-                log(actor.sprite + " new attached: " + attached + ", " + base);
+                log(actor.sprite, "new attached:", attached, ",", base);
                 actor.setAttached(attached);
             }
 
         // Possibly detach ourselves from our current ground line and possibly automatically
         // attach to a new ground line
         } else if (actor.attached != null) {
-            //log("attached: " + actor.attached + " bottom: " + getBottomLine());
+            //log("attached:", actor.attached, "bottom:", getBottomLine());
             if (!actor.attached.xIntersecting(getBottomLine()) ||
                 (actor.attached.iy > 0 && !actor.attached.yIntersecting(getBottomLine()))) {
                 maxY = -1;
@@ -456,10 +448,10 @@ public class SimpleActorBounds extends ActorBounds
                     }
                 }
                 if (attached == null) {
-                    log(actor.sprite + " detached " + actor.attached + ", " + getBottomLine());
+                    log(actor.sprite, "detached", actor.attached, ",", getBottomLine());
                     //trace(actor.sprite + " detached " + actor.attached + ", " + getBottomLine());
                 } else {
-                    log(actor.sprite + " autoatached " + attached + ", " + getBottomLine());
+                    log(actor.sprite, "autoatached", attached, ",", getBottomLine());
                 }
                 actor.setAttached(attached);
             }
@@ -516,21 +508,19 @@ public class SimpleActorBounds extends ActorBounds
             actor.dy = 0;
         }
         if (cd.acolliders.length == 0) {
-            //log("no dynamic colliders found (" + actor.x + ", " + actor.y + ")");
+            //log("no dynamic colliders found (", actor.x, ",", actor.y, ")");
         }
         dynamicCollider(cd);
 
         if (actor.attached != null) {
             var dist :Number = actor.attached.getLineDist(getBottomLine());
             if (dist > MIN_ATTACH_DIST) {
-                log(actor.sprite + " detaching: " + actor.attached + " dist: " + dist +
-                        ", " + getBottomLine());
-                //trace(actor.sprite + " detaching: " + actor.attached + " dist: " + dist +
-                //        ", " + getBottomLine());
+                log(actor.sprite, "detaching:", actor.attached,
+                        "dist:", dist, ",", getBottomLine());
                 actor.setAttached(null);
             }
         }
-        //log("new actor pos (" + actor.x + ", " + actor.y + ")");
+        //log("new actor pos (", actor.x, ",", actor.y, ")");
         return cd.rdelta;
     }
 
@@ -555,7 +545,7 @@ public class SimpleActorBounds extends ActorBounds
                 cdY + (cdY < 0 ? actor.height : 0) : (cdY < 0 ? 0 : actor.height));
         var x6 :Number = actor.width + (cdY < 0 ? cdX : 0);
         var y6 :Number = (cdY < 0 ? cdY : 0);
-        //log("new movement bounds (" + cdX + ", " + cdY + ")");
+        //log("new movement bounds (", cdX, ",", cdY, ")");
         if (_mlines == null) {
             _mlines = new Array();
             _mlines.push(dynLD(x1, y1, x2, y2, ACTOR_BOUND));
@@ -565,16 +555,17 @@ public class SimpleActorBounds extends ActorBounds
             _mlines.push(dynLD(x5, y5, x6, y6, ACTOR_BOUND));
             _mlines.push(dynLD(x6, y6, x1, y1, ACTOR_BOUND));
         } else {
-            dynUpdateLD(_mlines[0], x1, y1, x2, y2);
-            dynUpdateLD(_mlines[1], x2, y2, x3, y3);
-            dynUpdateLD(_mlines[2], x3, y3, x4, y4);
-            dynUpdateLD(_mlines[3], x4, y4, x5, y5);
-            dynUpdateLD(_mlines[4], x5, y5, x6, y6);
-            dynUpdateLD(_mlines[5], x6, y6, x1, y1);
+            dynUpdateLD(_mlines[0], x1, y1, x2, y2, _resetMLines);
+            dynUpdateLD(_mlines[1], x2, y2, x3, y3, _resetMLines);
+            dynUpdateLD(_mlines[2], x3, y3, x4, y4, _resetMLines);
+            dynUpdateLD(_mlines[3], x4, y4, x5, y5, _resetMLines);
+            dynUpdateLD(_mlines[4], x5, y5, x6, y6, _resetMLines);
+            dynUpdateLD(_mlines[5], x6, y6, x1, y1, _resetMLines);
         }
+        _resetMLines = false;
         /*
         for each (var mline :LineData in _mlines) {
-            log("  " + mline);
+            log("  ", mline);
         }
         */
     }
@@ -586,10 +577,10 @@ public class SimpleActorBounds extends ActorBounds
         return (getBottomLine().y1 >= minY && getBottomLine().y1 < maxY + 0.1);
     }
 
-    protected function log (str :String) :void
+    protected function log (... data) :void
     {
-        if (DEBUG) {
-            trace(str);
+        if (DEBUG && data != null) {
+            trace(data.join(" "));
         }
     }
 
@@ -597,8 +588,10 @@ public class SimpleActorBounds extends ActorBounds
 
     protected var _lines :Array;
     protected var _mlines :Array;
+    protected var _resetMLines :Boolean;
     protected var _hitX :Boolean;
     protected var _hitY :Boolean;
+    protected var _log :String;
 
     protected static const MIN_ATTACH_DIST :Number = 0.1;
 

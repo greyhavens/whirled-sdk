@@ -136,9 +136,10 @@ public class GameController
     {
         _rdelta += delta;
         var usedDelta :int;
-        while (_rdelta > 0) {
+        while (_rdelta >= MAX_TICK) {
             var paused :Boolean = isPaused();
-            var tdelta :int = Math.min(MAX_TICK, _rdelta);
+            //var tdelta :int = Math.min(MAX_TICK, _rdelta);
+            var tdelta :int = MAX_TICK;
             var sdelta :Number = tdelta / 1000;
             for each (var controller :Object in _controllers) {
                 if (controller is TickController &&
@@ -155,23 +156,27 @@ public class GameController
             _rdelta -= tdelta;
             usedDelta += tdelta;
             sendUpdates();
+            /*
             if (_rdelta < MAX_TICK) {
                 break;
             }
+            */
         }
-        updateDisplay(usedDelta/1000);
-        for each (controller in _controllers) {
-            if (controller is TickController && (!paused || controller is PauseController)) {
-                (controller as TickController).postTick();
+        if (usedDelta > 0) {
+            updateDisplay(usedDelta/1000);
+            for each (controller in _controllers) {
+                if (controller is TickController && (!paused || controller is PauseController)) {
+                    (controller as TickController).postTick();
+                }
             }
-        }
-        if (!paused) {
-            var ii :int = 0;
-            while (ii < _events.length) {
-                if (_events[ii].runEvent()) {
-                    _events.splice(ii, 1);
-                } else {
-                    ii++;
+            if (!paused) {
+                var ii :int = 0;
+                while (ii < _events.length) {
+                    if (_events[ii].runEvent()) {
+                        _events.splice(ii, 1);
+                    } else {
+                        ii++;
+                    }
                 }
             }
         }
@@ -373,6 +378,6 @@ public class GameController
     protected var _rdelta :int;
 
     protected static const MAX_TICK :int = 33;
-    //protected static const MAX_TICK :int = 40;
+    //protected static const MAX_TICK :int = 50;
 }
 }

@@ -37,11 +37,7 @@ public class CircleBounds extends ActorBounds
         r2 = radius * radius;
         x = actor.x + radius;
         y = actor.y + radius;
-    }
-
-    override public function getRect () :Rect
-    {
-        return new Rect(actor.x, actor.y, actor.width, actor.width);
+        _rect.height = actor.width;
     }
 
     override public function translate (dX :Number, dY :Number) :void

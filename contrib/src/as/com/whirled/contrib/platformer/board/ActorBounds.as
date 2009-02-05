@@ -32,11 +32,8 @@ public class ActorBounds extends DynamicBounds
     {
         super(ac, c);
         actor = ac.getActor();
-    }
-
-    override public function getRect () :Rect
-    {
-        return new Rect(actor.x, actor.y, actor.width, actor.height);
+        _rect.width = actor.width;
+        _rect.height = actor.height;
     }
 }
 }

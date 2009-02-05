@@ -63,6 +63,12 @@ public class LineData
         this.x2 = x2;
         this.y1 = y1;
         this.y2 = y2;
+        this.type = type;
+        init();
+    }
+
+    public function init () :void
+    {
         ix = x2 - x1;
         iy = y2 - y1;
         mag = Math.sqrt(ix * ix + iy * iy);
@@ -71,7 +77,6 @@ public class LineData
         nx = -iy;
         ny = ix;
         D = - x1 * nx - y1 * ny;
-        this.type = type;
     }
 
     /**
@@ -95,7 +100,8 @@ public class LineData
      * Updates a lines coordinates.  The supplied coordinates should have the same angle as the
      * old line values, but the magnitude can change.
      */
-    public function update (x1 :Number, y1 :Number, x2 :Number, y2 :Number) :void
+    public function update (
+            x1 :Number, y1 :Number, x2 :Number, y2 :Number, reset :Boolean = false) :void
     {
         if (this.x1 != x1 || this.y1 != y1 || this.x2 != x2 || this.y2 != y2) {
             mag = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
@@ -103,7 +109,11 @@ public class LineData
             this.y1 = y1;
             this.x2 = x2;
             this.y2 = y2;
-            D = -x1 * nx - y1 * ny;
+            if (reset) {
+                init();
+            } else {
+                D = -x1 * nx - y1 * ny;
+            }
         }
     }
 
@@ -422,18 +432,16 @@ public class LineData
      */
     public function polyIntersecting (lines :Array) :Boolean
     {
-        var p1inside :Boolean = lines.length > 1;
-        var p2inside :Boolean = lines.length > 1;
+        var p1inside :Boolean = lines.length > 2;
+        var p2inside :Boolean = lines.length > 2;
         for each (var line :LineData in lines) {
-            if (isIntersecting(line)) {
+            var o1 :Boolean = line.isInside(x1, y1);
+            var o2 :Boolean = line.isInside(x2, y2);
+            if (o1 != o2 && isInside(line.x1, line.y1) != isInside(line.x2, line.y2)) {
                 return true;
             }
-            if (p1inside && !line.isInside(x1, y1)) {
-                p1inside = false;
-            }
-            if (p2inside && !line.isInside(x2, y2)) {
-                p2inside = false;
-            }
+            p1inside &&= !o1;
+            p2inside &&= !o2;
         }
         return p1inside || p2inside;
     }

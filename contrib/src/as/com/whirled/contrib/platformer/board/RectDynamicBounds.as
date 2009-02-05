@@ -40,7 +40,8 @@ public class RectDynamicBounds extends DynamicBounds
                 rd.x, rd.y+rd.height, rd.x+rd.width, rd.y+rd.height, BoundData.ALL));
         lines.push(new LineData(rd.x+rd.width, rd.y+rd.height, rd.x+rd.width, rd.y, BoundData.ALL));
         lines.push(new LineData(rd.x+rd.width, rd.y, rd.x, rd.y, BoundData.ALL));
-        _rect = new Rect(rd.x, rd.y, rd.width, rd.height);
+        _rect.width = rd.width;
+        _rect.height = rd.height;
     }
 
     public function getBoundLines () :Array
@@ -53,16 +54,9 @@ public class RectDynamicBounds extends DynamicBounds
         return lines;
     }
 
-    override public function getRect () :Rect
-    {
-        return _rect.clone();
-    }
-
     override public function translate (dX :Number, dY :Number) :void
     {
         // no translation
     }
-
-    protected var _rect :Rect;
 }
 }

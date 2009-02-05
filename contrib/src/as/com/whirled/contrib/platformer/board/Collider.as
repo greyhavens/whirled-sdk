@@ -217,6 +217,7 @@ public class Collider
         if (db != null) {
             _dynamics[d.id] = db;
             var arr :Array = getDynamicBoundsByType(d.inter);
+            trace("adding bounds for (" + d.id + ") of type: " + d.inter);
             arr.push(db);
         }
         var task :ColliderTask = dc.getTask();
@@ -269,7 +270,7 @@ public class Collider
             if (idx != -1) {
                 arr.splice(idx, 1);
             }
-            debug("dynamic removed inter: " + d.inter + " remaining bounds: " + arr.length);
+            trace("dynamic(" + d.id + ") removed inter: " + d.inter + " remaining bounds: " + arr.length);
         }
         for (var ii :int = 0; ii < _tasks.length; ii++) {
             if (_tasks[ii].getController() == dc) {
@@ -447,9 +448,7 @@ public class Collider
 
     protected function closeIndices (rect1 :Rect, rect2 :Rect) :Boolean
     {
-        rect1.grow(1);
-        rect2.grow(1);
-        return rect1.overlaps(rect2);
+        return rect1.overlaps(rect2, 1);
         /*
         return !(_sindex.getSectionXFromTile(rect1.x) >
                 _sindex.getSectionXFromTile(rect2.x + rect2.width) ||
