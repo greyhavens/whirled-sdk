@@ -49,6 +49,27 @@ public class KeyboardController
         _ed = null;
     }
 
+    public function addKeyListener (keyCode :int, listener :Function) :void
+    {
+        if (_keyListener[keyCode] == null) {
+            _keyListener[keyCode] = new Array();
+        }
+        _keyListener[keyCode].push(listener);
+    }
+
+    public function removeKeyListener (keyCode :int, listener :Function) :void
+    {
+        if (_keyListener[keyCode] == null) {
+            return;
+        }
+        for (var ii :int; ii < _keyListener[keyCode].length; ii++) {
+            if (_keyListener[keyCode][ii] == listener) {
+                _keyListener[keyCode].splice(ii, 1);
+                return;
+            }
+        }
+    }
+
     public function getDx () :Number
     {
         var last :int = 0;
@@ -151,6 +172,11 @@ public class KeyboardController
             _lastDown[keyCode] = now;
             _downKeys[keyCode] = true;
             _wasRead[keyCode] = false;
+            if (_keyListener[keyCode] != null) {
+                for each (var listener :Function in _keyListener[keyCode].concat()) {
+                    listener();
+                }
+            }
             //trace("keyPressed: " + keyCode);
         }
     }
@@ -208,6 +234,7 @@ public class KeyboardController
     protected var _lastUp :Array = new Array();
     protected var _doubleTap :Array = new Array();
     protected var _wasRead :Array = new Array();
+    protected var _keyListener :Array = new Array();
 
     protected static const DOUBLE_TAP :int = 250;
     protected static const IGNORE_DOUBLE :int = 40;
