@@ -24,6 +24,7 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
 
+import com.whirled.contrib.platformer.client.ClientPlatformerContext;
 import com.whirled.contrib.platformer.util.Metrics;
 
 public class BitmapParallaxBackground extends Layer
@@ -34,8 +35,8 @@ public class BitmapParallaxBackground extends Layer
         addChild(new Bitmap(_bd));
     }
 
-    public function addNewLayer (disp :DisplayObject, scaleX :int = 1, scaleY :int = 1, offX :int = 0,
-            offY :int = 0, tileY :Boolean = false) :void
+    public function addNewLayer (disp :DisplayObject, scaleX :int = 1, scaleY :int = 1,
+            offX :int = 0, offY :int = 0, tileY :Boolean = false) :void
     {
         if (disp == null) {
             return;
@@ -46,23 +47,40 @@ public class BitmapParallaxBackground extends Layer
         }
     }
 
+    public function setEnabled (enabled :Boolean) :void
+    {
+        if (_enabled && !enabled) {
+            _hasDrawn = false;
+        }
+        _enabled = enabled;
+    }
+
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
+        if (!_enabled && _hasDrawn) {
+            return;
+        }
         var updated :Boolean = false;
         for each (var layer :BitmapParallax in _layers) {
+            if (!_enabled) {
+                nY = ClientPlatformerContext.boardSprite.minY * Metrics.TILE_SIZE;
+            }
             layer.update(nX, nY);
             updated = updated || layer.updated;
         }
-        _bd.lock();
         if (updated) {
+            _bd.lock();
             for each (layer in _layers) {
                 layer.redraw(_bd);
             }
+            _bd.unlock();
+            _hasDrawn = true;
         }
-        _bd.unlock();
     }
 
     protected var _bd :BitmapData;
+    protected var _enabled :Boolean = true;
+    protected var _hasDrawn :Boolean;
 
     protected var _layers :Array = new Array();
 }
