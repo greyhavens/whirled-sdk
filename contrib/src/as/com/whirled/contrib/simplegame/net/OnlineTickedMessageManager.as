@@ -90,7 +90,7 @@ public class OnlineTickedMessageManager
             _ticks.push(new Array());
             _receivedFirstTick = true;
 
-        } else {
+        } else if (_receivedFirstTick) {
             // add any actions received during this tick
             var array :Array = (_ticks[_ticks.length - 1] as Array);
             var msg :Message = deserializeMessage(event.name, event.value);
