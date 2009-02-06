@@ -26,10 +26,6 @@ import com.whirled.contrib.platformer.piece.Gate;
 
 public class GateSprite extends DynamicSprite
 {
-    public static const IDLE :String = "idle";
-    public static const DEATH :String = "death";
-    public static const DEAD :String = "dead";
-
     public function GateSprite (g :Gate, disp :DisplayObject = null)
     {
         _gate = g;
@@ -61,11 +57,24 @@ public class GateSprite extends DynamicSprite
         changeState(IDLE);
     }
 
-    protected function isDead (state :String) :Boolean
+    protected function isDead (state :int) :Boolean
     {
         return state == DEATH || state == DEAD;
     }
 
     protected var _gate :Gate;
+
+    override protected function getStateFrame (state :int) :Object
+    {
+        return GS_STATES[state];
+    }
+
+    protected static const IDLE :int = 0; // idle
+    protected static const DEATH :int = 1; // death
+    protected static const DEAD :int = 2; // dead
+    protected static const GS_COUNT :int = 3;
+
+    protected static const GS_STATES :Array =
+        [ "idle", "death", "dead" ];
 }
 }

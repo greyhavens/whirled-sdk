@@ -30,11 +30,6 @@ import com.whirled.contrib.platformer.util.Metrics;
 
 public class SpawnerSprite extends DynamicSprite
 {
-    public static const IDLE :String = "idle";
-    public static const SPAWN :String = "spawn";
-    public static const DEATH :String = "death";
-    public static const DEAD :String = "dead";
-
     public function SpawnerSprite (s :Spawner, disp :DisplayObject = null)
     {
         _spawner = s;
@@ -72,6 +67,20 @@ public class SpawnerSprite extends DynamicSprite
         }
     }
 
+    override protected function getStateFrame (state :int) :Object
+    {
+        return SS_STATES[state];
+    }
+
     protected var _spawner :Spawner;
+
+    protected static const IDLE :int = 0; // idle
+    protected static const SPAWN :int = 1; // spawn
+    protected static const DEATH :int = 2; // death
+    protected static const DEAD :int = 3; // dead
+
+    protected static const SS_STATES :Array =
+        [ "idle", "spawn", "death", "dead" ];
+
 }
 }

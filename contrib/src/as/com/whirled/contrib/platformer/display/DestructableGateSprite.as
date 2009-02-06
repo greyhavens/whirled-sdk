@@ -26,11 +26,6 @@ import com.whirled.contrib.platformer.piece.DestructableGate;
 
 public class DestructableGateSprite extends GateSprite
 {
-    public static const DAMAGE_1 :String = "damage1";
-    public static const DAMAGED_1 :String = "damaged1";
-    public static const DAMAGE_2 :String = "damage2";
-    public static const DAMAGED_2 :String = "damaged2";
-
     public function DestructableGateSprite (dg :DestructableGate, disp :DisplayObject = null)
     {
         _dg = dg;
@@ -62,6 +57,22 @@ public class DestructableGateSprite extends GateSprite
         }
     }
 
+    override protected function getStateFrame (state :int) :Object
+    {
+        if (state < GS_COUNT) {
+            return super.getStateFrame(state);
+        }
+        return DGS_STATES[state - GS_COUNT];
+    }
+
     protected var _dg :DestructableGate;
+
+    protected static const DAMAGE_1 :int = GS_COUNT + 0; // damage1
+    protected static const DAMAGED_1 :int = GS_COUNT + 1; // damaged1
+    protected static const DAMAGE_2 :int = GS_COUNT + 2; // damage2
+    protected static const DAMAGED_2 :int = GS_COUNT + 3; // damaged2
+
+    protected static const DGS_STATES :Array =
+        [ "damage1", "damaged1", "damage2", "damaged2" ];
 }
 }

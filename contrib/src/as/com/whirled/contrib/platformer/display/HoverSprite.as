@@ -28,11 +28,6 @@ import com.whirled.contrib.platformer.util.Metrics;
 
 public class HoverSprite extends DynamicSprite
 {
-    public static const IDLE :String = "idle";
-    public static const ACTIVE :String = "active";
-    public static const OVER :String = "over";
-    public static const OFF :String = "off";
-
     public function HoverSprite (h :Hover, disp :DisplayObject = null)
     {
         super(h, disp);
@@ -58,6 +53,19 @@ public class HoverSprite extends DynamicSprite
         }
     }
 
+    override protected function getStateFrame (state :int) :Object
+    {
+        return HS_STATES[state];
+    }
+
     protected var _hover :Hover;
+
+    protected static const IDLE :int = 0; // idle
+    protected static const ACTIVE :int = 1; // active
+    protected static const OVER :int = 2; // over
+    protected static const OFF :int = 3; // off
+
+    protected static const HS_STATES :Array =
+        [ "idle", "active", "over", "off" ];
 }
 }

@@ -36,8 +36,6 @@ import com.whirled.contrib.platformer.util.Metrics;
 
 public class ActorSprite extends DynamicSprite
 {
-    public static const TURN :String = "turn";
-
     public function ActorSprite (actor :Actor, disp :DisplayObject = null)
     {
         super(actor, disp);
@@ -101,7 +99,7 @@ public class ActorSprite extends DynamicSprite
     {
     }
 
-    override protected function changeState (newState :String) :void
+    override protected function changeState (newState :int) :void
     {
         if (_state != newState && _disp != null && _state == TURN) {
             _disp.scaleX *= -1;
@@ -109,9 +107,19 @@ public class ActorSprite extends DynamicSprite
         super.changeState(newState);
     }
 
+    override protected function getStateFrame (state :int) :Object
+    {
+        return AS_STATES[state];
+    }
+
     protected var _actor :Actor;
 
     protected var _oldDx :Number = 0;
     protected var _oldDy :Number = 0;
+
+    protected static const TURN :int = 0; // turn
+    protected static const AS_COUNT :int = 1;
+
+    protected static const AS_STATES :Array = [ "turn" ];
 }
 }

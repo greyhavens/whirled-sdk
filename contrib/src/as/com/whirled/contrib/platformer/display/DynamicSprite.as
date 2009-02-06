@@ -160,7 +160,7 @@ public class DynamicSprite extends Sprite
         }
     }
 
-    protected function changeState (newState :String) :void
+    protected function changeState (newState :int) :void
     {
         if (_state != newState) {
             _state = newState;
@@ -174,10 +174,10 @@ public class DynamicSprite extends Sprite
     {
         if (_disp is MovieClip) {
             if (_static) {
-                (_disp as MovieClip).gotoAndStop(_state);
+                (_disp as MovieClip).gotoAndStop(getStateFrame(_state));
             } else {
                 //trace("goto and play: " + _state);
-                (_disp as MovieClip).gotoAndPlay(_state);
+                (_disp as MovieClip).gotoAndPlay(getStateFrame(_state));
             }
         }
     }
@@ -273,7 +273,14 @@ public class DynamicSprite extends Sprite
         }
     }
 
-    protected var _state :String = "";
+    protected function getStateFrame (state :int) :Object
+    {
+        return 1;
+    }
+
+    //protected var _state :String = "";
+    //protected var _stateArray :Array;
+    protected var _state :int = -1;
     protected var _dynamic :Dynamic;
     protected var _disp :DisplayObject;
     protected var _particleCallback :Function;
