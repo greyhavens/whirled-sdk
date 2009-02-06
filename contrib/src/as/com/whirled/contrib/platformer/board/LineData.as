@@ -452,8 +452,8 @@ public class LineData
                     (line.x2 * nx + line.y2 * ny + D <= 0))) {
                 return true;
             }
-            p1inside &&= !o1;
-            p2inside &&= !o2;
+            p1inside &&= o1;
+            p2inside &&= o2;
         }
         return p1inside || p2inside;
     }
