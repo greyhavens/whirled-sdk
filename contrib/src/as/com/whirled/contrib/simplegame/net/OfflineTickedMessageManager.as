@@ -21,6 +21,7 @@
 package com.whirled.contrib.simplegame.net {
 
 import com.whirled.game.GameControl;
+import com.whirled.game.NetSubControl;
 
 public class OfflineTickedMessageManager
     implements TickedMessageManager
@@ -94,7 +95,7 @@ public class OfflineTickedMessageManager
         // no-op - we never need to serialize or deserialize messages
     }
 
-    public function sendMessage (msg :Message) :void
+    public function sendMessage (msg :Message, playerId :int = NetSubControl.TO_ALL) :void
     {
         // add any actions received during this tick
         var array :Array = (_ticks[_ticks.length - 1] as Array);

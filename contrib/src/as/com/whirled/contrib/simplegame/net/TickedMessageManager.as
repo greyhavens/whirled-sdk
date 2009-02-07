@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.simplegame.net {
 
+import com.whirled.game.NetSubControl;
+
 import com.whirled.contrib.simplegame.Updatable;
 
 public interface TickedMessageManager extends Updatable
@@ -64,9 +66,9 @@ public interface TickedMessageManager extends Updatable
     function addMessageType (messageClass :Class) :void;
 
     /**
-     * Sends a message to all other players in the game.
+     * Sends a message to the specified players.
      */
-    function sendMessage (msg :Message) :void;
+    function sendMessage (msg :Message, playerId :int = NetSubControl.TO_ALL) :void;
 
     /**
      * @return true if a call to sendMessage() will succeed. Games generally don't need to be

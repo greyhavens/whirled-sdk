@@ -24,6 +24,7 @@ import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 import com.whirled.contrib.EventHandlerManager;
 import com.whirled.game.GameControl;
+import com.whirled.game.NetSubControl;
 import com.whirled.net.MessageReceivedEvent;
 
 import flash.utils.ByteArray;
@@ -115,15 +116,16 @@ public class OnlineTickedMessageManager
         }
     }
 
-    public function sendMessage (msg :Message) :void
+    public function sendMessage (msg :Message, playerId :int = NetSubControl.TO_ALL) :void
     {
         // do we need to queue this message?
         var addToQueue :Boolean = ((_pendingSends.length > 0) || (!canSendMessageNow()));
 
         if (addToQueue) {
             _pendingSends.push(msg);
+            _pendingSends.push(playerId);
         } else {
-            sendMessageNow(msg);
+            sendMessageNow(msg, playerId);
         }
     }
 
@@ -151,24 +153,25 @@ public class OnlineTickedMessageManager
         return msg;
     }
 
-    protected function sendMessageNow (msg :Message) :void
+    protected function sendMessageNow (msg :Message, playerId :int) :void
     {
-        _gameCtrl.net.sendMessage(msg.name, msg.toBytes());
+        _gameCtrl.net.sendMessage(msg.name, msg.toBytes(), playerId);
         _lastSendTime = getTimer();
     }
 
-    public function update(dt :Number) :void
+    public function update (dt :Number) :void
     {
         // if there are messages waiting to go out, send one
         if (_pendingSends.length > 0 && canSendMessageNow()) {
             var message :Message = (_pendingSends.shift() as Message);
-            sendMessageNow(message);
+            var toPlayer :int = (_pendingSends.shift() as int);
+            sendMessageNow(message, toPlayer);
         }
     }
 
     public function canSendMessage () :Boolean
     {
-        // messages are stored in _pendingSends as two objects - name and data
+        // messages are stored in _pendingSends as two objects - data and playerId
         return (_pendingSends.length < (_maxPendingSends * 2));
     }
 
