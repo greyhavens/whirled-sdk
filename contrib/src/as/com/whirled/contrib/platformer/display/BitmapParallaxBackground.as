@@ -33,6 +33,7 @@ public class BitmapParallaxBackground extends Layer
     {
         _bd = new BitmapData(Metrics.DISPLAY_WIDTH, Metrics.DISPLAY_HEIGHT, true, 0x00000000);
         addChild(new Bitmap(_bd));
+        _enabled = ClientPlatformerContext.prefs.backgroundScrolling;
     }
 
     public function addNewLayer (disp :DisplayObject, scaleX :int = 1, scaleY :int = 1,
@@ -53,6 +54,7 @@ public class BitmapParallaxBackground extends Layer
             _hasDrawn = false;
         }
         _enabled = enabled;
+        ClientPlatformerContext.prefs.backgroundScrolling = enabled;
     }
 
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void

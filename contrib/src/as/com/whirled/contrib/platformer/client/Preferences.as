@@ -20,13 +20,36 @@
 
 package com.whirled.contrib.platformer.client {
 
-import com.whirled.contrib.platformer.PlatformerContext;
-import com.whirled.contrib.platformer.display.BoardSprite;
+import flash.display.StageQuality;
+import flash.net.SharedObject;
 
-public class ClientPlatformerContext extends PlatformerContext
+import com.threerings.util.Config;
+
+public class Preferences extends Config
 {
-    public static var keyboard :KeyboardController;
-    public static var boardSprite :BoardSprite;
-    public static var prefs :Preferences;
+    public function Preferences (path :String)
+    {
+        super(path);
+    }
+
+    public function get stageQuality () :String
+    {
+        return getValue("stageQuality", StageQuality.HIGH) as String;
+    }
+
+    public function set stageQuality (quality :String) :void
+    {
+        setValue("stageQuality", quality);
+    }
+
+    public function get backgroundScrolling () :Boolean
+    {
+        return getValue("backgroundScrolling", true) as Boolean;
+    }
+
+    public function set backgroundScrolling (scroll :Boolean) :void
+    {
+        setValue("backgroundScrolling", scroll);
+    }
 }
 }

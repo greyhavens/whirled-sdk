@@ -40,6 +40,9 @@ public class ClientPlatformerController extends PlatformerController
         if (PlatformerContext.gctrl.isConnected()) {
             ClientPlatformerContext.keyboard = new KeyboardController();
             ClientPlatformerContext.keyboard.init(PlatformerContext.gctrl.local);
+            ClientPlatformerContext.prefs = createPreferences();
+            PlatformerContext.gctrl.local.setStageQuality(
+                    ClientPlatformerContext.prefs.stageQuality);
         }
     }
 
@@ -49,6 +52,11 @@ public class ClientPlatformerController extends PlatformerController
         ClientPlatformerContext.keyboard.shutdown();
         _source.removeEventListener(Event.UNLOAD, handleUnload);
         _source.root.loaderInfo.removeEventListener(Event.UNLOAD, handleUnload);
+    }
+
+    protected function createPreferences () :Preferences
+    {
+        throw new Error("createPreferences must be implemented in subclass");
     }
 
     protected var _source :Sprite;
