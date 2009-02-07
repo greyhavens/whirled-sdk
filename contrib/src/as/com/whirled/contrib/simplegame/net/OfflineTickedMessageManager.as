@@ -95,7 +95,8 @@ public class OfflineTickedMessageManager
         // no-op - we never need to serialize or deserialize messages
     }
 
-    public function sendMessage (msg :Message, playerId :int = NetSubControl.TO_ALL) :void
+    public function sendMessage (
+            msg :Message, playerId :int = 0 /* == NetSubControl.TO_ALL */) :void
     {
         // add any actions received during this tick
         var array :Array = (_ticks[_ticks.length - 1] as Array);

@@ -68,7 +68,7 @@ public interface TickedMessageManager extends Updatable
     /**
      * Sends a message to the specified players.
      */
-    function sendMessage (msg :Message, playerId :int = NetSubControl.TO_ALL) :void;
+    function sendMessage (msg :Message, playerId :int = 0 /* == NetSubControl.TO_ALL */) :void;
 
     /**
      * @return true if a call to sendMessage() will succeed. Games generally don't need to be

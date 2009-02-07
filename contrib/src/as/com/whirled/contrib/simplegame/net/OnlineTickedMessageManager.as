@@ -116,7 +116,8 @@ public class OnlineTickedMessageManager
         }
     }
 
-    public function sendMessage (msg :Message, playerId :int = NetSubControl.TO_ALL) :void
+    public function sendMessage (
+            msg :Message, playerId :int = 0 /* == NetSubControl.TO_ALL */) :void
     {
         // do we need to queue this message?
         var addToQueue :Boolean = ((_pendingSends.length > 0) || (!canSendMessageNow()));
