@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.platformer.display {
 
+import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.GradientType;
 import flash.display.MovieClip;
@@ -111,7 +112,11 @@ public class PieceSpriteFactory
         if (pclass == null) {
             pclass = _defaultPieceSprite;
         }
-
+        if (!_duplicate) {
+            var ps :PieceSprite = new pclass(p, null, true);
+            ps.setBitmap(instantiatePBitmap(p));
+            return ps;
+        }
         return new pclass(p, instantiatePClip(p)) as PieceSprite;
     }
 
@@ -145,19 +150,56 @@ public class PieceSpriteFactory
             return null;
         }
         var ret :DisplayObject;
+        /*
         if (!_duplicate) {
             ret = _instanceMap.get(p.sprite);
         }
+        */
         if (ret == null) {
             ret = instantiateClip(p.sprite);
             if (ret == null) {
                 ret = blockShape(p.width, p.height, -p.width/2);
             }
+            /*
             if (!_duplicate) {
                 _instanceMap.put(p.sprite, ret);
             }
+            */
         }
         return ret;
+    }
+
+    public static function instantiatePBitmap (p :Piece) :BitmapData
+    {
+        if (p.sprite == null || p.sprite == "") {
+            return null;
+        }
+        var arr :Array = _instanceMap[p.sprite];
+        if (arr == null) {
+            arr = new Array(2);
+            _instanceMap[p.sprite] = arr;
+        }
+        var bd :BitmapData = arr[p.orient];
+        if (bd == null) {
+            var disp :DisplayObject = instantiateClip(p.sprite);
+            if (disp == null) {
+                disp = blockShape(p.width, p.height, -p.width/2);
+            }
+            //bd = new BitmapData(p.width * Metrics.TILE_SIZE, p.height * Metrics.TILE_SIZE, true, 0x00000000);
+            bd = new BitmapData((p.width + 2) * Metrics.TILE_SIZE,
+                    (p.height + 2) * Metrics.TILE_SIZE, true, 0x00000000);
+            var mat :Matrix = new Matrix();
+            if (p.orient == 0) {
+                mat.translate(Metrics.TILE_SIZE, (p.height + 1) * Metrics.TILE_SIZE);
+            } else {
+                mat.scale(-1, 1);
+                mat.translate(
+                    (p.width + 1) * Metrics.TILE_SIZE, (p.height + 1) * Metrics.TILE_SIZE);
+            }
+            bd.draw(disp, mat);
+            arr[p.orient] = bd;
+        }
+        return bd;
     }
 
     public static function instantiateDClip (d :Dynamic) :DisplayObject
@@ -246,9 +288,10 @@ public class PieceSpriteFactory
 
     protected static var _duplicate :Boolean;
     protected static var _spriteMap :HashMap = new HashMap();
-    protected static var _instanceMap :HashMap = new HashMap();
+    protected static var _instanceMap :Object = new Object();
     protected static var _defaultPieceSprite :Class;
     protected static var _defaultDynamicSprite :Class;
+    protected static var _mat :Matrix;
 
     protected static var _contentDomain :ApplicationDomain = new ApplicationDomain(null);
 

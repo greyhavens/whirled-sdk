@@ -20,9 +20,11 @@
 
 package com.whirled.contrib.platformer.display {
 
+import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.display.Shape;
+import flash.geom.Matrix;
 
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.util.Metrics;
@@ -32,19 +34,25 @@ import com.whirled.contrib.platformer.util.Metrics;
  */
 public class PieceSprite extends Sprite
 {
-    public function PieceSprite (piece :Piece, disp :DisplayObject = null)
+    public function PieceSprite (piece :Piece, disp :DisplayObject = null, bitmap :Boolean = false)
     {
+        _bitmap = bitmap;
         _piece = piece;
-        _disp = disp;
-        if (_disp != null) {
-            _disp.cacheAsBitmap = true;
-            addChild(_disp);
+        if (!bitmap) {
+            _disp = disp;
+            if (_disp != null) {
+                _disp.cacheAsBitmap = true;
+                addChild(_disp);
+            }
+            update();
         }
-        update();
     }
 
     public function update () :void
     {
+        if (_bitmap) {
+            return;
+        }
         this.x = _piece.x * Metrics.TILE_SIZE;
         this.y = -_piece.y * Metrics.TILE_SIZE;
         updateDisp();
@@ -62,6 +70,16 @@ public class PieceSprite extends Sprite
     {
         updateDisp();
         return _disp;
+    }
+
+    public function getBitmap () :BitmapData
+    {
+        return _bd;
+    }
+
+    public function setBitmap (bd :BitmapData) :void
+    {
+        _bd = bd;
     }
 
     public function showDetails (show :Boolean) :void
@@ -103,5 +121,7 @@ public class PieceSprite extends Sprite
     protected var _piece :Piece;
     protected var _disp : DisplayObject;
     protected var _details :Sprite;
+    protected var _bd :BitmapData;
+    protected var _bitmap :Boolean;
 }
 }

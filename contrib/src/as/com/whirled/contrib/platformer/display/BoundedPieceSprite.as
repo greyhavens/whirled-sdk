@@ -32,9 +32,10 @@ import com.whirled.contrib.platformer.util.Metrics;
 
 public class BoundedPieceSprite extends PieceSprite
 {
-    public function BoundedPieceSprite (p :BoundedPiece, disp :DisplayObject = null)
+    public function BoundedPieceSprite (
+            p :BoundedPiece, disp :DisplayObject = null, bitmap :Boolean = true)
     {
-        super(p, disp);
+        super(p, disp, bitmap);
         _bpiece = p;
     }
 

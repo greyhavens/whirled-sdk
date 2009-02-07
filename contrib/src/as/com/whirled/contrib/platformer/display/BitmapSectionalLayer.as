@@ -144,19 +144,32 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
     {
         bd.fillRect(new Rectangle(0, 0, bd.width, bd.height), 0);
         var sh :int = _sindex.getSectionHeight();
-        var offx :int = _sindex.getSectionX(idx) * _sindex.getSectionWidth();
+        var sw :int = _sindex.getSectionWidth();
+        var offx :int = _sindex.getSectionX(idx) * sw;
         var offy :int = _sindex.getSectionY(idx) * sh;
         for each (var ps :PieceSprite in _sections[idx]) {
-            var disp :DisplayObject = ps.getDisp();
-            if (disp == null) {
+            var bitmap :BitmapData = ps.getBitmap();
+            if (bitmap == null) {
                 continue;
             }
             var p :Piece = ps.getPiece();
+            //var x :int = p.x - 1 - offx;
+            //var y :int = sh + offy - p.y - p.height - 2;
+            var x :int = offx - p.x + 1;
+            var y :int = sh + offy - p.y - p.height - 1;
+            var r :Rectangle = new Rectangle(Math.max(x, 0) * Metrics.TILE_SIZE,
+                Math.max(-y, 0) * Metrics.TILE_SIZE,
+                Math.min(bitmap.width, (sw - Math.max(-x, 0)) * Metrics.TILE_SIZE),
+                Math.min(bitmap.height, (sh - Math.max(y, 0)) * Metrics.TILE_SIZE));
+            var pt :Point = new Point(Math.max(-x, 0) * Metrics.TILE_SIZE, Math.max(y, 0) * Metrics.TILE_SIZE);
+            bd.copyPixels(bitmap, r, pt, null, null, true);
+            /*
             var mat :Matrix = disp.transform.matrix.clone();
             mat.translate((p.x - offx) * Metrics.TILE_SIZE, (sh - p.y + offy) * Metrics.TILE_SIZE);
 //            trace("drawing piece (" + p.x + ", " + p.y + ") to translation (" + mat.tx + ", " +
 //                mat.ty + ")");
             bd.draw(disp, mat);
+            */
         }
     }
 
