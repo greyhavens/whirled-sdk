@@ -30,6 +30,7 @@ import mx.events.ListEvent;
 import mx.events.FlexEvent;
 
 import com.threerings.util.ClassUtil;
+import com.threerings.util.Enum;
 
 import com.whirled.contrib.platformer.board.Board;
 
@@ -59,6 +60,11 @@ public class DynamicTree extends BaseTree
                         }
                     } else if (dobj[cxml.@id] is Array) {
                         if (dobj[cxml.@id].join(",") != cxml.@value) {
+                            def = null;
+                            break;
+                        }
+                    } else if (dobj[cxml.@id] is Enum) {
+                        if (dobj[cxml.@id].name() != cxml.@value) {
                             def = null;
                             break;
                         }
