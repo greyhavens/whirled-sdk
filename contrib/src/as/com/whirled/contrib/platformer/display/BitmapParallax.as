@@ -51,6 +51,11 @@ public class BitmapParallax
         //trace("BP: " + rect + " source: (" + bd.width + ", " + bd.height + ")");
     }
 
+    public function shutdown () :void
+    {
+        bd.dispose();
+    }
+
     public function update (nX :Number, nY :Number) :void
     {
         nY -= ClientPlatformerContext.boardSprite.minY * Metrics.TILE_SIZE;

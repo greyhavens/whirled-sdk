@@ -47,6 +47,11 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
         addChild(new Bitmap(_bd));
     }
 
+    override public function shutdown () :void
+    {
+        clear();
+    }
+
     override public function addPieceSprite (ps :PieceSprite) :void
     {
         var p :Piece = ps.getPiece();

@@ -52,6 +52,14 @@ public class DynamicSpriteLayer extends Layer
         }
     }
 
+    override public function shutdown () :void
+    {
+        for each (var ds :DynamicSprite in _dynamics) {
+            removeDS(ds);
+            ds.shutdown();
+        }
+    }
+
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         super.update(nX, nY);

@@ -166,14 +166,15 @@ public class PieceSpriteFactory
             arr = new Array(2);
             _instanceMap[p.sprite] = arr;
         }
-        var bd :BitmapData = arr[p.orient];
-        if (bd == null) {
+        var wrapper :BDWrapper = arr[p.orient];
+        if (wrapper == null) {
             var disp :DisplayObject = instantiateClip(p.sprite);
             if (disp == null) {
                 disp = blockShape(p.width, p.height, -p.width/2);
             }
             //bd = new BitmapData(p.width * Metrics.TILE_SIZE, p.height * Metrics.TILE_SIZE, true, 0x00000000);
-            bd = new BitmapData((p.width + 2) * Metrics.TILE_SIZE,
+            wrapper = new BDWrapper();
+            wrapper.bd = new BitmapData((p.width + 2) * Metrics.TILE_SIZE,
                     (p.height + 2) * Metrics.TILE_SIZE, true, 0x00000000);
             var mat :Matrix = new Matrix();
             if (p.orient == 0) {
@@ -183,10 +184,40 @@ public class PieceSpriteFactory
                 mat.translate(
                     (p.width + 1) * Metrics.TILE_SIZE, (p.height + 1) * Metrics.TILE_SIZE);
             }
-            bd.draw(disp, mat);
-            arr[p.orient] = bd;
+            wrapper.bd.draw(disp, mat);
+            arr[p.orient] = wrapper;
         }
-        return bd;
+        wrapper.isOld = false;
+        return wrapper.bd;
+    }
+
+    public static function markOldBitmaps () :void
+    {
+        if (_duplicate) {
+            return;
+        }
+        for each (var arr :Array in _instanceMap) {
+            for each (var wrapper :BDWrapper in arr) {
+                if (wrapper != null) {
+                    wrapper.isOld = true;
+                }
+            }
+        }
+    }
+
+    public static function clearOldBitmaps () :void
+    {
+        if (_duplicate) {
+            return;
+        }
+        for each (var arr :Array in _instanceMap) {
+            for (var ii :int; ii < arr.length; ii++) {
+                if (arr[ii] != null && arr[ii].isOld) {
+                    arr[ii].bd.dispose();
+                    arr[ii] = null;
+                }
+            }
+        }
     }
 
     public static function instantiateDClip (d :Dynamic) :DisplayObject
@@ -286,4 +317,12 @@ public class PieceSpriteFactory
 
     private static const log :Log = Log.getLog(PieceSpriteFactory);
 }
+}
+
+import flash.display.BitmapData;
+
+class BDWrapper
+{
+    public var bd :BitmapData;
+    public var isOld :Boolean;
 }

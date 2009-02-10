@@ -57,6 +57,13 @@ public class BitmapParallaxBackground extends Layer
         ClientPlatformerContext.prefs.backgroundScrolling = enabled;
     }
 
+    override public function shutdown () :void
+    {
+        for each (var layer :BitmapParallax in _layers) {
+            layer.shutdown();
+        }
+    }
+
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         if (!_enabled && _hasDrawn) {

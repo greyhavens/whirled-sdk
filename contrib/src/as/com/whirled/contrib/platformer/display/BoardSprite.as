@@ -103,7 +103,9 @@ public class BoardSprite extends Sprite
                 new BitmapSectionalLayer(3, 3);
                 //new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
         addChild(_layers[FRONT_LEVEL_LAYER]);
+        PieceSpriteFactory.markOldBitmaps();
         addPieces(_board.getPieces());
+        PieceSpriteFactory.clearOldBitmaps();
         initBounds();
         centerOn(0, 0);
     }
@@ -114,6 +116,10 @@ public class BoardSprite extends Sprite
         _board.removeEventListener(Board.SHOT_ADDED, handleDynamicAdded);
         _board.removeEventListener(Board.DYNAMIC_ADDED, handleDynamicAdded);
         _board.removeEventListener(Board.DYNAMIC_REMOVED, handleDynamicRemoved);
+        for each (var layer :Layer in _layers) {
+            layer.shutdown();
+            removeChild(layer);
+        }
     }
 
     public function moveDelta (dX :Number, dY :Number) :void

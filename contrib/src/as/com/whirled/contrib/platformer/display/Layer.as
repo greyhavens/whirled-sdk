@@ -37,6 +37,10 @@ public class Layer extends Sprite
         }
     }
 
+    public function shutdown () :void
+    {
+    }
+
     /** Set to true and all coordinates will be floored. */
     protected var _snapToPixel :Boolean = true;
 }
