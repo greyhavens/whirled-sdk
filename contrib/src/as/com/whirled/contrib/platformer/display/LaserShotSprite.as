@@ -24,6 +24,7 @@ import flash.display.DisplayObject;
 import flash.display.Sprite;
 
 import com.whirled.contrib.platformer.piece.LaserShot;
+import com.whirled.contrib.platformer.util.Effect;
 import com.whirled.contrib.platformer.util.Metrics;
 
 public class LaserShotSprite extends ShotSprite
@@ -39,15 +40,15 @@ public class LaserShotSprite extends ShotSprite
     override public function update (delta :Number) :void
     {
         if (_ls.hit && stage != null) {
-            var effect :String = _ls.length < 1 ? _ls.wallEffect : _ls.laserEffect;
-            generateParticleEffect(effect, this, false, null, null, _ls.length);
+            var effect :Effect = _ls.length < 1 ? _ls.wallEffect : _ls.laserEffect;
+            generateEffect(effect, this, null, _ls.length);
             if (_ls.hits != null) {
                 var node :Sprite = new Sprite();
                 addChild(node);
                 node.rotation = - this.rotation;
                 for each (var dist :Number in _ls.hits) {
                     node.y = -dist * _ls.length * 24 * Metrics.TILE_SIZE;
-                    generateParticleEffect(_ls.hitEffect, node);
+                    generateEffect(_ls.hitEffect, node);
                     trace("generating " + _ls.hitEffect + " at " + dist);
                 }
             }

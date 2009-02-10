@@ -18,15 +18,18 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.piece {
+package com.whirled.contrib.platformer.util {
 
-import com.whirled.contrib.platformer.util.Effect;
-
-public class LaserShot extends Shot
+public interface Effect
 {
-    public var length :Number;
-    public var laserEffect :Effect;
-    public var wallEffect :Effect;
-    public var hits :Array;
+    function get effect () :String;
+
+    function get back () :Boolean;
+
+    function get recolor () :String;
+
+    function shouldShow (effectLevel :int) :Boolean;
+
+    function toString () :String;
 }
 }

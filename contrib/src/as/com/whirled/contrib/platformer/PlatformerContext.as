@@ -39,6 +39,7 @@ public class PlatformerContext
     public static var local :Boolean;
     public static var persist :PersistenceManager;
     public static var myId :int;
+    public static var effectEnum :Class;
 
     public static function get inControl () :Boolean
     {

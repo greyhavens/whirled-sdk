@@ -22,7 +22,10 @@ package com.whirled.contrib.platformer.piece {
 
 import flash.utils.ByteArray;
 
+import com.threerings.util.Enum;
+
 import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.util.Effect;
 
 public class Spawner extends RectDynamic
 {
@@ -36,7 +39,7 @@ public class Spawner extends RectDynamic
     public var spawnDelay :Number;
     public var deathInterval :Number;
     public var destructable :Boolean;
-    public var deathEffect :String;
+    public var deathEffect :Effect;
     public var offX :Number;
     public var spawns :Array;
     public var disabled :Boolean;
@@ -54,7 +57,8 @@ public class Spawner extends RectDynamic
                 sprite = insxml.@sprite;
             }
             if (insxml.hasOwnProperty("@deathEffect")) {
-                deathEffect = insxml.@deathEffect;
+                deathEffect =
+                    Enum.valueOf(PlatformerContext.effectEnum, insxml.@deathEffect) as Effect;
             }
             width = insxml.hasOwnProperty("@width") ? insxml.@width : 1;
             height = insxml.hasOwnProperty("@height") ? insxml.@height : 1;
@@ -154,7 +158,7 @@ public class Spawner extends RectDynamic
             xml.appendChild(spawnXML);
         }
         if (deathEffect != null) {
-            xml.@deathEffect = deathEffect;
+            xml.@deathEffect = deathEffect.toString();
         }
         xml.@destructable = destructable;
         xml.@health = health;

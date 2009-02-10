@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import com.whirled.contrib.platformer.util.Effect;
+
 /**
  * A base class for shots as dynamic objects.
  */
@@ -30,8 +32,9 @@ public class Shot extends Dynamic
     public var hit :Boolean = false;
     public var miss :Boolean = false;
     public var bigHit :Boolean = false;
-    public var hitEffect :String;
-    public var missEffect :String;
+    public var hitEffect :Effect;
+    public var missEffect :Effect;
+    public var airEffect :Effect;
     public var force :Number = 0;
     public var source :int = 0;
     public var rotateHit :Boolean = false;

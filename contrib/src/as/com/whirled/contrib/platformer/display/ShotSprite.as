@@ -70,18 +70,18 @@ public class ShotSprite extends DynamicSprite
         } else {
             rotation = 0;
         }
-        generateParticleEffect(_shot.hitEffect, this);
+        generateEffect(_shot.hitEffect, this);
     }
 
     protected function displayMiss () :void
     {
         rotation += 180;
-        generateParticleEffect(_shot.missEffect, this);
+        generateEffect(_shot.missEffect, this);
     }
 
     protected function displayAir () :void
     {
-        generateParticleEffect("miss_air", this);
+        generateEffect(_shot.airEffect, this);
     }
 
     protected var _shot :Shot;

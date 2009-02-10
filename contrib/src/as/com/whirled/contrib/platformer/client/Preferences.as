@@ -51,5 +51,15 @@ public class Preferences extends Config
     {
         setValue("backgroundScrolling", scroll);
     }
+
+    public function get effectLevel () :int
+    {
+        return getValue("effectLevel", 0) as int;
+    }
+
+    public function set effectLevel (level :int) :void
+    {
+        setValue("effectLevel", level);
+    }
 }
 }

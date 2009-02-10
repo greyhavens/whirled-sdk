@@ -53,7 +53,7 @@ public class SpawnerSprite extends DynamicSprite
             var node :Sprite = new Sprite;
             node.x = _spawner.width/2 * Metrics.TILE_SIZE;
             (_disp as DisplayObjectContainer).addChild(node);
-            generateParticleEffect(_spawner.deathEffect, node);
+            generateEffect(_spawner.deathEffect, node);
             _state = DEAD;
         } else if (_spawner.spawning > 0) {
             changeState(SPAWN);

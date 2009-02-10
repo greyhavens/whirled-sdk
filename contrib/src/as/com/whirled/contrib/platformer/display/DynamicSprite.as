@@ -34,7 +34,9 @@ import flash.geom.Point;
 import flash.geom.Transform;
 
 import com.whirled.contrib.ColorMatrix;
+import com.whirled.contrib.platformer.client.ClientPlatformerContext;
 import com.whirled.contrib.platformer.piece.Dynamic;
+import com.whirled.contrib.platformer.util.Effect;
 import com.whirled.contrib.platformer.util.Metrics;
 
 public class DynamicSprite extends Sprite
@@ -182,12 +184,15 @@ public class DynamicSprite extends Sprite
         }
     }
 
-    protected function generateParticleEffect (
-            name :String, node :DisplayObject, back :Boolean = false,
-            recolor :String = null, filter :ColorMatrixFilter = null, scaleY :Number = 1) :void
+    protected function generateEffect (
+            effect :Effect, node :DisplayObject, filter :ColorMatrixFilter = null,
+            scaleY :Number = 1) :void
     {
-        if (_particleCallback != null && stage != null && node != null && name != null) {
-            var cw :CacheWrapper = PieceSpriteFactory.loadCacheWrapper(name);
+        if (_particleCallback != null && stage != null && node != null && effect != null) {
+            if (!effect.shouldShow(ClientPlatformerContext.prefs.effectLevel)) {
+                return;
+            }
+            var cw :CacheWrapper = PieceSpriteFactory.loadCacheWrapper(effect.effect);
             //var disp :DisplayObject = PieceSpriteFactory.instantiateClip(name);
             if (cw == null) {
                 return;
@@ -199,8 +204,8 @@ public class DynamicSprite extends Sprite
             apt = apt.subtract(opt);
             apt.normalize(1);
             cw.disp.rotation = -90 + (Math.atan2(apt.y, apt.x) - Math.atan2(0, -1)) * 180 / Math.PI;
-            cw.recolor(recolor, filter);
-            _particleCallback(cw, pt, back);
+            cw.recolor(effect.recolor, filter);
+            _particleCallback(cw, pt, effect.back);
         }
     }
 
