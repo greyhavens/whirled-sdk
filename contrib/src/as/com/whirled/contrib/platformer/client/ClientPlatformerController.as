@@ -25,6 +25,7 @@ import flash.events.Event;
 
 import com.whirled.contrib.platformer.PlatformerController;
 import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.sound.SoundController;
 
 public class ClientPlatformerController extends PlatformerController
 {
@@ -43,6 +44,7 @@ public class ClientPlatformerController extends PlatformerController
             ClientPlatformerContext.prefs = createPreferences();
             PlatformerContext.gctrl.local.setStageQuality(
                     ClientPlatformerContext.prefs.stageQuality);
+            ClientPlatformerContext.sound = new SoundController();
         }
     }
 
@@ -50,6 +52,7 @@ public class ClientPlatformerController extends PlatformerController
     {
         shutdown();
         ClientPlatformerContext.keyboard.shutdown();
+        ClientPlatformerContext.sound.shutdown();
         _source.removeEventListener(Event.UNLOAD, handleUnload);
         _source.root.loaderInfo.removeEventListener(Event.UNLOAD, handleUnload);
     }
