@@ -117,7 +117,7 @@ public class PieceSpriteFactory
             ps.setBitmap(instantiatePBitmap(p));
             return ps;
         }
-        return new pclass(p, instantiatePClip(p)) as PieceSprite;
+        return new pclass(p, instantiatePClip(p), false) as PieceSprite;
     }
 
     public static function getDynamicSprite (d :Dynamic) :DynamicSprite
@@ -149,22 +149,9 @@ public class PieceSpriteFactory
         if (p.sprite == null || p.sprite == "") {
             return null;
         }
-        var ret :DisplayObject;
-        /*
-        if (!_duplicate) {
-            ret = _instanceMap.get(p.sprite);
-        }
-        */
+        var ret :DisplayObject = instantiateClip(p.sprite);
         if (ret == null) {
-            ret = instantiateClip(p.sprite);
-            if (ret == null) {
-                ret = blockShape(p.width, p.height, -p.width/2);
-            }
-            /*
-            if (!_duplicate) {
-                _instanceMap.put(p.sprite, ret);
-            }
-            */
+            ret = blockShape(p.width, p.height, -p.width/2);
         }
         return ret;
     }

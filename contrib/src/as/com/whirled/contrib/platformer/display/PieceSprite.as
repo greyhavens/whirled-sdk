@@ -34,11 +34,12 @@ import com.whirled.contrib.platformer.util.Metrics;
  */
 public class PieceSprite extends Sprite
 {
-    public function PieceSprite (piece :Piece, disp :DisplayObject = null, bitmap :Boolean = false)
+    public function PieceSprite (
+            piece :Piece, disp :DisplayObject = null, asBitmap :Boolean = false)
     {
-        _bitmap = bitmap;
+        _bitmap = asBitmap;
         _piece = piece;
-        if (!bitmap) {
+        if (!_bitmap) {
             _disp = disp;
             if (_disp != null) {
                 _disp.cacheAsBitmap = true;
