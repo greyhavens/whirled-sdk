@@ -55,11 +55,11 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
     override public function addPieceSprite (ps :PieceSprite) :void
     {
         var p :Piece = ps.getPiece();
-        for (var xx :int = _sindex.getSectionXFromTile(p.x - 1),
-             xn :int = _sindex.getSectionXFromTile(p.x + p.width + 1);
+        for (var xx :int = _sindex.getSectionXFromTile(p.sX),
+             xn :int = _sindex.getSectionXFromTile(p.sX + p.sWidth);
              xx <= xn; xx++) {
-            for (var yy :int = _sindex.getSectionYFromTile(p.y - 1),
-                 yn :int = _sindex.getSectionYFromTile(p.y + p.height + 1);
+            for (var yy :int = _sindex.getSectionYFromTile(p.sY),
+                 yn :int = _sindex.getSectionYFromTile(p.sY + p.sHeight);
                  yy <= yn; yy++) {
                 var idx :int = _sindex.getSectionIndex(xx, yy);
                 if (_sections[idx] == null) {
@@ -160,8 +160,8 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
             var p :Piece = ps.getPiece();
             //var x :int = p.x - 1 - offx;
             //var y :int = sh + offy - p.y - p.height - 2;
-            var x :int = offx - p.x + 1;
-            var y :int = sh + offy - p.y - p.height - 1;
+            var x :int = offx - (p.orient == 0 ? p.sX : p.x - (p.nudgeW ? 1 : 0));
+            var y :int = sh + offy - p.y - p.height - (p.nudgeH ? 1 : 0);
             var r :Rectangle = new Rectangle(Math.max(x, 0) * Metrics.TILE_SIZE,
                 Math.max(-y, 0) * Metrics.TILE_SIZE,
                 Math.min(bitmap.width, (sw - Math.max(-x, 0)) * Metrics.TILE_SIZE),

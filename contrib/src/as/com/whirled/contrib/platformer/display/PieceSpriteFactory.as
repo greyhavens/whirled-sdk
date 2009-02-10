@@ -174,15 +174,16 @@ public class PieceSpriteFactory
             }
             //bd = new BitmapData(p.width * Metrics.TILE_SIZE, p.height * Metrics.TILE_SIZE, true, 0x00000000);
             wrapper = new BDWrapper();
-            wrapper.bd = new BitmapData((p.width + 2) * Metrics.TILE_SIZE,
-                    (p.height + 2) * Metrics.TILE_SIZE, true, 0x00000000);
+            wrapper.bd = new BitmapData((p.sWidth) * Metrics.TILE_SIZE,
+                    (p.sHeight) * Metrics.TILE_SIZE, true, 0x00000000);
             var mat :Matrix = new Matrix();
             if (p.orient == 0) {
-                mat.translate(Metrics.TILE_SIZE, (p.height + 1) * Metrics.TILE_SIZE);
+                mat.translate(p.nudgeX ? Metrics.TILE_SIZE : 0,
+                        (p.sHeight - (p.nudgeY ? 1 : 0)) * Metrics.TILE_SIZE);
             } else {
                 mat.scale(-1, 1);
-                mat.translate(
-                    (p.width + 1) * Metrics.TILE_SIZE, (p.height + 1) * Metrics.TILE_SIZE);
+                mat.translate((p.width + (p.nudgeW ? 1 : 0)) * Metrics.TILE_SIZE,
+                        (p.sHeight - (p.nudgeY ? 1 : 0)) * Metrics.TILE_SIZE);
             }
             wrapper.bd.draw(disp, mat);
             arr[p.orient] = wrapper;

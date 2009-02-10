@@ -38,6 +38,12 @@ public class Piece
     public var height :int;
     public var width :int;
 
+    /** The piece sprite bound offsets. */
+    public var nudgeX :Boolean;
+    public var nudgeY :Boolean;
+    public var nudgeW :Boolean;
+    public var nudgeH :Boolean;
+
     /** The piece type. */
     public var type :String = "";
 
@@ -54,6 +60,10 @@ public class Piece
             height = defxml.@height;
             width = defxml.@width;
             sprite = defxml.@sprite;
+            nudgeX = defxml.@nudgeX == "true";
+            nudgeY = defxml.@nudgeY == "true";
+            nudgeW = defxml.@nudgeW == "true";
+            nudgeH = defxml.@nudgeH == "true";
         }
         if (insxml != null) {
             if (defxml == null) {
@@ -67,6 +77,26 @@ public class Piece
         }
     }
 
+    public function get sX () :int
+    {
+        return x - (nudgeX ? 1 : 0);
+    }
+
+    public function get sY () :int
+    {
+        return y - (nudgeY ? 1 : 0);
+    }
+
+    public function get sWidth () :int
+    {
+        return width + (nudgeX ? 1 : 0) + (nudgeW ? 1 : 0);
+    }
+
+    public function get sHeight () :int
+    {
+        return height + (nudgeY ? 1 : 0) + (nudgeH ? 1 : 0);
+    }
+
     /**
      * Get the XML piece definition.
      */
@@ -78,6 +108,10 @@ public class Piece
         xml.@width = width;
         xml.@height = height;
         xml.@sprite = sprite;
+        xml.@nudgeX = nudgeX;
+        xml.@nudgeY = nudgeY;
+        xml.@nudgeW = nudgeW;
+        xml.@nudgeH = nudgeH;
         return xml;
     }
 

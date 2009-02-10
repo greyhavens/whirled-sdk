@@ -95,14 +95,12 @@ public class PieceEditDetails extends Canvas
             _details = new Array();
             var xmlDef :XML = p.xmlDef();
             for each (var attr :XML in xmlDef.attributes()) {
-                var dfunc :Function = _detailTypes.get(attr.name().toString());
-                var detail :Detail = (dfunc == null ? new TextDetail(attr) : dfunc(attr) as Detail);
+                var detail :Detail = getDetail(attr);
                 _details.push(detail);
                 _detailsBox.addChild(detail.createBox());
             }
             for each (var child :XML in xmlDef.children()) {
-                dfunc = _detailTypes.get(child.name().toString());
-                detail = (dfunc == null ? new TextDetail(child) : dfunc(child) as Detail);
+                detail = getDetail(child);
                 _details.push(detail);
                 _detailsBox.addChild(detail.createBox());
             }
@@ -154,6 +152,19 @@ public class PieceEditDetails extends Canvas
     protected function deletePiece (...ignored) :void
     {
         _pfac.deletePiece(_p);
+    }
+
+    protected function getDetail (attr :XML) :Detail
+    {
+        var name :String = attr.name().toString();
+        var dfunc :Function = _detailTypes.get(name);
+        if (dfunc != null) {
+            return dfunc(attr) as Detail
+        }
+        if (name.indexOf("nudge") == 0) {
+            return new CheckDetail(attr);
+        }
+        return new TextDetail(attr);
     }
 
     protected function initDetails () :void

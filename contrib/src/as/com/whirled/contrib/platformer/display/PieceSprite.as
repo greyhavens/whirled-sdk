@@ -112,6 +112,13 @@ public class PieceSprite extends Sprite
     protected function createDetails () :void
     {
         _details = new Sprite();
+        if (_piece.nudgeX || _piece.nudgeY || _piece.nudgeH || _piece.nudgeW) {
+            _details.graphics.lineStyle(0, 0xDD00DD);
+            _details.graphics.drawRect(
+                    (_piece.nudgeX ? -1 : 0) * Metrics.TILE_SIZE,
+                    (_piece.nudgeY ? 1 : 0) * Metrics.TILE_SIZE,
+                    _piece.sWidth * Metrics.TILE_SIZE, -_piece.sHeight * Metrics.TILE_SIZE);
+        }
         if (_piece.width > 0 && _piece.height > 0) {
             _details.graphics.lineStyle(0, 0x0000DD);
             _details.graphics.drawRect(
