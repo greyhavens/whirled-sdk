@@ -27,7 +27,6 @@ import com.whirled.contrib.platformer.game.GameController;
 import com.whirled.contrib.platformer.net.MessageManager;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 import com.whirled.contrib.platformer.persist.PersistenceManager;
-import com.whirled.contrib.platformer.sound.SoundController;
 
 public class PlatformerContext
 {
