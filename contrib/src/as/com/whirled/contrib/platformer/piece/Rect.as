@@ -94,6 +94,11 @@ public class Rect
             y <= other.y && y + height >= other.y + other.height;
     }
 
+    public function containsPoint (px :Number, py :Number) :Boolean
+    {
+        return x <= px && x + width >= px && y <= py && y + height >= py;
+    }
+
     public function toString () :String
     {
         return "rect: (" + x.toFixed(3) + ", " + y.toFixed(3) + ", " +

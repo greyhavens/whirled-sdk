@@ -25,24 +25,37 @@ import flash.utils.getTimer;
 
 public class BitmapPool
 {
-    public function BitmapPool (size :int, width :int, height :int, generator :Function)
+    public function BitmapPool (
+            size :int, width :int, height :int, generator :Function, heuristic :Function = null)
     {
         _pool = new Array(size);
         _lookup = new Array();
         _width = width;
         _height = height;
         _generator = generator;
+        _heuristic = heuristic;
     }
 
     public function getBitmap (idx :int) :BitmapData
     {
         var cache :PoolCache;
-        if (_lookup[idx] == null || _pool[_lookup[idx]].idx != idx) {
+        _read++;
+        if (!inPool(idx)) {
             _lookup[idx] = generateBitmap(idx);
         }
         cache = _pool[_lookup[idx]];
         cache.hit = getTimer();
         return cache.bd;
+    }
+
+    public function inPool (idx :int) :Boolean
+    {
+        return (_lookup[idx] != null && _pool[_lookup[idx]].idx == idx);
+    }
+
+    public function ratio () :Number
+    {
+        return _miss/_read;
     }
 
     public function clear () :void
@@ -53,6 +66,8 @@ public class BitmapPool
                 _pool[ii] = null;
             }
         }
+        _miss = 0;
+        _read = 0;
     }
 
     public function clearIndex (idx :int) :void
@@ -69,6 +84,7 @@ public class BitmapPool
      */
     protected function generateBitmap (idx :int) :int
     {
+        _miss++;
         var cache :PoolCache;
         var jj :int;
         for (var ii :int = 0, ll :int = _pool.length; ii < ll; ii++) {
@@ -77,6 +93,11 @@ public class BitmapPool
                 _pool[ii] = cache;
                 jj = ii;
                 break;
+            } else if (_heuristic != null) {
+                if (_heuristic(cache, _pool[ii])) {
+                    cache = _pool[ii];
+                    jj = ii;
+                }
             } else if (cache == null || cache.hit > _pool[ii].hit) {
                 cache = _pool[ii];
                 jj = ii;
@@ -97,16 +118,10 @@ public class BitmapPool
     protected var _pool :Array;
     protected var _lookup :Array;
     protected var _generator :Function;
+    protected var _heuristic :Function;
     protected var _width :int;
     protected var _height :int;
+    protected var _miss :int;
+    protected var _read :int;
 }
-}
-
-import flash.display.BitmapData;
-
-class PoolCache
-{
-    public var idx :int;
-    public var hit :int;
-    public var bd :BitmapData;
 }

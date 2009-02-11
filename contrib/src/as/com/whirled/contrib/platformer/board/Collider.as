@@ -224,7 +224,7 @@ public class Collider
         if (db != null) {
             _dynamics[d.id] = db;
             var arr :Array = getDynamicBoundsByType(d.inter);
-            trace("adding bounds for (" + d.id + ") of type: " + d.inter);
+            //trace("adding bounds for (" + d.id + ") of type: " + d.inter);
             arr.push(db);
         }
         var task :ColliderTask = dc.getTask();
@@ -277,7 +277,6 @@ public class Collider
             if (idx != -1) {
                 arr.splice(idx, 1);
             }
-            trace("dynamic(" + d.id + ") removed inter: " + d.inter + " remaining bounds: " + arr.length);
         }
         for (var ii :int = 0; ii < _tasks.length; ii++) {
             if (_tasks[ii].getController() == dc) {

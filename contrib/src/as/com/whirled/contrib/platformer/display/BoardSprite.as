@@ -89,7 +89,7 @@ public class BoardSprite extends Sprite
         }
 
         _layers[LEVEL_LAYER] =
-                new BitmapSectionalLayer(4, 4);
+                new BitmapSectionalLayer(4, 4, true);
                 //new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
         //_layers[LEVEL_LAYER] = new PieceSpriteLayer();
         addChild(_layers[LEVEL_LAYER]);

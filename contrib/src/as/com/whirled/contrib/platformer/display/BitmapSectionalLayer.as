@@ -29,20 +29,24 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 
 import com.whirled.contrib.platformer.piece.Piece;
+import com.whirled.contrib.platformer.piece.Rect;
 import com.whirled.contrib.platformer.util.Metrics;
 import com.whirled.contrib.platformer.util.SectionalIndex;
 
 public class BitmapSectionalLayer extends PieceSpriteLayer
 {
-    public function BitmapSectionalLayer (secWidth :int, secHeight :int)
+    public function BitmapSectionalLayer (secWidth :int, secHeight :int, doPreload :Boolean = false)
     {
         _sindex = new SectionalIndex(secWidth, secHeight);
+        if (doPreload) {
+            _preload = 1;
+        }
         _bd = new BitmapData(Metrics.DISPLAY_WIDTH, Metrics.DISPLAY_HEIGHT, true, 0x00000000);
         var width :int = Math.ceil(Metrics.WINDOW_WIDTH / secWidth);
         var height :int = Math.ceil(Metrics.WINDOW_HEIGHT / secHeight);
         var poolSize :int = width * height * 9 + 1;
         _pool = new BitmapPool(poolSize, secWidth * Metrics.TILE_SIZE,
-                secHeight * Metrics.TILE_SIZE, generateBitmap);
+                secHeight * Metrics.TILE_SIZE, generateBitmap, heuristic);
         //        10, secWidth * Metrics.TILE_SIZE, secHeight * Metrics.TILE_SIZE, generateBitmap);
         addChild(new Bitmap(_bd));
     }
@@ -75,7 +79,7 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
 
     override public function clear () :void
     {
-        _sections = new Array();
+        _sections = new Object();
         _pool.clear();
     }
 
@@ -86,10 +90,17 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
         if (_oldnX == sx && _oldnY == sy) {
             return;
         }
+        _deltaX = sx - _oldnX;
+        _deltaY = sy - _oldnY;
         _oldnX = sx;
         _oldnY = sy;
         sx /= Metrics.TILE_SIZE;
         sy /= Metrics.TILE_SIZE;
+        _rect.x = _sindex.getSectionXFromTile(sx);
+        _rect.y = _sindex.getSectionYFromTile(sy);
+        _rect.width = _sindex.getSectionXFromTile(sx + Metrics.WINDOW_WIDTH) - _rect.x;
+        _rect.height = _sindex.getSectionYFromTile(sy + Metrics.WINDOW_WIDTH) - _rect.y;
+
         var sw :int = _sindex.getSectionWidth();
         var sh :int = _sindex.getSectionHeight();
         var rect :Rectangle = new Rectangle(0, 0, Metrics.DISPLAY_WIDTH, Metrics.DISPLAY_HEIGHT);
@@ -142,7 +153,7 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
             oy += rect.height;
         }
         _bd.unlock();
-
+        preload();
     }
 
     protected function generateBitmap (idx :int, bd :BitmapData) :void
@@ -178,12 +189,139 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
         }
     }
 
+    protected function heuristic (current :PoolCache, test :PoolCache) :Boolean
+    {
+        if (current == null) {
+            return true;
+        }
+        var tsx :int = _sindex.getSectionX(test.idx);
+        var tsy :int = _sindex.getSectionY(test.idx);
+        if (_rect.containsPoint(tsx, tsy)) {
+            return false;
+        }
+        var csx :int = _sindex.getSectionX(current.idx);
+        var csy :int = _sindex.getSectionY(current.idx);
+        var tdist :int = calcDist(tsx, tsy);
+        var cdist :int = calcDist(csx, csy);
+        return (cdist < tdist) || (cdist == tdist && current.hit > test.hit);
+    }
+
+    protected function calcDist (x :int, y :int) :int
+    {
+        var dist :int;
+        if (x < _rect.x) {
+            dist += _rect.x - x;
+        } else if (x > _rect.x + _rect.width) {
+            dist += x - _rect.x - _rect.width;
+        }
+        if (y < _rect.y) {
+            dist += _rect.y - y;
+        } else if (y > _rect.y + _rect.height) {
+            dist += y - _rect.y - _rect.height;
+        }
+        return dist;
+    }
+
+    protected function preload () :void
+    {
+        if (_preload < PRELOAD_RATE) {
+            if (_preload > 0) {
+                _preload++;
+            }
+            return;
+        }
+        _preload = 1;
+        var dir :int;
+        if (Math.abs(_deltaX) >= Math.abs(_deltaY)) {
+            if (_deltaX < 0) {
+                dir = 2;
+            }
+        } else if (_deltaY < 0) {
+            dir = 3;
+        } else {
+            dir = 1;
+        }
+        if (checkSegments(dir)) {
+            return;
+        }
+        dir = (dir + 2) % 4;
+        if (checkSegments(dir)) {
+            return;
+        }
+        dir = (dir + 1) % 4;
+        if (checkSegments(dir)) {
+            checkSegments(dir);
+        }
+        dir = (dir + 2) % 4;
+        if (checkSegments(dir)) {
+            checkSegments(dir);
+        }
+    }
+
+    protected function checkSegments (dir :int) :Boolean
+    {
+        var xx :int;
+        var yy :int;
+        var dd :int;
+        var ee :int;
+        if (dir % 2 == 0) {
+            xx = _rect.x + (dir == 2 ? -1 : _rect.width + 1);
+            if (_deltaY > 0) {
+                yy = _rect.y + _rect.height + 1;
+                dd = -1;
+                ee = _rect.y - 2;
+            } else {
+                yy = _rect.y - 1;
+                dd = 1;
+                ee = _rect.y + _rect.height + 2;
+            }
+            for ( ; yy != ee; yy += dd) {
+                if (preloadSegment(xx, yy)) {
+                    return true;
+                }
+            }
+        } else {
+            yy = _rect.y + (dir == 3 ? -1 : _rect.height + 1);
+            if (_deltaX >= 0) {
+                xx = _rect.x + _rect.width + 1;
+                dd = -1;
+                ee = _rect.x - 2;
+            } else {
+                xx = _rect.x - 1;
+                dd = 1;
+                ee = _rect.x + _rect.width + 2;
+            }
+            for ( ; xx != ee; xx += dd) {
+                if (preloadSegment(xx, yy)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected function preloadSegment (xx :int, yy :int) :Boolean
+    {
+        var idx :int = _sindex.getSectionIndex(xx, yy);
+        if (_sections[idx] != null && !_pool.inPool(idx)) {
+            _pool.getBitmap(idx);
+            return true;
+        }
+        return false;
+    }
+
     protected var _oldnX :int = -1;
     protected var _oldnY :int = -1;
+    protected var _deltaX :int;
+    protected var _deltaY :int;
 
     protected var _sindex :SectionalIndex;
-    protected var _sections :Array = new Array();
+    protected var _sections :Object = new Object();
     protected var _bd :BitmapData;
     protected var _pool :BitmapPool;
+    protected var _rect :Rect = new Rect();
+    protected var _preload :int;
+
+    protected static const PRELOAD_RATE :int = 3;
 }
 }
