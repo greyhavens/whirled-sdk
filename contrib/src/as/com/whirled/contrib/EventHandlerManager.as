@@ -82,18 +82,27 @@ public class EventHandlerManager
         registerListener(dispatcher, Event.UNLOAD, freeAllHandlers);
     }
 
-    /** 
-     * Will either call a given function now, or defer it based on the boolean parameter.  If the 
+    /**
+     * Will either call a given function now, or defer it based on the boolean parameter.  If the
      * parameter is false, the function will be registered as a one-shot callback on the dispatcher
      */
-    public function conditionalCall (callback :Function, callNow :Boolean, 
-        dispatcher :IEventDispatcher, event :String, useCapture :Boolean = false, 
+    public function conditionalCall (callback :Function, callNow :Boolean,
+        dispatcher :IEventDispatcher, event :String, useCapture :Boolean = false,
         priority :int = 0) :void
     {
         if (callNow) {
             callback();
         } else {
             registerOneShotCallback(dispatcher, event, callback, useCapture, priority);
+        }
+    }
+
+    public function freeAllOn (dispatcher :IEventDispatcher) :void
+    {
+        for each (var rl :RegisteredListener in _eventHandlers) {
+            if (rl.dispatcher == dispatcher) {
+                rl.free();
+            }
         }
     }
 
@@ -104,7 +113,7 @@ public class EventHandlerManager
     public function freeAllHandlers (...ignored) :void
     {
         for each (var rl :RegisteredListener in _eventHandlers) {
-            rl.dispatcher.removeEventListener(rl.event, rl.listener, rl.useCapture);
+            rl.free();
         }
 
         _eventHandlers = [];
@@ -131,5 +140,10 @@ class RegisteredListener
         this.event = event;
         this.listener = listener;
         this.useCapture = useCapture;
+    }
+
+    public function free () :void
+    {
+        dispatcher.removeEventListener(event, listener, useCapture);
     }
 }

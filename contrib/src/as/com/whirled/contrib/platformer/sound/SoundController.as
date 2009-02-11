@@ -91,9 +91,9 @@ public class SoundController extends EventDispatcher
         }
 
         if (crossfade) {
-            addBinding(bindFadein(_track = trackSound.play(0, 0, new SoundTransform(0))));
+            addBinding(bindFadein(_track = play(trackSound, 0)));
         } else {
-            _track = trackSound.play(0, 0, new SoundTransform(volume));
+            _track = play(trackSound);
         }
         _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
     }
@@ -151,8 +151,33 @@ public class SoundController extends EventDispatcher
             return;
         }
 
-        var channel :SoundChannel = sound.play(0, 0, new SoundTransform(volume));
+        var channel :SoundChannel = play(sound);
         _channels.put(name, channel);
+        _eventMgr.registerOneShotCallback(channel, Event.SOUND_COMPLETE, bindChannelRemoval(name));
+    }
+
+    /**
+     * If this sound effect is already playing, stop the current channel.  In either case, start the
+     * effect now.
+     */
+    public function restartSoundEffect (name :String) :void
+    {
+        if (!SOUND_ENABLED) {
+            return;
+        }
+
+        var channel :SoundChannel = _channels.remove(name);
+        if (channel != null) {
+            channel.stop();
+            _eventMgr.freeAllOn(channel);
+        }
+
+        var sound :Sound = getSound(name);
+        if (sound == null) {
+            return;
+        }
+
+        _channels.put(name, channel = play(sound));
         _eventMgr.registerOneShotCallback(channel, Event.SOUND_COMPLETE, bindChannelRemoval(name));
     }
 
@@ -171,7 +196,7 @@ public class SoundController extends EventDispatcher
         // is allowed to have several instances playing simultaneously.
         var sound :Sound = getSound(name);
         if (sound != null) {
-            sound.play(0, 0, new SoundTransform(volume));
+            play(sound);
         }
     }
 
@@ -279,8 +304,13 @@ public class SoundController extends EventDispatcher
         if (sound == null) {
             log.warning("No cached Sound for a looping track", "trackName", _trackName);
         }
-        _track = sound.play(0, 0, new SoundTransform(volume));
+        _track = play(sound);
         _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
+    }
+
+    protected function play (sound :Sound, vol :Number = -1) :SoundChannel
+    {
+        return sound.play(0, 0, new SoundTransform(vol < 0 ? volume : vol));
     }
 
     protected var _contentDomain :ApplicationDomain = new ApplicationDomain(null);
