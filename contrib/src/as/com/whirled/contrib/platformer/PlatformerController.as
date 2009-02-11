@@ -68,6 +68,10 @@ public class PlatformerController
     {
     }
 
+    public function startBackgroundMusic (track :String) :void
+    {
+    }
+
     protected function run () :void
     {
         PlatformerContext.pfac = createPieceFactory();

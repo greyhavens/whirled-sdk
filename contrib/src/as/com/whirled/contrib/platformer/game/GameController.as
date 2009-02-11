@@ -72,6 +72,7 @@ public class GameController
         c = MultiEventTrigger;
         c = OpenGateEventAction;
         c = EnableSpawnerEventAction;
+        c = BackgroundMusicAction;
     }
 
     public function initDynamicClasses () :void

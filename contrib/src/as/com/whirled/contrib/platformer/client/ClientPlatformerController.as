@@ -44,8 +44,13 @@ public class ClientPlatformerController extends PlatformerController
             ClientPlatformerContext.prefs = createPreferences();
             PlatformerContext.gctrl.local.setStageQuality(
                     ClientPlatformerContext.prefs.stageQuality);
-            ClientPlatformerContext.sound = new SoundController();
+            ClientPlatformerContext.sound = new SoundController(source);
         }
+    }
+
+    override public function startBackgroundMusic (track :String) :void
+    {
+        ClientPlatformerContext.sound.startBackgroundMusic(track);
     }
 
     protected function handleUnload (...ignored) :void
