@@ -57,11 +57,10 @@ public class ShotCollisionHandler extends CollisionHandler
                 var ab :ActorBounds = db as ActorBounds;
                 if (cd.alines[0] is Number) {
                     ab.actor.wasHit = Actor.HIT_FRONT;
-                } else if (cd.alines[0] != null && Math.abs(cd.alines[0].nx) > 0) {
+                } else if (cd.alines[0] != null && cd.alines[0].nx != 0) {
                     ab.actor.wasHit =
-                        ((cd.alines[0].nx > 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) > 0) ||
-                         (cd.alines[0].nx < 0 && (ab.actor.orient & Actor.ORIENT_RIGHT) == 0)) ?
-                        Actor.HIT_FRONT : Actor.HIT_BACK;
+                        ((ab.actor.orient & Actor.ORIENT_RIGHT) > 0 ? cd.alines[0].nx > 0 : cd.alines[0].nx < 0) ?
+                                Actor.HIT_FRONT : Actor.HIT_BACK;
                 } else {
                     if (s.dx == 0) {
                         ab.actor.wasHit = Actor.HIT_FRONT;
