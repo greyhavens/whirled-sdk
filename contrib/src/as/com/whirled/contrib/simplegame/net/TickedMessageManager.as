@@ -24,7 +24,7 @@ import com.whirled.game.NetSubControl;
 
 import com.whirled.contrib.simplegame.Updatable;
 
-public interface TickedMessageManager extends Updatable
+public interface TickedMessageManager extends MessageManager, Updatable
 {
     /**
      * Should be called when the the TickedMessageManager should start listening for and
@@ -57,13 +57,6 @@ public interface TickedMessageManager extends Updatable
      * tick, or null if there are no unprocessed ticks remaining.
      */
     function getNextTick () :Array;
-
-    /**
-     * Registers a message type with the TickedMessageManager. Shortly after setup() is called,
-     * this function should be called once for each message type that the game will send or
-     * receive.
-     */
-    function addMessageType (messageClass :Class) :void;
 
     /**
      * Sends a message to the specified players.

@@ -23,7 +23,7 @@ package com.whirled.contrib.simplegame.net {
 import com.whirled.game.GameControl;
 import com.whirled.game.NetSubControl;
 
-public class OfflineTickedMessageManager
+public class OfflineTickedMessageManager extends BasicMessageManager
     implements TickedMessageManager
 {
     public function OfflineTickedMessageManager (gameCtrl :GameControl, tickIntervalMS :int)
@@ -88,11 +88,6 @@ public class OfflineTickedMessageManager
         } else {
             return (_ticks.shift() as Array);
         }
-    }
-
-    public function addMessageType (messageClass :Class) :void
-    {
-        // no-op - we never need to serialize or deserialize messages
     }
 
     public function sendMessage (

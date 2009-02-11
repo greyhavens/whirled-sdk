@@ -35,7 +35,7 @@ import flash.utils.getTimer;
  * Received messages are grouped by "ticks", which represent timeslices, and are synchronized
  * across clients by a game server.
  */
-public class OnlineTickedMessageManager
+public class OnlineTickedMessageManager extends BasicMessageManager
     implements TickedMessageManager
 {
     public function OnlineTickedMessageManager (gameCtrl :GameControl, isInControl :Boolean,
@@ -45,14 +45,6 @@ public class OnlineTickedMessageManager
         _isInControl = isInControl;
         _tickIntervalMS = tickIntervalMS;
         _tickName = tickMessageName;
-    }
-
-    public function addMessageType (messageClass :Class) :void
-    {
-        var msg :Message = new messageClass();
-        if (_messageTypes.put(msg.name, messageClass) !== undefined) {
-            throw new Error("Message type '" + msg.name + "' already registered");
-        }
     }
 
     public function run () :void
@@ -135,25 +127,6 @@ public class OnlineTickedMessageManager
         return ((getTimer() - _lastSendTime) >= _minSendDelayMS);
     }
 
-    protected function deserializeMessage (name :String, val :Object) :Message
-    {
-        var messageClass :Class = _messageTypes.get(name) as Class;
-        if (null == messageClass) {
-            //log.info("Discarding incoming '" + name + "' message (message type not registered)");
-            return null;
-        }
-
-        var msg :Message = new messageClass();
-        try {
-            msg.fromBytes(ByteArray(val));
-        } catch (e :Error) {
-            log.warning("Discarding incoming '" + name + "' message (failed to deserialize)", e);
-            return null;
-        }
-
-        return msg;
-    }
-
     protected function sendMessageNow (msg :Message, playerId :int) :void
     {
         _gameCtrl.net.sendMessage(msg.name, msg.toBytes(), playerId);
@@ -197,7 +170,6 @@ public class OnlineTickedMessageManager
     protected var _maxPendingSends :uint = 10;
     protected var _minSendDelayMS :uint = 105;  // default to 10 sends/second
     protected var _lastSendTime :int;
-    protected var _messageTypes :HashMap = new HashMap();
 
     protected var _events :EventHandlerManager = new EventHandlerManager();
 
