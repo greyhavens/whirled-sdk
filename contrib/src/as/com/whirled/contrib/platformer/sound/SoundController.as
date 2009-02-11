@@ -146,21 +146,33 @@ public class SoundController extends EventDispatcher
             return;
         }
 
-        var sound :Sound = _sounds.get(name);
+        var sound :Sound = getSound(name);
         if (sound == null) {
-            var cls :Class = _contentDomain.getDefinition(name) as Class;
-            sound = cls == null ? null : (new cls()) as Sound;
-            if (sound == null) {
-                log.warning("Sound effect not found!", "name", name);
-                return;
-            }
-
-            _sounds.put(name, sound);
+            return;
         }
 
         var channel :SoundChannel = sound.play(0, 0, new SoundTransform(volume));
         _channels.put(name, channel);
         _eventMgr.registerOneShotCallback(channel, Event.SOUND_COMPLETE, bindChannelRemoval(name));
+    }
+
+    /**
+     * Players the given sound effect in a new channel, regardless of whether it was already playing
+     */
+    public function startSoundEffect (name :String) :void
+    {
+        if (!SOUND_ENABLED) {
+            return;
+        }
+
+        // TODO: This is going to need to be more sophisticated so that these can be included in
+        // _channels.  Probably, _channels will need to be indexed off of some sort of id that
+        // differentiates between a sound effect that should be looped, and a sound effect that
+        // is allowed to have several instances playing simultaneously.
+        var sound :Sound = getSound(name);
+        if (sound != null) {
+            sound.play(0, 0, new SoundTransform(volume));
+        }
     }
 
     public function stopSoundEffect (name :String) :void
@@ -180,6 +192,21 @@ public class SoundController extends EventDispatcher
     {
         _loaded = true;
         dispatchEvent(new Event(Event.COMPLETE));
+    }
+
+    protected function getSound (name :String) :Sound
+    {
+        var sound :Sound = _sounds.get(name);
+        if (sound == null) {
+            var cls :Class = _contentDomain.getDefinition(name) as Class;
+            sound = cls == null ? null : (new cls()) as Sound;
+            if (sound == null) {
+                log.warning("Sound effect not found!", "name", name);
+            } else {
+                _sounds.put(name, sound);
+            }
+        }
+        return sound;
     }
 
     protected function bindChannelRemoval (name :String) :Function
