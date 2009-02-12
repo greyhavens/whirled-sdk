@@ -81,6 +81,11 @@ public class AudioControls
         return volumeTo(1, time);
     }
 
+    public function fadeOutAndStop (time :Number) :AudioControls
+    {
+        return fadeOut(time).stopAfter(time);
+    }
+
     public function pan (val :Number) :AudioControls
     {
         _localState.pan = Math.max(val, -1);
