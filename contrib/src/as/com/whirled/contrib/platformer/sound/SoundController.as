@@ -40,7 +40,7 @@ public class SoundController extends EventDispatcher
 {
     public static const SOUND_ENABLED :Boolean = true;
 
-    public static const DEFAULT_VOLUME :Number = 0.6;
+    public static const DEFAULT_VOLUME :Number = 0.3;
 
     public function SoundController (dispatcher :EventDispatcher)
     {
