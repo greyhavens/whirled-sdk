@@ -162,7 +162,7 @@ public class BaseGameBackend
      */
     public function gameStateChanged (started :Boolean) :void
     {
-        if (started && !allPlayersInited()) {
+        if (started && !readyToStart()) {
             // We're waiting to dispatch GAME_STARTED until the API is prepared to give out valid
             // player data for the current players. See entryUpdated/entryAdded.
             return;
@@ -209,9 +209,6 @@ public class BaseGameBackend
             var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo)
             if (isInited(occInfo)) {
                 occupantAdded(occInfo);
-                if (!_gameStarted && _gameObj.isInPlay()) {
-                    gameStateChanged(true);
-                }
             }
             break;
         }
@@ -233,9 +230,6 @@ public class BaseGameBackend
             // Note that our own occupantInfo will never pass this test, that is correct.
             if (!isInited(oldInfo) && isInited(occInfo)) {
                 occupantAdded(occInfo);
-                if (!_gameStarted && _gameObj.isInPlay()) {
-                    gameStateChanged(true);
-                }
             }
             break;
         }
@@ -432,8 +426,8 @@ public class BaseGameBackend
     }
 
     /**
-     * Helper for various occupantInfo-related bits.
-     * Returns true if the occupant info is not null and is reportable to the usercode.
+     * Helper for various occupantInfo-related bits. Returns true if the occupant info is not null
+     * and is reportable to the usercode. Overriding this function will create bugs.
      */
     protected function isInited (occInfo :OccupantInfo) :Boolean
     {
@@ -442,11 +436,11 @@ public class BaseGameBackend
              (occInfo.bodyOid == _ctx.getClient().getClientOid()));
     }
 
-    protected function allPlayersInited () :Boolean
+    protected function readyToStart () :Boolean
     {
         for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
             var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
-            if (!isInited(_gameObj.getOccupantInfo(_gameObj.players[ii] as Name))) {
+            if (!isInited(occInfo)) {
                 return false;
             }
         }
@@ -1392,8 +1386,22 @@ public class BaseGameBackend
      */
     protected function occupantAdded (occInfo :OccupantInfo) :void
     {
+        doOccupantAdded(occInfo);
+    }
+
+    /**
+     * Dispatches the addition of an occupant to the user code, including starting the game if the
+     * addition of the occupant means that the game is ready to start.
+     * 
+     */
+    protected function doOccupantAdded (occInfo :OccupantInfo) :void
+    {
         callUserCode("occupantChanged_v1", occInfo.bodyOid,
             isPlayer(occInfo.username), true);
+
+        if (!_gameStarted && _gameObj.isInPlay()) {
+            gameStateChanged(true);
+        }
     }
 
     /**
@@ -1401,14 +1409,30 @@ public class BaseGameBackend
      */
     protected function occupantRemoved (occInfo :OccupantInfo) :void
     {
+        doOccupantRemoved(occInfo);
+    }
+
+    /**
+     * Dispatches the removal of an occupant to the user code.
+     */
+    protected function doOccupantRemoved (occInfo :OccupantInfo) :void
+    {
         callUserCode("occupantChanged_v1", occInfo.bodyOid,
             isPlayer(occInfo.username), false);
     }
 
     /**
-     * Called when the players of the game are updated.
+     * Called when an occupant's player status changes.
      */
     protected function occupantRoleChanged (occInfo :OccupantInfo, isPlayerNow :Boolean) :void
+    {
+        doOccupantRoleChanged(occInfo, isPlayerNow);
+    }
+
+    /**
+     * Dispatches the change in player status to the user code.
+     */
+    protected function doOccupantRoleChanged (occInfo :OccupantInfo, isPlayerNow :Boolean) :void
     {
         // let the user code know about this by sending a "left" message followed by
         // an "entered" message

@@ -57,78 +57,6 @@ public class ThaneGameBackend extends BaseGameBackend
         return _ctrl.getConfig();
     }
 
-    // from BaseGameBackend
-    override public function entryAdded (event :EntryAddedEvent) :void
-    {
-        var name :String = event.getName();
-        if (name == PlaceObject.OCCUPANT_INFO) {
-            var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo);
-            if (isPlayer(occInfo.username)) {
-                _somgr.subscribe(occInfo.bodyOid, subscribedToPlayer);
-            }
-        }
-
-        super.entryAdded(event);
-    }
-
-    // from BaseGameBackend
-    override public function entryUpdated (event :EntryUpdatedEvent) :void
-    {
-        var name :String = event.getName();
-        if (name == PlaceObject.OCCUPANT_INFO) {
-            var occInfo :WhirledGameOccupantInfo = (event.getEntry() as WhirledGameOccupantInfo);
-            var oldInfo :WhirledGameOccupantInfo = (event.getOldEntry() as WhirledGameOccupantInfo);
-            // Only report someone else if they transitioned from uninitialized to initialized
-            // Note that our own occupantInfo will never pass this test, that is correct.
-            if (!isInited(oldInfo) && super.isInited(occInfo)) {
-                _somgr.subscribe(occInfo.bodyOid, subscribedToPlayer);
-            }
-        }
-
-        super.entryUpdated(event);
-    }
-
-    // from BaseGameBackend
-    override public function entryRemoved (event :EntryRemovedEvent) :void
-    {
-        var name :String = event.getName();
-        if (name == PlaceObject.OCCUPANT_INFO) {
-            var occInfo :WhirledGameOccupantInfo = (event.getOldEntry() as WhirledGameOccupantInfo);
-            if (isInited(occInfo) && isPlayer(occInfo.username)) {
-                _somgr.unsubscribe(occInfo.bodyOid);
-            }
-        }
-
-        super.entryRemoved(event);
-    }
-
-    // from BaseGameBackend
-    override public function elementUpdated (event :ElementUpdatedEvent) :void
-    {
-        var name :String = event.getName();
-        if (name == GameObject.PLAYERS) {
-            var oldPlayer :Name = (event.getOldValue() as Name);
-            var newPlayer :Name = (event.getValue() as Name);
-            var occInfo :OccupantInfo;
-            if (oldPlayer != null) {
-                occInfo = _gameObj.getOccupantInfo(oldPlayer);
-                if (isInited(occInfo)) {
-                    _somgr.unsubscribe(occInfo.bodyOid);
-                }
-            }
-            if (newPlayer != null) {
-                occInfo = _gameObj.getOccupantInfo(newPlayer);
-                if (super.isInited(occInfo)) {
-                    _somgr.subscribe(occInfo.bodyOid, function (...ignored) :void {
-                        occupantRoleChanged(occInfo, true);
-                    });
-                }
-            }
-        }
-
-        super.elementUpdated(event);
-    }
-
     //---- GameControl -----------------------------------------------------
 
     //---- .game -----------------------------------------------------------
@@ -164,25 +92,87 @@ public class ThaneGameBackend extends BaseGameBackend
     }
 
     // from BaseGameBackend
-    override protected function isInited (occInfo :OccupantInfo) :Boolean
+    override protected function occupantAdded (info :OccupantInfo) :void
     {
-        return super.isInited(occInfo) && getPlayer(occInfo.bodyOid) != null;
+        if (isPlayer(info.username)) {
+            _somgr.subscribe(info.bodyOid, function (...ignored) :void {
+                doOccupantAdded(info);
+            });
+
+        } else {
+            doOccupantAdded(info);
+        }
     }
 
-    protected function subscribedToPlayer (player :WhirledPlayerObject) :void
+    // from BaseGameBackend
+    override protected function doOccupantAdded (info :OccupantInfo) :void
     {
-        var occInfo :OccupantInfo = _gameObj.getOccupantInfo(player.username);
-        if (isInited(occInfo)) {
-            occupantAdded(occInfo);
-            if (!_gameStarted && _gameObj.isInPlay()) {
-                gameStateChanged(true);
+        _addedOccupants.push(info.bodyOid);
+        super.doOccupantAdded(info);
+    }
+
+    // from BaseGameBackend
+    override protected function occupantRemoved (info :OccupantInfo) :void
+    {
+        if (isPlayer(info.username)) {
+            _somgr.unsubscribe(info.bodyOid);
+        }
+
+        doOccupantRemoved(info);
+    }
+
+    // from BaseGameBackend
+    override protected function doOccupantRemoved (info :OccupantInfo) :void
+    {
+        var idx :int = _addedOccupants.indexOf(info.bodyOid);
+        if (idx >= 0) {
+            _addedOccupants.splice(idx, 1);
+            super.doOccupantRemoved(info);
+        }
+    }
+
+    // from BaseGameBackend
+    override protected function occupantRoleChanged (info :OccupantInfo, isPlayerNow :Boolean) :void
+    {
+        if (isPlayerNow) {
+            _somgr.subscribe(info.bodyOid, function (...ignored) :void {
+                doOccupantRoleChanged(info, true);
+            });
+
+        } else {
+            doOccupantRoleChanged(info, false);
+            _somgr.unsubscribe(info.bodyOid);
+        }
+    }
+
+    // from BaseGameBackend
+    override protected function doOccupantRoleChanged (info :OccupantInfo, isPlayerNow :Boolean) :void
+    {
+        if (_addedOccupants.indexOf(info.bodyOid) >= 0) {
+            super.doOccupantRoleChanged(info, isPlayerNow);
+        }
+    }
+
+    // from BaseGameBackend
+    override protected function readyToStart () :Boolean
+    {
+        if (!super.readyToStart()) {
+            return false;
+        }
+
+        for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
+            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
+            if (getPlayer(occInfo.bodyOid) == null) {
+                return false;
             }
         }
+        return true;
     }
 
     protected var _ctrl :ThaneGameController;
 
     protected var _somgr :SafeObjectManager;
+    protected var _addedOccupants :Array = new Array();
 }
 }
 
