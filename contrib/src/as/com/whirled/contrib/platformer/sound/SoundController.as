@@ -257,7 +257,7 @@ public class SoundController extends EventDispatcher
     protected function bindFadeout (channel :SoundChannel) :Function
     {
         var endTime :int = getTimer() + FADE_TIME;
-        var startVolume :Number = channel.soundTransform.volume
+        var startVolume :Number = channel.soundTransform.volume;
         return function () :Boolean {
             var time :int = getTimer();
             if (time >= endTime) {
