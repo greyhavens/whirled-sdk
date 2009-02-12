@@ -23,7 +23,10 @@ package com.whirled.contrib.platformer.client {
 import flash.display.StageQuality;
 import flash.net.SharedObject;
 
+import com.threerings.flash.MathUtil;
 import com.threerings.util.Config;
+
+import com.whirled.contrib.platformer.client.ClientPlatformerContext;
 
 public class Preferences extends Config
 {
@@ -61,5 +64,34 @@ public class Preferences extends Config
     {
         setValue("effectLevel", level);
     }
+
+    public function get backgroundVolume () :Number
+    {
+        return getValue("backgroundVolume", DEFAULT_BACKGROUND_VOLUME) as Number;
+    }
+
+    public function set backgroundVolume (value :Number) :void
+    {
+        setValue("backgroundVolume",
+            MathUtil.clamp(value, MIN_BACKGROUND_VOLUME, MAX_BACKGROUND_VOLUME));
+        ClientPlatformerContext.sound.backgroundVolumeModified();
+    }
+
+    public function get effectsVolume () :Number
+    {
+        return getValue("effectsVolume", DEFAULT_EFFECTS_VOLUME) as Number;
+    }
+
+    public function set effectsVolume (value :Number) :void
+    {
+        setValue("effectsVolume", MathUtil.clamp(value, MIN_EFFECTS_VOLUME, MAX_EFFECTS_VOLUME));
+    }
+
+    protected static const DEFAULT_BACKGROUND_VOLUME :Number = 0.5;
+    protected static const MIN_BACKGROUND_VOLUME :Number = 0.0;
+    protected static const MAX_BACKGROUND_VOLUME :Number = 1.0;
+    protected static const DEFAULT_EFFECTS_VOLUME :Number = 0.3;
+    protected static const MIN_EFFECTS_VOLUME :Number = 0.0;
+    protected static const MAX_EFFECTS_VOLUME :Number = 1.0;
 }
 }

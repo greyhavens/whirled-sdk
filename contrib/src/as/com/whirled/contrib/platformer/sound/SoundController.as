@@ -35,22 +35,15 @@ import com.threerings.util.Log;
 import com.whirled.contrib.EventHandlerManager;
 import com.whirled.contrib.LevelPacks;
 import com.whirled.contrib.ZipMultiLoader;
+import com.whirled.contrib.platformer.client.ClientPlatformerContext;
 
 public class SoundController extends EventDispatcher
 {
     public static const SOUND_ENABLED :Boolean = true;
 
-    public static const DEFAULT_VOLUME :Number = 0.3;
-
     public function SoundController (dispatcher :EventDispatcher)
     {
         _eventMgr.registerListener(dispatcher, Event.ENTER_FRAME, tick);
-    }
-
-    public function get volume () :Number
-    {
-        // TODO: controls for volume?
-        return DEFAULT_VOLUME;
     }
 
     public function initZip (source :Object) :void
@@ -93,7 +86,7 @@ public class SoundController extends EventDispatcher
         if (crossfade) {
             addBinding(bindFadein(_track = play(trackSound, 0)));
         } else {
-            _track = play(trackSound);
+            _track = play(trackSound, backgroundVolume);
         }
         _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
     }
@@ -151,7 +144,7 @@ public class SoundController extends EventDispatcher
             return;
         }
 
-        var channel :SoundChannel = play(sound);
+        var channel :SoundChannel = play(sound, effectsVolume);
         _channels.put(name, channel);
         _eventMgr.registerOneShotCallback(channel, Event.SOUND_COMPLETE, bindChannelRemoval(name));
     }
@@ -177,7 +170,7 @@ public class SoundController extends EventDispatcher
             return;
         }
 
-        _channels.put(name, channel = play(sound));
+        _channels.put(name, channel = play(sound, effectsVolume));
         _eventMgr.registerOneShotCallback(channel, Event.SOUND_COMPLETE, bindChannelRemoval(name));
     }
 
@@ -196,7 +189,7 @@ public class SoundController extends EventDispatcher
         // is allowed to have several instances playing simultaneously.
         var sound :Sound = getSound(name);
         if (sound != null) {
-            play(sound);
+            play(sound, effectsVolume);
         }
     }
 
@@ -211,6 +204,25 @@ public class SoundController extends EventDispatcher
     public function shutdown () :void
     {
         _eventMgr.freeAllHandlers();
+    }
+
+    public function backgroundVolumeModified () :void
+    {
+        if (_track != null) {
+            _track.soundTransform = new SoundTransform(backgroundVolume);
+        }
+    }
+
+    // convenience getter
+    protected function get effectsVolume () :Number
+    {
+        return ClientPlatformerContext.prefs.effectsVolume;
+    }
+
+    // convenience getter
+    protected function get backgroundVolume () :Number
+    {
+        return ClientPlatformerContext.prefs.backgroundVolume;
     }
 
     protected function onLoaded (...ignored) :void
@@ -245,7 +257,7 @@ public class SoundController extends EventDispatcher
     protected function bindFadeout (channel :SoundChannel) :Function
     {
         var endTime :int = getTimer() + FADE_TIME;
-        var startVolume :Number = channel.soundTransform.volume;
+        var startVolume :Number = channel.soundTransform.volume
         return function () :Boolean {
             var time :int = getTimer();
             if (time >= endTime) {
@@ -264,12 +276,12 @@ public class SoundController extends EventDispatcher
         return function () :Boolean {
             var time :int = getTimer();
             if (time >= endTime) {
-                channel.soundTransform = new SoundTransform(volume)
+                channel.soundTransform = new SoundTransform(effectsVolume)
                 return true;
             }
 
             channel.soundTransform =
-                new SoundTransform(volume * (1 - (endTime - time) / FADE_TIME));
+                new SoundTransform(effectsVolume * (1 - (endTime - time) / FADE_TIME));
             return false;
         };
     }
@@ -304,13 +316,13 @@ public class SoundController extends EventDispatcher
         if (sound == null) {
             log.warning("No cached Sound for a looping track", "trackName", _trackName);
         }
-        _track = play(sound);
+        _track = play(sound, effectsVolume);
         _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
     }
 
-    protected function play (sound :Sound, vol :Number = -1) :SoundChannel
+    protected function play (sound :Sound, volume :Number) :SoundChannel
     {
-        return sound.play(0, 0, new SoundTransform(vol < 0 ? volume : vol));
+        return sound.play(0, 0, new SoundTransform(volume));
     }
 
     protected var _contentDomain :ApplicationDomain = new ApplicationDomain(null);
