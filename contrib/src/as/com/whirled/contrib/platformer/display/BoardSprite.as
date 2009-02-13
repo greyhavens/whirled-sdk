@@ -117,8 +117,10 @@ public class BoardSprite extends Sprite
         _board.removeEventListener(Board.DYNAMIC_ADDED, handleDynamicAdded);
         _board.removeEventListener(Board.DYNAMIC_REMOVED, handleDynamicRemoved);
         for each (var layer :Layer in _layers) {
-            layer.shutdown();
-            removeChild(layer);
+            if (layer != null) {
+                layer.shutdown();
+                removeChild(layer);
+            }
         }
     }
 
@@ -151,8 +153,10 @@ public class BoardSprite extends Sprite
         if (layer >= 0 && layer < NUM_LAYERS) {
             if (_layerEnabled[layer]) {
                 _layerEnabled[layer] = false;
-                removeChild(_layers[layer]);
-            } else {
+                if (_layers[layer] != null) {
+                    removeChild(_layers[layer]);
+                }
+            } else if (_layers[layer] != null) {
                 _layerEnabled[layer] = true;
                 var idx :int;
                 for (var ii :int = 0; ii < layer; ii++) {
@@ -167,7 +171,9 @@ public class BoardSprite extends Sprite
 
     public function enableParallax (enable :Boolean) :void
     {
-        _layers[BG_LAYER].setEnabled(enable);
+        if (_layers[BG_LAYER] != null) {
+            _layers[BG_LAYER].setEnabled(enable);
+        }
     }
 
     public function get centerX () :Number
@@ -398,7 +404,7 @@ public class BoardSprite extends Sprite
             _centerY += _cameraCtrl.getOffY();
         }
         for (var ii :int = 0; ii < _layers.length; ii++) {
-            if (_layerEnabled[ii]) {
+            if (_layerEnabled[ii] && _layers[ii] != null) {
                 _layers[ii].update(_centerX, _centerY);
             }
         }

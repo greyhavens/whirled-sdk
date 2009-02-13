@@ -31,13 +31,13 @@ public class GameEvent
             trace("no trigger or action children to game event");
             return null;
         }
+        var continuous :Boolean = xml.hasOwnProperty("@continuous") && xml.@continuous == "true";
         var trigger :EventTrigger = EventTrigger.createEventTrigger(gctrl, xml.trigger[0]);
         var action :EventAction = EventAction.createEventAction(gctrl, xml.action[0]);
         if (trigger == null || action == null) {
             return null;
         }
-        return new GameEvent(trigger, action,
-                xml.hasOwnProperty("@continuous") ? xml.@continuous == "true" : false);
+        return new GameEvent(trigger, action, continuous);
     }
 
     public function GameEvent (trigger :EventTrigger, action :EventAction, continuous :Boolean)

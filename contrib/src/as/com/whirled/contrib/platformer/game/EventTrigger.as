@@ -40,6 +40,7 @@ public class EventTrigger
 
     public function EventTrigger (gctrl :GameController, xml :XML)
     {
+        _continuous = xml.hasOwnProperty("@continuous") && xml.@continuous == "true";
         _gctrl = gctrl;
     }
 
@@ -50,7 +51,9 @@ public class EventTrigger
 
     public function checkTriggered () :Boolean
     {
-        if (hasTriggered()) {
+        if (_continuous) {
+            return testTriggered();
+        } else if (hasTriggered()) {
             return true;
         }
         _triggered = testTriggered();
@@ -64,5 +67,6 @@ public class EventTrigger
 
     protected var _gctrl :GameController;
     protected var _triggered :Boolean;
+    protected var _continuous :Boolean;
 }
 }

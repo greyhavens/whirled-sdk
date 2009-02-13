@@ -21,6 +21,7 @@
 package com.whirled.contrib.platformer.board {
 
 import flash.geom.Point;
+import flash.utils.Dictionary;
 import com.whirled.contrib.platformer.piece.BoundData;
 
 /**
@@ -132,7 +133,16 @@ public class LineData
      */
     public function isConnected (line :LineData, convex :Boolean = true) :Array
     {
+        if (_connected == null) {
+            _connected = new Dictionary();
+        }
+        if (convex && _connected[line] !== undefined) {
+            return _connected[line];
+        }
         if (line == null || !BoundData.doesBound(type) || !BoundData.doesBound(line.type)) {
+            if (convex) {
+                _connected[line] = null;
+            }
             return null;
         }
 
@@ -164,20 +174,25 @@ public class LineData
             oX = line.x1;
             oY = line.y1;
         } else {
+            if (convex) {
+                _connected[line] = null;
+            }
             return null;
         }
         ret.push(getDist(oX, oY));
         ret.push(line.getDist(mX, mY));
 
-        if (!convex) {
-            return ret;
-        }
-
-        if ((!BoundData.blockInner(type) && ret[0] >= 0) ||
-            (!BoundData.blockOuter(type) && ret[0] <= 0) ||
-            (!BoundData.blockInner(line.type) && ret[1] >= 0) ||
-            (!BoundData.blockOuter(line.type) && ret[1] <= 0)) {
+        if (convex && ((!BoundData.blockInner(type) && ret[0] >= 0) ||
+                (!BoundData.blockOuter(type) && ret[0] <= 0) ||
+                (!BoundData.blockInner(line.type) && ret[1] >= 0) ||
+                (!BoundData.blockOuter(line.type) && ret[1] <= 0))) {
+            if (convex) {
+                _connected[line] = null;
+            }
             return null;
+        }
+        if (convex) {
+            _connected[line] = ret;
         }
         return ret;
     }
@@ -520,5 +535,7 @@ public class LineData
                     ")->(" + x2.toFixed(3) + ", " + y2.toFixed(3) + ") N(" +
                     nx.toFixed(3) + ", " + ny.toFixed(3) + ") D: " + D.toFixed(3);
     }
+
+    protected var _connected :Dictionary;
 }
 }

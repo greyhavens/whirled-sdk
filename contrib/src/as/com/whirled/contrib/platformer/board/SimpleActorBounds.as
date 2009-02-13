@@ -206,12 +206,13 @@ public class SimpleActorBounds extends ActorBounds
         } else {
             cd.reset(delta);
         }
-        log("found", cd.colliders.length, "lines and", cd.acolliders.length, "interesting bounds");
+        log("found", cd.colliders.length, "lines and", cd.acolliders.length, "interesting bounds for", getBottomLine());
         var beforeX :Number = actor.x;
         var beforeY :Number = actor.y;
         var didCollide :Boolean = false;
 
         do {
+            startLog();
             fcCalls++;
             var cdX :Number = actor.dx * delta;
             var cdY :Number = actor.dy * delta;
@@ -221,21 +222,53 @@ public class SimpleActorBounds extends ActorBounds
             }
             var verify :Array = new Array();
             genMovementBounds(cdX, cdY);
+            log("testing delta", delta, "with (", cdX, ",", cdY, ") on", getBottomLine(), "->",_mlines[5]);
 
             // Find all the static lines we collide with
             if (cd.colliders.length > 0) {
-                verify = cd.colliders;
-                cd.colliders = new Array();
-                for each (var ld :LineData in verify) {
+                var colTest :Array = new Array(cd.colliders.length);
+                //verify = cd.colliders;
+                //cd.colliders = new Array();
+                for (var ii :int = 0; ii < cd.colliders.length; ii++) {
+                //for each (var ld :LineData in cd.colliders) {
+                    var ld :LineData = cd.colliders[ii];
                     if (actor.attached == ld || !BoundData.doesBound(ld.type, actor.projCollider)) {
+                        colTest[ii] = -1;
                         continue;
                     }
                     if (ld.polyIntersecting(_mlines)) {
                             //&& !ld.polyIntersecting(_lines)) {
-                        cd.colliders.push(ld);
-                        log("adding intersecting ", ld);
+                        colTest[ii] = 1;
+                        //cd.colliders.push(ld);
+                        //log("adding intersecting ", ld);
                     } else {
-                        log("ignoring non intersecting ", ld);
+                        //log("ignoring non intersecting ", ld);
+                        colTest[ii] = 0;
+                    }
+                }
+                for (ii = 0; ii < cd.colliders.length; ii++) {
+                    if (colTest[ii] != 1) {
+                        continue;
+                    }
+                    for (var jj :int = 0; jj < cd.colliders.length; jj++) {
+                        if (ii == jj || colTest[jj] != 0) {
+                            continue;
+                        }
+                        if (cd.colliders[ii].isConnected(cd.colliders[jj]) != null) {
+                            colTest[jj] = 2;
+                        }
+                    }
+                }
+                verify = cd.colliders;
+                cd.colliders = new Array();
+                var ignored :Array = new Array();
+                for (ii = 0; ii < colTest.length; ii++) {
+                    if (colTest[ii] >= 1) {
+                        cd.colliders.push(verify[ii]);
+                        ignored.push(colTest[ii]);
+                        log("adding interesting", verify[ii], "ignored", ignored[ignored.length - 1]);
+                    } else {
+                        log("ignoring uninteresting", verify[ii]);
                     }
                 }
             }
@@ -244,8 +277,7 @@ public class SimpleActorBounds extends ActorBounds
             if (cd.colliders.length > 0) {
                 verify = cd.colliders;
                 cd.colliders = new Array();
-                var ignored :Array = new Array();
-                for (var ii :int = 0; ii < verify.length; ii++) {
+                for (ii = 0; ii < verify.length; ii++) {
                     if (!BoundData.doesBound(verify[ii].type)) {
                         cd.colliders.push(verify[ii]);
                         log("ignoring non bounding collider:", verify[ii]);
@@ -253,16 +285,17 @@ public class SimpleActorBounds extends ActorBounds
                     }
                     var ignore :Boolean = false;
                     var connected :Boolean = false;
-                    for (var jj :int = 0; jj < verify.length; jj++) {
+                    for (jj = 0; jj < verify.length; jj++) {
                         if (ii == jj) {
                             continue;
                         }
                         var sides :Array = verify[ii].isConnected(verify[jj]);
                         if (sides != null) {
                             connected = true;
-                            if (BoundData.getNormalBound(verify[ii].type) != BoundData.ALL &&
+                            if (ignored[ii] != 2 && ignored[jj] != 2 &&
+                                    BoundData.getNormalBound(verify[ii].type) != BoundData.ALL &&
                                     isContained(verify[ii], verify[jj], sides)) {
-                                ignored[ii] = true;
+                                ignored[ii] = 3;
                                 log("ignoring contained collider:", verify[ii]);
                                 break;
                             }
@@ -270,19 +303,19 @@ public class SimpleActorBounds extends ActorBounds
                                  (sides[1] < 0 && !verify[jj].anyInside(_lines))) &&
                                 !((sides[0] > 0 && !verify[ii].anyOutside(_lines)) ||
                                   (sides[0] < 0 && !verify[ii].anyInside(_lines)))) {
-                                ignored[ii] = true;
+                                ignored[ii] = 3;
                                 log("ignoring unreachable collider:", verify[ii]);
                                 break;
                             }
                         }
                     }
-                    if (!connected && !ignored[ii] &&
+                    if (!connected && ignored[ii] == 1 &&
                         ((!BoundData.blockOuter(verify[ii].type) && verify[ii].anyOutside(_lines)) ||
                          (!BoundData.blockInner(verify[ii].type) && verify[ii].anyInside(_lines)))) {
-                        ignored[ii] = true;
+                        ignored[ii] = 3;
                         log("ignoring unconnected collider:", verify[ii]);
                     }
-                    if (!ignored[ii]) {
+                    if (ignored[ii] == 1) {
                         cd.colliders.push(verify[ii]);
                     }
                 }
@@ -312,9 +345,15 @@ public class SimpleActorBounds extends ActorBounds
                 averify = new Array();
             }
             if (cd.colliders.length > 0 || cd.acolliders.length > 0) {
+                log("reducing delta");
+                writeLog();
                 cd.fcdX = cdX;
                 cd.fcdY = cdY;
+                if (Math.abs(cdX) > 1/Metrics.TILE_SIZE || Math.abs(cdY) > 1/Metrics.TILE_SIZE) {
+                    cd.colliders = verify;
+                }
             } else {
+                writeLog();
                 translate(cdX, cdY);
                 cd.oX += cdX;
                 cd.oY += cdY;
@@ -324,8 +363,10 @@ public class SimpleActorBounds extends ActorBounds
                 if (cd.rdelta == 0) {
                     break;
                 }
-                cd.colliders = verify;
-                cd.acolliders = averify;
+                if (Math.abs(cdX) > 1/Metrics.TILE_SIZE || Math.abs(cdY) > 1/Metrics.TILE_SIZE) {
+                    cd.colliders = verify;
+                    cd.acolliders = averify;
+                }
             }
             if (cd.colliders.length > 0) {
                 //log("found", cd.colliders.length, "colliders, now halving delta, actor (",
@@ -384,14 +425,16 @@ public class SimpleActorBounds extends ActorBounds
                 maxY = Math.max(actor.attached.y1, actor.attached.y2);
                 attached = actor.attached;
             }
+            var acols :int = 0;
             for each (col in cd.colliders) {
-                if (Math.abs(col.ix) > 0 &&
+                if (col.ix != 0 &&
                         (col.isIntersecting(base) || col.didSimpleCross(getBottomLine(), base))) {
-                    if (col.y1 > maxY || col.y2 > maxY || (
-                            ((col.y1 == maxY || col.y2 == maxY) &&
-                            Math.abs(col.iy) < Math.abs(attached.iy))) ||
+                    var amax :Number = Math.max(col.y1, col.y2);
+                    if (amax > maxY ||
+                            (amax == maxY && Math.abs(col.iy) < Math.abs(attached.iy)) ||
                             (attached.yIntersecting(base) && col.yIntersecting(base))) {
-                        if (attached != null && Math.abs(col.iy) > actor.maxWalkable) {
+                        if (attached != null && Math.abs(col.iy) > actor.maxWalkable &&
+                                Math.abs(attached.iy) <= actor.maxWalkable) {
                             continue;
                         }
                         attached = col;
@@ -402,11 +445,9 @@ public class SimpleActorBounds extends ActorBounds
             if (attached != null && attached != actor.attached) {
                 if (Math.abs(attached.iy) > 0 && actor.y > maxY && cd.colliders.length > 1) {
                     if (attached.y1 == maxY) {
-                        attached = new LineData(attached.x1 - 0.00001, attached.y1,
-                            attached.x1 + 0.00001, attached.y1, BoundData.ALL);
+                        attached = pointLine(attached.x1, attached.y1);
                     } else {
-                        attached = new LineData(attached.x2 - 0.00001, attached.y2,
-                            attached.x2 + 0.00001, attached.y2, BoundData.ALL);
+                        attached = pointLine(attached.x2, attached.y2);
                     }
                 }
                 log(actor.sprite, "new attached:", attached, ",", base);
@@ -423,9 +464,10 @@ public class SimpleActorBounds extends ActorBounds
                 attached = null;
                 if (cd.acolliders.length == 0) {
                     for each (var ld :LineData in _collider.getLines(actor)) {
-                        if (ld == actor.attached || ld.isConnected(actor.attached, false) == null ||
-                            Math.abs(ld.iy) > actor.maxWalkable ||
-                            (ld.y1 > getBottomLine().y1 && ld.y2 > getBottomLine().y1)) {
+                        if (ld == actor.attached ||
+                                ld.isConnected(actor.attached, false) == null ||
+                                Math.abs(ld.iy) > actor.maxWalkable ||
+                                (ld.y1 > getBottomLine().y1 && ld.y2 > getBottomLine().y1)) {
                             continue;
                         }
                         if ((ld.y1 > maxY || ld.y2 > maxY) && ld.xIntersecting(getBottomLine()) &&
@@ -435,15 +477,13 @@ public class SimpleActorBounds extends ActorBounds
                         }
                     }
                     if (attached != null) {
-                        if (Maths.sign0(attached.iy * attached.ix) !=
+                        if (actor.attached.iy != 0 && Maths.sign0(attached.iy * attached.ix) !=
                                 Maths.sign0(actor.attached.iy * actor.attached.ix) &&
                             Math.abs(attached.iy) > 0 && actor.y > maxY) {
                             if (attached.y1 == maxY) {
-                                attached = new LineData(attached.x1 - 0.00001, attached.y1,
-                                    attached.x1 + 0.00001, attached.y1, BoundData.ALL);
+                                attached = pointLine(attached.x1, attached.y1);
                             } else {
-                                attached = new LineData(attached.x2 - 0.00001, attached.y2,
-                                    attached.x2 + 0.00001, attached.y2, BoundData.ALL);
+                                attached = pointLine(attached.x2, attached.y2);
                             }
                         }
                     }
@@ -462,7 +502,8 @@ public class SimpleActorBounds extends ActorBounds
         // First we check any lines that are crossed
         if (cd.colliders.length > 0) {
             for each (col in cd.colliders) {
-                if (actor.attached == col || (col.isConnected(actor.attached, false) != null &&
+                if (actor.attached == col ||
+                        (col.isConnected(actor.attached, false) != null &&
                             Math.abs(col.iy) < actor.maxWalkable)) {
                     continue;
                 }
@@ -578,10 +619,59 @@ public class SimpleActorBounds extends ActorBounds
         return (getBottomLine().y1 >= minY && getBottomLine().y1 < maxY + 0.1);
     }
 
+    protected function pointLine (x :Number, y :Number) :LineData
+    {
+        var ld :LineData = new LineData(x - 0.00001, y, x + 0.00001, y, BoundData.ALL);
+        ld.mag = 0.00001;
+        ld.ix = 1;
+        ld.iy = 0;
+        ld.nx = 0;
+        ld.ny = 1;
+        ld.D = -y;
+        return ld;
+    }
+
     protected function log (... data) :void
     {
         if (DEBUG && data != null) {
+            if (_buffer != null) {
+                _buffer.push(data.join(" "));
+            } else {
+                trace(data.join(" "));
+            }
+        }
+    }
+
+    protected function flog (... data) :void
+    {
+        if (actor.id < 100) {
             trace(data.join(" "));
+        }
+    }
+
+    protected function startLog () :void
+    {
+        if (DEBUG) {
+            _buffer = new Array();
+        }
+    }
+
+    protected function clearLog () :void
+    {
+        if (DEBUG) {
+            _buffer = null;
+        }
+    }
+
+    protected function writeLog () :void
+    {
+        if (DEBUG) {
+            if (_buffer != null) {
+                for each (var str :String in _buffer) {
+                    trace(str);
+                }
+                _buffer = null;
+            }
         }
     }
 
@@ -593,6 +683,7 @@ public class SimpleActorBounds extends ActorBounds
     protected var _hitX :Boolean;
     protected var _hitY :Boolean;
     protected var _log :String;
+    protected var _buffer :Array;
 
     protected static const MIN_ATTACH_DIST :Number = 0.1;
 

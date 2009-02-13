@@ -75,6 +75,7 @@ public class WalkTask extends ColliderTask
             a.dx = Maths.limit(a.dx, _maxDx);
         }
         _attached = null;
+        _new = false;
         _lastDelta = NaN;
         updateVector();
     }
@@ -109,7 +110,8 @@ public class WalkTask extends ColliderTask
             _attached = a.attached;
             // Newly attached to a walkable tile, preserve our momentum
             if (Math.abs(a.attached.iy) < a.maxWalkable) {
-                var dot :Number = a.dx * a.attached.ix + a.dy * a.attached.iy;
+                var dot :Number = a.attached.dot(a.dx, a.dy);
+                //var dot :Number = a.dx * a.attached.ix + a.dy * a.attached.iy;
                 if (a.attached.ix >= 0) {
                     dot += a.accelX * _delta;
                 } else {
@@ -119,6 +121,7 @@ public class WalkTask extends ColliderTask
                 dot = Maths.limit(dot, _maxDx);
                 a.dx = dot * a.attached.ix;
                 a.dy = dot * a.attached.iy;
+
             // Newly attached to an unwalkable tile, start to slide
             } else {
                 if (a.attached.iy > 0) {
@@ -133,6 +136,7 @@ public class WalkTask extends ColliderTask
                 a.dx = Maths.limit(a.dx, _maxDx);
                 a.dy = Maths.limit(a.dy, Collider.MAX_DY);
             }
+            _new = true;
         }
         if (a.attached != null) {
             adjustAttached(a);
@@ -141,7 +145,7 @@ public class WalkTask extends ColliderTask
 
     protected function adjustAttached (a :Actor) :void
     {
-        if (a.accelY == 0 &&
+        if (a.accelY == 0 && a.attached.mag > 0.2 &&
             ((a.attached.isLineOutside(_sab.getBottomLine()) &&
                 a.attached.normalDot(a.dx, a.dy) < 0) ||
             (a.attached.isLineInside(_sab.getBottomLine()) &&
@@ -186,5 +190,6 @@ public class WalkTask extends ColliderTask
     protected var _maxDx :Number = Collider.MAX_DX;
     protected var _hitX :Boolean;
     protected var _hitY :Boolean;
+    protected var _new :Boolean;
 }
 }
