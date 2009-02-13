@@ -51,7 +51,9 @@ public class BasicMessageManager
 
         var msg :Message = new messageClass();
         try {
-            msg.fromBytes(ByteArray(val));
+            var bytes :ByteArray = ByteArray(val);
+            bytes.position = 0;
+            msg.fromBytes(bytes);
         } catch (e :Error) {
             log.warning("Failed to deserialize incoming '" + name + "' message", e);
             return null;
