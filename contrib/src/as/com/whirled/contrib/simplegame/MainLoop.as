@@ -306,7 +306,7 @@ public final class MainLoop
             mode._ctx = null;
 
             _modeStack.splice(index, 1);
-            _hostSprite.removeChildAt(index);
+            _hostSprite.removeChild(mode.modeSprite);
         }
 
         // create a new _pendingModeTransitionQueue right now
