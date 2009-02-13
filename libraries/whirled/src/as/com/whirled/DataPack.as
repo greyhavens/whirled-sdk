@@ -158,6 +158,10 @@ public class DataPack extends BaseDataPack
 
     /**
      * Get some display objects in the datapack.
+     * <b>Note</b>: With the move to flash 10, it's now illegal to "reparent" a SWF that was
+     * compiled with AVM1 (flash 8, or newer but compiled as actionscript 1/2). It will work
+     * fine in flashplayer 9, but in flashplayer 10 it will give a runtime error. The workaround
+     * is to use getLoaders() instead, and add the Loader to your hierarchy.
      *
      * @param sources an Object containing keys mapping to the names of the display objects to load.
      * @param callback a Function that will be called when all the display objects
@@ -174,13 +178,15 @@ public class DataPack extends BaseDataPack
     }
 
     /**
-     * Get SWF loaders for each SWF in the datapack.
+     * Get Loaders containing the specified files from the datapack. These Loaders will hold the 
+     * DisplayObject or Image files, and can be safely added to your display hierarchy without
+     * causing any errors, even if loading an AVM1 swf.
      *
      * @param sources an Object containing keys mapping to the names of the display objects to load.
      * @param callback a Function that will be called when all the display objects
      *                 are loaded (or were unable to load).
      *                 Signature: <code>function (results :Object) :void</code>.
-     *                 results will contain a mapping from name -> EmbeddedSwfLoader, or null.
+     *                 results will contain a mapping from name -> Loader, or null.
      * @param appDom The ApplicationDomain in which to load the DisplayObjects. The default value
      *               of null will load into a child of the current ApplicationDomain.
      */
