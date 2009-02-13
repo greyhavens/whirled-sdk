@@ -67,11 +67,17 @@ public class WalkTask extends ColliderTask
             }
         }
         if (a.attached == null || a.accelY > 0) {
+            var xdrag :Number = 9;
+            var ydrag :Number = 15;
+            if (!a.isAlive()) {
+               xdrag = 3;
+               ydrag = 20;
+            }
             a.dy += a.accelY * delta;
-            a.dy -= 15 * delta;
+            a.dy -= ydrag * delta;
             a.dy = Math.max(a.dy, -Collider.MAX_DY);
             a.dx += a.accelX * delta;
-            a.dx -= Maths.sign0(a.dx) * Maths.limit(9 * delta, Math.abs(a.dx));
+            a.dx -= Maths.sign0(a.dx) * Maths.limit(xdrag * delta, Math.abs(a.dx));
             a.dx = Maths.limit(a.dx, _maxDx);
         }
         _attached = null;
@@ -178,6 +184,9 @@ public class WalkTask extends ColliderTask
             }
             _lastDelta = _delta;
             _delta = _cd.rdelta;
+            if (_delta > 0) {
+                updateVector();
+            }
         } else {
             _delta = 0;
             trace("WalkTask ran with no cd");

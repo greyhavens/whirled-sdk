@@ -277,13 +277,13 @@ public class SimpleActorBounds extends ActorBounds
             if (cd.colliders.length > 0) {
                 verify = cd.colliders;
                 cd.colliders = new Array();
+
                 for (ii = 0; ii < verify.length; ii++) {
                     if (!BoundData.doesBound(verify[ii].type)) {
                         cd.colliders.push(verify[ii]);
                         log("ignoring non bounding collider:", verify[ii]);
                         continue;
                     }
-                    var ignore :Boolean = false;
                     var connected :Boolean = false;
                     for (jj = 0; jj < verify.length; jj++) {
                         if (ii == jj) {
@@ -312,11 +312,18 @@ public class SimpleActorBounds extends ActorBounds
                     if (!connected && ignored[ii] == 1 &&
                         ((!BoundData.blockOuter(verify[ii].type) && verify[ii].anyOutside(_lines)) ||
                          (!BoundData.blockInner(verify[ii].type) && verify[ii].anyInside(_lines)))) {
-                        ignored[ii] = 3;
+                        ignored[ii] = 4;
                         log("ignoring unconnected collider:", verify[ii]);
                     }
                     if (ignored[ii] == 1) {
                         cd.colliders.push(verify[ii]);
+                    }
+                }
+                for (ii = 0, jj = 0; ii < verify.length; jj++) {
+                    if (ignored[jj] == 4) {
+                        verify.splice(ii, 1);
+                    } else {
+                        ii++;
                     }
                 }
             }
