@@ -90,11 +90,11 @@ public class DynamicBounds
         return _collider.isInteresting(this, db);
     }
 
-    public function updatedDB (cd :ColliderDetails, db :DynamicBounds) :void
+    public function updatedDB (cd :ColliderDetails, db :DynamicBounds) :Boolean
     {
         if (cd != null && db != null) {
             if (_collider.doesInteract(dyn.inter, db.dyn.inter) && isInteresting(db)) {
-                cd.pushActor(db);
+                return cd.pushActor(db);
             }
             /*
             var c :int = cd.colliders.length;
@@ -104,6 +104,7 @@ public class DynamicBounds
             }
             */
         }
+        return true;
     }
 
     protected function dynamicCollider (cd :ColliderDetails) :void
@@ -115,12 +116,19 @@ public class DynamicBounds
         for (var ii :int = 0; ii < cd.acolliders.length; ii++) {
             var ch :CollisionHandler =
                 controller.getCollisionHandler(cd.acolliders[ii].controller);
+            var reset :Boolean = false;
             if (ch != null) {
                 ch.collide(this, cd.acolliders[ii], cd);
+                reset = true;
             }
             ch = cd.acolliders[ii].controller.getCollisionHandler(controller);
             if (ch != null) {
                 ch.collide(cd.acolliders[ii], this, cd);
+                reset = true;
+            }
+            if (reset) {
+                //trace("resetting " + cd.acolliders[ii].controller.getDynamic().id + " due to collision with " + dyn.id);
+                cd.acolliders[ii].controller.getTask().reset();
             }
         }
     }

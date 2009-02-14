@@ -105,7 +105,7 @@ public class BounceCollisionHandler extends CollisionHandler
         }
         //trace("bounce collide adjust (" + ax + ", " + ay + "), (" + target.actor.dx + ", " + target.actor.dy + ")");
         if (ay != 0 || ax != 0) {
-            target.controller.getTask().reset();
+            //target.controller.getTask().reset();
             if (ay > 0) {
                 source.actor.events.push("bounce");
             } else {

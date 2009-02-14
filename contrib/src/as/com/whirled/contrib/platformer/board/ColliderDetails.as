@@ -24,6 +24,7 @@ public class ColliderDetails
 {
     /** An array of LineData static colliders. */
     public var colliders :Array;
+    public var ignored :Array;
 
     /** An array of DynamicBounds dynamic colliders. */
     public var acolliders :Array;
@@ -57,15 +58,18 @@ public class ColliderDetails
         oY = 0;
     }
 
-    public function pushActor (db :DynamicBounds) :void
+    public function pushActor (db :DynamicBounds) :Boolean
     {
         if (acolliders == null) {
             acolliders = [ db ];
         } else {
             if (acolliders.indexOf(db) == -1) {
                 acolliders.push(db);
+            } else {
+                return false;
             }
         }
+        return true;
     }
 }
 }

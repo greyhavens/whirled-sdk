@@ -66,7 +66,9 @@ public class FlyTask extends ColliderTask
         if (_cd == null) {
             updateVector();
         } else if (ct != null) {
-            _sab.updatedDB(_cd, ct.getBounds());
+            if (!_sab.updatedDB(_cd, ct.getBounds())) {
+                reset();
+            }
         }
         _cd = _sab.findColliders(_delta, _cd);
         return _cd;

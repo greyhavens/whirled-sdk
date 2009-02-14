@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer.game {
 
+import com.whirled.contrib.platformer.board.ColliderTask;
+
 public interface CollisionController
 {
     function getCollisionHandler (other :Object) :CollisionHandler;
@@ -27,5 +29,7 @@ public interface CollisionController
     function addCollisionHandler (handler :CollisionHandler) :void;
 
     function postCollider () :void;
+
+    function getTask () :ColliderTask;
 }
 }

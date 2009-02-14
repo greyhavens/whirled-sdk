@@ -94,7 +94,9 @@ public class WalkTask extends ColliderTask
     override public function genCD (ct :ColliderTask = null) :ColliderDetails
     {
         if (_cd != null && ct != null) {
-            _sab.updatedDB(_cd, ct.getBounds());
+            if (!_sab.updatedDB(_cd, ct.getBounds())) {
+                reset();
+            }
         }
         _cd = _sab.findColliders(_delta, _cd);
         return _cd;
@@ -184,9 +186,6 @@ public class WalkTask extends ColliderTask
             }
             _lastDelta = _delta;
             _delta = _cd.rdelta;
-            if (_delta > 0) {
-                updateVector();
-            }
         } else {
             _delta = 0;
             trace("WalkTask ran with no cd");
