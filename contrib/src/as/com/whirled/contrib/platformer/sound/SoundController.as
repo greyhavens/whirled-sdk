@@ -69,8 +69,6 @@ public class SoundController extends EventDispatcher
             return;
         }
 
-        log.debug("startBackgroundMusic", "name", name);
-
         stopBackgroundMusic(crossfade);
 
         var trackSound :Sound = _tracks.get(_trackName = name) as Sound;
@@ -96,8 +94,6 @@ public class SoundController extends EventDispatcher
         if (_track == null) {
             return;
         }
-
-        log.debug("stopBackgroundMusic", "name", _trackName, "channel", _track);
 
         if (fadeOut) {
             addBinding(bindFadeout(_track));
@@ -176,22 +172,25 @@ public class SoundController extends EventDispatcher
 
     /**
      * Players the given sound effect in a new channel, regardless of whether it was already playing
+     *
+     * TODO: this is disabled because it's not well designed.  If it turns out that we need this
+     * method, I'll rework it.  If we don't need it, we can just dump it altogether.
      */
-    public function startSoundEffect (name :String) :void
-    {
-        if (!SOUND_ENABLED) {
-            return;
-        }
-
-        // TODO: This is going to need to be more sophisticated so that these can be included in
-        // _channels.  Probably, _channels will need to be indexed off of some sort of id that
-        // differentiates between a sound effect that should be looped, and a sound effect that
-        // is allowed to have several instances playing simultaneously.
-        var sound :Sound = getSound(name);
-        if (sound != null) {
-            play(sound, effectsVolume);
-        }
-    }
+//    public function startSoundEffect (name :String) :void
+//    {
+//        if (!SOUND_ENABLED) {
+//            return;
+//        }
+//
+//        // TODO: This is going to need to be more sophisticated so that these can be included in
+//        // _channels.  Probably, _channels will need to be indexed off of some sort of id that
+//        // differentiates between a sound effect that should be looped, and a sound effect that
+//        // is allowed to have several instances playing simultaneously.
+//        var sound :Sound = getSound(name);
+//        if (sound != null) {
+//            play(sound, effectsVolume);
+//        }
+//    }
 
     public function stopSoundEffect (name :String) :void
     {
@@ -249,7 +248,6 @@ public class SoundController extends EventDispatcher
     protected function bindChannelRemoval (name :String) :Function
     {
         return function () :void {
-            log.debug("sound complete", "name", name);
             _channels.remove(name);
         };
     }
