@@ -21,6 +21,7 @@
 package com.whirled.contrib.platformer.piece {
 
 import com.whirled.contrib.platformer.util.Effect;
+import com.whirled.contrib.platformer.sound.SoundEffect;
 
 /**
  * A base class for shots as dynamic objects.
@@ -38,6 +39,8 @@ public class Shot extends Dynamic
     public var force :Number = 0;
     public var source :int = 0;
     public var rotateHit :Boolean = false;
+    public var fireSoundEffect :SoundEffect;
+    public var missSoundEffect :SoundEffect;
 
     override public function shouldSpawn () :Boolean
     {

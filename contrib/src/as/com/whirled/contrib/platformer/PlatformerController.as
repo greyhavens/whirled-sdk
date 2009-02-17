@@ -72,6 +72,10 @@ public class PlatformerController
     {
     }
 
+    public function restartSoundEffect (effect :Object, startTime :int = -1) :void
+    {
+    }
+
     protected function run () :void
     {
         PlatformerContext.pfac = createPieceFactory();

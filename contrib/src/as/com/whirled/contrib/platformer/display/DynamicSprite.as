@@ -36,6 +36,7 @@ import flash.geom.Transform;
 import com.whirled.contrib.ColorMatrix;
 import com.whirled.contrib.platformer.client.ClientPlatformerContext;
 import com.whirled.contrib.platformer.piece.Dynamic;
+import com.whirled.contrib.platformer.sound.SoundEffect;
 import com.whirled.contrib.platformer.util.Effect;
 import com.whirled.contrib.platformer.util.Metrics;
 
@@ -239,7 +240,8 @@ public class DynamicSprite extends Sprite
         DisplayUtils.recolorNodes(node, disp, filter);
     }
 
-    protected function showHit (filter :ColorMatrixFilter = null, length :Number = HIT_LENGTH) :Boolean
+    protected function showHit (filter :ColorMatrixFilter = null,
+        length :Number = HIT_LENGTH) :Boolean
     {
         if (_hitLeft <= 0 && stage != null) {
             _hitLeft = length;
@@ -281,6 +283,33 @@ public class DynamicSprite extends Sprite
     protected function getStateFrame (state :int) :Object
     {
         return 1;
+    }
+
+    protected function playSoundEffect (effect :SoundEffect) :void
+    {
+        if (effect != null) {
+            ClientPlatformerContext.sound.playEffect(effect);
+        }
+    }
+
+    protected function stopSoundEffect (effect :SoundEffect) :void
+    {
+        if (effect != null) {
+            ClientPlatformerContext.sound.stopEffect(effect);
+        }
+    }
+
+    protected function setSoundEffectPlaying (effect :SoundEffect, playing :Boolean) :void
+    {
+        if (effect == null) {
+            return;
+        }
+
+        if (playing) {
+            playSoundEffect(effect);
+        } else {
+            stopSoundEffect(effect);
+        }
     }
 
     //protected var _state :String = "";

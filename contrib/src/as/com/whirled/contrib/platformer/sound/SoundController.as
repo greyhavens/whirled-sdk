@@ -82,9 +82,9 @@ public class SoundController extends EventDispatcher
         }
 
         if (crossfade) {
-            addBinding(bindFadein(_track = play(trackSound, 0)));
+            addBinding(bindFadein(_track = playSound(trackSound, 0)));
         } else {
-            _track = play(trackSound, backgroundVolume);
+            _track = playSound(trackSound, backgroundVolume);
         }
         _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
     }
@@ -104,98 +104,28 @@ public class SoundController extends EventDispatcher
         _track = null;
     }
 
-    /**
-     * If start is true, continueSoundEffect will be called.  If start is false, stopSoundEffect
-     * will be called.
-     */
-    public function setEffectPlayback (name :String, start :Boolean) :void
+    public function playEffect (effect :SoundEffect) :void
     {
         if (!SOUND_ENABLED) {
             return;
         }
 
-        if (start) {
-            continueSoundEffect(name);
-        } else {
-            stopSoundEffect(name);
+        if (effect.playType == PlayType.RESTARTING) {
+            stopEffect(effect);
+
+        } else if (effect.playType == PlayType.CONTINUOUS && _channels.containsKey(effect)) {
+            return;
         }
+
+        startEffectPlayback(effect);
     }
 
-    /**
-     * If the given sound effect has a channel allocated and is playing, nothing happens.
-     * Otherwise, a new channel is allocated and the sound effect begins.
-     */
-    public function continueSoundEffect (effect :Object) :void
+    public function stopEffect (effect :SoundEffect) :void
     {
-        if (!SOUND_ENABLED) {
-            return;
-        }
-
-        var name :String = getName(effect);
-        if (_channels.containsKey(name)) {
-            return;
-        }
-
-        var sound :Sound = getSound(effect);
-        if (sound != null) {
-            playEffect(name, sound);
-        }
-    }
-
-    /**
-     * If this sound effect is already playing, stop the current channel.
-     */
-    public function restartSoundEffect (effect :Object, playTime :int = -1) :void
-    {
-        if (!SOUND_ENABLED) {
-            return;
-        }
-
-        var name :String = getName(effect);
-        var playback :ChannelPlayback = _channels.get(name);
+        var playback :ChannelPlayback = _channels.remove(effect);
         if (playback != null) {
-            if (playTime != -1 && getTimer() < (playback.startTime + playTime)) {
-                return;
-            }
-
-            _channels.remove(name);
             playback.channel.stop();
             _eventMgr.freeAllOn(playback.channel);
-        }
-
-        var sound :Sound = getSound(effect);
-        if (sound != null) {
-            playEffect(name, sound);
-        }
-    }
-
-    /**
-     * Players the given sound effect in a new channel, regardless of whether it was already playing
-     *
-     * TODO: this is disabled because it's not well designed.  If it turns out that we need this
-     * method, I'll rework it.  If we don't need it, we can just dump it altogether.
-     */
-//    public function startSoundEffect (name :String) :void
-//    {
-//        if (!SOUND_ENABLED) {
-//            return;
-//        }
-//
-//        // TODO: This is going to need to be more sophisticated so that these can be included in
-//        // _channels.  Probably, _channels will need to be indexed off of some sort of id that
-//        // differentiates between a sound effect that should be looped, and a sound effect that
-//        // is allowed to have several instances playing simultaneously.
-//        var sound :Sound = getSound(name);
-//        if (sound != null) {
-//            play(sound, effectsVolume);
-//        }
-//    }
-
-    public function stopSoundEffect (name :String) :void
-    {
-        var playback :ChannelPlayback = _channels.remove(name);
-        if (playback != null) {
-            playback.channel.stop();
         }
     }
 
@@ -229,51 +159,25 @@ public class SoundController extends EventDispatcher
         dispatchEvent(new Event(Event.COMPLETE));
     }
 
-    protected function getName (effect :Object) :String
+    protected function getSound (effect :SoundEffect) :Sound
     {
-        if (effect is String) {
-            return effect as String;
-        }
-
-        if (effect is EffectSet) {
-            return (effect as EffectSet).name;
-        }
-
-        log.debug("getName given an invalid effect", "effect", effect);
-        return null;
-    }
-
-    protected function getSound (effect :Object) :Sound
-    {
-        var effectName :String
-        if (effect is String) {
-            effectName = effect as String;
-
-        } else if (effect is EffectSet) {
-            effectName = (effect as EffectSet).getRandomEntry();
-
-        } else {
-            log.debug("getSound given an invalid effect", "effect", effect);
-            return null;
-        }
-
-        var sound :Sound = _sounds.get(effectName);
+        var sound :Sound = _sounds.get(effect.sound);
         if (sound == null) {
-            var cls :Class = _contentDomain.getDefinition(effectName) as Class;
+            var cls :Class = _contentDomain.getDefinition(effect.sound) as Class;
             sound = cls == null ? null : (new cls()) as Sound;
             if (sound == null) {
-                log.warning("Sound effect not found!", "name", effectName);
+                log.warning("Sound effect not found!", "name", effect.sound);
             } else {
-                _sounds.put(effectName, sound);
+                _sounds.put(effect.sound, sound);
             }
         }
         return sound;
     }
 
-    protected function bindChannelRemoval (name :String) :Function
+    protected function bindChannelRemoval (effect :SoundEffect) :Function
     {
         return function () :void {
-            _channels.remove(name);
+            _channels.remove(effect);
         };
     }
 
@@ -339,20 +243,27 @@ public class SoundController extends EventDispatcher
         if (sound == null) {
             log.warning("No cached Sound for a looping track", "trackName", _trackName);
         }
-        _track = play(sound, effectsVolume);
+        _track = playSound(sound, effectsVolume);
         _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
     }
 
-    protected function play (sound :Sound, volume :Number) :SoundChannel
+    protected function playSound (sound :Sound, volume :Number) :SoundChannel
     {
         return sound.play(0, 0, new SoundTransform(volume));
     }
 
-    protected function playEffect (name :String, effect :Sound) :void
+    protected function startEffectPlayback (effect :SoundEffect) :void
     {
-        var channel :SoundChannel = play(effect, effectsVolume);
-        _channels.put(name, new ChannelPlayback(channel, getTimer()));
-        _eventMgr.registerOneShotCallback(channel, Event.SOUND_COMPLETE, bindChannelRemoval(name));
+        var sound :Sound = getSound(effect);
+        if (sound == null) {
+            log.warning("No sound found for effect", "effect", effect);
+            return;
+        }
+
+        var channel :SoundChannel = playSound(sound, effectsVolume);
+        _channels.put(effect, new ChannelPlayback(channel, getTimer()));
+        _eventMgr.registerOneShotCallback(
+            channel, Event.SOUND_COMPLETE, bindChannelRemoval(effect));
     }
 
     protected var _contentDomain :ApplicationDomain = new ApplicationDomain(null);

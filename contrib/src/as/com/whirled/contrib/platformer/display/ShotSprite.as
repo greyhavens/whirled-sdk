@@ -45,6 +45,7 @@ public class ShotSprite extends DynamicSprite
             _alive += delta;
             if (_alive > TIME_TO_LIVE) {
                 _disp.visible = true;
+                playSoundEffect(_shot.fireSoundEffect);
             }
         }
         if (_dead) {
@@ -77,6 +78,7 @@ public class ShotSprite extends DynamicSprite
     {
         rotation += 180;
         generateEffect(_shot.missEffect, this);
+        playSoundEffect(_shot.missSoundEffect);
     }
 
     protected function displayAir () :void

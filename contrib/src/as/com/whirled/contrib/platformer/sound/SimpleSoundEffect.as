@@ -20,34 +20,21 @@
 
 package com.whirled.contrib.platformer.sound {
 
-import com.threerings.util.HashSet;
-import com.threerings.util.RandomUtil;
 import com.threerings.util.StringUtil;
 
-public class EffectSet extends HashSet
+public class SimpleSoundEffect
     implements SoundEffect
 {
-    public function EffectSet (name :String, playType :PlayType, initialEffects :Array = null)
+    public function SimpleSoundEffect (sound :String, playType :PlayType)
     {
-        _name = name;
+        _sound = sound;
         _playType = playType;
-
-        if (initialEffects != null) {
-            for each (var effect :String in initialEffects) {
-                add(effect);
-            }
-        }
-    }
-
-    public function get name () :String
-    {
-        return _name;
     }
 
     // from SoundEffect
     public function get sound () :String
     {
-        return RandomUtil.pickRandom(toArray()) as String;
+        return _sound;
     }
 
     // from SoundEffect
@@ -59,31 +46,26 @@ public class EffectSet extends HashSet
     // from Hashable
     public function hashCode () :int
     {
-        return StringUtil.hashCode(_name);
+        return StringUtil.hashCode(_sound) * _playType.hashCode();
     }
 
     // from Equalable
-    public function equals (other :Object) :Boolean
+    public function equals (o :Object) :Boolean
     {
-        return other is EffectSet && (other as EffectSet).name == _name;
-    }
-
-    // from HashSet
-    override public function add (effect :Object) :Boolean
-    {
-        if (!(effect is String)) {
+        if (!(o is SimpleSoundEffect)) {
             return false;
         }
 
-        return super.add(effect);
+        var other :SimpleSoundEffect = o as SimpleSoundEffect;
+        return other.sound == _sound && other.playType == _playType;
     }
 
     public function toString () :String
     {
-        return "EffectSet [" + _name + ", " + _playType + "]";
+        return "SimpleSoundEffect [" + sound + ", " + playType + "]";
     }
 
-    protected var _name :String;
+    protected var _sound :String;
     protected var _playType :PlayType;
 }
 }
