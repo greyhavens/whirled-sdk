@@ -125,49 +125,48 @@ public class SoundController extends EventDispatcher
      * If the given sound effect has a channel allocated and is playing, nothing happens.
      * Otherwise, a new channel is allocated and the sound effect begins.
      */
-    public function continueSoundEffect (name :String) :void
+    public function continueSoundEffect (effect :Object) :void
     {
         if (!SOUND_ENABLED) {
             return;
         }
 
+        var name :String = getName(effect);
         if (_channels.containsKey(name)) {
             return;
         }
 
-        var sound :Sound = getSound(name);
-        if (sound == null) {
-            return;
+        var sound :Sound = getSound(effect);
+        if (sound != null) {
+            playEffect(name, sound);
         }
-
-        var channel :SoundChannel = play(sound, effectsVolume);
-        _channels.put(name, channel);
-        _eventMgr.registerOneShotCallback(channel, Event.SOUND_COMPLETE, bindChannelRemoval(name));
     }
 
     /**
-     * If this sound effect is already playing, stop the current channel.  In either case, start the
-     * effect now.
+     * If this sound effect is already playing, stop the current channel.
      */
-    public function restartSoundEffect (name :String) :void
+    public function restartSoundEffect (effect :Object, playTime :int = -1) :void
     {
         if (!SOUND_ENABLED) {
             return;
         }
 
-        var channel :SoundChannel = _channels.remove(name);
-        if (channel != null) {
-            channel.stop();
-            _eventMgr.freeAllOn(channel);
+        var name :String = getName(effect);
+        var playback :ChannelPlayback = _channels.get(name);
+        if (playback != null) {
+            if (playTime != -1 && getTimer() < (playback.startTime + playTime)) {
+                return;
+            }
+
+            _channels.remove(name);
+            playback.channel.stop();
+            _eventMgr.freeAllOn(playback.channel);
         }
 
-        var sound :Sound = getSound(name);
-        if (sound == null) {
-            return;
+        var sound :Sound = getSound(effect);
+        if (sound != null) {
+            playEffect(name, sound);
         }
-
-        _channels.put(name, channel = play(sound, effectsVolume));
-        _eventMgr.registerOneShotCallback(channel, Event.SOUND_COMPLETE, bindChannelRemoval(name));
     }
 
     /**
@@ -194,9 +193,9 @@ public class SoundController extends EventDispatcher
 
     public function stopSoundEffect (name :String) :void
     {
-        var channel :SoundChannel = _channels.remove(name);
-        if (channel != null) {
-            channel.stop();
+        var playback :ChannelPlayback = _channels.remove(name);
+        if (playback != null) {
+            playback.channel.stop();
         }
     }
 
@@ -230,16 +229,42 @@ public class SoundController extends EventDispatcher
         dispatchEvent(new Event(Event.COMPLETE));
     }
 
-    protected function getSound (name :String) :Sound
+    protected function getName (effect :Object) :String
     {
-        var sound :Sound = _sounds.get(name);
+        if (effect is String) {
+            return effect as String;
+        }
+
+        if (effect is EffectSet) {
+            return (effect as EffectSet).name;
+        }
+
+        log.debug("getName given an invalid effect", "effect", effect);
+        return null;
+    }
+
+    protected function getSound (effect :Object) :Sound
+    {
+        var effectName :String
+        if (effect is String) {
+            effectName = effect as String;
+
+        } else if (effect is EffectSet) {
+            effectName = (effect as EffectSet).getRandomEntry();
+
+        } else {
+            log.debug("getSound given an invalid effect", "effect", effect);
+            return null;
+        }
+
+        var sound :Sound = _sounds.get(effectName);
         if (sound == null) {
-            var cls :Class = _contentDomain.getDefinition(name) as Class;
+            var cls :Class = _contentDomain.getDefinition(effectName) as Class;
             sound = cls == null ? null : (new cls()) as Sound;
             if (sound == null) {
-                log.warning("Sound effect not found!", "name", name);
+                log.warning("Sound effect not found!", "name", effectName);
             } else {
-                _sounds.put(name, sound);
+                _sounds.put(effectName, sound);
             }
         }
         return sound;
@@ -323,6 +348,13 @@ public class SoundController extends EventDispatcher
         return sound.play(0, 0, new SoundTransform(volume));
     }
 
+    protected function playEffect (name :String, effect :Sound) :void
+    {
+        var channel :SoundChannel = play(effect, effectsVolume);
+        _channels.put(name, new ChannelPlayback(channel, getTimer()));
+        _eventMgr.registerOneShotCallback(channel, Event.SOUND_COMPLETE, bindChannelRemoval(name));
+    }
+
     protected var _contentDomain :ApplicationDomain = new ApplicationDomain(null);
     protected var _eventMgr :EventHandlerManager = new EventHandlerManager();
     protected var _loaded :Boolean = false;
@@ -337,4 +369,18 @@ public class SoundController extends EventDispatcher
 
     private static const log :Log = Log.getLog(SoundController);
 }
+}
+
+import flash.media.SoundChannel;
+
+class ChannelPlayback
+{
+    public var channel :SoundChannel;
+    public var startTime :int;
+
+    public function ChannelPlayback (channel :SoundChannel, startTime :int)
+    {
+        this.channel = channel;
+        this.startTime = startTime;
+    }
 }
