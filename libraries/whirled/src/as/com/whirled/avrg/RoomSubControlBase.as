@@ -161,33 +161,33 @@ public class RoomSubControlBase extends TargetedSubControl
     /** @private */
     internal function playerLeft_v1 (id :int) :void
     {
-        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.PLAYER_LEFT, _targetId, null, id));
+        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.PLAYER_LEFT, getRoomId(), null, id));
     }
 
     /** @private */
     internal function playerEntered_v1 (id :int) :void
     {
-        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.PLAYER_ENTERED, _targetId, null, id));
+        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.PLAYER_ENTERED, getRoomId(), null, id));
     }
 
     /** @private */
     internal function playerMoved_v1 (id :int) :void
     {
-        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.PLAYER_MOVED, _targetId, null, id));
+        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.PLAYER_MOVED, getRoomId(), null, id));
     }
 
     /** @private */
     internal function actorAppearanceChanged_v1 (playerId :int) :void
     {
         dispatch(new AVRGameRoomEvent(
-                AVRGameRoomEvent.AVATAR_CHANGED, _targetId, null, playerId));
+            AVRGameRoomEvent.AVATAR_CHANGED, getRoomId(), null, playerId));
     }
 
     /** @private */
     internal function actorStateSet_v1 (playerId :int, state :String) :void
     {
         dispatch(new AVRGameRoomEvent(
-                AVRGameRoomEvent.AVATAR_CHANGED, _targetId, null, playerId));
+            AVRGameRoomEvent.AVATAR_CHANGED, getRoomId(), null, playerId));
     }
 
     /** @private */
@@ -201,7 +201,7 @@ public class RoomSubControlBase extends TargetedSubControl
         ctrl.gotHostPropsFriend(_funcs);
         function doDisp () :void {
             dispatch(new AVRGameRoomEvent(
-                AVRGameRoomEvent.MOB_CONTROL_AVAILABLE, _targetId, mobId, ctrl));
+                AVRGameRoomEvent.MOB_CONTROL_AVAILABLE, getRoomId(), mobId, ctrl));
         }
         if (delayEvent) {
             setTimeout(doDisp, 0);
