@@ -94,7 +94,8 @@ public class DynamicBounds
     {
         if (cd != null && db != null) {
             if (_collider.doesInteract(dyn.inter, db.dyn.inter) && isInteresting(db)) {
-                return cd.pushActor(db);
+                cd.pushActor(db);
+                return true;
             }
             /*
             var c :int = cd.colliders.length;
@@ -104,7 +105,7 @@ public class DynamicBounds
             }
             */
         }
-        return true;
+        return false;
     }
 
     protected function dynamicCollider (cd :ColliderDetails) :void
@@ -128,7 +129,7 @@ public class DynamicBounds
             }
             if (reset) {
                 //trace("resetting " + cd.acolliders[ii].controller.getDynamic().id + " due to collision with " + dyn.id);
-                cd.acolliders[ii].controller.getTask().reset();
+                //cd.acolliders[ii].controller.getTask().reset();
             }
         }
     }

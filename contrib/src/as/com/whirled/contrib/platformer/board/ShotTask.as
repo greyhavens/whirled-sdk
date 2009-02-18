@@ -51,9 +51,8 @@ public class ShotTask extends ColliderTask
                 return;
             }
         }
-        var line :LineData = new LineData(
-                _s.x, _s.y, _s.x + _s.dx * _delta, _s.y + _s.dy * _delta, BoundData.S_ALL);
-        _delta *= collide(line);
+        _line.update(_s.x, _s.y, _s.x + _s.dx * _delta, _s.y + _s.dy * _delta, true);
+        _delta *= collide(_line);
         if (_cdb != null) {
             // shit happens
             var ch :CollisionHandler = _cc.getCollisionHandler(_cdb.controller);
@@ -112,9 +111,9 @@ public class ShotTask extends ColliderTask
 
     protected function preCalcMovement () :void
     {
-        var line :LineData = new LineData(
+        _line = new LineData(
                 _s.x, _s.y, _s.x + _s.dx * _s.ttl, _s.y + _s.dy * _s.ttl, BoundData.S_ALL);
-        var closehit :Number = _collider.findLineCloseHit(line);
+        var closehit :Number = _collider.findLineCloseHit(_line);
         if (closehit < 1 && closehit > 0) {
             _s.ttl *= closehit;
             _s.miss = true;
@@ -123,5 +122,6 @@ public class ShotTask extends ColliderTask
 
     protected var _s :Shot;
     protected var _cdb :DynamicBounds;
+    protected var _line :LineData;
 }
 }

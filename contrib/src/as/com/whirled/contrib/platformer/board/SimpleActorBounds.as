@@ -195,6 +195,7 @@ public class SimpleActorBounds extends ActorBounds
 
     public function findColliders (delta :Number, cd :ColliderDetails = null) :ColliderDetails
     {
+        clearLog();
         _resetMLines = true;
         if (delta <= 0) {
             return new ColliderDetails(null, null, 0);
@@ -202,132 +203,149 @@ public class SimpleActorBounds extends ActorBounds
         if (cd == null || cd.colliders == null) {
             log("generating new collider details");
             cd = new ColliderDetails(_collider.getLines(actor), getInteractingBounds(), delta);
-        } else if (cd.colliders.length == 0 && cd.acolliders.length == 0) {
-            return cd;
+            cd.initActor(actor);
+        } else if (cd.acolliders.length == 0) {
+            if (cd.isValid(actor)) {
+                return cd;
+            }
+            cd.reset(delta, actor);
         } else {
-            log("resetting colider details to delta:", delta);
-            cd.reset(delta);
+            //log("resetting collider details to delta:", delta);
+           cd.reset(delta, actor);
         }
-        log("found", cd.colliders.length, "lines and", cd.acolliders.length, "interesting bounds for", getBottomLine());
-        var beforeX :Number = actor.x;
-        var beforeY :Number = actor.y;
+        log("found", cd.colliders.length, "lines and", cd.acolliders.length,
+                "interesting bounds for", getBottomLine());
         var didCollide :Boolean = false;
+        var forward :Boolean = true;
+        var lcount :int;
+        var lcidx :int = 0;
 
         do {
             startLog();
             fcCalls++;
+            var skip :Boolean = false;
             var cdX :Number = actor.dx * delta;
             var cdY :Number = actor.dy * delta;
             if (PlatformerContext.gctrl.game.amServerAgent() && !actor.amOwner()) {
                 cdX = 0;
                 cdY = 0;
             }
-            var verify :Array = new Array();
+            var lcd :LineCollisionDetail = null;
+            if (cd.lineCol != null) {
+                if (cd.lineCol.length > lcidx) {
+                    lcd = cd.lineCol[lcidx];
+                    skip = lcd.isValid(actor.x, actor.y, cdX, cdY);
+                    if (!skip) {
+                        cd.lineCol.splice(lcidx);
+                    }
+                }
+                if (!skip) {
+                    lcd = cd.lineCol[cd.lineCol.length-1].clone(
+                            actor.x, actor.y, cdX, cdY, cd.rdelta - delta);
+                }
+            } else {
+                cd.lineCol = new Array();
+            }
+            if (lcd == null) {
+                lcd = new LineCollisionDetail(
+                        actor.x, actor.y, cdX, cdY, cd.rdelta - delta, cd.colliders.length);
+            }
+            if (!skip) {
+                cd.lineCol.push(lcd);
+            }
+            lcount = 0;
+
             genMovementBounds(cdX, cdY);
-            log("testing delta", delta, "with (", cdX, ",", cdY, ") on", getBottomLine(), "->",_mlines[5]);
+            log("testing delta", delta, "with (", cdX, ",", cdY, ") on",
+                    getBottomLine(), "->",_mlines[5]);
 
             // Find all the static lines we collide with
-            if (cd.colliders.length > 0) {
-                var colTest :Array = new Array(cd.colliders.length);
-                //verify = cd.colliders;
-                //cd.colliders = new Array();
+            if (!skip && cd.colliders.length > 0) {
                 for (var ii :int = 0; ii < cd.colliders.length; ii++) {
-                //for each (var ld :LineData in cd.colliders) {
                     var ld :LineData = cd.colliders[ii];
-                    if (actor.attached == ld || !BoundData.doesBound(ld.type, actor.projCollider)) {
-                        colTest[ii] = -1;
+                    if (actor.attached == ld || lcd.lines[ii] == LineCollisionDetail.IGNORE ||
+                            !BoundData.doesBound(ld.type, actor.projCollider)) {
+                        lcd.lines[ii] = LineCollisionDetail.IGNORE;
+                        continue;
+                    } else if (lcd.lines[ii] <= LineCollisionDetail.MISS &&
+                        cd.lineCol[-lcd.lines[ii] + LineCollisionDetail.MISS].delta < lcd.delta) {
                         continue;
                     }
                     if (ld.polyIntersecting(_mlines)) {
-                            //&& !ld.polyIntersecting(_lines)) {
-                        colTest[ii] = 1;
-                        //cd.colliders.push(ld);
-                        //log("adding intersecting ", ld);
+                        lcd.lines[ii] = LineCollisionDetail.HIT;
+                        log("found intersecting", ld);
                     } else {
                         //log("ignoring non intersecting ", ld);
-                        colTest[ii] = 0;
+                        lcd.lines[ii] = LineCollisionDetail.MISS - lcidx;
                     }
                 }
                 for (ii = 0; ii < cd.colliders.length; ii++) {
-                    if (colTest[ii] != 1) {
+                    if (lcd.lines[ii] != LineCollisionDetail.HIT) {
                         continue;
                     }
                     for (var jj :int = 0; jj < cd.colliders.length; jj++) {
-                        if (ii == jj || colTest[jj] != 0) {
+                        if (ii == jj || lcd.lines[jj] != LineCollisionDetail.MISS - lcidx) {
                             continue;
                         }
                         if (cd.colliders[ii].isConnected(cd.colliders[jj]) != null) {
-                            colTest[jj] = 2;
+                            lcd.lines[jj] = LineCollisionDetail.CONNECTED;
                         }
                     }
                 }
-                verify = cd.colliders;
-                cd.colliders = new Array();
-                cd.ignored = new Array();
-                var ignored :Array = new Array();
-                for (ii = 0; ii < colTest.length; ii++) {
-                    if (colTest[ii] >= 1) {
-                        cd.colliders.push(verify[ii]);
-                        cd.ignored.push(colTest[ii]);
-                        log("adding interesting", verify[ii], "ignored", cd.ignored[ignored.length - 1]);
-                    } else {
-                        //log("ignoring uninteresting", verify[ii]);
+                for (ii = 0; ii < lcd.lines.length; ii++) {
+                    if (lcd.lines[ii] >= LineCollisionDetail.HIT) {
+                        lcount++;
                     }
                 }
             }
 
             // Filter out those lines which don't block our movement direction
-            if (cd.colliders.length > 0) {
-                verify = cd.colliders;
-                cd.colliders = new Array();
-
-                for (ii = 0; ii < verify.length; ii++) {
-                    if (!BoundData.doesBound(verify[ii].type)) {
-                        cd.colliders.push(verify[ii]);
-                        log("ignoring non bounding collider:", verify[ii]);
+            if (!skip && lcount > 0) {
+                for (ii = 0; ii < cd.colliders.length; ii++) {
+                    if (lcd.lines[ii] < LineCollisionDetail.HIT ||
+                            lcd.lines[ii] == LineCollisionDetail.CONNECTED) {
                         continue;
                     }
                     var connected :Boolean = false;
-                    for (jj = 0; jj < verify.length; jj++) {
-                        if (ii == jj || cd.ignored[ii] == 2 || cd.ignored[jj] == 2) {
+                    for (jj = 0; jj < cd.colliders.length; jj++) {
+                    //    if (ii == jj || lcd.lines[ii] == LineCollisionDetail.CONNECTED ||
+                    //            lcd.lines[jj] == LineCollisionDetail.CONNECTED) {
+                        if (ii == jj || lcd.lines[jj] == LineCollisionDetail.CONNECTED) {
                             continue;
                         }
-                        var sides :Array = verify[ii].isConnected(verify[jj]);
+                        var sides :Array = cd.colliders[ii].isConnected(cd.colliders[jj]);
                         if (sides != null) {
                             connected = true;
-                            if (BoundData.getNormalBound(verify[ii].type) != BoundData.ALL &&
-                                    isContained(verify[ii], verify[jj], sides)) {
-                                cd.ignored[ii] = 3;
-                                log("ignoring contained collider:", verify[ii]);
+                            if (BoundData.getNormalBound(cd.colliders[ii].type) != BoundData.ALL &&
+                                    isContained(cd.colliders[ii], cd.colliders[jj], sides)) {
+                                lcd.lines[ii] = LineCollisionDetail.IGNORE_CONNECTED;
+                                log("ignoring contained collider:", lcd.lines[ii]);
                                 break;
                             }
-                            if (((sides[1] > 0 && !verify[jj].anyOutside(_lines)) ||
-                                 (sides[1] < 0 && !verify[jj].anyInside(_lines))) &&
-                                !((sides[0] > 0 && !verify[ii].anyOutside(_lines)) ||
-                                  (sides[0] < 0 && !verify[ii].anyInside(_lines)))) {
-                                cd.ignored[ii] = 3;
-                                log("ignoring unreachable collider:", verify[ii]);
+                            if (((sides[1] > 0 && !cd.colliders[jj].anyOutside(_lines)) ||
+                                 (sides[1] < 0 && !cd.colliders[jj].anyInside(_lines))) &&
+                                !((sides[0] > 0 && !cd.colliders[ii].anyOutside(_lines)) ||
+                                  (sides[0] < 0 && !cd.colliders[ii].anyInside(_lines)))) {
+                                lcd.lines[ii] = LineCollisionDetail.IGNORE_CONNECTED;
+                                log("ignoring unreachable collider:", lcd.lines[ii]);
                                 break;
                             }
                         }
                     }
-                    if (!connected && cd.ignored[ii] == 1 &&
-                        ((!BoundData.blockOuter(verify[ii].type) && verify[ii].anyOutside(_lines)) ||
-                         (!BoundData.blockInner(verify[ii].type) && verify[ii].anyInside(_lines)))) {
-                        cd.ignored[ii] = 4;
-                        log("ignoring unconnected collider:", verify[ii]);
-                    }
-                    if (cd.ignored[ii] == 1) {
-                        cd.colliders.push(verify[ii]);
+                    if (!connected && lcd.lines[ii] == LineCollisionDetail.HIT &&
+                            ((!BoundData.blockOuter(cd.colliders[ii].type) &&
+                                cd.colliders[ii].anyOutside(_lines)) ||
+                            (!BoundData.blockInner(cd.colliders[ii].type) &&
+                                cd.colliders[ii].anyInside(_lines)))) {
+                        lcd.lines[ii] = LineCollisionDetail.IGNORE_UNCONNECTED;
+                        log("ignoring unconnected collider:", lcd.lines[ii]);
                     }
                 }
-                for (ii = 0, jj = 0; ii < verify.length; jj++) {
-                    if (cd.ignored[ii] == 4) {
-                        verify.splice(ii, 1);
-                        cd.ignored.splice(ii, 1);
-                    } else {
-                        ii++;
-                    }
+            }
+            lcount = 0;
+            for (ii = 0; ii < lcd.lines.length; ii++) {
+                if (lcd.lines[ii] == LineCollisionDetail.HIT) {
+                    lcount++;
                 }
             }
 
@@ -351,21 +369,25 @@ public class SimpleActorBounds extends ActorBounds
                 }
                 log("remaining dynamic colliders: ", cd.acolliders.length);
             }
+            /*
             if (cd.acolliders.length > 0 && cd.colliders.length == 0 && verify.length > 0) {
                 verify = new Array();
-            } else if (cd.colliders.length > 0 && cd.acolliders.length == 0) {
+            */
+            if (lcount > 0 && cd.acolliders.length == 0) {
                 averify = new Array();
             }
-            if (cd.colliders.length > 0 || cd.acolliders.length > 0) {
+            lcidx++;
+
+            if (lcount > 0 || cd.acolliders.length > 0) {
                 log("reducing delta");
                 writeLog();
                 cd.fcdX = cdX;
                 cd.fcdY = cdY;
-                //if (Math.abs(cdX) > 1/Metrics.TILE_SIZE || Math.abs(cdY) > 1/Metrics.TILE_SIZE) {
-                    cd.colliders = verify;
-                //}
+                forward = false;
             } else {
-                writeLog();
+                if (!skip) {
+                    writeLog();
+                }
                 translate(cdX, cdY);
                 cd.oX += cdX;
                 cd.oY += cdY;
@@ -375,10 +397,8 @@ public class SimpleActorBounds extends ActorBounds
                 if (cd.rdelta == 0) {
                     break;
                 }
-                //if (Math.abs(cdX) > 1/Metrics.TILE_SIZE || Math.abs(cdY) > 1/Metrics.TILE_SIZE) {
-                    cd.colliders = verify;
-                    cd.acolliders = averify;
-                //}
+                cd.acolliders = averify;
+                forward = true;
             }
             if (cd.colliders.length > 0) {
                 //log("found", cd.colliders.length, "colliders, now halving delta, actor (",
@@ -389,6 +409,9 @@ public class SimpleActorBounds extends ActorBounds
             }
             delta /= 2;
         } while (Math.abs(cdX) > 1/Metrics.TILE_SIZE || Math.abs(cdY) > 1/Metrics.TILE_SIZE);
+        if (lcidx < cd.lineCol.length) {
+            cd.lineCol.splice(lcidx);
+        }
 
         translate(-cd.oX, -cd.oY);
         //log("actor adjust is (", cd.oX, ",", cd.oY, ") pos (", actor.x, ",", actor.y, ")");
@@ -422,8 +445,9 @@ public class SimpleActorBounds extends ActorBounds
             base.translate(cd.fcdX, cd.fcdY);
         }
         var mcolliders :Array = new Array();
+        var lcd :LineCollisionDetail = cd.lineCol[cd.lineCol.length-1];
         for (var ii :int = 0; ii < cd.colliders.length; ii++) {
-            if (cd.ignored[ii] != 1) {
+            if (lcd.lines[ii] != LineCollisionDetail.HIT) {
                 continue;
             }
             mcolliders.push(cd.colliders[ii]);
@@ -652,11 +676,11 @@ public class SimpleActorBounds extends ActorBounds
 
     protected function log (... data) :void
     {
-        if (DEBUG && data != null) {
+        if (DEBUG && data != null && actor.id < 100) {
             if (_buffer != null) {
                 _buffer.push(data.join(" "));
             } else {
-                trace(data.join(" "));
+                trace("" + actor.id + ": " + data.join(" "));
             }
         }
     }
@@ -687,7 +711,7 @@ public class SimpleActorBounds extends ActorBounds
         if (DEBUG) {
             if (_buffer != null) {
                 for each (var str :String in _buffer) {
-                    trace(str);
+                    trace("" + actor.id + ": " + str);
                 }
                 _buffer = null;
             }

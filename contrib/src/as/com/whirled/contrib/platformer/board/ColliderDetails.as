@@ -20,11 +20,13 @@
 
 package com.whirled.contrib.platformer.board {
 
+import com.whirled.contrib.platformer.piece.Actor;
+
 public class ColliderDetails
 {
     /** An array of LineData static colliders. */
     public var colliders :Array;
-    public var ignored :Array;
+    public var lineCol :Array;
 
     /** An array of DynamicBounds dynamic colliders. */
     public var acolliders :Array;
@@ -43,6 +45,14 @@ public class ColliderDetails
     public var oX :Number;
     public var oY :Number;
 
+    /** The starting x and y position. */
+    public var sX :Number;
+    public var sY :Number;
+
+    /** The starting dx and dy. */
+    public var dx :Number;
+    public var dy :Number;
+
     public function ColliderDetails (cols :Array, acols :Array, delta :Number)
     {
         colliders = cols;
@@ -50,12 +60,33 @@ public class ColliderDetails
         reset(delta);
     }
 
-    public function reset (delta :Number) :void
+    public function initActor (a :Actor) :void
+    {
+        sX = a.x;
+        sY = a.y;
+        dx = a.dx;
+        dy = a.dy;
+    }
+
+    public function isValid (a :Actor) :Boolean
+    {
+        return  a.x == sX && a.y == sY && a.dx == dx && a.dy == dy;
+    }
+
+    public function reset (delta :Number, a :Actor = null) :Boolean
     {
         rdelta = delta;
         alines = new Array();
         oX = 0;
         oY = 0;
+        if (a == null || !isValid(a)) {
+            lineCol = null;
+            if (a != null) {
+                initActor(a);
+            }
+            return true;
+        }
+        return false;
     }
 
     public function pushActor (db :DynamicBounds) :Boolean

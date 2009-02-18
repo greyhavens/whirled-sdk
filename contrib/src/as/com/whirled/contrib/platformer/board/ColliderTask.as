@@ -61,6 +61,7 @@ public class ColliderTask
         _running = true;
         runTask();
         _running = false;
+        _cd = null;
         reset();
     }
 
@@ -77,7 +78,7 @@ public class ColliderTask
     public function reset () :void
     {
         if (!_running) {
-            _cd = null;
+            //_cd = null;
         }
     }
 

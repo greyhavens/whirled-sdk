@@ -31,6 +31,8 @@ import flash.text.TextField;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
+import flash.utils.getTimer;
+
 import com.threerings.util.ArrayIterator;
 import com.threerings.util.ClassUtil;
 
@@ -49,6 +51,8 @@ import com.whirled.contrib.platformer.util.Metrics;
 public class BoardSprite extends Sprite
 {
     public static const SHOW_DETAILS :Boolean = false;
+
+    public var layerTicks :Array = new Array();
 
     public function BoardSprite (board :Board)
     {
@@ -73,9 +77,11 @@ public class BoardSprite extends Sprite
         */
 
         _layers = new Array(NUM_LAYERS);
+        layerTicks = new Array(NUM_LAYERS);
         _layerEnabled = new Array(NUM_LAYERS);
         for (var ii :int = 0; ii < NUM_LAYERS; ii++) {
             _layerEnabled[ii] = true;
+            layerTicks[ii] = 0;
         }
         var bxml :XML = _board.getBackgroundXML();
         if (bxml != null) {
@@ -405,7 +411,9 @@ public class BoardSprite extends Sprite
         }
         for (var ii :int = 0; ii < _layers.length; ii++) {
             if (_layerEnabled[ii] && _layers[ii] != null) {
+                var now :int = getTimer();
                 _layers[ii].update(_centerX, _centerY);
+                layerTicks[ii] += getTimer() - now;
             }
         }
         if (_cameraCtrl != null) {

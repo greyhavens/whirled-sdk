@@ -63,11 +63,15 @@ public class FlyTask extends ColliderTask
 
     override public function genCD (ct :ColliderTask = null) :ColliderDetails
     {
+        var doReset :Boolean;
         if (_cd == null) {
             updateVector();
         } else if (ct != null) {
             if (!_sab.updatedDB(_cd, ct.getBounds())) {
                 reset();
+            }
+            if (!_cd.isValid(_sab.actor)) {
+                updateVector();
             }
         }
         _cd = _sab.findColliders(_delta, _cd);
@@ -98,9 +102,10 @@ public class FlyTask extends ColliderTask
                     _cd.rdelta = 0;
                 }
             }
-            if ((_cd.colliders != null && _cd.colliders.length > 0) ||
-                    (_sab.actor.inter == Dynamic.DEAD && (_hitX || _hitY))) {
-                _sab.actor.events.push("hit_ground");
+            if (_sab.actor.inter == Dynamic.DEAD) {
+                if (_hitX || _hitY) {
+                    _sab.actor.events.push("hit_ground");
+                }
             }
             _lastDelta = _delta;
             _delta = _cd.rdelta;

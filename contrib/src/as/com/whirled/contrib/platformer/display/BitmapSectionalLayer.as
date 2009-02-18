@@ -30,6 +30,7 @@ import flash.geom.Rectangle;
 
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.Rect;
+import com.whirled.contrib.platformer.util.Maths;
 import com.whirled.contrib.platformer.util.Metrics;
 import com.whirled.contrib.platformer.util.SectionalIndex;
 
@@ -143,9 +144,23 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
                 if (bd != null) {
                     _bd.copyPixels(bd, rect, pt);
                 } else {
-                    rect.x = pt.x;
-                    rect.y = pt.y;
-                    _bd.fillRect(rect, 0);
+                    var fill :Boolean;
+                    if (Math.abs(_deltaX) < Metrics.TILE_SIZE &&
+                            Math.abs(_deltaY) < Metrics.TILE_SIZE) {
+                        var dx :int = -Maths.sign0(_deltaX);
+                        var dy :int = -Maths.sign0(_deltaY);
+                        fill = (_sections[_sindex.getSectionIndex(xx + dx, yy)] != null ||
+                            _sections[_sindex.getSectionIndex(xx, yy + dy)] != null ||
+                            _sections[_sindex.getSectionIndex(xx + dx, yy + dy)] != null);
+
+                    } else {
+                        fill = true;
+                    }
+                    if (fill) {
+                        rect.x = pt.x;
+                        rect.y = pt.y;
+                        _bd.fillRect(rect, 0);
+                    }
                 }
 //                trace("copy pixels " + idx + " r:" + rect + ", pt:" + pt);
                 ox += rect.width;

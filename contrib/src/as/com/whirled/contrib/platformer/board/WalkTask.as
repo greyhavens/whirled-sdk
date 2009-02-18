@@ -93,8 +93,8 @@ public class WalkTask extends ColliderTask
 
     override public function genCD (ct :ColliderTask = null) :ColliderDetails
     {
-        if (_cd != null && ct != null) {
-            if (!_sab.updatedDB(_cd, ct.getBounds())) {
+        if (_cd != null) {
+            if ((ct != null && _sab.updatedDB(_cd, ct.getBounds())) || !_cd.isValid(_sab.actor)) {
                 reset();
             }
         }
@@ -165,7 +165,7 @@ public class WalkTask extends ColliderTask
         if (a.attached.isIntersecting(_sab.getBottomLine()) ||
                 (a.attached.iy == 0 && a.attached.y1 >= _sab.getBottomLine().y1)) {
             a.dy += 1;
-            trace(a.sprite + " is intersecting attached " + a.attached +
+            trace(a.sprite + "(" + a.id + ") is intersecting attached " + a.attached +
                     ", " + _sab.getBottomLine());
         }
     }

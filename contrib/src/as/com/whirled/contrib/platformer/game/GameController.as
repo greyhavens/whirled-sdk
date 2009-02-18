@@ -49,6 +49,7 @@ public class GameController
     public var forceX :Number = 0;
     public var forceY :Number = -4.8;
     public var colliderTicks :int;
+    public var displayTicks :int;
     public var ticked :int;
 
     public function GameController ()
@@ -164,7 +165,9 @@ public class GameController
             */
         }
         if (usedDelta > 0) {
+            now = getTimer();
             updateDisplay(usedDelta/1000);
+            displayTicks += getTimer() - now;
             for each (controller in _controllers) {
                 if (controller is TickController && (!paused || controller is PauseController)) {
                     (controller as TickController).postTick();
