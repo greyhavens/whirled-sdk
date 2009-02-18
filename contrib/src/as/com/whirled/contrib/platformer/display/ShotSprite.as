@@ -72,7 +72,6 @@ public class ShotSprite extends DynamicSprite
             rotation = 0;
         }
         generateEffect(_shot.hitEffect, this);
-        trace("hitSoundEffect [" + _shot.hitSoundEffect + "]");
         playSoundEffect(_shot.hitSoundEffect);
     }
 
