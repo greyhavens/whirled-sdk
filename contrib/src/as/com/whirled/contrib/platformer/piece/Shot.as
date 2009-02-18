@@ -41,6 +41,7 @@ public class Shot extends Dynamic
     public var rotateHit :Boolean = false;
     public var fireSoundEffect :SoundEffect;
     public var missSoundEffect :SoundEffect;
+    public var hitSoundEffect :SoundEffect
 
     override public function shouldSpawn () :Boolean
     {
