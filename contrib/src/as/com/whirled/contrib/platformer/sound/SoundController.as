@@ -262,9 +262,11 @@ public class SoundController extends EventDispatcher
         }
 
         var channel :SoundChannel = playSound(sound, effectsVolume);
-        _channels.put(effect, new ChannelPlayback(channel, getTimer()));
-        _eventMgr.registerOneShotCallback(
-            channel, Event.SOUND_COMPLETE, bindChannelRemoval(effect));
+        if (effect.playType != PlayType.OVERLAPPING) {
+            _channels.put(effect, new ChannelPlayback(channel, getTimer()));
+            _eventMgr.registerOneShotCallback(
+                channel, Event.SOUND_COMPLETE, bindChannelRemoval(effect));
+        }
     }
 
     protected var _contentDomain :ApplicationDomain = new ApplicationDomain(null);
