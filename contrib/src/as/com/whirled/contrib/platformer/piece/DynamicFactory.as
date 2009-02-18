@@ -55,7 +55,7 @@ public class DynamicFactory
         if (ddef != null) {
             xml.@cname = ddef.@cname;
             xml.@type = ddef.@label;
-            for each (cxml in node.elements("const")) {
+            for each (cxml in ddef.elements("const")) {
                 xml["@" + cxml.@id] = cxml.@value;
             }
         }
