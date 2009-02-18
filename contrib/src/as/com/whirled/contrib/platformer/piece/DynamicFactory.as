@@ -36,7 +36,10 @@ public class DynamicFactory
     {
         var ddef :XML;
         if (xml.hasOwnProperty("@type")) {
-            ddef = _dynamicMap[xml.@type.toString()];
+            var type :String = xml.@type;
+            if (type != null && type != "") {
+                ddef = _dynamicMap[type];
+            }
         }
         if (ddef == null) {
             for each (var node :XML in _dynamicMap) {
@@ -49,6 +52,9 @@ public class DynamicFactory
                         ddef = null;
                         break;
                     }
+                }
+                if (ddef != null) {
+                    break;
                 }
             }
         }

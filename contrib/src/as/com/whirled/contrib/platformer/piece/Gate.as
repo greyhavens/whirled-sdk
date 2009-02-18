@@ -53,9 +53,6 @@ public class Gate extends RectDynamic
     override public function xmlInstance () :XML
     {
         var xml :XML = super.xmlInstance();
-        if (!xml.hasOwnProperty("@type")) {
-            xml.@type = "Gate";
-        }
         xml.@width = width;
         xml.@height = height;
         if (sprite != null) {
