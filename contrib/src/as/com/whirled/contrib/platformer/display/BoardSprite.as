@@ -416,6 +416,7 @@ public class BoardSprite extends Sprite
                 layerTicks[ii] += getTimer() - now;
             }
         }
+        BitmapSectionalLayer.didPreload = false;
         if (_cameraCtrl != null) {
             _centerX = oldX;
             _centerY = oldY;

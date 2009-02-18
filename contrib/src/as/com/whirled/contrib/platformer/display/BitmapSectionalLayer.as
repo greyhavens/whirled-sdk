@@ -36,6 +36,8 @@ import com.whirled.contrib.platformer.util.SectionalIndex;
 
 public class BitmapSectionalLayer extends PieceSpriteLayer
 {
+    public static var didPreload :Boolean;
+
     public function BitmapSectionalLayer (secWidth :int, secHeight :int, doPreload :Boolean = false)
     {
         _sindex = new SectionalIndex(secWidth, secHeight);
@@ -89,6 +91,7 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
         var sx :int = Math.floor(nX);
         var sy :int = Math.floor(nY);
         if (_oldnX == sx && _oldnY == sy) {
+            preload(true);
             return;
         }
         _deltaX = sx - _oldnX;
@@ -118,6 +121,9 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
                 var idx :int = _sindex.getSectionIndex(xx, yy);
                 var bd :BitmapData;
                 if (_sections[idx] != null) {
+                    if (!_pool.inPool(idx)) {
+                        //trace("load idx: " + idx);
+                    }
                     bd = _pool.getBitmap(idx);
                 } else {
                     bd = null;
@@ -237,12 +243,15 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
         return dist;
     }
 
-    protected function preload () :void
+    protected function preload (force :Boolean = false) :void
     {
-        if (_preload < PRELOAD_RATE) {
+        if (!force && _preload < PRELOAD_RATE) {
             if (_preload > 0) {
                 _preload++;
             }
+            return;
+        }
+        if (didPreload) {
             return;
         }
         _preload = 1;
@@ -265,12 +274,13 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
         }
         dir = (dir + 1) % 4;
         if (checkSegments(dir)) {
-            checkSegments(dir);
+            return;
         }
         dir = (dir + 2) % 4;
         if (checkSegments(dir)) {
-            checkSegments(dir);
+            return;
         }
+        _missedPreload++;
     }
 
     protected function checkSegments (dir :int) :Boolean
@@ -320,6 +330,9 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
         var idx :int = _sindex.getSectionIndex(xx, yy);
         if (_sections[idx] != null && !_pool.inPool(idx)) {
             _pool.getBitmap(idx);
+            //trace("preload idx: " + idx + ", missed: " + _missedPreload);
+            _missedPreload = 0;
+            didPreload = true;
             return true;
         }
         return false;
@@ -336,6 +349,7 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
     protected var _pool :BitmapPool;
     protected var _rect :Rect = new Rect();
     protected var _preload :int;
+    protected var _missedPreload :int;
 
     protected static const PRELOAD_RATE :int = 3;
 }
