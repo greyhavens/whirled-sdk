@@ -82,7 +82,7 @@ public class SoundController extends EventDispatcher
         }
 
         if (crossfade) {
-            addBinding(bindFadein(_track = playSound(trackSound, 0)));
+            addBinding(bindFadein(_track = playSound(trackSound, 0), SoundType.MUSIC));
         } else {
             _track = playSound(trackSound, backgroundVolume);
         }
@@ -197,18 +197,19 @@ public class SoundController extends EventDispatcher
         };
     }
 
-    protected function bindFadein (channel :SoundChannel) :Function
+    protected function bindFadein (channel :SoundChannel, type :SoundType) :Function
     {
         var endTime :int = getTimer() + FADE_TIME;
         return function () :Boolean {
+            var targetVolume :Number = type == SoundType.EFFECT ? effectsVolume : backgroundVolume;
             var time :int = getTimer();
             if (time >= endTime) {
-                channel.soundTransform = new SoundTransform(effectsVolume)
+                channel.soundTransform = new SoundTransform(targetVolume);
                 return true;
             }
 
             channel.soundTransform =
-                new SoundTransform(effectsVolume * (1 - (endTime - time) / FADE_TIME));
+                new SoundTransform(targetVolume * (1 - (endTime - time) / FADE_TIME));
             return false;
         };
     }
@@ -284,6 +285,8 @@ public class SoundController extends EventDispatcher
 
 import flash.media.SoundChannel;
 
+import com.threerings.util.Enum;
+
 class ChannelPlayback
 {
     public var channel :SoundChannel;
@@ -293,5 +296,28 @@ class ChannelPlayback
     {
         this.channel = channel;
         this.startTime = startTime;
+    }
+}
+
+final class SoundType extends Enum
+{
+    public static const MUSIC :SoundType = new SoundType("MUSIC");
+    public static const EFFECT :SoundType = new SoundType("EFFECT");
+    finishedEnumerating(SoundType);
+
+    public static function values () :Array
+    {
+        return Enum.values(SoundType);
+    }
+
+    public static function valueOf (name :String) :SoundType
+    {
+        return Enum.valueOf(SoundType, name) as SoundType;
+    }
+
+    // @private
+    public function SoundType (name :String)
+    {
+        super(name);
     }
 }
