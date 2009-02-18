@@ -42,7 +42,6 @@ public class Gate extends RectDynamic
             if (insxml.hasOwnProperty("@deathSoundEffect")) {
                 deathSoundEffect = PlatformerContext.getSoundEffect(insxml.@deathSoundEffect);
             }
-            trace("deathSoundEffect [" + insxml.@deathSoundEffect + ", " + deathSoundEffect + "]");
         }
     }
 
