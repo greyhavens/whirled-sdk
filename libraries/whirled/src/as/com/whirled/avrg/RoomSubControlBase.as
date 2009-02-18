@@ -159,6 +159,12 @@ public class RoomSubControlBase extends TargetedSubControl
     }
 
     /** @private */
+    internal function signalReceived_v1 (name :String, arg :Object) :void
+    {
+        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.SIGNAL_RECEIVED, getRoomId(), name, arg));
+    }
+
+    /** @private */
     internal function playerLeft_v1 (id :int) :void
     {
         dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.PLAYER_LEFT, getRoomId(), null, id));

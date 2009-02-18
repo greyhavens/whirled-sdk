@@ -140,12 +140,6 @@ public class RoomSubControlServer extends RoomSubControlBase
     }
 
     /** @private -- relayed from AVRServerGameControl when signal received. */
-    internal function signalReceived_v1 (name :String, arg :Object) :void
-    {
-        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.SIGNAL_RECEIVED, _targetId, name, arg));
-    }
-
-    /** @private -- relayed from AVRServerGameControl when signal received. */
     internal function roomUnloaded_v1 () :void
     {
         dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.ROOM_UNLOADED, _targetId));
