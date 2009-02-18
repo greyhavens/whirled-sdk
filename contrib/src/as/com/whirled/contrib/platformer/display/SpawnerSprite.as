@@ -57,6 +57,7 @@ public class SpawnerSprite extends DynamicSprite
             _state = DEAD;
         } else if (_spawner.spawning > 0) {
             changeState(SPAWN);
+            playSoundEffect(_spawner.spawnSoundEffect);
         } else if (_state == SPAWN) {
             _state = IDLE;
         } else {

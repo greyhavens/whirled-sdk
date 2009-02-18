@@ -25,6 +25,7 @@ import flash.utils.ByteArray;
 import com.threerings.util.Enum;
 
 import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.sound.SoundEffect;
 import com.whirled.contrib.platformer.util.Effect;
 
 public class Spawner extends RectDynamic
@@ -43,6 +44,7 @@ public class Spawner extends RectDynamic
     public var offX :Number;
     public var spawns :Array;
     public var disabled :Boolean;
+    public var spawnSoundEffect :SoundEffect;
 
     public function Spawner (insxml :XML = null)
     {
@@ -57,8 +59,10 @@ public class Spawner extends RectDynamic
                 sprite = insxml.@sprite;
             }
             if (insxml.hasOwnProperty("@deathEffect")) {
-                deathEffect =
-                    Enum.valueOf(PlatformerContext.effectEnum, insxml.@deathEffect) as Effect;
+                deathEffect = PlatformerContext.getEffect(insxml.@deathEffect);
+            }
+            if (insxml.hasOwnProperty("@spawnSoundEffect")) {
+                spawnSoundEffect = PlatformerContext.getSoundEffect(insxml.@spawnSoundEffect);
             }
             width = insxml.hasOwnProperty("@width") ? insxml.@width : 1;
             height = insxml.hasOwnProperty("@height") ? insxml.@height : 1;
@@ -158,7 +162,10 @@ public class Spawner extends RectDynamic
             xml.appendChild(spawnXML);
         }
         if (deathEffect != null) {
-            xml.@deathEffect = deathEffect.toString();
+            xml.@deathEffect = deathEffect;
+        }
+        if (spawnSoundEffect != null) {
+            xml.@spawnSoundEffect = spawnSoundEffect;
         }
         xml.@destructable = destructable;
         xml.@health = health;
