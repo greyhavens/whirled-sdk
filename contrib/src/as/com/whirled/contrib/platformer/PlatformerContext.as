@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer {
 
+import com.threerings.util.Enum;
+
 import com.whirled.game.GameControl;
 
 import com.whirled.contrib.platformer.board.Board;
@@ -28,6 +30,8 @@ import com.whirled.contrib.platformer.net.MessageManager;
 import com.whirled.contrib.platformer.piece.DynamicFactory;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 import com.whirled.contrib.platformer.persist.PersistenceManager;
+import com.whirled.contrib.platformer.sound.SoundEffect;
+import com.whirled.contrib.platformer.util.Effect;
 
 public class PlatformerContext
 {
@@ -42,10 +46,21 @@ public class PlatformerContext
     public static var persist :PersistenceManager;
     public static var myId :int;
     public static var effectEnum :Class;
+    public static var soundEffectEnum :Class;
 
     public static function get inControl () :Boolean
     {
         return local || PlatformerContext.gctrl.game.amServerAgent();
+    }
+
+    public static function getEffect (name :String) :Effect
+    {
+        return effectEnum == null ? null : Enum.valueOf(effectEnum, name) as Effect;
+    }
+
+    public static function getSoundEffect (name :String) :SoundEffect
+    {
+        return soundEffectEnum == null ? null : Enum.valueOf(soundEffectEnum, name) as SoundEffect;
     }
 }
 }

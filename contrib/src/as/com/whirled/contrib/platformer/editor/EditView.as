@@ -220,6 +220,7 @@ public class EditView extends Canvas
         xml.@x = Math.max(0, _boardSprite.getX());
         xml.@y = Math.max(0, _boardSprite.getY());
         xml.@id = _board.getMaxId() + 1;
+        xml.@type = _dynamicSelector.getSelectedLabel();
         var d :Dynamic = Board.loadDynamic(xml);
         if (d != null) {
             _dynamicTree.addDynamic(d, group);

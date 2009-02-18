@@ -20,6 +20,9 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.sound.SoundEffect;
+
 /**
  * A walkable solid dynamic that can be removed.
  */
@@ -27,6 +30,7 @@ public class Gate extends RectDynamic
     implements Attachable
 {
     public var open :Boolean;
+    public var deathSoundEffect :SoundEffect;
 
     public function Gate (insxml :XML = null)
     {
@@ -35,6 +39,10 @@ public class Gate extends RectDynamic
             width = insxml.@width;
             height = insxml.@height;
             sprite = insxml.@sprite;
+            if (insxml.hasOwnProperty("@deathSoundEffect")) {
+                deathSoundEffect = PlatformerContext.getSoundEffect(insxml.@deathSoundEffect);
+            }
+            trace("deathSoundEffect [" + insxml.@deathSoundEffect + ", " + deathSoundEffect + "]");
         }
     }
 
@@ -46,11 +54,16 @@ public class Gate extends RectDynamic
     override public function xmlInstance () :XML
     {
         var xml :XML = super.xmlInstance();
-        xml.@type = "Gate";
+        if (!xml.hasOwnProperty("@type")) {
+            xml.@type = "Gate";
+        }
         xml.@width = width;
         xml.@height = height;
         if (sprite != null) {
             xml.@sprite = sprite;
+        }
+        if (deathSoundEffect != null) {
+            xml.@deathSoundEffect = deathSoundEffect;
         }
         return xml;
     }

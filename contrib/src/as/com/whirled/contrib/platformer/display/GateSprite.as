@@ -46,6 +46,7 @@ public class GateSprite extends DynamicSprite
             if (!isDead(_state)) {
                 changeState(DEATH);
                 _state = DEAD;
+                playSoundEffect(_gate.deathSoundEffect);
             }
         } else {
             idle();
