@@ -25,6 +25,7 @@ import com.whirled.game.GameControl;
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.game.GameController;
 import com.whirled.contrib.platformer.net.MessageManager;
+import com.whirled.contrib.platformer.piece.DynamicFactory;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 import com.whirled.contrib.platformer.persist.PersistenceManager;
 
@@ -35,6 +36,7 @@ public class PlatformerContext
     public static var gctrl :GameControl;
     public static var board :Board;
     public static var pfac :PieceFactory;
+    public static var dfac :DynamicFactory;
     public static var net :MessageManager;
     public static var local :Boolean;
     public static var persist :PersistenceManager;

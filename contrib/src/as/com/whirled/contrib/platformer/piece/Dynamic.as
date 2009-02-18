@@ -57,12 +57,15 @@ public class Dynamic
 
     public var updateState :int;
 
+    public var type :String;
+
     public function Dynamic (insxml :XML = null)
     {
         if (insxml != null) {
             x = insxml.@x;
             y = insxml.@y;
             id = insxml.@id;
+            type = insxml.@type;
         }
     }
 
@@ -123,6 +126,7 @@ public class Dynamic
         xml.@x = x;
         xml.@y = y;
         xml.@id = id;
+        xml.@type = type;
         xml.@cname = ClassUtil.getClassName(this);
         return xml;
     }

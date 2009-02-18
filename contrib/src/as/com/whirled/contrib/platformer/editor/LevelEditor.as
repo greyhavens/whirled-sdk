@@ -35,6 +35,7 @@ import flash.net.URLRequest;
 
 import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.editor.EditView;
+import com.whirled.contrib.platformer.piece.DynamicFactory;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 
 /**
@@ -162,6 +163,7 @@ public class LevelEditor extends Panel
         var xmlLevel :XML = (_levelLoader == null ? null : new XML(_levelLoader.data));
         var xmlDynamics :XML =
             (_dynamicsLoader == null ? <dynamics/> : new XML(_dynamicsLoader.data));
+        PlatformerContext.dfac = new DynamicFactory(xmlDynamics);
 
         _levelEdit.rawChildren.addChild(_editView = new EditView(xmlDynamics, xmlLevel));
     }

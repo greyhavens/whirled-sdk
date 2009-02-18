@@ -33,6 +33,7 @@ import com.whirled.contrib.platformer.net.DynamicMessage;
 import com.whirled.contrib.platformer.net.ShotMessage;
 import com.whirled.contrib.platformer.net.SpawnMessage;
 import com.whirled.contrib.platformer.net.TickMessage;
+import com.whirled.contrib.platformer.piece.DynamicFactory;
 import com.whirled.contrib.platformer.piece.PieceFactory;
 import com.whirled.contrib.platformer.persist.PersistenceManager;
 
@@ -75,6 +76,7 @@ public class PlatformerController
     protected function run () :void
     {
         PlatformerContext.pfac = createPieceFactory();
+        PlatformerContext.dfac = createDynamicFactory();
         addGameListeners();
     }
 
@@ -123,6 +125,11 @@ public class PlatformerController
     protected function createPieceFactory () :PieceFactory
     {
         return new PieceFactory(null);
+    }
+
+    protected function createDynamicFactory () :DynamicFactory
+    {
+        return new DynamicFactory(null);
     }
 
     protected function createGameController () :GameController

@@ -65,12 +65,7 @@ public class Board
 
     public static function loadDynamic (xml :XML) :Dynamic
     {
-        var dclass :Class = ClassUtil.getClassByName(xml.@cname);
-        if (dclass != null) {
-            debug("creating dynamic: " + xml.@cname);
-            return new dclass(xml);
-        }
-        return null;
+        return PlatformerContext.dfac.loadDynamic(xml);
     }
 
     public function Board () :void

@@ -46,11 +46,15 @@ public class DynamicTree extends BaseTree
         }
         var defs :XMLList = ddef.dynamicdef.(@cname == ClassUtil.getClassName(dobj));
         var def :XML;
+        var type :String = dobj.type;
         if (defs.length() == 1) {
             def = defs[0];
         } else if (defs.length() > 1) {
             for each (var node :XML in defs) {
                 def = node;
+                if (def.@label == type) {
+                    break;
+                }
                 for each (var cxml :XML in node.elements("const")) {
                     // fucking as3 can't convert booleans consistently
                     if (dobj[cxml.@id] is Boolean) {
