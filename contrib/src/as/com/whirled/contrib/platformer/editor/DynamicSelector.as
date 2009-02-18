@@ -38,11 +38,6 @@ public class DynamicSelector extends BaseSelector
         return _group;
     }
 
-    public function getConst () :XMLList
-    {
-        return _const;
-    }
-
     override protected function getColumns () :Array
     {
         var column :AdvancedDataGridColumn = new AdvancedDataGridColumn("Dynamic");
@@ -72,10 +67,8 @@ public class DynamicSelector extends BaseSelector
         var item :XML = _adg.selectedItem as XML;
         if (item != null && item.parent() != null && item.children().length() == 0) {
             _group = item.parent().@label;
-            _const = _dxml.elements(_group)[0].dynamicdef.(@label == item.@label).elements("const");
         } else {
             _group = null;
-            _const = null;
         }
         super.handleChange(event);
     }
@@ -90,6 +83,5 @@ public class DynamicSelector extends BaseSelector
 
     protected var _dxml :XML;
     protected var _group :String;
-    protected var _const :XMLList;
 }
 }
