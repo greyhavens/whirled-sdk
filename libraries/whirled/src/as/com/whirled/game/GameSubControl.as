@@ -385,10 +385,11 @@ public class GameSubControl extends AbstractSubControl
      * ranking will be used to adjust the players rating as well as to determine their individual
      * coin payout. </p>
      *
-     * <p> Note that scores must be integers >= 0 and higher scores are considered better, so if
-     * your game naturally operates with scores where lower is better (elapsed time in a racing
-     * game, for example), then you must convert your score to a positive integer by, for example,
-     * subtracting your score from a hypothentical worse possible score. For example: </p>
+     * <p> Note that scores must be positive integers between 0 and 2^30 (1073741824) and higher
+     * scores are considered better, so if your game naturally operates with scores where lower is
+     * better (elapsed time in a racing game, for example), then you must convert your score to a
+     * positive integer by, for example, subtracting your score from a hypothentical worse possible
+     * score. For example: </p>
      *
      * <p><code>score = Math.max(WORST_POSSIBLE_TIME - actualTime, 1)</code></p>
      *
@@ -411,6 +412,8 @@ public class GameSubControl extends AbstractSubControl
     /**
      * A convenience function for ending a single player game with the supplied score. This is
      * equivalent to: <code>endGameWithScores([ getMyId() ], [ score ], TO_EACH_THEIR_OWN)</code>.
+     * Please read the <code>endGameWithScores</code> documentation for information on the range of
+     * allowable scores.
      *
      * <p> Note that if a single player game is ended with a score of zero, it will be assumed
      * that the player in question abandoned the game and no coins will be paid out, nor will
