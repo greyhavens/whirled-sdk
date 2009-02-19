@@ -264,7 +264,7 @@ public class Definitions
         function getMobSpriteExporter () :Function {
             return local.mobSpriteExporter;
         }
-        
+
         return [
             new FunctionSpec("feedback", local.feedback, [
                 new Parameter("msg", String)]),
@@ -288,6 +288,11 @@ public class Definitions
             new FunctionSpec("setMobSpriteExporter", local.setMobSpriteExporter, [
                 new CallbackParameter("exporter")]),
             new FunctionSpec("getMobSpriteExporter", getMobSpriteExporter),
+            new FunctionSpec("showInvitePage", local.showInvitePage, [
+                new Parameter("defmsg", String),
+                new Parameter("token", String, Parameter.OPTIONAL)]),
+            new FunctionSpec("getInviteToken", local.getInviteToken),
+            new FunctionSpec("getInviterMemberId", local.getInviterMemberId),
         ];
     }
 
