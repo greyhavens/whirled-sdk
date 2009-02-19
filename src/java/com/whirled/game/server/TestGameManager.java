@@ -145,6 +145,12 @@ public class TestGameManager extends WhirledGameManager
     {
         WhirledPlayerObject plobj = (WhirledPlayerObject)body;
         String pidPrefix = getPlayerPersistentId(plobj) + ":";
+        int gameId = _gameconfig.getGameId();
+        if (plobj.isContentResolved(gameId)) {
+            listener.requestCompleted(null);
+            return;
+        }
+
         plobj.startTransaction();
         try {
             for (String key : _prefs.keys()) {
@@ -157,6 +163,8 @@ public class TestGameManager extends WhirledGameManager
         } catch (BackingStoreException bse) {
             log.warning("Error attempting to resolve player trophies", bse);
         } finally {
+            plobj.addToGameContent(new GameContentOwnership(gameId,
+                GameData.RESOLUTION_MARKER, WhirledPlayerObject.RESOLVED));
             plobj.commitTransaction();
         }
         listener.requestCompleted(null);
