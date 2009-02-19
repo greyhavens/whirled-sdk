@@ -102,10 +102,8 @@ public class FlyTask extends ColliderTask
                     _cd.rdelta = 0;
                 }
             }
-            if (_sab.actor.inter == Dynamic.DEAD) {
-                if (_hitX || _hitY) {
-                    _sab.actor.events.push("hit_ground");
-                }
+            if (!_sab.actor.isAlive() && (_hitX || _hitY)) {
+                _sab.actor.events.push("hit_ground");
             }
             _lastDelta = _delta;
             _delta = _cd.rdelta;
