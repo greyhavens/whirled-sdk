@@ -220,7 +220,7 @@
 
     <echo>Thane path: ${thane.path}</echo>
 
-    <copy file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
+    <copy overwrite="true" file="${app.name}.swf" tofile="${build.root}/dist/game.swf"/>
 
     <!-- start the server which will start up the clients -->
     <java classname="com.whirled.server.WhirledTestServer" fork="true">
@@ -245,7 +245,8 @@
   </target>
 
   <target name="test-avatar">
-    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/avatar.${app.suffix}"/>
+    <copy overwrite="true"
+          file="${app.name}.${app.suffix}" tofile="${build.root}/dist/avatar.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
       <param name="mode" value="100"/>
@@ -259,7 +260,8 @@
   </target>
 
   <target name="test-furni">
-    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/furni.${app.suffix}"/>
+    <copy overwrite="true"
+          file="${app.name}.${app.suffix}" tofile="${build.root}/dist/furni.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
       <param name="mode" value="102"/>
@@ -274,7 +276,8 @@
   </target>
 
   <target name="test-backdrop">
-    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/backdrop.${app.suffix}"/>
+    <copy overwrite="true"
+          file="${app.name}.${app.suffix}" tofile="${build.root}/dist/backdrop.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
       <param name="mode" value="105"/>
@@ -287,7 +290,8 @@
   </target>
 
   <target name="test-toy">
-    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/toy.${app.suffix}"/>
+    <copy overwrite="true"
+          file="${app.name}.${app.suffix}" tofile="${build.root}/dist/toy.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
       <param name="mode" value="103"/>
@@ -302,7 +306,8 @@
   </target>
 
   <target name="test-pet">
-    <copy file="${app.name}.${app.suffix}" tofile="${build.root}/dist/pet.${app.suffix}"/>
+    <copy overwrite="true"
+          file="${app.name}.${app.suffix}" tofile="${build.root}/dist/pet.${app.suffix}"/>
     <echoxml file="${build.root}/dist/parameters.xml">
     <parameters>
       <param name="mode" value="101"/>
