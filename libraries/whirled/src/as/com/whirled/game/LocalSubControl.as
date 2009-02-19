@@ -252,7 +252,7 @@ public class LocalSubControl extends AbstractSubControl
     }
     
     /**
-     * Instructs the game client to open the Share Game page, allowing the player to invite friends
+     * Instructs the game client to open the game invite page, allowing the player to invite friends
      * to play this game.
      * @param defmsg Default message that will be included along with the game's URL when sent
      * to the player's friends.
@@ -260,9 +260,9 @@ public class LocalSubControl extends AbstractSubControl
      * the game when an invited friend goes to the URL.  This allows the game to start in
      * a different state than usual.
      */ 
-    public function showSharePage (defmsg :String, token :String = "") :void
+    public function showInvitePage (defmsg :String, token :String = "") :void
     {
-        callHostCode("showSharePage_v1", defmsg, token);
+        callHostCode("showInvitePage_v1", defmsg, token);
     }
 
     /**
@@ -272,24 +272,27 @@ public class LocalSubControl extends AbstractSubControl
     {
         callHostCode("showTrophies_v1");
     }
-    
+
     /**
-     * Retrieves the share token that was passed to the game.  If the player entered into the game
-     * via a URL that contained a token (provided by the game via showSharePage), this will return
-     * that token, otherwise null.
+     * Retrieves the token, if any, that was used to launch the game.  If the player entered into
+     * the game via a URL that contained a token (provided by the game via showInvitePage), this
+     * will return that token, otherwise null. Note that the invitations are not managed securely,
+     * it would be trivial for someone to modify a URL to specify a different token, so appropriate
+     * checks should be made.
      */
-    public function getShareToken () :String
+    public function getInviteToken () :String
     {
-    	return callHostCode("getShareToken_v1");
+    	return callHostCode("getInviteToken_v1");
     }
-    
+
     /**
-     * Retrieves the ID of the member who shared this game to the current player.  Returns 0 if the
-     * player did not start the game via a shared link.
+     * Retrieves the ID of the member who invited the current player to this game (using the page
+     * shown by <code>showInvitePage</code>. Returns 0 if the player did not start the game via an
+     * invite link.
      */
-    public function getShareMemberId () :int
+    public function getInviterMemberId () :int
     {
-    	return callHostCode("getShareMemberId_v1");
+    	return callHostCode("getInviterMemberId_v1");
     }
 
     /**
