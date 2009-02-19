@@ -87,10 +87,10 @@ public class Preferences extends Config
         setValue("effectsVolume", MathUtil.clamp(value, MIN_EFFECTS_VOLUME, MAX_EFFECTS_VOLUME));
     }
 
-    protected static const DEFAULT_BACKGROUND_VOLUME :Number = 0.5;
+    protected static const DEFAULT_BACKGROUND_VOLUME :Number = 0.3;
     protected static const MIN_BACKGROUND_VOLUME :Number = 0.0;
     protected static const MAX_BACKGROUND_VOLUME :Number = 1.0;
-    protected static const DEFAULT_EFFECTS_VOLUME :Number = 0.3;
+    protected static const DEFAULT_EFFECTS_VOLUME :Number = 0.4;
     protected static const MIN_EFFECTS_VOLUME :Number = 0.0;
     protected static const MAX_EFFECTS_VOLUME :Number = 1.0;
 }
