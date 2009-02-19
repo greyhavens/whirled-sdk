@@ -41,7 +41,7 @@ public class PlatformerController
 {
     public function PlatformerController (disp :DisplayObject)
     {
-        PlatformerContext.gctrl = new GameControl(disp);
+        PlatformerContext.gctrl = new GameControl(disp, false);
         if (PlatformerContext.gctrl.isConnected()) {
             PlatformerContext.myId = PlatformerContext.gctrl.game.getMyId();
             PlatformerContext.platformer = this;
