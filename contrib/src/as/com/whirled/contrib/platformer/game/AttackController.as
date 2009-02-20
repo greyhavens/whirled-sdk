@@ -28,7 +28,7 @@ public interface AttackController
 
     function startAttack () :void;
 
-    function doAttack (target :ActorController, doesHit :Boolean) :void;
+    function doAttack (target :ShootableController, doesHit :Boolean) :void;
 
     function getSourceX () :Number;
 }

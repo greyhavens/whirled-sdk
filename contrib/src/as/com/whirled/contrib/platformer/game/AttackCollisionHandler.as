@@ -20,8 +20,9 @@
 
 package com.whirled.contrib.platformer.game {
 
-import com.whirled.contrib.platformer.board.ColliderDetails;
 import com.whirled.contrib.platformer.board.ActorBounds;
+import com.whirled.contrib.platformer.board.ColliderDetails;
+import com.whirled.contrib.platformer.board.DynamicBounds;
 
 import com.whirled.contrib.platformer.piece.Actor;
 
@@ -29,7 +30,7 @@ public class AttackCollisionHandler extends CollisionHandler
 {
     public function AttackCollisionHandler (ac :AttackController)
     {
-        super(ActorController);
+        super(ShootableController);
         _ac = ac;
     }
 
@@ -41,19 +42,24 @@ public class AttackCollisionHandler extends CollisionHandler
 
     override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
-        var tab :ActorBounds = target as ActorBounds;
+        var db :DynamicBounds = target as DynamicBounds;
+        var sc :ShootableController = db.controller as ShootableController;
+        //var tab :ActorBounds = target as ActorBounds;
         if (_ac.canAttack()) {
             _ac.startAttack();
         } else {
             var hit :Boolean = false;
-            if (tab.actor.doesHit(NaN, NaN, null)) {
-                var diff :Number = tab.actor.x + tab.actor.width/2 - _ac.getSourceX();
-                tab.actor.wasHit = ((diff > 0 && (tab.actor.orient & Actor.ORIENT_RIGHT) == 0) ||
-                        (diff < 0 && (tab.actor.orient & Actor.ORIENT_RIGHT) > 0)) ?
-                    Actor.HIT_FRONT : Actor.HIT_BACK;
+            if (sc.doesHit()) {
                 hit = true;
+                if (db.dyn is Actor) {
+                    var a :Actor = db.dyn as Actor;
+                    var diff :Number = sc.getCenterX() - _ac.getSourceX();
+                    a.wasHit = ((diff > 0 && (a.orient & Actor.ORIENT_RIGHT) == 0) ||
+                            (diff < 0 && (a.orient & Actor.ORIENT_RIGHT) > 0)) ?
+                        Actor.HIT_FRONT : Actor.HIT_BACK;
+                }
             }
-            _ac.doAttack(tab.controller as ActorController, hit);
+            _ac.doAttack(sc, hit);
         }
     }
 
