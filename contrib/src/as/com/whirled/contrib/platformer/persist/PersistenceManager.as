@@ -29,7 +29,7 @@ import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 
 import com.whirled.game.PlayerSubControl;
-import com.whirled.game.StateChangedEvent;
+import com.whirled.game.OccupantChangedEvent;
 
 import com.whirled.contrib.EventHandlerManager;
 
@@ -40,8 +40,12 @@ public class PersistenceManager extends EventDispatcher
         _debugLogging = debugLogging;
         _eventMgr = new EventHandlerManager();
         _eventMgr.registerUnload(_gameCtrl = gameCtrl);
-        _eventMgr.conditionalCall(
-            init, _gameCtrl.game.isInPlay(), _gameCtrl.game, StateChangedEvent.GAME_STARTED);
+        if (allPlayersPresent()) {
+            init();
+        } else {
+            _eventMgr.registerListener(
+                _gameCtrl.game, OccupantChangedEvent.OCCUPANT_ENTERED, occupantEntered);
+        }
     }
 
     public function get loaded () :Boolean
@@ -143,6 +147,22 @@ public class PersistenceManager extends EventDispatcher
     protected function getPropertyKey (name :String, playerId :int) :String
     {
         return name + "|" + playerId;
+    }
+
+    protected function allPlayersPresent () :Boolean
+    {
+        return _gameCtrl.game.seating.getPlayerIds().indexOf(0) < 0;
+    }
+
+    protected function occupantEntered (event :OccupantChangedEvent) :void
+    {
+        if (!allPlayersPresent()) {
+            return;
+        }
+
+        _eventMgr.unregisterListener(
+            _gameCtrl.game, OccupantChangedEvent.OCCUPANT_ENTERED, occupantEntered);
+        init();
     }
 
     private static const log :Log = Log.getLog(PersistenceManager);
