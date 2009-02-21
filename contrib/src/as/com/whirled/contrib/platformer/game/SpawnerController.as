@@ -101,13 +101,12 @@ public class SpawnerController extends RectDynamicController
             return;
         }
         if (!_spawner.amOwner()) {
-            if (_spawnDelay > 0) {
+            if (_spawnId != 0) {
                 _spawnDelay -= delta;
                 if (_spawnDelay <= 0) {
                     spawn();
                 }
             } else if (_spawner.spawning > 0) {
-                trace("spawner (" + _spawner.id + ") is spawning (" + _spawner.spawning + ")");
                 _spawnDelay = _spawner.spawnDelay;
                 _spawnId = _spawner.spawning;
                 _spawnOwner = 0;
@@ -154,6 +153,7 @@ public class SpawnerController extends RectDynamicController
         cxml.@y = _spawner.y;
         var a :Actor = Board.loadDynamic(cxml) as Actor;
         a.id = _spawnId;
+        _spawnId = 0;
         a.owner = _spawnOwner;
         _controller.getBoard().addActor(a);
         _spawner.spawns.push(a.id);
