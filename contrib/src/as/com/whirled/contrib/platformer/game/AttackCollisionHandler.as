@@ -20,7 +20,6 @@
 
 package com.whirled.contrib.platformer.game {
 
-import com.whirled.contrib.platformer.board.ActorBounds;
 import com.whirled.contrib.platformer.board.ColliderDetails;
 import com.whirled.contrib.platformer.board.DynamicBounds;
 
@@ -44,7 +43,6 @@ public class AttackCollisionHandler extends CollisionHandler
     {
         var db :DynamicBounds = target as DynamicBounds;
         var sc :ShootableController = db.controller as ShootableController;
-        //var tab :ActorBounds = target as ActorBounds;
         if (_ac.canAttack()) {
             _ac.startAttack();
         } else {
