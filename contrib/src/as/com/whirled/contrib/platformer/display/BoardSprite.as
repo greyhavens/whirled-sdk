@@ -175,13 +175,6 @@ public class BoardSprite extends Sprite
         }
     }
 
-    public function enableParallax (enable :Boolean) :void
-    {
-        if (_layers[BG_LAYER] != null) {
-            _layers[BG_LAYER].setEnabled(enable);
-        }
-    }
-
     public function get centerX () :Number
     {
         return _centerX;

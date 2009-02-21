@@ -28,6 +28,37 @@ import com.whirled.contrib.ColorMatrix;
 
 public class DisplayUtils
 {
+    public static function findNode (node :String, disp :DisplayObject) :DisplayObject
+    {
+        var ret :Array = findNodes([ node ], disp);
+        return (ret == null ? null : ret[0]);
+    }
+
+    public static function findNodes (nodes :Array, disp :DisplayObject) :Array
+    {
+        var ret :Array;
+        if (disp == null) {
+            return ret;
+        }
+        if (nodes.indexOf(disp.name) != -1) {
+            ret = new Array();
+            ret.push(disp);
+        }
+        if (disp is DisplayObjectContainer) {
+            var cont :DisplayObjectContainer = disp as DisplayObjectContainer;
+            for (var ii :int = 0; ii < cont.numChildren; ii++) {
+                var disps :Array = findNodes(nodes, cont.getChildAt(ii));
+                if (disps != null) {
+                    if (ret == null) {
+                        ret = new Array();
+                    }
+                    ret = ret.concat(disps);
+                }
+            }
+        }
+        return ret;
+    }
+
     public static function recolorNodesToColor (
         node :String, disp :DisplayObject, color :int) :ColorMatrixFilter
     {
