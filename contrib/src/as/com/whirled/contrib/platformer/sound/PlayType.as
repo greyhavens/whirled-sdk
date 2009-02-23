@@ -35,6 +35,9 @@ public final class PlayType extends Enum
     // Newly requested plays of this SoundEffect will overlap any previously playing instances.
     public static const OVERLAPPING :PlayType = new PlayType("OVERLAPPING");
 
+    // A sound that should not be played, and is only a stub in the code at the moment.
+    public static const PLACEHOLDER :PlayType = new PlayType("PLACEHOLDER");
+
     finishedEnumerating(PlayType);
 
 

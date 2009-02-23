@@ -106,7 +106,7 @@ public class SoundController extends EventDispatcher
 
     public function playEffect (effect :SoundEffect) :void
     {
-        if (!SOUND_ENABLED) {
+        if (!SOUND_ENABLED || effect.playType == PlayType.PLACEHOLDER) {
             return;
         }
 
