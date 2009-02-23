@@ -106,7 +106,11 @@ public class SpawnerController extends RectDynamicController
                 if (_spawnDelay <= 0) {
                     spawn();
                 }
-            } else if (_spawner.spawning > 0) {
+            }
+            if (_spawner.spawning > 0 && _spawnId != _spawner.spawning) {
+                if (_spawnId != 0) {
+                    spawn();
+                }
                 _spawnDelay = _spawner.spawnDelay;
                 _spawnId = _spawner.spawning;
                 _spawnOwner = 0;
@@ -124,8 +128,8 @@ public class SpawnerController extends RectDynamicController
                      _spawner.maxConcurrent > _spawner.spawns.length)) {
                 _spawner.spawning = _controller.getBoard().reserveId();
                 _spawnId = _spawner.spawning;
-                _spawnDelay = _spawner.spawnDelay;
                 _spawnOwner = (PlatformerContext.local ? PlatformerContext.myId : 0);
+                _spawnDelay = _spawner.spawnDelay;
             }
         }
     }
@@ -153,19 +157,20 @@ public class SpawnerController extends RectDynamicController
         cxml.@y = _spawner.y;
         var a :Actor = Board.loadDynamic(cxml) as Actor;
         a.id = _spawnId;
-        _spawnId = 0;
         a.owner = _spawnOwner;
         _controller.getBoard().addActor(a);
         _spawner.spawns.push(a.id);
         _spawner.spawning = 0;
         _spawner.spawnCount++;
+        _spawnId = 0;
+        _spawnOwner = 0;
     }
 
     protected function messageReceived (event :MessageReceivedEvent) :void
     {
         if (event.value is SpawnMessage) {
             var spawnMsg :SpawnMessage = event.value as SpawnMessage;
-            if (spawnMsg.state == SpawnMessage.OWNER && spawnMsg.id == _spawnId) {
+            if (spawnMsg.state == SpawnMessage.OWNER && _spawnId == spawnMsg.id) {
                 _spawnOwner = spawnMsg.idx;
             }
         }
