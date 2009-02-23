@@ -61,6 +61,9 @@ public class Actor extends Dynamic
     public function Actor (insxml :XML = null)
     {
         super(insxml);
+        if (insxml != null) {
+            disabled = insxml.@disabled == "true";
+        }
     }
 
     public function toString () :String
@@ -145,6 +148,19 @@ public class Actor extends Dynamic
     {
         _startHealth = startHealth;
         updateState |= U_UPGRADE;
+    }
+
+    public function get disabled () :Boolean
+    {
+        return _disabled;
+    }
+
+    public function set disabled (disabled :Boolean) :void
+    {
+        if (disabled != _disabled) {
+            _disabled = disabled;
+            updateState |= U_INTER;
+        }
     }
 
     public function get orient () :int
@@ -253,7 +269,19 @@ public class Actor extends Dynamic
 
     override public function shouldSpawn () :Boolean
     {
+        return health > 0 && !disabled;
+    }
+
+    override public function isAlive () :Boolean
+    {
         return health > 0;
+    }
+
+    override public function xmlInstance () :XML
+    {
+        var xml :XML = super.xmlInstance();
+        xml.@disabled = disabled;
+        return xml;
     }
 
     override public function toBytes (bytes :ByteArray = null) :ByteArray
@@ -283,6 +311,9 @@ public class Actor extends Dynamic
         }
         if ((_inState & U_UPGRADE) > 0) {
             bytes.writeFloat(_startHealth);
+        }
+        if ((_inState & U_INTER) > 0) {
+            bytes.writeBoolean(_disabled);
         }
         return bytes;
     }
@@ -315,6 +346,9 @@ public class Actor extends Dynamic
         if ((_inState & U_UPGRADE) > 0) {
             _startHealth = bytes.readFloat();
         }
+        if ((_inState & U_INTER) > 0) {
+            _disabled = bytes.readBoolean();
+        }
     }
 
     protected var _bounds :Rect;
@@ -331,5 +365,6 @@ public class Actor extends Dynamic
     protected var _height :Number = 0;
     protected var _width :Number = 0;
     protected var _killer :int;
+    protected var _disabled :Boolean;
 }
 }

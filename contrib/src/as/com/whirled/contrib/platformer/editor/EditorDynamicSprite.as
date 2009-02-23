@@ -32,11 +32,13 @@ public class EditorDynamicSprite extends EditorSprite
         _dynamic = ds.getDynamic();
         name = _dynamic.id.toString();
         ds.setStatic(true);
+        updateDisabled();
     }
 
     override public function update () :void
     {
         (_sprite as DynamicSprite).update(0);
+        updateDisabled();
     }
 
     override public function getTileX () :Number
@@ -73,6 +75,17 @@ public class EditorDynamicSprite extends EditorSprite
             _dynamic.x = Math.max(0, newX - _startX);
             _dynamic.y = Math.max(0, newY - _startY);
             update();
+        }
+    }
+
+    protected function updateDisabled () :void
+    {
+        if (_dynamic.hasOwnProperty("disabled")) {
+            if (_dynamic["disabled"] == true) {
+                _sprite.alpha = 0.6;
+            } else {
+                _sprite.alpha = 1;
+            }
         }
     }
 

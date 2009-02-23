@@ -74,6 +74,7 @@ public class GameController
         c = OpenGateEventAction;
         c = EnableSpawnerEventAction;
         c = BackgroundMusicAction;
+        c = EnableActorEventAction;
     }
 
     public function initDynamicClasses () :void
