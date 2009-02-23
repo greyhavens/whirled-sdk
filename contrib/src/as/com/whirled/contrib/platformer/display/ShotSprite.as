@@ -45,7 +45,6 @@ public class ShotSprite extends DynamicSprite
             _alive += delta;
             if (_alive > TIME_TO_LIVE) {
                 _disp.visible = true;
-                playSoundEffect(_shot.fireSoundEffect);
             }
         }
         if (_dead) {
@@ -61,6 +60,10 @@ public class ShotSprite extends DynamicSprite
                 displayAir();
             }
             _dead = true;
+        }
+        if (!_playedFireSE) {
+            playSoundEffect(_shot.fireSoundEffect);
+            _playedFireSE = true;
         }
     }
 
@@ -90,6 +93,7 @@ public class ShotSprite extends DynamicSprite
     protected var _shot :Shot;
     protected var _alive :Number = 0;
     protected var _dead :Boolean = false;
+    protected var _playedFireSE :Boolean = false;
 
     protected static const TIME_TO_LIVE :Number = 0.05;
 }
