@@ -257,7 +257,18 @@ public class DynamicSprite extends Sprite
     protected function playSoundEffect (effect :SoundEffect) :void
     {
         if (effect != null) {
-            ClientPlatformerContext.sound.playEffect(effect);
+            var screenCenterX :Number = ClientPlatformerContext.boardSprite.centerX +
+                Metrics.DISPLAY_WIDTH / 2;
+            var screenCenterY :Number = ClientPlatformerContext.boardSprite.centerY +
+                Metrics.DISPLAY_HEIGHT / 2;
+            var xNormal :Number = (x - screenCenterX) / SOUND_NORMAL_DISTANCE;
+            var yNormal :Number = (-y - screenCenterY) / SOUND_NORMAL_DISTANCE;
+            if (Math.abs(xNormal) > 1 || Math.abs(yNormal) > 1) {
+                // not playing this effect
+                return;
+            }
+
+            ClientPlatformerContext.sound.playEffect(effect, new Point(xNormal, yNormal));
         }
     }
 
@@ -299,5 +310,8 @@ public class DynamicSprite extends Sprite
     protected var _hitFilterIndex :int;
 
     protected static const HIT_LENGTH :Number = 0.1;
+
+    protected static const SOUND_NORMAL_DISTANCE :Number = Metrics.DISPLAY_HEIGHT * 2;
 }
 }
+

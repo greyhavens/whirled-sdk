@@ -22,6 +22,7 @@ package com.whirled.contrib.platformer.sound {
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
+import flash.geom.Point;
 import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
@@ -104,7 +105,14 @@ public class SoundController extends EventDispatcher
         _track = null;
     }
 
-    public function playEffect (effect :SoundEffect) :void
+    /**
+     * Location indicates how far off center the sound should feel to the user.  The pure distance
+     * from (0, 0) indicates the overall volume level that the effect will play at, and the x value
+     * indicates how far left/right the sound will be panned.
+     *
+     * The location point x and y values should be normalized to a [-1, 1] scale.
+     */
+    public function playEffect (effect :SoundEffect, location :Point = null) :void
     {
         if (!SOUND_ENABLED || effect.playType == PlayType.PLACEHOLDER) {
             return;
@@ -117,7 +125,21 @@ public class SoundController extends EventDispatcher
             return;
         }
 
-        startEffectPlayback(effect);
+        var sound :Sound = getSound(effect);
+        if (sound == null) {
+            log.warning("No sound found for effect", "effect", effect);
+            return;
+        }
+
+        var dist :Number =
+            location == null ? 0 : Point.distance(location, new Point(0, 0)) / DISTANCE_NORMALIZE;
+        var pan :Number = location == null ? 0 : location.x;
+        var channel :SoundChannel = playSound(sound, effectsVolume * (1 - dist), pan);
+        if (effect.playType != PlayType.OVERLAPPING) {
+            _channels.put(effect, new ChannelPlayback(channel, getTimer()));
+            _eventMgr.registerOneShotCallback(
+                channel, Event.SOUND_COMPLETE, bindChannelRemoval(effect));
+        }
     }
 
     public function stopEffect (effect :SoundEffect) :void
@@ -248,25 +270,9 @@ public class SoundController extends EventDispatcher
         _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
     }
 
-    protected function playSound (sound :Sound, volume :Number) :SoundChannel
+    protected function playSound (sound :Sound, volume :Number, pan :Number = 0) :SoundChannel
     {
-        return sound.play(0, 0, new SoundTransform(volume));
-    }
-
-    protected function startEffectPlayback (effect :SoundEffect) :void
-    {
-        var sound :Sound = getSound(effect);
-        if (sound == null) {
-            log.warning("No sound found for effect", "effect", effect);
-            return;
-        }
-
-        var channel :SoundChannel = playSound(sound, effectsVolume);
-        if (effect.playType != PlayType.OVERLAPPING) {
-            _channels.put(effect, new ChannelPlayback(channel, getTimer()));
-            _eventMgr.registerOneShotCallback(
-                channel, Event.SOUND_COMPLETE, bindChannelRemoval(effect));
-        }
+        return sound.play(0, 0, new SoundTransform(volume, pan));
     }
 
     protected var _contentDomain :ApplicationDomain = new ApplicationDomain(null);
@@ -278,6 +284,9 @@ public class SoundController extends EventDispatcher
     protected var _track :SoundChannel;
     protected var _trackName :String;
     protected var _tickBindings :Array = [];
+
+    protected static const DISTANCE_NORMALIZE :Number =
+        Point.distance(new Point(0, 0), new Point(1, 1));
 
     protected static const FADE_TIME :int = 3 * 1000; // in ms
 
