@@ -193,8 +193,11 @@ public class AVRServerGameControl extends AbstractControl
      */
     protected function roomUnloaded_v1 (roomId :int) :void
     {
-        RoomSubControlServer(_roomControls[roomId]).roomUnloaded_v1();
-        delete _roomControls[roomId];
+        var ctrl :RoomSubControlServer = (_roomControls[roomId] as RoomSubControlServer);
+        if (ctrl != null) {
+            ctrl.roomUnloaded_v1();
+            delete _roomControls[roomId];
+        }
     }
 
     /** @private */
