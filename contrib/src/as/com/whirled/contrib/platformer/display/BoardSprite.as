@@ -95,7 +95,7 @@ public class BoardSprite extends Sprite
         }
 
         _layers[LEVEL_LAYER] =
-                new BitmapSectionalLayer(4, 4, true);
+                new BitmapSectionalLayer(2, 2, true);
                 //new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
         //_layers[LEVEL_LAYER] = new PieceSpriteLayer();
         addChild(_layers[LEVEL_LAYER]);
@@ -333,6 +333,7 @@ public class BoardSprite extends Sprite
                 }
             }
         }
+        //_layers[LEVEL_LAYER].showSectionData();
     }
 
     protected function initBounds () :void

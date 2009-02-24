@@ -40,7 +40,7 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
 
     public function BitmapSectionalLayer (secWidth :int, secHeight :int, doPreload :Boolean = false)
     {
-        _sindex = new SectionalIndex(secWidth, secHeight);
+        _sindex = new SectionalIndex(secWidth, secHeight, 10000/secWidth);
         if (doPreload) {
             _preload = 1;
         }
@@ -52,6 +52,13 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
                 secHeight * Metrics.TILE_SIZE, generateBitmap, heuristic);
         //        10, secWidth * Metrics.TILE_SIZE, secHeight * Metrics.TILE_SIZE, generateBitmap);
         addChild(new Bitmap(_bd));
+    }
+
+    public function showSectionData () :void
+    {
+        for (var idx :String in _sections) {
+            trace("Section (" + idx + ") has pieces: " + _sections[idx].length);
+        }
     }
 
     override public function shutdown () :void
