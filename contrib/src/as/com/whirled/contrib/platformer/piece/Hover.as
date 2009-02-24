@@ -20,12 +20,16 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.sound.SoundEffect;
+
 /**
  * A simple dynamic that changes it's image when hovered.
  */
 public class Hover extends RectDynamic
 {
     public var hovered :Boolean = false;
+    public var hoverSoundEffect :SoundEffect;
 
     public function Hover (insxml :XML = null)
     {
@@ -34,6 +38,9 @@ public class Hover extends RectDynamic
             height = insxml.@height;
             width = insxml.@width;
             sprite = insxml.@sprite;
+            if (insxml.hasOwnProperty("@hoverSoundEffect")) {
+                hoverSoundEffect = PlatformerContext.getSoundEffect(insxml.@hoverSoundEffect);
+            }
         }
         inter = Dynamic.ENEMY;
     }
@@ -44,6 +51,9 @@ public class Hover extends RectDynamic
         xml.@height = height;
         xml.@width = width;
         xml.@sprite = sprite;
+        if (hoverSoundEffect != null) {
+            xml.@hoverSoundEffect = hoverSoundEffect;
+        }
         return xml;
     }
 

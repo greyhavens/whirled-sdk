@@ -50,6 +50,7 @@ public class HoverSprite extends DynamicSprite
         } else if (_hover.hovered) {
             changeState(ACTIVE);
             _state = OVER;
+            playSoundEffect(_hover.hoverSoundEffect);
         }
     }
 
