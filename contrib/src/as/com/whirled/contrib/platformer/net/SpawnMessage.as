@@ -34,6 +34,7 @@ public class SpawnMessage
     public static const REMOVE :int = 3;
     public static const SPAWN :int = 4;
     public static const OWNER :int = 5;
+    public static const REQUEST_OWNER :int = 6;
 
     public var state :int;
     public var id :int;
@@ -65,6 +66,11 @@ public class SpawnMessage
     public static function changeOwner (id :int, owner :int) :SpawnMessage
     {
         return create(OWNER, id, owner);
+    }
+
+    public static function requestOwnerChange (id :int, owner :int) :SpawnMessage
+    {
+        return create(REQUEST_OWNER, id, owner);
     }
 
     public static function create (

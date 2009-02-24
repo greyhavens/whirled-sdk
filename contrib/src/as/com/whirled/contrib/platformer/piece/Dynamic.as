@@ -59,6 +59,8 @@ public class Dynamic
 
     public var type :String;
 
+    public var ownerRequest :int;
+
     public function Dynamic (insxml :XML = null)
     {
         if (insxml != null) {
@@ -112,6 +114,7 @@ public class Dynamic
     public function set owner (owner :int) :void
     {
         _owner = owner;
+        ownerRequest = owner;
         updateState = 0;
     }
 

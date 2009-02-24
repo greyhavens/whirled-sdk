@@ -170,7 +170,8 @@ public class SpawnerController extends RectDynamicController
     {
         if (event.value is SpawnMessage) {
             var spawnMsg :SpawnMessage = event.value as SpawnMessage;
-            if (spawnMsg.state == SpawnMessage.OWNER && _spawnId == spawnMsg.id) {
+            if ((spawnMsg.state == SpawnMessage.OWNER ||
+                    spawnMsg.state == SpawnMessage.REQUEST_OWNER) && _spawnId == spawnMsg.id) {
                 _spawnOwner = spawnMsg.idx;
             }
         }
