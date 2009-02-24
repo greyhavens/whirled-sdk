@@ -25,6 +25,7 @@ import flash.utils.Timer;
 import flash.utils.getTimer;
 
 import com.whirled.game.GameControl;
+import com.whirled.net.MessageReceivedEvent;
 
 public class ThrottlingMessageManager extends MessageManager
 {
@@ -33,10 +34,20 @@ public class ThrottlingMessageManager extends MessageManager
     public function ThrottlingMessageManager (gameCtrl :GameControl, rate :int)
     {
         super(gameCtrl);
+        _minRate = rate;
         _timer = new Timer(rate);
         _timer.addEventListener(TimerEvent.TIMER, onTimer);
         _timer.start();
         _lastSent = getTimer();
+    }
+
+    public function trackRateAgainstId (id :int = 0, adjustRate :int = 0, maxRate :int = 0) :void
+    {
+        _trackingId = id;
+        _lastTrackAdjust = getTimer();
+        _trackReceived = 0;
+        _trackAdjustRate = adjustRate;
+        _maxRate = maxRate;
     }
 
     override public function shutdown () :void
@@ -67,11 +78,42 @@ public class ThrottlingMessageManager extends MessageManager
                 }
             }
         }
+        if (_trackingId != 0) {
+            var diff :int = getTimer() - _lastTrackAdjust;
+            if (diff > _trackAdjustRate) {
+                var rate :int;
+                if (_trackReceived == 0) {
+                    rate = _maxRate;
+                } else {
+                    rate = Math.round(diff / _trackReceived);
+                    rate = Math.min(_maxRate, Math.max(_minRate, rate));
+                }
+                _timer.delay = rate;
+                _lastTrackAdjust = getTimer();
+                _trackReceived = 0;
+            }
+        } else if (_timer.delay != _minRate) {
+            _timer.delay = _minRate;
+        }
+    }
+
+    override protected function onMessageReceived (e :MessageReceivedEvent) :void
+    {
+        if (_trackingId != 0 && _trackingId == e.senderId) {
+            _trackReceived++;
+        }
+        super.onMessageReceived(e);
     }
 
     protected var _queue :QueueMessage = new QueueMessage();
     protected var _timer :Timer;
     protected var _sent :int;
     protected var _lastSent :int;
+    protected var _maxRate :int;
+    protected var _minRate :int;
+    protected var _trackingId :int;
+    protected var _lastTrackAdjust :int;
+    protected var _trackReceived :int;
+    protected var _trackAdjustRate :int;
 }
 }
