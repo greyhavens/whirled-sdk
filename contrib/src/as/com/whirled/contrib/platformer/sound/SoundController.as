@@ -253,21 +253,7 @@ public class SoundController extends EventDispatcher
 
     protected function loopTrack (...ignored) :void
     {
-        if (_track != null) {
-            _eventMgr.unregisterListener(_track, Event.SOUND_COMPLETE, loopTrack);
-            _track = null;
-        }
-
-        if (_trackName == null) {
-            return;
-        }
-
-        var sound :Sound = _tracks.get(_trackName);
-        if (sound == null) {
-            log.warning("No cached Sound for a looping track", "trackName", _trackName);
-        }
-        _track = playSound(sound, effectsVolume);
-        _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
+        startBackgroundMusic(_trackName, false);
     }
 
     protected function playSound (sound :Sound, volume :Number, pan :Number = 0) :SoundChannel
