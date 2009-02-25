@@ -268,14 +268,15 @@ public class DynamicSprite extends Sprite
                 return;
             }
 
-            ClientPlatformerContext.sound.playEffect(effect, new Point(xNormal, yNormal));
+            ClientPlatformerContext.sound.playEffect(
+                effect, _dynamic.id, new Point(xNormal, yNormal));
         }
     }
 
     protected function stopSoundEffect (effect :SoundEffect) :void
     {
         if (effect != null) {
-            ClientPlatformerContext.sound.stopEffect(effect);
+            ClientPlatformerContext.sound.stopEffect(effect, _dynamic.id);
         }
     }
 

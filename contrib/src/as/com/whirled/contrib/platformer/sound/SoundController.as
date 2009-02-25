@@ -112,16 +112,17 @@ public class SoundController extends EventDispatcher
      *
      * The location point x and y values should be normalized to a [-1, 1] scale.
      */
-    public function playEffect (effect :SoundEffect, location :Point = null) :void
+    public function playEffect (effect :SoundEffect, id :int = 0, location :Point = null) :void
     {
         if (!SOUND_ENABLED || effect.playType == PlayType.PLACEHOLDER) {
             return;
         }
 
+        var key :String = getKey(effect, id);
         if (effect.playType == PlayType.RESTARTING) {
-            stopEffect(effect);
+            stopEffect(effect, id);
 
-        } else if (effect.playType == PlayType.CONTINUOUS && _channels.containsKey(effect)) {
+        } else if (effect.playType == PlayType.CONTINUOUS && _channels.containsKey(key)) {
             return;
         }
 
@@ -136,15 +137,15 @@ public class SoundController extends EventDispatcher
         var pan :Number = location == null ? 0 : location.x;
         var channel :SoundChannel = playSound(sound, effectsVolume * (1 - dist), pan);
         if (effect.playType != PlayType.OVERLAPPING) {
-            _channels.put(effect, new ChannelPlayback(channel, getTimer()));
+            _channels.put(key, new ChannelPlayback(channel, getTimer()));
             _eventMgr.registerOneShotCallback(
-                channel, Event.SOUND_COMPLETE, bindChannelRemoval(effect));
+                channel, Event.SOUND_COMPLETE, bindChannelRemoval(key));
         }
     }
 
-    public function stopEffect (effect :SoundEffect) :void
+    public function stopEffect (effect :SoundEffect, id :int) :void
     {
-        var playback :ChannelPlayback = _channels.remove(effect);
+        var playback :ChannelPlayback = _channels.remove(getKey(effect, id));
         if (playback != null) {
             playback.channel.stop();
             _eventMgr.freeAllOn(playback.channel);
@@ -196,10 +197,10 @@ public class SoundController extends EventDispatcher
         return sound;
     }
 
-    protected function bindChannelRemoval (effect :SoundEffect) :Function
+    protected function bindChannelRemoval (key :String) :Function
     {
         return function () :void {
-            _channels.remove(effect);
+            _channels.remove(key);
         };
     }
 
@@ -259,6 +260,11 @@ public class SoundController extends EventDispatcher
     protected function playSound (sound :Sound, volume :Number, pan :Number = 0) :SoundChannel
     {
         return sound.play(0, 0, new SoundTransform(volume, pan));
+    }
+
+    protected function getKey (effect :SoundEffect, id :int) :String
+    {
+        return id + ":" + effect.hashCode();
     }
 
     protected var _contentDomain :ApplicationDomain = new ApplicationDomain(null);
