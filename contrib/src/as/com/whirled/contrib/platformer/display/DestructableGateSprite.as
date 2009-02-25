@@ -46,11 +46,13 @@ public class DestructableGateSprite extends GateSprite
             if (_state != DAMAGED_2) {
                 changeState(DAMAGE_2);
                 _state = DAMAGED_2;
+                playSoundEffect(_gate.deathSoundEffect);
             }
         } else if (_dg.health < 2 * _dg.startHealth / 3) {
             if (_state != DAMAGED_1) {
                 changeState(DAMAGE_1);
                 _state = DAMAGED_1;
+                playSoundEffect(_gate.deathSoundEffect);
             }
         } else {
             super.idle();
