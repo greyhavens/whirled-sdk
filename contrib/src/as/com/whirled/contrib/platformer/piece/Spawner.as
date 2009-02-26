@@ -142,7 +142,7 @@ public class Spawner extends RectDynamic
 
     override public function alwaysSpawn () :Boolean
     {
-        if (spawns == null || spawns.length == 0) {
+        if (spawns == null || spawns.length == 0 || spawning != 0) {
             return false;
         }
         for each (var id :int in spawns) {

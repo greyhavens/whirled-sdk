@@ -97,6 +97,8 @@ public class SpawnerController extends RectDynamicController
         if (!_spawner.shouldSpawn() || _spawner.disabled) {
             if (_spawner.spawning != 0) {
                 _spawner.spawning = 0;
+                _spawnId = 0;
+                _spawnOwner = 0;
             }
             return;
         }
