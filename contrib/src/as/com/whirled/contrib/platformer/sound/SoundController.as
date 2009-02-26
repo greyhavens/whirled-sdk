@@ -264,6 +264,8 @@ public class SoundController extends EventDispatcher
 
     protected function getKey (effect :SoundEffect, id :int) :String
     {
+        // id is only honored for CONTINUOUS sounds right now.
+        id = effect.playType == PlayType.CONTINUOUS ? id : 0;
         return id + ":" + effect.hashCode();
     }
 
