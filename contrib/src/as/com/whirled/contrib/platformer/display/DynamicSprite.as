@@ -256,7 +256,7 @@ public class DynamicSprite extends Sprite
 
     protected function playSoundEffect (effect :SoundEffect) :void
     {
-        if (effect != null) {
+        if (effect != null && ClientPlatformerContext.sound != null) {
             var screenCenterX :Number = ClientPlatformerContext.boardSprite.centerX +
                 Metrics.DISPLAY_WIDTH / 2;
             var screenCenterY :Number = ClientPlatformerContext.boardSprite.centerY +
@@ -275,7 +275,7 @@ public class DynamicSprite extends Sprite
 
     protected function stopSoundEffect (effect :SoundEffect) :void
     {
-        if (effect != null) {
+        if (effect != null && ClientPlatformerContext.sound != null) {
             ClientPlatformerContext.sound.stopEffect(effect, _dynamic.id);
         }
     }
