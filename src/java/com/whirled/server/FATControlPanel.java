@@ -134,7 +134,8 @@ public class FATControlPanel extends JFrame
         // prepare the server
         final FATServer server = _injector.getInstance(FATServer.class);
         try {
-            server.init(_injector);
+            server.init(_injector, _gconfig.getText(), _players.getValue(),
+                _prefs.getValue("fat.playerpath", "flashplayer"), _status);
         } catch (Exception e) {
             log.warning("Unable to initialize server.", e);
             _status.setText("Unable to initialize server: " + e.getMessage());
@@ -162,27 +163,6 @@ public class FATControlPanel extends JFrame
     {
         _startA.setEnabled(true);
         _status.setText("Ready...");
-    }
-
-    protected class FATServer extends WhirledTestServer
-    {
-        protected String getDocRoot () {
-            return "dist";
-        }
-        protected Reader getGameConfig () {
-            String config = "<game><params>" + _gconfig.getText() + "</params></game>";
-            return new StringReader(config);
-        }
-        protected int getPlayerCount () {
-            return _players.getValue();
-        }
-        protected String getFlashPlayerPath () {
-            return _prefs.getValue("fat.playerpath", "flashplayer");
-        }
-        protected void reportError (String message, Exception e) {
-            log.warning(message, e);
-            _status.setText(message);
-        }
     }
 
     protected Action _startA = new AbstractAction("Start") {
@@ -226,4 +206,44 @@ public class FATControlPanel extends JFrame
     protected File _swfpath = new File("");
 
     protected Injector _injector = Guice.createInjector(new WhirledTestServer.Module());
+
+    protected static class FATServer extends WhirledTestServer
+    {
+        public void init (Injector injector, String params, int playerCount,
+                          String playerPath, JLabel status)
+            throws Exception
+        {
+            _params = params;
+            _playerCount = playerCount;
+            _playerPath = playerPath;
+            _status = status;
+            
+            super.init(injector);
+        }
+        protected boolean hasServerSideCode () {
+            return false;
+        }
+        protected String getDocRoot () {
+            return "dist";
+        }
+        protected Reader getGameConfig () {
+            String config = "<game><params>" + _params + "</params></game>";
+            return new StringReader(config);
+        }
+        protected int getPlayerCount () {
+            return _playerCount;
+        }
+        protected String getFlashPlayerPath () {
+            return _playerPath;
+        }
+        protected void reportError (String message, Exception e) {
+            log.warning(message, e);
+            _status.setText(message);
+        }
+        
+        protected String _params;
+        protected int _playerCount;
+        protected String _playerPath;
+        protected JLabel _status;
+    }
 }
