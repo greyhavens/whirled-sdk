@@ -1005,7 +1005,9 @@ public class BaseGameBackend
             delete _loadedPacks[data.mediaURL];
         });
         loader.addEventListener(Event.COMPLETE, function (evt :Event) :void {
-            onLoaded(ByteArray(loader.data));
+            var ba :ByteArray = ByteArray(loader.data);
+            ba.position = 0;
+            onLoaded(ba);
         });
         loader.load(new URLRequest(data.mediaURL));
     }
