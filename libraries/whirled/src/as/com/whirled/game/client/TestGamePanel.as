@@ -55,16 +55,16 @@ public class TestGamePanel extends WhirledGamePanel
 
     override protected function displayGameOver (gameOver :Boolean) :void
     {
-        // in the test environment, we simply add or remove the rematch button from the
-        // control bar... even if our caller made it invisible!
-        if (gameOver == (_rematch.parent != null)) {
-            return; // we're already displaying the right state
-        }
-        if (gameOver) {
-            _ctrlBar.addChild(_rematch);
-        } else {
-            _ctrlBar.removeChild(_rematch);
-        }
+//        // in the test environment, we simply add or remove the rematch button from the
+//        // control bar... even if our caller made it invisible!
+//        if (gameOver == (_rematch.parent != null)) {
+//            return; // we're already displaying the right state
+//        }
+//        if (gameOver) {
+//            _ctrlBar.addChild(_rematch);
+//        } else {
+//            _ctrlBar.removeChild(_rematch);
+//        }
     }
 
     override protected function getRematchLabel (plobj :PlaceObject) :String
