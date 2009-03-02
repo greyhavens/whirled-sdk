@@ -104,6 +104,7 @@ public class HttpUserCode
             var consoleTracePrefix :String = _domainId + ": ";
             _domain = Thane.spawnDomain(_domainId, consoleTracePrefix, _bridge);
             _domain.loadBytes(_loader.data);
+            ByteArray(_loader.data).position = 0;
             _loader = null;
             _class = _domain.getClass(_className);
             success = _class != null;
