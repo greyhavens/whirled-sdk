@@ -3,6 +3,7 @@
 
 package com.whirled.game.server.persist;
 
+import java.util.Collection;
 import java.util.Set;
 
 import com.google.inject.Inject;
@@ -11,6 +12,7 @@ import com.google.inject.Singleton;
 import com.samskivert.depot.DepotRepository;
 import com.samskivert.depot.PersistenceContext;
 import com.samskivert.depot.PersistentRecord;
+import com.samskivert.depot.operator.Conditionals;
 import com.samskivert.depot.clause.Where;
 
 /**
@@ -47,11 +49,12 @@ public class GameCookieRepository extends DepotRepository
     }
 
     /**
-     * Purges all data associated with the supplied player.
+     * Purges all data associated with the supplied players.
      */
-    public void purgePlayer (int playerId)
+    public void purgePlayers (Collection<Integer> playerIds)
     {
-        deleteAll(GameCookieRecord.class, new Where(GameCookieRecord.USER_ID, playerId));
+        deleteAll(GameCookieRecord.class,
+                  new Where(new Conditionals.In(GameCookieRecord.USER_ID, playerIds)));
     }
 
     @Override // from DepotRepository
