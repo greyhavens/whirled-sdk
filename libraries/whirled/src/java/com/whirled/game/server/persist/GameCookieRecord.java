@@ -8,6 +8,7 @@ import com.samskivert.depot.PersistentRecord;
 import com.samskivert.depot.annotation.Column;
 import com.samskivert.depot.annotation.Entity;
 import com.samskivert.depot.annotation.Id;
+import com.samskivert.depot.annotation.Index;
 import com.samskivert.depot.expression.ColumnExp;
 
 @Entity(name="GAME_COOKIES")
@@ -20,14 +21,14 @@ public class GameCookieRecord extends PersistentRecord
     public static final ColumnExp COOKIE = colexp(_R, "cookie");
     // AUTO-GENERATED: FIELDS END
 
-    public static final int SCHEMA_VERSION = 1;
+    public static final int SCHEMA_VERSION = 2;
 
     /** The id of the game for which this is a cookie. */
     @Id @Column(name="GAME_ID")
     public int gameId;
 
     /** The id of the user for which this is a cookie. */
-    @Id @Column(name="USER_ID")
+    @Id @Index @Column(name="USER_ID")
     public int userId;
 
     /** The actual cookie, as a byte array. */
