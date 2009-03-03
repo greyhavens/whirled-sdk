@@ -51,6 +51,22 @@
     </copy>
   </target>
 
+  <!-- generates fields for persistent record classes -->
+  <target name="genrecord" depends="prepare">
+    <taskdef name="grecord" classname="com.samskivert.depot.tools.GenRecordTask"
+             classpathref="classpath"/>
+    <!-- make sure the record class files are all compiled -->
+    <javac srcdir="src/java" destdir="${classes.dir}" debug="on" optimize="${build.optimize}"
+           deprecation="on" source="1.5" target="1.5">
+      <classpath refid="classpath"/>
+      <include name="**/*Record.java"/>
+    </javac>
+    <!-- now update the source files -->
+    <grecord classpathref="classpath">
+      <fileset dir="src/java" includes="**/*Record.java"/>
+    </grecord>
+  </target>
+
   <!-- generates additional methods for distributed object classes -->
   <target name="gendobj" depends="prepare-java"> 
     <taskdef name="dobj" classpathref="classpath"
