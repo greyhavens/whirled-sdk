@@ -11,6 +11,7 @@ import com.google.inject.Singleton;
 import com.samskivert.depot.DepotRepository;
 import com.samskivert.depot.PersistenceContext;
 import com.samskivert.depot.PersistentRecord;
+import com.samskivert.depot.clause.Where;
 
 /**
  * Provides storage services for user cookies used in games.
@@ -26,23 +27,31 @@ public class GameCookieRepository extends DepotRepository
     /**
      * Get the specified game cookie, or null if none.
      */
-    public byte[] getCookie (int gameId, int userId)
+    public byte[] getCookie (int gameId, int playerId)
     {
         GameCookieRecord record = load(
-            GameCookieRecord.class, GameCookieRecord.getKey(gameId, userId));
+            GameCookieRecord.class, GameCookieRecord.getKey(gameId, playerId));
         return record != null ? record.cookie : null;
     }
 
     /**
      * Set the specified user's game cookie.
      */
-    public void setCookie (int gameId, int userId, byte[] cookie)
+    public void setCookie (int gameId, int playerId, byte[] cookie)
     {
         if (cookie != null) {
-            store(new GameCookieRecord(gameId, userId, cookie));
+            store(new GameCookieRecord(gameId, playerId, cookie));
         } else {
-            delete(GameCookieRecord.class, GameCookieRecord.getKey(gameId, userId));
+            delete(GameCookieRecord.class, GameCookieRecord.getKey(gameId, playerId));
         }
+    }
+
+    /**
+     * Purges all data associated with the supplied player.
+     */
+    public void purgePlayer (int playerId)
+    {
+        deleteAll(GameCookieRecord.class, new Where(GameCookieRecord.USER_ID, playerId));
     }
 
     @Override // from DepotRepository
