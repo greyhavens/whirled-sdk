@@ -21,7 +21,6 @@
 package com.whirled.contrib.platformer.display {
 
 import com.whirled.contrib.platformer.piece.Dynamic;
-import com.whirled.contrib.platformer.piece.Rect;
 import com.whirled.contrib.platformer.util.Metrics;
 
 public class DynamicSpriteLayer extends Layer
@@ -71,9 +70,8 @@ public class DynamicSpriteLayer extends Layer
 
     protected function showDS (ds :DynamicSprite) :void
     {
-        var r :Rect = ds.getDynamic().getBounds();
-        var w :Number = (r.width + 1) * Metrics.TILE_SIZE;
-        var h :Number = (r.height + 1) * Metrics.TILE_SIZE;
+        var w :Number = ds.displayWidth;
+        var h :Number = ds.displayHeight;
         if (!ds.showAlways() && (ds.x + w < -x || ds.x - w > -x + Metrics.DISPLAY_WIDTH ||
                 ds.y + h < -y || ds.y - h > -y + Metrics.DISPLAY_HEIGHT)) {
             removeDS(ds);

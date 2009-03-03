@@ -52,6 +52,16 @@ public class DynamicSprite extends Sprite
         this.y = -_dynamic.y * Metrics.TILE_SIZE;
     }
 
+    public function get displayWidth () :Number
+    {
+        return (_dynamic.getBounds().width + 1) * Metrics.TILE_SIZE;
+    }
+
+    public function get displayHeight () :Number
+    {
+        return (_dynamic.getBounds().height + 1) * Metrics.TILE_SIZE;
+    }
+
     public function shutdown () :void
     {
         removeEventListener(Event.ADDED, handleAdded);
