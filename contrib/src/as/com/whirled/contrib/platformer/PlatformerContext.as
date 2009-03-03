@@ -25,6 +25,7 @@ import com.threerings.util.Enum;
 import com.whirled.game.GameControl;
 
 import com.whirled.contrib.platformer.board.Board;
+import com.whirled.contrib.platformer.game.Collision;
 import com.whirled.contrib.platformer.game.GameController;
 import com.whirled.contrib.platformer.net.MessageManager;
 import com.whirled.contrib.platformer.piece.DynamicFactory;
@@ -47,6 +48,7 @@ public class PlatformerContext
     public static var myId :int;
     public static var effectEnum :Class;
     public static var soundEffectEnum :Class;
+    public static var collisionEnum :Class;
 
     public static function get inControl () :Boolean
     {
@@ -61,6 +63,11 @@ public class PlatformerContext
     public static function getSoundEffect (name :String) :SoundEffect
     {
         return soundEffectEnum == null ? null : Enum.valueOf(soundEffectEnum, name) as SoundEffect;
+    }
+
+    public static function getCollision (name :String) :Collision
+    {
+        return collisionEnum == null ? null : Enum.valueOf(collisionEnum, name) as Collision;
     }
 }
 }

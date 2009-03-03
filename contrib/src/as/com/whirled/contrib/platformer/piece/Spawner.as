@@ -25,6 +25,7 @@ import flash.utils.ByteArray;
 import com.threerings.util.Enum;
 
 import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.game.Collision;
 import com.whirled.contrib.platformer.sound.SoundEffect;
 import com.whirled.contrib.platformer.util.Effect;
 
@@ -45,6 +46,8 @@ public class Spawner extends RectDynamic
     public var spawns :Array;
     public var disabled :Boolean;
     public var spawnSoundEffect :SoundEffect;
+    public var hitCollision :Collision;
+    public var missCollision :Collision;
 
     public function Spawner (insxml :XML = null)
     {
@@ -71,6 +74,8 @@ public class Spawner extends RectDynamic
             deathInterval = insxml.@deathInterval;
             offX = insxml.hasOwnProperty("@offX") ? insxml.@offX : 0;
             disabled = insxml.@disabled == "true";
+            hitCollision = PlatformerContext.getCollision(insxml.@hitCollision);
+            missCollision = PlatformerContext.getCollision(insxml.@missCollision);
         }
         inter = Dynamic.ENEMY;
     }
@@ -179,6 +184,8 @@ public class Spawner extends RectDynamic
         if (sprite != null) {
             xml.@sprite = sprite;
         }
+        xml.@hitCollision = hitCollision;
+        xml.@missCollision = missCollision;
         return xml;
     }
 

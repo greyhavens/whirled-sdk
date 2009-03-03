@@ -50,11 +50,11 @@ public class ShotSprite extends DynamicSprite
         if (_dead) {
             return;
         }
-        if (_shot.hit) {
+        if (_shot.hit != null) {
             displayHit();
             _dead = true;
         } else if (_shot.ttl <= 0 && _disp != null) {
-            if (_shot.miss) {
+            if (_shot.miss != null) {
                 displayMiss();
             } else {
                 displayAir();
@@ -75,14 +75,14 @@ public class ShotSprite extends DynamicSprite
             rotation = 0;
         }
         generateEffect(_shot.hitEffect, this);
-        playSoundEffect(_shot.hitSoundEffect);
+        playSoundEffect(_shot.hit.shotSoundEffect || _shot.genericHitSoundEffect);
     }
 
     protected function displayMiss () :void
     {
         rotation += 180;
         generateEffect(_shot.missEffect, this);
-        playSoundEffect(_shot.missSoundEffect);
+        playSoundEffect(_shot.miss.shotSoundEffect || _shot.genericMissSoundEffect);
     }
 
     protected function displayAir () :void

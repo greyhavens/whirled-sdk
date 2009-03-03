@@ -47,7 +47,7 @@ public class AttackCollisionHandler extends CollisionHandler
             _ac.startAttack();
         } else {
             var hit :Boolean = false;
-            if (sc.doesHit()) {
+            if (sc.doesHit().hits) {
                 hit = true;
                 if (db.dyn is Actor) {
                     var a :Actor = db.dyn as Actor;

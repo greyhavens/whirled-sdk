@@ -22,6 +22,7 @@ package com.whirled.contrib.platformer.game {
 
 import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.board.ColliderTask;
+import com.whirled.contrib.platformer.game.Collision;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.net.ShotMessage;
 
@@ -39,7 +40,7 @@ public class ActorController extends DynamicController
         return _actor;
     }
 
-    public function doesHit (x :Number = NaN, y :Number = NaN, source :Object = null) :Boolean
+    public function doesHit (x :Number = NaN, y :Number = NaN, source :Object = null) :Collision
     {
         return _actor.doesHit(x, y, source);
     }

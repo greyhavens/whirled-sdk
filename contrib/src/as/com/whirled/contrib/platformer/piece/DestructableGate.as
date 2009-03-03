@@ -22,6 +22,9 @@ package com.whirled.contrib.platformer.piece {
 
 import flash.utils.ByteArray;
 
+import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.game.Collision;
+
 /**
  * A gate that can be destroyed by shooting.
  */
@@ -33,6 +36,8 @@ public class DestructableGate extends Gate
     public var startHealth :Number;
     public var wasHit :Boolean;
     public var playerImpervious :Boolean;
+    public var hitCollision :Collision;
+    public var missCollision :Collision;
 
     public function DestructableGate (insxml :XML = null)
     {
@@ -41,6 +46,8 @@ public class DestructableGate extends Gate
             health = insxml.@health;
             startHealth = insxml.@health;
             playerImpervious = insxml.@playerImpervious == "true";
+            hitCollision = PlatformerContext.getCollision(insxml.@hitCollision);
+            missCollision = PlatformerContext.getCollision(insxml.@missCollision);
         }
     }
 
@@ -60,6 +67,8 @@ public class DestructableGate extends Gate
         var xml :XML = super.xmlInstance();
         xml.@health = health;
         xml.@playerImpervious = playerImpervious;
+        xml.@hitCollision = hitCollision;
+        xml.@missCollision = missCollision;
         return xml;
     }
 

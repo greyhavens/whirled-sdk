@@ -24,8 +24,10 @@ import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.BoundData;
 import com.whirled.contrib.platformer.piece.LaserShot;
 
+import com.whirled.contrib.platformer.game.Collision;
 import com.whirled.contrib.platformer.game.CollisionHandler;
 import com.whirled.contrib.platformer.game.LaserShotController;
+import com.whirled.contrib.platformer.game.SimpleCollision;
 
 public class LaserShotTask extends ShotTask
 {
@@ -39,14 +41,14 @@ public class LaserShotTask extends ShotTask
     {
         collide(new LineData(_ls.x, _ls.y,
                 _ls.x + _ls.dx * _ls.length, _ls.y + _ls.dy * _ls.length, BoundData.S_ALL));
-        _s.hit = true;
+        _s.hit = new SimpleCollision(true, null);
     }
 
     override protected function didHit (hit :Number, db :DynamicBounds) :Number
     {
         var ch :CollisionHandler = _cc.getCollisionHandler(db.controller);
         if (ch != null) {
-            _s.hit = false;
+            _s.hit = null;
             ch.collide(_s, db, _cd);
             if (_ls.hits == null) {
                 _ls.hits = new Array();

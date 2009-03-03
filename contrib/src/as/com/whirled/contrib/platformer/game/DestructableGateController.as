@@ -21,6 +21,7 @@
 package com.whirled.contrib.platformer.game {
 
 import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.game.Collision;
 import com.whirled.contrib.platformer.net.ShotMessage;
 import com.whirled.contrib.platformer.piece.DestructableGate;
 import com.whirled.contrib.platformer.piece.Dynamic;
@@ -34,9 +35,9 @@ public class DestructableGateController extends GateController
         _dg = dg;
     }
 
-    public function doesHit (x :Number = NaN, y :Number = NaN, source :Object = null) :Boolean
+    public function doesHit (x :Number = NaN, y :Number = NaN, source :Object = null) :Collision
     {
-        return _dg.health > 0;
+        return _dg.health > 0 ? _dg.hitCollision : _dg.missCollision;
     }
 
     public function doHit (damage :Number, owner :int, inter :int, sowner :int) :void

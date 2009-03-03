@@ -48,19 +48,25 @@ public class ShotCollisionHandler extends CollisionHandler
     protected function pCollide (s :Shot, db :DynamicBounds, cd :ColliderDetails) :void
     {
         var sc :ShootableController = db.controller as ShootableController;
-        if ((cd.alines[0] == null && sc.doesHit()) ||
-                (cd.alines[0] is LineData && sc.doesHit(cd.alines[0].x1, cd.alines[0].y1)) ||
-                (cd.alines[0] is Number && sc.doesHit())) {
-            s.hit = true;
+        var collision :Collision;
+        if (cd.alines[0] is LineData) {
+            collision = sc.doesHit(cd.alines[0].x1, cd.alines[0].y1);
+        } else {
+            collision = sc.doesHit();
+        }
+
+        if (collision.hits) {
+            s.hit = collision;
             sc.doHit(s.damage, s.owner, s.inter, s.owner);
             if (db is ActorBounds) {
                 var ab :ActorBounds = db as ActorBounds;
                 if (cd.alines[0] is Number) {
                     ab.actor.wasHit = Actor.HIT_FRONT;
                 } else if (cd.alines[0] != null && cd.alines[0].nx != 0) {
-                    ab.actor.wasHit =
-                        ((ab.actor.orient & Actor.ORIENT_RIGHT) > 0 ? cd.alines[0].nx > 0 : cd.alines[0].nx < 0) ?
-                                Actor.HIT_FRONT : Actor.HIT_BACK;
+                    var nx :Number = cd.alines[0].nx;
+                    var front :Boolean =
+                        (ab.actor.orient & Actor.ORIENT_RIGHT) > 0 ? nx > 0 : nx < 0;
+                    ab.actor.wasHit = front ? Actor.HIT_FRONT : Actor.HIT_BACK;
                 } else {
                     if (s.dx == 0) {
                         ab.actor.wasHit = Actor.HIT_FRONT;
@@ -82,7 +88,7 @@ public class ShotCollisionHandler extends CollisionHandler
             }
         } else {
             s.ttl = 0;
-            s.miss = true;
+            s.miss = collision;
         }
     }
 }

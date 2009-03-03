@@ -20,18 +20,12 @@
 
 package com.whirled.contrib.platformer.game {
 
-public interface ShootableController
+import com.whirled.contrib.platformer.sound.SoundEffect;
+
+public interface Collision
 {
-    function doesHit (x :Number = NaN, y :Number = NaN, source :Object = null) :Collision;
+    function get hits () :Boolean;
 
-    function doHit (damage :Number, owner :int, inter :int, sowner :int) :void
-
-    function doesCollide () :Boolean;
-
-    function getCenterX () :Number;
-
-    function getCenterY () :Number;
-
-    function getLastDamager () :int;
+    function get shotSoundEffect () :SoundEffect;
 }
 }

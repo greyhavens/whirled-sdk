@@ -23,6 +23,7 @@ package com.whirled.contrib.platformer.piece {
 import flash.utils.ByteArray;
 
 import com.whirled.contrib.platformer.board.LineData;
+import com.whirled.contrib.platformer.game.Collision;
 
 /**
  * A game actor that has orientation, acceleration and health.
@@ -73,9 +74,9 @@ public class Actor extends Dynamic
             ") d:(" + dx.toFixed(3) + ", " + dy.toFixed(3) + ")" + at;
     }
 
-    public function doesHit (x :Number, y :Number, source :Object) :Boolean
+    public function doesHit (x :Number, y :Number, source :Object) :Collision
     {
-        return true;
+        throw new Error("doesHit() in Actor is abstract!");
     }
 
     public function orientBody (body :int) :void

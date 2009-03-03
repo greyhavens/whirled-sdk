@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import com.whirled.contrib.platformer.game.Collision;
 import com.whirled.contrib.platformer.util.Effect;
 import com.whirled.contrib.platformer.sound.SoundEffect;
 
@@ -30,8 +31,8 @@ public class Shot extends Dynamic
 {
     public var damage :Number = 0;
     public var ttl :Number = 0;
-    public var hit :Boolean = false;
-    public var miss :Boolean = false;
+    public var hit :Collision = null;
+    public var miss :Collision = null;
     public var bigHit :Boolean = false;
     public var hitEffect :Effect;
     public var missEffect :Effect;
@@ -40,8 +41,8 @@ public class Shot extends Dynamic
     public var source :int = 0;
     public var rotateHit :Boolean = false;
     public var fireSoundEffect :SoundEffect;
-    public var missSoundEffect :SoundEffect;
-    public var hitSoundEffect :SoundEffect
+    public var genericHitSoundEffect :SoundEffect;
+    public var genericMissSoundEffect :SoundEffect;
 
     override public function shouldSpawn () :Boolean
     {

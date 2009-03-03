@@ -26,6 +26,7 @@ import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Shot;
 
 import com.whirled.contrib.platformer.game.CollisionHandler;
+import com.whirled.contrib.platformer.game.SimpleCollision;
 import com.whirled.contrib.platformer.game.ShotController;
 
 public class ShotTask extends ColliderTask
@@ -116,7 +117,7 @@ public class ShotTask extends ColliderTask
         var closehit :Number = _collider.findLineCloseHit(_line);
         if (closehit < 1 && closehit > 0) {
             _s.ttl *= closehit;
-            _s.miss = true;
+            _s.miss = new SimpleCollision(false, _s.genericMissSoundEffect);
         }
     }
 

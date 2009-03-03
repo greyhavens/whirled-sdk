@@ -39,7 +39,7 @@ public class LaserShotSprite extends ShotSprite
 
     override public function update (delta :Number) :void
     {
-        if (_ls.hit && stage != null) {
+        if (_ls.hit != null && stage != null) {
             var effect :Effect = _ls.length < 1 ? _ls.wallEffect : _ls.laserEffect;
             generateEffect(effect, this, null, _ls.length);
             if (_ls.hits != null) {
