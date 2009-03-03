@@ -172,8 +172,6 @@ public class OnlineTickedMessageManager extends BasicMessageManager
     protected var _lastSendTime :int;
 
     protected var _events :EventHandlerManager = new EventHandlerManager();
-
-    protected static const log :Log = Log.getLog(OnlineTickedMessageManager);
 }
 
 }

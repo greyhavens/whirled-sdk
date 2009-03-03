@@ -22,15 +22,7 @@ package com.whirled.contrib.simplegame.net {
 
 public interface MessageManager
 {
-    /**
-     * Registers a message type with the TickedMessageManager. Shortly after setup() is called,
-     * this function should be called once for each message type that the game will send or
-     * receive.
-     */
     function addMessageType (messageClass :Class) :void;
-
-    function serializeMsg (msg :Message) :Object;
-
     function deserializeMessage (name :String, val :Object) :Message;
 }
 

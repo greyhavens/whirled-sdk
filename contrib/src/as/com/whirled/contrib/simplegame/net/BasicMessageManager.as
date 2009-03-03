@@ -36,11 +36,6 @@ public class BasicMessageManager
         }
     }
 
-    public function serializeMsg (msg :Message) :Object
-    {
-        return msg.toBytes();
-    }
-
     public function deserializeMessage (name :String, val :Object) :Message
     {
         var messageClass :Class = _messageTypes.get(name) as Class;
@@ -64,7 +59,7 @@ public class BasicMessageManager
 
     protected var _messageTypes :HashMap = new HashMap();
 
-    protected static var log :Log = Log.getLog(BasicMessageManager);
+    protected const log :Log = Log.getLog(this);
 }
 
 }
