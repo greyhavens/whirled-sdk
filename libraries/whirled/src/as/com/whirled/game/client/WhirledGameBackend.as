@@ -77,6 +77,14 @@ public class WhirledGameBackend extends BaseGameBackend
         callUserCode("sizeChanged_v1", getSize_v1());
     }
 
+    /**
+     * Called when the game lobby is closed by the player.
+     */
+    public function lobbyClosed () :void
+    {
+        callUserCode("lobbyClosed_v1");
+    }
+
     /** @inheritDoc */
     // from BaseGameBackend
     override public function messageReceived (event :MessageEvent) :void

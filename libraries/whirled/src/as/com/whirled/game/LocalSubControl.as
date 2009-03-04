@@ -33,6 +33,13 @@ import com.whirled.AbstractSubControl;
 [Event(name="SizeChanged", type="com.whirled.game.SizeChangedEvent")]
 
 /**
+ * Dispatched if the game lobby is closed.
+ *
+ * @eventType com.whirled.game.LobbyClosedEvent.LOBBY_CLOSED
+ */
+[Event(name="LobbyClosed", type="com.whirled.game.LobbyClosedEvent")]
+
+/**
  * Provides access to the 'local' game services. Do not instantiate this class yourself,
  * access it via GameControl.local.
  */
@@ -224,13 +231,13 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
-     * Opens the game's multiplayer lobby on this player's machine. Please note this is only 
+     * Opens the game's multiplayer lobby on this player's machine. Please note this is only
      * meaningful for games that support multiplayer.
-     * 
-     * @param multiplayerOnly Optional parameter: if this game supports both single- and 
-     * multi-player games, a true value will only show multiplayer options (create table 
+     *
+     * @param multiplayerOnly Optional parameter: if this game supports both single- and
+     * multi-player games, a true value will only show multiplayer options (create table
      * or join existing tables), and a false value will show the default
-     * single- and multi-player options. Default value is true. 
+     * single- and multi-player options. Default value is true.
      */
     public function showGameLobby (multiplayerOnly :Boolean = true) :void
     {
@@ -250,7 +257,7 @@ public class LocalSubControl extends AbstractSubControl
     {
         callHostCode("showGameShop_v1", itemType, catalogId);
     }
-    
+
     /**
      * Instructs the game client to open the game invite page, allowing the player to invite friends
      * to play this game.
@@ -259,7 +266,7 @@ public class LocalSubControl extends AbstractSubControl
      * @param token Optional token that will be included on the URL and eventually passed back to
      * the game when an invited friend goes to the URL.  This allows the game to start in
      * a different state than usual.
-     */ 
+     */
     public function showInvitePage (defmsg :String, token :String = "") :void
     {
         callHostCode("showInvitePage_v1", defmsg, token);
@@ -304,6 +311,7 @@ public class LocalSubControl extends AbstractSubControl
 
         o["dispatchEvent_v1"] = dispatch; // for re-dispatching keyboard events
         o["sizeChanged_v1"] = sizeChanged_v1;
+        o["lobbyClosed_v1"] = lobbyClosed_v1;
     }
 
     /**
@@ -312,6 +320,14 @@ public class LocalSubControl extends AbstractSubControl
     private function sizeChanged_v1 (size :Point) :void
     {
         dispatch(new SizeChangedEvent(size));
+    }
+
+    /**
+     * Private method to generate a LobbyClosedEvent.
+     */
+    private function lobbyClosed_v1 () :void
+    {
+        dispatch(new LobbyClosedEvent());
     }
 }
 }
