@@ -25,6 +25,7 @@ import com.whirled.contrib.ColorMatrix;
 import com.whirled.contrib.simplegame.ObjectMessage;
 import com.whirled.contrib.simplegame.ObjectTask;
 import com.whirled.contrib.simplegame.SimObject;
+import com.whirled.contrib.simplegame.components.SceneComponent;
 
 import flash.display.DisplayObject;
 import flash.filters.ColorMatrixFilter;
@@ -34,21 +35,22 @@ import mx.effects.easing.*;
 public class ColorMatrixBlendTask
     implements ObjectTask
 {
-    public static function colorize (disp :DisplayObject, fromColor :uint, toColor :uint,
-        time :Number, interpolator :Function = null, preserveFilters :Boolean = false)
-        :ColorMatrixBlendTask
+    public static function colorize (fromColor :uint, toColor :uint,
+        time :Number, disp :DisplayObject = null, interpolator :Function = null,
+        preserveFilters :Boolean = false) :ColorMatrixBlendTask
     {
         return new ColorMatrixBlendTask(
-            disp,
             new ColorMatrix().colorize(fromColor, 1),
             new ColorMatrix().colorize(toColor, 1),
             time,
+            disp,
             interpolator,
             preserveFilters);
     }
 
-    public function ColorMatrixBlendTask (disp :DisplayObject, cmFrom :ColorMatrix,
-        cmTo :ColorMatrix, time :Number, interpolator :Function = null,
+    public function ColorMatrixBlendTask (cmFrom :ColorMatrix,
+        cmTo :ColorMatrix, time :Number, disp :DisplayObject = null,
+        interpolator :Function = null,
         preserveFilters :Boolean = false)
     {
         _disp = disp;
@@ -61,6 +63,18 @@ public class ColorMatrixBlendTask
 
     public function update (dt :Number, obj :SimObject) :Boolean
     {
+        var disp :DisplayObject = _disp;
+        if (disp == null) {
+            var sceneObj :SceneComponent = obj as SceneComponent;
+            if (sceneObj == null) {
+                throw new Error("ColorMatrixBlendTask must be applied to a SimObject that " +
+                                "implements SceneComponent, or must have a non-null disp " +
+                                "parameter");
+            }
+
+            disp = sceneObj.displayObject;
+        }
+
         _elapsedTime += dt;
 
         var amount :Number = _interpolator(
@@ -75,13 +89,13 @@ public class ColorMatrixBlendTask
         // when adding the new filter. This can be an expensive operation, so it's false by default.
         if (_preserveFilters) {
             if (_oldFilter != null) {
-                FilterUtil.removeFilter(_disp, _oldFilter);
+                FilterUtil.removeFilter(disp, _oldFilter);
             }
-            FilterUtil.addFilter(_disp, filter);
+            FilterUtil.addFilter(disp, filter);
             _oldFilter = filter;
 
         } else {
-            _disp.filters = [ filter ];
+            disp.filters = [ filter ];
         }
 
         return (_elapsedTime >= _totalTime);
@@ -90,10 +104,10 @@ public class ColorMatrixBlendTask
     public function clone () :ObjectTask
     {
         return new ColorMatrixBlendTask(
-            _disp,
             _from,
             _to,
             _totalTime,
+            _disp,
             _interpolator,
             _preserveFilters);
     }
