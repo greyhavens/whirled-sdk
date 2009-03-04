@@ -258,6 +258,12 @@ public class Actor extends Dynamic
         }
     }
 
+    public function applyForce (fx :Number, fy :Number) :void
+    {
+        dx += fx;
+        dy += fy;
+    }
+
     override public function getBounds () :Rect
     {
         if (_bounds == null) {

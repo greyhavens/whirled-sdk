@@ -168,7 +168,7 @@ public class SimpleActorBounds extends ActorBounds
             return true;
         }
         var delta :Number = oldHeight - newHeight;
-        var clines :Array = _collider.getLines(actor);
+        var clines :Array = getLines();
         for each (var ld :LineData in clines) {
             if (actor.attached == ld || !BoundData.doesBound(ld.type, actor.projCollider) ||
                 !ld.polyIntersecting(_lines)) {
@@ -202,7 +202,7 @@ public class SimpleActorBounds extends ActorBounds
         }
         if (cd == null || cd.colliders == null) {
             log("generating new collider details");
-            cd = new ColliderDetails(_collider.getLines(actor), getInteractingBounds(), delta);
+            cd = new ColliderDetails(getLines(), getInteractingBounds(), delta);
             cd.initActor(actor);
         } else if (cd.acolliders.length == 0) {
             if (cd.isValid(actor)) {
@@ -506,7 +506,7 @@ public class SimpleActorBounds extends ActorBounds
                 maxY = -1;
                 attached = null;
                 if (cd.acolliders.length == 0) {
-                    for each (var ld :LineData in _collider.getLines(actor)) {
+                    for each (var ld :LineData in getLines()) {
                         if (ld == actor.attached ||
                                 ld.isConnected(actor.attached, false) == null ||
                                 Math.abs(ld.iy) > actor.maxWalkable ||
@@ -653,6 +653,11 @@ public class SimpleActorBounds extends ActorBounds
             log("  ", mline);
         }
         */
+    }
+
+    protected function getLines () :Array
+    {
+        return _collider.getLines(actor);
     }
 
     protected function inYBounds (line :LineData) :Boolean

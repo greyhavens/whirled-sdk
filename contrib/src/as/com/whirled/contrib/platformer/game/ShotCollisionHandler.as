@@ -78,8 +78,7 @@ public class ShotCollisionHandler extends CollisionHandler
                     }
                 }
                 if (s.force != 0) {
-                    ab.actor.dx += s.dx * s.force / 10;
-                    ab.actor.dy += s.dy * s.force / 10;
+                    ab.actor.applyForce(s.dx * s.force / 10, s.dy * s.force / 10);
                     db.controller.getTask().reset();
                 }
                 if (s.bigHit) {
