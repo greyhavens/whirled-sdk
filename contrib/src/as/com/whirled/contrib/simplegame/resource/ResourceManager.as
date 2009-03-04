@@ -23,15 +23,9 @@ package com.whirled.contrib.simplegame.resource {
 import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
-import com.whirled.contrib.simplegame.SGContext;
 
 public class ResourceManager
 {
-    public function ResourceManager (ctx :SGContext)
-    {
-        _ctx = ctx;
-    }
-
     public function shutdown () :void
     {
         unloadAll();
@@ -177,7 +171,6 @@ public class ResourceManager
         }
     }
 
-    protected var _ctx :SGContext;
     protected var _loading :Boolean;
     protected var _completeCallback :Function;
     protected var _errorCallback :Function;

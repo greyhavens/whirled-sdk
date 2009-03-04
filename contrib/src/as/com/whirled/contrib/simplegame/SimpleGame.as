@@ -13,7 +13,7 @@ public class SimpleGame
 
         _ctx.mainLoop = new MainLoop(_ctx, config.hostSprite, config.keyDispatcher);
         _ctx.audio = new AudioManager(_ctx, config.maxAudioChannels);
-        _ctx.rsrcs = new ResourceManager(_ctx);
+        _ctx.rsrcs = new ResourceManager();
 
         // add resource factories
         _ctx.rsrcs.registerResourceType("image", ImageResource);
