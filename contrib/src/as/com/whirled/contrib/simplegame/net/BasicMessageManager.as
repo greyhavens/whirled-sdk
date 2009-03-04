@@ -23,9 +23,10 @@ package com.whirled.contrib.simplegame.net {
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 
+import flash.events.EventDispatcher;
 import flash.utils.ByteArray;
 
-public class BasicMessageManager
+public class BasicMessageManager extends EventDispatcher
     implements MessageManager
 {
     public function addMessageType (messageClass :Class) :void
