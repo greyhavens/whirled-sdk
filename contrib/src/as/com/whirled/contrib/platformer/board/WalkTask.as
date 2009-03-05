@@ -165,8 +165,8 @@ public class WalkTask extends ColliderTask
         if (a.attached.isIntersecting(_sab.getBottomLine()) ||
                 (a.attached.iy == 0 && a.attached.y1 >= _sab.getBottomLine().y1)) {
             a.dy += 1;
-            trace(a.sprite + "(" + a.id + ") is intersecting attached " + a.attached +
-                    ", " + _sab.getBottomLine());
+            //trace(a.sprite + "(" + a.id + ") is intersecting attached " + a.attached +
+            //        ", " + _sab.getBottomLine());
         }
     }
 
