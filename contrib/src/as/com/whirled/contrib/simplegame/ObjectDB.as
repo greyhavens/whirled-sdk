@@ -29,9 +29,10 @@ import com.whirled.contrib.simplegame.tasks.*;
 
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
+import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
 
-public class ObjectDB
+public class ObjectDB extends EventDispatcher
     implements Updatable
 {
     /**
