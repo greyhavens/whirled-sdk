@@ -46,6 +46,7 @@ public class Spawner extends RectDynamic
     public var spawns :Array;
     public var disabled :Boolean;
     public var spawnSoundEffect :SoundEffect;
+    public var deathSoundEffect :SoundEffect;
     public var hitCollision :Collision;
     public var missCollision :Collision;
 
@@ -66,6 +67,9 @@ public class Spawner extends RectDynamic
             }
             if (insxml.hasOwnProperty("@spawnSoundEffect")) {
                 spawnSoundEffect = PlatformerContext.getSoundEffect(insxml.@spawnSoundEffect);
+            }
+            if (insxml.hasOwnProperty("@deathSoundEffect")) {
+                deathSoundEffect = PlatformerContext.getSoundEffect(insxml.@deathSoundEffect);
             }
             width = insxml.hasOwnProperty("@width") ? insxml.@width : 1;
             height = insxml.hasOwnProperty("@height") ? insxml.@height : 1;
@@ -171,6 +175,9 @@ public class Spawner extends RectDynamic
         }
         if (spawnSoundEffect != null) {
             xml.@spawnSoundEffect = spawnSoundEffect;
+        }
+        if (deathSoundEffect != null) {
+            xml.@deathSoundEffect = deathSoundEffect;
         }
         xml.@destructable = destructable;
         xml.@health = health;
