@@ -258,7 +258,7 @@ public class LocalSubControl extends AbstractSubControl
      */
     public function paintableToLocationAtDepth (p :Point, depth :Number) :Array
     {
-        return callHostCode("roomToLocationAtDepth_v1", p, depth);
+        return callHostCode("stageToLocationAtDepth_v1", p, depth);
     }
 
     /**
@@ -284,7 +284,7 @@ public class LocalSubControl extends AbstractSubControl
      */
     public function paintableToLocationAtHeight (p :Point, height :Number) :Array
     {
-        return callHostCode("roomToLocationAtHeight_v1", p, height);
+        return callHostCode("stageToLocationAtHeight_v1", p, height);
     }
 
     /**
