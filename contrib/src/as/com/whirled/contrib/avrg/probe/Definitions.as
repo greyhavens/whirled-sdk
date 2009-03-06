@@ -282,6 +282,12 @@ public class Definitions
                 new Parameter("x", Number),
                 new Parameter("y", Number),
                 new Parameter("z", Number)]),
+            new FunctionSpec("paintableToLocationAtDepth", local.paintableToLocationAtDepth, [
+                new PointParameter("p"),
+                new Parameter("depth", Number)]),
+            new FunctionSpec("paintableToLocationAtHeight", local.paintableToLocationAtHeight, [
+                new PointParameter("p"),
+                new Parameter("height", Number)]),
             new FunctionSpec("setHitPointTester", local.setHitPointTester, [
                 new CallbackParameter("tester")]),
             new FunctionSpec("getHitPointTester", getHitPointTester),
