@@ -127,7 +127,7 @@ public class LocalSubControl extends AbstractSubControl
      * @return a Rectangle containing the bounds of the paintable area, or null if the area is not
      * defined
      *
-     * @see #event:SizeChanged
+     * @see #event:sizeChanged
      */
     public function getPaintableArea (full :Boolean = true) :Rectangle
     {
@@ -152,25 +152,79 @@ public class LocalSubControl extends AbstractSubControl
         return callHostCode("getPartyInfo_temp") as Object;
     }
 
-    // TODO: document
+    /**
+     * Converts a paintable area coordinate to a decor coordinate. A null value may be returned if
+     * the room is not currently well defined, for example if the player has left a room and the
+     * new room is not yet loaded.
+     *
+     * <p>"Paintable area" is a 2D pixel coordinate system that is relative to the parent display
+     * object of your game's interface and therefore useful for actually setting the x and y
+     * properties of your top-level user interface display object.</p>
+     *
+     * <p>"Decor" or "2D room" is a two dimensional system that measures the location in pixels
+     * relative to the top-left corner of the room decor graphics. This removes all effects of
+     * stretching and scrolling so is absolute for all clients.</p>
+     *
+     * @see http://wiki.whirled.com/Coordinate_systems
+     */
     public function paintableToRoom (p :Point) :Point
     {
         return callHostCode("stageToRoom_v1", p) as Point;
     }
 
-    // TODO: document
+    /**
+     * Converts a decor coordinate to a paintable area coordinate. A null value may be returned if
+     * the room is not currently well defined, for example if the player has left a room and the
+     * new room is not yet loaded.
+     *
+     * <p>"Decor" or "2D room" is a two dimensional system that measures the location in pixels
+     * relative to the top-left corner of the room decor graphics. This removes all effects of
+     * stretching and scrolling so is absolute for all clients.</p>
+     *
+     * <p>"Paintable area" is a 2D pixel coordinate system that is relative to the parent display
+     * object of your game's interface and therefore useful for actually setting the x and y
+     * properties of your top-level user interface display object.</p>
+     *
+     * @see http://wiki.whirled.com/Coordinate_systems
+     */
     public function roomToPaintable (p :Point) :Point
     {
         return callHostCode("roomToStage_v1", p) as Point;
     }
 
-    // TODO: document
+    /**
+     * Converts a 3D room location coordinate to a 2D decor coordinate. A null value may be returned
+     * if the room is not currently well defined, for example if the player has left a room and the
+     * new room is not yet loaded.
+     *
+     * <p>"3D room" is a an absolute coordinate system used by the Whirled server and server agents
+     * to specify an unambiguous position within the room's space.</p>
+     *
+     * <p>"Decor" or "2D room" is a two dimensional system that measures the location in pixels
+     * relative to the top-left corner of the room decor graphics. This removes all effects of
+     * stretching and scrolling so is absolute for all clients.</p>
+     *
+     * @see http://wiki.whirled.com/Coordinate_systems
+     */
     public function locationToRoom (x :Number, y :Number, z :Number) :Point
     {
         return callHostCode("locationToRoom_v1", x, y, z) as Point;
     }
 
-    // TODO: document
+    /**
+     * Converts a 3D room location coordinate to a 2D paintable area coordinate. A null value may be
+     * returned if the room is not currently well defined, for example if the player has left a
+     * room and the new room is not yet loaded.
+     *
+     * <p>"3D room" is a an absolute coordinate system used by the Whirled server and server agents
+     * to specify an unambiguous position within the room's space.</p>
+     *
+     * <p>"Decor" or "2D room" is a two dimensional system that measures the location in pixels
+     * relative to the top-left corner of the room decor graphics. This removes all effects of
+     * stretching and scrolling so is absolute for all clients.</p>
+     *
+     * @see http://wiki.whirled.com/Coordinate_systems
+     */
     public function locationToPaintable (x :Number, y :Number, z :Number) :Point
     {
         var roomCoord :Point = locationToRoom(x, y, z);
@@ -182,27 +236,43 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
-     * Finds the projection of mouse coordinates onto a plane in the room, parallel with the
-     * front wall, intersecting the room at specified depth. This type of functionality is useful
-     * for converting mouse position into room position at some constant depth. The result is
-     * not constrained to be inside the room unit box.
+     * Converts a paintable area coordinate to a 3D room coordinate by projecting onto a plane
+     * parallel to the front wall, intersecting the room at a specified depth. This type of
+     * functionality is useful for converting mouse position into 3D room location at some constant
+     * depth. The result is not constrained to be inside the room unit box.
      *
-     *   @param p            location in room coordinate space
+     * <p>"Paintable area" is a 2D pixel coordinate system that is relative to the parent display
+     * object of your game's interface and therefore useful for actually setting the x and y
+     * properties of your top-level user interface display object.</p>
+     *
+     * <p>"3D room" is a an absolute coordinate system used by the Whirled server and server agents
+     * to specify an unambiguous position within the room's space.</p>
+     *
+     *   @param p            location in paintable area coordinate space
      *   @param depth        Z position of the intersection wall, in room coordinate space.
      *
      *   @return an array containing [ x, y, z ] (with z value equal to depth), or null
      *   if no valid location was found.
+     *
+     * @see http://wiki.whirled.com/Coordinate_systems
      */
-    public function roomToLocationAtDepth (p :Point, depth :Number) :Array
+    public function paintableToLocationAtDepth (p :Point, depth :Number) :Array
     {
         return callHostCode("roomToLocationAtDepth_v1", p, depth);
     }
 
-     /**
-     * Finds the projection of mouse coordinates onto a plane in the room, parallel with the
-     * floor, intersecting the room at specified height. This type of functionality is useful
-     * for converting mouse position into room position at some constant height. The result is
-     * not constrained to be inside the room unit box.
+    /**
+     * Converts a paintable area coordinate to a 3D room coordinate by projecting onto a plane
+     * parallel to the floor, intersecting the room at a specified height. This type of
+     * functionality is useful for converting mouse position into 3D room location at some constant
+     * height. The result is not constrained to be inside the room unit box.
+     *
+     * <p>"Paintable area" is a 2D pixel coordinate system that is relative to the parent display
+     * object of your game's interface and therefore useful for actually setting the x and y
+     * properties of your top-level user interface display object.</p>
+     *
+     * <p>"3D room" is a an absolute coordinate system used by the Whirled server and server agents
+     * to specify an unambiguous position within the room's space.</p>
      *
      *   @param p            location in room coordinate space
      *   @param height       Y position of the intersection wall, in room coordinate space.
@@ -210,8 +280,9 @@ public class LocalSubControl extends AbstractSubControl
      * @return an array containing [ x, y, z ] (with y value equal to height) or null if
      * no valid location was found.
      *
+     * @see http://wiki.whirled.com/Coordinate_systems
      */
-    public function roomToLocationAtHeight (p :Point, height :Number) :Array
+    public function paintableToLocationAtHeight (p :Point, height :Number) :Array
     {
         return callHostCode("roomToLocationAtHeight_v1", p, height);
     }
