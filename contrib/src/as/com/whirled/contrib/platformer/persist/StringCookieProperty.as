@@ -22,26 +22,24 @@ package com.whirled.contrib.platformer.persist {
 
 import flash.utils.ByteArray;
 
-public class IntCookieProperty extends CookieProperty
+public class StringCookieProperty extends CookieProperty
 {
-    public function IntCookieProperty (manager :CookieManager, name :String = null,
+    public function StringCookieProperty (manager :CookieManager, name :String = null,
         defaultValue :Object = null)
     {
         super(manager, name);
 
-        // This should not simply call value = defaultValue because the value setter tells the
-        // CookieManager that this property was updated, and a new version was pushed out, but
-        // we don't want to push default values out in the cookie.
-        if (defaultValue != null && !(defaultValue is int)) {
-            throw new Error("IntCookieProperty can only accept int values [" + value + "]");
+        if (defaultValue != null && !(defaultValue is String)) {
+            throw new Error("StringCookieProperty can only accept String values [" +
+                defaultValue + "]");
         }
         _value = defaultValue;
     }
 
     override public function set value (value :Object) :void
     {
-        if (!(value is int)) {
-            throw new Error("IntCookieProperty can only accept int values [" + value + "]");
+        if (!(value is String)) {
+            throw new Error("StringCookieProperty can only accept String values [" + value + "]");
         }
 
         super.value = value;
@@ -49,35 +47,24 @@ public class IntCookieProperty extends CookieProperty
 
     override public function get typeId () :int
     {
-        return CookiePropertyType.INT.id;
+        return CookiePropertyType.STRING.id;
     }
 
-    /**
-     * Typed accessor for easy arithmetic operations.
-     */
-    public function get intValue () :int
+    public function get stringValue () :String
     {
-        return value as int;
-    }
-
-    /**
-     * Typed accessor for easy arithmetic operations.
-     */
-    public function set intValue (intValue :int) :void
-    {
-        value = intValue;
+        return value as String;
     }
 
     override public function serialize (bytes :ByteArray) :void
     {
         bytes.writeUTF(_name);
-        bytes.writeInt(_value as int);
+        bytes.writeUTF(stringValue);
     }
 
     override public function deserialize (bytes :ByteArray) :void
     {
         _name = bytes.readUTF();
-        _value = bytes.readInt();
+        _value = bytes.readUTF();
     }
 }
 }

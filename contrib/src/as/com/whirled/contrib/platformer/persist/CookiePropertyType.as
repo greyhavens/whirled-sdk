@@ -24,8 +24,10 @@ import com.threerings.util.Enum;
 
 public final class CookiePropertyType extends Enum
 {
-    public static const INT :CookiePropertyType = 
+    public static const INT :CookiePropertyType =
         new CookiePropertyType("INT", 1, IntCookieProperty);
+    public static const STRING :CookiePropertyType =
+        new CookiePropertyType("STRING", 2, StringCookieProperty);
     finishedEnumerating(CookiePropertyType);
 
     public static function valueOf (name :String) :CookiePropertyType

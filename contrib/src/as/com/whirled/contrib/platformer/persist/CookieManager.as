@@ -35,7 +35,7 @@ import com.whirled.game.PlayerSubControl;
 
 public class CookieManager extends EventDispatcher
 {
-    public function CookieManager (gameCtrl :GameControl, properties :HashMap, 
+    public function CookieManager (gameCtrl :GameControl, properties :HashMap,
         playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/, debugLogging :Boolean = false)
     {
         _gameCtrl = gameCtrl;
@@ -65,12 +65,18 @@ public class CookieManager extends EventDispatcher
 
         var defaultValue :Object = _propertyDefaults.get(name);
         if (defaultValue is int) {
-            return new IntCookieProperty(this, name, defaultValue as int);
+            _properties.put(name,
+                property = new IntCookieProperty(this, name, defaultValue as int));
+
+        } else if (defaultValue is String) {
+            _properties.put(name,
+                property = new StringCookieProperty(this, name, defaultValue as String));
 
         } else {
-            throw new Error("CookieManager does not know how to handle this type of value [" + 
+            throw new Error("CookieManager does not know how to handle this type of value [" +
                 defaultValue + "]");
         }
+        return property;
     }
 
     public function cookiePropertyUpdated (property :CookieProperty) :void
@@ -78,12 +84,6 @@ public class CookieManager extends EventDispatcher
         if (_timer != null) {
             // we're already waiting to do a write
             return;
-        }
-
-        if (!_properties.containsKey(property.name)) {
-            // if a default value property was magicked up at runtime, it won't have been added
-            // to the saved properties yet.
-            _properties.put(property.name, property);
         }
 
         var timeRemaining :int = (_lastWrite + WRITE_DELAY) - getTimer();
@@ -116,7 +116,7 @@ public class CookieManager extends EventDispatcher
                 version + ", " + VERSION + "]");
         }
         // there are currently no legacy versions to migrate
-        
+
         while (bytes.bytesAvailable > 0) {
             var typeId :int = bytes.readInt();
             var typeClass :Class = CookiePropertyType.getClass(typeId);
@@ -168,11 +168,11 @@ public class CookieManager extends EventDispatcher
     protected var _debug :Boolean;
     protected var _playerId :int;
 
-    /** Version bumps are not required when adding new data types.  Only if another form of 
+    /** Version bumps are not required when adding new data types.  Only if another form of
      * storing data in the cookie is fashioned should a version bump be necessary. */
     protected static const VERSION :int = 1;
-    
-    /** Write out the cookie at most every 2 seconds, in order to prevent this manager from 
+
+    /** Write out the cookie at most every 2 seconds, in order to prevent this manager from
      * sucking up network resources */
     protected static const WRITE_DELAY :int = 2000; // in ms.
 
