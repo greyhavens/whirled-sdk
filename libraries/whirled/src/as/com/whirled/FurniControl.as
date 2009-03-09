@@ -65,41 +65,13 @@ public class FurniControl extends EntityControl
     }
 
     /**
-     * Register a function used for generating a custom config panel. This will
-     * be called when this piece of furniture is being edited inside whirled.
-     *
-     * @param func signature: function () :DisplayObject
-     * <p>Your function should return a DisplayObject as a configuration panel.
-     * The width/height of the object at return time will be used to configure the amount
-     * of space given it. Any changes made by the user should effect immediately, or
-     * you should provide buttons to apply the change, if absolutely necessary.</p>
-     *
-     */
-    public function registerCustomConfig (func :Function) :void
-    {
-        _customConfig = func;
-    }
-
-    /**
      * @private
      */
     override protected function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
 
-        o["getConfigPanel_v1"] = getConfigPanel_v1;
         o["mouseHover_v1"] = mouseHover_v1;
-    }
-
-    /**
-     * Called when whirled is editing this furniture, to retrieve any custom configuration
-     * panel.
-     * @private
-     */
-    protected function getConfigPanel_v1 () :DisplayObject
-    {
-        // TODO: make this dispatch an event that receives the config in a method
-        return (_customConfig != null) ? (_customConfig() as DisplayObject) : null;
     }
 
     /**
@@ -121,8 +93,5 @@ public class FurniControl extends EntityControl
         // getting our HOVERs from whirled.
         mouseHover_v1(event.type == MouseEvent.ROLL_OVER);
     }
-
-    /** A function registered to return a custom configuration panel. @private */
-    protected var _customConfig :Function;
 }
 }

@@ -487,6 +487,22 @@ public class EntityControl extends AbstractControl
     }
 
     /**
+     * Register a function used for generating a custom config panel. This will
+     * be called when this piece of furniture is being edited inside whirled.
+     *
+     * @param func signature: function () :DisplayObject
+     * <p>Your function should return a DisplayObject as a configuration panel.
+     * The width/height of the object at return time will be used to configure the amount
+     * of space given it. Any changes made by the user should effect immediately, or
+     * you should provide buttons to apply the change, if absolutely necessary.</p>
+     *
+     */
+    public function registerCustomConfig (func :Function) :void
+    {
+        _customConfig = func;
+    }
+
+    /**
      * Access the local user's camera.
      *
      * <p>Calling Camera.getCamera() does not work inside whirled due to security restrictions.
@@ -523,6 +539,7 @@ public class EntityControl extends AbstractControl
         o["messageReceived_v1"] = messageReceived_v1;
         o["signalReceived_v1"] = signalReceived_v1;
         o["receivedChat_v2"] = receivedChat_v2;
+        o["getConfigPanel_v1"] = getConfigPanel_v1;
 
         o["entityEntered_v1"] = entityEntered_v1;
         o["entityLeft_v1"] = entityLeft_v1;
@@ -651,6 +668,17 @@ public class EntityControl extends AbstractControl
     }
 
     /**
+     * Called when whirled is editing this furniture, to retrieve any custom configuration
+     * panel.
+     * @private
+     */
+    protected function getConfigPanel_v1 () :DisplayObject
+    {
+        // TODO: make this dispatch an event that receives the config in a method
+        return (_customConfig != null) ? (_customConfig() as DisplayObject) : null;
+    }
+
+    /**
      * Called when this entity is overhearing a line of chatter in the room.
      * If this instance of the pet has control, it will dispatch a new receivedChat event,
      * otherwise the line will be ignored.
@@ -721,6 +749,9 @@ public class EntityControl extends AbstractControl
 
     /** Whether this instance has control. @private */
     protected var _hasControl :Boolean = false;
+
+    /** A function registered to return a custom configuration panel. @private */
+    protected var _customConfig :Function;
 
     /** The default datapack, if any. @private */
     protected var _datapack :ByteArray;
