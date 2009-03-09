@@ -124,6 +124,9 @@ public class PersistenceManager extends EventDispatcher
             }
             _cookieManagers.put(playerId, cookieManager);
         }
+        if (_loaded) {
+            dispatchEvent(new Event(Event.COMPLETE));
+        }
     }
 
     protected function getPrototypes () :Array
