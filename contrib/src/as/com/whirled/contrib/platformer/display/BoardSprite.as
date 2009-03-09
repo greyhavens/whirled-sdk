@@ -96,18 +96,27 @@ public class BoardSprite extends Sprite
 
         _layers[LEVEL_LAYER] =
                 new BitmapSectionalLayer(2, 2, true);
+        _layers[LEVEL_LAYER].name = "Level Layer";
                 //new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
         //_layers[LEVEL_LAYER] = new PieceSpriteLayer();
         addChild(_layers[LEVEL_LAYER]);
         addChild(_layers[BACK_DYNAMIC_LAYER] = new DynamicSpriteLayer());
+        _layers[BACK_DYNAMIC_LAYER].name = "Back Dynamic Layer";
         addChild(_layers[BACK_PARTICLE_LAYER] = new ParticleLayer());
+        _layers[BACK_PARTICLE_LAYER].name = "Back Particle Layer";
         _layers[ACTOR_LAYER] = new ActorSpriteLayer();
+        _layers[ACTOR_LAYER].name = "Actor Layer";
         addChild(_layers[ACTOR_LAYER]);
         addChild(_layers[SHOT_LAYER] = new DynamicSpriteLayer());
+        _layers[SHOT_LAYER].name = "Shot Layer";
         addChild(_layers[FRONT_PARTICLE_LAYER] = new ParticleLayer());
+        _layers[FRONT_PARTICLE_LAYER].name = "Front Particle Layer";
         _layers[FRONT_LEVEL_LAYER] =
                 new BitmapSectionalLayer(3, 3);
                 //new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
+        _layers[FRONT_LEVEL_LAYER].name = "Front Level Layer";
+        _layers[FRONT_LEVEL_LAYER].mouseEnabled = false;
+        _layers[FRONT_LEVEL_LAYER].mouseChildren = false;
         addChild(_layers[FRONT_LEVEL_LAYER]);
         PieceSpriteFactory.markOldBitmaps();
         addPieces(_board.getPieces());
