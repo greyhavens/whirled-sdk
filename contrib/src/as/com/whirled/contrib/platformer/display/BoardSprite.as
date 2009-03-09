@@ -139,6 +139,17 @@ public class BoardSprite extends Sprite
         }
     }
 
+    public function setDynamics (enabled :Boolean) :void
+    {
+        for each (var layer :int in DYNAMIC_LAYERS) {
+            if (enabled) {
+                addChildAt(_layers[layer], layer);
+            } else {
+                removeChild(_layers[layer]);
+            }
+        }
+    }
+
     public function moveDelta (dX :Number, dY :Number) :void
     {
         _centerX += dX;
@@ -458,6 +469,10 @@ public class BoardSprite extends Sprite
     protected static const FRONT_PARTICLE_LAYER :int = 6;
     protected static const FRONT_LEVEL_LAYER :int = 7;
     protected static const NUM_LAYERS :int = 8;
+
+    protected static const DYNAMIC_LAYERS :Array = [
+            BACK_DYNAMIC_LAYER, BACK_PARTICLE_LAYER, ACTOR_LAYER, SHOT_LAYER, FRONT_PARTICLE_LAYER
+        ];
 
     protected static const BUFFER :int = Metrics.TILE_SIZE*3;
     protected static const LBUFFER :int = Metrics.TILE_SIZE;

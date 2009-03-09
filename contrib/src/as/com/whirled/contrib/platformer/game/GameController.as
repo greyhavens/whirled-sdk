@@ -127,7 +127,9 @@ public class GameController
 
     public function setPause (pause :Boolean) :void
     {
-        _pause = pause;
+        if (PlatformerContext.local) {
+            _pause = pause;
+        }
     }
 
     public function isPaused () :Boolean
@@ -137,6 +139,9 @@ public class GameController
 
     public function tick (delta :int) :void
     {
+        if (isPaused()) {
+            return;
+        }
         _rdelta += delta;
         var usedDelta :int;
         while (_rdelta >= MAX_TICK) {

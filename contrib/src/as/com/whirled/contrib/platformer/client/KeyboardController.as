@@ -49,6 +49,18 @@ public class KeyboardController
         _ed = null;
     }
 
+    public function clearKeys () :void
+    {
+        for (var keyCode :int; keyCode < _downKeys.length; keyCode++) {
+            if (_downKeys[keyCode] == true) {
+                keyUp(keyCode);
+            }
+        }
+        _downKeys[KeyboardCodes.SHIFT] = false;
+        _downKeys[KeyboardCodes.ALTERNATE] = false;
+        _downKeys[KeyboardCodes.CONTROL] = false;
+    }
+
     public function addKeyListener (keyCode :int, listener :Function) :void
     {
         if (_keyListener[keyCode] == null) {
@@ -201,26 +213,31 @@ public class KeyboardController
 
     protected function keyReleased (event :KeyboardEvent) :void
     {
-        if (event.keyCode == KeyboardCodes.UP || event.keyCode == KeyboardCodes.W) {
+        keyUp(event.keyCode);
+        updateACS(event);
+    }
+
+    protected function keyUp (keyCode :int) :void
+    {
+        if (keyCode == KeyboardCodes.UP || keyCode == KeyboardCodes.W) {
             if (_dy == 1) {
                 _dy = 0;
             }
-        } else if (event.keyCode == KeyboardCodes.DOWN || event.keyCode == KeyboardCodes.S) {
+        } else if (keyCode == KeyboardCodes.DOWN || keyCode == KeyboardCodes.S) {
             if (_dy == -1) {
                 _dy = 0;
             }
-        } else if (event.keyCode == KeyboardCodes.LEFT || event.keyCode == KeyboardCodes.A) {
+        } else if (keyCode == KeyboardCodes.LEFT || keyCode == KeyboardCodes.A) {
             if (_dx == -1) {
                 _dx = 0;
             }
-        } else if (event.keyCode == KeyboardCodes.RIGHT || event.keyCode == KeyboardCodes.D) {
+        } else if (keyCode == KeyboardCodes.RIGHT || keyCode == KeyboardCodes.D) {
             if (_dx == 1) {
                 _dx = 0;
             }
         }
-        _lastUp[event.keyCode] = getTimer();
-        _downKeys[event.keyCode] = false;
-        updateACS(event);
+        _lastUp[keyCode] = getTimer();
+        _downKeys[keyCode] = false;
         //trace("keyReleased: " + event.keyCode);
     }
 
