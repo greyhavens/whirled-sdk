@@ -144,10 +144,11 @@ public class GameController
         }
         _rdelta += delta;
         var usedDelta :int;
-        while (_rdelta >= MAX_TICK) {
+        do {
+        //while (_rdelta >= MAX_TICK) {
             var paused :Boolean = isPaused();
-            //var tdelta :int = Math.min(MAX_TICK, _rdelta);
-            var tdelta :int = MAX_TICK;
+            var tdelta :int = Math.min(MAX_TICK, _rdelta);
+            //var tdelta :int = MAX_TICK;
             var sdelta :Number = tdelta / 1000;
             for each (var controller :Object in _controllers) {
                 if (controller is TickController &&
@@ -169,7 +170,7 @@ public class GameController
                 break;
             }
             */
-        }
+        } while (_rdelta >= MAX_TICK);
         if (usedDelta > 0) {
             now = getTimer();
             updateDisplay(usedDelta/1000);

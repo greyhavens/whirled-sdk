@@ -63,12 +63,12 @@ public class GateSprite extends DynamicSprite
         return state == DEATH || state == DEAD;
     }
 
-    protected var _gate :Gate;
-
     override protected function getStateFrame (state :int) :Object
     {
         return GS_STATES[state];
     }
+
+    protected var _gate :Gate;
 
     protected static const IDLE :int = 0; // idle
     protected static const DEATH :int = 1; // death

@@ -134,7 +134,9 @@ public class BoardSprite extends Sprite
         for each (var layer :Layer in _layers) {
             if (layer != null) {
                 layer.shutdown();
-                removeChild(layer);
+                if (layer.parent == this) {
+                    removeChild(layer);
+                }
             }
         }
     }
@@ -214,7 +216,7 @@ public class BoardSprite extends Sprite
     {
         var lxbuffer :int = BUFFER * (1 + (actor.dx < 0 ? -actor.dx : 0) / 5);
         var rxbuffer :int = BUFFER * (1 + (actor.dx > 0 ? actor.dx : 0) / 5);
-        //var xbuffer :int = Math.min(Metrics.DISPLAY_WIDTH/2, BUFFER * (1 + Math.abs(actor.dx) / 5));
+
         if (xshift != 0) {
             if (((actor.orient & Actor.ORIENT_RIGHT) > 0) == (xshift > 0)) {
                 xshift += actor.dx / 2;
@@ -228,15 +230,7 @@ public class BoardSprite extends Sprite
             _centerX = (actor.x + actor.width) * Metrics.TILE_SIZE +
                     BUFFER - Metrics.DISPLAY_WIDTH;
         }
-        /*
-        if (actor.x * Metrics.TILE_SIZE < _centerX + lxbuffer) {
-            _centerX = actor.x * Metrics.TILE_SIZE - lxbuffer;
-        } else if ((actor.x + actor.width) * Metrics.TILE_SIZE >
-                    _centerX + Metrics.DISPLAY_WIDTH - rxbuffer) {
-            _centerX = (actor.x + actor.width) * Metrics.TILE_SIZE +
-                    rxbuffer - Metrics.DISPLAY_WIDTH;
-        }
-        */
+
         var x :int = Math.floor(_centerX / Metrics.TILE_SIZE);
         var minX :int = _board.getBound(Board.LEFT_BOUND) > 0 ?
                 Math.max(_minX, _board.getBound(Board.LEFT_BOUND)) : _minX;
@@ -253,20 +247,14 @@ public class BoardSprite extends Sprite
 
         if (yshift != 0) {
             _centerY += Metrics.TILE_SIZE * _lastDelta * yshift * 3;
-            _lastY = 0;
-        } else if (_lastY > Y_ADJUST && actor.y * Metrics.TILE_SIZE > _centerY + LBUFFER) {
-            _centerY += Metrics.TILE_SIZE * _lastDelta;
-
         }
 
         if (actor.y * Metrics.TILE_SIZE < _centerY + LBUFFER) {
             _centerY = actor.y * Metrics.TILE_SIZE - LBUFFER;
-            _lastY = 0;
         } else if ((actor.y + actor.height) * Metrics.TILE_SIZE >
                     _centerY + Metrics.DISPLAY_HEIGHT - BUFFER) {
             _centerY = (actor.y + actor.height) * Metrics.TILE_SIZE +
                         BUFFER - Metrics.DISPLAY_HEIGHT;
-            _lastY = 0;
         }
 
         var offY :Number = Math.floor(_centerY / Metrics.TILE_SIZE);
@@ -277,24 +265,21 @@ public class BoardSprite extends Sprite
             lowBound2 = Math.max(lowBound2, _board.getBound(Board.BOTTOM_BOUND));
         }
 
-        if (offY < lowBound1 || offY < lowBound2) {
-            var newY :Number;
-            if (lowBound1 == lowBound2) {
-                newY = lowBound1 * Metrics.TILE_SIZE;
-            } else if (lowBound1 < lowBound2) {
-                newY = (lowBound1 + (lowBound2 - lowBound1) * offX) * Metrics.TILE_SIZE;
-            } else {
-                newY = (lowBound2 + (lowBound1 - lowBound2) * (1 - offX)) * Metrics.TILE_SIZE;
-            }
-            if (newY > _centerY) {
-                _centerY = newY;
-            }
-            _lastY = 0;
-        } else if (_board.getBound(Board.TOP_BOUND) > 0 &&
+        var lowY :Number;
+        if (lowBound1 == lowBound2) {
+            lowY = lowBound1 * Metrics.TILE_SIZE;
+        } else if (lowBound1 < lowBound2) {
+            lowY = (lowBound1 + (lowBound2 - lowBound1) * offX) * Metrics.TILE_SIZE;
+        } else {
+            lowY = (lowBound2 + (lowBound1 - lowBound2) * (1 - offX)) * Metrics.TILE_SIZE;
+        }
+        if (_board.getBound(Board.TOP_BOUND) > 0 &&
                 offY + Metrics.WINDOW_HEIGHT >= _board.getBound(Board.TOP_BOUND)) {
             _centerY = (_board.getBound(Board.TOP_BOUND) - Metrics.WINDOW_HEIGHT) *
                     Metrics.TILE_SIZE;
-            _lastY = 0;
+        }
+        if (lowY > _centerY) {
+            _centerY = lowY;
         }
 
         updateDisplay();
@@ -304,7 +289,6 @@ public class BoardSprite extends Sprite
     {
         updateActors(delta);
         _lastDelta = delta;
-        _lastY += delta;
         if (_cameraCtrl != null) {
             _cameraCtrl.tick(delta);
         }
@@ -452,7 +436,6 @@ public class BoardSprite extends Sprite
     protected var _lowBounds :Array = new Array();
     protected var _minX :int = int.MAX_VALUE;
     protected var _maxX :int = 0;
-    protected var _lastY :Number = 0;
     protected var _lastDelta :Number = 0;
     protected var _minY :int = int.MAX_VALUE;
 
@@ -474,8 +457,8 @@ public class BoardSprite extends Sprite
             BACK_DYNAMIC_LAYER, BACK_PARTICLE_LAYER, ACTOR_LAYER, SHOT_LAYER, FRONT_PARTICLE_LAYER
         ];
 
-    protected static const BUFFER :int = Metrics.TILE_SIZE*3;
-    protected static const LBUFFER :int = Metrics.TILE_SIZE;
+    protected static const BUFFER :int = Metrics.TILE_SIZE*4;
+    protected static const LBUFFER :int = Metrics.TILE_SIZE*1.5;
     protected static const Y_ADJUST :Number = 2;
 }
 }
