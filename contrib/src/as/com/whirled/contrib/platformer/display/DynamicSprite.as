@@ -48,18 +48,22 @@ public class DynamicSprite extends Sprite
         _disp = disp;
         addEventListener(Event.ADDED, handleAdded);
         addEventListener(Event.REMOVED, handleRemoved);
-        this.x = _dynamic.x * Metrics.TILE_SIZE;
-        this.y = -_dynamic.y * Metrics.TILE_SIZE;
+        this.x = _dynamic.x * Metrics.SOURCE_TILE_SIZE;
+        this.y = -_dynamic.y * Metrics.SOURCE_TILE_SIZE;
+        /*
+        this.scaleX = Metrics.SCALE;
+        this.scaleY = Metrics.SCALE;
+        */
     }
 
     public function get displayWidth () :Number
     {
-        return (_dynamic.getBounds().width + 1) * Metrics.TILE_SIZE;
+        return (_dynamic.getBounds().width + 1) * Metrics.SOURCE_TILE_SIZE;
     }
 
     public function get displayHeight () :Number
     {
-        return (_dynamic.getBounds().height + 1) * Metrics.TILE_SIZE;
+        return (_dynamic.getBounds().height + 1) * Metrics.SOURCE_TILE_SIZE;
     }
 
     public function shutdown () :void
@@ -81,8 +85,8 @@ public class DynamicSprite extends Sprite
 
     public function update (delta :Number) :void
     {
-        this.x = _dynamic.x * Metrics.TILE_SIZE;
-        this.y = -_dynamic.y * Metrics.TILE_SIZE;
+        this.x = _dynamic.x * Metrics.SOURCE_TILE_SIZE;
+        this.y = -_dynamic.y * Metrics.SOURCE_TILE_SIZE;
         if (_hitLeft > 0) {
             _hitLeft -= delta;
             if (_hitLeft <= 0) {

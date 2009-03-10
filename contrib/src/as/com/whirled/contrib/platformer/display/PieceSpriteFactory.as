@@ -178,10 +178,11 @@ public class PieceSpriteFactory
                     (p.sHeight) * Metrics.TILE_SIZE, true, 0x00000000);
             var mat :Matrix = new Matrix();
             if (p.orient == 0) {
+                mat.scale(Metrics.SCALE, Metrics.SCALE);
                 mat.translate(p.nudgeX ? Metrics.TILE_SIZE : 0,
                         (p.sHeight - (p.nudgeY ? 1 : 0)) * Metrics.TILE_SIZE);
             } else {
-                mat.scale(-1, 1);
+                mat.scale(-Metrics.SCALE, Metrics.SCALE);
                 mat.translate((p.width + (p.nudgeW ? 1 : 0)) * Metrics.TILE_SIZE,
                         (p.sHeight - (p.nudgeY ? 1 : 0)) * Metrics.TILE_SIZE);
             }

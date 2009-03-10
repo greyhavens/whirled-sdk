@@ -30,11 +30,20 @@ import com.whirled.contrib.platformer.util.Metrics;
 
 public class ParticleLayer extends Layer
 {
+    public function ParticleLayer ()
+    {
+        super();
+        scaleX = Metrics.SCALE;
+        scaleY = Metrics.SCALE;
+    }
+
     public function addParticleEffect (cw :CacheWrapper, pt :Point) :void
     {
         var newpt :Point = globalToLocal(pt);
-        if (newpt.x > -x - BUFFER && newpt.x < -x + Metrics.DISPLAY_WIDTH + BUFFER &&
-                newpt.y > -y - BUFFER && newpt.y < -y + Metrics.DISPLAY_HEIGHT + BUFFER) {
+        if (newpt.x > (-x - BUFFER)/Metrics.SCALE &&
+                newpt.x < (-x + Metrics.DISPLAY_WIDTH + BUFFER) / Metrics.SCALE &&
+                newpt.y > (-y - BUFFER) / Metrics.SCALE &&
+                newpt.y < (-y + Metrics.DISPLAY_HEIGHT + BUFFER) / Metrics.SCALE) {
             cw.disp.x = newpt.x;
             cw.disp.y = newpt.y;
             cw.resetOnComplete();

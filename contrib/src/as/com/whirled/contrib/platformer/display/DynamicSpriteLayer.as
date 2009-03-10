@@ -25,6 +25,13 @@ import com.whirled.contrib.platformer.util.Metrics;
 
 public class DynamicSpriteLayer extends Layer
 {
+    public function DynamicSpriteLayer ()
+    {
+        super();
+        scaleX = Metrics.SCALE;
+        scaleY = Metrics.SCALE;
+    }
+
     public function addDynamicSprite (ds :DynamicSprite) :void
     {
         _dynamics.push(ds);
@@ -72,8 +79,10 @@ public class DynamicSpriteLayer extends Layer
     {
         var w :Number = ds.displayWidth;
         var h :Number = ds.displayHeight;
-        if (!ds.showAlways() && (ds.x + w < -x || ds.x - w > -x + Metrics.DISPLAY_WIDTH ||
-                ds.y + h < -y || ds.y - h > -y + Metrics.DISPLAY_HEIGHT)) {
+        if (!ds.showAlways() && (ds.x + w < -x / Metrics.SCALE ||
+                ds.x - w > (-x + Metrics.DISPLAY_WIDTH) / Metrics.SCALE ||
+                ds.y + h < -y / Metrics.SCALE ||
+                ds.y - h > (-y + Metrics.DISPLAY_HEIGHT) / Metrics.SCALE)) {
             removeDS(ds);
         } else {
             addDS(ds);

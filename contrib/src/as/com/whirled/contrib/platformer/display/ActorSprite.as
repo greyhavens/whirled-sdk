@@ -41,14 +41,14 @@ public class ActorSprite extends DynamicSprite
         super(actor, disp);
         _actor = actor;
         if (_disp != null) {
-            _disp.x = _actor.width / 2 * Metrics.TILE_SIZE;
+            _disp.x = _actor.width / 2 * Metrics.SOURCE_TILE_SIZE;
             addChild(_disp);
             _disp.addEventListener(Event.COMPLETE, actionComplete);
             if (BoardSprite.SHOW_DETAILS) {
                 var outline :Shape = new Shape();
                 outline.graphics.lineStyle(0, 0xFF0000);
-                outline.graphics.drawRect(
-                        0, 0, _actor.width*Metrics.TILE_SIZE, -_actor.height*Metrics.TILE_SIZE);
+                outline.graphics.drawRect(0, 0, _actor.width*Metrics.SOURCE_TILE_SIZE,
+                        -_actor.height*Metrics.SOURCE_TILE_SIZE);
                 addChild(outline);
             }
             if ((_actor.orient & Actor.ORIENT_RIGHT) == 0) {

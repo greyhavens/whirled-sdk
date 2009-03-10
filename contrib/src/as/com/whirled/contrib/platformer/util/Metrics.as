@@ -25,7 +25,7 @@ package com.whirled.contrib.platformer.util {
  */
 public class Metrics
 {
-    public static function init (width :int, height :int, tile :int) :void
+    public static function init (width :int, height :int, tile :int, stile :int = 0) :void
     {
         if (_set) {
             throw new Error("Metrics have already been initialized");
@@ -35,6 +35,11 @@ public class Metrics
         _tile = tile;
         _winWidth = Math.ceil(_width / tile);
         _winHeight = Math.ceil(_height / tile);
+        if (stile == 0) {
+            stile = tile;
+        }
+        _stile = stile;
+        _scale = tile / stile;
         _set = true;
     }
 
@@ -58,6 +63,11 @@ public class Metrics
         return isSet(_tile);
     }
 
+    public static function get SOURCE_TILE_SIZE () :int
+    {
+        return isSet(_stile);
+    }
+
     public static function get WINDOW_WIDTH () :int
     {
         return isSet(_winWidth);
@@ -68,7 +78,12 @@ public class Metrics
         return isSet(_winHeight);
     }
 
-    protected static function isSet (value :int) :int
+    public static function get SCALE () :Number
+    {
+        return isSet(_scale);
+    }
+
+    protected static function isSet (value :*) :*
     {
         if (!_set) {
             throw new Error("Cannot access Metrics before initialization");
@@ -79,8 +94,10 @@ public class Metrics
     protected static var _width :int;
     protected static var _height :int;
     protected static var _tile :int;
+    protected static var _stile :int;
     protected static var _winWidth :int;
     protected static var _winHeight :int;
+    protected static var _scale :Number;
     protected static var _set :Boolean = false;
 }
 }

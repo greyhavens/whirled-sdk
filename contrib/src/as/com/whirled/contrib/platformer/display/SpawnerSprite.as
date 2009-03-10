@@ -51,7 +51,7 @@ public class SpawnerSprite extends DynamicSprite
         } else if (!_spawner.shouldSpawn()) {
             changeState(DEATH);
             var node :Sprite = new Sprite;
-            node.x = _spawner.width/2 * Metrics.TILE_SIZE;
+            node.x = _spawner.width/2 * Metrics.SOURCE_TILE_SIZE;
             (_disp as DisplayObjectContainer).addChild(node);
             generateEffect(_spawner.deathEffect, node);
             playSoundEffect(_spawner.deathSoundEffect);

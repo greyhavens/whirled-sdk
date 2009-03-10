@@ -33,7 +33,7 @@ public class HoverSprite extends DynamicSprite
         super(h, disp);
         _hover = h;
         if (_disp != null) {
-            _disp.x = h.width/2 * Metrics.TILE_SIZE;
+            _disp.x = h.width/2 * Metrics.SOURCE_TILE_SIZE;
             addChild(_disp);
         }
         update(0);

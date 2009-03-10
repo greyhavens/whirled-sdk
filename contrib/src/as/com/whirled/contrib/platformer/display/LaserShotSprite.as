@@ -47,7 +47,7 @@ public class LaserShotSprite extends ShotSprite
                 addChild(node);
                 node.rotation = - this.rotation;
                 for each (var dist :Number in _ls.hits) {
-                    node.y = -dist * _ls.length * 24 * Metrics.TILE_SIZE;
+                    node.y = -dist * _ls.length * 24 * Metrics.SOURCE_TILE_SIZE;
                     generateEffect(_ls.hitEffect, node);
                     trace("generating " + _ls.hitEffect + " at " + dist);
                 }
