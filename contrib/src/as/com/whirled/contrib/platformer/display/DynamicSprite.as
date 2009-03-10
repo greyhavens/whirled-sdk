@@ -275,8 +275,8 @@ public class DynamicSprite extends Sprite
                 Metrics.DISPLAY_WIDTH / 2;
             var screenCenterY :Number = ClientPlatformerContext.boardSprite.centerY +
                 Metrics.DISPLAY_HEIGHT / 2;
-            var xNormal :Number = (x - screenCenterX) / SOUND_NORMAL_DISTANCE;
-            var yNormal :Number = (-y - screenCenterY) / SOUND_NORMAL_DISTANCE;
+            var xNormal :Number = (x - (screenCenterX / Metrics.SCALE)) / SOUND_NORMAL_DISTANCE;
+            var yNormal :Number = (-y - (screenCenterY / Metrics.SCALE)) / SOUND_NORMAL_DISTANCE;
             if (Math.abs(xNormal) > 1 || Math.abs(yNormal) > 1) {
                 // not playing this effect
                 return;
