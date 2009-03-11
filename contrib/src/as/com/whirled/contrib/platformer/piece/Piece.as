@@ -79,12 +79,12 @@ public class Piece
 
     public function get sX () :int
     {
-        return x - (nudgeX ? 1 : 0);
+        return x - ((orient == 0 ? nudgeX : nudgeW) ? 1 : 0);
     }
 
     public function get sY () :int
     {
-        return y - (nudgeY ? 1 : 0);
+        return y - ((orient == 0 ? nudgeY : nudgeH) ? 1 : 0);
     }
 
     public function get sWidth () :int
