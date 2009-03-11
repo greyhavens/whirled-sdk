@@ -70,6 +70,10 @@ public class SoundController extends EventDispatcher
             return;
         }
 
+        if (name == _trackName) {
+            return;
+        }
+
         stopBackgroundMusic(crossfade);
 
         var trackSound :Sound = _tracks.get(_trackName = name) as Sound;
