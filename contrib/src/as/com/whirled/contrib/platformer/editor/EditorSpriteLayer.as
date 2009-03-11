@@ -31,6 +31,13 @@ import com.whirled.contrib.platformer.display.Layer;
 
 public class EditorSpriteLayer extends Layer
 {
+    public function EditorSpriteLayer ()
+    {
+        super();
+        scaleX = Metrics.SCALE;
+        scaleY = Metrics.SCALE;
+    }
+
     public function addEditorSprite (es :EditorSprite, tree :String) :void
     {
         var container :DisplayObjectContainer = getContainer(tree);
@@ -161,8 +168,8 @@ public class EditorSpriteLayer extends Layer
 
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
-        scaleX = 1 / scale;
-        scaleY = 1 / scale;
+        scaleX = Metrics.SCALE / scale;
+        scaleY = Metrics.SCALE / scale;
         x = Math.floor(-nX);
         y = Math.floor(Metrics.DISPLAY_HEIGHT - nY);
     }

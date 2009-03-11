@@ -54,13 +54,16 @@ public class BoundedPieceSprite extends PieceSprite
         for each (var end :Point in _bpiece.getBounds()) {
             if (start == null) {
                 start = end;
-                _bounds.graphics.moveTo(start.x * Metrics.TILE_SIZE, -start.y * Metrics.TILE_SIZE);
+                _bounds.graphics.moveTo(
+                        start.x * Metrics.SOURCE_TILE_SIZE, -start.y * Metrics.SOURCE_TILE_SIZE);
             } else {
-                _bounds.graphics.lineTo(end.x * Metrics.TILE_SIZE, -end.y * Metrics.TILE_SIZE);
+                _bounds.graphics.lineTo(
+                        end.x * Metrics.SOURCE_TILE_SIZE, -end.y * Metrics.SOURCE_TILE_SIZE);
             }
             _bounds.graphics.lineStyle(0, BoundData.getColor(_bpiece.getBound(idx++)));
         }
-        _bounds.graphics.lineTo(start.x * Metrics.TILE_SIZE, -start.y * Metrics.TILE_SIZE);
+        _bounds.graphics.lineTo(
+                start.x * Metrics.SOURCE_TILE_SIZE, -start.y * Metrics.SOURCE_TILE_SIZE);
         _details.addChild(_bounds);
     }
 

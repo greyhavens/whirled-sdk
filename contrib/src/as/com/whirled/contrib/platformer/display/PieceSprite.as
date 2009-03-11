@@ -54,8 +54,8 @@ public class PieceSprite extends Sprite
         if (_bitmap) {
             return;
         }
-        this.x = _piece.x * Metrics.TILE_SIZE;
-        this.y = -_piece.y * Metrics.TILE_SIZE;
+        this.x = _piece.x * Metrics.SOURCE_TILE_SIZE;
+        this.y = -_piece.y * Metrics.SOURCE_TILE_SIZE;
         updateDisp();
         if (_details != null && _details.parent != null) {
             createDetails();
@@ -103,7 +103,7 @@ public class PieceSprite extends Sprite
                 _disp.scaleX = 1.0;
             } else {
                 _disp.scaleX = -1.0;
-                _disp.x = _piece.width * Metrics.TILE_SIZE;
+                _disp.x = _piece.width * Metrics.SOURCE_TILE_SIZE;
             }
 
         }
@@ -115,14 +115,16 @@ public class PieceSprite extends Sprite
         if (_piece.nudgeX || _piece.nudgeY || _piece.nudgeH || _piece.nudgeW) {
             _details.graphics.lineStyle(0, 0xDD00DD);
             _details.graphics.drawRect(
-                    (_piece.nudgeX ? -1 : 0) * Metrics.TILE_SIZE,
-                    (_piece.nudgeY ? 1 : 0) * Metrics.TILE_SIZE,
-                    _piece.sWidth * Metrics.TILE_SIZE, -_piece.sHeight * Metrics.TILE_SIZE);
+                    (_piece.nudgeX ? -1 : 0) * Metrics.SOURCE_TILE_SIZE,
+                    (_piece.nudgeY ? 1 : 0) * Metrics.SOURCE_TILE_SIZE,
+                    _piece.sWidth * Metrics.SOURCE_TILE_SIZE,
+                    -_piece.sHeight * Metrics.SOURCE_TILE_SIZE);
         }
         if (_piece.width > 0 && _piece.height > 0) {
             _details.graphics.lineStyle(0, 0x0000DD);
             _details.graphics.drawRect(
-                    0, 0, _piece.width * Metrics.TILE_SIZE, -_piece.height * Metrics.TILE_SIZE);
+                    0, 0, _piece.width * Metrics.SOURCE_TILE_SIZE,
+                    -_piece.height * Metrics.SOURCE_TILE_SIZE);
         }
     }
 

@@ -142,8 +142,9 @@ public class EditorSprite extends Sprite
     {
         var highlight :Shape = new Shape();
         highlight.graphics.beginFill(color, 0.3);
-        highlight.graphics.drawRect(0, -getTileHeight() * Metrics.TILE_SIZE,
-                getTileWidth() * Metrics.TILE_SIZE, getTileHeight() * Metrics.TILE_SIZE);
+        highlight.graphics.drawRect(0, -getTileHeight() * Metrics.SOURCE_TILE_SIZE,
+                getTileWidth() * Metrics.SOURCE_TILE_SIZE,
+                getTileHeight() * Metrics.SOURCE_TILE_SIZE);
         highlight.graphics.endFill();
         return highlight;
     }

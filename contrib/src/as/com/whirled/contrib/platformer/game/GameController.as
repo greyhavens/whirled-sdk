@@ -145,49 +145,37 @@ public class GameController
         _rdelta += delta;
         var usedDelta :int;
         do {
-        //while (_rdelta >= MAX_TICK) {
-            var paused :Boolean = isPaused();
             var tdelta :int = Math.min(MAX_TICK, _rdelta);
-            //var tdelta :int = MAX_TICK;
             var sdelta :Number = tdelta / 1000;
             for each (var controller :Object in _controllers) {
-                if (controller is TickController &&
-                        (!paused || controller is PauseController)) {
+                if (controller is TickController) {
                     tickController(controller as TickController, sdelta);
                 }
             }
-            if (!paused) {
-                var now :int = getTimer();
-                _collider.tick(tdelta);
-                colliderTicks += getTimer() - now;
-            }
+            var now :int = getTimer();
+            _collider.tick(tdelta);
+            colliderTicks += getTimer() - now;
             ticked++;
             _rdelta -= tdelta;
             usedDelta += tdelta;
             sendUpdates();
-            /*
-            if (_rdelta < MAX_TICK) {
-                break;
-            }
-            */
         } while (_rdelta >= MAX_TICK);
+
         if (usedDelta > 0) {
             now = getTimer();
             updateDisplay(usedDelta/1000);
             displayTicks += getTimer() - now;
             for each (controller in _controllers) {
-                if (controller is TickController && (!paused || controller is PauseController)) {
+                if (controller is TickController) {
                     (controller as TickController).postTick();
                 }
             }
-            if (!paused) {
-                var ii :int = 0;
-                while (ii < _events.length) {
-                    if (_events[ii].runEvent()) {
-                        _events.splice(ii, 1);
-                    } else {
-                        ii++;
-                    }
+            var ii :int = 0;
+            while (ii < _events.length) {
+                if (_events[ii].runEvent()) {
+                    _events.splice(ii, 1);
+                } else {
+                    ii++;
                 }
             }
         }
