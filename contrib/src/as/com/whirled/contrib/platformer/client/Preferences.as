@@ -67,7 +67,8 @@ public class Preferences extends Config
 
     public function get backgroundVolume () :Number
     {
-        return getValue("backgroundVolume", DEFAULT_BACKGROUND_VOLUME) as Number;
+        var value :Number = getValue("backgroundVolume", DEFAULT_BACKGROUND_VOLUME) as Number;
+        return MathUtil.clamp(value, MIN_BACKGROUND_VOLUME, MAX_BACKGROUND_VOLUME);
     }
 
     public function set backgroundVolume (value :Number) :void
@@ -92,6 +93,6 @@ public class Preferences extends Config
     protected static const MAX_BACKGROUND_VOLUME :Number = 1.0;
     protected static const DEFAULT_EFFECTS_VOLUME :Number = 0.4;
     protected static const MIN_EFFECTS_VOLUME :Number = 0.0;
-    protected static const MAX_EFFECTS_VOLUME :Number = 1.0;
+    protected static const MAX_EFFECTS_VOLUME :Number = 0.65;
 }
 }
