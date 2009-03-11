@@ -30,6 +30,8 @@ public final class CookiePropertyType extends Enum
         new CookiePropertyType("STRING", 2, StringCookieProperty);
     public static const FLOAT :CookiePropertyType =
         new CookiePropertyType("FLOAT", 3, FloatCookieProperty);
+    public static const ARRAY_STR :CookiePropertyType =
+        new CookiePropertyType("ARRAY_STR", 4, StringArrayCookieProperty);
     finishedEnumerating(CookiePropertyType);
 
     public static function valueOf (name :String) :CookiePropertyType
