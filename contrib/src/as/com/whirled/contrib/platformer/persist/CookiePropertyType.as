@@ -28,6 +28,8 @@ public final class CookiePropertyType extends Enum
         new CookiePropertyType("INT", 1, IntCookieProperty);
     public static const STRING :CookiePropertyType =
         new CookiePropertyType("STRING", 2, StringCookieProperty);
+    public static const NUMBER :CookiePropertyType =
+        new CookiePropertyType("NUMBER", 3, NumberCookieProperty);
     finishedEnumerating(CookiePropertyType);
 
     public static function valueOf (name :String) :CookiePropertyType

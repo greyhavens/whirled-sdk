@@ -72,6 +72,10 @@ public class CookieManager extends EventDispatcher
             _properties.put(name,
                 property = new StringCookieProperty(this, name, defaultValue as String));
 
+        } else if (defaultValue is Number) {
+            _properties.put(name,
+                property = new NumberCookieProperty(this, name, defaultValue as Number));
+
         } else {
             throw new Error("CookieManager does not know how to handle this type of value [" +
                 defaultValue + "]");
@@ -109,6 +113,9 @@ public class CookieManager extends EventDispatcher
         }
 
         var bytes :ByteArray = cookie as ByteArray;
+        if (_debug) {
+            log.debug("Stored cookie", "size", bytes.bytesAvailable);
+        }
         bytes.uncompress();
         var version :int = bytes.readInt();
         if (version > VERSION) {
