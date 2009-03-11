@@ -7,6 +7,7 @@ package com.whirled.avrg {
 
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
+import com.whirled.ControlEvent;
 
 import com.whirled.TargetedSubControl;
 import com.whirled.net.MessageReceivedEvent;
@@ -22,6 +23,14 @@ import flash.utils.Dictionary;
  * @see RoomSubControlServer#sendMessage()
  */
 [Event(name="MsgReceived", type="com.whirled.net.MessageReceivedEvent")]
+
+/**
+ * Dispatched to entities when they overhear chatter in the room.
+ * 
+ * @eventType com.whirled.ControlEvent.CHAT_RECEIVED
+ */
+[Event(name="chatReceived", type="com.whirled.ControlEvent")]
+
 
 /**
  * Provides AVR services for a client player's current room.
@@ -115,6 +124,7 @@ public class RoomSubControlClient extends RoomSubControlBase
         o["mobAppearanceChanged_v1"] = mobAppearanceChanged_v1;
         // the client backend does not send in targetId
         o["room_propertyWasSet_v1"] = _props.propertyWasSet_v1;
+        o["receivedChat_v2"] = receivedChat_v2;
     }
 
     /** @private */
@@ -122,6 +132,12 @@ public class RoomSubControlClient extends RoomSubControlBase
     {
         _props = new PropertyGetSubControlImpl(_parent, _targetId, "room_getGameData_v1");
         return [ _props ];
+    }
+
+    /** @private */
+    internal function receivedChat_v2 (entityId :String, msg :String) :void
+    {
+        dispatch(new ControlEvent(ControlEvent.CHAT_RECEIVED, entityId, msg));
     }
 
     /** @private */
