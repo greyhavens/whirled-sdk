@@ -82,6 +82,14 @@ public class RoomSubControlClient extends RoomSubControlBase
     }
 
     /**
+     * Can the specified memberId manage the current room?
+     */
+    public function canManageRoom (memberId :int = 0) :Boolean
+    {
+        return callHostCode("room_canEditRoom_v1", memberId) as Boolean;
+    }
+
+    /**
      * Accesses a previosly spawned MOB in this room.
      * @see http://wiki.whirled.com/Mobs
      * @see RoomSubControlBase#event:mobControlAvailable
