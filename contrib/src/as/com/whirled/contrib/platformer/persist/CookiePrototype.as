@@ -20,32 +20,38 @@
 
 package com.whirled.contrib.platformer.persist {
 
-import com.whirled.game.PlayerSubControl;
-
-public /*abstract*/ class PropertyPrototype
+public class CookiePrototype extends PropertyPrototype
 {
-    public function PropertyPrototype (name :String, playerId :int = 0)
+    public function CookiePrototype (name :String, cookieType :CookiePropertyType,
+        defaultValue :Object = null, playerId :int = 0)
     {
-        _name = name;
-        _playerId = playerId;
+        super(name, playerId);
+
+        _cookieType = cookieType;
+        _defaultValue = defaultValue;
     }
 
-    public function get name () :String
+    override public function get type () :PropertyType
     {
-        return _name;
+        return PropertyType.COOKIE;
     }
 
-    public /*abstract*/ function get type () :PropertyType
+    public function get cookieType () :CookiePropertyType
     {
-        throw new Error("get type() in PropertyPrototype is abstract!");
+        return _cookieType;
     }
 
-    public function get playerId () :int
+    public function get defaultValue () :Object
     {
-        return _playerId;
+        return _defaultValue;
     }
 
-    protected var _name :String;
-    protected var _playerId :int = PlayerSubControl.CURRENT_USER;
+    public function createDefaultInstance (mgr :CookieManager) :CookieProperty
+    {
+        return new _cookieType.cls(mgr, name, defaultValue);
+    }
+
+    protected var _cookieType :CookiePropertyType;
+    protected var _defaultValue :Object;
 }
 }

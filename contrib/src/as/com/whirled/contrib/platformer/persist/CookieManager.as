@@ -63,23 +63,8 @@ public class CookieManager extends EventDispatcher
             throw new Error("Property is unknown to this CookieManager [" + name + "]");
         }
 
-        var defaultValue :Object = _propertyDefaults.get(name);
-        if (defaultValue is int) {
-            _properties.put(name,
-                property = new IntCookieProperty(this, name, defaultValue as int));
-
-        } else if (defaultValue is String) {
-            _properties.put(name,
-                property = new StringCookieProperty(this, name, defaultValue as String));
-
-        } else if (defaultValue is Number) {
-            _properties.put(name,
-                property = new NumberCookieProperty(this, name, defaultValue as Number));
-
-        } else {
-            throw new Error("CookieManager does not know how to handle this type of value [" +
-                defaultValue + "]");
-        }
+        var prototype :CookiePrototype = _propertyDefaults.get(name) as CookiePrototype;
+        _properties.put(name, property = prototype.createDefaultInstance(this));
         return property;
     }
 

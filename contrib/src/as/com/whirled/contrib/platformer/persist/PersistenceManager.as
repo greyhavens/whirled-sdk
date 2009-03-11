@@ -98,7 +98,7 @@ public class PersistenceManager extends EventDispatcher
                 if (cookieProperties == null) {
                     cookiePropertyMaps.put(prototype.playerId, cookieProperties = new HashMap());
                 }
-                cookieProperties.put(prototype.name, prototype.defaultValue);
+                cookieProperties.put(prototype.name, prototype);
                 break;
 
             default:
