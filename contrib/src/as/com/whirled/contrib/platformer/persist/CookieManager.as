@@ -172,9 +172,9 @@ public class CookieManager extends EventDispatcher
      * storing data in the cookie is fashioned should a version bump be necessary. */
     protected static const VERSION :int = 1;
 
-    /** Write out the cookie at most every 2 seconds, in order to prevent this manager from
+    /** Write out the cookie at most every 0.5 seconds, in order to prevent this manager from
      * sucking up network resources */
-    protected static const WRITE_DELAY :int = 2000; // in ms.
+    protected static const WRITE_DELAY :int = 500; // in ms.
 
     protected static const log :Log = Log.getLog(CookieManager);
 }
