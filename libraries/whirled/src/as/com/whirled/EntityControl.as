@@ -20,14 +20,14 @@ import flash.utils.Timer;
 
 /**
  * Dispatched when the instance in control sends a trigger action to all instances.
- * 
+ *
  * @eventType com.whirled.ControlEvent.ACTION_TRIGGERED
  */
 [Event(name="actionTriggered", type="com.whirled.ControlEvent")]
 
 /**
  * Dispatched when any instance sends a message to all instances.
- * 
+ *
  * @eventType com.whirled.ControlEvent.MESSAGE_RECEIVED
  */
 [Event(name="messageReceived", type="com.whirled.ControlEvent")]
@@ -35,7 +35,7 @@ import flash.utils.Timer;
 /**
  * Dispatched when any entity or AVR game sends a message to all other entities.
  * <p>Note: this is only dispatched to the instance in control.</p>
- * 
+ *
  * @eventType com.whirled.ControlEvent.SIGNAL_RECEIVED
  * @see com.whirled.avrg.RoomSubControlServer#sendSignal()
  */
@@ -51,7 +51,7 @@ import flash.utils.Timer;
 /**
  * Dispatched to entities when they overhear chatter in the room. Only
  * the instance in control receives this event.
- * 
+ *
  * @eventType com.whirled.ControlEvent.CHAT_RECEIVED
  */
 [Event(name="chatReceived", type="com.whirled.ControlEvent")]
@@ -66,7 +66,7 @@ import flash.utils.Timer;
 /**
  * Dispatched once per tick, only when this instance has control and only if tick interval is
  * registered.
- * 
+ *
  * @eventType flash.events.TimerEvent.TIMER
  */
 [Event(name="timer", type="flash.events.TimerEvent")]
@@ -284,7 +284,8 @@ public class EntityControl extends AbstractControl
 
     /**
      * Return an associative hash of all the memories. This is not a cheap operation. Use
-     * lookupMemory if you know what you want.
+     * <code>getMemory</code> if you know what you want.
+     * @see #getMemory
      */
     public function getMemories () :Object
     {
@@ -308,7 +309,8 @@ public class EntityControl extends AbstractControl
     /**
      * Requests that this item's memory be updated with the supplied key/value pair. The supplied
      * value must be a simple object (Integer, Number, String) or an Array of simple objects. The
-     * contents of the Pet's memory (keys and values) must not exceed 4096 bytes when AMF3 encoded.
+     * contents of the entity's memory (keys and values) must not exceed 4096 bytes when AMF3
+     * encoded.
      *
      * <p>Setting the memory for a key to null clears that key; subsequent lookups will return the
      * default value.</p>
@@ -396,7 +398,7 @@ public class EntityControl extends AbstractControl
      * <p>Ticking mechanism is turned off by default. Application needs to set the interval
      * explicitly to start receiving tick events. The tick interval can be no smaller than 100ms
      * to avoid bogging down the client.</p>
-     * 
+     *
      * @param interval Delay between ticks in milliseconds, either 0ms, or a value larger
      * than 100ms. Value larger than zero activates the ticking mechanism,
      * and a value of exactly zero deactivates it.
@@ -474,7 +476,7 @@ public class EntityControl extends AbstractControl
         title :String, panel :DisplayObject, width :Number, height :Number,
         backgroundColor :uint = 0xFFFFFF, backgroundAlpha :Number = 1.0) :Boolean
     {
-        return callHostCode("showPopup_v1", title, panel, width, height, backgroundColor, 
+        return callHostCode("showPopup_v1", title, panel, width, height, backgroundColor,
                             backgroundAlpha) as Boolean;
     }
 
@@ -680,7 +682,7 @@ public class EntityControl extends AbstractControl
 
     /**
      * Called when this entity is overhearing a line of chatter in the room.
-     * If this instance of the pet has control, it will dispatch a new receivedChat event,
+     * If this instance of the entity has control, it will dispatch a new receivedChat event,
      * otherwise the line will be ignored.
      * @private
      */
