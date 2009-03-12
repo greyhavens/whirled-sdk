@@ -22,12 +22,12 @@ package com.whirled.contrib.platformer.persist {
 
 import flash.utils.ByteArray;
 
-public class FloatCookieProperty extends CookieProperty
+public class FloatCookieProperty extends CookiePropertyBase
 {
-    public function FloatCookieProperty (manager :CookieManager, name :String = null,
+    public function FloatCookieProperty (manager :CookieManager, typeId :int, name :String = null,
         defaultValue :Object = null)
     {
-        super(manager, name);
+        super(manager, typeId, name);
 
         if (defaultValue != null && !(defaultValue is Number)) {
             throw new Error("FloatCookieProperty can only accept Number values [" + value + "]");
@@ -42,11 +42,6 @@ public class FloatCookieProperty extends CookieProperty
         }
 
         super.value = value;
-    }
-
-    override public function get typeId () :int
-    {
-        return CookiePropertyType.FLOAT.id;
     }
 
     public function get floatValue () :Number

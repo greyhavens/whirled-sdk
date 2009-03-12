@@ -24,16 +24,10 @@ import flash.utils.ByteArray;
 
 public class IntArrayCookieProperty extends TypedArrayCookieProperty
 {
-    public function IntArrayCookieProperty (manager :CookieManager, name :String = null,
-        defaultValue :Array = null)
+    public function IntArrayCookieProperty (manager :CookieManager, typeId :int,
+        name :String = null, defaultValue :Array = null)
     {
-        super(manager, name, defaultValue);
-    }
-
-    // from CookieProperty
-    override public function get typeId () :int
-    {
-        return CookiePropertyType.ARRAY_INT.id;
+        super(manager, typeId, name, defaultValue);
     }
 
     // from TypedArrayCookieProperty

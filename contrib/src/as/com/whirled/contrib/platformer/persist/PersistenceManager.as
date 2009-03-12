@@ -35,8 +35,10 @@ import com.whirled.contrib.EventHandlerManager;
 
 public class PersistenceManager extends EventDispatcher
 {
-    public function PersistenceManager (gameCtrl :GameControl, debugLogging :Boolean = false)
+    public function PersistenceManager (gameCtrl :GameControl, cookieFactory :CookieFactory,
+        debugLogging :Boolean = false)
     {
+        _cookieFactory = cookieFactory;
         _debugLogging = debugLogging;
         _eventMgr = new EventHandlerManager();
         _eventMgr.registerUnload(_gameCtrl = gameCtrl);
@@ -117,7 +119,7 @@ public class PersistenceManager extends EventDispatcher
 
             cookieProperties = cookiePropertyMaps.get(playerId);
             var cookieManager :CookieManager = new CookieManager(
-                _gameCtrl, cookieProperties, playerId, _debugLogging);
+                _gameCtrl, cookieProperties, _cookieFactory, playerId, _debugLogging);
             _loaded = _loaded && cookieManager.loaded;
             if (!cookieManager.loaded) {
                 _eventMgr.registerOneShotCallback(cookieManager, Event.COMPLETE, loadingComplete);
@@ -171,6 +173,7 @@ public class PersistenceManager extends EventDispatcher
     private static const log :Log = Log.getLog(PersistenceManager);
 
     protected var _gameCtrl :GameControl;
+    protected var _cookieFactory :CookieFactory;
     protected var _debugLogging :Boolean;
     protected var _loaded :Boolean = false;
     protected var _trophyProperties :HashMap;

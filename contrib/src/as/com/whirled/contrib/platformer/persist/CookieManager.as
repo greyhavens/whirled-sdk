@@ -36,9 +36,11 @@ import com.whirled.game.PlayerSubControl;
 public class CookieManager extends EventDispatcher
 {
     public function CookieManager (gameCtrl :GameControl, properties :HashMap,
-        playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/, debugLogging :Boolean = false)
+        cookieFactory :CookieFactory, playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/,
+        debugLogging :Boolean = false)
     {
         _gameCtrl = gameCtrl;
+        _cookieFactory = cookieFactory;
         _propertyDefaults = properties;
         _playerId = playerId;
         _debug = debugLogging;
@@ -64,7 +66,7 @@ public class CookieManager extends EventDispatcher
         }
 
         var prototype :CookiePrototype = _propertyDefaults.get(name) as CookiePrototype;
-        _properties.put(name, property = prototype.createDefaultInstance(this));
+        _properties.put(name, _cookieFactory.getDefaultCookieInstance(this, prototype));
         return property;
     }
 
@@ -111,9 +113,7 @@ public class CookieManager extends EventDispatcher
 
         while (bytes.bytesAvailable > 0) {
             var typeId :int = bytes.readInt();
-            var typeClass :Class = CookiePropertyType.getClass(typeId);
-
-            var property :CookieProperty = new typeClass(this) as CookieProperty;
+            var property :CookieProperty = _cookieFactory.getBlankCookieInstance(this, typeId);
             property.deserialize(bytes);
             _properties.put(property.name, property);
 
@@ -152,6 +152,7 @@ public class CookieManager extends EventDispatcher
     }
 
     protected var _gameCtrl :GameControl;
+    protected var _cookieFactory :CookieFactory;
     protected var _properties :HashMap;
     protected var _propertyDefaults :HashMap;
     protected var _loaded :Boolean = false;

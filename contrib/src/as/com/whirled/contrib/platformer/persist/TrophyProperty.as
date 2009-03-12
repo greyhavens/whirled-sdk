@@ -23,20 +23,34 @@ package com.whirled.contrib.platformer.persist {
 import com.whirled.game.GameControl;
 import com.whirled.game.PlayerSubControl;
 
-public class TrophyProperty extends PersistentProperty
+public class TrophyProperty
+    implements PersistentProperty
 {
     public function TrophyProperty (name :String, gameCtrl :GameControl,
         playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/)
     {
-        super(name);
-
+        _name = name;
         _gameCtrl = gameCtrl;
         _playerId = playerId;
     }
 
-    override public function get value () :Object
+    // from PersistentProperty
+    public function get name () :String
+    {
+        return _name;
+    }
+
+    // from PersistentProperty
+    public function get value () :Object
     {
         return hasTrophy();
+    }
+
+    // from PersistentProperty
+    public function set value (value :Object) :void
+    {
+        // for the purposes of the PersistentProperty API, TrophyProperty is read-only
+        throw new ArgumentError("TrophyProperty is read-only.");
     }
 
     public function get playerId () :int
@@ -67,6 +81,7 @@ public class TrophyProperty extends PersistentProperty
     }
 
     protected var _gameCtrl :GameControl;
+    protected var _name :String;
     protected var _playerId :int;
     protected var _awardedThisSession :Boolean = false;
 }

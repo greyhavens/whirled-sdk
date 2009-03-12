@@ -22,12 +22,12 @@ package com.whirled.contrib.platformer.persist {
 
 import flash.utils.ByteArray;
 
-public class StringCookieProperty extends CookieProperty
+public class StringCookieProperty extends CookiePropertyBase
 {
-    public function StringCookieProperty (manager :CookieManager, name :String = null,
+    public function StringCookieProperty (manager :CookieManager, typeId :int, name :String = null,
         defaultValue :Object = null)
     {
-        super(manager, name);
+        super(manager, typeId, name);
 
         if (defaultValue != null && !(defaultValue is String)) {
             throw new Error("StringCookieProperty can only accept String values [" +
@@ -43,11 +43,6 @@ public class StringCookieProperty extends CookieProperty
         }
 
         super.value = value;
-    }
-
-    override public function get typeId () :int
-    {
-        return CookiePropertyType.STRING.id;
     }
 
     public function get stringValue () :String

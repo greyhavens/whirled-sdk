@@ -20,14 +20,11 @@
 
 package com.whirled.contrib.platformer.persist {
 
-import flash.utils.ByteArray;
-
-public interface CookieProperty extends PersistentProperty
+public interface CookieFactory
 {
-    function get typeId () :int
+    function getBlankCookieInstance (mgr :CookieManager, typeId :int) :CookieProperty;
 
-    function serialize (bytes :ByteArray) :void
-
-    function deserialize (bytes :ByteArray) :void
+    function getDefaultCookieInstance (mgr :CookieManager,
+        prototype :CookiePrototype) :CookieProperty;
 }
 }

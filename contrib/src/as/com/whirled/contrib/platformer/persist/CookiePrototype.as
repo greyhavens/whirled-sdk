@@ -22,12 +22,12 @@ package com.whirled.contrib.platformer.persist {
 
 public class CookiePrototype extends PropertyPrototype
 {
-    public function CookiePrototype (name :String, cookieType :CookiePropertyType,
+    public function CookiePrototype (name :String, typeId :int,
         defaultValue :Object = null, playerId :int = 0)
     {
         super(name, playerId);
 
-        _cookieType = cookieType;
+        _typeId = typeId;
         _defaultValue = defaultValue;
     }
 
@@ -36,9 +36,9 @@ public class CookiePrototype extends PropertyPrototype
         return PropertyType.COOKIE;
     }
 
-    public function get cookieType () :CookiePropertyType
+    public function get typeId () :int
     {
-        return _cookieType;
+        return _typeId;
     }
 
     public function get defaultValue () :Object
@@ -46,12 +46,7 @@ public class CookiePrototype extends PropertyPrototype
         return _defaultValue;
     }
 
-    public function createDefaultInstance (mgr :CookieManager) :CookieProperty
-    {
-        return new _cookieType.cls(mgr, name, defaultValue);
-    }
-
-    protected var _cookieType :CookiePropertyType;
+    protected var _typeId :int;
     protected var _defaultValue :Object;
 }
 }

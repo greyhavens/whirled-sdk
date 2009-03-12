@@ -22,12 +22,12 @@ package com.whirled.contrib.platformer.persist {
 
 import flash.utils.ByteArray;
 
-public class IntCookieProperty extends CookieProperty
+public class IntCookieProperty extends CookiePropertyBase
 {
-    public function IntCookieProperty (manager :CookieManager, name :String = null,
+    public function IntCookieProperty (manager :CookieManager, typeId :int, name :String = null,
         defaultValue :Object = null)
     {
-        super(manager, name);
+        super(manager, typeId, name);
 
         // This should not simply call value = defaultValue because the value setter tells the
         // CookieManager that this property was updated, and a new version was pushed out, but
@@ -45,11 +45,6 @@ public class IntCookieProperty extends CookieProperty
         }
 
         super.value = value;
-    }
-
-    override public function get typeId () :int
-    {
-        return CookiePropertyType.INT.id;
     }
 
     /**

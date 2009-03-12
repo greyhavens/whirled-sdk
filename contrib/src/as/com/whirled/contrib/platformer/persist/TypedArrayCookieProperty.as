@@ -22,14 +22,18 @@ package com.whirled.contrib.platformer.persist {
 
 import flash.utils.ByteArray
 
+import com.threerings.util.ClassUtil;
 import com.threerings.util.Log;
 
-public /*abstract*/ class TypedArrayCookieProperty extends CookieProperty
+public /*abstract*/ class TypedArrayCookieProperty
+    implements CookieProperty
 {
-    public function TypedArrayCookieProperty (manager :CookieManager, name :String = null,
-        defaultValue :Array = null)
+    public function TypedArrayCookieProperty (manager :CookieManager, typeId :int,
+        name :String = null, defaultValue :Array = null)
     {
-        super(manager, name);
+        _manager = manager;
+        _typeId = typeId;
+        _name = name;
 
         if (defaultValue != null) {
             if (!(defaultValue is Array)) {
@@ -41,7 +45,14 @@ public /*abstract*/ class TypedArrayCookieProperty extends CookieProperty
         }
     }
 
-    override public function set value (value :Object) :void
+    // from PersistentProperty
+    public function get name () :String
+    {
+        return _name;
+    }
+
+    // from CookieProperty
+    public function set value (value :Object) :void
     {
         if (!(value is Array)) {
             throw new ArgumentError("TypedArrayCookieProperty value must be an Array");
@@ -51,9 +62,16 @@ public /*abstract*/ class TypedArrayCookieProperty extends CookieProperty
         _manager.cookiePropertyUpdated(this);
     }
 
-    override public function get value () :Object
+    // from PersistentProperty
+    public function get value () :Object
     {
         return _array.concat();
+    }
+
+    // from CookieProperty
+    public function get typeId () :int
+    {
+        return _typeId;
     }
 
     public function get length () :int
@@ -129,16 +147,23 @@ public /*abstract*/ class TypedArrayCookieProperty extends CookieProperty
         _manager.cookiePropertyUpdated(this);
     }
 
-    override public function serialize (bytes :ByteArray) :void
+    // from CookieProperty
+    public function serialize (bytes :ByteArray) :void
     {
         bytes.writeUTF(_name);
         serializeValue(bytes, _array);
     }
 
-    override public function deserialize (bytes :ByteArray) :void
+    // from CookieProperty
+    public function deserialize (bytes :ByteArray) :void
     {
         _name = bytes.readUTF();
         _array = deserializeValue(bytes) as Array;
+    }
+
+    public function toString () :String
+    {
+        return ClassUtil.tinyClassName(this) + " [name=" + _name + ", value=" + value + "]";
     }
 
     protected /*abstract*/ function get type () :Class
@@ -215,7 +240,10 @@ public /*abstract*/ class TypedArrayCookieProperty extends CookieProperty
         }
     }
 
+    protected var _manager :CookieManager;
+    protected var _name :String;
     protected var _array :Array = [];
+    protected var _typeId :int;
 
     protected static const ARRAY_MARKER :int = 0;
     protected static const VALUE_MARKER :int = 1;

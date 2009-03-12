@@ -20,23 +20,12 @@
 
 package com.whirled.contrib.platformer.persist {
 
-public class PersistentProperty
+public interface PersistentProperty
 {
-    public function PersistentProperty (name :String)
-    {
-        _name = name;
-    }
+    function get name () :String;
 
-    public function get name () :String
-    {
-        return _name;
-    }
-
-    public /* abstract */ function get value () :Object
-    {
-        throw new Error("get value () in PeristentPropety is abstract");
-    }
-
-    protected var _name :String;
+    function get value () :Object;
+    // read-only properties may throw an error here.
+    function set value (value :Object) :void
 }
 }
