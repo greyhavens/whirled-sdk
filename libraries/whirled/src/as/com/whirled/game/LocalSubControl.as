@@ -162,16 +162,16 @@ public class LocalSubControl extends AbstractSubControl
         callHostCode("setStageQuality_v1", quality);
     }
 
-    /**
-     * Set whether the rematch/replay button is shown at the end of the game. It is shown
-     * by default, but some games may not support rematching and so should hide the button.
-     *
-     * <b>Note:</b> this function changes local display only; other clients will not be affected.
-     */
-    public function setShowReplay (show :Boolean) :void
-    {
-        callHostCode("setShowReplay_v1", show);
-    }
+//    /**
+//     * Set whether the rematch/replay button is shown at the end of the game. It is shown
+//     * by default, but some games may not support rematching and so should hide the button.
+//     *
+//     * <b>Note:</b> this function changes local display only; other clients will not be affected.
+//     */
+//    public function setShowReplay (show :Boolean) :void
+//    {
+//        callHostCode("setShowReplay_v1", show);
+//    }
 
     /**
      * Set a label to be shown above the occupants list in the game.
