@@ -113,8 +113,7 @@ public class CookieManager extends EventDispatcher
 
         while (bytes.bytesAvailable > 0) {
             var typeId :int = bytes.readInt();
-            var property :CookieProperty = _cookieFactory.getBlankCookieInstance(
-                this, typeId, _playerId);
+            var property :CookieProperty = _cookieFactory.getBlankCookieInstance(this, typeId);
             property.deserialize(bytes);
 
             if (_propertyDefaults.containsKey(property.name)) {

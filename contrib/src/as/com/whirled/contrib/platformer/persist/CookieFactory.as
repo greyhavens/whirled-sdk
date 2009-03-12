@@ -22,8 +22,7 @@ package com.whirled.contrib.platformer.persist {
 
 public interface CookieFactory
 {
-    function getBlankCookieInstance (mgr :CookieManager, typeId :int,
-        playerId :int) :CookieProperty;
+    function getBlankCookieInstance (mgr :CookieManager, typeId :int) :CookieProperty
 
     function getDefaultCookieInstance (mgr :CookieManager,
         prototype :CookiePrototype) :CookieProperty;
