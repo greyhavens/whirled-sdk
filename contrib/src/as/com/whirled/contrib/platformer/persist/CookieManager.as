@@ -66,7 +66,7 @@ public class CookieManager extends EventDispatcher
         }
 
         var prototype :CookiePrototype = _propertyDefaults.get(name) as CookiePrototype;
-        _properties.put(name, _cookieFactory.getDefaultCookieInstance(this, prototype));
+        _properties.put(name, property = _cookieFactory.getDefaultCookieInstance(this, prototype));
         return property;
     }
 
