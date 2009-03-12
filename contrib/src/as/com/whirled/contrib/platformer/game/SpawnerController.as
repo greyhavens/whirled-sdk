@@ -112,11 +112,12 @@ public class SpawnerController extends RectDynamicController
                 }
             }
             if (_spawner.spawning > 0 && _spawnId != _spawner.spawning) {
+                var newSpawnId :int = _spawner.spawning;
                 if (_spawnId != 0) {
                     spawn();
                 }
                 _spawnDelay = _spawner.spawnDelay;
-                _spawnId = _spawner.spawning;
+                _spawnId = newSpawnId;
                 _spawnOwner = 0;
             }
         } else {
