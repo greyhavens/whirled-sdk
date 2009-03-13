@@ -44,7 +44,6 @@ public class ClientPlatformerController extends PlatformerController
             ClientPlatformerContext.prefs = createPreferences();
             PlatformerContext.gctrl.local.setStageQuality(
                     ClientPlatformerContext.prefs.stageQuality);
-            PlatformerContext.gctrl.local.setShowReplay(false);
             ClientPlatformerContext.sound = new SoundController(source);
         }
     }
