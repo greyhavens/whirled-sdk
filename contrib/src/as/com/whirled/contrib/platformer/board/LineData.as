@@ -249,6 +249,20 @@ public class LineData
     }
 
     /**
+     * Returns a minimal LineData between this line and the supplied point.
+     */
+    public function getSegmentDistLine (x :Number, y :Number, type :int) :LineData
+    {
+        var r :Number = (x - x1) * ix + (y - y1) * iy;
+        if (r < 0) {
+            return new LineData(x1, y1, x, y, type);
+        } else if (r > mag) {
+            return new LineData(x2, y2, x, y, type);
+        }
+        return new LineData(x1 + r * ix, y1 + r * iy, x, y, type);
+    }
+
+    /**
      * Returns the distance on the line to the near intersection between this line and the
      * supplied circle.
      */
@@ -281,6 +295,26 @@ public class LineData
         dist2 = Math.min(dist2, line.getSegmentDist2(x1, y1));
         dist2 = Math.min(dist2, line.getSegmentDist2(x2, y2));
         return Math.sqrt(dist2);
+    }
+
+    /**
+     * Returns the minimal line between two line segments.
+     */
+    public function getMinimalLine (line :LineData) :LineData
+    {
+        var dist1 :Number = getSegmentDist2(line.x1, line.y1);
+        var dist2 :Number = getSegmentDist2(line.x2, line.y2);
+        var dist3 :Number = line.getSegmentDist2(x1, y1);
+        var dist4 :Number = line.getSegmentDist2(x2, y2);
+        if (dist1 < dist2 && dist1 < dist3 && dist1 < dist4) {
+            return getSegmentDistLine(line.x1, line.y1, type);
+        } else if (dist2 < dist3 && dist2 < dist4) {
+            return getSegmentDistLine(line.x2, line.y2, type);
+        } else if (dist3 < dist4) {
+            return line.getSegmentDistLine(x1, y1, type);
+        } else {
+            return line.getSegmentDistLine(x2, y2, type);
+        }
     }
 
     /**
