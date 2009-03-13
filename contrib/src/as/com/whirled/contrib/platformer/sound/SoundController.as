@@ -107,6 +107,7 @@ public class SoundController extends EventDispatcher
         }
         _eventMgr.unregisterListener(_track, Event.SOUND_COMPLETE, loopTrack);
         _track = null;
+        _trackName = null;
     }
 
     /**
@@ -258,7 +259,9 @@ public class SoundController extends EventDispatcher
 
     protected function loopTrack (...ignored) :void
     {
-        startBackgroundMusic(_trackName, false);
+        var trackName :String = _trackName;
+        stopBackgroundMusic(false);
+        startBackgroundMusic(trackName, false);
     }
 
     protected function playSound (sound :Sound, volume :Number, pan :Number = 0) :SoundChannel
