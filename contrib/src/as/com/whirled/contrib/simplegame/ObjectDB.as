@@ -24,11 +24,8 @@ import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
 import com.whirled.contrib.EventHandlerManager;
-import com.whirled.contrib.simplegame.components.SceneComponent;
 import com.whirled.contrib.simplegame.tasks.*;
 
-import flash.display.DisplayObject;
-import flash.display.DisplayObjectContainer;
 import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
 
@@ -37,11 +34,8 @@ public class ObjectDB extends EventDispatcher
 {
     /**
      * Adds a SimObject to the ObjectDB. The SimObject must not be owned by another ObjectDB.
-     * If displayParent is not null, obj's attached DisplayObject will be added as a child
-     * of displayParent.
      */
-    public function addObject (obj :SimObject, displayParent :DisplayObjectContainer = null)
-        :SimObjectRef
+    public function addObject (obj :SimObject) :SimObjectRef
     {
         if (null == obj || null != obj._ref) {
             throw new ArgumentError("obj must be non-null, and must never have belonged to " +
@@ -64,7 +58,6 @@ public class ObjectDB extends EventDispatcher
         // initialize object
         obj._parentDB = this;
         obj._ref = ref;
-        obj._ctx = _ctx;
 
         // does the object have a name?
         var objectName :String = obj.objectName;
@@ -90,25 +83,6 @@ public class ObjectDB extends EventDispatcher
                 groupArray.push(ref);
             }
         } while (null != groupName);
-
-        // should the object be attached to a display parent?
-        // (this is purely a convenience - the client is free to
-        // do the attaching themselves)
-        if (null != displayParent) {
-            var sc :SceneComponent = (obj as SceneComponent);
-            if (null == sc) {
-                throw new Error("only objects implementing SceneComponent can be attached to " +
-                                "a display parent");
-            }
-
-            var displayObj :DisplayObject = sc.displayObject;
-            if (null == displayObj) {
-                throw new Error("object must return a non-null displayObject to be attached " +
-                                "to a display parent");
-            }
-
-            displayParent.addChild(displayObj);
-        }
 
         obj.addedToDBInternal();
 
@@ -151,20 +125,6 @@ public class ObjectDB extends EventDispatcher
 
         // the ref no longer points to the object
         ref._obj = null;
-
-        // if the object is attached to a DisplayObject, and if that
-        // DisplayObject is in a display list, remove it from the display list
-        // so that it will no longer be drawn to the screen
-        var sc :SceneComponent = (obj as SceneComponent);
-        if (null != sc) {
-            var displayObj :DisplayObject = sc.displayObject;
-            if (null != displayObj) {
-                var parent :DisplayObjectContainer = displayObj.parent;
-                if (null != parent) {
-                    parent.removeChild(displayObj);
-                }
-            }
-        }
 
         // does the object have a name?
         var objectName :String = obj.objectName;
@@ -280,12 +240,6 @@ public class ObjectDB extends EventDispatcher
     public function get objectCount () :uint
     {
         return _objectCount;
-    }
-
-    /** Returns the SGContext associated with this ObjectDB. */
-    public final function get ctx () :SGContext
-    {
-        return _ctx;
     }
 
     /**
@@ -437,8 +391,6 @@ public class ObjectDB extends EventDispatcher
     protected var _groupedObjects :HashMap = new HashMap();
 
     protected var _events :EventHandlerManager = new EventHandlerManager();
-
-    internal var _ctx :SGContext; // Managed by MainLoop
 }
 
 }

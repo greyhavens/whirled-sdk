@@ -47,14 +47,6 @@ public class SimObject extends EventDispatcher
     }
 
     /**
-     * Returns the SGContext associated with this SimObject.
-     */
-    public final function get ctx () :SGContext
-    {
-        return _ctx;
-    }
-
-    /**
      * Returns true if the object is in an ObjectDB and is "live"
      * (not pending removal from the database)
      */
@@ -335,10 +327,9 @@ public class SimObject extends EventDispatcher
 
     protected var _events :EventHandlerManager = new EventHandlerManager();
 
-    // managed by ObjectDB
+    // managed by ObjectDB/AppMode
     internal var _ref :SimObjectRef;
     internal var _parentDB :ObjectDB;
-    internal var _ctx :SGContext;
 }
 
 }

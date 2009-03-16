@@ -20,6 +20,10 @@
 
 package com.whirled.contrib.simplegame {
 
+import com.whirled.contrib.simplegame.components.SceneComponent;
+
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
 import flash.display.Sprite;
 
 public class AppMode extends ObjectDB
@@ -33,6 +37,53 @@ public class AppMode extends ObjectDB
     public function get modeSprite () :Sprite
     {
         return _modeSprite;
+    }
+
+    /** Returns the SGContext associated with this AppMode. */
+    public final function get ctx () :SGContext
+    {
+        return _ctx;
+    }
+
+    public function addSceneObject (obj :SimObject, displayParent :DisplayObjectContainer)
+        :SimObjectRef
+    {
+        if (!(obj is SceneComponent)) {
+            throw new Error("obj must implement SceneComponent");
+        }
+
+        // Attach the object to a display parent.
+        // (This is purely a convenience - the client is free to do the attaching themselves)
+        var disp :DisplayObject = (obj as SceneComponent).displayObject;
+        if (null == disp) {
+            throw new Error("obj must return a non-null displayObject to be attached " +
+                            "to a display parent");
+        }
+
+        displayParent.addChild(disp);
+
+        return addObject(obj);
+    }
+
+    override public function destroyObject (ref :SimObjectRef) :void
+    {
+        if (null != ref && null != ref.object) {
+            // if the object is attached to a DisplayObject, and if that
+            // DisplayObject is in a display list, remove it from the display list
+            // so that it will no longer be drawn to the screen
+            var sc :SceneComponent = (ref.object as SceneComponent);
+            if (null != sc) {
+                var displayObj :DisplayObject = sc.displayObject;
+                if (null != displayObj) {
+                    var parent :DisplayObjectContainer = displayObj.parent;
+                    if (null != parent) {
+                        parent.removeChild(displayObj);
+                    }
+                }
+            }
+        }
+
+        super.destroyObject(ref);
     }
 
     /** Called when a key is pressed while this mode is active */
@@ -93,6 +144,9 @@ public class AppMode extends ObjectDB
     }
 
     protected var _modeSprite :Sprite = new Sprite();
+
+    // Managed by MainLoop
+    internal var _ctx :SGContext;
 }
 
 }

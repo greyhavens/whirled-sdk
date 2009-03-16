@@ -22,7 +22,6 @@ package com.whirled.contrib.simplegame.tasks {
 
 import com.whirled.contrib.simplegame.*;
 import com.whirled.contrib.simplegame.audio.*;
-import com.whirled.contrib.simplegame.resource.SoundResource;
 
 public class PlaySoundTask
     implements ObjectTask
@@ -38,7 +37,7 @@ public class PlaySoundTask
     public function update (dt :Number, obj :SimObject) :Boolean
     {
         if (null == _channel) {
-            _channel = obj.ctx.audio.playSoundNamed(_soundName, _parentControls);
+            _channel = (obj.db as AppMode).ctx.audio.playSoundNamed(_soundName, _parentControls);
         }
 
         return (!_waitForComplete || !_channel.isPlaying);
