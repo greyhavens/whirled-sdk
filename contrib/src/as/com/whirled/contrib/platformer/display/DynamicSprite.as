@@ -182,6 +182,7 @@ public class DynamicSprite extends Sprite
                 return;
             }
             cw.disp.scaleY = scaleY;
+            cw.disp.scaleX = effect.flip ? -1 : 1;
             var pt :Point = node.localToGlobal(new Point());
             var opt :Point = node.localToGlobal(new Point(0, 0));
             var apt :Point = node.localToGlobal(new Point(0, -1));

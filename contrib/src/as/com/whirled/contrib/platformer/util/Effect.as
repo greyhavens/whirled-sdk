@@ -28,6 +28,8 @@ public interface Effect
 
     function get recolor () :String;
 
+    function get flip () :Boolean;
+
     function shouldShow (effectLevel :int) :Boolean;
 
     function toString () :String;
