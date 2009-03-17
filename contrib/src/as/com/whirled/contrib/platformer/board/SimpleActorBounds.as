@@ -147,6 +147,7 @@ public class SimpleActorBounds extends ActorBounds
      */
     public function isContained (ld0 :LineData, ld1 :LineData, sides :Array) :Boolean
     {
+        var pIn :Boolean = true;
         for each (var line :LineData in _lines) {
             if (((sides[0] > 0 && ld0.isOutside(line.x1, line.y1)) ||
                  (sides[0] < 0 && ld0.isInside(line.x1, line.y1))) && (
@@ -154,8 +155,11 @@ public class SimpleActorBounds extends ActorBounds
                  (sides[1] < 0 && ld1.isInside(line.x1, line.y1)))) {
                 return true;
             }
+            if (pIn && !line.isInside(sides[2], sides[3])) {
+                pIn = false;
+            }
         }
-        return false;
+        return pIn;
     }
 
     public function adjustHeight (newHeight :Number) :Boolean

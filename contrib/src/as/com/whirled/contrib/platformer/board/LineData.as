@@ -158,29 +158,37 @@ public class LineData
             mY = y2;
             oX = line.x2;
             oY = line.y2;
+            ret[2] = x1;
+            ret[3] = y1;
         } else if (x1 == line.x2 && y1 == line.y2) {
             mX = x2;
             mY = y2;
             oX = line.x1;
             oY = line.y1;
+            ret[2] = x1;
+            ret[3] = y1;
         } else if (x2 == line.x1 && y2 == line.y1) {
             mX = x1;
             mY = y1;
             oX = line.x2;
             oY = line.y2;
+            ret[2] = x2;
+            ret[3] = y2;
         } else if (x2 == line.x2 && y2 == line.y2) {
             mX = x1;
             mY = y1;
             oX = line.x1;
             oY = line.y1;
+            ret[2] = x2;
+            ret[3] = y2;
         } else {
             if (convex) {
                 _connected[line] = null;
             }
             return null;
         }
-        ret.push(getDist(oX, oY));
-        ret.push(line.getDist(mX, mY));
+        ret[0] = getDist(oX, oY);
+        ret[1] = line.getDist(mX, mY);
 
         if (convex && ((!BoundData.blockInner(type) && ret[0] >= 0) ||
                 (!BoundData.blockOuter(type) && ret[0] <= 0) ||
