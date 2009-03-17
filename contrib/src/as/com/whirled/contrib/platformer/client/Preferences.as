@@ -68,11 +68,18 @@ public class Preferences extends Config
     public function get backgroundVolume () :Number
     {
         var value :Number = getValue("backgroundVolume", DEFAULT_BACKGROUND_VOLUME) as Number;
-        return MathUtil.clamp(value, MIN_BACKGROUND_VOLUME, MAX_BACKGROUND_VOLUME);
+        var clamped :Number = MathUtil.clamp(value, MIN_BACKGROUND_VOLUME, MAX_BACKGROUND_VOLUME);
+        if (clamped != value) {
+            // they had an old, invalid value stored, lets store the clamped value.
+            backgroundVolume = value;
+        }
+        trace("returning background Volume [" + clamped + "]");
+        return clamped;
     }
 
     public function set backgroundVolume (value :Number) :void
     {
+        trace("setting background volume [" + value + "]");
         setValue("backgroundVolume",
             MathUtil.clamp(value, MIN_BACKGROUND_VOLUME, MAX_BACKGROUND_VOLUME));
         ClientPlatformerContext.sound.backgroundVolumeModified();
@@ -91,6 +98,7 @@ public class Preferences extends Config
     protected static const DEFAULT_BACKGROUND_VOLUME :Number = 0.25;
     protected static const MIN_BACKGROUND_VOLUME :Number = 0.0;
     protected static const MAX_BACKGROUND_VOLUME :Number = 0.5;
+
     protected static const DEFAULT_EFFECTS_VOLUME :Number = 0.5;
     protected static const MIN_EFFECTS_VOLUME :Number = 0.0;
     protected static const MAX_EFFECTS_VOLUME :Number = 1.0;
