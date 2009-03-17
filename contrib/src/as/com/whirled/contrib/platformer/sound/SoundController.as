@@ -160,6 +160,14 @@ public class SoundController extends EventDispatcher
     public function shutdown () :void
     {
         _eventMgr.freeAllHandlers();
+        if (_track != null) {
+            _track.stop();
+        }
+        _channels.forEach(function (key :String, value :SoundChannel) :void {
+            if (value != null) {
+                value.stop();
+            }
+        });
     }
 
     public function backgroundVolumeModified () :void
