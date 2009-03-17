@@ -73,13 +73,11 @@ public class Preferences extends Config
             // they had an old, invalid value stored, lets store the clamped value.
             backgroundVolume = value;
         }
-        trace("returning background Volume [" + clamped + "]");
         return clamped;
     }
 
     public function set backgroundVolume (value :Number) :void
     {
-        trace("setting background volume [" + value + "]");
         setValue("backgroundVolume",
             MathUtil.clamp(value, MIN_BACKGROUND_VOLUME, MAX_BACKGROUND_VOLUME));
         ClientPlatformerContext.sound.backgroundVolumeModified();
