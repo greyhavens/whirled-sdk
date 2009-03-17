@@ -126,8 +126,17 @@ public class WhirledGameBackend extends BaseGameBackend
     }
 
     /**
-     * Displays an info message to the player. Default does nothing, so subclasses should
-     * override.
+     * Used to report a typical framework-level message to the player. In the base class
+     * this will end up using displayInfo(), but in Whirled will be overridden to use
+     * the notifications.
+     */
+    protected function systemMessage (bundle :String, msg :String) :void
+    {
+        displayInfo(bundle, msg);
+    }
+
+    /**
+     * Displays an info message to the player.
      */
     protected function displayInfo (bundle :String, msg :String, localType :String = null) :void
     {
@@ -178,7 +187,7 @@ public class WhirledGameBackend extends BaseGameBackend
             // and add a little note if the coins aren't going to "stick" (never happen when
             // testing, but may happen in whirled).
             if (!forReal) {
-                displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE, "m.no_coins_dev");
+                systemMessage(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE, "m.no_coins_dev");
             }
 
         } else {
@@ -253,7 +262,7 @@ public class WhirledGameBackend extends BaseGameBackend
         // we do nothing with forReal here, because this method only gets called if the
         // usercode didn't report the coin award itself. The forReal is handled elsewhere.
         if (!gameWantsMessageSuppressed) {
-            displayInfo(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
+            systemMessage(WhirledGameCodes.WHIRLEDGAME_MESSAGE_BUNDLE,
                 MessageBundle.tcompose("m.coins_awarded", amount));
         }
     }
