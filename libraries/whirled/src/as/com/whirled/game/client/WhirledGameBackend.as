@@ -368,8 +368,7 @@ public class WhirledGameBackend extends BaseGameBackend
 
     protected function showAllGames_v1 () :void
     {
-        displayInfo(null, "showAllGames failed because game is not connected to Whirled.",
-            WhirledGameCodes.USERGAME_CHAT_TYPE);
+        displayInfo(null, "showAllGames failed because game is not connected to Whirled.");
     }
 
     /**
@@ -379,8 +378,7 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function showGameShop_v1 (itemType :String, catalogId :int = 0) :void
     {
-        displayInfo(null, "Open game shop failed because game is not connected to Whirled.",
-           WhirledGameCodes.USERGAME_CHAT_TYPE);
+        displayInfo(null, "Open game shop failed because game is not connected to Whirled.");
     }
 
     /**
@@ -390,8 +388,7 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function showInvitePage_v1 (defmsg :String, token :String = "") :void
     {
-    	displayInfo(null, "Open game invite page failed because game is not connected to Whirled.",
-           WhirledGameCodes.USERGAME_CHAT_TYPE);
+    	displayInfo(null, "Open game invite page failed because game is not connected to Whirled.");
     }
 
     /**
@@ -400,8 +397,7 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function getInviteToken_v1 () :String
     {
-    	displayInfo(null, "Cannot retrieve invite token because game is not connected to Whirled.",
-    	   WhirledGameCodes.USERGAME_CHAT_TYPE);
+    	displayInfo(null, "Cannot retrieve invite token because game is not connected to Whirled.");
     	return null;
     }
 
@@ -413,8 +409,7 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function getInviterMemberId_v1 () :int
     {
     	displayInfo(null,
-            "Cannot retrieve inviter's member ID because game is not connected to Whirled.",
-            WhirledGameCodes.USERGAME_CHAT_TYPE);
+            "Cannot retrieve inviter's member ID because game is not connected to Whirled.");
         return 0;
     }
 
@@ -424,8 +419,7 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function showGameLobby_v1 (multiplayer :Boolean) :void
     {
-        displayInfo(null, "Would display a game lobby, but we're in the test environment.",
-           WhirledGameCodes.USERGAME_CHAT_TYPE);
+        displayInfo(null, "Would display a game lobby, but we're in the test environment.");
     }
 
     /**
@@ -434,8 +428,7 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function showTrophies_v1 () :void
     {
-        displayInfo(null, "Would display trophies popup, but we're in the test environment.",
-           WhirledGameCodes.USERGAME_CHAT_TYPE);
+        displayInfo(null, "Would display trophies popup, but we're in the test environment.");
     }
 
     protected function getHeadShot_v2 (occupant :int) :DisplayObject
