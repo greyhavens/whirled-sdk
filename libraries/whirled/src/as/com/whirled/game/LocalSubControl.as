@@ -100,6 +100,15 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
+     * Is the game being played in a "Whirled embed", and not on the main site?
+     * In the game testing environment, this will always be false. 
+     */
+    public function isEmbedded () :Boolean
+    {
+        return Boolean(callHostCode("isEmbedded_v1"));
+    }
+
+    /**
      * Display a feedback chat message for the local player only, no other players
      * or observers will see it.
      */
@@ -228,6 +237,14 @@ public class LocalSubControl extends AbstractSubControl
     public function setMappedScores (scores :Object) :void
     {
         callHostCode("setMappedScores_v1", scores);
+    }
+
+    /**
+     * Opens the web page for all the games at whirled. (Does nothing in the test environment)
+     */
+    public function showAllGames () :void
+    {
+        callHostCode("showAllGames_v1");
     }
 
     /**

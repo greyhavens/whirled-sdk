@@ -227,6 +227,7 @@ public class WhirledGameBackend extends BaseGameBackend
         o["filter_v1"] = filter_v1;
         o["getHeadShot_v2"] = getHeadShot_v2;
         o["getSize_v1"] = getSize_v1;
+        o["isEmbedded_v1"] = isEmbedded_v1;
         o["localChat_v1"] = localChat_v1;
         o["setMappedScores_v1"] = setMappedScores_v1;
         o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
@@ -234,6 +235,7 @@ public class WhirledGameBackend extends BaseGameBackend
         o["setFrameRate_v1"] = setFrameRate_v1;
         o["setShowReplay_v1"] = setShowReplay_v1;
         o["setStageQuality_v1"] = setStageQuality_v1;
+        o["showAllGames_v1"] = showAllGames_v1;
         o["showGameLobby_v1"] = showGameLobby_v1;
         o["showGameShop_v1"] = showGameShop_v1;
         o["showTrophies_v1"] = showTrophies_v1;
@@ -307,6 +309,11 @@ public class WhirledGameBackend extends BaseGameBackend
         return new Point(_gameView.width, _gameView.height);
     }
 
+    protected function isEmbedded_v1 () :Boolean
+    {
+        return false;
+    }
+
     protected function setShowReplay_v1 (show :Boolean) :void
     {
         (_ctrl.getPlaceView() as WhirledGamePanel).setShowReplay(show);
@@ -357,6 +364,12 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function setMappedScores_v1 (scores :Object) :void
     {
         (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setMappedScores(scores);
+    }
+
+    protected function showAllGames_v1 () :void
+    {
+        displayInfo(null, "showAllGames failed because game is not connected to Whirled.",
+            WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
 
     /**
