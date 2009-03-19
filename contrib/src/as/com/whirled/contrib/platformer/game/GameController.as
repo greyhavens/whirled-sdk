@@ -161,7 +161,7 @@ public class GameController
             sendUpdates();
         } while (_rdelta >= MAX_TICK);
 
-        if (usedDelta > 0) {
+        //if (usedDelta > 0) {
             now = getTimer();
             updateDisplay(usedDelta/1000);
             displayTicks += getTimer() - now;
@@ -178,7 +178,7 @@ public class GameController
                     ii++;
                 }
             }
-        }
+        //}
     }
 
     public function getBoard () :Board
