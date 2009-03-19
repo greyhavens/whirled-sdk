@@ -31,6 +31,7 @@ public class ShotMessage
 
     public static const HIT :int = 1;
     public static const DAMAGE :int = 2;
+    public static const RECORD :int = 3;
 
     public var type :int;
     public var id :int;
@@ -40,19 +41,24 @@ public class ShotMessage
 
     public static function shotHit (id :int, damage :Number, inter :int, owner :int) :ShotMessage
     {
-        var msg :ShotMessage = new ShotMessage();
-        msg.type = HIT;
-        msg.id = id;
-        msg.damage = damage;
-        msg.inter = inter;
-        msg.owner = owner;
-        return msg;
+        return create(HIT, id, damage, inter, owner);
     }
 
     public static function shotDamage (id :int, damage :Number, inter :int, owner :int) :ShotMessage
     {
+        return create(DAMAGE, id, damage, inter, owner);
+    }
+
+    public static function recordShot (id :int, owner :int) :ShotMessage
+    {
+        return create(RECORD, id, 0, 0, owner);
+    }
+
+    public static function create (
+        type :int, id :int, damage :Number, inter :int, owner :int) :ShotMessage
+    {
         var msg :ShotMessage = new ShotMessage();
-        msg.type = DAMAGE;
+        msg.type = type;
         msg.id = id;
         msg.damage = damage;
         msg.inter = inter;
