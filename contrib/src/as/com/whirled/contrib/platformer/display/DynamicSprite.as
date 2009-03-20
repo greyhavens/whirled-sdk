@@ -191,7 +191,7 @@ public class DynamicSprite extends Sprite
             cw.disp.rotation = -90 + (Math.atan2(apt.y, apt.x) - Math.atan2(0, -1)) * 180 / Math.PI;
             cw.recolor(effect.recolor, filter);
             if (effect.soundEvents != null && effect.soundEvents.length > 0) {
-                if ((effect.soundEvents.length % 1) != 0) {
+                if ((effect.soundEvents.length % 2) != 0) {
                     trace("Effect.soundEvents is required to be even in length! [" + effect + "]");
                 } else {
                     for (var ii :int = 0; ii < effect.soundEvents.length; ii += 2) {
