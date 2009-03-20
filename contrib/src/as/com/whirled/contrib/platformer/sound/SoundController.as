@@ -64,7 +64,8 @@ public class SoundController extends EventDispatcher
         _eventMgr.conditionalCall(callback, loaded, this, Event.COMPLETE);
     }
 
-    public function startBackgroundMusic (name :String, crossfade :Boolean = true) :void
+    public function startBackgroundMusic (name :String, crossfade :Boolean = true,
+        loop :Boolean = true) :void
     {
         if (!SOUND_ENABLED) {
             return;
@@ -91,7 +92,9 @@ public class SoundController extends EventDispatcher
         } else {
             _track = playSound(trackSound, backgroundVolume);
         }
-        _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
+        if (loop) {
+            _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
+        }
     }
 
     public function stopBackgroundMusic (fadeOut :Boolean = true) :void

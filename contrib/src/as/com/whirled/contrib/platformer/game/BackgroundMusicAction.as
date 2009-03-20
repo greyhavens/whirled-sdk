@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer.game {
 
+import com.threerings.util.RandomUtil;
+
 import com.whirled.contrib.platformer.PlatformerContext;
 
 public class BackgroundMusicAction extends EventAction
@@ -28,14 +30,24 @@ public class BackgroundMusicAction extends EventAction
     {
         super(gctrl, xml);
 
-        _track = xml.@track;
+        _track = String(xml.@track).split(",");
+
+        if (xml.hasOwnProperty("@crossfade")) {
+            _crossfade = xml.@crossfade == "true";
+        }
+        if (xml.hasOwnProperty("@loop")) {
+            _loop = xml.@loop == "true";
+        }
     }
 
     override public function run () :void
     {
-        PlatformerContext.platformer.startBackgroundMusic(_track);
+        PlatformerContext.platformer.startBackgroundMusic(
+            RandomUtil.pickRandom(_track) as String, _crossfade, _loop);
     }
 
-    protected var _track :String;
+    protected var _track :Array;
+    protected var _crossfade :Boolean = true;
+    protected var _loop :Boolean = true;
 }
 }

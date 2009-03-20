@@ -48,9 +48,10 @@ public class ClientPlatformerController extends PlatformerController
         }
     }
 
-    override public function startBackgroundMusic (track :String) :void
+    override public function startBackgroundMusic (track :String, crossfade :Boolean = true,
+        loop :Boolean = true) :void
     {
-        ClientPlatformerContext.sound.startBackgroundMusic(track);
+        ClientPlatformerContext.sound.startBackgroundMusic(track, crossfade, loop);
     }
 
     protected function handleUnload (...ignored) :void

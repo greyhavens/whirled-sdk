@@ -69,7 +69,8 @@ public class PlatformerController
     {
     }
 
-    public function startBackgroundMusic (track :String) :void
+    public function startBackgroundMusic (track :String, crossfade :Boolean = true,
+        loop :Boolean = true) :void
     {
     }
 
