@@ -241,7 +241,7 @@ public class GameSubControl extends AbstractSubControl
      */
     public function getOccupantName (playerId :int) :String
     {
-        return String(callHostCode("getOccupantName_v1", playerId));
+        return (callHostCode("getOccupantName_v1", playerId) as String);
     }
 
     /**
