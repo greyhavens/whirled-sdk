@@ -190,8 +190,25 @@ public class DynamicSprite extends Sprite
             apt.normalize(1);
             cw.disp.rotation = -90 + (Math.atan2(apt.y, apt.x) - Math.atan2(0, -1)) * 180 / Math.PI;
             cw.recolor(effect.recolor, filter);
+            if (effect.soundEvents != null && effect.soundEvents.length > 0) {
+                if ((effect.soundEvents.length % 1) != 0) {
+                    trace("Effect.soundEvents is required to be even in length! [" + effect + "]");
+                } else {
+                    for (var ii :int = 0; ii < effect.soundEvents.length; ii += 2) {
+                        cw.addDispListener(effect.soundEvents[ii] as String,
+                            bindSoundEffectPlayback(effect.soundEvents[ii+1] as SoundEffect));
+                    }
+                }
+            }
             _particleCallback(cw, pt, effect.back);
         }
+    }
+
+    protected function bindSoundEffectPlayback (soundEffect :SoundEffect) :Function
+    {
+        return function (...ignored) :void {
+            playSoundEffect(soundEffect);
+        };
     }
 
     protected function generateAttachedEffect (name :String, node :DisplayObjectContainer) :void

@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer.util {
 
+import com.whirled.contrib.platformer.sound.SoundEffect;
+
 public interface Effect
 {
     function get effect () :String;
@@ -29,6 +31,8 @@ public interface Effect
     function get recolor () :String;
 
     function get flip () :Boolean;
+
+    function get soundEvents () :Array;
 
     function shouldShow (effectLevel :int) :Boolean;
 

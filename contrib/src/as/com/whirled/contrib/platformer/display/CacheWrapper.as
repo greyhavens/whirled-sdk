@@ -57,6 +57,9 @@ public class CacheWrapper
     public function reset (...ignored) :void
     {
         _disp.removeEventListener(Event.COMPLETE, onComplete);
+        for each (var listener :DispListener in _listeners) {
+            _disp.removeEventListener(listener.event, listener.func);
+        }
         if (_disp.parent != null) {
             _disp.parent.removeChild(_disp);
         }
@@ -68,7 +71,13 @@ public class CacheWrapper
 
     public function resetOnComplete () :void
     {
-        _disp.addEventListener(Event.COMPLETE, reset);
+        addDispListener(Event.COMPLETE, reset);
+    }
+
+    public function addDispListener (event :String, func :Function) :void
+    {
+        _listeners.push(new DispListener(event, func));
+        _disp.addEventListener(event, func);
     }
 
     public function recolor (node :String, filter :ColorMatrixFilter) :void
@@ -93,5 +102,18 @@ public class CacheWrapper
     protected var _name :String;
     protected var _recolor :String;
     protected var _filter :ColorMatrixFilter;
+    protected var _listeners :Array = [];
 }
+}
+
+class DispListener
+{
+    public var event :String;
+    public var func :Function;
+
+    public function DispListener (event :String, func :Function)
+    {
+        this.event = event;
+        this.func = func;
+    }
 }
