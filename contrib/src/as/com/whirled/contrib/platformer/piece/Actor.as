@@ -249,6 +249,11 @@ public class Actor extends Dynamic
         }
     }
 
+    public function isAttached () :Boolean
+    {
+        return _attached != null || _attachedId != -1;
+    }
+
     public function setAttached (ld :LineData, id :int = -1) :void
     {
         _attached = ld;
