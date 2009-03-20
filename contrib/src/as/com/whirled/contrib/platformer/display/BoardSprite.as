@@ -232,6 +232,7 @@ public class BoardSprite extends Sprite
         }
 
         var x :int = Math.floor(_centerX / Metrics.TILE_SIZE);
+        var mx :int = Math.ceil((_centerX + Metrics.DISPLAY_WIDTH) / Metrics.TILE_SIZE);
         var minX :int = _board.getBound(Board.LEFT_BOUND) > 0 ?
                 Math.max(_minX, _board.getBound(Board.LEFT_BOUND)) : _minX;
         var maxX :int = _board.getBound(Board.RIGHT_BOUND) > 0 ?
@@ -239,7 +240,7 @@ public class BoardSprite extends Sprite
         if (x < minX) {
             _centerX = minX * Metrics.TILE_SIZE;
             x = minX;
-        } else if (x + 1 + Metrics.WINDOW_WIDTH > maxX) {
+        } else if (mx > maxX) {
             _centerX = maxX * Metrics.TILE_SIZE - Metrics.DISPLAY_WIDTH;
             x = maxX - Metrics.WINDOW_WIDTH;
         }
