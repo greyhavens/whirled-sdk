@@ -166,9 +166,9 @@ public class SoundController extends EventDispatcher
         if (_track != null) {
             _track.stop();
         }
-        _channels.forEach(function (key :String, value :SoundChannel) :void {
+        _channels.forEach(function (key :String, value :ChannelPlayback) :void {
             if (value != null) {
-                value.stop();
+                value.channel.stop();
             }
         });
     }
