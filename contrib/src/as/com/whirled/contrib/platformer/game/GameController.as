@@ -108,6 +108,7 @@ public class GameController
                     //trace("adding event: " + node.toXMLString());
                 }
             }
+            runEvents();
         }
     }
 
@@ -170,14 +171,7 @@ public class GameController
                     (controller as TickController).postTick();
                 }
             }
-            var ii :int = 0;
-            while (ii < _events.length) {
-                if (_events[ii].runEvent()) {
-                    _events.splice(ii, 1);
-                } else {
-                    ii++;
-                }
-            }
+            runEvents();
         //}
     }
 
@@ -358,6 +352,18 @@ public class GameController
             }
         }
         PlatformerContext.net.sendMessage(new TickMessage());
+    }
+
+    protected function runEvents () :void
+    {
+        var ii :int = 0;
+        while (ii < _events.length) {
+            if (_events[ii].runEvent()) {
+                _events.splice(ii, 1);
+            } else {
+                ii++;
+            }
+        }
     }
 
     protected var _controllers :Array = new Array();
