@@ -661,6 +661,9 @@ public class SimpleActorBounds extends ActorBounds
 
     protected function getLines () :Array
     {
+        if (PlatformerContext.gctrl.game.amServerAgent()) {
+            return new Array();
+        }
         return _collider.getLines(actor);
     }
 

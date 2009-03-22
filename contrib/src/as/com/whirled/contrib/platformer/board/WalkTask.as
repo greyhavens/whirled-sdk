@@ -56,6 +56,9 @@ public class WalkTask extends ColliderTask
         _hitX = false;
         _hitY = false;
         super.init(delta);
+        if (PlatformerContext.gctrl.game.amServerAgent()) {
+            return;
+        }
         var a :Actor = _sab.actor;
         if (a.attachedId != -1) {
             var d :Dynamic = PlatformerContext.board.getDynamic(a.attachedId);
@@ -112,6 +115,9 @@ public class WalkTask extends ColliderTask
 
     protected function updateVector () :void
     {
+        if (PlatformerContext.gctrl.game.amServerAgent()) {
+            return;
+        }
         var a :Actor = _sab.actor;
 
         if (a.attached != null && a.attached != _attached && a.accelY <= 0) {

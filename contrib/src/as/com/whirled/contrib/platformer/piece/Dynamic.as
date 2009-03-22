@@ -159,6 +159,11 @@ public class Dynamic
         return false;
     }
 
+    public function spawnDist () :Number
+    {
+        return 0;
+    }
+
     public function useCache () :Boolean
     {
         return false;
