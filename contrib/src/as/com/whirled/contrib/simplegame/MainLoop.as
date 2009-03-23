@@ -27,17 +27,25 @@ import com.whirled.contrib.simplegame.resource.*;
 
 import flash.display.Sprite;
 import flash.events.Event;
+import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
 import flash.events.KeyboardEvent;
 import flash.utils.getTimer;
 
-public final class MainLoop
+public class MainLoop extends EventDispatcher
 {
+    public static const HAS_SHUTDOWN :String = "HasShutdown";
+
     public function MainLoop (ctx :SGContext, hostSprite :Sprite,
         keyDispatcher :IEventDispatcher = null)
     {
+        if (null == hostSprite) {
+            throw new ArgumentError("hostSprite must be non-null");
+        }
+
         _ctx = ctx;
-        reset(hostSprite, keyDispatcher);
+        _hostSprite = hostSprite;
+        _keyDispatcher = (null != keyDispatcher ? keyDispatcher : _hostSprite);
     }
 
     /**
@@ -49,31 +57,22 @@ public final class MainLoop
 
     /**
      * Call this function before the application shuts down to release
-     * memory and disconnect event handlers.
+     * memory and disconnect event handlers. The MainLoop may not shut down
+     * immediately when this function is called - if it is running, it will be
+     * shut down at the end of the current update.
+     *
+     * It's an error to continue to use a MainLoop that has been shut down.
      *
      * Most applications will want to install an Event.REMOVED_FROM_STAGE
      * handler on the main sprite, and call shutdown from there.
      */
     public function shutdown () :void
     {
-        stop();
-
-        popAllModes();
-        handleModeTransitions();
-    }
-
-    public function reset (hostSprite :Sprite, keyDispatcher :IEventDispatcher = null) :void
-    {
-        if (null == hostSprite) {
-            throw new ArgumentError("hostSprite must be non-null");
+        if (_running) {
+            _shutdownPending = true;
+        } else {
+            shutdownNow();
         }
-
-        stop();
-        popAllModes();
-        handleModeTransitions();
-
-        _hostSprite = hostSprite;
-        _keyDispatcher = (null != keyDispatcher ? keyDispatcher : _hostSprite);
     }
 
     public function addUpdatable (obj :Updatable) :void
@@ -113,6 +112,7 @@ public final class MainLoop
         setup();
 
         _running = true;
+        _stopPending = false;
 
         _hostSprite.addEventListener(Event.ENTER_FRAME, update);
         _keyDispatcher.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
@@ -121,13 +121,15 @@ public final class MainLoop
         _lastTime = this.elapsedSeconds;
     }
 
+    /**
+     * Stops the MainLoop from running. It can be restarted by calling run() again.
+     * The MainLoop may not stop immediately when this function is called -
+     * if it is running, it will be stopped at the end of the current update.
+     */
     public function stop () :void
     {
         if (_running) {
-            _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
-            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-            _running = false;
+            _stopPending = true;
         }
     }
 
@@ -386,6 +388,18 @@ public final class MainLoop
             theTopMode.update(dt);
         }
 
+        // has the MainLoop been stopped?
+        if (_stopPending || _shutdownPending) {
+            _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
+            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+            _keyDispatcher.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+            _running = false;
+
+            if (_shutdownPending) {
+                shutdownNow();
+            }
+        }
+
         _lastTime = newTime;
     }
 
@@ -405,11 +419,29 @@ public final class MainLoop
         }
     }
 
+    protected function shutdownNow () :void
+    {
+        popAllModes();
+        handleModeTransitions();
+
+        _ctx = null;
+        _hostSprite = null;
+        _keyDispatcher = null;
+        _modeStack = null;
+        _pendingModeTransitionQueue = null;
+        _updatables = null;
+
+        dispatchEvent(new Event(HAS_SHUTDOWN));
+    }
+
     protected var _ctx :SGContext;
     protected var _hostSprite :Sprite;
     protected var _keyDispatcher :IEventDispatcher;
-    protected var _hasSetup :Boolean = false;
-    protected var _running :Boolean = false;
+
+    protected var _hasSetup :Boolean;
+    protected var _running :Boolean;
+    protected var _stopPending :Boolean;
+    protected var _shutdownPending :Boolean;
     protected var _lastTime :Number;
     protected var _modeStack :Array = [];
     protected var _pendingModeTransitionQueue :Array = [];
