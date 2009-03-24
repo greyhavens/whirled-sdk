@@ -24,8 +24,7 @@ import flash.utils.ByteArray;
 
 import com.whirled.contrib.platformer.net.GameMessage;
 
-public class SpawnMessage
-    implements GameMessage
+public class SpawnMessage extends BaseGameMessage
 {
     public static const NAME :String = "spawn";
 
@@ -85,12 +84,12 @@ public class SpawnMessage
         return msg;
     }
 
-    public function get name () :String
+    override public function get name () :String
     {
         return NAME;
     }
 
-    public function toBytes (bytes :ByteArray = null) :ByteArray
+    override public function toBytes (bytes :ByteArray = null) :ByteArray
     {
         bytes = (bytes != null ? bytes : new ByteArray());
         bytes.writeByte(state);
@@ -103,7 +102,7 @@ public class SpawnMessage
         return bytes;
     }
 
-    public function fromBytes (bytes :ByteArray) :void
+    override public function fromBytes (bytes :ByteArray) :void
     {
         state = bytes.readByte();
         id = bytes.readInt();

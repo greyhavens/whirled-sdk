@@ -24,8 +24,7 @@ import flash.utils.ByteArray;
 
 import com.whirled.contrib.platformer.piece.Dynamic;
 
-public class DynamicMessage
-    implements GameMessage
+public class DynamicMessage extends BaseGameMessage
 {
     public static const NAME :String = "dynamic";
 
@@ -40,12 +39,12 @@ public class DynamicMessage
         return msg;
     }
 
-    public function get name () :String
+    override public function get name () :String
     {
         return NAME;
     }
 
-    public function toBytes (ba :ByteArray = null) :ByteArray
+    override public function toBytes (ba :ByteArray = null) :ByteArray
     {
         var ba :ByteArray = (ba != null ? ba : new ByteArray());
         ba.writeInt(id);
@@ -54,7 +53,7 @@ public class DynamicMessage
         return ba;
     }
 
-    public function fromBytes (ba :ByteArray) :void
+    override public function fromBytes (ba :ByteArray) :void
     {
         id = ba.readInt();
         bytes = new ByteArray();

@@ -24,8 +24,7 @@ import flash.utils.ByteArray;
 
 import com.threerings.util.HashMap;
 
-public class QueueMessage
-    implements GameMessage
+public class QueueMessage extends BaseGameMessage
 {
     public static const NAME :String = "queue";
 
@@ -40,12 +39,12 @@ public class QueueMessage
         msgs.push(msg);
     }
 
-    public function get name () :String
+    override public function get name () :String
     {
         return NAME;
     }
 
-    public function toBytes (bytes :ByteArray = null) :ByteArray
+    override public function toBytes (bytes :ByteArray = null) :ByteArray
     {
         bytes = (bytes != null ? bytes : new ByteArray());
         if (msgs != null) {
@@ -57,7 +56,7 @@ public class QueueMessage
         return bytes;
     }
 
-    public function fromBytes (bytes :ByteArray) :void
+    override public function fromBytes (bytes :ByteArray) :void
     {
         this.bytes = bytes;
     }

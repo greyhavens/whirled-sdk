@@ -23,23 +23,22 @@ package com.whirled.contrib.platformer.net {
 
 import flash.utils.ByteArray;
 
-public class TickMessage
-    implements GameMessage
+public class TickMessage extends BaseGameMessage
 {
     public static const NAME :String = "tick";
 
-    public function get name () :String
+    override public function get name () :String
     {
         return NAME;
     }
 
-    public function toBytes (bytes :ByteArray = null) :ByteArray
+    override public function toBytes (bytes :ByteArray = null) :ByteArray
     {
         bytes = (bytes != null ? bytes : new ByteArray());
         return bytes;
     }
 
-    public function fromBytes (bytes :ByteArray) :void
+    override public function fromBytes (bytes :ByteArray) :void
     {
     }
 }

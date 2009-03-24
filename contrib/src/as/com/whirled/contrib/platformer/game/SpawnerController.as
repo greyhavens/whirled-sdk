@@ -20,8 +20,6 @@
 
 package com.whirled.contrib.platformer.game {
 
-import com.whirled.net.MessageReceivedEvent;
-
 import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.game.Collision;
@@ -40,15 +38,13 @@ public class SpawnerController extends RectDynamicController
         if (_spawner.spawns == null) {
             _spawner.spawns = new Array();
         }
-        PlatformerContext.net.addEventListener(
-            MessageReceivedEvent.MESSAGE_RECEIVED, messageReceived);
+        PlatformerContext.net.addEventListener(SpawnMessage.NAME, spawnMsgReceived);
     }
 
     override public function shutdown () :void
     {
         super.shutdown();
-        PlatformerContext.net.removeEventListener(
-            MessageReceivedEvent.MESSAGE_RECEIVED, messageReceived);
+        PlatformerContext.net.removeEventListener(SpawnMessage.NAME, spawnMsgReceived);
     }
 
     override public function hasBounds () :Boolean
@@ -171,14 +167,11 @@ public class SpawnerController extends RectDynamicController
         _spawnOwner = 0;
     }
 
-    protected function messageReceived (event :MessageReceivedEvent) :void
+    protected function spawnMsgReceived (spawnMsg :SpawnMessage) :void
     {
-        if (event.value is SpawnMessage) {
-            var spawnMsg :SpawnMessage = event.value as SpawnMessage;
-            if ((spawnMsg.state == SpawnMessage.OWNER ||
-                    spawnMsg.state == SpawnMessage.REQUEST_OWNER) && _spawnId == spawnMsg.id) {
-                _spawnOwner = spawnMsg.idx;
-            }
+        if ((spawnMsg.state == SpawnMessage.OWNER ||
+                spawnMsg.state == SpawnMessage.REQUEST_OWNER) && _spawnId == spawnMsg.id) {
+            _spawnOwner = spawnMsg.idx;
         }
     }
 

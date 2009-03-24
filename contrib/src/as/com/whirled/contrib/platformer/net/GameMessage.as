@@ -25,6 +25,8 @@ import flash.utils.ByteArray;
 public interface GameMessage
 {
     function get name () :String;
+    function get senderId () :int;
+    function set senderId (id :int) :void;
     function fromBytes (bytes :ByteArray) :void;
     function toBytes (bytes :ByteArray = null) :ByteArray;
 }

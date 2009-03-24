@@ -24,8 +24,7 @@ import flash.utils.ByteArray;
 
 import com.whirled.contrib.platformer.piece.Shot;
 
-public class ShotMessage
-    implements GameMessage
+public class ShotMessage extends BaseGameMessage
 {
     public static const NAME :String = "shot";
 
@@ -33,7 +32,7 @@ public class ShotMessage
     public static const DAMAGE :int = 2;
     public static const RECORD :int = 3;
 
-    public var type :int;
+    public var state :int;
     public var id :int;
     public var damage :Number;
     public var inter :int;
@@ -55,10 +54,10 @@ public class ShotMessage
     }
 
     public static function create (
-        type :int, id :int, damage :Number, inter :int, owner :int) :ShotMessage
+        state :int, id :int, damage :Number, inter :int, owner :int) :ShotMessage
     {
         var msg :ShotMessage = new ShotMessage();
-        msg.type = type;
+        msg.state = state;
         msg.id = id;
         msg.damage = damage;
         msg.inter = inter;
@@ -66,24 +65,24 @@ public class ShotMessage
         return msg;
     }
 
-    public function get name () :String
+    override public function get name () :String
     {
         return NAME;
     }
 
-    public function toBytes (ba :ByteArray = null) :ByteArray
+    override public function toBytes (ba :ByteArray = null) :ByteArray
     {
         var ba :ByteArray = (ba != null ? ba : new ByteArray());
-        ba.writeByte(type);
+        ba.writeByte(state);
         ba.writeInt(id);
         ba.writeFloat(damage);
         ba.writeByte(inter);
         return ba;
     }
 
-    public function fromBytes (ba :ByteArray) :void
+    override public function fromBytes (ba :ByteArray) :void
     {
-        type = ba.readByte();
+        state = ba.readByte();
         id = ba.readInt();
         damage = ba.readFloat();
         inter = ba.readByte();

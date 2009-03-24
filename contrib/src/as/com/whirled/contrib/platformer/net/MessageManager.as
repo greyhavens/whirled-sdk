@@ -101,7 +101,12 @@ public class MessageManager extends EventDispatcher
             var queue :QueueMessage = msg as QueueMessage;
             while (queue.hasMessages()) {
                 msg = queue.nextMessage(getMessage);
-                dispatchEvent(new MessageReceivedEvent(msg.name, msg, e.senderId));
+                if (msg is BaseGameMessage) {
+                    msg.senderId = e.senderId;
+                    dispatchEvent(msg as BaseGameMessage);
+                } else {
+                    dispatchEvent(new MessageReceivedEvent(msg.name, msg, e.senderId));
+                }
             }
             /*
             _rec++;
@@ -112,6 +117,9 @@ public class MessageManager extends EventDispatcher
                 _rec = 0;
             }
             */
+        } else if (msg is BaseGameMessage) {
+            msg.senderId = e.senderId;
+            dispatchEvent(msg as BaseGameMessage);
         } else {
             dispatchEvent(new MessageReceivedEvent(e.name, msg, e.senderId));
         }

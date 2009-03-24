@@ -20,40 +20,44 @@
 
 package com.whirled.contrib.platformer.net {
 
+import flash.events.Event;
 import flash.utils.ByteArray;
 
-public class WrapperMessage extends BaseGameMessage
+public class BaseGameMessage extends Event
+    implements GameMessage
 {
-    public static const NAME :String = "wrapper";
-
-    public var messageName :String;
-    public var bytes :ByteArray;
-
-    public static function wrap (msg :GameMessage) :void
+    public function BaseGameMessage ()
     {
-        var wmsg :WrapperMessage = new WrapperMessage;
-        wmsg.messageName = msg.name;
-        wmsg.bytes = msg.toBytes();
+        super(name);
     }
 
-    override public function get name () :String
+    public function get name () :String
     {
-        return NAME;
+        throw new Error("name must be implemented");
+        return null;
     }
 
-    override public function toBytes (ba :ByteArray = null) :ByteArray
+    public function get senderId () :int
     {
-        var ba :ByteArray = (ba != null ? ba : new ByteArray());
-        ba.writeUTF(messageName);
-        ba.writeBytes(bytes);
-        return ba;
+        return _senderId;
     }
 
-    override public function fromBytes (ba :ByteArray) :void
+    public function set senderId (id :int) :void
     {
-        messageName = ba.readUTF();
-        bytes = new ByteArray();
-        ba.readBytes(bytes);
+        _senderId = id;
     }
+
+    public function fromBytes (bytes :ByteArray) :void
+    {
+        throw new Error("fromBytes must be implemented");
+    }
+
+    public function toBytes (bytes :ByteArray = null) :ByteArray
+    {
+        throw new Error("toBytes must be implemented");
+        return null;
+    }
+
+    protected var _senderId :int;
 }
 }
