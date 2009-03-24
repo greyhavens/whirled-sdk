@@ -93,15 +93,7 @@ public class GameController
     public function run () :void
     {
         for each (var d :Dynamic in _board.getDynamicIns()) {
-            var dc :DynamicController = getController(d);
-            if (dc != null) {
-                if (dc is InitController) {
-                    (dc as InitController).init();
-                }
-                if (dc is ShutdownController) {
-                    (dc as ShutdownController).shutdown();
-                }
-            }
+            initDynamic(d);
         }
         var eventsXML :XML = _board.getEventXML();
         if (eventsXML != null) {
@@ -244,6 +236,19 @@ public class GameController
     protected function genCollider () :Collider
     {
         throw new Error("Must initialize collider in subclass");
+    }
+
+    protected function initDynamic (d :Dynamic) :void
+    {
+        var dc :DynamicController = getController(d);
+        if (dc != null) {
+            if (dc is InitController) {
+                (dc as InitController).init();
+            }
+            if (dc is ShutdownController) {
+                (dc as ShutdownController).shutdown();
+            }
+        }
     }
 
     protected function addActorClass (a :Class, ac :Class, isDefault :Boolean = false) :void
