@@ -20,7 +20,10 @@
 
 package com.whirled.contrib.platformer.game {
 
+import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.piece.Hover;
+import com.whirled.contrib.platformer.net.HoverMessage;
 
 public class HoverController extends RectDynamicController
 {
@@ -29,6 +32,16 @@ public class HoverController extends RectDynamicController
         super(h, controller);
         _hover = h;
         addCollisionHandlers();
+        if (_hover.owner == Dynamic.OWN_SERVER && _hover.amOwner()) {
+            _hoverers = new Array();
+            PlatformerContext.net.addEventListener(HoverMessage.NAME, hoverMsgReceived);
+        }
+    }
+
+    override public function shutdown () :void
+    {
+        super.shutdown();
+        PlatformerContext.net.removeEventListener(HoverMessage.NAME, hoverMsgReceived);
     }
 
     protected function addCollisionHandlers () :void
@@ -36,6 +49,22 @@ public class HoverController extends RectDynamicController
         addCollisionHandler(new HoverCollisionHandler(this));
     }
 
+    protected function hoverMsgReceived (hoverMsg :HoverMessage) :void
+    {
+        if (hoverMsg.id == _hover.id) {
+            var idx :int = _hoverers.indexOf(hoverMsg.senderId);
+            if (hoverMsg.state == HoverMessage.HOVER) {
+                if (idx == -1) {
+                    _hoverers.push(hoverMsg.senderId);
+                }
+            } else if (idx != -1) {
+                _hoverers.splice(idx, 1);
+            }
+            _hover.hovered = _hoverers.length == 0;
+        }
+    }
+
     protected var _hover :Hover;
+    protected var _hoverers :Array;
 }
 }

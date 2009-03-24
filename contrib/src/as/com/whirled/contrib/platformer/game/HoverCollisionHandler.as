@@ -20,8 +20,10 @@
 
 package com.whirled.contrib.platformer.game {
 
+import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.board.ColliderDetails;
 import com.whirled.contrib.platformer.piece.Hover;
+import com.whirled.contrib.platformer.net.HoverMessage;
 
 public class HoverCollisionHandler extends CollisionHandler
 {
@@ -38,7 +40,11 @@ public class HoverCollisionHandler extends CollisionHandler
 
     override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
-        _hover.hovered = true;
+        if (_hover.amOwner()) {
+            _hover.hovered = true;
+        } else {
+            PlatformerContext.net.sendMessage(HoverMessage.create(HoverMessage.HOVER, _hover.id));
+        }
         _collided.push(target.controller);
     }
 
@@ -46,8 +52,10 @@ public class HoverCollisionHandler extends CollisionHandler
     {
         if (_collided.length > 0) {
             _collided.splice(0);
-        } else {
+        } else if (_hover.amOwner()) {
             _hover.hovered = false;
+        } else {
+            PlatformerContext.net.sendMessage(HoverMessage.create(HoverMessage.UNHOVER, _hover.id));
         }
     }
 

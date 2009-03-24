@@ -30,6 +30,7 @@ import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.game.GameController;
 import com.whirled.contrib.platformer.net.MessageManager;
 import com.whirled.contrib.platformer.net.DynamicMessage;
+import com.whirled.contrib.platformer.net.HoverMessage;
 import com.whirled.contrib.platformer.net.ShotMessage;
 import com.whirled.contrib.platformer.net.SpawnMessage;
 import com.whirled.contrib.platformer.net.TickMessage;
@@ -50,6 +51,7 @@ public class PlatformerController
             PlatformerContext.net = createMessageManager();
             if (PlatformerContext.net != null) {
                 PlatformerContext.net.addMessageType(DynamicMessage);
+                PlatformerContext.net.addMessageType(HoverMessage);
                 PlatformerContext.net.addMessageType(ShotMessage);
                 PlatformerContext.net.addMessageType(SpawnMessage);
                 PlatformerContext.net.addMessageType(TickMessage);
