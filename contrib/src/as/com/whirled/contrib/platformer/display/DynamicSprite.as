@@ -34,6 +34,7 @@ import flash.geom.Point;
 import flash.geom.Transform;
 
 import com.whirled.contrib.ColorMatrix;
+import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.client.ClientPlatformerContext;
 import com.whirled.contrib.platformer.piece.Dynamic;
 import com.whirled.contrib.platformer.sound.SoundEffect;
@@ -54,6 +55,19 @@ public class DynamicSprite extends Sprite
         this.scaleX = Metrics.SCALE;
         this.scaleY = Metrics.SCALE;
         */
+
+        if (dy.soundEvents != null) {
+            if ((dy.soundEvents.length % 2) != 0) {
+                trace("Dynamic.soundEvents must be even in length! [" + dy + "]");
+                return;
+            }
+            for (var ii :int = 0; ii < dy.soundEvents.length; ii += 2) {
+                var soundEffect :SoundEffect =
+                    PlatformerContext.getSoundEffect(dy.soundEvents[ii+1] as String);
+                disp.addEventListener(dy.soundEvents[ii] as String,
+                    bindSoundEffectPlayback(soundEffect));
+            }
+        }
     }
 
     public function get displayWidth () :Number
@@ -347,4 +361,3 @@ public class DynamicSprite extends Sprite
     protected static const SOUND_NORMAL_DISTANCE :Number = Metrics.DISPLAY_HEIGHT * 2;
 }
 }
-

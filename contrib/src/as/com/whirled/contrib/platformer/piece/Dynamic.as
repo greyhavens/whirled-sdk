@@ -59,6 +59,8 @@ public class Dynamic
 
     public var ownerRequest :int;
 
+    public var soundEvents :Array;
+
     public function Dynamic (insxml :XML = null)
     {
         if (insxml != null) {
@@ -66,6 +68,9 @@ public class Dynamic
             y = insxml.@y;
             id = insxml.@id;
             type = insxml.@type;
+            if (insxml.hasOwnProperty("@soundEvents")) {
+                soundEvents = String(insxml.@soundEvents).split(",");
+            }
         }
     }
 
@@ -159,6 +164,9 @@ public class Dynamic
         xml.@id = id;
         xml.@type = type;
         xml.@cname = ClassUtil.getClassName(this);
+        if (soundEvents != null && soundEvents.length > 0) {
+            xml.@soundEvents = soundEvents.join(",");
+        }
         return xml;
     }
 
