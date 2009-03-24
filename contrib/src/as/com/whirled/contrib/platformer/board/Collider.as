@@ -219,6 +219,9 @@ public class Collider
 
     public function addDynamic (dc :DynamicController) :void
     {
+        if (PlatformerContext.gctrl.game.amServerAgent()) {
+            return;
+        }
         var d :Dynamic = dc.getDynamic();
         var db :DynamicBounds = getBounds(dc);
         if (db != null) {
@@ -248,6 +251,10 @@ public class Collider
     public function updateInterTo (d :Dynamic, oldInter :int, newInter :int) :void
     {
         var db :DynamicBounds = getDynamicBounds(d);
+        if (db == null) {
+            d.inter = newInter;
+            return;
+        }
         var arr :Array = getDynamicBoundsByType(oldInter);
         var idx :int = arr.indexOf(db);
         if (idx != -1) {
@@ -362,7 +369,9 @@ public class Collider
     public function translateDynamic (d :Dynamic, dX :Number, dY :Number) :void
     {
         var db :DynamicBounds = _dynamics[d.id];
-        db.translate(dX, dY);
+        if (db != null) {
+            db.translate(dX, dY);
+        }
     }
 
     public function doesInteract (sinter :int, tinter :int) :Boolean

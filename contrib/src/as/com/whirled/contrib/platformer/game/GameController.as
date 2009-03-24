@@ -153,9 +153,17 @@ public class GameController
                     tickController(controller as TickController, sdelta);
                 }
             }
-            var now :int = getTimer();
-            _collider.tick(tdelta);
-            colliderTicks += getTimer() - now;
+            if (!PlatformerContext.gctrl.game.amServerAgent()) {
+                var now :int = getTimer();
+                _collider.tick(tdelta);
+                colliderTicks += getTimer() - now;
+            } else {
+                for each (controller in _controllers) {
+                    if (controller is CollisionController) {
+                        (controller as CollisionController).postCollider();
+                    }
+                }
+            }
             ticked++;
             _rdelta -= tdelta;
             usedDelta += tdelta;

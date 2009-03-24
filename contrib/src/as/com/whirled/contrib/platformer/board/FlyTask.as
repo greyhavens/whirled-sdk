@@ -29,6 +29,18 @@ import com.whirled.contrib.platformer.piece.Dynamic;
 
 public class FlyTask extends ColliderTask
 {
+    public static function updateVector (
+            a :Actor, delta :Number, maxDx :Number, maxDy :Number) :void
+    {
+        a.dy += a.accelY * delta;
+        a.dy -= Maths.sign0(a.dy) * Maths.limit(DRAG * delta, Math.abs(a.dy));
+        var maxDy :Number = (a.health > 0) ? maxDy : MAX_DEAD_DY;
+        a.dy = Math.min(Math.max(a.dy, -maxDy), maxDy);
+        a.dx += a.accelX * delta;
+        a.dx -= Maths.sign0(a.dx) * Maths.limit(DRAG * delta, Math.abs(a.dx));
+        a.dx = Maths.limit(a.dx, maxDx);
+    }
+
     public function FlyTask (
             ac :ActorController, col :Collider, maxDx :Number = 3, maxDy :Number = 1)
     {
@@ -65,29 +77,17 @@ public class FlyTask extends ColliderTask
     {
         var doReset :Boolean;
         if (_cd == null) {
-            updateVector();
+            updateVector(_sab.actor, _delta, _maxDx, _maxDy);
         } else if (ct != null) {
             if (!_sab.updatedDB(_cd, ct.getBounds())) {
                 reset();
             }
             if (!_cd.isValid(_sab.actor)) {
-                updateVector();
+                updateVector(_sab.actor, _delta, _maxDx, _maxDy);
             }
         }
         _cd = _sab.findColliders(_delta, _cd);
         return _cd;
-    }
-
-    protected function updateVector () :void
-    {
-        var a :Actor = _sab.actor;
-        a.dy += a.accelY * _delta;
-        a.dy -= Maths.sign0(a.dy) * Maths.limit(DRAG * _delta, Math.abs(a.dy));
-        var maxDy :Number = (a.health > 0) ? _maxDy : MAX_DEAD_DY;
-        a.dy = Math.min(Math.max(a.dy, -maxDy), maxDy);
-        a.dx += a.accelX * _delta;
-        a.dx -= Maths.sign0(a.dx) * Maths.limit(DRAG * _delta, Math.abs(a.dx));
-        a.dx = Maths.limit(a.dx, _maxDx);
     }
 
     override protected function runTask () :void
@@ -120,7 +120,7 @@ public class FlyTask extends ColliderTask
     protected var _hitX :Boolean;
     protected var _hitY :Boolean;
 
-    protected var MAX_DEAD_DY :Number = 6;
-    protected var DRAG :Number = 0.5;
+    protected static const MAX_DEAD_DY :Number = 6;
+    protected static const DRAG :Number = 0.5;
 }
 }
