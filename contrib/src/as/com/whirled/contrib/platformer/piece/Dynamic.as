@@ -48,8 +48,6 @@ public class Dynamic
     public static const U_INTER :int = 1 << 2;
     public static const DYN_COUNT :int = 2;
 
-    public var x :Number = 0;
-    public var y :Number = 0;
 
     public var id :int;
 
@@ -71,6 +69,32 @@ public class Dynamic
         }
     }
 
+    public function get x () :Number
+    {
+        return _x;
+    }
+
+    public function set x (x :Number) :void
+    {
+        if (_x != x) {
+            _x = x;
+            updateState |= U_POS;
+        }
+    }
+
+    public function get y () :Number
+    {
+        return _y;
+    }
+
+    public function set y (y :Number) :void
+    {
+        if (_y != y) {
+            _y = y;
+            updateState |= U_POS;
+        }
+    }
+
     public function get dx () :Number
     {
         return _dx;
@@ -78,8 +102,10 @@ public class Dynamic
 
     public function set dx (dx :Number) :void
     {
-        _dx = dx;
-        updateState |= U_VEL;
+        if (_dx != dx) {
+            _dx = dx;
+            updateState |= U_VEL;
+        }
     }
 
     public function get dy () :Number
@@ -89,8 +115,10 @@ public class Dynamic
 
     public function set dy (dy :Number) :void
     {
-        _dy = dy;
-        updateState |= U_VEL;
+        if (_dy != dy) {
+            _dy = dy;
+            updateState |= U_VEL;
+        }
     }
 
     public function get inter () :int
@@ -196,8 +224,8 @@ public class Dynamic
         updateState = 0;
         bytes.writeInt(_inState);
         if ((_inState & U_POS) > 0) {
-            bytes.writeFloat(x);
-            bytes.writeFloat(y);
+            bytes.writeFloat(_x);
+            bytes.writeFloat(_y);
             //trace("toBytes pos (" + x + ", " + y + ")");
         }
         if ((_inState & U_VEL) > 0) {
@@ -214,8 +242,8 @@ public class Dynamic
     {
         _inState = bytes.readInt();
         if ((_inState & U_POS) > 0) {
-            x = bytes.readFloat();
-            y = bytes.readFloat();
+            _x = bytes.readFloat();
+            _y = bytes.readFloat();
             //trace("fromBytes pos (" + x + ", " + y + ")");
         }
         if ((_inState & U_VEL) > 0) {
@@ -232,5 +260,7 @@ public class Dynamic
     protected var _dy :Number = 0;
     protected var _inter :int;
     protected var _owner :int;
+    protected var _x :Number = 0;
+    protected var _y :Number = 0;
 }
 }

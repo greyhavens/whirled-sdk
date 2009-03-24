@@ -51,6 +51,8 @@ public class GameController
     public var colliderTicks :int;
     public var displayTicks :int;
     public var ticked :int;
+    public var skipActor :int;
+    public var skipDynamic :int;
 
     public function GameController ()
     {
@@ -146,7 +148,7 @@ public class GameController
         _rdelta += delta;
         var usedDelta :int;
         do {
-            var tdelta :int = Math.min(MAX_TICK, _rdelta);
+            var tdelta :int = Math.min(getMaxTick(), _rdelta);
             var sdelta :Number = tdelta / 1000;
             for each (var controller :Object in _controllers) {
                 if (controller is TickController) {
@@ -168,7 +170,7 @@ public class GameController
             _rdelta -= tdelta;
             usedDelta += tdelta;
             sendUpdates();
-        } while (_rdelta >= MAX_TICK);
+        } while (_rdelta >= getMaxTick());
 
         //if (usedDelta > 0) {
             now = getTimer();
@@ -348,8 +350,12 @@ public class GameController
             if (!d.amOwner() || d.ownerType() == Dynamic.OWN_ALL) {
                 continue;
             }
-            d.updateState |= Dynamic.U_POS;
-            PlatformerContext.net.sendMessage(DynamicMessage.wrap(d));
+            //d.updateState |= Dynamic.U_POS;
+            if (d.updateState != 0) {
+                PlatformerContext.net.sendMessage(DynamicMessage.wrap(d));
+            } else {
+                skipActor++;
+            }
         }
         for each (d in PlatformerContext.board.getDynamics()) {
             if (!d.amOwner() || d.ownerType() == Dynamic.OWN_ALL) {
@@ -357,6 +363,8 @@ public class GameController
             }
             if (d.updateState != 0) {
                 PlatformerContext.net.sendMessage(DynamicMessage.wrap(d));
+            } else {
+                skipDynamic++;
             }
         }
         PlatformerContext.net.sendMessage(new TickMessage());
@@ -372,6 +380,11 @@ public class GameController
                 ii++;
             }
         }
+    }
+
+    protected function getMaxTick () :int
+    {
+        return MAX_TICK;
     }
 
     protected var _controllers :Array = new Array();
@@ -391,6 +404,5 @@ public class GameController
     protected var _rdelta :int;
 
     protected static const MAX_TICK :int = 33;
-    //protected static const MAX_TICK :int = 50;
 }
 }

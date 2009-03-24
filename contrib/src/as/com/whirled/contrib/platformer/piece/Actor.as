@@ -184,8 +184,10 @@ public class Actor extends Dynamic
 
     public function set shooting (shooting :Boolean) :void
     {
-        _shooting = shooting;
-        updateState |= U_SHOOT;
+        if (_shooting != shooting) {
+            _shooting = shooting;
+            updateState |= U_SHOOT;
+        }
     }
 
     public function get justShot () :Boolean

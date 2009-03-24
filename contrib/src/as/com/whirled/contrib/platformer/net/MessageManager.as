@@ -33,6 +33,9 @@ import com.whirled.contrib.platformer.PlatformerContext;
 
 public class MessageManager extends EventDispatcher
 {
+    public var recTicks :int;
+    public var msgCount :int;
+
     public function MessageManager (gameCtrl :GameControl)
     {
         _gameCtrl = gameCtrl;
@@ -93,14 +96,19 @@ public class MessageManager extends EventDispatcher
 
     protected function onMessageReceived (e :MessageReceivedEvent) :void
     {
+        if (e.senderId == PlatformerContext.myId) {
+            return;
+        }
         var msg :GameMessage = getMessage(e.name, ByteArray(e.value));
         if (msg == null) {
             return;
         }
+        var now :int = getTimer();
         if (msg is QueueMessage) {
             var queue :QueueMessage = msg as QueueMessage;
             while (queue.hasMessages()) {
                 msg = queue.nextMessage(getMessage);
+                msgCount++;
                 if (msg is BaseGameMessage) {
                     msg.senderId = e.senderId;
                     dispatchEvent(msg as BaseGameMessage);
@@ -118,11 +126,14 @@ public class MessageManager extends EventDispatcher
             }
             */
         } else if (msg is BaseGameMessage) {
+            msgCount++;
             msg.senderId = e.senderId;
             dispatchEvent(msg as BaseGameMessage);
         } else {
+            msgCount++;
             dispatchEvent(new MessageReceivedEvent(e.name, msg, e.senderId));
         }
+        recTicks += getTimer() - now;
     }
 
     protected function checkSend (msg :GameMessage) :void
