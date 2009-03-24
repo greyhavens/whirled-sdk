@@ -34,6 +34,7 @@ import flash.utils.getTimer;
 
 public class MainLoop extends EventDispatcher
 {
+    public static const HAS_STOPPED :String = "HasStopped";
     public static const HAS_SHUTDOWN :String = "HasShutdown";
 
     public function MainLoop (ctx :SGContext, hostSprite :Sprite,
@@ -388,12 +389,13 @@ public class MainLoop extends EventDispatcher
             theTopMode.update(dt);
         }
 
-        // has the MainLoop been stopped?
+        // should the MainLoop be stopped?
         if (_stopPending || _shutdownPending) {
             _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
             _keyDispatcher.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
             _keyDispatcher.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
             _running = false;
+            dispatchEvent(new Event(HAS_STOPPED));
 
             if (_shutdownPending) {
                 shutdownNow();
