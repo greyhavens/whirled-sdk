@@ -22,8 +22,6 @@ package com.whirled.contrib.platformer.net {
 
 import flash.utils.ByteArray;
 
-import com.whirled.contrib.platformer.net.GameMessage;
-
 public class SpawnMessage extends BaseGameMessage
 {
     public static const NAME :String = "spawn";

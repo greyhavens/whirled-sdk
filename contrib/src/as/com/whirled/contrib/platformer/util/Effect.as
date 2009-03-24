@@ -20,8 +20,6 @@
 
 package com.whirled.contrib.platformer.util {
 
-import com.whirled.contrib.platformer.sound.SoundEffect;
-
 public interface Effect
 {
     function get effect () :String;
