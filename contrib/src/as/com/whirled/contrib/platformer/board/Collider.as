@@ -58,6 +58,11 @@ public class Collider
         return _tickCounter;
     }
 
+    public function count (delta :int) :void
+    {
+        _tickCounter += delta;
+    }
+
     public function getStartDelta (offset :int = 0) :Number
     {
         return (_tickCounter - offset) / 1000;
@@ -309,7 +314,7 @@ public class Collider
     public function tick (delta :int) :Boolean
     {
         var runTasks :Array = new Array();
-        _tickCounter += delta;
+        count(delta);
         var time :int = getTimer();
         var quickTasks :int = 0;
         for each (var task :ColliderTask in _tasks) {

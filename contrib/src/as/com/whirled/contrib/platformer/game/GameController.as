@@ -152,6 +152,7 @@ public class GameController
                 _collider.tick(tdelta);
                 colliderTicks += getTimer() - now;
             } else {
+                _collider.count(tdelta);
                 for each (controller in _controllers) {
                     if (controller is CollisionController) {
                         (controller as CollisionController).postCollider();

@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import flash.utils.ByteArray;
+
 import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.sound.SoundEffect;
 
@@ -28,7 +30,9 @@ import com.whirled.contrib.platformer.sound.SoundEffect;
  */
 public class Hover extends RectDynamic
 {
-    public var hovered :Boolean = false;
+    public static const U_HOVERED :int = 1 << (DYN_COUNT + 1);
+    public static const HOVER_COUNT :int = DYN_COUNT + 1;
+
     public var hoverSoundEffect :SoundEffect;
 
     public function Hover (insxml :XML = null)
@@ -43,6 +47,19 @@ public class Hover extends RectDynamic
             }
         }
         inter = Dynamic.ENEMY;
+    }
+
+    public function get hovered () :Boolean
+    {
+        return _hovered;
+    }
+
+    public function set hovered (hovered :Boolean) :void
+    {
+        if (_hovered != hovered) {
+            _hovered = hovered;
+            updateState |= U_HOVERED;
+        }
     }
 
     override public function xmlInstance () :XML
@@ -61,5 +78,24 @@ public class Hover extends RectDynamic
     {
         return OWN_ALL;
     }
+
+    override public function toBytes (bytes :ByteArray = null) :ByteArray
+    {
+        bytes = super.toBytes(bytes);
+        if ((_inState & U_HOVERED) > 0) {
+            bytes.writeBoolean(_hovered);
+        }
+        return bytes;
+    }
+
+    override public function fromBytes (bytes :ByteArray) :void
+    {
+        super.fromBytes(bytes);
+        if ((_inState & U_HOVERED) > 0) {
+            _hovered = bytes.readBoolean();
+        }
+    }
+
+    protected var _hovered :Boolean = false;
 }
 }

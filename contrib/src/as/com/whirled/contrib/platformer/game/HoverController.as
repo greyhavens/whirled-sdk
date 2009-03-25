@@ -32,7 +32,7 @@ public class HoverController extends RectDynamicController
         super(h, controller);
         _hover = h;
         addCollisionHandlers();
-        if (_hover.owner == Dynamic.OWN_SERVER && _hover.amOwner()) {
+        if (_hover.ownerType() == Dynamic.OWN_SERVER && _hover.amOwner()) {
             _hoverers = new Array();
             PlatformerContext.net.addEventListener(HoverMessage.NAME, hoverMsgReceived);
         }
@@ -60,7 +60,7 @@ public class HoverController extends RectDynamicController
             } else if (idx != -1) {
                 _hoverers.splice(idx, 1);
             }
-            _hover.hovered = _hoverers.length == 0;
+            _hover.hovered = _hoverers.length > 0;
         }
     }
 

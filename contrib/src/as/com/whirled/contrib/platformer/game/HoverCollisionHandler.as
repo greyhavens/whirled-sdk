@@ -42,7 +42,7 @@ public class HoverCollisionHandler extends CollisionHandler
     {
         if (_hover.amOwner()) {
             _hover.hovered = true;
-        } else {
+        } else if (!_hover.hovered) {
             PlatformerContext.net.sendMessage(HoverMessage.create(HoverMessage.HOVER, _hover.id));
         }
         _collided.push(target.controller);
@@ -54,7 +54,7 @@ public class HoverCollisionHandler extends CollisionHandler
             _collided.splice(0);
         } else if (_hover.amOwner()) {
             _hover.hovered = false;
-        } else {
+        } else if (_hover.hovered) {
             PlatformerContext.net.sendMessage(HoverMessage.create(HoverMessage.UNHOVER, _hover.id));
         }
     }
