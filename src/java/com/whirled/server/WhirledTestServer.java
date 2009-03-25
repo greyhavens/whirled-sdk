@@ -242,7 +242,7 @@ public class WhirledTestServer extends CrowdServer
         }
 
         // figure out how many players will be involved in the test game
-        int pcount = getIntProperty("players", 1);
+        int pcount = getPlayerCount();
         int remoteCount = getIntProperty("remotePlayers", 0);
         int playerCount = pcount + remoteCount;
         TableMatchConfig match = new TableMatchConfig();
@@ -324,6 +324,11 @@ public class WhirledTestServer extends CrowdServer
                         "[value=" + System.getProperty(property) + ", error=" + e + "].");
             return defaultValue;
         }
+    }
+
+    protected int getPlayerCount ()
+    {
+        return getIntProperty("players", 1);
     }
 
     protected String getFlashPlayerPath ()

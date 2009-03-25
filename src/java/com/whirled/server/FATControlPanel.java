@@ -220,23 +220,23 @@ public class FATControlPanel extends JFrame
             
             super.init(injector);
         }
-        protected boolean hasServerSideCode () {
+        @Override protected boolean hasServerSideCode () {
             return false;
         }
-        protected String getDocRoot () {
+        @Override protected String getDocRoot () {
             return "dist";
         }
-        protected Reader getGameConfig () {
+        @Override protected Reader getGameConfig () {
             String config = "<game><params>" + _params + "</params></game>";
             return new StringReader(config);
         }
-        protected int getPlayerCount () {
+        @Override protected int getPlayerCount () {
             return _playerCount;
         }
-        protected String getFlashPlayerPath () {
+        @Override protected String getFlashPlayerPath () {
             return _playerPath;
         }
-        protected void reportError (String message, Exception e) {
+        @Override protected void reportError (String message, Exception e) {
             log.warning(message, e);
             _status.setText(message);
         }
