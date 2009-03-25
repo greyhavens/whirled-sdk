@@ -84,7 +84,7 @@ public class Piece
 
     public function get sY () :int
     {
-        return y - ((orient == 0 ? nudgeY : nudgeH) ? 1 : 0);
+        return y - (nudgeY ? 1 : 0);
     }
 
     public function get sWidth () :int
