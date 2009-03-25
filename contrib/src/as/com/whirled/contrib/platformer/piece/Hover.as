@@ -62,6 +62,11 @@ public class Hover extends RectDynamic
         }
     }
 
+    public function clientSetHovered () :Boolean
+    {
+        return amOwner();
+    }
+
     override public function xmlInstance () :XML
     {
         var xml :XML = super.xmlInstance();

@@ -40,7 +40,7 @@ public class HoverCollisionHandler extends CollisionHandler
 
     override public function collide (source :Object, target :Object, cd :ColliderDetails) :void
     {
-        if (_hover.amOwner()) {
+        if (_hover.clientSetHovered()) {
             _hover.hovered = true;
         } else if (!_hover.hovered) {
             PlatformerContext.net.sendMessage(HoverMessage.create(HoverMessage.HOVER, _hover.id));
@@ -52,7 +52,7 @@ public class HoverCollisionHandler extends CollisionHandler
     {
         if (_collided.length > 0) {
             _collided.splice(0);
-        } else if (_hover.amOwner()) {
+        } else if (_hover.clientSetHovered()) {
             _hover.hovered = false;
         } else if (_hover.hovered) {
             PlatformerContext.net.sendMessage(HoverMessage.create(HoverMessage.UNHOVER, _hover.id));
