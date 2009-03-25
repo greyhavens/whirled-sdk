@@ -99,6 +99,7 @@ public abstract class WhirledGameManager extends GameManager
         super.occupantInRoom(caller);
     }
 
+/*
     @Override
     public void playerReady (BodyObject caller)
     {
@@ -114,6 +115,7 @@ public abstract class WhirledGameManager extends GameManager
 
         super.playerReady(caller);
     }
+*/
 
     @Override
     protected AccessController getAccessController ()
