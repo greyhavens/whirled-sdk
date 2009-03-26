@@ -40,8 +40,6 @@ import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.turn.server.TurnGameManager;
 
-import com.threerings.util.MessageBundle;
-
 import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.WhirledGameOccupantInfo;
