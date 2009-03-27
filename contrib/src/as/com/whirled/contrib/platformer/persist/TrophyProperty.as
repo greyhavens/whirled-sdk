@@ -65,11 +65,6 @@ public class TrophyProperty
             return;
         }
 
-        if (_playerId != PlayerSubControl.CURRENT_USER || _gameCtrl.game.amServerAgent()) {
-            throw new Error("This game instance does not have permission to grant that user " +
-                "trophies [" + _playerId + "]");
-        }
-
         _awardedThisSession = _gameCtrl.player.awardTrophy(_name, _playerId);
     }
 
