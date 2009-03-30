@@ -109,7 +109,11 @@ public class EntityControl extends AbstractControl
 
     /**
      * The entity's location in logical coordinates (an Array [ x, y, z ]). x, y, and z are Numbers
-     * between 0 and 1 or null if our location is unknown. Use with getEntityProperty().
+     * between that are typically between 0 and 1 or null if our location is unknown.
+     * Note that Whirled allows furniture to be positioned "outside" the room, at locations less
+     * than 0 or greater than 1, in order to create a desired effect, so don't be surprised if
+     * something is placed at wacky coordinates.
+     * Use with getEntityProperty().
      */
     public static const PROP_LOCATION_LOGICAL :String = "std:location_logical";
 
