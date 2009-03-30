@@ -5,13 +5,12 @@ package com.whirled.game {
 
 import com.whirled.AbstractSubControl;
 
+import com.whirled.net.ElementChangedEvent;
 import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.MessageSubControl;
-import com.whirled.net.ElementChangedEvent;
 import com.whirled.net.PropertyChangedEvent;
 import com.whirled.net.PropertySubControl;
 import com.whirled.net.impl.MessageSubControlAdapter;
-import com.whirled.net.impl.PropertySubControlImpl;
 
 import flash.utils.Dictionary;
 

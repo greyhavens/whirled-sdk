@@ -11,7 +11,6 @@ import com.threerings.util.Log;
 
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
-import com.whirled.ControlEvent;
 
 /**
  * Provides clients with a means of accessing and controlling a previously spawned MOB.

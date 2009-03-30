@@ -8,7 +8,6 @@ package com.whirled.avrg {
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 
-import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.MessageSubControl;
 
 /**

@@ -15,8 +15,6 @@ import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 
 import com.whirled.TargetedSubControl;
-import com.whirled.net.PropertyGetSubControl;
-import com.whirled.net.impl.PropertyGetSubControlImpl;
 
 /**
  * Dispatched either when somebody in this room entered our current game, or somebody playing the

@@ -15,7 +15,6 @@ import flash.events.MouseEvent;
 import flash.geom.Point;
 
 import com.whirled.AbstractControl;
-import com.whirled.AbstractSubControl;
 
 /**
  * Used to coordinate game state and control your multiplayer game.

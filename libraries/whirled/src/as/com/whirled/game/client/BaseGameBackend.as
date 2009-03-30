@@ -62,7 +62,6 @@ import com.whirled.game.data.PropertySetEvent;
 import com.whirled.game.data.PropertySetListener;
 import com.whirled.game.data.TrophyData;
 import com.whirled.game.data.UserCookie;
-import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.WhirledGameOccupantInfo;
 import com.whirled.game.data.WhirledPlayerObject;

@@ -8,7 +8,6 @@ package com.whirled.avrg {
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 import com.whirled.net.MessageReceivedEvent;
-import com.whirled.net.impl.PropertyGetSubControlImpl;
 
 /**
  * Dispatched when a message arrives with information that is not part of the shared game state.
