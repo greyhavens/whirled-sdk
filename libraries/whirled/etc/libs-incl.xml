@@ -21,9 +21,9 @@
     <include name="nenya-rsrc*.jar"/>
     <include name="vilya-parlor*.jar"/>
     <!-- ActionScript dependencies -->
-    <include name="naryalib.swc"/>
-    <include name="nenyalib.swc"/>
-    <include name="vilyalib.swc"/>
+    <include name="naryalib*.swc"/>
+    <include name="nenyalib*.swc"/>
+    <include name="vilyalib*.swc"/>
     <!-- Thane dependencies -->
     <include name="thane*.swc"/>
     <include name="http*.swc"/>
