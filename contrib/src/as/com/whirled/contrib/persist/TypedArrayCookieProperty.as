@@ -29,7 +29,7 @@ public /*abstract*/ class TypedArrayCookieProperty
     implements CookieProperty
 {
     public function TypedArrayCookieProperty (manager :CookieManager, typeId :int,
-        name :String = null, defaultValue :Array = null)
+        name :String, defaultValue :Array = null)
     {
         _manager = manager;
         _typeId = typeId;
@@ -150,14 +150,16 @@ public /*abstract*/ class TypedArrayCookieProperty
     // from CookieProperty
     public function serialize (bytes :ByteArray) :void
     {
-        bytes.writeUTF(_name);
         serializeValue(bytes, _array);
     }
 
     // from CookieProperty
     public function deserialize (bytes :ByteArray) :void
     {
-        _name = bytes.readUTF();
+        if (_name == null) {
+            // this should only happen in old cookie version
+            _name = bytes.readUTF();
+        }
         _array = deserializeValue(bytes) as Array;
     }
 

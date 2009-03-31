@@ -109,11 +109,15 @@ public class CookieManager extends EventDispatcher
             throw new Error("Received a cookie that is newer than we are capable of reading [" +
                 version + ", " + VERSION + "]");
         }
-        // there are currently no legacy versions to migrate
 
         while (bytes.bytesAvailable > 0) {
             var typeId :int = bytes.readInt();
-            var property :CookieProperty = _cookieFactory.getBlankCookieInstance(this, typeId);
+            var name :String = null;
+            if (version > 1) {
+                name = bytes.readUTF();
+            }
+            var property :CookieProperty =
+                _cookieFactory.getBlankCookieInstance(this, typeId, name);
             property.deserialize(bytes);
 
             if (_propertyDefaults.containsKey(property.name)) {
@@ -146,6 +150,7 @@ public class CookieManager extends EventDispatcher
 
         for each (var property :CookieProperty in _properties.values()) {
             bytes.writeInt(property.typeId);
+            bytes.writeUTF(property.name);
             property.serialize(bytes);
         }
 
@@ -166,7 +171,7 @@ public class CookieManager extends EventDispatcher
 
     /** Version bumps are not required when adding new data types.  Only if another form of
      * storing data in the cookie is fashioned should a version bump be necessary. */
-    protected static const VERSION :int = 1;
+    protected static const VERSION :int = 2;
 
     /** Write out the cookie at most every 2 seconds, in order to prevent this manager from
      * sucking up network resources */

@@ -24,7 +24,7 @@ import flash.utils.ByteArray;
 
 public class FloatCookieProperty extends CookiePropertyBase
 {
-    public function FloatCookieProperty (manager :CookieManager, typeId :int, name :String = null,
+    public function FloatCookieProperty (manager :CookieManager, typeId :int, name :String,
         defaultValue :Object = null)
     {
         super(manager, typeId, name);
@@ -56,13 +56,15 @@ public class FloatCookieProperty extends CookiePropertyBase
 
     override public function serialize (bytes :ByteArray) :void
     {
-        bytes.writeUTF(_name);
         bytes.writeFloat(_value as Number);
     }
 
     override public function deserialize (bytes :ByteArray) :void
     {
-        _name = bytes.readUTF();
+        if (_name == null) {
+            // This should only happen with old cookie versions
+            _name = bytes.readUTF();
+        }
         _value = bytes.readFloat();
     }
 }

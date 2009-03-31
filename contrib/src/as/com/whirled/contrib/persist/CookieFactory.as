@@ -22,7 +22,7 @@ package com.whirled.contrib.persist {
 
 public interface CookieFactory
 {
-    function getBlankCookieInstance (mgr :CookieManager, typeId :int) :CookieProperty
+    function getBlankCookieInstance (mgr :CookieManager, typeId :int, name :String) :CookieProperty
 
     function getDefaultCookieInstance (mgr :CookieManager,
         prototype :CookiePrototype) :CookieProperty;
