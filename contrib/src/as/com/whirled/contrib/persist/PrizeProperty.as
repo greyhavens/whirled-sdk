@@ -20,30 +20,11 @@
 
 package com.whirled.contrib.persist {
 
-import com.whirled.game.GameControl;
-
-public class TrophyPrizeProperty extends TrophyProperty
-    implements PrizeProperty
+public interface PrizeProperty
 {
-    public function TrophyPrizeProperty (name :String, gameCtrl :GameControl,
-        playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/)
-    {
-        super(name, gameCtrl, playerId);
-    }
-
-    override public function awardTrophy () :Boolean
-    {
-        var awarded :Boolean = super.awardTrophy();
-        if (awarded) {
-            _gameCtrl.player.awardPrize(_name, _playerId);
-        }
-        return awarded;
-    }
-
-    // from PrizePrototye
-    public function awardPrize () :Boolean
-    {
-        return awardTrophy();
-    }
+    /**
+     * Returns true if the prize was awarded to the player.
+     */
+    function awardPrize () :Boolean;
 }
 }
