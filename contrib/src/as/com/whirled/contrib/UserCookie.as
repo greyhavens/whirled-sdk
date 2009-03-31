@@ -33,65 +33,65 @@ import com.threerings.util.Log;
 import com.whirled.game.GameControl;
 
 /**
- * <p>A class to manage complicated user cookies on a GameControl.  Using this class, user 
+ * <p>A class to manage complicated user cookies on a GameControl.  Using this class, user
  * cookies can contain a list of various different data types, which are read from the server and
- * saved back to the server automatically.  The data structure is compressed into a ByteArray to 
+ * saved back to the server automatically.  The data structure is compressed into a ByteArray to
  * save space (user cookies are only allowed to go up to 4k).  Data is saved to the server as it is
- * updated on this object, but no faster than once per every 2 seconds so that this class doesn't 
- * add too much to the game's networking activity, as games are limited to 100 messages per every 
+ * updated on this object, but no faster than once per every 2 seconds so that this class doesn't
+ * add too much to the game's networking activity, as games are limited to 100 messages per every
  * 10 seconds.</p>
- * 
- * <p>This class enables versioning, up to a point.  It currently supports adding parameters to the 
+ *
+ * <p>This class enables versioning, up to a point.  It currently supports adding parameters to the
  * cookie definition, but does not support removing them or changing their data type.  The only
  * overhead added by this class to the cookie itself is a single int that holds the version number
  * of the cookie.</p>
  *
  * <p>example usage:  This could be used for a game that has 5 levels.  At first the developer only
- * needed to know which was the last level the player played on, so it was stored in the cookie.  
+ * needed to know which was the last level the player played on, so it was stored in the cookie.
  * Later he wanted to know how many times each level had been played by the player, so he added it
  * to the cookie definition in a new version.</p>
  *
  * <pre>
  * protected var LAST_LEVEL_PLAYED :String = "lastLevelPlayed";
  * protected var TIMES_LEVELS_PLAYED :String = "timesLevelsPlayed";
- * 
- * public function getCookie () :void 
+ *
+ * public function getCookie () :void
  * {
  *     var timesPlayed :Array = [];
  *     for (level = 0; level < 5; level++) {
- *         // parameter names are not used if the parameter is nested in an array.  Arrays can also 
+ *         // parameter names are not used if the parameter is nested in an array.  Arrays can also
  *         // hold array parameters as children.
  *         timesPlayed.push(UserCookie.getIntParameter("", 0));
  *     }
- * 
+ *
  *     var cookieDef :Array = [
  *         // start at version 1
  *         UserCookie.getVersionParameter(),
  *         UserCookie.getIntParameter(LAST_LEVEL_PLAYED, 0),
- *     
+ *
  *         // version 2 added the number of times each level was played
  *         UserCookie.getVersionParameter(),
  *         UserCookie.getArrayParameter(TIMES_LEVELS_PLAYED, timesPlayed)
  *     ];
- *     
+ *
  *     UserCookie.getCookie(wgc, function (cookie :UserCookie) :void {
  *         // notify those that need to know that the UserCookie is valid and available.
  *         _cookie = cookie;
  *     }, cookieDef);
  * }
- * 
+ *
  * public function setLastLevelPlayed (level :int) :void
  * {
  *     if (_cookie != null) {
  *         _cookie.set(LAST_LEVEL_PLAYED, level);
  *     }
  * }
- * 
+ *
  * public function playedLevel (level :int) :void
  * {
  *     if (_cookie != null) {
  *         // increment the array value for this level.
- *         var previousValue :int = _cookie.get(TIMES_LEVELS_PLAYED, level);     
+ *         var previousValue :int = _cookie.get(TIMES_LEVELS_PLAYED, level);
  *         _cookie.set(TIMES_LEVELS_PLAYED, previousValue + 1, level);
  *     }
  * }
@@ -99,7 +99,7 @@ import com.whirled.game.GameControl;
  *
  * <p>One more note: this class creates a timer and registers the TimerEvent.TIMER listener with
  * com.whirled.contrib.EventHandlers.  To make sure that this class stops checking the timer when
- * your game is unloaded, call EventHandlers.freeAllHandlers() when your game receives the 
+ * your game is unloaded, call EventHandlers.freeAllHandlers() when your game receives the
  * Event.UNLOAD event.</p>
  */
 public class UserCookie
@@ -107,11 +107,11 @@ public class UserCookie
     /**
      * Get a player's user cookie via GameControl.getUserCookie, wrapped in a UserCookie
      * object.
-     * 
+     *
      * @param wgc The GameControl of the current instance
      * @param validCallback This function is called with a single UserCookie parameter when the
      *                      cookie has been retrieved and validated.
-     * @param cookieDef An array of cookie parameters that define the format of the user cookie.  
+     * @param cookieDef An array of cookie parameters that define the format of the user cookie.
      *                  See the various get*Parameter() functions for more detail.
      * @param eventMgr If an EventHandlerManager is provided, it will be used to register all event
                        listeners.  If not provided, EventHandlers will be used instead.
@@ -122,7 +122,7 @@ public class UserCookie
      *              a different player is specified, this UserCookie will be read-only - attempting
      *              to set a value will generate an IllegalOperationError.
      */
-    public static function getCookie (wgc :GameControl, validCallback :Function, 
+    public static function getCookie (wgc :GameControl, validCallback :Function,
         cookieDef :Array, eventMgr :EventHandlerManager = null, enableDebugLogging :Boolean = false,
         occId :int = -1) :void
     {
@@ -131,7 +131,7 @@ public class UserCookie
         cookie._cookieDef = cookieDef;
         cookie._readOnly = occId != -1 && occId != wgc.game.getMyId();
         cookie._logDebug = enableDebugLogging;
-        var callback :Function = 
+        var callback :Function =
             function (obj :Object, occupantId :int) :void {
                 if (obj is ByteArray) {
                     cookie.read(obj as ByteArray);
@@ -168,7 +168,7 @@ public class UserCookie
 
     /**
      * Returns an Array typped parameter for use in the cookieDef argument to getCookie().  All of
-     * the children must be CookieParameters returned from a get*Parameter() function, or an 
+     * the children must be CookieParameters returned from a get*Parameter() function, or an
      * ArgumentError will be thrown.  Also, you cannot embed a version in an array.
      */
     public static function getArrayParameter (name :String, children :Array) :CookieParameter
@@ -177,11 +177,11 @@ public class UserCookie
     }
 
     /**
-     * Returns a version flag for use in the cookieDef argument to getCookie().  If the cookie 
+     * Returns a version flag for use in the cookieDef argument to getCookie().  If the cookie
      * definition for a game is extended after some players may have the old cookie already set,
      * there should be a version flag added before adding in the new parameters.  This will allow
      * the old players to gracefully add in the new values when they play the game again.
-     * 
+     *
      * If a player with an old cookie or no cookie plays the game, each parameter will return
      * its default type.  The default type will also get set for this player on the server until
      * a new value is defined.
@@ -205,8 +205,8 @@ public class UserCookie
      * Set the value of the cookie parameter identified by name.  If the type of value does not
      * match the type from the cookieDef parameter to getCookie, an ArgumentError is thrown.
      *
-     * @param args  The first arg should be the parameter identifier as a String.  The next 
-     * argument should be the value to set.  Any further arguments are the array indices to use.  
+     * @param args  The first arg should be the parameter identifier as a String.  The next
+     * argument should be the value to set.  Any further arguments are the array indices to use.
      * There can be multiple array indices, if a value in a nested array is being set.
      */
     public function set (name :String, value :*, ... indices) :void
@@ -223,11 +223,11 @@ public class UserCookie
             debugLog("setting value [name=" + name + ", value=" + value + "]");
             parameter.value = value;
         } else {
-            debugLog("setting array value [name=" + name + ", value=" + value + ", indices=[" + 
+            debugLog("setting array value [name=" + name + ", value=" + value + ", indices=[" +
                 indices + "]]");
             var arrParam :ArrayParameter = parameter as ArrayParameter;
             if (arrParam == null) {
-                throw new ArgumentError("Array value setting, but no array found [" + 
+                throw new ArgumentError("Array value setting, but no array found [" +
                     name + "]");
             }
             setInArray(arrParam, value, indices);
@@ -237,9 +237,9 @@ public class UserCookie
     }
 
     /**
-     * Get the value of the cookie parameter identified by name.  
-     * 
-     * @param args The first arg should be the parameter identified as a String.  Any further 
+     * Get the value of the cookie parameter identified by name.
+     *
+     * @param args The first arg should be the parameter identified as a String.  Any further
      * arguments are the array indices to use.  There can be multiple array indices, if a value
      * in a nested array is being retrieved.
      */
@@ -279,7 +279,7 @@ public class UserCookie
                 log.warning("Null cookie param, ignoring and moving on");
                 continue;
             }
-            
+
             if (param is VersionParameter) {
                 version--;
                 if (version < 0) {
@@ -289,10 +289,10 @@ public class UserCookie
                 if (!versionBreak) {
                     param.read(bytes);
                     if (param is ArrayParameter) {
-                        debugLog("read param [name=" + param.name + ", children=" + 
+                        debugLog("read param [name=" + param.name + ", children=" +
                             arrayChildrenAsString(param as ArrayParameter) + "]");
                     } else {
-                        debugLog("read param [name=" + param.name + ", value=" + 
+                        debugLog("read param [name=" + param.name + ", value=" +
                             param.value + "]");
                     }
                 } else {
@@ -300,7 +300,7 @@ public class UserCookie
                         debugLog("param in new version [name=" + param.name + ", children=" +
                             arrayChildrenAsString(param as ArrayParameter) + "]");
                     } else {
-                        debugLog("param in new version [name=" + param.name + ", value=" + 
+                        debugLog("param in new version [name=" + param.name + ", value=" +
                             param.value + "]");
                     }
                 }
@@ -320,7 +320,7 @@ public class UserCookie
     protected function write () :ByteArray
     {
         var bytes :ByteArray = new ByteArray();
-        
+
         // find version number
         var version :int = 0;
         for each (var param :CookieParameter in _cookieDef) {
@@ -338,7 +338,7 @@ public class UserCookie
                 log.warning("Null cookie param, ignoring and moving on");
                 continue;
             }
-            
+
             if (param is VersionParameter) {
                 // NOOP
                 continue;
@@ -435,7 +435,7 @@ class CookieParameter
 {
     public function CookieParameter (name :String, type :Class, defaultValue :*)
     {
-        _name = name;        
+        _name = name;
         _type = type;
         _value = defaultValue;
     }
