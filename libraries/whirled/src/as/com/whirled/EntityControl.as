@@ -422,9 +422,8 @@ public class EntityControl extends AbstractControl
      * If you are in a room with 2 other people, each piece of furniture has three instances:
      * one on each person's browser.
      *
-     * @return the memberId of the player viewing this instance. Only ids greater than 0
-     * represent whirled members. Ids less than 0 represent guests, and 0 means that the
-     * instance is being viewed by something other than a player.
+     * @return the memberId of the player viewing this instance, or zero if the instance is being
+     * viewed by something other than a player.
      */
     public function getInstanceId () :int
     {
@@ -435,8 +434,10 @@ public class EntityControl extends AbstractControl
      * Get the non-unique display name of the user viewing a particular instance. Note
      * that this cannot be used to look up member names of people who are not in the room.
      *
-     * @param id a permanent memberId or transient guestId, or 0 to just get this instance's
-     * viewer name without first calling getInstanceId() to get the id.
+     * <p>TODO: other examples of where the member id comes from.</p>
+     *
+     * @param id a memberId, for example one obtained from <code>getInstanceId</code>. If the
+     * default argument of zero is passed, the instance id is used.
      *
      * @return a String or null if the viewer is unknown.
      */
