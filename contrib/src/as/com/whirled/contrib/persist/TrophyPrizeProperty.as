@@ -20,29 +20,23 @@
 
 package com.whirled.contrib.persist {
 
-import com.threerings.util.Enum;
+import com.whirled.game.GameControl;
 
-public final class PropertyType extends Enum
+public class TrophyPrizeProperty extends TrophyProperty
 {
-    public static const TROPHY :PropertyType = new PropertyType("TROPHY");
-    public static const COOKIE :PropertyType = new PropertyType("COOKIE");
-    public static const TROPHY_PRIZE :PropertyType = new PropertyType("TROPHY_PRIZE");
-    finishedEnumerating(PropertyType);
-
-    public static function values () :Array
+    public function TrophyPrizeProperty (name :String, gameCtrl :GameControl,
+        playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/)
     {
-        return Enum.values(PropertyType);
+        super(name, gameCtrl, playerId);
     }
 
-    public static function valueOf (name :String) :PropertyType
+    override public function awardTrophy () :Boolean
     {
-        return Enum.valueOf(PropertyType, name) as PropertyType;
-    }
-
-    // @private
-    public function PropertyType (name :String)
-    {
-        super(name);
+        var awarded :Boolean = super.awardTrophy();
+        if (awarded) {
+            _gameCtrl.player.awardPrize(_name, _playerId);
+        }
+        return awarded;
     }
 }
 }

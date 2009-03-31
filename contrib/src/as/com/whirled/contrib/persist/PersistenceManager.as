@@ -95,6 +95,10 @@ public class PersistenceManager extends EventDispatcher
                     new TrophyProperty(prototype.name, _gameCtrl, prototype.playerId));
                 break;
 
+            case PropertyType.TROPHY_PRIZE:
+                _trophyProperties.put(getPropertyKey(prototype.name, prototype.playerId),
+                    new TrophyPrizeProperty(prototype.name, _gameCtrl, prototype.playerId));
+
             case PropertyType.COOKIE:
                 var cookieProperties :HashMap = cookiePropertyMaps.get(prototype.playerId);
                 if (cookieProperties == null) {

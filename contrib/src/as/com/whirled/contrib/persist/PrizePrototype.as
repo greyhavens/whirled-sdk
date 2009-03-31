@@ -20,29 +20,34 @@
 
 package com.whirled.contrib.persist {
 
-import com.threerings.util.Enum;
-
-public final class PropertyType extends Enum
+public class PrizePrototype extends PropertyPrototype
 {
-    public static const TROPHY :PropertyType = new PropertyType("TROPHY");
-    public static const COOKIE :PropertyType = new PropertyType("COOKIE");
-    public static const TROPHY_PRIZE :PropertyType = new PropertyType("TROPHY_PRIZE");
-    finishedEnumerating(PropertyType);
-
-    public static function values () :Array
+    /**
+     * Currently the only supported prizeType is PropertyType.TROPHY_PRIZE, but there could be
+     * prize types in the future that can be awarded multiple times, or cookie protected instead
+     * of trophy protected.
+     */
+    public function PrizePrototype (name :String, prizeType :PropertyType, playerId :int = 0)
     {
-        return Enum.values(PropertyType);
+        super(name, playerId);
+
+        switch (prizeType) {
+        case PropertyType.TROPHY_PRIZE:
+            // these types are prize related, and acceptable
+            break;
+
+        default:
+            throw new ArgumentError("prizeType is not prize related! [" + prizeType + "]");
+        }
+
+        _prizeType = prizeType;
     }
 
-    public static function valueOf (name :String) :PropertyType
+    override public function get type () :PropertyType
     {
-        return Enum.valueOf(PropertyType, name) as PropertyType;
+        return _prizeType;
     }
 
-    // @private
-    public function PropertyType (name :String)
-    {
-        super(name);
-    }
+    protected var _prizeType :PropertyType;
 }
 }

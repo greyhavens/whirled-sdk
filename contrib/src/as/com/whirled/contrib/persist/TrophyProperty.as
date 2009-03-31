@@ -45,14 +45,14 @@ public class TrophyProperty
         return _playerId;
     }
 
-    public function awardTrophy () :void
+    public function awardTrophy () :Boolean
     {
         if (hasTrophy()) {
             trace("This player already holds this trophy [" + _name + "]");
-            return;
+            return false;
         }
 
-        _awardedThisSession = _gameCtrl.player.awardTrophy(_name, _playerId);
+        return _awardedThisSession = _gameCtrl.player.awardTrophy(_name, _playerId);
     }
 
     public function hasTrophy () :Boolean
