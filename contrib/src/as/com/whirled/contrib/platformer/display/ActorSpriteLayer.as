@@ -52,9 +52,8 @@ public class ActorSpriteLayer extends DynamicSpriteLayer
         if (ds.parent == null) {
             addAS(ds);
         } else if ((ds.parent == this) != ds.getDynamic().isAlive()) {
-            if (!removeDS(ds)) {
-                addAS(ds);
-            }
+            ds.parent.removeChild(ds);
+            addAS(ds);
         }
     }
 
