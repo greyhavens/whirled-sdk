@@ -99,9 +99,18 @@ public class DynamicController
         return new StaticTask(this, _controller.getCollider());
     }
 
+    protected function stopCollisions () :void
+    {
+        if (!_removedCollider) {
+            _controller.getCollider().removeDynamic(this);
+            _removedCollider = true;
+        }
+    }
+
     protected var _chandlers :Array;
     protected var _dynamic :Dynamic;
     protected var _controller :GameController;
     protected var _task :ColliderTask;
+    protected var _removedCollider :Boolean;
 }
 }

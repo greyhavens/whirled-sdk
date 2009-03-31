@@ -95,7 +95,8 @@ public class BoardSprite extends Sprite
         }
 
         _layers[LEVEL_LAYER] =
-                new BitmapSectionalLayer(2, 2, true);
+                //new BitmapSectionalLayer(2, 2, true);
+                new BitmapSectionalLayer(5, 5, true);
         _layers[LEVEL_LAYER].name = "Level Layer";
                 //new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
         //_layers[LEVEL_LAYER] = new PieceSpriteLayer();
@@ -112,7 +113,8 @@ public class BoardSprite extends Sprite
         addChild(_layers[FRONT_PARTICLE_LAYER] = new ParticleLayer());
         _layers[FRONT_PARTICLE_LAYER].name = "Front Particle Layer";
         _layers[FRONT_LEVEL_LAYER] =
-                new BitmapSectionalLayer(3, 3);
+                //new BitmapSectionalLayer(3, 3);
+                new BitmapSectionalLayer(6, 6);
                 //new BitmapSectionalLayer(Metrics.WINDOW_WIDTH, Metrics.WINDOW_HEIGHT);
         _layers[FRONT_LEVEL_LAYER].name = "Front Level Layer";
         _layers[FRONT_LEVEL_LAYER].mouseEnabled = false;

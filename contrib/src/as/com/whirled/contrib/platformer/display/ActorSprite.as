@@ -31,6 +31,7 @@ import flash.events.Event;
 import flash.filters.ColorMatrixFilter;
 
 import com.whirled.contrib.ColorMatrix;
+import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.util.Metrics;
 
@@ -79,6 +80,17 @@ public class ActorSprite extends DynamicSprite
         if (_actor.wasHit > 0) {
             showHit();
         }
+    }
+
+    override public function showState () :int
+    {
+        if (PlatformerContext.board.getDynamicInsById(_actor.id) != null) {
+            return super.showState();
+        }
+        if (_actor.isAlive()) {
+            return NORMAL;
+        }
+        return UNTIL_REMOVED;
     }
 
     override public function setStatic (s :Boolean) :void

@@ -31,13 +31,20 @@ public class ActorSpriteLayer extends DynamicSpriteLayer
         addChild(_deathLayer);
     }
 
-    override protected function removeDS (ds :DynamicSprite) :void
+    override public function update (nX :Number, nY :Number, scale :Number = 1) :void
+    {
+        super.update(nX, nY, scale);
+        if (_count != numChildren) {
+            _count = numChildren;
+        }
+    }
+
+    override protected function removeDS (ds :DynamicSprite) :Boolean
     {
         if (ds.parent == _deathLayer) {
             _deathLayer.removeChild(ds);
-        } else if (ds.parent == this) {
-            super.removeDS(ds);
         }
+        return super.removeDS(ds);
     }
 
     override protected function addDS (ds :DynamicSprite) :void
@@ -45,8 +52,9 @@ public class ActorSpriteLayer extends DynamicSpriteLayer
         if (ds.parent == null) {
             addAS(ds);
         } else if ((ds.parent == this) != ds.getDynamic().isAlive()) {
-            removeDS(ds);
-            addAS(ds);
+            if (!removeDS(ds)) {
+                addAS(ds);
+            }
         }
     }
 
@@ -64,5 +72,6 @@ public class ActorSpriteLayer extends DynamicSpriteLayer
     }
 
     protected var _deathLayer :Sprite;
+    protected var _count :int;
 }
 }

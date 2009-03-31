@@ -42,9 +42,7 @@ public class DynamicSpriteLayer extends Layer
     {
         for (var ii :int = 0; ii < _dynamics.length; ii++) {
             if (_dynamics[ii].getDynamic() == d) {
-                removeDS(_dynamics[ii]);
-                _dynamics[ii].shutdown();
-                _dynamics.splice(ii, 1);
+                removeSprite(_dynamics[ii]);
                 break;
             }
         }
@@ -77,29 +75,67 @@ public class DynamicSpriteLayer extends Layer
 
     protected function showDS (ds :DynamicSprite) :void
     {
-        var w :Number = ds.displayWidth;
-        var h :Number = ds.displayHeight;
-        if (!ds.showAlways() && (ds.x + w < -x / Metrics.SCALE ||
-                ds.x - w > (-x + Metrics.DISPLAY_WIDTH) / Metrics.SCALE ||
-                ds.y + h < -y / Metrics.SCALE ||
-                ds.y - h > (-y + Metrics.DISPLAY_HEIGHT) / Metrics.SCALE)) {
-            removeDS(ds);
-        } else {
+        switch (ds.showState()) {
+        case DynamicSprite.ALWAYS:
             addDS(ds);
+            break;
+        case DynamicSprite.NEVER:
+            removeDS(ds);
+            break;
+        case DynamicSprite.UNTIL_REMOVED:
+            if (ds.parent == null) {
+                removeDS(ds);
+                break;
+            }
+            // drop through
+        default :
+            if (offScreen(ds)) {
+                removeDS(ds);
+            } else {
+                addDS(ds);
+            }
         }
     }
 
-    protected function removeDS (ds :DynamicSprite) :void
+    protected function offScreen (ds :DynamicSprite) :Boolean
+    {
+        var w :Number = ds.displayWidth;
+        var h :Number = ds.displayHeight;
+        return ((ds.x + w < -x / Metrics.SCALE ||
+                ds.x - w > (-x + Metrics.DISPLAY_WIDTH) / Metrics.SCALE ||
+                ds.y + h < -y / Metrics.SCALE ||
+                ds.y - h > (-y + Metrics.DISPLAY_HEIGHT) / Metrics.SCALE));
+    }
+
+    protected function removeDS (ds :DynamicSprite) :Boolean
     {
         if (ds.parent == this) {
             removeChild(ds);
         }
+        if (ds.showState() == DynamicSprite.UNTIL_REMOVED ||
+                ds.showState() == DynamicSprite.NEVER) {
+            removeSprite(ds);
+            return true;
+        }
+        return false;
     }
 
     protected function addDS (ds :DynamicSprite) :void
     {
         if (ds.parent == null) {
             addChild(ds);
+        }
+    }
+
+    protected function removeSprite (ds :DynamicSprite) :void
+    {
+        if (ds.parent != null) {
+            removeDS(ds);
+        }
+        ds.shutdown();
+        var idx :int = _dynamics.indexOf(ds);
+        if (idx != -1) {
+            _dynamics.splice(idx, 1);
         }
     }
 

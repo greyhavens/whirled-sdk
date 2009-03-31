@@ -68,6 +68,7 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
 
     override public function addPieceSprite (ps :PieceSprite) :void
     {
+        _hasPieces = true;
         var p :Piece = ps.getPiece();
         for (var xx :int = _sindex.getSectionXFromTile(p.sX),
              xn :int = _sindex.getSectionXFromTile(p.sX + p.sWidth);
@@ -95,10 +96,13 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
 
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
+        if (!_hasPieces) {
+            return;
+        }
         var sx :int = Math.floor(nX);
         var sy :int = Math.floor(nY);
         if (_oldnX == sx && _oldnY == sy) {
-            preload(true);
+            preload(_preload > 0);
             return;
         }
         _deltaX = sx - _oldnX;
@@ -158,8 +162,8 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
                     _bd.copyPixels(bd, rect, pt);
                 } else {
                     var fill :Boolean;
-                    if (Math.abs(_deltaX) < Metrics.TILE_SIZE &&
-                            Math.abs(_deltaY) < Metrics.TILE_SIZE) {
+                    if (Math.abs(_deltaX) < sw * Metrics.TILE_SIZE &&
+                            Math.abs(_deltaY) < sh * Metrics.TILE_SIZE) {
                         var dx :int = -Maths.sign0(_deltaX);
                         var dy :int = -Maths.sign0(_deltaY);
                         fill = (_sections[_sindex.getSectionIndex(xx + dx, yy)] != null ||
@@ -357,6 +361,7 @@ public class BitmapSectionalLayer extends PieceSpriteLayer
     protected var _rect :Rect = new Rect();
     protected var _preload :int;
     protected var _missedPreload :int;
+    protected var _hasPieces :Boolean;
 
     protected static const PRELOAD_RATE :int = 3;
 }

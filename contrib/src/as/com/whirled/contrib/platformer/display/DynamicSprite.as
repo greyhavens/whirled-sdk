@@ -43,6 +43,11 @@ import com.whirled.contrib.platformer.util.Metrics;
 
 public class DynamicSprite extends Sprite
 {
+    public static const NORMAL :int = 0;
+    public static const ALWAYS :int = 1;
+    public static const NEVER :int = 2;
+    public static const UNTIL_REMOVED :int = 3;
+
     public function DynamicSprite (dy :Dynamic, disp :DisplayObject = null)
     {
         _dynamic = dy;
@@ -92,9 +97,9 @@ public class DynamicSprite extends Sprite
         return _dynamic;
     }
 
-    public function showAlways () :Boolean
+    public function showState () :int
     {
-        return false;
+        return NORMAL;
     }
 
     public function update (delta :Number) :void
