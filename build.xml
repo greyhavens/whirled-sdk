@@ -94,7 +94,7 @@
 
   <!-- builds our Flash game test client -->
   <target name="asclient" depends="prepare">
-    <copy file="etc/whirled-config.xml.in" tofile="etc/whirled-config.xml">
+    <copy file="etc/whirled-config.xml.in" tofile="etc/whirled-config.xml" overwrite="true">
       <filterset>
         <filter token="flex_path" value="${flex.path}"/>
       </filterset>
@@ -119,7 +119,7 @@
   </target>
 
   <target name="asserver" depends="prepare">
-    <copy file="etc/thane-config.xml.in" tofile="etc/thane-config.xml">
+    <copy file="etc/thane-config.xml.in" tofile="etc/thane-config.xml" overwrite="true">
       <filterset>
         <filter token="flex_path" value="${flex.path}"/>
       </filterset>
