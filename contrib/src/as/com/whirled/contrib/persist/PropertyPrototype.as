@@ -18,18 +18,34 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.persist {
+package com.whirled.contrib.persist {
 
-public class TrophyPrototype extends PropertyPrototype
+import com.whirled.game.PlayerSubControl;
+
+public /*abstract*/ class PropertyPrototype
 {
-    public function TrophyPrototype (name :String, playerId :int = 0)
+    public function PropertyPrototype (name :String, playerId :int = 0)
     {
-        super(name, playerId);
+        _name = name;
+        _playerId = playerId;
     }
 
-    override public function get type () :PropertyType
+    public function get name () :String
     {
-        return PropertyType.TROPHY;
+        return _name;
     }
+
+    public /*abstract*/ function get type () :PropertyType
+    {
+        throw new Error("get type() in PropertyPrototype is abstract!");
+    }
+
+    public function get playerId () :int
+    {
+        return _playerId;
+    }
+
+    protected var _name :String;
+    protected var _playerId :int = PlayerSubControl.CURRENT_USER;
 }
 }

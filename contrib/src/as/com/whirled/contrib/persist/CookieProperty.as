@@ -18,30 +18,16 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.persist {
+package com.whirled.contrib.persist {
 
-import com.threerings.util.Enum;
+import flash.utils.ByteArray;
 
-public final class PropertyType extends Enum
+public interface CookieProperty extends PersistentProperty
 {
-    public static const TROPHY :PropertyType = new PropertyType("TROPHY");
-    public static const COOKIE :PropertyType = new PropertyType("COOKIE");
-    finishedEnumerating(PropertyType);
+    function get typeId () :int
 
-    public static function values () :Array
-    {
-        return Enum.values(PropertyType);
-    }
+    function serialize (bytes :ByteArray) :void
 
-    public static function valueOf (name :String) :PropertyType
-    {
-        return Enum.valueOf(PropertyType, name) as PropertyType;
-    }
-
-    // @private
-    public function PropertyType (name :String)
-    {
-        super(name);
-    }
+    function deserialize (bytes :ByteArray) :void
 }
 }

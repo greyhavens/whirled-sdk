@@ -18,7 +18,7 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.persist {
+package com.whirled.contrib.persist {
 
 import com.whirled.game.GameControl;
 import com.whirled.game.PlayerSubControl;

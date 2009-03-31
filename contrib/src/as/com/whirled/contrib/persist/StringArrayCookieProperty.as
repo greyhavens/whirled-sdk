@@ -18,35 +18,34 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.persist {
+package com.whirled.contrib.persist {
 
-public class CookiePrototype extends PropertyPrototype
+import flash.utils.ByteArray;
+
+public class StringArrayCookieProperty extends TypedArrayCookieProperty
 {
-    public function CookiePrototype (name :String, typeId :int,
-        defaultValue :Object = null, playerId :int = 0)
+    public function StringArrayCookieProperty (manager :CookieManager, typeId :int,
+        name :String = null, defaultValue :Array = null)
     {
-        super(name, playerId);
-
-        _typeId = typeId;
-        _defaultValue = defaultValue;
+        super(manager, typeId, name, defaultValue);
     }
 
-    override public function get type () :PropertyType
+    // from TypedArrayCookieProperty
+    override protected function get type () :Class
     {
-        return PropertyType.COOKIE;
+        return String;
     }
 
-    public function get typeId () :int
+    // from TypedArrayCookieProperty
+    override protected function serializeField (bytes :ByteArray, value :Object) :void
     {
-        return _typeId;
+        bytes.writeUTF(value as String);
     }
 
-    public function get defaultValue () :Object
+    // from TypedArrayCookieProperty
+    override protected function deserializeField (bytes :ByteArray) :Object
     {
-        return _defaultValue;
+        return bytes.readUTF();
     }
-
-    protected var _typeId :int;
-    protected var _defaultValue :Object;
 }
 }

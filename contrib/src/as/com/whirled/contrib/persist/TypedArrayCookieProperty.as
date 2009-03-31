@@ -18,7 +18,7 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.persist {
+package com.whirled.contrib.persist {
 
 import flash.utils.ByteArray
 

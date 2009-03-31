@@ -26,6 +26,8 @@ import com.whirled.game.GameControl;
 import com.whirled.game.OccupantChangedEvent;
 import com.whirled.game.StateChangedEvent;
 
+import com.whirled.contrib.persist.PersistenceManager;
+
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.game.GameController;
 import com.whirled.contrib.platformer.net.MessageManager;
@@ -36,7 +38,6 @@ import com.whirled.contrib.platformer.net.SpawnMessage;
 import com.whirled.contrib.platformer.net.TickMessage;
 import com.whirled.contrib.platformer.piece.DynamicFactory;
 import com.whirled.contrib.platformer.piece.PieceFactory;
-import com.whirled.contrib.platformer.persist.PersistenceManager;
 
 public class PlatformerController
 {

@@ -18,34 +18,13 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.persist {
+package com.whirled.contrib.persist {
 
-import flash.utils.ByteArray;
-
-public class IntArrayCookieProperty extends TypedArrayCookieProperty
+public interface CookieFactory
 {
-    public function IntArrayCookieProperty (manager :CookieManager, typeId :int,
-        name :String = null, defaultValue :Array = null)
-    {
-        super(manager, typeId, name, defaultValue);
-    }
+    function getBlankCookieInstance (mgr :CookieManager, typeId :int) :CookieProperty
 
-    // from TypedArrayCookieProperty
-    override protected function get type () :Class
-    {
-        return int;
-    }
-
-    // from TypedArrayCookieProperty
-    override protected function serializeField (bytes :ByteArray, value :Object) :void
-    {
-        bytes.writeInt(value as int);
-    }
-
-    // from TypedArrayCookieProperty
-    override protected function deserializeField (bytes :ByteArray) :Object
-    {
-        return bytes.readInt();
-    }
+    function getDefaultCookieInstance (mgr :CookieManager,
+        prototype :CookiePrototype) :CookieProperty;
 }
 }

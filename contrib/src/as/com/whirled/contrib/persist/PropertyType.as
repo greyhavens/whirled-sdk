@@ -18,13 +18,30 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.persist {
+package com.whirled.contrib.persist {
 
-public interface CookieFactory
+import com.threerings.util.Enum;
+
+public final class PropertyType extends Enum
 {
-    function getBlankCookieInstance (mgr :CookieManager, typeId :int) :CookieProperty
+    public static const TROPHY :PropertyType = new PropertyType("TROPHY");
+    public static const COOKIE :PropertyType = new PropertyType("COOKIE");
+    finishedEnumerating(PropertyType);
 
-    function getDefaultCookieInstance (mgr :CookieManager,
-        prototype :CookiePrototype) :CookieProperty;
+    public static function values () :Array
+    {
+        return Enum.values(PropertyType);
+    }
+
+    public static function valueOf (name :String) :PropertyType
+    {
+        return Enum.valueOf(PropertyType, name) as PropertyType;
+    }
+
+    // @private
+    public function PropertyType (name :String)
+    {
+        super(name);
+    }
 }
 }

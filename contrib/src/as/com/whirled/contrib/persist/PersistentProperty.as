@@ -18,16 +18,14 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.persist {
+package com.whirled.contrib.persist {
 
-import flash.utils.ByteArray;
-
-public interface CookieProperty extends PersistentProperty
+public interface PersistentProperty
 {
-    function get typeId () :int
+    function get name () :String;
 
-    function serialize (bytes :ByteArray) :void
-
-    function deserialize (bytes :ByteArray) :void
+    function get value () :Object;
+    // read-only properties may throw an error here.
+    function set value (value :Object) :void
 }
 }

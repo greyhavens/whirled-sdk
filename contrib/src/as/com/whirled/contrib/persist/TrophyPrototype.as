@@ -18,14 +18,18 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.persist {
+package com.whirled.contrib.persist {
 
-public interface PersistentProperty
+public class TrophyPrototype extends PropertyPrototype
 {
-    function get name () :String;
+    public function TrophyPrototype (name :String, playerId :int = 0)
+    {
+        super(name, playerId);
+    }
 
-    function get value () :Object;
-    // read-only properties may throw an error here.
-    function set value (value :Object) :void
+    override public function get type () :PropertyType
+    {
+        return PropertyType.TROPHY;
+    }
 }
 }

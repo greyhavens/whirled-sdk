@@ -24,13 +24,14 @@ import com.threerings.util.Enum;
 
 import com.whirled.game.GameControl;
 
+import com.whirled.contrib.persist.PersistenceManager;
+
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.game.Collision;
 import com.whirled.contrib.platformer.game.GameController;
 import com.whirled.contrib.platformer.net.MessageManager;
 import com.whirled.contrib.platformer.piece.DynamicFactory;
 import com.whirled.contrib.platformer.piece.PieceFactory;
-import com.whirled.contrib.platformer.persist.PersistenceManager;
 import com.whirled.contrib.platformer.sound.SoundEffect;
 import com.whirled.contrib.platformer.util.Effect;
 

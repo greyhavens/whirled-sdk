@@ -18,61 +18,52 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.persist {
+package com.whirled.contrib.persist {
 
 import flash.utils.ByteArray;
 
-public class IntCookieProperty extends CookiePropertyBase
+public class FloatCookieProperty extends CookiePropertyBase
 {
-    public function IntCookieProperty (manager :CookieManager, typeId :int, name :String = null,
+    public function FloatCookieProperty (manager :CookieManager, typeId :int, name :String = null,
         defaultValue :Object = null)
     {
         super(manager, typeId, name);
 
-        // This should not simply call value = defaultValue because the value setter tells the
-        // CookieManager that this property was updated, and a new version was pushed out, but
-        // we don't want to push default values out in the cookie.
-        if (defaultValue != null && !(defaultValue is int)) {
-            throw new Error("IntCookieProperty can only accept int values [" + value + "]");
+        if (defaultValue != null && !(defaultValue is Number)) {
+            throw new Error("FloatCookieProperty can only accept Number values [" + value + "]");
         }
         _value = defaultValue;
     }
 
     override public function set value (value :Object) :void
     {
-        if (!(value is int)) {
-            throw new Error("IntCookieProperty can only accept int values [" + value + "]");
+        if (!(value is Number)) {
+            throw new Error("FloatCookieProperty can only accept Number values [" + value + "]");
         }
 
         super.value = value;
     }
 
-    /**
-     * Typed accessor for easy arithmetic operations.
-     */
-    public function get intValue () :int
+    public function get floatValue () :Number
     {
-        return value as int;
+        return value as Number;
     }
 
-    /**
-     * Typed accessor for easy arithmetic operations.
-     */
-    public function set intValue (intValue :int) :void
+    public function set floatValue (floatValue :Number) :void
     {
-        value = intValue;
+        value = floatValue;
     }
 
     override public function serialize (bytes :ByteArray) :void
     {
         bytes.writeUTF(_name);
-        bytes.writeInt(_value as int);
+        bytes.writeFloat(_value as Number);
     }
 
     override public function deserialize (bytes :ByteArray) :void
     {
         _name = bytes.readUTF();
-        _value = bytes.readInt();
+        _value = bytes.readFloat();
     }
 }
 }
