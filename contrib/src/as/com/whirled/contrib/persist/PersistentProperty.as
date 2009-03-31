@@ -23,9 +23,5 @@ package com.whirled.contrib.persist {
 public interface PersistentProperty
 {
     function get name () :String;
-
-    function get value () :Object;
-    // read-only properties may throw an error here.
-    function set value (value :Object) :void
 }
 }

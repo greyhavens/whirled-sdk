@@ -36,10 +36,6 @@ public /*abstract*/ class TypedArrayCookieProperty
         _name = name;
 
         if (defaultValue != null) {
-            if (!(defaultValue is Array)) {
-                throw new ArgumentError("The defaultValue of a TypedArrayCookieProperty must be " +
-                    "an array");
-            }
             requireValidValue(defaultValue);
             _array = defaultValue.concat();
         }
@@ -51,19 +47,14 @@ public /*abstract*/ class TypedArrayCookieProperty
         return _name;
     }
 
-    // from CookieProperty
-    public function set value (value :Object) :void
+    public function set value (value :Array) :void
     {
-        if (!(value is Array)) {
-            throw new ArgumentError("TypedArrayCookieProperty value must be an Array");
-        }
         requireValidValue(value);
         _array = value as Array;
         _manager.cookiePropertyUpdated(this);
     }
 
-    // from PersistentProperty
-    public function get value () :Object
+    public function get value () :Array
     {
         return _array.concat();
     }

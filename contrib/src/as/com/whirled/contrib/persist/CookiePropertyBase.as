@@ -40,19 +40,17 @@ public /* abstract */ class CookiePropertyBase
         return _name;
     }
 
-    // from PersistentProperty
-    public function get value () :Object
-    {
-        return _value;
-    }
-
     // from CookieProperty
     public function get typeId () :int
     {
         return _typeId;
     }
 
-    // from CookieProperty
+    public function get value () :Object
+    {
+        return _value;
+    }
+
     public function set value (value :Object) :void
     {
         _value = value;

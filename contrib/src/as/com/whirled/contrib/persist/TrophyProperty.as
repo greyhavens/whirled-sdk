@@ -40,19 +40,6 @@ public class TrophyProperty
         return _name;
     }
 
-    // from PersistentProperty
-    public function get value () :Object
-    {
-        return hasTrophy();
-    }
-
-    // from PersistentProperty
-    public function set value (value :Object) :void
-    {
-        // for the purposes of the PersistentProperty API, TrophyProperty is read-only
-        throw new ArgumentError("TrophyProperty is read-only.");
-    }
-
     public function get playerId () :int
     {
         return _playerId;
