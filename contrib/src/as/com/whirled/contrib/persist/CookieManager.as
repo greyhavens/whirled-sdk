@@ -54,6 +54,24 @@ public class CookieManager extends EventDispatcher
         return _loaded;
     }
 
+    public function stopWrites () :void
+    {
+        _stopped = true;
+    }
+
+    /**
+     * Will allow cookie updates to cause a write to the server cookie once again.  If any updates
+     * happend after stopWrites() was called, a single write will be done now.
+     */
+    public function resumeWrites () :void
+    {
+        _stopped = false;
+        if (_receivedUpdates) {
+            _receivedUpdates = false;
+            cookiePropertyUpdated();
+        }
+    }
+
     public function getProperty (name :String) :CookieProperty
     {
         var property :CookieProperty = _properties.get(name);
@@ -70,8 +88,13 @@ public class CookieManager extends EventDispatcher
         return property;
     }
 
-    public function cookiePropertyUpdated (property :CookieProperty) :void
+    public function cookiePropertyUpdated (...ignored) :void
     {
+        if (_stopped) {
+            _receivedUpdates = true;
+            return;
+        }
+
         if (_timer != null) {
             // we're already waiting to do a write
             return;
@@ -177,6 +200,8 @@ public class CookieManager extends EventDispatcher
     protected var _timer :Timer = null;
     protected var _debug :Boolean;
     protected var _playerId :int;
+    protected var _stopped :Boolean = false;
+    protected var _receivedUpdates :Boolean = false;
 
     /** Version bumps are not required when adding new data types.  Only if another form of
      * storing data in the cookie is fashioned should a version bump be necessary. */
