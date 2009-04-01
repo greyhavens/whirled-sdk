@@ -104,6 +104,11 @@ public class CookieManager extends EventDispatcher
             log.debug("Stored cookie", "size", bytes.bytesAvailable);
         }
         bytes.uncompress();
+        readBytes(bytes);
+    }
+
+    protected function readBytes (bytes :ByteArray) :void
+    {
         var version :int = bytes.readInt();
         if (version > VERSION) {
             throw new Error("Received a cookie that is newer than we are capable of reading [" +
@@ -146,6 +151,14 @@ public class CookieManager extends EventDispatcher
         }
 
         var bytes :ByteArray = new ByteArray();
+        writeBytes(bytes);
+        bytes.compress();
+        _gameCtrl.player.setCookie(bytes, _playerId);
+        _lastWrite = getTimer();
+    }
+
+    protected function writeBytes (bytes :ByteArray) :void
+    {
         bytes.writeInt(VERSION);
 
         for each (var property :CookieProperty in _properties.values()) {
@@ -153,10 +166,6 @@ public class CookieManager extends EventDispatcher
             bytes.writeUTF(property.name);
             property.serialize(bytes);
         }
-
-        bytes.compress();
-        _gameCtrl.player.setCookie(bytes, _playerId);
-        _lastWrite = getTimer();
     }
 
     protected var _gameCtrl :GameControl;

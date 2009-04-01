@@ -122,8 +122,7 @@ public class PersistenceManager extends EventDispatcher
             }
 
             cookieProperties = cookiePropertyMaps.get(playerId);
-            var cookieManager :CookieManager = new CookieManager(
-                _gameCtrl, cookieProperties, _cookieFactory, playerId, _debugLogging);
+            var cookieManager :CookieManager = createCookieManager(cookieProperties, playerId);
             _loaded = _loaded && cookieManager.loaded;
             if (!cookieManager.loaded) {
                 _eventMgr.registerOneShotCallback(cookieManager, Event.COMPLETE, loadingComplete);
@@ -172,6 +171,12 @@ public class PersistenceManager extends EventDispatcher
         _eventMgr.unregisterListener(
             _gameCtrl.game, OccupantChangedEvent.OCCUPANT_ENTERED, occupantEntered);
         init();
+    }
+
+    protected function createCookieManager (cookieProperties :HashMap, playerId :int) :CookieManager
+    {
+        return new CookieManager(
+                _gameCtrl, cookieProperties, _cookieFactory, playerId, _debugLogging);
     }
 
     private static const log :Log = Log.getLog(PersistenceManager);
