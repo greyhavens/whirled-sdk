@@ -8,6 +8,7 @@ import com.threerings.util.Log;
 import com.threerings.util.MethodQueue;
 import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringUtil;
+import com.threerings.util.Util;
 import com.whirled.ServerObject;
 import com.whirled.game.GameControl;
 import com.whirled.game.client.PropertySpaceHelper;
@@ -102,7 +103,7 @@ public class LoopbackGameControl extends GameControl
         // .net
         o["sendMessage_v2"] = sendMessage_v2;
         o["setProperty_v2"] = setProperty_v2;
-        //o["testAndSetProperty_v1"] = testAndSetProperty_v1;
+        o["testAndSetProperty_v1"] = testAndSetProperty_v1;
 
         // .player
         //o["getUserCookie_v2"] = getUserCookie_v2;
@@ -241,6 +242,41 @@ public class LoopbackGameControl extends GameControl
             updateProp(propName, encoded, ikey, isArray);
             if (this.otherLoopback != null) {
                 this.otherLoopback.updateProp(propName, encoded, ikey, isArray);
+            }
+        };
+
+        if (_transactionCount > 0) {
+            _curTransaction.push(propOp);
+        } else {
+            MethodQueue.callLater(propOp);
+        }
+    }
+
+    /**
+     * Test and set a property. Note that the 'index' parameter was deprecated on 2008-02-20.
+     * Newer code will only pass in propName, value, testValue. Older code will also pass in the
+     * index, but that's ok as long as it's -1.
+     */
+    protected function testAndSetProperty_v1 (
+        propName :String, value :Object, testValue :Object, index :int = -1) :void
+    {
+        if (index != -1) {
+            throw new Error("Sorry, using testAndSet with an index value is no longer supported. " +
+                "Update your SDK.");
+        }
+        validatePropertyChange(propName, value, false, 0);
+
+        var encodedValue :Object = PropertySpaceHelper.encodeProperty(value, true);
+        var encodedTestValue :Object = PropertySpaceHelper.encodeProperty(testValue, true);
+
+        var propOp :Function = function () :void {
+            var encodedCurValue :Object =
+                PropertySpaceHelper.encodeProperty(_gameData[propName], true);
+            if (Util.equals(encodedTestValue, encodedCurValue)) {
+                updateProp(propName, encodedValue, null, false);
+                if (this.otherLoopback != null) {
+                    this.otherLoopback.updateProp(propName, encodedValue, null, false);
+                }
             }
         };
 
