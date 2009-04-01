@@ -5,6 +5,7 @@ package com.whirled.game.loopback {
 
 import com.threerings.util.Integer;
 import com.threerings.util.Log;
+import com.threerings.util.MethodQueue;
 import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringUtil;
 import com.whirled.ServerObject;
@@ -19,8 +20,6 @@ public class LoopbackGameControl extends GameControl
 {
     public function LoopbackGameControl (disp :DisplayObject, autoReady :Boolean = true)
     {
-        _disp = disp;
-
         if (disp is ServerObject) {
             _serverLoopback = this;
             _myId = SERVER_AGENT_ID;
@@ -32,27 +31,6 @@ public class LoopbackGameControl extends GameControl
         disp.root.loaderInfo.sharedEvents.addEventListener(
             "controlConnect", handleUserCodeConnect, false, int.MAX_VALUE);
         super(disp, autoReady);
-
-        disp.addEventListener(Event.ENTER_FRAME, onEnterFrame);
-    }
-
-    override protected function handleUnload (event :Event) :void
-    {
-        _disp.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
-
-        super.handleUnload(event);
-    }
-
-    protected function onEnterFrame (...ignored) :void
-    {
-        // If we have any deferred operations, do them now
-        if (_deferredOps.length > 0) {
-            for each (var op :Function in _deferredOps) {
-                op();
-            }
-
-            _deferredOps = [];
-        }
     }
 
     override public function isConnected () :Boolean
@@ -189,7 +167,7 @@ public class LoopbackGameControl extends GameControl
         validateValue(value);
 
         // Simulate network latency: wait 1 frame to deliver the message to everyone
-        _deferredOps.push(function () :void {
+        MethodQueue.callLater(function () :void {
             if ((playerId == TO_ALL || playerId == PLAYER_ID) && _playerLoopback != null) {
                 _playerLoopback.callUserCode("messageReceived_v2", messageName, value, _myId);
             }
@@ -226,7 +204,7 @@ public class LoopbackGameControl extends GameControl
         }
 
         // Simulate network latency: wait 1 frame to deliver the update
-        _deferredOps.push(function () :void {
+        MethodQueue.callLater(function () :void {
             updateProp(propName, encoded, ikey, isArray);
             if (this.otherLoopback != null) {
                 this.otherLoopback.updateProp(propName, encoded, ikey, isArray);
@@ -368,9 +346,6 @@ public class LoopbackGameControl extends GameControl
     protected var _myId :int;
     protected var _userFuncs :Object;
     protected var _gameData :Object = new Object();
-
-    protected var _disp :DisplayObject;
-    protected var _deferredOps :Array = [];
 
     protected var log :Log = Log.getLog(this);
 
