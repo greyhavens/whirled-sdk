@@ -13,6 +13,7 @@ import com.whirled.game.GameControl;
 import com.whirled.game.client.PropertySpaceHelper;
 
 import flash.display.DisplayObject;
+import flash.errors.IllegalOperationError;
 import flash.events.Event;
 import flash.utils.Dictionary;
 
@@ -95,8 +96,8 @@ public class LoopbackGameControl extends GameControl
         o["gameInfo"] = createGameInfo();*/
 
         // GameControl
-        //o["commitTransaction"] = commitTransaction_v1;
-        //o["startTransaction"] = startTransaction_v1;
+        o["commitTransaction"] = commitTransaction_v1;
+        o["startTransaction"] = startTransaction_v1;
 
         // .net
         o["sendMessage_v2"] = sendMessage_v2;
@@ -161,13 +162,40 @@ public class LoopbackGameControl extends GameControl
         //o["getLevelPacks_v1"] = getLevelPacks_v1;
     }
 
+    /**
+     * Starts a transaction that will group all game state changes into a single message.
+     */
+    protected function startTransaction_v1 () :void
+    {
+        // increment our transaction nesting count
+        if (_transactionCount++ == 0) {
+            _curTransaction = [];
+        }
+    }
+
+    /**
+     * Commits a transaction started with <code>startTransaction_v1</code>.
+     */
+    protected function commitTransaction_v1 () :void
+    {
+        if (_transactionCount <= 0) {
+            throw new IllegalOperationError("Cannot commit: not involved in a transaction");
+        }
+        if (--_transactionCount == 0) {
+            for each (var op :Function in _curTransaction) {
+                MethodQueue.callLater(op);
+            }
+
+            _curTransaction = null;
+        }
+    }
+
     protected function sendMessage_v2 (messageName :String, value :Object, playerId :int) :void
     {
         validateName(messageName);
         validateValue(value);
 
-        // Simulate network latency: wait 1 frame to deliver the message to everyone
-        MethodQueue.callLater(function () :void {
+        var messageOp :Function = function () :void {
             if ((playerId == TO_ALL || playerId == PLAYER_ID) && _playerLoopback != null) {
                 _playerLoopback.callUserCode("messageReceived_v2", messageName, value, _myId);
             }
@@ -175,7 +203,13 @@ public class LoopbackGameControl extends GameControl
             if ((playerId == TO_ALL || playerId == SERVER_AGENT_ID) && _serverLoopback != null) {
                 _serverLoopback.callUserCode("messageReceived_v2", messageName, value, _myId);
             }
-        });
+        };
+
+        if (_transactionCount > 0) {
+            _curTransaction.push(messageOp);
+        } else {
+            MethodQueue.callLater(messageOp);
+        }
     }
 
     /**
@@ -203,13 +237,18 @@ public class LoopbackGameControl extends GameControl
             }
         }
 
-        // Simulate network latency: wait 1 frame to deliver the update
-        MethodQueue.callLater(function () :void {
+        var propOp :Function = function () :void {
             updateProp(propName, encoded, ikey, isArray);
             if (this.otherLoopback != null) {
                 this.otherLoopback.updateProp(propName, encoded, ikey, isArray);
             }
-        });
+        };
+
+        if (_transactionCount > 0) {
+            _curTransaction.push(propOp);
+        } else {
+            MethodQueue.callLater(propOp);
+        }
     }
 
     protected function updateProp (propName :String, encodedVal :Object, ikey :Integer,
@@ -346,6 +385,9 @@ public class LoopbackGameControl extends GameControl
     protected var _myId :int;
     protected var _userFuncs :Object;
     protected var _gameData :Object = new Object();
+
+    protected var _curTransaction :Array;
+    protected var _transactionCount :int;
 
     protected var log :Log = Log.getLog(this);
 
