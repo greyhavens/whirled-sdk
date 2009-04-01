@@ -3,19 +3,24 @@
 
 package com.whirled.game.loopback {
 
+import com.threerings.util.Integer;
 import com.threerings.util.Log;
 import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringUtil;
 import com.whirled.ServerObject;
 import com.whirled.game.GameControl;
+import com.whirled.game.client.PropertySpaceHelper;
 
 import flash.display.DisplayObject;
 import flash.events.Event;
+import flash.utils.Dictionary;
 
 public class LoopbackGameControl extends GameControl
 {
     public function LoopbackGameControl (disp :DisplayObject, autoReady :Boolean = true)
     {
+        _disp = disp;
+
         if (disp is ServerObject) {
             _serverLoopback = this;
             _myId = SERVER_AGENT_ID;
@@ -27,6 +32,27 @@ public class LoopbackGameControl extends GameControl
         disp.root.loaderInfo.sharedEvents.addEventListener(
             "controlConnect", handleUserCodeConnect, false, int.MAX_VALUE);
         super(disp, autoReady);
+
+        disp.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+    }
+
+    override protected function handleUnload (event :Event) :void
+    {
+        _disp.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+
+        super.handleUnload(event);
+    }
+
+    protected function onEnterFrame (...ignored) :void
+    {
+        // If we have any deferred operations, do them now
+        if (_deferredOps.length > 0) {
+            for each (var op :Function in _deferredOps) {
+                op();
+            }
+
+            _deferredOps = [];
+        }
     }
 
     override public function isConnected () :Boolean
@@ -79,7 +105,7 @@ public class LoopbackGameControl extends GameControl
     protected function populateProperties (o :Object) :void
     {
         // straight data
-        //o["gameData"] = _gameData;
+        o["gameData"] = _gameData;
 
         // convert our game config from a HashMap to a Dictionary
         /*var gameConfig :Object = {};
@@ -96,7 +122,7 @@ public class LoopbackGameControl extends GameControl
 
         // .net
         o["sendMessage_v2"] = sendMessage_v2;
-        //o["setProperty_v2"] = setProperty_v2;
+        o["setProperty_v2"] = setProperty_v2;
         //o["testAndSetProperty_v1"] = testAndSetProperty_v1;
 
         // .player
@@ -162,13 +188,87 @@ public class LoopbackGameControl extends GameControl
         validateName(messageName);
         validateValue(value);
 
-        if ((playerId == TO_ALL || playerId == PLAYER_ID) && _playerLoopback != null) {
-            _playerLoopback.callUserCode("messageReceived_v2", messageName, value, _myId);
+        // Simulate network latency: wait 1 frame to deliver the message to everyone
+        _deferredOps.push(function () :void {
+            if ((playerId == TO_ALL || playerId == PLAYER_ID) && _playerLoopback != null) {
+                _playerLoopback.callUserCode("messageReceived_v2", messageName, value, _myId);
+            }
+
+            if ((playerId == TO_ALL || playerId == SERVER_AGENT_ID) && _serverLoopback != null) {
+                _serverLoopback.callUserCode("messageReceived_v2", messageName, value, _myId);
+            }
+        });
+    }
+
+    /**
+     * Sets a property.
+     *
+     * Note: immediate defaults to true, even though immediate=false is the general case. We are
+     * providing some backwards compatibility to old versions of setProperty_v1() that assumed
+     * immediate and did not pass a 4th value.  All callers should now specify that value
+     * explicitly.
+     */
+    protected function setProperty_v2 (
+        propName :String, value :Object, key :Object, isArray :Boolean, immediate :Boolean) :void
+    {
+        validatePropertyChange(propName, value, isArray, int(key));
+
+        var encoded :Object = PropertySpaceHelper.encodeProperty(value, (key == null));
+        var ikey :Integer = (key == null) ? null : new Integer(int(key));
+        if (immediate) {
+            // we re-decode so that it looks like it came off the net
+            try {
+                applyPropertySet(
+                    _gameData, propName, PropertySpaceHelper.decodeProperty(encoded), key, isArray);
+            } catch (re :RangeError) {
+                trace("Error setting property (immediate): " + re);
+            }
         }
 
-        if ((playerId == TO_ALL || playerId == SERVER_AGENT_ID) && _serverLoopback != null) {
-            _serverLoopback.callUserCode("messageReceived_v2", messageName, value, _myId);
+        // Simulate network latency: wait 1 frame to deliver the update
+        _deferredOps.push(function () :void {
+            updateProp(propName, encoded, ikey, isArray);
+            if (this.otherLoopback != null) {
+                this.otherLoopback.updateProp(propName, encoded, ikey, isArray);
+            }
+        });
+    }
+
+    protected function updateProp (propName :String, encodedVal :Object, ikey :Integer,
+        isArray :Boolean) :void
+    {
+        var value :Object = PropertySpaceHelper.decodeProperty(encodedVal);
+        var keyObj :Object = (ikey == null) ? null : ikey.value;
+        var oldValue :Object;
+        try {
+            oldValue = applyPropertySet(_gameData, propName, value, keyObj, isArray);
+        } catch (re :RangeError) {
+            trace("Error setting property: " + re);
+            return;
         }
+
+        callUserCode("propertyWasSet_v2", propName, value, oldValue, keyObj);
+    }
+
+    /**
+     * Verify that the property name / value are valid.
+     */
+    protected function validatePropertyChange (
+        propName :String, value :Object, array :Boolean, index :int) :void
+    {
+        validateName(propName);
+
+        if (array) {
+            if (index < 0) {
+                throw new ArgumentError("Bogus array index specified.");
+            }
+            if (!(_gameData[propName] is Array)) {
+                throw new ArgumentError("Property " + propName + " is not an Array.");
+            }
+        }
+
+        // validate the value too
+        validateValue(value);
     }
 
     /**
@@ -211,8 +311,66 @@ public class LoopbackGameControl extends GameControl
         }
     }
 
+    protected function get otherLoopback () :LoopbackGameControl
+    {
+        return (this == _playerLoopback ? _serverLoopback : _playerLoopback);
+    }
+
+    /**
+     * Enacts a property change.
+     * @return the old value
+     *
+     * @throws RangeError if the key is out of range (arrays only)
+     */
+    protected static function applyPropertySet (
+        props :Object, propName :String, value :Object,
+        key :Object, isArray :Boolean) :Object
+    {
+        var oldValue :Object = props[propName];
+        if (key != null) {
+            var index :int = int(key);
+            if (isArray) {
+                if (!(oldValue is Array)) {
+                    throw new RangeError("Current value is not an Array.");
+                }
+                var arr :Array = (oldValue as Array);
+                if (index < 0 || index >= arr.length) {
+                    throw new RangeError("Array index out of range.");
+                }
+                oldValue = arr[index];
+                arr[index] = value;
+
+            } else {
+                var dict :Dictionary = (oldValue as Dictionary);
+                if (dict == null) {
+                    dict = new Dictionary(); // force creation
+                    props[propName] = dict;
+                }
+                oldValue = dict[index];
+                if (value == null) {
+                    delete dict[index];
+                } else {
+                    dict[index] = value;
+                }
+            }
+
+        } else if (value != null) {
+            // normal property set
+            props[propName] = value;
+
+        } else {
+            // remove a property
+            delete props[propName];
+        }
+        return oldValue;
+    }
+
     protected var _myId :int;
     protected var _userFuncs :Object;
+    protected var _gameData :Object = new Object();
+
+    protected var _disp :DisplayObject;
+    protected var _deferredOps :Array = [];
 
     protected var log :Log = Log.getLog(this);
 
