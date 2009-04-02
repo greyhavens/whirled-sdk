@@ -55,6 +55,13 @@ public class PersistUtil
         serializeHashMap(output, map, serializeInt, serializeInt);
     }
 
+    public static function serializeSingleTypeMap (seralizeFn :Function) :Function
+    {
+        return function (output :IDataOutput, map :HashMap) :void {
+            serializeHashMap(output, map, serializeFn, serializeFn);
+        }
+    }
+
     public static function serializeObject (output :IDataOutput, value :Object) :void
     {
         output.writeObject(value);
@@ -104,9 +111,11 @@ public class PersistUtil
         }
     }
 
-    public static function deserializeIntIntMap (input :IDataInput) :HashMap
+    public static function deserializeSingleTypeMap (deserializeFn :Function) :Function
     {
-        return deserializeHashMap(input, deserializeInt, deserializeInt);
+        return function (input :IDataInput) :HashMap {
+            return deserializeHashMap(input, deserializeFn, deserializeFn);
+        }
     }
 
     public static function deserializeObject (input :IDataInput) :Object
