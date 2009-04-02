@@ -514,16 +514,17 @@ public class LoopbackGameControl extends GameControl
         }
 
         var turnOp :Function = function () :void {
-            endTurn(nextPlayerId);
+            _turnHolderId = nextPlayerId;
+            turnChanged();
             if (this.otherLoopback != null) {
-                this.otherLoopback.endTurn(nextPlayerId);
+                this.otherLoopback.turnChanged();
             }
         };
 
         MethodQueue.callLater(turnOp);
     }
 
-    protected function endTurn (nextTurnHolder :int) :void
+    protected function turnChanged () :void
     {
         callUserCode("turnDidChange_v1");
     }
