@@ -32,8 +32,8 @@ public class PersistUtil
     {
         bytes.writeInt(map.size());
         for each (var key :Object in map.keys()) {
-            serializeKey(key);
-            serializeValue(map.get(key));
+            serializeKey(bytes, key);
+            serializeValue(bytes, map.get(key));
         }
     }
 
