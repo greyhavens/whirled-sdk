@@ -3,6 +3,7 @@
 
 package com.whirled.game.loopback {
 
+import com.threerings.util.ArrayUtil;
 import com.threerings.util.HashMap;
 import com.threerings.util.HashSet;
 import com.threerings.util.Integer;
@@ -12,6 +13,7 @@ import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringUtil;
 import com.threerings.util.Util;
 import com.whirled.ServerObject;
+import com.whirled.contrib.TimerManager;
 import com.whirled.game.GameControl;
 import com.whirled.game.client.PropertySpaceHelper;
 
@@ -23,7 +25,8 @@ import flash.utils.Dictionary;
 
 public class LoopbackGameControl extends GameControl
 {
-    public function LoopbackGameControl (disp :DisplayObject, autoReady :Boolean = true)
+    public function LoopbackGameControl (disp :DisplayObject, isPartyGame :Boolean,
+                                         autoReady :Boolean = true)
     {
         if (disp is ServerObject) {
             _serverLoopback = this;
@@ -33,9 +36,27 @@ public class LoopbackGameControl extends GameControl
             _myId = LOOPBACK_PLAYER_ID;
         }
 
+        _isPartyGame = isPartyGame;
+
+        // refcount the number of LoopbackGameControls that are instantiated
+        _numControls++;
+
         disp.root.loaderInfo.sharedEvents.addEventListener(
             "controlConnect", handleUserCodeConnect, false, int.MAX_VALUE);
         super(disp, autoReady);
+    }
+
+    /**
+     * Handle any shutdown required.
+     */
+    override protected function handleUnload (event :Event) :void
+    {
+        if (--_numControls == 0) {
+            // shutdown static stuff
+            _timerMgr.shutdown();
+        }
+
+        super.handleUnload(event);
     }
 
     override public function isConnected () :Boolean
@@ -61,6 +82,9 @@ public class LoopbackGameControl extends GameControl
 
         // determine whether to automatically start the game in a backwards compatible way
         var autoReady :Boolean = ("autoReady_v1" in userProps) ? userProps["autoReady_v1"] : true;
+        if (autoReady) {
+            playerReady_v1();
+        }
     }
 
     protected function setUserCodeProperties (o :Object) :void
@@ -87,6 +111,8 @@ public class LoopbackGameControl extends GameControl
 
     protected function populateProperties (o :Object) :void
     {
+        /* BaseGameBackend */
+
         // straight data
         o["gameData"] = _gameData;
 
@@ -120,10 +146,15 @@ public class LoopbackGameControl extends GameControl
         o["getPlayerLevelPacks_v1"] = getPlayerLevelPacks_v1;
 
         // .game
-        //o["endGame_v2"] = endGame_v2;
-        //o["endGameWithScores_v1"] = endGameWithScores_v1;
-        //o["endGameWithWinners_v1"] = endGameWithWinners_v1;
-        //o["endRound_v1"] = endRound_v1;
+        o["endGame_v2"] = endGame_v2;
+        o["endGameWithScores_v1"] = endGameWithScores_v1;
+        o["endGameWithWinners_v1"] = endGameWithWinners_v1;
+        o["endRound_v1"] = endRound_v1;
+        o["getRound_v1"] = getRound_v1;
+        o["getTurnHolder_v1"] = getTurnHolder_v1;
+        o["isInPlay_v1"] = isInPlay_v1;
+        o["restartGameIn_v1"] = restartGameIn_v1;
+        o["startNextTurn_v1"] = startNextTurn_v1;
         o["getControllerId_v1"] = getControllerId_v1;
         o["getLevelPacks_v2"] = getLevelPacks_v2;
         o["getItemPacks_v1"] = getItemPacks_v1;
@@ -131,12 +162,7 @@ public class LoopbackGameControl extends GameControl
         o["loadItemPackData_v1"] = loadItemPackData_v1;
         o["getOccupants_v1"] = getOccupants_v1;
         o["getOccupantName_v1"] = getOccupantName_v1;
-        //o["getRound_v1"] = getRound_v1;
-        //o["getTurnHolder_v1"] = getTurnHolder_v1;
-        //o["isInPlay_v1"] = isInPlay_v1;
-        //o["restartGameIn_v1"] = restartGameIn_v1;
         o["sendChat_v1"] = sendChat_v1;
-        //o["startNextTurn_v1"] = startNextTurn_v1;
         o["getMyId_v1"] = getMyId_v1;
 
         // .game.seating
@@ -164,6 +190,42 @@ public class LoopbackGameControl extends GameControl
         //o["getDictionaryLetterSet_v1"] = getDictionaryLetterSet_v1;
         //o["setProperty_v1"] = setProperty_v1;
         //o["getLevelPacks_v1"] = getLevelPacks_v1;
+
+        /* WhirledGameBackend */
+        // GameControl
+        //o["focusContainer_v1"] = focusContainer_v1;
+
+        // .local
+        //o["alterKeyEvents_v1"] = alterKeyEvents_v1;
+        //o["clearScores_v1"] = clearScores_v1;
+        //o["filter_v1"] = filter_v1;
+        //o["getHeadShot_v2"] = getHeadShot_v2;
+        //o["getSize_v1"] = getSize_v1;
+        //o["isEmbedded_v1"] = isEmbedded_v1;
+        //o["localChat_v1"] = localChat_v1;
+        //o["setMappedScores_v1"] = setMappedScores_v1;
+        //o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
+        //o["setPlayerScores_v1"] = setPlayerScores_v1;
+        //o["setFrameRate_v1"] = setFrameRate_v1;
+        //o["setShowReplay_v1"] = setShowReplay_v1;
+        //o["setStageQuality_v1"] = setStageQuality_v1;
+        //o["showAllGames_v1"] = showAllGames_v1;
+        //o["showGameLobby_v1"] = showGameLobby_v1;
+        //o["showGameShop_v1"] = showGameShop_v1;
+        //o["showTrophies_v1"] = showTrophies_v1;
+        //o["showInvitePage_v1"] = showInvitePage_v1;
+        //o["getInviteToken_v1"] = getInviteToken_v1;
+        //o["getInviterMemberId_v1"] = getInviterMemberId_v1;
+
+        // .game
+        //o["isMyTurn_v1"] = isMyTurn_v1;
+        o["playerReady_v1"] = playerReady_v1;
+
+        // Old methods: backwards compatability
+        //o["backToWhirled_v1"] = backToWhirled_v1;
+        //o["getStageBounds_v1"] = getStageBounds_v1;
+        //o["getHeadShot_v1"] = getHeadShot_v1;
+        //o["setShowButtons_v1"] = setShowButtons_v1;
     }
 
     //---- GameControl -----------------------------------------------------
@@ -424,6 +486,195 @@ public class LoopbackGameControl extends GameControl
 
     //---- .game -----------------------------------------------------------
 
+    protected function getTurnHolder_v1 () :int
+    {
+        return _turnHolderId;
+    }
+
+    protected function getRound_v1 () :int
+    {
+        return (_roundStarted ? _roundId : -_roundId);
+    }
+
+    protected function isInPlay_v1 () :Boolean
+    {
+        return _gameStarted;
+    }
+
+    protected function startNextTurn_v1 (nextPlayerId :int) :void
+    {
+        if (nextPlayerId != LOOPBACK_PLAYER_ID) {
+            // TODO: what should we do here?
+            return;
+        }
+
+        var turnOp :Function = function () :void {
+            endTurn(nextPlayerId);
+            if (this.otherLoopback != null) {
+                this.otherLoopback.endTurn(nextPlayerId);
+            }
+        };
+
+        MethodQueue.callLater(turnOp);
+    }
+
+    protected function endTurn (nextTurnHolder :int) :void
+    {
+        callUserCode("turnDidChange_v1");
+    }
+
+    protected function endRound_v1 (nextRoundDelay :int) :void
+    {
+        var startRoundOp :Function = function () :void {
+            changeRoundState(true);
+        };
+
+        var endRoundOp :Function = function () :void {
+            if (changeRoundState(false)) {
+                // start the next round soon
+                _timerMgr.runOnce(Math.max(nextRoundDelay * 1000, 0), startRoundOp);
+            }
+        };
+
+        MethodQueue.callLater(endRoundOp);
+    }
+
+    protected function changeRoundState (newState :Boolean) :Boolean
+    {
+        if (_gameStarted && _roundStarted != newState) {
+            _roundStarted = newState;
+            if (_roundStarted) {
+                _roundId++;
+            }
+
+            roundStateChanged();
+            if (this.otherLoopback != null) {
+                this.otherLoopback.roundStateChanged();
+            }
+
+            return true;
+
+        } else if (_gameStarted && _roundStarted == newState) {
+            reportGameError(newState ? "Failed to start round; round already started" :
+                                       "Failed to end round; round already ended");
+        } else if (!_gameStarted) {
+            reportGameError("Failed to start or end a round; the game is not in play");
+        }
+
+        return false;
+    }
+
+    protected function roundStateChanged () :void
+    {
+        callUserCode("roundStateChanged_v1", _roundStarted);
+    }
+
+    protected function endGame_v2 (... winnerIds) :void
+    {
+        var loserIds :Array = [];
+        if (!ArrayUtil.contains(winnerIds, LOOPBACK_PLAYER_ID)) {
+            loserIds.push(LOOPBACK_PLAYER_ID);
+        }
+
+        endGameWithWinners_v1(winnerIds, loserIds, 0) // WhirledGameControl.CASCADING_PAYOUT
+    }
+
+    protected function endGameWithWinners_v1 (
+        winnerIds :Array, loserIds :Array, payoutType :int) :void
+    {
+        var endGameOp :Function = function () :void {
+            changeGameState(false, ArrayUtil.contains(winnerIds, LOOPBACK_PLAYER_ID), payoutType);
+        };
+
+        MethodQueue.callLater(endGameOp);
+    }
+
+    // gameMode was added on Oct-23-2008, most games will continue to use the default mode, but new
+    // games may pass a non-zero value to make use of per-mode score distributions
+    protected function endGameWithScores_v1 (playerIds :Array, scores :Array /* of int */,
+        payoutType :int, gameMode :int = 0) :void
+    {
+        var endGameOp :Function = function () :void {
+            var loopbackPlayerIdx :int = playerIds.indexOf(LOOPBACK_PLAYER_ID);
+            var loopbackPlayerScore :int;
+            if (loopbackPlayerIdx >= 0 && loopbackPlayerIdx < scores.length) {
+                loopbackPlayerScore = scores[loopbackPlayerScore];
+            }
+
+            changeGameState(false, loopbackPlayerScore > 0, payoutType, gameMode);
+        };
+
+        MethodQueue.callLater(endGameOp);
+    }
+
+    protected function restartGameIn_v1 (seconds :int) :void
+    {
+        if (!_isPartyGame) {
+            // I'd like to throw an error, but some old games incorrectly call this
+            // and we don't want to break them, so just log it here, but we throw an Error
+            // in newer versions of GameSubControl.
+            reportGameError("restartGameIn() is only applicable to party games.");
+            return;
+        }
+
+        var restartOp :Function = function () :void {
+            _timerMgr.runOnce(seconds * 1000,
+                function (...ignored) :void {
+                    changeGameState(true);
+                });
+        };
+
+        MethodQueue.callLater(restartOp);
+    }
+
+    /**
+     * Called by the client code when it is ready for the game to be started (if called before the
+     * game ever starts) or rematched (if called after the game has ended).
+     */
+    protected function playerReady_v1 () :void
+    {
+        if (_isPartyGame) {
+            // I'd like to throw an error, but some old games incorrectly call this
+            // and we don't want to break them, so just log it here, but we throw an Error
+            // in newer versions of GameSubControl.
+            reportGameError("playerReady() is only applicable to seated games.");
+            return;
+        }
+
+        if (_myId == LOOPBACK_PLAYER_ID) {
+            var startOp :Function = function () :void {
+                changeGameState(true);
+            };
+
+            MethodQueue.callLater(startOp);
+        }
+    }
+
+    protected function changeGameState (newState :Boolean, loopbackPlayerIsWinner :Boolean = false,
+                                        payoutType :int = 0, gameMode :int = 0) :void
+    {
+        if (_gameStarted != newState) {
+            _gameStarted = newState;
+            if (!_gameStarted && loopbackPlayerIsWinner) {
+                // TODO - dispatch a flow award here or something?
+            }
+
+            gameStateChanged();
+            if (this.otherLoopback != null) {
+                this.otherLoopback.gameStateChanged();
+            }
+
+        } else {
+            reportGameError(newState ? "Failed to start game; game already started" :
+                                       "Failed to end game; game already ended");
+        }
+    }
+
+    protected function gameStateChanged () :void
+    {
+        callUserCode("gameStateChanged_v1", _gameStarted);
+    }
+
     protected function sendChat_v1 (msg :String) :void
     {
         validateChat(msg);
@@ -637,10 +888,19 @@ public class LoopbackGameControl extends GameControl
 
     protected var log :Log = Log.getLog(this);
 
+    protected static var _isPartyGame :Boolean;
+    protected static var _gameStarted :Boolean;
+    protected static var _roundStarted :Boolean = true;
+    protected static var _roundId :int;
+    protected static var _turnHolderId :int;
+
     protected static var _playerLoopback :LoopbackGameControl;
     protected static var _serverLoopback :LoopbackGameControl;
 
-    protected static const LOOPBACK_PLAYER_ID :int = 1
+    protected static var _numControls :int;
+    protected static var _timerMgr :TimerManager = new TimerManager();
+
+    protected static const LOOPBACK_PLAYER_ID :int = 1;
     protected static const SERVER_AGENT_ID :int = int.MIN_VALUE;
 
     protected static const TO_ALL :int = 0;
