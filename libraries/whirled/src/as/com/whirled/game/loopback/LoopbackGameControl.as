@@ -30,7 +30,7 @@ public class LoopbackGameControl extends GameControl
             _myId = SERVER_AGENT_ID;
         } else {
             _playerLoopback = this;
-            _myId = PLAYER_ID;
+            _myId = LOOPBACK_PLAYER_ID;
         }
 
         disp.root.loaderInfo.sharedEvents.addEventListener(
@@ -124,18 +124,18 @@ public class LoopbackGameControl extends GameControl
         //o["endGameWithScores_v1"] = endGameWithScores_v1;
         //o["endGameWithWinners_v1"] = endGameWithWinners_v1;
         //o["endRound_v1"] = endRound_v1;
-        //o["getControllerId_v1"] = getControllerId_v1;
-        //o["getLevelPacks_v2"] = getLevelPacks_v2;
-        //o["getItemPacks_v1"] = getItemPacks_v1;
-        //o["loadLevelPackData_v1"] = loadLevelPackData_v1;
-        //o["loadItemPackData_v1"] = loadItemPackData_v1;
-        //o["getOccupants_v1"] = getOccupants_v1;
-        //o["getOccupantName_v1"] = getOccupantName_v1;
+        o["getControllerId_v1"] = getControllerId_v1;
+        o["getLevelPacks_v2"] = getLevelPacks_v2;
+        o["getItemPacks_v1"] = getItemPacks_v1;
+        o["loadLevelPackData_v1"] = loadLevelPackData_v1;
+        o["loadItemPackData_v1"] = loadItemPackData_v1;
+        o["getOccupants_v1"] = getOccupants_v1;
+        o["getOccupantName_v1"] = getOccupantName_v1;
         //o["getRound_v1"] = getRound_v1;
         //o["getTurnHolder_v1"] = getTurnHolder_v1;
         //o["isInPlay_v1"] = isInPlay_v1;
         //o["restartGameIn_v1"] = restartGameIn_v1;
-        //o["sendChat_v1"] = sendChat_v1;
+        o["sendChat_v1"] = sendChat_v1;
         //o["startNextTurn_v1"] = startNextTurn_v1;
         o["getMyId_v1"] = getMyId_v1;
 
@@ -204,7 +204,7 @@ public class LoopbackGameControl extends GameControl
         validateValue(value);
 
         var messageOp :Function = function () :void {
-            if ((playerId == TO_ALL || playerId == PLAYER_ID) && _playerLoopback != null) {
+            if ((playerId == TO_ALL || playerId == LOOPBACK_PLAYER_ID) && _playerLoopback != null) {
                 _playerLoopback.callUserCode("messageReceived_v2", messageName, value, _myId);
             }
 
@@ -377,7 +377,7 @@ public class LoopbackGameControl extends GameControl
             }
         }
 
-        if (playerId == PLAYER_ID && _playerLoopback != null) {
+        if (playerId == LOOPBACK_PLAYER_ID && _playerLoopback != null) {
             return _playerLoopback._awardedTrophies.contains(ident);
         } else {
             return false;
@@ -397,7 +397,7 @@ public class LoopbackGameControl extends GameControl
             return false;
         }
 
-        if (playerId == PLAYER_ID) {
+        if (playerId == LOOPBACK_PLAYER_ID) {
             _playerLoopback._awardedTrophies.add(ident);
             return true;
         }
@@ -424,6 +424,70 @@ public class LoopbackGameControl extends GameControl
 
     //---- .game -----------------------------------------------------------
 
+    protected function sendChat_v1 (msg :String) :void
+    {
+        validateChat(msg);
+
+        var chatOp :Function = function () :void {
+            if (_playerLoopback != null) {
+                _playerLoopback.receiveChat(_myId, msg);
+            }
+            if (_serverLoopback != null) {
+                _serverLoopback.receiveChat(_myId, msg);
+            }
+        };
+
+        MethodQueue.callLater(chatOp);
+    }
+
+    protected function getLevelPacks_v2 (filter :Function = null) :Array
+    {
+        // no-op
+        return [];
+    }
+
+    protected function getItemPacks_v1 (filter :Function = null) :Array
+    {
+        // no-op
+        return [];
+    }
+
+    protected function loadLevelPackData_v1 (
+        ident :String, onLoaded :Function, onFailure :Function) :void
+    {
+        if (onFailure != null) {
+            onFailure(new Error("Unknown data pack: " + ident));
+        }
+    }
+
+    protected function loadItemPackData_v1 (
+        ident :String, onLoaded :Function, onFailure :Function) :void
+    {
+        if (onFailure != null) {
+            onFailure(new Error("Unknown data pack: " + ident));
+        }
+    }
+
+    protected function receiveChat (senderId :int, msg :String) :void
+    {
+        callUserCode("userChat_v1", senderId, msg);
+    }
+
+    protected function getControllerId_v1 () :int
+    {
+        return (_playerLoopback != null ? LOOPBACK_PLAYER_ID : 0);
+    }
+
+    protected function getOccupants_v1 () :Array
+    {
+        return (_playerLoopback != null ? [ LOOPBACK_PLAYER_ID ] : []);
+    }
+
+    protected function getOccupantName_v1 (playerId :int) :String
+    {
+        return (playerId == LOOPBACK_PLAYER_ID ? "Loopback Player" : null);
+    }
+
     protected function getMyId_v1 () :int
     {
         return _myId;
@@ -433,12 +497,12 @@ public class LoopbackGameControl extends GameControl
 
     protected function getPlayerPosition_v1 (playerId :int) :int
     {
-        return (playerId == PLAYER_ID ? 0 : -1);
+        return (playerId == LOOPBACK_PLAYER_ID ? 0 : -1);
     }
 
     protected function getPlayers_v1 () :Array
     {
-        return (_playerLoopback != null ? [ PLAYER_ID ] : []);
+        return (_playerLoopback != null ? [ LOOPBACK_PLAYER_ID ] : []);
     }
 
     protected function getMyPosition_v1 () :int
@@ -576,8 +640,9 @@ public class LoopbackGameControl extends GameControl
     protected static var _playerLoopback :LoopbackGameControl;
     protected static var _serverLoopback :LoopbackGameControl;
 
-    protected static const PLAYER_ID :int = 1
+    protected static const LOOPBACK_PLAYER_ID :int = 1
     protected static const SERVER_AGENT_ID :int = int.MIN_VALUE;
+
     protected static const TO_ALL :int = 0;
 
     protected static const MAX_USER_COOKIE :int = 4096;
