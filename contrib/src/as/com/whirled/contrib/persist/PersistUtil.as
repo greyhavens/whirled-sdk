@@ -31,10 +31,10 @@ public class PersistUtil
         serializeKey :Function, serializeValue :Function) :void
     {
         bytes.writeInt(map.size());
-        for each (var key :Object in map.keys()) {
+        map.forEach(function (key :Object, value :Object) :void {
             serializeKey(bytes, key);
-            serializeValue(bytes, map.get(key));
-        }
+            serializeValue(bytes, value);
+        });
     }
 
     public static function serializeEnumIntMap (bytes :ByteArray, map :HashMap) :void
