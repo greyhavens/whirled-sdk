@@ -218,7 +218,7 @@ public class LoopbackGameControl extends GameControl
         //o["getInviterMemberId_v1"] = getInviterMemberId_v1;
 
         // .game
-        //o["isMyTurn_v1"] = isMyTurn_v1;
+        o["isMyTurn_v1"] = isMyTurn_v1;
         o["playerReady_v1"] = playerReady_v1;
 
         // Old methods: backwards compatability
@@ -489,6 +489,11 @@ public class LoopbackGameControl extends GameControl
     protected function getTurnHolder_v1 () :int
     {
         return _turnHolderId;
+    }
+
+    protected function isMyTurn_v1 () :Boolean
+    {
+        return (_myId == _turnHolderId);
     }
 
     protected function getRound_v1 () :int
