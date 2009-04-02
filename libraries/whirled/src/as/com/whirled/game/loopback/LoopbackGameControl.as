@@ -13,7 +13,7 @@ import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringUtil;
 import com.threerings.util.Util;
 import com.whirled.ServerObject;
-import com.whirled.contrib.TimerManager;
+//import com.whirled.contrib.TimerManager;
 import com.whirled.game.GameControl;
 import com.whirled.game.client.PropertySpaceHelper;
 
@@ -28,6 +28,8 @@ public class LoopbackGameControl extends GameControl
     public function LoopbackGameControl (disp :DisplayObject, isPartyGame :Boolean,
                                          autoReady :Boolean = true)
     {
+        _disp = disp;
+
         if (disp is ServerObject) {
             _serverLoopback = this;
             _myId = SERVER_AGENT_ID;
@@ -53,7 +55,7 @@ public class LoopbackGameControl extends GameControl
     {
         if (--_numControls == 0) {
             // shutdown static stuff
-            _timerMgr.shutdown();
+            //_timerMgr.shutdown();
         }
 
         super.handleUnload(event);
@@ -91,6 +93,9 @@ public class LoopbackGameControl extends GameControl
     {
         // here we would handle adapting old functions to a new version
         _userFuncs = o;
+
+        // here we would handle adapting old functions to a new version
+        _keyDispatcher = (o["dispatchEvent_v1"] as Function);
     }
 
     protected function callUserCode (name :String, ... args) :*
@@ -192,11 +197,12 @@ public class LoopbackGameControl extends GameControl
         //o["getLevelPacks_v1"] = getLevelPacks_v1;
 
         /* WhirledGameBackend */
+
         // GameControl
         //o["focusContainer_v1"] = focusContainer_v1;
 
         // .local
-        //o["alterKeyEvents_v1"] = alterKeyEvents_v1;
+        o["alterKeyEvents_v1"] = alterKeyEvents_v1;
         //o["clearScores_v1"] = clearScores_v1;
         //o["filter_v1"] = filter_v1;
         //o["getHeadShot_v2"] = getHeadShot_v2;
@@ -538,7 +544,7 @@ public class LoopbackGameControl extends GameControl
         var endRoundOp :Function = function () :void {
             if (changeRoundState(false)) {
                 // start the next round soon
-                _timerMgr.runOnce(Math.max(nextRoundDelay * 1000, 0), startRoundOp);
+                //_timerMgr.runOnce(Math.max(nextRoundDelay * 1000, 0), startRoundOp);
             }
         };
 
@@ -624,10 +630,10 @@ public class LoopbackGameControl extends GameControl
         }
 
         var restartOp :Function = function () :void {
-            _timerMgr.runOnce(seconds * 1000,
+            /*_timerMgr.runOnce(seconds * 1000,
                 function (...ignored) :void {
                     changeGameState(true);
-                });
+                });*/
         };
 
         MethodQueue.callLater(restartOp);
@@ -767,6 +773,26 @@ public class LoopbackGameControl extends GameControl
         return getPlayerPosition_v1(_myId);
     }
 
+    //---- .local ----------------------------------------------------------
+
+    protected function alterKeyEvents_v1 (keyEventType :String, add :Boolean) :void
+    {
+        if (add) {
+            _disp.addEventListener(keyEventType, handleKeyEvent);
+        } else {
+            _disp.removeEventListener(keyEventType, handleKeyEvent);
+        }
+    }
+
+    /**
+     * Handle key events on our container and pass them into the game.
+     */
+    protected function handleKeyEvent (evt :Event) :void
+    {
+        // dispatch a cloned copy of the event, so that it's safe
+        _keyDispatcher(evt.clone());
+    }
+
     /**
      * Verify that the property name / value are valid.
      */
@@ -882,6 +908,8 @@ public class LoopbackGameControl extends GameControl
         return oldValue;
     }
 
+    protected var _disp :DisplayObject;
+
     protected var _myId :int;
     protected var _userFuncs :Object;
     protected var _gameData :Object = new Object();
@@ -891,6 +919,10 @@ public class LoopbackGameControl extends GameControl
 
     protected var _curTransaction :Array;
     protected var _transactionCount :int;
+
+    /** The function on the GameControl which we can use to directly dispatch events to the
+     * user's game. */
+    protected var _keyDispatcher :Function;
 
     protected var log :Log = Log.getLog(this);
 
@@ -904,7 +936,7 @@ public class LoopbackGameControl extends GameControl
     protected static var _serverLoopback :LoopbackGameControl;
 
     protected static var _numControls :int;
-    protected static var _timerMgr :TimerManager = new TimerManager();
+    //protected static var _timerMgr :TimerManager = new TimerManager();
 
     protected static const LOOPBACK_PLAYER_ID :int = 1;
     protected static const SERVER_AGENT_ID :int = int.MIN_VALUE;
