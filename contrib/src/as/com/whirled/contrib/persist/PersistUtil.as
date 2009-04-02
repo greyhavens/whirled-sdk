@@ -47,7 +47,12 @@ public class PersistUtil
 
     public static function serializeEnumStringMap (output :IDataOutput, map :HashMap) :void
     {
-        serializeHashMap(output, map, seralizeEnum, serializeString);
+        serializeHashMap(output, map, serializeEnum, serializeString);
+    }
+
+    public static function serializeIntIntMap (output :IDataOutput, map :HashMap) :void
+    {
+        serializeHashMap(output, map, serializeInt, serializeInt);
     }
 
     public static function serializeObject (output :IDataOutput, value :Object) :void
@@ -97,6 +102,11 @@ public class PersistUtil
         return function (input :IDataInput) :HashMap {
             return deserializeHashMap(input, deserializeEnum(keyEnum), deserializeString);
         }
+    }
+
+    public static function deserializeIntIntMap (input :IDataInput) :HashMap
+    {
+        return deserializeHashMap(input, deserializeInt, deserializeInt);
     }
 
     public static function deserializeObject (input :IDataInput) :Object
