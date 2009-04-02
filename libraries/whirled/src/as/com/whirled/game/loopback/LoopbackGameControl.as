@@ -3,6 +3,7 @@
 
 package com.whirled.game.loopback {
 
+import com.threerings.util.HashMap;
 import com.threerings.util.Integer;
 import com.threerings.util.Log;
 import com.threerings.util.MethodQueue;
@@ -16,6 +17,7 @@ import com.whirled.game.client.PropertySpaceHelper;
 import flash.display.DisplayObject;
 import flash.errors.IllegalOperationError;
 import flash.events.Event;
+import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
 public class LoopbackGameControl extends GameControl
@@ -106,10 +108,10 @@ public class LoopbackGameControl extends GameControl
         o["testAndSetProperty_v1"] = testAndSetProperty_v1;
 
         // .player
-        //o["getUserCookie_v2"] = getUserCookie_v2;
-        //o["getCookie_v1"] = getCookie_v1;
-        //o["setUserCookie_v1"] = setUserCookie_v1;
-        //o["setCookie_v1"] = setCookie_v1;
+        o["getUserCookie_v2"] = getUserCookie_v2;
+        o["getCookie_v1"] = getCookie_v1;
+        o["setUserCookie_v1"] = setUserCookie_v1;
+        o["setCookie_v1"] = setCookie_v1;
         //o["holdsTrophy_v1"] = holdsTrophy_v1;
         //o["awardTrophy_v1"] = awardTrophy_v1;
         //o["awardPrize_v1"] = awardPrize_v1;
@@ -134,7 +136,7 @@ public class LoopbackGameControl extends GameControl
         //o["restartGameIn_v1"] = restartGameIn_v1;
         //o["sendChat_v1"] = sendChat_v1;
         //o["startNextTurn_v1"] = startNextTurn_v1;
-        //o["getMyId_v1"] = getMyId_v1;
+        o["getMyId_v1"] = getMyId_v1;
 
         // .game.seating
         //o["getPlayers_v1"] = getPlayers_v1;
@@ -303,6 +305,69 @@ public class LoopbackGameControl extends GameControl
         callUserCode("propertyWasSet_v2", propName, value, oldValue, keyObj);
     }
 
+    //---- .player ---------------------------------------------------------
+
+    protected function getUserCookie_v2 (playerId :int, callback :Function) :void
+    {
+        getCookie_v1(function (cookie :Object, ...unused) :void {
+            callback(cookie);
+        }, playerId);
+    }
+
+    protected function getCookie_v1 (callback :Function, occupantId :int) :void
+    {
+        if (occupantId == CURRENT_USER) {
+            occupantId = getMyId_v1();
+            if (occupantId == SERVER_AGENT_ID) {
+                throw new Error("Server agent must provide a player id here");
+            }
+        }
+
+        var cookieBytes :ByteArray = (_userCookies.get(occupantId) as ByteArray);
+        var cookie :Object = (cookieBytes != null ? ObjectMarshaller.decode(cookieBytes) : null);
+        callback(cookie, occupantId);
+    }
+
+    protected function setUserCookie_v1 (cookie :Object, playerId :int = CURRENT_USER) :Boolean
+    {
+        return setCookie_v1(cookie, playerId);
+    }
+
+    protected function setCookie_v1 (cookie :Object, occupantId :int = CURRENT_USER) :Boolean
+    {
+        validateValue(cookie);
+
+        if (occupantId == CURRENT_USER) {
+            occupantId = getMyId_v1();
+            if (occupantId == SERVER_AGENT_ID) {
+                throw new Error("Server agent must provide a player id here");
+            }
+        }
+
+        var ba :ByteArray = (ObjectMarshaller.encode(cookie, false) as ByteArray);
+        if (ba.length > MAX_USER_COOKIE) {
+            // not saved!
+            return false;
+        }
+
+        receiveUserCookie(occupantId, ba);
+        if (this.otherLoopback != null) {
+            this.otherLoopback.receiveUserCookie(occupantId, ba);
+        }
+
+        return true;
+    }
+
+    protected function receiveUserCookie (occupantId :int, cookieBytes :ByteArray) :void
+    {
+        _userCookies.put(occupantId, cookieBytes);
+    }
+
+    protected function getMyId_v1 () :int
+    {
+        return _myId;
+    }
+
     /**
      * Verify that the property name / value are valid.
      */
@@ -422,6 +487,8 @@ public class LoopbackGameControl extends GameControl
     protected var _userFuncs :Object;
     protected var _gameData :Object = new Object();
 
+    protected var _userCookies :HashMap = new HashMap();
+
     protected var _curTransaction :Array;
     protected var _transactionCount :int;
 
@@ -433,6 +500,10 @@ public class LoopbackGameControl extends GameControl
     protected static const PLAYER_ID :int = 1
     protected static const SERVER_AGENT_ID :int = int.MIN_VALUE;
     protected static const TO_ALL :int = 0;
+
+    protected static const MAX_USER_COOKIE :int = 4096;
+
+    protected static const CURRENT_USER :int = 0;
 }
 
 }
