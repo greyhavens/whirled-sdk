@@ -546,6 +546,7 @@ public class EntityControl extends AbstractControl
         o["messageReceived_v1"] = messageReceived_v1;
         o["signalReceived_v1"] = signalReceived_v1;
         o["receivedChat_v2"] = receivedChat_v2;
+        o["hasConfigPanel_v1"] = hasConfigPanel_v1;
         o["getConfigPanel_v1"] = getConfigPanel_v1;
 
         o["entityEntered_v1"] = entityEntered_v1;
@@ -672,6 +673,14 @@ public class EntityControl extends AbstractControl
 
         // possibly set up a ticker now
         recheckTicker();
+    }
+
+    /**
+     * @private
+     */
+    protected function hasConfigPanel_v1 () :Boolean
+    {
+        return (_customConfig != null); // we assume it'll work...
     }
 
     /**
