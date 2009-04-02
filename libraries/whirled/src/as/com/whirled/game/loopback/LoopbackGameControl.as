@@ -13,7 +13,6 @@ import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringUtil;
 import com.threerings.util.Util;
 import com.whirled.ServerObject;
-//import com.whirled.contrib.TimerManager;
 import com.whirled.game.GameControl;
 import com.whirled.game.client.PropertySpaceHelper;
 
@@ -22,6 +21,7 @@ import flash.errors.IllegalOperationError;
 import flash.events.Event;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
+import flash.utils.setTimeout;
 
 public class LoopbackGameControl extends GameControl
 {
@@ -40,9 +40,6 @@ public class LoopbackGameControl extends GameControl
 
         _isPartyGame = isPartyGame;
 
-        // refcount the number of LoopbackGameControls that are instantiated
-        _numControls++;
-
         disp.root.loaderInfo.sharedEvents.addEventListener(
             "controlConnect", handleUserCodeConnect, false, int.MAX_VALUE);
         super(disp, autoReady);
@@ -53,11 +50,6 @@ public class LoopbackGameControl extends GameControl
      */
     override protected function handleUnload (event :Event) :void
     {
-        if (--_numControls == 0) {
-            // shutdown static stuff
-            //_timerMgr.shutdown();
-        }
-
         super.handleUnload(event);
     }
 
@@ -544,7 +536,7 @@ public class LoopbackGameControl extends GameControl
         var endRoundOp :Function = function () :void {
             if (changeRoundState(false)) {
                 // start the next round soon
-                //_timerMgr.runOnce(Math.max(nextRoundDelay * 1000, 0), startRoundOp);
+                runOnce(Math.max(nextRoundDelay * 1000, 0), startRoundOp);
             }
         };
 
@@ -630,10 +622,10 @@ public class LoopbackGameControl extends GameControl
         }
 
         var restartOp :Function = function () :void {
-            /*_timerMgr.runOnce(seconds * 1000,
-                function (...ignored) :void {
+            runOnce(seconds * 1000,
+                function () :void {
                     changeGameState(true);
-                });*/
+                });
         };
 
         MethodQueue.callLater(restartOp);
@@ -859,6 +851,17 @@ public class LoopbackGameControl extends GameControl
         return (this == _playerLoopback ? _serverLoopback : _playerLoopback);
     }
 
+    protected function runOnce (delayMs :Number, callback :Function) :void
+    {
+        // Flash docs say:
+        // "If you do not call the clearTimeout() function to cancel the setTimeout() call,
+        // the object containing the set timeout closure function will not be garbage collected."
+        //
+        // Let's assume that what they mean is that it won't be garbage collected *until
+        // after the timeout is called* and hope we're right
+        flash.utils.setTimeout(callback, delayMs);
+    }
+
     /**
      * Enacts a property change.
      * @return the old value
@@ -934,9 +937,6 @@ public class LoopbackGameControl extends GameControl
 
     protected static var _playerLoopback :LoopbackGameControl;
     protected static var _serverLoopback :LoopbackGameControl;
-
-    protected static var _numControls :int;
-    //protected static var _timerMgr :TimerManager = new TimerManager();
 
     protected static const LOOPBACK_PLAYER_ID :int = 1;
     protected static const SERVER_AGENT_ID :int = int.MIN_VALUE;
