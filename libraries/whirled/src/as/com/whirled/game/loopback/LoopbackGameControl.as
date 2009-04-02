@@ -25,12 +25,14 @@ import flash.utils.setTimeout;
 
 public class LoopbackGameControl extends GameControl
 {
-    public function LoopbackGameControl (disp :DisplayObject, isPartyGame :Boolean,
+    public function LoopbackGameControl (disp :DisplayObject,
+                                         isServer :Boolean,
+                                         isPartyGame :Boolean,
                                          autoReady :Boolean = true)
     {
         _disp = disp;
 
-        if (disp is ServerObject) {
+        if (isServer) {
             _serverLoopback = this;
             _myId = SERVER_AGENT_ID;
         } else {
@@ -40,9 +42,10 @@ public class LoopbackGameControl extends GameControl
 
         _isPartyGame = isPartyGame;
 
-        disp.root.loaderInfo.sharedEvents.addEventListener(
+        _disp.root.loaderInfo.sharedEvents.addEventListener(
             "controlConnect", handleUserCodeConnect, false, int.MAX_VALUE);
-        super(disp, autoReady);
+
+        super(_disp, autoReady);
     }
 
     /**
@@ -64,6 +67,11 @@ public class LoopbackGameControl extends GameControl
     {
         evt.stopImmediatePropagation();
 
+        // Unsubscribe from this event now. We may be running the server locally, and it
+        // will also be listening for the event.
+        _disp.root.loaderInfo.sharedEvents.removeEventListener(
+            "controlConnect", handleUserCodeConnect);
+
         // Do everything that BaseGameBackend does
         var props :Object = Object(evt).props;
 
@@ -76,7 +84,7 @@ public class LoopbackGameControl extends GameControl
 
         // determine whether to automatically start the game in a backwards compatible way
         var autoReady :Boolean = ("autoReady_v1" in userProps) ? userProps["autoReady_v1"] : true;
-        if (autoReady) {
+        if (autoReady && !_isPartyGame && this.isPlayer) {
             playerReady_v1();
         }
     }
@@ -860,6 +868,16 @@ public class LoopbackGameControl extends GameControl
         // Let's assume that what they mean is that it won't be garbage collected *until
         // after the timeout is called* and hope we're right
         flash.utils.setTimeout(callback, delayMs);
+    }
+
+    protected function get isServer () :Boolean
+    {
+        return (this == _serverLoopback);
+    }
+
+    protected function get isPlayer () :Boolean
+    {
+        return !(this.isServer);
     }
 
     /**
