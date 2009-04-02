@@ -23,6 +23,8 @@ package com.whirled.contrib.platformer.net {
 import flash.events.Event;
 import flash.utils.ByteArray;
 
+import com.whirled.game.GameSubControl;
+
 public class BaseGameMessage extends Event
     implements GameMessage
 {
@@ -45,6 +47,11 @@ public class BaseGameMessage extends Event
     public function set senderId (id :int) :void
     {
         _senderId = id;
+    }
+
+    public function fromServer () :Boolean
+    {
+        return _senderId == GameSubControl.SERVER_AGENT_ID;
     }
 
     public function fromBytes (bytes :ByteArray) :void
