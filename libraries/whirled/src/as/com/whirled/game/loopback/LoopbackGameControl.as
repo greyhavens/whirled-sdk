@@ -4,6 +4,7 @@
 package com.whirled.game.loopback {
 
 import com.threerings.util.HashMap;
+import com.threerings.util.HashSet;
 import com.threerings.util.Integer;
 import com.threerings.util.Log;
 import com.threerings.util.MethodQueue;
@@ -112,11 +113,11 @@ public class LoopbackGameControl extends GameControl
         o["getCookie_v1"] = getCookie_v1;
         o["setUserCookie_v1"] = setUserCookie_v1;
         o["setCookie_v1"] = setCookie_v1;
-        //o["holdsTrophy_v1"] = holdsTrophy_v1;
-        //o["awardTrophy_v1"] = awardTrophy_v1;
-        //o["awardPrize_v1"] = awardPrize_v1;
-        //o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
-        //o["getPlayerLevelPacks_v1"] = getPlayerLevelPacks_v1;
+        o["holdsTrophy_v1"] = holdsTrophy_v1;
+        o["awardTrophy_v1"] = awardTrophy_v1;
+        o["awardPrize_v1"] = awardPrize_v1;
+        o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
+        o["getPlayerLevelPacks_v1"] = getPlayerLevelPacks_v1;
 
         // .game
         //o["endGame_v2"] = endGame_v2;
@@ -139,9 +140,9 @@ public class LoopbackGameControl extends GameControl
         o["getMyId_v1"] = getMyId_v1;
 
         // .game.seating
-        //o["getPlayers_v1"] = getPlayers_v1;
-        //o["getPlayerPosition_v1"] = getPlayerPosition_v1;
-        //o["getMyPosition_v1"] = getMyPosition_v1;
+        o["getPlayers_v1"] = getPlayers_v1;
+        o["getPlayerPosition_v1"] = getPlayerPosition_v1;
+        o["getMyPosition_v1"] = getMyPosition_v1;
 
         // .services
         //o["checkDictionaryWord_v2"] = checkDictionaryWord_v2;
@@ -164,6 +165,8 @@ public class LoopbackGameControl extends GameControl
         //o["setProperty_v1"] = setProperty_v1;
         //o["getLevelPacks_v1"] = getLevelPacks_v1;
     }
+
+    //---- GameControl -----------------------------------------------------
 
     /**
      * Starts a transaction that will group all game state changes into a single message.
@@ -192,6 +195,8 @@ public class LoopbackGameControl extends GameControl
             _curTransaction = null;
         }
     }
+
+    //---- .net ------------------------------------------------------------
 
     protected function sendMessage_v2 (messageName :String, value :Object, playerId :int) :void
     {
@@ -363,9 +368,82 @@ public class LoopbackGameControl extends GameControl
         _userCookies.put(occupantId, cookieBytes);
     }
 
+    protected function holdsTrophy_v1 (ident :String, playerId :int = CURRENT_USER) :Boolean
+    {
+        if (playerId == CURRENT_USER) {
+            playerId = getMyId_v1();
+            if (playerId == SERVER_AGENT_ID) {
+                throw new Error("Server agent must provide a player id here");
+            }
+        }
+
+        if (playerId == PLAYER_ID && _playerLoopback != null) {
+            return _playerLoopback._awardedTrophies.contains(ident);
+        } else {
+            return false;
+        }
+    }
+
+    protected function awardTrophy_v1 (ident :String, playerId :int = CURRENT_USER) :Boolean
+    {
+        if (playerId == CURRENT_USER) {
+            playerId = getMyId_v1();
+            if (playerId == SERVER_AGENT_ID) {
+                throw new Error("Server agent must provide a player id here");
+            }
+        }
+
+        if (holdsTrophy_v1(ident, playerId)) {
+            return false;
+        }
+
+        if (playerId == PLAYER_ID) {
+            _playerLoopback._awardedTrophies.add(ident);
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function awardPrize_v1 (ident :String, playerId :int = CURRENT_USER) :void
+    {
+        // no-op
+    }
+
+    protected function getPlayerItemPacks_v1 (playerId :int = CURRENT_USER) :Array
+    {
+        // no-op
+        return [];
+    }
+
+    protected function getPlayerLevelPacks_v1 (playerId :int = CURRENT_USER) :Array
+    {
+        // no-op
+        return [];
+    }
+
+    //---- .game -----------------------------------------------------------
+
     protected function getMyId_v1 () :int
     {
         return _myId;
+    }
+
+    //---- .game.seating ---------------------------------------------------
+
+    protected function getPlayerPosition_v1 (playerId :int) :int
+    {
+        return (playerId == PLAYER_ID ? 0 : -1);
+    }
+
+    protected function getPlayers_v1 () :Array
+    {
+        return (_playerLoopback != null ? [ PLAYER_ID ] : []);
+    }
+
+    protected function getMyPosition_v1 () :int
+    {
+        return getPlayerPosition_v1(_myId);
     }
 
     /**
@@ -488,6 +566,7 @@ public class LoopbackGameControl extends GameControl
     protected var _gameData :Object = new Object();
 
     protected var _userCookies :HashMap = new HashMap();
+    protected var _awardedTrophies :HashSet = new HashSet();
 
     protected var _curTransaction :Array;
     protected var _transactionCount :int;
