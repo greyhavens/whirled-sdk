@@ -50,11 +50,6 @@ public class PersistUtil
         serializeHashMap(output, map, serializeEnum, serializeString);
     }
 
-    public static function serializeIntIntMap (output :IDataOutput, map :HashMap) :void
-    {
-        serializeHashMap(output, map, serializeInt, serializeInt);
-    }
-
     public static function serializeSingleTypeMap (seralizeFn :Function) :Function
     {
         return function (output :IDataOutput, map :HashMap) :void {
