@@ -106,7 +106,7 @@ public class PersistUtil
 
     public static function deserializeEnum (enum :Class) :Function
     {
-        return function (input :IDataInput) :Object {
+        return function (input :IDataInput) :Enum {
             return Enum.valueOf(enum, input.readUTF());
         };
     }
