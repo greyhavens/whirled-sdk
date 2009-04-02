@@ -20,56 +20,66 @@
 
 package com.whirled.contrib.persist {
 
-import flash.utils.ByteArray;
+import flash.utils.IDataInput;
+import flash.utils.IDataOutput;
 
 import com.threerings.util.Enum;
 import com.threerings.util.HashMap;
 
 public class PersistUtil
 {
-    public static function serializeHashMap (bytes :ByteArray, map :HashMap,
-        serializeKey :Function, serializeValue :Function) :void
+    public static function serializeHashMap (output :IDataOutput, map :HashMap,
+        serializeKey :Function = null, serializeValue :Function = null) :void
     {
-        bytes.writeInt(map.size());
+        serializeKey = serializeKey == null ? serializeObject : serializeKey;
+        serializeValue = serializeValue == null ? serializeObject : serializeKey;
+        output.writeInt(map.size());
         map.forEach(function (key :Object, value :Object) :void {
-            serializeKey(bytes, key);
-            serializeValue(bytes, value);
+            serializeKey(output, key);
+            serializeValue(output, value);
         });
     }
 
-    public static function serializeEnumIntMap (bytes :ByteArray, map :HashMap) :void
+    public static function serializeEnumIntMap (output :IDataOutput, map :HashMap) :void
     {
-        serializeHashMap(map, bytes, serializeEnum, serializeInt);
+        serializeHashMap(output, map, serializeEnum, serializeInt);
     }
 
-    public static function serializeEnumStringMap (bytes :ByteArray, map :HashMap) :void
+    public static function serializeEnumStringMap (output :IDataOutput, map :HashMap) :void
     {
-        serializeHashMap(map, bytes, seralizeEnum, serializeString);
+        serializeHashMap(output, map, seralizeEnum, serializeString);
     }
 
-    public static function serializeEnum (bytes :ByteArray, value :Enum) :void
+    public static function serializeObject (output :IDataOutput, value :Object) :void
     {
-        bytes.writeUTF(value.name());
+        output.writeObject(value);
     }
 
-    public static function serializeInt (bytes :ByteArray, value :int) :void
+    public static function serializeEnum (output :IDataOutput, value :Enum) :void
     {
-        bytes.writeInt(value);
+        output.writeUTF(value.name());
     }
 
-    public static function serializeString (bytes :ByteArray, value :String) :void
+    public static function serializeInt (output :IDataOutput, value :int) :void
     {
-        bytes.writeUTF(value);
+        output.writeInt(value);
     }
 
-    public static function deserializeHashMap (bytes :ByteArray, deserializeKey :Function,
-        deserializeValue :Function) :HashMap
+    public static function serializeString (output :IDataOutput, value :String) :void
     {
+        output.writeUTF(value);
+    }
+
+    public static function deserializeHashMap (input :IDataInput, deserializeKey :Function = null,
+        deserializeValue :Function = null) :HashMap
+    {
+        deserializeKey = deserializeKey == null ? deserializeObject : deserializeKey;
+        deserializeValue = deserializeValue == null ? deserializeObject : deserializeKey;
         var map :HashMap = new HashMap();
-        var size :int = bytes.readInt();
+        var size :int = input.readInt();
         for (var ii :int = 0; ii < size; ii++) {
-            var key :Object = deserializeKey(bytes);
-            var value :Object = deserializeValue(bytes);
+            var key :Object = deserializeKey(input);
+            var value :Object = deserializeValue(input);
             map.put(key, value);
         }
         return map;
@@ -77,33 +87,38 @@ public class PersistUtil
 
     public static function deserializeEnumIntMap (keyEnum :Class) :Function
     {
-        return function (bytes :ByteArray) :HashMap {
-            return deserializeHashMap(bytes, deserializeEnum(keyEnum), deserializeInt);
+        return function (input :IDataInput) :HashMap {
+            return deserializeHashMap(input, deserializeEnum(keyEnum), deserializeInt);
         };
     }
 
     public static function deserializeEnumStringMap (keyEnum :Class) :Function
     {
-        return function (bytes :ByteArray) :HashMap {
-            return deserializeHashMap(bytes, deserializeEnum(keyEnum), deserializeString);
+        return function (input :IDataInput) :HashMap {
+            return deserializeHashMap(input, deserializeEnum(keyEnum), deserializeString);
         }
+    }
+
+    public static function deserializeObject (input :IDataInput) :Object
+    {
+        return input.readObject();
     }
 
     public static function deserializeEnum (enum :Class) :Function
     {
-        return function (bytes :ByteArray) :Object {
-            return Enum.valueOf(enum, bytes.readUTF());
+        return function (input :IDataInput) :Object {
+            return Enum.valueOf(enum, input.readUTF());
         };
     }
 
-    public static function deserializeInt (bytes :ByteArray) :int
+    public static function deserializeInt (input :IDataInput) :int
     {
-        return bytes.readInt();
+        return input.readInt();
     }
 
-    public static function deserializeString (bytes :ByteArray) :String
+    public static function deserializeString (input :IDataInput) :String
     {
-        return bytes.readUTF();
+        return input.readUTF();
     }
 }
 }
