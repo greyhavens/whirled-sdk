@@ -28,7 +28,7 @@ public class ServicesSubControl extends AbstractSubControl
     }
 
     /**
-     * Requests a set of random letters from the dictionary service. The letters will arrive in a
+     * Requests a list of random letters from the dictionary service. The letters will arrive in a
      * separate message with the specified key, as an array of strings.
      *
      * The returned letters aren't necessarily unique; there may be repeats in the array.
