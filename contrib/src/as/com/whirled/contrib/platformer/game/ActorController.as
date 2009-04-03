@@ -59,7 +59,7 @@ public class ActorController extends DynamicController
                     _actor.killer = sowner;
                 }
             } else {
-                trace("sending hit message actor: " + _actor.id + " damage " + damage);
+                //trace("sending hit message actor: " + _actor.id + " damage " + damage);
                 PlatformerContext.net.sendMessage(
                         ShotMessage.shotHit(_actor.id, damage, inter, sowner));
             }
