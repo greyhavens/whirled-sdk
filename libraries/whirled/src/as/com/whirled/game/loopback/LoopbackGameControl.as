@@ -199,7 +199,7 @@ public class LoopbackGameControl extends GameControl
         /* WhirledGameBackend */
 
         // GameControl
-        //o["focusContainer_v1"] = focusContainer_v1;
+        o["focusContainer_v1"] = focusContainer_v1;
 
         // .local
         o["alterKeyEvents_v1"] = alterKeyEvents_v1;
@@ -754,6 +754,11 @@ public class LoopbackGameControl extends GameControl
     protected function getMyId_v1 () :int
     {
         return _myId;
+    }
+
+    protected function focusContainer_v1 () :void
+    {
+        // no-op
     }
 
     //---- .game.seating ---------------------------------------------------
