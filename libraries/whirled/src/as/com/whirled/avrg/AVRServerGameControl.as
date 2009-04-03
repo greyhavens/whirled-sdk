@@ -94,15 +94,14 @@ public class AVRServerGameControl extends AbstractControl
      * see fit. Note: To preserve some semblance of sanity, you can only load the properties
      * of a player who has already had at least one persistent property set.
      *
-     * An example, whereby one player may leave an offline message for another player:
-     *
-     * <code>
+     * @example An example, whereby one player may leave an offline message for another player:
+     * <listing version="3.0">
      *    _ctrl.loadOfflinePlayer(opponentPlayerId, function (props :PropertySpaceObject) :void {
      *        props.setIn("messages", myPlayerId, myMessage);
      *    }, function (failureCause :String) :void {
      *        log.warn("Eek! Sending message to offline player failed!", "cause", failureCause);
      *   });
-     * </code>
+     * </listing>
      */
     public function loadOfflinePlayer (playerId :int, success :Function, failure :Function) :void
     {
