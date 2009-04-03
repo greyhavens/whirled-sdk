@@ -61,13 +61,20 @@ public class PlayerSubControlBase extends TargetedSubControl
     }
 
     /**
-     * Gets the id of this player. For joined members, this id is the member id and can be used to
-     * view the member's profile (www.whirled.com/#people-{id}).
+     * Returns the id of this player. This id is the member id and can be used to view the member's
+     * profile (www.whirled.com/#people-{id}).
      */
     public function getPlayerId () :int
     {
-        // subclasses take care of this
-        return 0;
+        return 0; // subclasses take care of this
+    }
+
+    /**
+     * Returns the name of this player.
+     */
+    public function getPlayerName () :String
+    {
+        return null; // subclasses take care of this
     }
 
     /**

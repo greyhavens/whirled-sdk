@@ -34,6 +34,13 @@ public class PlayerSubControlServer extends PlayerSubControlBase
         return _targetId;
     }
 
+    /** @inheritDoc */
+    // from PlayerSubControlBase
+    override public function getPlayerName () :String
+    {
+        return callHostCode("getPlayerName_v1");
+    }
+
     /**
      * Awards the specified trophy to this player. If the supplied trophy identifier is not valid,
      * this will not be known until the request is processed on the server, so the method will
@@ -48,10 +55,10 @@ public class PlayerSubControlServer extends PlayerSubControlBase
     }
 
     /**
-     * Awards the specified prize item to this player. If the supplied prize identifier is not valid,
-     * this will not be known until the request is processed on the server, so the method will return
-     * successfully but no prize will have been awarded. Thus you should be careful not to misspell
-     * your prize identifier in your code or in the associated prize item.
+     * Awards the specified prize item to this player. If the supplied prize identifier is not
+     * valid, this will not be known until the request is processed on the server, so the method
+     * will return successfully but no prize will have been awarded. Thus you should be careful not
+     * to misspell your prize identifier in your code or in the associated prize item.
      *
      * <p> Note: a game is only allowed to award a prize once per game session. This is to guard
      * against bugs that might try to award many hundreds of the same prize to a user while playing

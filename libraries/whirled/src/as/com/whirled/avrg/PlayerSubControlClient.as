@@ -37,6 +37,13 @@ public class PlayerSubControlClient extends PlayerSubControlBase
         return callHostCode("getPlayerId_v1");
     }
 
+    /** @inheritDoc */
+    // from PlayerSubControlBase
+    override public function getPlayerName () :String
+    {
+        return callHostCode("getPlayerName_v1");
+    }
+
     /**
      * Returns the master item id of the avatar being worn by the player, or zero for
      * guests (ghosts) or people wearing the default tofu. The master id will be the
