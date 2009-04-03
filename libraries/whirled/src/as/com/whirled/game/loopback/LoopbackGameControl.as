@@ -208,7 +208,7 @@ public class LoopbackGameControl extends GameControl
         o["alterKeyEvents_v1"] = alterKeyEvents_v1;
         o["clearScores_v1"] = clearScores_v1;
         o["filter_v1"] = filter_v1;
-        //o["getHeadShot_v2"] = getHeadShot_v2;
+        o["getHeadShot_v2"] = getHeadShot_v2;
         o["getSize_v1"] = getSize_v1;
         o["isEmbedded_v1"] = isEmbedded_v1;
         o["localChat_v1"] = localChat_v1;
@@ -877,6 +877,12 @@ public class LoopbackGameControl extends GameControl
     {
         // no-op
         return text;
+    }
+
+    protected function getHeadShot_v2 () :DisplayObject
+    {
+        // TODO
+        return null;
     }
 
     /**
