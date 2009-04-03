@@ -12,13 +12,13 @@ import com.threerings.util.MethodQueue;
 import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringUtil;
 import com.threerings.util.Util;
-import com.whirled.ServerObject;
 import com.whirled.game.GameControl;
 import com.whirled.game.client.PropertySpaceHelper;
 
 import flash.display.DisplayObject;
 import flash.errors.IllegalOperationError;
 import flash.events.Event;
+import flash.geom.Point;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 import flash.utils.setTimeout;
@@ -203,25 +203,25 @@ public class LoopbackGameControl extends GameControl
 
         // .local
         o["alterKeyEvents_v1"] = alterKeyEvents_v1;
-        //o["clearScores_v1"] = clearScores_v1;
-        //o["filter_v1"] = filter_v1;
+        o["clearScores_v1"] = clearScores_v1;
+        o["filter_v1"] = filter_v1;
         //o["getHeadShot_v2"] = getHeadShot_v2;
-        //o["getSize_v1"] = getSize_v1;
-        //o["isEmbedded_v1"] = isEmbedded_v1;
-        //o["localChat_v1"] = localChat_v1;
-        //o["setMappedScores_v1"] = setMappedScores_v1;
-        //o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
-        //o["setPlayerScores_v1"] = setPlayerScores_v1;
-        //o["setFrameRate_v1"] = setFrameRate_v1;
-        //o["setShowReplay_v1"] = setShowReplay_v1;
-        //o["setStageQuality_v1"] = setStageQuality_v1;
-        //o["showAllGames_v1"] = showAllGames_v1;
-        //o["showGameLobby_v1"] = showGameLobby_v1;
-        //o["showGameShop_v1"] = showGameShop_v1;
-        //o["showTrophies_v1"] = showTrophies_v1;
-        //o["showInvitePage_v1"] = showInvitePage_v1;
-        //o["getInviteToken_v1"] = getInviteToken_v1;
-        //o["getInviterMemberId_v1"] = getInviterMemberId_v1;
+        o["getSize_v1"] = getSize_v1;
+        o["isEmbedded_v1"] = isEmbedded_v1;
+        o["localChat_v1"] = localChat_v1;
+        o["setMappedScores_v1"] = setMappedScores_v1;
+        o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
+        o["setPlayerScores_v1"] = setPlayerScores_v1;
+        o["setFrameRate_v1"] = setFrameRate_v1;
+        o["setShowReplay_v1"] = setShowReplay_v1;
+        o["setStageQuality_v1"] = setStageQuality_v1;
+        o["showAllGames_v1"] = showAllGames_v1;
+        o["showGameLobby_v1"] = showGameLobby_v1;
+        o["showGameShop_v1"] = showGameShop_v1;
+        o["showTrophies_v1"] = showTrophies_v1;
+        o["showInvitePage_v1"] = showInvitePage_v1;
+        o["getInviteToken_v1"] = getInviteToken_v1;
+        o["getInviterMemberId_v1"] = getInviterMemberId_v1;
 
         // .game
         o["isMyTurn_v1"] = isMyTurn_v1;
@@ -782,6 +782,113 @@ public class LoopbackGameControl extends GameControl
         } else {
             _disp.removeEventListener(keyEventType, handleKeyEvent);
         }
+    }
+
+    protected function localChat_v1 (msg :String) :void
+    {
+        validateChat(msg);
+        // no-op
+    }
+
+    protected function filter_v1 (text :String) :String
+    {
+        // no-op
+        return text;
+    }
+
+    /**
+     * Get the size of the game area.
+     */
+    protected function getSize_v1 () :Point
+    {
+        return new Point(_disp.width, _disp.height);
+    }
+
+    protected function isEmbedded_v1 () :Boolean
+    {
+        return false;
+    }
+
+    protected function setShowReplay_v1 (show :Boolean) :void
+    {
+        // no-op
+    }
+
+    protected function setFrameRate_v1 (frameRate :Number, quality :String = null) :void
+    {
+        // then, let this throw whatever errors they might. Not our problem.
+        _disp.stage.frameRate = Math.max(frameRate, 15);
+
+        // NOTE: originally the quality was specified as the second argument to setFrameRate.
+        // To preserve backwards compatibility, the quality arg is now optional, but if specified
+        // we must still let it work.
+        if (quality != null) {
+            setStageQuality_v1(quality);
+        }
+    }
+
+    protected function setStageQuality_v1 (quality :String) :void
+    {
+        // if quality is an invalid string, this might throw an error. Not our problem.
+        _disp.stage.quality = quality;
+    }
+
+    protected function setOccupantsLabel_v1 (label :String) :void
+    {
+        // no-op
+    }
+
+    protected function clearScores_v1 (clearValue :Object = null,
+        sortValuesToo :Boolean = false) :void
+    {
+        // no-op
+    }
+
+    protected function setPlayerScores_v1 (scores :Array, sortValues :Array = null) :void
+    {
+        // no-op
+    }
+
+    protected function setMappedScores_v1 (scores :Object) :void
+    {
+        // no-op
+    }
+
+    protected function showAllGames_v1 () :void
+    {
+        // no-op
+    }
+
+    protected function showGameShop_v1 (itemType :String, catalogId :int = 0) :void
+    {
+        // no-op
+    }
+
+    protected function showInvitePage_v1 (defmsg :String, token :String = "") :void
+    {
+        // no-op
+    }
+
+    protected function getInviteToken_v1 () :String
+    {
+        // no-op
+        return null;
+    }
+
+    protected function getInviterMemberId_v1 () :int
+    {
+        // no-op
+        return 0;
+    }
+
+    protected function showGameLobby_v1 (multiplayer :Boolean) :void
+    {
+        // no-op
+    }
+
+    protected function showTrophies_v1 () :void
+    {
+        // no-op
     }
 
     /**
