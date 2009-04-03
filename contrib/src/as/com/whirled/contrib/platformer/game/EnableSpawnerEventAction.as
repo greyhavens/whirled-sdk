@@ -38,6 +38,11 @@ public class EnableSpawnerEventAction extends EventAction
         }
     }
 
+    override public function needServer () :Boolean
+    {
+        return true;
+    }
+
     protected var _id :int;
 }
 }

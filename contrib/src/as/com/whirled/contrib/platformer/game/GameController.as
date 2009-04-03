@@ -228,6 +228,7 @@ public class GameController
     public function addGameEvent (ge :GameEvent) :Boolean
     {
         if (ge != null) {
+            ge.id = EVENT_COUNTER++;
             _events.push(ge);
             return true;
         }
@@ -408,6 +409,8 @@ public class GameController
 
     protected var _collider :Collider;
     protected var _rdelta :int;
+
+    protected static var EVENT_COUNTER :int = 1;
 
     protected static const MAX_TICK :int = 33;
 }

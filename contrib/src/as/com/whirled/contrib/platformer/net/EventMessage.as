@@ -18,41 +18,44 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.game {
+package com.whirled.contrib.platformer.net {
 
-import com.threerings.util.ClassUtil;
+import flash.utils.ByteArray;
 
-public class EventAction
+public class EventMessage extends BaseGameMessage
 {
-    public static function createEventAction (gctrl :GameController, xml :XML) :EventAction
+    public static const NAME :String = "event";
+
+    public static const TRIGGER :int = 1;
+
+    public var state :int;
+    public var id :int;
+
+    public static function create (state :int, id :int) :EventMessage
     {
-        var cname :String = xml.@cname;
-        var actionClass :Class;
-        if (cname != null) {
-            actionClass = ClassUtil.getClassByName(cname);
-        }
-        if (cname == null || actionClass == null) {
-            trace("could not find class for event action " + cname);
-            return null;
-        }
-        return new actionClass(gctrl, xml) as EventAction;
+        var msg :EventMessage = new EventMessage();
+        msg.state = state;
+        msg.id = id;
+        return msg;
     }
 
-
-    public function EventAction (gctrl :GameController, xml :XML)
+    override public function get name () :String
     {
-        _gctrl = gctrl;
+        return NAME;
     }
 
-    public function run () :void
+    override public function toBytes (ba :ByteArray = null) :ByteArray
     {
+        var ba :ByteArray = (ba != null ? ba : new ByteArray());
+        ba.writeByte(state);
+        ba.writeInt(id);
+        return ba;
     }
 
-    public function needServer () :Boolean
+    override public function fromBytes (ba :ByteArray) :void
     {
-        return false;
+        state = ba.readByte();
+        id = ba.readInt();
     }
-
-    protected var _gctrl :GameController;
 }
 }

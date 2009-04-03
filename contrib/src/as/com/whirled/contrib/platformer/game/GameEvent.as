@@ -20,11 +20,16 @@
 
 package com.whirled.contrib.platformer.game {
 
+import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.net.EventMessage;
+
 /**
  * A game event that has a trigger and an action.
  */
 public class GameEvent
 {
+    public var id :int;
+
     public static function create (gctrl :GameController, xml :XML) :GameEvent
     {
         if (xml.child("trigger").length() == 0 || xml.child("action").length() == 0) {
@@ -32,19 +37,23 @@ public class GameEvent
             return null;
         }
         var continuous :Boolean = xml.hasOwnProperty("@continuous") && xml.@continuous == "true";
+        var server :Boolean = xml.hasOwnProperty("@server") && xml.@server == "true";
         var trigger :EventTrigger = EventTrigger.createEventTrigger(gctrl, xml.trigger[0]);
         var action :EventAction = EventAction.createEventAction(gctrl, xml.action[0]);
+        server ||= action.needServer();
         if (trigger == null || action == null) {
             return null;
         }
-        return new GameEvent(trigger, action, continuous);
+        return new GameEvent(trigger, action, continuous, server);
     }
 
-    public function GameEvent (trigger :EventTrigger, action :EventAction, continuous :Boolean)
+    public function GameEvent (trigger :EventTrigger, action :EventAction,
+            continuous :Boolean, server :Boolean = false)
     {
         _trigger = trigger;
         _action = action;
         _continuous = continuous;
+        _server = server;
     }
 
     public function isComplete () :Boolean
@@ -56,13 +65,23 @@ public class GameEvent
     {
         if (_trigger.checkTriggered()) {
             _action.run();
+            if (_server) {
+                PlatformerContext.net.notLocalSend(EventMessage.create, EventMessage.TRIGGER, id);
+            }
             return !_continuous;
         }
         return false;
     }
 
+    public function runAction () :Boolean
+    {
+        _action.run();
+        return !_continuous;
+    }
+
     protected var _trigger :EventTrigger;
     protected var _action :EventAction;
     protected var _continuous :Boolean;
+    protected var _server :Boolean;
 }
 }

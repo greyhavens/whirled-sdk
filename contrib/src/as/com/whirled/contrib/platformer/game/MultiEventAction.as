@@ -40,6 +40,16 @@ public class MultiEventAction extends EventAction
         }
     }
 
+    override public function needServer () :Boolean
+    {
+        for each (var action :EventAction in _actions) {
+            if (action != null && action.needServer()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected var _actions :Array;
 }
 }
