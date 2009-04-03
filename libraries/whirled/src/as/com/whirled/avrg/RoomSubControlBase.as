@@ -137,22 +137,21 @@ public class RoomSubControlBase extends TargetedSubControl
      */
     public function getAvatarInfo (playerId :int) :AVRGameAvatar
     {
-        var data :Array = callHostCode("getAvatarInfo_v1", playerId);
+        var data :Object = callHostCode("getAvatarInfo_v2", playerId);
         if (data == null) {
             return null;
         }
-        var ix :int = 0;
         var info :AVRGameAvatar = new AVRGameAvatar();
-        info.name = data[ix ++];
-        info.state = data[ix ++];
-        info.x = data[ix ++];
-        info.y = data[ix ++];
-        info.z = data[ix ++];
-        info.orientation = data[ix ++];
-        info.moveSpeed = data[ix ++];
-        info.isMoving = data[ix ++];
-        info.isIdle = data[ix ++];
-        info.bounds = data[ix ++];
+        info.entityId = data["entityId"];
+        info.state = data["state"];
+        info.x = data["x"];
+        info.y = data["y"];
+        info.z = data["z"];
+        info.orientation = data["orientation"];
+        info.moveSpeed = data["moveSpeed"];
+        info.isMoving = data["isMoving"];
+        info.isIdle = data["isIdle"];
+        info.bounds = data["bounds"];
         return info;
     }
 

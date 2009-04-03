@@ -13,8 +13,9 @@ import flash.geom.Rectangle;
  */
 public class AVRGameAvatar
 {
-    /** The avatar's associated display name. */
-    public var name :String;
+    /** The entity id of the player's avatar.
+     * @see RoomSubControlClient#getEntityProperty */
+    public var entityId :String;
 
     /** The avatar's current state. These are the same states that appear on the avatar's "Change
      * state" menu. */
