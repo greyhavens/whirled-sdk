@@ -179,9 +179,9 @@ public class LoopbackGameControl extends GameControl
         o["getMyPosition_v1"] = getMyPosition_v1;
 
         // .services
-        //o["checkDictionaryWord_v2"] = checkDictionaryWord_v2;
-        //o["getDictionaryLetterSet_v2"] = getDictionaryLetterSet_v2;
-        //o["getDictionaryWords_v1"] = getDictionaryWords_v1;
+        o["checkDictionaryWord_v2"] = checkDictionaryWord_v2;
+        o["getDictionaryLetterSet_v2"] = getDictionaryLetterSet_v2;
+        o["getDictionaryWords_v1"] = getDictionaryWords_v1;
         o["setTicker_v1"] = setTicker_v1;
 
         // .services.bags
@@ -856,6 +856,48 @@ public class LoopbackGameControl extends GameControl
         }
     }
 
+    protected function getDictionaryLetterSet_v2 (
+        locale :String, dictionary :String, count :int, callback :Function) :void
+    {
+        var dictOp :Function = function () :void {
+            var letters :Array = [];
+            for (var ii :int = 0; ii < count; ++ii) {
+                var idx :int = Math.random() * DICTIONARY_LETTERS.length;
+                letters.push(DICTIONARY_LETTERS[idx]);
+            }
+
+            callback(letters);
+        };
+
+        MethodQueue.callLater(dictOp);
+    }
+
+    protected function getDictionaryWords_v1 (
+        locale :String, dictionary :String, count :int, callback :Function) :void
+    {
+        var dictOp :Function = function () :void {
+            var words :Array = DICTIONARY_WORDS.slice();
+            ArrayUtil.shuffle(words);
+            if (count < words.length) {
+                words.splice(count - 1);
+            }
+
+            callback(words);
+        };
+
+        MethodQueue.callLater(dictOp);
+    }
+
+    protected function checkDictionaryWord_v2 (
+        locale :String, dictionary :String, word :String, callback :Function) :void
+    {
+        var dictOp :Function = function () :void {
+            callback(word, ArrayUtil.contains(DICTIONARY_WORDS, word));
+        };
+
+        MethodQueue.callLater(dictOp);
+    }
+
     //---- .local ----------------------------------------------------------
 
     protected function alterKeyEvents_v1 (keyEventType :String, add :Boolean) :void
@@ -1164,6 +1206,15 @@ public class LoopbackGameControl extends GameControl
 
     protected static const MAX_TICKERS :int = 3;
     protected static const MIN_TICKER_INTERVAL :int = 50;
+
+    protected static const DICTIONARY_LETTERS :Array = [
+        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+        "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
+    ];
+
+    protected static const DICTIONARY_WORDS :Array = [
+        "the", "quick", "brown", "fox", "jumps", "over", "lazy", "dog"
+    ];
 }
 
 }
