@@ -18,9 +18,11 @@ import com.whirled.game.client.PropertySpaceHelper;
 import flash.display.DisplayObject;
 import flash.errors.IllegalOperationError;
 import flash.events.Event;
+import flash.events.TimerEvent;
 import flash.geom.Point;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
+import flash.utils.Timer;
 import flash.utils.setTimeout;
 
 public class LoopbackGameControl extends GameControl
@@ -53,6 +55,7 @@ public class LoopbackGameControl extends GameControl
      */
     override protected function handleUnload (event :Event) :void
     {
+        stopAllTickers();
         super.handleUnload(event);
     }
 
@@ -179,7 +182,7 @@ public class LoopbackGameControl extends GameControl
         //o["checkDictionaryWord_v2"] = checkDictionaryWord_v2;
         //o["getDictionaryLetterSet_v2"] = getDictionaryLetterSet_v2;
         //o["getDictionaryWords_v1"] = getDictionaryWords_v1;
-        //o["setTicker_v1"] = setTicker_v1;
+        o["setTicker_v1"] = setTicker_v1;
 
         // .services.bags
         //o["getFromCollection_v2"] = getFromCollection_v2;
@@ -667,8 +670,13 @@ public class LoopbackGameControl extends GameControl
     {
         if (_gameStarted != newState) {
             _gameStarted = newState;
-            if (!_gameStarted && loopbackPlayerIsWinner) {
-                // TODO - dispatch a flow award here or something?
+            if (!_gameStarted) {
+                // All tickers get stopped when the game ends
+                stopAllTickers();
+
+                if (loopbackPlayerIsWinner) {
+                    // TODO - dispatch a flow award here or something?
+                }
             }
 
             gameStateChanged();
@@ -776,6 +784,76 @@ public class LoopbackGameControl extends GameControl
     protected function getMyPosition_v1 () :int
     {
         return getPlayerPosition_v1(_myId);
+    }
+
+    //---- .services -------------------------------------------------------
+
+    protected function setTicker_v1 (tickerName :String, msOfDelay :int) :void
+    {
+        validateName(tickerName);
+
+        if (!_gameStarted) {
+            reportGameError("Failed to start a ticker; a game is not in session");
+            return;
+        }
+
+        if (msOfDelay == 0) {
+            stopTicker(tickerName);
+        } else {
+            if (_tickers.size() >= MAX_TICKERS) {
+                reportGameError("There are already " + MAX_TICKERS + " running");
+            } else if (_tickers.containsKey(tickerName)) {
+                reportGameError("A ticker named '" + tickerName + "' already exists");
+            } else {
+                var ticker :Ticker = new Ticker();
+                ticker.timer = new Timer(Math.max(msOfDelay, MIN_TICKER_INTERVAL));
+                ticker.name = tickerName;
+
+                ticker.timer.addEventListener(TimerEvent.TIMER,
+                    function (...ignored) :void {
+                        tickerFired(ticker);
+                    });
+
+                ticker.timer.start();
+                _tickers.put(tickerName, ticker);
+            }
+        }
+    }
+
+    protected function tickerFired (ticker :Ticker) :void
+    {
+        sendTickerMessage(ticker);
+        if (this.otherLoopback != null) {
+            this.otherLoopback.sendTickerMessage(ticker);
+        }
+
+        ticker.tickCount++;
+    }
+
+    protected function sendTickerMessage (ticker :Ticker) :void
+    {
+        callUserCode("messageReceived_v2", ticker.name, ticker.tickCount, 0);
+    }
+
+    protected function stopTicker (tickerName :String) :void
+    {
+        var ticker :Ticker = _tickers.remove(tickerName) as Ticker;
+        if (ticker != null) {
+            ticker.timer.stop();
+        } else {
+            reportGameError("No ticker named '" + tickerName + "' exists");
+        }
+    }
+
+    protected function stopAllTickers () :void
+    {
+        if (_tickers.size() > 0) {
+            _tickers.forEach(
+                function (name :String, ticker :Ticker) :void {
+                    ticker.timer.stop();
+                });
+            _tickers = new HashMap();
+        }
     }
 
     //---- .local ----------------------------------------------------------
@@ -1064,6 +1142,7 @@ public class LoopbackGameControl extends GameControl
     protected static var _roundStarted :Boolean = true;
     protected static var _roundId :int;
     protected static var _turnHolderId :int;
+    protected static var _tickers :HashMap = new HashMap();
 
     protected static var _playerLoopback :LoopbackGameControl;
     protected static var _serverLoopback :LoopbackGameControl;
@@ -1076,6 +1155,18 @@ public class LoopbackGameControl extends GameControl
     protected static const MAX_USER_COOKIE :int = 4096;
 
     protected static const CURRENT_USER :int = 0;
+
+    protected static const MAX_TICKERS :int = 3;
+    protected static const MIN_TICKER_INTERVAL :int = 50;
 }
 
+}
+
+import flash.utils.Timer;
+
+class Ticker
+{
+    public var timer :Timer;
+    public var name :String;
+    public var tickCount :int;
 }
