@@ -96,11 +96,13 @@ public class AVRServerGameControl extends AbstractControl
      *
      * An example, whereby one player may leave an offline message for another player:
      *
+     * <code>
      *    _ctrl.loadOfflinePlayer(opponentPlayerId, function (props :PropertySpaceObject) :void {
      *        props.setIn("messages", myPlayerId, myMessage);
      *    }, function (failureCause :String) :void {
      *        log.warn("Eek! Sending message to offline player failed!", "cause", failureCause);
      *   });
+     * </code>
      */
     public function loadOfflinePlayer (playerId :int, success :Function, failure :Function) :void
     {
