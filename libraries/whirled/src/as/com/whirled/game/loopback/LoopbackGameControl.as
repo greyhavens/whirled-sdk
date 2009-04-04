@@ -185,9 +185,9 @@ public class LoopbackGameControl extends GameControl
         o["setTicker_v1"] = setTicker_v1;
 
         // .services.bags
-        //o["getFromCollection_v2"] = getFromCollection_v2;
-        //o["mergeCollection_v1"] = mergeCollection_v1;
-        //o["populateCollection_v1"] = populateCollection_v1;
+        o["getFromCollection_v2"] = getFromCollection_v2;
+        o["mergeCollection_v1"] = mergeCollection_v1;
+        o["populateCollection_v1"] = populateCollection_v1;
 
         // Old methods: backwards compatability
         //o["awardFlow_v1"] = awardFlow_v1;
@@ -275,13 +275,7 @@ public class LoopbackGameControl extends GameControl
         validateValue(value);
 
         var messageOp :Function = function () :void {
-            if ((playerId == TO_ALL || playerId == LOOPBACK_PLAYER_ID) && _playerLoopback != null) {
-                _playerLoopback.callUserCode("messageReceived_v2", messageName, value, _myId);
-            }
-
-            if ((playerId == TO_ALL || playerId == SERVER_AGENT_ID) && _serverLoopback != null) {
-                _serverLoopback.callUserCode("messageReceived_v2", messageName, value, _myId);
-            }
+            receiveMessage(messageName, value, _myId, playerId);
         };
 
         if (_transactionCount > 0) {
@@ -289,6 +283,23 @@ public class LoopbackGameControl extends GameControl
         } else {
             MethodQueue.callLater(messageOp);
         }
+    }
+
+    protected static function receiveMessage (messageName :String, value :Object, fromId :int,
+                                              toId :int) :void
+    {
+        if ((toId == TO_ALL || toId == LOOPBACK_PLAYER_ID) && _playerLoopback != null) {
+            _playerLoopback.receiveMessageLocally(messageName, value, fromId);
+        }
+
+        if ((toId == TO_ALL || toId == SERVER_AGENT_ID) && _serverLoopback != null) {
+            _serverLoopback.receiveMessageLocally(messageName, value, fromId);
+        }
+    }
+
+    protected function receiveMessageLocally (messageName :String, value :Object, fromId :int) :void
+    {
+        callUserCode("messageReceived_v2", messageName, value, fromId);
     }
 
     /**
@@ -318,9 +329,6 @@ public class LoopbackGameControl extends GameControl
 
         var propOp :Function = function () :void {
             updateProp(propName, encoded, ikey, isArray);
-            if (this.otherLoopback != null) {
-                this.otherLoopback.updateProp(propName, encoded, ikey, isArray);
-            }
         };
 
         if (_transactionCount > 0) {
@@ -348,13 +356,15 @@ public class LoopbackGameControl extends GameControl
         var encodedTestValue :Object = PropertySpaceHelper.encodeProperty(testValue, true);
 
         var propOp :Function = function () :void {
+            // If we're running a server, its game data is the "official" game data
+            var officialData :Object =
+                (_serverLoopback != null ? _serverLoopback._gameData : _gameData);
+
+            // Encode the official value and compare it the test value
             var encodedCurValue :Object =
-                PropertySpaceHelper.encodeProperty(_gameData[propName], true);
+                PropertySpaceHelper.encodeProperty(officialData[propName], true);
             if (Util.equals(encodedTestValue, encodedCurValue)) {
                 updateProp(propName, encodedValue, null, false);
-                if (this.otherLoopback != null) {
-                    this.otherLoopback.updateProp(propName, encodedValue, null, false);
-                }
             }
         };
 
@@ -365,7 +375,18 @@ public class LoopbackGameControl extends GameControl
         }
     }
 
-    protected function updateProp (propName :String, encodedVal :Object, ikey :Integer,
+    protected static function updateProp (propName :String, encodedVal :Object, ikey :Integer,
+        isArray :Boolean) :void
+    {
+        if (_playerLoopback != null) {
+            _playerLoopback.updatePropLocally(propName, encodedVal, ikey, isArray);
+        }
+        if (_serverLoopback != null) {
+            _serverLoopback.updatePropLocally(propName, encodedVal, ikey, isArray);
+        }
+    }
+
+    protected function updatePropLocally (propName :String, encodedVal :Object, ikey :Integer,
         isArray :Boolean) :void
     {
         var value :Object = PropertySpaceHelper.decodeProperty(encodedVal);
@@ -822,17 +843,8 @@ public class LoopbackGameControl extends GameControl
 
     protected function tickerFired (ticker :Ticker) :void
     {
-        sendTickerMessage(ticker);
-        if (this.otherLoopback != null) {
-            this.otherLoopback.sendTickerMessage(ticker);
-        }
-
+        receiveMessage(ticker.name, ticker.tickCount, 0, TO_ALL);
         ticker.tickCount++;
-    }
-
-    protected function sendTickerMessage (ticker :Ticker) :void
-    {
-        callUserCode("messageReceived_v2", ticker.name, ticker.tickCount, 0);
     }
 
     protected function stopTicker (tickerName :String) :void
@@ -896,6 +908,120 @@ public class LoopbackGameControl extends GameControl
         };
 
         MethodQueue.callLater(dictOp);
+    }
+
+    //---- .services.bags --------------------------------------------------
+
+    protected function mergeCollection_v1 (srcColl :String, intoColl :String) :void
+    {
+        validateName(srcColl);
+        validateName(intoColl);
+
+        var bagOp :Function = function () :void {
+            var src :Array = getBag(srcColl, false);
+            if (src != null) {
+                // shuffle 'src' and append it to 'into'
+                ArrayUtil.shuffle(src);
+                var into :Array = getBag(intoColl, true);
+                for each (var val :* in src) {
+                    into.push(val);
+                }
+
+                // and delete 'src'
+                destroyBag(srcColl);
+            }
+        };
+
+        MethodQueue.callLater(bagOp);
+    }
+
+    /**
+     * Helper method for setCollection and addToCollection.
+     */
+    protected function populateCollection_v1 (
+        collName :String, values :Array, clearExisting :Boolean) :void
+    {
+        validateName(collName);
+        if (values == null) {
+            throw new ArgumentError("Collection values may not be null.");
+        }
+        validateValue(values);
+
+        var bagOp :Function = function () :void {
+            if (clearExisting) {
+                destroyBag(collName);
+            }
+
+            var bag :Array = getBag(collName, true);
+            for each (var val :* in values) {
+                bag.push(val);
+            }
+        };
+
+        MethodQueue.callLater(bagOp);
+    }
+
+    /**
+     * Helper method for pickFromCollection and dealFromCollection.
+     */
+    protected function getFromCollection_v2 (
+        collName :String, count :int, msgOrPropName :String, playerId :int,
+        consume :Boolean, callback :Function) :void
+    {
+        validateName(collName);
+        validateName(msgOrPropName);
+        if (count < 1) {
+            throw new ArgumentError("Must retrieve at least one element!");
+        }
+
+        var bagOp :Function = function () :void {
+            // Pick elements from the bag
+            var pickedElements :Array = [];
+            var bag :Array = getBag(collName, false);
+            if (bag != null) {
+                for (var ii :int = 0; ii < count; ++ii) {
+                    if (bag.length == 0) {
+                        break;
+                    }
+                    var idx :int = Math.random() * bag.length;
+                    pickedElements.push(bag[idx]);
+                    if (consume) {
+                        bag.splice(idx, 1);
+                    }
+                }
+            }
+
+            // Send those elements in a message, or put them in a property
+            var encoded :Object = PropertySpaceHelper.encodeProperty(pickedElements, true);
+            if (playerId == TO_ALL) {
+                updateProp(msgOrPropName, encoded, null, false);
+            } else {
+                receiveMessage(msgOrPropName, encoded, 0, playerId);
+            }
+
+            // If we have a callback, call it with the number of elements retrieved
+            if (callback != null) {
+                callback(pickedElements.length);
+            }
+        };
+
+        MethodQueue.callLater(bagOp);
+    }
+
+    protected function getBag (name :String, create :Boolean) :Array
+    {
+        var bag :Array = _bags.get(name);
+        if (bag == null && create) {
+            bag = [];
+            _bags.put(name, bag);
+        }
+
+        return bag;
+    }
+
+    protected function destroyBag (name :String) :void
+    {
+        _bags.remove(name);
     }
 
     //---- .local ----------------------------------------------------------
@@ -1190,7 +1316,8 @@ public class LoopbackGameControl extends GameControl
     protected static var _roundStarted :Boolean = true;
     protected static var _roundId :int;
     protected static var _turnHolderId :int;
-    protected static var _tickers :HashMap = new HashMap();
+    protected static var _tickers :HashMap = new HashMap(); // Map<name:String, ticker:Ticker>
+    protected static var _bags :HashMap = new HashMap(); // Map<name:String, bag:Array>
 
     protected static var _playerLoopback :LoopbackGameControl;
     protected static var _serverLoopback :LoopbackGameControl;
