@@ -88,11 +88,14 @@ public class SoundController extends EventDispatcher
         }
 
         if (crossfade) {
-            addBinding(bindFadein(_track = playSound(trackSound, 0), SoundType.MUSIC));
+            _track = playSound(trackSound, 0);
+            if (_track != null) {
+                addBinding(bindFadein(_track, SoundType.MUSIC));
+            }
         } else {
             _track = playSound(trackSound, backgroundVolume);
         }
-        if (loop) {
+        if (loop && _track != null) {
             _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
         }
     }
@@ -144,7 +147,7 @@ public class SoundController extends EventDispatcher
             location == null ? 0 : Point.distance(location, new Point(0, 0)) / DISTANCE_NORMALIZE;
         var pan :Number = location == null ? 0 : location.x;
         var channel :SoundChannel = playSound(sound, effectsVolume * (1 - dist), pan);
-        if (effect.playType != PlayType.OVERLAPPING) {
+        if (channel != null && effect.playType != PlayType.OVERLAPPING) {
             _channels.put(key, new ChannelPlayback(channel, getTimer()));
             _eventMgr.registerOneShotCallback(
                 channel, Event.SOUND_COMPLETE, bindChannelRemoval(key));
