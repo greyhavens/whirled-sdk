@@ -12,6 +12,7 @@ import com.threerings.util.Log;
 import com.whirled.AbstractControl;
 import com.whirled.ServerObject;
 import com.whirled.net.PropertySubControl;
+import com.whirled.net.impl.PropertySubControlImpl;
 import com.whirled.avrg.AVRGameControlEvent;
 
 /**
@@ -36,6 +37,19 @@ public class AVRServerGameControl extends AbstractControl
     public function AVRServerGameControl (serv :ServerObject)
     {
         super(serv);
+    }
+
+    /**
+     * Accesses the private properties for the server agent: these are not distributed to any
+     * clients and can thus be updated with greater frequency than the game-global ones.
+     *
+     * Properties marked as such will be persisted and restored whenever the server agent starts.
+     *
+     * @see com.whirled.net.NetConstants#makePersistent()
+     */
+    public function get props () :PropertySubControl
+    {
+        return _props;
     }
 
     /**
@@ -144,6 +158,8 @@ public class AVRServerGameControl extends AbstractControl
     override protected function createSubControls () :Array
     {
         return [
+            _props = new PropertySubControlImpl(
+                this, 0, "agent_getGameData_v1", "agent_setProperty_v1"),
             _game = new GameSubControlServer(this),
         ];
     }
@@ -209,6 +225,9 @@ public class AVRServerGameControl extends AbstractControl
 
     /** @private */
     protected var _playerControls :Dictionary = new Dictionary();
+
+    /** @private */
+    protected var _props :PropertySubControlImpl;
 }
 }
 

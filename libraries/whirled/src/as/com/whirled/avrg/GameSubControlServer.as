@@ -50,9 +50,9 @@ public class GameSubControlServer extends GameSubControlBase
     }
 
     /**
-     * Accesses the properties for this room. Game properties marked as such will be persisted
-     * and restored whenever the server agent starts. Persistent properties should only be used
-     * when genuinely necessary.
+     * Accesses the global properties for this game. Game properties marked as such will be
+     * persisted  and restored whenever the server agent starts. Persistent properties should
+     * only be used when genuinely necessary.
      *
      * @see com.whirled.net.NetConstants#makePersistent()
      */
