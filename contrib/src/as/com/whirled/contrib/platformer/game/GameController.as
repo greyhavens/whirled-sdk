@@ -196,7 +196,7 @@ public class GameController
 
     public function removeDynamicController (d :Dynamic) :DynamicController
     {
-        if (!d.needServerController() && PlatformerContext.gctrl.game.amServerAgent()) {
+        if (PlatformerContext.gctrl.game.amServerAgent()) {
             return null;
         }
         var dc :DynamicController;
@@ -310,7 +310,7 @@ public class GameController
 
     protected function getController (d :Dynamic) :DynamicController
     {
-        if (!d.needServerController() && PlatformerContext.gctrl.game.amServerAgent()) {
+        if (PlatformerContext.gctrl.game.amServerAgent()) {
             return null;
         }
         var className :String = ClassUtil.getClassName(d);

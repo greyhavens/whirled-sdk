@@ -57,8 +57,6 @@ public class Dynamic
 
     public var type :String;
 
-    public var ownerRequest :int;
-
     public var soundEvents :Array;
 
     public function Dynamic (insxml :XML = null)
@@ -147,7 +145,6 @@ public class Dynamic
     public function set owner (owner :int) :void
     {
         _owner = owner;
-        ownerRequest = owner;
         updateState = 0;
     }
 
@@ -220,9 +217,14 @@ public class Dynamic
         return OWN_PLAYER;
     }
 
-    public function needServerController () :Boolean
+    public function getNewOwner (closest :int) :int
     {
-        return ownerType() == OWN_SERVER;
+        return closest;
+    }
+
+    public function forceOwner () :Boolean
+    {
+        return false;
     }
 
     public function toBytes (bytes :ByteArray = null) :ByteArray
