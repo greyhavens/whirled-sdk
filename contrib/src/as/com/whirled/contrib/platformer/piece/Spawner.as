@@ -210,13 +210,6 @@ public class Spawner extends RectDynamic
             (spawnCount < totalSpawns || spawns != null || spawns.length > 0);
     }
 
-    /*
-    override public function ownerType () :int
-    {
-        return OWN_SERVER;
-    }
-    */
-
     override public function toBytes (bytes :ByteArray = null) :ByteArray
     {
         bytes = super.toBytes(bytes);

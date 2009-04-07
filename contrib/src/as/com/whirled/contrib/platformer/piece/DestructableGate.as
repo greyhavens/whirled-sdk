@@ -72,11 +72,6 @@ public class DestructableGate extends Gate
         return xml;
     }
 
-    override public function ownerType () :int
-    {
-        return OWN_SERVER;
-    }
-
     override public function toBytes (bytes :ByteArray = null) :ByteArray
     {
         bytes = super.toBytes(bytes);
