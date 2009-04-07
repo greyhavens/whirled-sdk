@@ -24,7 +24,7 @@ import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.game.Collision;
 import com.whirled.contrib.platformer.net.ShotMessage;
-import com.whirled.contrib.platformer.net.SpawnMessage;
+import com.whirled.contrib.platformer.net.SpawnerMessage;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.piece.Spawner;
 
@@ -38,13 +38,6 @@ public class SpawnerController extends RectDynamicController
         if (_spawner.spawns == null) {
             _spawner.spawns = new Array();
         }
-        PlatformerContext.net.addEventListener(SpawnMessage.NAME, spawnMsgReceived);
-    }
-
-    override public function shutdown () :void
-    {
-        super.shutdown();
-        PlatformerContext.net.removeEventListener(SpawnMessage.NAME, spawnMsgReceived);
     }
 
     override public function hasBounds () :Boolean
@@ -96,7 +89,6 @@ public class SpawnerController extends RectDynamicController
             if (_spawner.spawning != 0) {
                 _spawner.spawning = 0;
                 _spawnId = 0;
-                _spawnOwner = 0;
             }
             return;
         }
@@ -114,12 +106,13 @@ public class SpawnerController extends RectDynamicController
                 }
                 _spawnDelay = _spawner.spawnDelay;
                 _spawnId = newSpawnId;
-                _spawnOwner = 0;
             }
         } else {
             if (_spawnDelay > 0) {
                 _spawnDelay -= delta;
             } else if (_spawner.spawning > 0) {
+                PlatformerContext.net.notLocalSend(
+                        SpawnerMessage.create, SpawnerMessage.SPAWN, _spawner.id, _spawnId);
                 spawn();
                 _spawnInterval = _spawner.spawnInterval;
             } else if (_spawnInterval > 0) {
@@ -129,7 +122,6 @@ public class SpawnerController extends RectDynamicController
                      _spawner.maxConcurrent > _spawner.spawns.length)) {
                 _spawner.spawning = _controller.getBoard().reserveId();
                 _spawnId = _spawner.spawning;
-                _spawnOwner = (PlatformerContext.local ? PlatformerContext.myId : 0);
                 _spawnDelay = _spawner.spawnDelay;
             }
         }
@@ -153,32 +145,18 @@ public class SpawnerController extends RectDynamicController
 
     protected function spawn () :void
     {
-        var cxml :XML = _spawner.spawnXML.copy();
-        cxml.@x = _spawner.x + _spawner.width/2 + _spawner.offX;
-        cxml.@y = _spawner.y;
-        var a :Actor = Board.loadDynamic(cxml) as Actor;
-        a.id = _spawnId;
-        a.owner = _spawnOwner;
+        var a :Actor = _spawner.genActor(_spawnId);
         _controller.getBoard().addActor(a);
         _spawner.spawns.push(a.id);
         _spawner.spawning = 0;
         _spawner.spawnCount++;
         _spawnId = 0;
-        _spawnOwner = 0;
-    }
-
-    protected function spawnMsgReceived (spawnMsg :SpawnMessage) :void
-    {
-        if ((spawnMsg.state == SpawnMessage.OWNER ||
-                spawnMsg.state == SpawnMessage.REQUEST_OWNER) && _spawnId == spawnMsg.id) {
-            _spawnOwner = spawnMsg.idx;
-        }
+        trace("" + PlatformerContext.myId + ": Spawner spawning " + a.id + ", owner: " + a.owner);
     }
 
     protected var _spawner :Spawner;
     protected var _spawnInterval :Number;
     protected var _spawnDelay :Number;
     protected var _spawnId :int;
-    protected var _spawnOwner :int;
 }
 }

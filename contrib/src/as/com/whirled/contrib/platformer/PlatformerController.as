@@ -35,6 +35,7 @@ import com.whirled.contrib.platformer.net.DynamicMessage;
 import com.whirled.contrib.platformer.net.EventMessage;
 import com.whirled.contrib.platformer.net.HoverMessage;
 import com.whirled.contrib.platformer.net.ShotMessage;
+import com.whirled.contrib.platformer.net.SpawnerMessage;
 import com.whirled.contrib.platformer.net.SpawnMessage;
 import com.whirled.contrib.platformer.net.TickMessage;
 import com.whirled.contrib.platformer.piece.DynamicFactory;
@@ -58,6 +59,7 @@ public class PlatformerController
                 PlatformerContext.net.addMessageType(SpawnMessage);
                 PlatformerContext.net.addMessageType(TickMessage);
                 PlatformerContext.net.addMessageType(EventMessage);
+                PlatformerContext.net.addMessageType(SpawnerMessage);
             }
             PlatformerContext.persist = createPersistenceManager();
             addOccupantListeners();

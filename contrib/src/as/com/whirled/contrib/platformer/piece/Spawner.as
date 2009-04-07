@@ -25,6 +25,7 @@ import flash.utils.ByteArray;
 import com.threerings.util.Enum;
 
 import com.whirled.contrib.platformer.PlatformerContext;
+import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.game.Collision;
 import com.whirled.contrib.platformer.sound.SoundEffect;
 import com.whirled.contrib.platformer.util.Effect;
@@ -49,6 +50,7 @@ public class Spawner extends RectDynamic
     public var deathSoundEffect :SoundEffect;
     public var hitCollision :Collision;
     public var missCollision :Collision;
+    public var wasHit :Boolean;
 
     public function Spawner (insxml :XML = null)
     {
@@ -95,19 +97,6 @@ public class Spawner extends RectDynamic
         updateState |= U_HEALTH;
     }
 
-    public function get wasHit () :Boolean
-    {
-        return _wasHit;
-    }
-
-    public function set wasHit (wasHit :Boolean) :void
-    {
-        if (_wasHit != wasHit) {
-            _wasHit = wasHit;
-            updateState |= U_HEALTH;
-        }
-    }
-
     public function get killer () :int
     {
         return _killer;
@@ -147,6 +136,17 @@ public class Spawner extends RectDynamic
             return super.enemyCount;
         }
         return totalSpawns - spawnCount + (spawns == null ? 0 : spawns.length);
+    }
+
+    public function genActor (id :int) :Actor
+    {
+        var cxml :XML = spawnXML.copy();
+        cxml.@x = x + width/2 + offX;
+        cxml.@y = y;
+        var a :Actor = Board.loadDynamic(cxml) as Actor;
+        a.id = id;
+        a.owner = owner;
+        return a;
     }
 
     override public function alwaysSpawn () :Boolean
@@ -210,17 +210,18 @@ public class Spawner extends RectDynamic
             (spawnCount < totalSpawns || spawns != null || spawns.length > 0);
     }
 
+    /*
     override public function ownerType () :int
     {
         return OWN_SERVER;
     }
+    */
 
     override public function toBytes (bytes :ByteArray = null) :ByteArray
     {
         bytes = super.toBytes(bytes);
         if ((_inState & U_HEALTH) > 0) {
             bytes.writeFloat(_health);
-            bytes.writeBoolean(_wasHit);
             bytes.writeInt(_killer);
         }
         if ((_inState & U_SPAWN) > 0) {
@@ -235,7 +236,6 @@ public class Spawner extends RectDynamic
         super.fromBytes(bytes);
         if ((_inState & U_HEALTH) > 0) {
             _health = bytes.readFloat();
-            _wasHit = bytes.readBoolean();
             _killer = bytes.readInt();
         }
         if ((_inState & U_SPAWN) > 0) {
@@ -247,7 +247,6 @@ public class Spawner extends RectDynamic
     protected var _health :Number;
     protected var _spawning :int;
     protected var _spawnCount :int;
-    protected var _wasHit :Boolean;
     protected var _killer :int;
 }
 }
