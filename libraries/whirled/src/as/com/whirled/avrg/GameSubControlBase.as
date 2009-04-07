@@ -38,6 +38,19 @@ public class GameSubControlBase extends AbstractSubControl
     }
 
     /**
+     * Get the name of an occupant of the game, or null if not found.
+     * In an AVRG all occupants are players, so this could be called getPlayerName(),
+     * but this name matches RoomSubControlBase as well as the "regular" game api.
+     *
+     * NOTE: names are not unique and can change at any time. You must use the playerId to
+     * identify someone, and only retrieve the name for display purposes.
+     */
+    public function getOccupantName (playerId :int) :String
+    {
+        return callHostCode("game_getOccupantName_v1", playerId) as String;
+    }
+
+    /**
      * Return the ids of all parties presently in this game.
      */
     public function getPartyIds () :Array /* of int */

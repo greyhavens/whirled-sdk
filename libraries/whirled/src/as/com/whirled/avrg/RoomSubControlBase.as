@@ -91,6 +91,7 @@ public class RoomSubControlBase extends TargetedSubControl
 
     /**
      * Gets an array of the ids of all the players in this room.
+     * The players are a subset of the occupants.
      */
     public function getPlayerIds () :Array
     {
@@ -103,6 +104,26 @@ public class RoomSubControlBase extends TargetedSubControl
     public function isPlayerHere (id :int) :Boolean
     {
         return callHostCode("isPlayerHere_v1", id);
+    }
+
+    /**
+     * Gets an array of the ids of all the occupants in this room.
+     * The occupants is a superset of the players.
+     */
+    public function getOccupantIds () :Array
+    {
+        return callHostCode("room_getOccupantIds_v1") as Array;
+    }
+
+    /**
+     * Get the name of the specified occupant, who may be a player, or null if not found.
+     *
+     * NOTE: names are not unique and can change at any time. You must use the playerId to
+     * identify someone, and only retrieve the name for display purposes.
+     */
+    public function getOccupantName (playerId :int) :String
+    {
+        return callHostCode("room_getOccupantName_v1") as String;
     }
 
     /**
