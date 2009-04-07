@@ -20,7 +20,7 @@
 
 package com.whirled.contrib.platformer.game {
 
-import com.whirled.contrib.platformer.sound.SoundEffect;
+import com.whirled.contrib.sound.SoundEffect;
 
 public interface Collision
 {

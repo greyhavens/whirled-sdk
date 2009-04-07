@@ -34,10 +34,11 @@ import flash.geom.Point;
 import flash.geom.Transform;
 
 import com.whirled.contrib.ColorMatrix;
+import com.whirled.contrib.sound.SoundEffect;
+
 import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.client.ClientPlatformerContext;
 import com.whirled.contrib.platformer.piece.Dynamic;
-import com.whirled.contrib.platformer.sound.SoundEffect;
 import com.whirled.contrib.platformer.util.Effect;
 import com.whirled.contrib.platformer.util.Metrics;
 

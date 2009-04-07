@@ -20,9 +20,10 @@
 
 package com.whirled.contrib.platformer.client {
 
+import com.whirled.contrib.sound.SoundController;
+
 import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.display.BoardSprite;
-import com.whirled.contrib.platformer.sound.SoundController;
 
 public class ClientPlatformerContext extends PlatformerContext
 {

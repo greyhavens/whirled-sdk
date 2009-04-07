@@ -80,7 +80,7 @@ public class Preferences extends Config
     {
         setValue("backgroundVolume",
             MathUtil.clamp(value, MIN_BACKGROUND_VOLUME, MAX_BACKGROUND_VOLUME));
-        ClientPlatformerContext.sound.backgroundVolumeModified();
+        ClientPlatformerContext.sound.backgroundVolume = value;
     }
 
     public function get effectsVolume () :Number
@@ -91,6 +91,7 @@ public class Preferences extends Config
     public function set effectsVolume (value :Number) :void
     {
         setValue("effectsVolume", MathUtil.clamp(value, MIN_EFFECTS_VOLUME, MAX_EFFECTS_VOLUME));
+        ClientPlatformerContext.sound.effectsVolume = value;
     }
 
     protected static const DEFAULT_BACKGROUND_VOLUME :Number = 0.25;

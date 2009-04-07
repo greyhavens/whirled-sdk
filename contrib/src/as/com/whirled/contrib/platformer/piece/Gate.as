@@ -20,8 +20,9 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import com.whirled.contrib.sound.SoundEffect;
+
 import com.whirled.contrib.platformer.PlatformerContext;
-import com.whirled.contrib.platformer.sound.SoundEffect;
 
 /**
  * A walkable solid dynamic that can be removed.

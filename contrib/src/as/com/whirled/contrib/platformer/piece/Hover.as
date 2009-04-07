@@ -22,8 +22,9 @@ package com.whirled.contrib.platformer.piece {
 
 import flash.utils.ByteArray;
 
+import com.whirled.contrib.sound.SoundEffect;
+
 import com.whirled.contrib.platformer.PlatformerContext;
-import com.whirled.contrib.platformer.sound.SoundEffect;
 
 /**
  * A simple dynamic that changes it's image when hovered.

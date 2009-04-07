@@ -18,7 +18,7 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.sound {
+package com.whirled.contrib.sound {
 
 import com.threerings.util.Enum;
 

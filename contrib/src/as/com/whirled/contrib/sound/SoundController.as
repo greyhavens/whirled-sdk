@@ -18,7 +18,7 @@
 //
 // $Id$
 
-package com.whirled.contrib.platformer.sound {
+package com.whirled.contrib.sound {
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -32,19 +32,46 @@ import flash.utils.getTimer; // function import
 
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.MethodQueue;
 
 import com.whirled.contrib.EventHandlerManager;
 import com.whirled.contrib.LevelPacks;
 import com.whirled.contrib.ZipMultiLoader;
-import com.whirled.contrib.platformer.client.ClientPlatformerContext;
 
 public class SoundController extends EventDispatcher
 {
     public static const SOUND_ENABLED :Boolean = true;
 
-    public function SoundController (dispatcher :EventDispatcher)
+    public function SoundController (initialBackgroundVolume :Number = 0.5,
+        initialEffectsVolume :Number = 0.5)
     {
-        _eventMgr.registerListener(dispatcher, Event.ENTER_FRAME, tick);
+        _backgroundVolume = initialBackgroundVolume;
+        _effectsVolume = initialEffectsVolume;
+
+        MethodQueue.callLater(tick);
+    }
+
+    public function get effectsVolume () :Number
+    {
+        return _effectsVolume;
+    }
+
+    public function set effectsVolume (value :Number) :void
+    {
+        _effectsVolume = value;
+    }
+
+    public function get backgroundVolume () :Number
+    {
+        return _backgroundVolume;
+    }
+
+    public function set backgroundVolume (value :Number) :void
+    {
+        _backgroundVolume = value;
+        if (_track != null) {
+            _track.soundTransform = new SoundTransform(_backgroundVolume);
+        }
     }
 
     public function initZip (source :Object) :void
@@ -176,25 +203,6 @@ public class SoundController extends EventDispatcher
         });
     }
 
-    public function backgroundVolumeModified () :void
-    {
-        if (_track != null) {
-            _track.soundTransform = new SoundTransform(backgroundVolume);
-        }
-    }
-
-    // convenience getter
-    protected function get effectsVolume () :Number
-    {
-        return ClientPlatformerContext.prefs.effectsVolume;
-    }
-
-    // convenience getter
-    protected function get backgroundVolume () :Number
-    {
-        return ClientPlatformerContext.prefs.backgroundVolume;
-    }
-
     protected function onLoaded (...ignored) :void
     {
         _loaded = true;
@@ -264,6 +272,7 @@ public class SoundController extends EventDispatcher
                 ii--;
             }
         }
+        MethodQueue.callLater(tick);
     }
 
     protected function addBinding (binding :Function) :void
@@ -299,6 +308,8 @@ public class SoundController extends EventDispatcher
     protected var _track :SoundChannel;
     protected var _trackName :String;
     protected var _tickBindings :Array = [];
+    protected var _backgroundVolume :Number;
+    protected var _effectsVolume :Number;
 
     protected static const DISTANCE_NORMALIZE :Number =
         Point.distance(new Point(0, 0), new Point(1, 1));

@@ -23,9 +23,10 @@ package com.whirled.contrib.platformer.client {
 import flash.display.Sprite;
 import flash.events.Event;
 
+import com.whirled.contrib.sound.SoundController;
+
 import com.whirled.contrib.platformer.PlatformerController;
 import com.whirled.contrib.platformer.PlatformerContext;
-import com.whirled.contrib.platformer.sound.SoundController;
 
 public class ClientPlatformerController extends PlatformerController
 {
@@ -44,7 +45,7 @@ public class ClientPlatformerController extends PlatformerController
             ClientPlatformerContext.prefs = createPreferences();
             PlatformerContext.gctrl.local.setStageQuality(
                     ClientPlatformerContext.prefs.stageQuality);
-            ClientPlatformerContext.sound = new SoundController(source);
+            ClientPlatformerContext.sound = new SoundController();
         }
     }
 

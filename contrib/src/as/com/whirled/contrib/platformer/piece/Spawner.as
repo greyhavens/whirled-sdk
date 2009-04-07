@@ -24,10 +24,11 @@ import flash.utils.ByteArray;
 
 import com.threerings.util.Enum;
 
+import com.whirled.contrib.sound.SoundEffect;
+
 import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.game.Collision;
-import com.whirled.contrib.platformer.sound.SoundEffect;
 import com.whirled.contrib.platformer.util.Effect;
 
 public class Spawner extends RectDynamic

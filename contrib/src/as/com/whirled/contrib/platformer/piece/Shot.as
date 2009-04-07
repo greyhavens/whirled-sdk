@@ -20,9 +20,10 @@
 
 package com.whirled.contrib.platformer.piece {
 
+import com.whirled.contrib.sound.SoundEffect;
+
 import com.whirled.contrib.platformer.game.Collision;
 import com.whirled.contrib.platformer.util.Effect;
-import com.whirled.contrib.platformer.sound.SoundEffect;
 
 /**
  * A base class for shots as dynamic objects.
