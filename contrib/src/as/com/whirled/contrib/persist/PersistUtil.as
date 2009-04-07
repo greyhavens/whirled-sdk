@@ -32,7 +32,7 @@ public class PersistUtil
         serializeKey :Function = null, serializeValue :Function = null) :void
     {
         serializeKey = serializeKey == null ? serializeObject : serializeKey;
-        serializeValue = serializeValue == null ? serializeObject : serializeKey;
+        serializeValue = serializeValue == null ? serializeObject : serializeValue;
         output.writeInt(map.size());
         map.forEach(function (key :Object, value :Object) :void {
             serializeKey(output, key);
