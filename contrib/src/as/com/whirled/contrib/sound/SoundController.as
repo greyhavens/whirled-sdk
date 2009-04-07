@@ -38,9 +38,13 @@ import com.whirled.contrib.EventHandlerManager;
 import com.whirled.contrib.LevelPacks;
 import com.whirled.contrib.ZipMultiLoader;
 
+[Event(name="backgroundMusicComplete", type="flash.events.Event")]
+
 public class SoundController extends EventDispatcher
 {
     public static const SOUND_ENABLED :Boolean = true;
+
+    public static const BACKGROUND_MUSIC_COMPLETE :String = "backgroundMusicComplete";
 
     public function SoundController (initialBackgroundVolume :Number = 0.5,
         initialEffectsVolume :Number = 0.5)
@@ -91,6 +95,11 @@ public class SoundController extends EventDispatcher
         _eventMgr.conditionalCall(callback, loaded, this, Event.COMPLETE);
     }
 
+    public function whenBackgroundMusicComplete (callback :Function) :void
+    {
+        _eventMgr.conditionalCall(callback, _track == null, this, BACKGROUND_MUSIC_COMPLETE);
+    }
+
     public function startBackgroundMusic (name :String, crossfade :Boolean = true,
         loop :Boolean = true) :void
     {
@@ -122,8 +131,13 @@ public class SoundController extends EventDispatcher
         } else {
             _track = playSound(trackSound, backgroundVolume);
         }
-        if (loop && _track != null) {
-            _eventMgr.registerListener(_track, Event.SOUND_COMPLETE, loopTrack);
+        if (_track != null) {
+            _eventMgr.registerOneShotCallback(_track, Event.SOUND_COMPLETE, function () :void {
+                if (loop) {
+                    loopTrack();
+                }
+                dispatchEvent(new Event(BACKGROUND_MUSIC_COMPLETE));
+            });
         }
     }
 
@@ -280,7 +294,7 @@ public class SoundController extends EventDispatcher
         _tickBindings.push(binding);
     }
 
-    protected function loopTrack (...ignored) :void
+    protected function loopTrack () :void
     {
         var trackName :String = _trackName;
         stopBackgroundMusic(false);
