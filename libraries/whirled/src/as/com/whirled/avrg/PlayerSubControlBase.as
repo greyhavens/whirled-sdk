@@ -96,6 +96,24 @@ public class PlayerSubControlBase extends TargetedSubControl
     }
 
     /**
+     * Instructs this player's client to move to the specified room. The given exit coordinates are
+     * a 3-tuple specifying in room coordinates where the avatar should appear to walk to when
+     * leaving the room. If not given, the avatar will just disappear.
+     *
+     * <p>Hard-wiring valid room ids should be avoided. Room ids can be obtained from properties
+     * stored by an admininstrative interface or from a server agent message containing currently
+     * active rooms.</p>
+     *
+     * <p>Note that this is not guaranteed to succeed. The request may be denied.</p>
+     * @see http://wiki.whirled.com/Coordinate_systems
+     * @see AVRGamePlayerEvent#ENTERED_ROOM
+     */
+    public function moveToRoom (roomId :int, exitCoords :Array = null) :void
+    {
+        callHostCode("player_moveToRoom_v1", roomId, exitCoords);
+    }
+
+    /**
      * Quits the game for this player. This method should be called for example when the user
      * closes the HUD of a game.
      */
