@@ -81,7 +81,7 @@ public class PersistUtil
         deserializeValue :Function = null) :HashMap
     {
         deserializeKey = deserializeKey == null ? deserializeObject : deserializeKey;
-        deserializeValue = deserializeValue == null ? deserializeObject : deserializeKey;
+        deserializeValue = deserializeValue == null ? deserializeObject : deserializeValue;
         var map :HashMap = new HashMap();
         var size :int = input.readInt();
         for (var ii :int = 0; ii < size; ii++) {
