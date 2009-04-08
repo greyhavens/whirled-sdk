@@ -91,6 +91,37 @@ public class ColorMatrix
         return new ColorMatrix( matrix );
     }
 
+    /**
+     * Matches the effects of the "Adjust Color" filter in the FAT
+     *
+     * @param brightness an integer between -100 and 100
+     * @param contrast an integer between -100 and 100
+     * @param saturation an integer between -100 and 100
+     * @param hue an integer between -180 and 180
+     */
+    public function adjustColor (brightness :int, contrast :int, saturation :int, hue :int)
+        :ColorMatrix
+    {
+        if (brightness != 0) {
+            adjustBrightness(brightness, brightness, brightness);
+        }
+
+        if (contrast != 0) {
+            var actualContrast :Number = (contrast * 0.01);
+            adjustContrast(actualContrast, actualContrast, actualContrast);
+        }
+
+        if (saturation != 0) {
+            adjustSaturation(1 + (saturation * 0.01));
+        }
+
+        if (hue != 0) {
+            adjustHue(hue);
+        }
+
+        return this;
+    }
+
 
     /*
    Function: adjustSaturation
