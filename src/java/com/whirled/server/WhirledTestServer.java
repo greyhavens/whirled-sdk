@@ -141,7 +141,6 @@ public class WhirledTestServer extends CrowdServer
                 ABCLibs abcLibs = new ABCLibs();
                 List<String> args = Lists.newArrayList();
                 args.add(System.getProperty("thane.path"));
-                args.add("-Dinterp");
                 args.addAll(abcLibs.getLibs("game-server-lib.", "game-server."));
                 args.add("--");
                 args.add(bureauId);
