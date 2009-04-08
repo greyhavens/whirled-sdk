@@ -49,7 +49,7 @@ public class LaserShotSprite extends ShotSprite
                 for each (var dist :Number in _ls.hits) {
                     node.y = -dist * _ls.length * 24 * Metrics.SOURCE_TILE_SIZE;
                     generateEffect(_ls.hitEffect, node);
-                    trace("generating " + _ls.hitEffect + " at " + dist);
+                    //trace("generating " + _ls.hitEffect + " at " + dist);
                 }
             }
             _dead = true;

@@ -260,7 +260,7 @@ public class Actor extends Dynamic
     {
         _attached = ld;
         if (_attachedId != id) {
-            updateState |= U_ATTACH;
+            updateState |= U_POS;
             _attachedId = id;
         }
     }
@@ -320,7 +320,7 @@ public class Actor extends Dynamic
             bytes.writeFloat(_accelX);
             bytes.writeFloat(_accelY);
         }
-        if ((_inState & U_ATTACH) > 0) {
+        if ((_inState & U_POS) > 0) {
             bytes.writeInt(_attachedId);
         }
         if ((_inState & U_UPGRADE) > 0) {
@@ -354,7 +354,7 @@ public class Actor extends Dynamic
             _accelX = bytes.readFloat();
             _accelY = bytes.readFloat();
         }
-        if ((_inState & U_ATTACH) > 0) {
+        if ((_inState & U_POS) > 0) {
             _attachedId = bytes.readInt();
         }
         if ((_inState & U_UPGRADE) > 0) {
