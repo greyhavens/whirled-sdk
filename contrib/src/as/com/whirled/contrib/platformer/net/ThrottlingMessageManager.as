@@ -41,9 +41,19 @@ public class ThrottlingMessageManager extends MessageManager
         _lastSent = getTimer();
     }
 
-    public function trackRateAgainstId (id :int = 0, adjustRate :int = 0, maxRate :int = 0) :void
+    public function trackRateAgainstId (
+            tracker :String = null, adjustRate :int = 0, maxRate :int = 0) :void
     {
-        _trackingId = id;
+        if (_tracker != tracker) {
+            if (_tracker != null) {
+                _gameCtrl.services.stopTicker(_tracker);
+            }
+            _tracker = tracker;
+            if (_tracker != null) {
+                _gameCtrl.services.startTicker(_tracker, TRACK_RATE);
+            }
+        }
+
         _lastTrackAdjust = getTimer();
         _trackReceived = 0;
         _trackAdjustRate = adjustRate;
@@ -78,16 +88,17 @@ public class ThrottlingMessageManager extends MessageManager
                 }
             }
         }
-        if (_trackingId != 0) {
+        if (_tracker != null) {
             var diff :int = getTimer() - _lastTrackAdjust;
             if (diff > _trackAdjustRate) {
                 var rate :int;
                 if (_trackReceived == 0) {
                     rate = _maxRate;
                 } else {
-                    rate = Math.round(diff / _trackReceived);
+                    rate = Math.round(diff * _minRate / _trackReceived / TRACK_RATE);
                     rate = Math.min(_maxRate, Math.max(_minRate, rate));
                 }
+                trace("Adjusting throttle rate to: " + rate);
                 _timer.delay = rate;
                 _lastTrackAdjust = getTimer();
                 _trackReceived = 0;
@@ -99,10 +110,11 @@ public class ThrottlingMessageManager extends MessageManager
 
     override protected function onMessageReceived (e :MessageReceivedEvent) :void
     {
-        if (_trackingId != 0 && _trackingId == e.senderId) {
+        if (_tracker != null && e.name == _tracker) {
             _trackReceived++;
+        } else {
+            super.onMessageReceived(e);
         }
-        super.onMessageReceived(e);
     }
 
     protected var _queue :QueueMessage = new QueueMessage();
@@ -111,9 +123,11 @@ public class ThrottlingMessageManager extends MessageManager
     protected var _lastSent :int;
     protected var _maxRate :int;
     protected var _minRate :int;
-    protected var _trackingId :int;
+    protected var _tracker :String;
     protected var _lastTrackAdjust :int;
     protected var _trackReceived :int;
     protected var _trackAdjustRate :int;
+
+    protected static const TRACK_RATE :int = 500;
 }
 }

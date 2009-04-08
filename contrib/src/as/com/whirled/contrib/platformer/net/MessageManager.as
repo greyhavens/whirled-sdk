@@ -96,7 +96,7 @@ public class MessageManager extends EventDispatcher
 
     protected function onMessageReceived (e :MessageReceivedEvent) :void
     {
-        if (e.senderId == PlatformerContext.myId) {
+        if (e.senderId == PlatformerContext.myId || !(e.value is ByteArray)) {
             return;
         }
         var msg :GameMessage = getMessage(e.name, ByteArray(e.value));
