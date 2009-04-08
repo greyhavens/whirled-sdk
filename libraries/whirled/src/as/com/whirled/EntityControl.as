@@ -98,6 +98,19 @@ import flash.utils.Timer;
  */
 public class EntityControl extends AbstractControl
 {
+    /** A constant returned by getEnvironment() to indicate that this entity is
+     * being viewed in the "viewer": memories may be set and read, but they will not be saved. */
+    public static const ENV_VIEWER :String = "viewer";
+
+    /** A constant returned by getEnvironment() to indicate that this entity is
+     * being viewed in the shop. If the user buys the item, any memories will be saved for
+     * the user's new copy of the item. */
+    public static const ENV_SHOP :String = "shop";
+
+    /** A constant returned by getEnvironment() to indicate that this entity is
+     * being viewed in a room. Memories are persistent. */
+    public static const ENV_ROOM :String = "room";
+
     /** The type of furniture entities. */
     public static const TYPE_FURNI :String = "furni";
 
@@ -186,6 +199,17 @@ public class EntityControl extends AbstractControl
     public function getDefaultDataPack () :ByteArray
     {
         return _datapack;
+    }
+
+    /**
+     * Get the "environment" in which this entity is presently running.
+     * 
+     * @return one of the ENV_VIEWER, ENV_SHOP, or ENV_ROOM constants,
+     * or null if we're not connected.
+     */
+    public function getEnvironment () :String
+    {
+        return _env;
     }
 
     /**
@@ -319,10 +343,12 @@ public class EntityControl extends AbstractControl
      * <p>Setting the memory for a key to null clears that key; subsequent lookups will return the
      * default value.</p>
      *
-     * <p>Note: any instance can update memories!</p>
+     * <p>Note: for avatars, only the instance "in control" can update memories, but this
+     * restriction does not hold (presently) for pets, furni, toys, or backdrops. Put another
+     * way, only the instance of the person wearing the avatar can update memories.</p>
      *
      * @param callback An optional function that is passed a Boolean indicating whether the
-     * memory was successfully updated or not. True if the memory was safely persisted, or false
+     * memory was successfully updated or not. True if the memory update was accepted, or false
      * if the memory update failed due to size or other restrictions.
      */
     public function setMemory (key :String, value :Object, callback :Function = null) :void
@@ -595,6 +621,7 @@ public class EntityControl extends AbstractControl
     {
         _location = (o["location"] as Array);
         _datapack = (o["datapack"] as ByteArray);
+        _env = (o["env"] as String);
     }
 
     /**
@@ -779,6 +806,9 @@ public class EntityControl extends AbstractControl
 
     /** Whether this instance has control. @private */
     protected var _hasControl :Boolean = false;
+
+    /** The environment in which we're running. */
+    protected var _env :String;
 
     /** A function registered to return a custom configuration panel. @private */
     protected var _customConfig :Function;
