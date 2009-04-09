@@ -651,7 +651,7 @@ public class Board
     /** All the pieces on the board. */
     protected var _pieceTree :Array = new Array();
     protected var _maxId :int;
-    protected var _shotId :int = 100000;
+    protected var _shotId :int = SHOT_BASE;
     protected var _name :String;
 
     protected var _actors :Object = new Object();
@@ -664,5 +664,8 @@ public class Board
     protected var _listeners :HashMap = new HashMap();
 
     protected var _groupNames :Array;
+
+    protected static const SHOT_BASE :int = 1000000;
+    protected static const LOCAL_BASE :int = 10000;
 }
 }
