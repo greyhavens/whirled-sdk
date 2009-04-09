@@ -151,7 +151,6 @@ public class SpawnerController extends RectDynamicController
         _spawner.spawning = 0;
         _spawner.spawnCount++;
         _spawnId = 0;
-        trace("" + PlatformerContext.myId + ": Spawner spawning " + a.id + ", owner: " + a.owner);
     }
 
     protected var _spawner :Spawner;

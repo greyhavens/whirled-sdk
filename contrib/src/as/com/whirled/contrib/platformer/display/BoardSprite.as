@@ -53,6 +53,9 @@ public class BoardSprite extends Sprite
     public static const SHOW_DETAILS :Boolean = false;
 
     public var layerTicks :Array = new Array();
+    public var dynamicTick :int;
+    public var actorTick :int;
+    public var shotTick :int;
 
     public function BoardSprite (board :Board)
     {
@@ -304,9 +307,15 @@ public class BoardSprite extends Sprite
 
     public function updateActors (delta :Number, ids :Array = null) :void
     {
+        var now :int = getTimer();
         _layers[BACK_DYNAMIC_LAYER].updateSprites(delta, ids);
+        dynamicTick += getTimer() - now;
+        now = getTimer();
         _layers[ACTOR_LAYER].updateSprites(delta, ids);
+        actorTick += getTimer() - now;
+        now = getTimer();
         _layers[SHOT_LAYER].updateSprites(delta, ids);
+        shotTick += getTimer() - now;
     }
 
     protected function addPieces (pieces :Array, layer :int = -1) :void
