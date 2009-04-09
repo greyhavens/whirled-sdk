@@ -235,14 +235,15 @@ public class SoundController extends EventDispatcher
 
     protected function getSound (effect :SoundEffect) :Sound
     {
-        var sound :Sound = _sounds.get(effect.sound);
+        var soundName :String = effect.sound;
+        var sound :Sound = _sounds.get(soundName);
         if (sound == null) {
-            var cls :Class = _contentDomain.getDefinition(effect.sound) as Class;
+            var cls :Class = _contentDomain.getDefinition(soundName) as Class;
             sound = cls == null ? null : (new cls()) as Sound;
             if (sound == null) {
-                log.warning("Sound effect not found!", "name", effect.sound);
+                log.warning("Sound effect not found!", "name", soundName);
             } else {
-                _sounds.put(effect.sound, sound);
+                _sounds.put(soundName, sound);
             }
         }
         return sound;
