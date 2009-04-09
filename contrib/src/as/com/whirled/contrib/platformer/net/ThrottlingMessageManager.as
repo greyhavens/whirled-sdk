@@ -98,7 +98,7 @@ public class ThrottlingMessageManager extends MessageManager
                     rate = Math.round(diff * _minRate / _trackReceived / TRACK_RATE);
                     rate = Math.min(_maxRate, Math.max(_minRate, rate));
                 }
-                trace("Adjusting throttle rate to: " + rate);
+                //trace("Adjusting throttle rate to: " + rate);
                 _timer.delay = rate;
                 _lastTrackAdjust = getTimer();
                 _trackReceived = 0;
