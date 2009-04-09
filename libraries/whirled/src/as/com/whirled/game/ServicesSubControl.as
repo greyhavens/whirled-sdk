@@ -92,6 +92,9 @@ public class ServicesSubControl extends AbstractSubControl
      * a single integer, starting with 0 and increasing by 1 with each messsage.
      *
      * Note: you may have a maximum of 3 tickers, and the minimum delay is 50ms.
+     *
+     * Note: When your game transitions to the GAME_ENDED state, all tickers are automatically
+     * stopped.
      */
     public function startTicker (tickerName :String, msOfDelay :int) :void
     {
