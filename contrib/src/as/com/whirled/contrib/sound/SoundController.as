@@ -46,6 +46,11 @@ public class SoundController extends EventDispatcher
 
     public static const BACKGROUND_MUSIC_COMPLETE :String = "backgroundMusicComplete";
 
+    /* For Testing Purposes */
+    public var soundTick :int;
+    public var stopTick :int;
+    public var soundsPlayed :int;
+
     public function SoundController (initialBackgroundVolume :Number = 0.5,
         initialEffectsVolume :Number = 0.5)
     {
@@ -166,13 +171,15 @@ public class SoundController extends EventDispatcher
      */
     public function playEffect (effect :SoundEffect, id :int = 0, location :Point = null) :void
     {
-        if (!SOUND_ENABLED || effect.playType == PlayType.PLACEHOLDER) {
+        if (!SOUND_ENABLED || effect.playType == PlayType.PLACEHOLDER || effectsVolume == 0) {
             return;
         }
 
         var key :String = getKey(effect, id);
         if (effect.playType == PlayType.RESTARTING) {
+            var now :int = getTimer();
             stopEffect(effect, id);
+            stopTick += getTimer() - now;
 
         } else if (effect.playType == PlayType.CONTINUOUS && _channels.containsKey(key)) {
             return;
@@ -187,7 +194,10 @@ public class SoundController extends EventDispatcher
         var dist :Number =
             location == null ? 0 : Point.distance(location, new Point(0, 0)) / DISTANCE_NORMALIZE;
         var pan :Number = location == null ? 0 : location.x;
+        now = getTimer();
         var channel :SoundChannel = playSound(sound, effectsVolume * (1 - dist), pan);
+        soundsPlayed++;
+        soundTick += getTimer() - now;
         if (channel != null && effect.playType != PlayType.OVERLAPPING) {
             _channels.put(key, new ChannelPlayback(channel, getTimer()));
             _eventMgr.registerOneShotCallback(
