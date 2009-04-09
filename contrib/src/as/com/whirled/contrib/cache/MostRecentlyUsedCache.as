@@ -29,7 +29,7 @@ import com.threerings.util.Log;
 import com.threerings.util.MethodQueue;
 
 public class MostRecentlyUsedCache
-    implements DataSource
+    implements Cache
 {
     /**
      * @param maxValue This maximum value of the objects in the cache.  If this value is exceeded,
@@ -48,9 +48,7 @@ public class MostRecentlyUsedCache
         _evaluationTime = evaluationTime;
     }
 
-    /**
-     * Fetching the stats will cause this cache to start recording to a new CacheStats object.
-     */
+    // from Cache
     public function get cacheStats () :CacheStats
     {
         var stats :CacheStats = _stats;
