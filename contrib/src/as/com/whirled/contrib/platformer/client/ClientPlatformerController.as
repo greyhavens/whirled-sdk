@@ -45,7 +45,7 @@ public class ClientPlatformerController extends PlatformerController
             ClientPlatformerContext.prefs = createPreferences();
             PlatformerContext.gctrl.local.setStageQuality(
                     ClientPlatformerContext.prefs.stageQuality);
-            ClientPlatformerContext.sound = new SoundController();
+            ClientPlatformerContext.sound = createSoundController();
         }
     }
 
@@ -67,6 +67,11 @@ public class ClientPlatformerController extends PlatformerController
     protected function createPreferences () :Preferences
     {
         throw new Error("createPreferences must be implemented in subclass");
+    }
+
+    protected function createSoundController () :SoundController
+    {
+        throw new Error("createSoundController must be implemented in subclass");
     }
 
     protected var _source :Sprite;

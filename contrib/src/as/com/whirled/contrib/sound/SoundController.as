@@ -22,14 +22,11 @@ package com.whirled.contrib.sound {
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
-import flash.events.SampleDataEvent;
 import flash.geom.Point;
 import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
 import flash.net.URLRequest;
-import flash.system.ApplicationDomain;
-import flash.utils.ByteArray;
 import flash.utils.getTimer; // function import
 
 import com.threerings.util.HashMap;
@@ -38,7 +35,6 @@ import com.threerings.util.MethodQueue;
 
 import com.whirled.contrib.EventHandlerManager;
 import com.whirled.contrib.LevelPacks;
-import com.whirled.contrib.ZipMultiLoader;
 
 [Event(name="backgroundMusicComplete", type="flash.events.Event")]
 
@@ -53,9 +49,10 @@ public class SoundController extends EventDispatcher
     public var stopTick :int;
     public var soundsPlayed :int;
 
-    public function SoundController (initialBackgroundVolume :Number = 0.5,
+    public function SoundController (factory :SoundFactory, initialBackgroundVolume :Number = 0.5,
         initialEffectsVolume :Number = 0.5)
     {
+        _soundFactory = factory;
         _backgroundVolume = initialBackgroundVolume;
         _effectsVolume = initialEffectsVolume;
 
@@ -83,23 +80,6 @@ public class SoundController extends EventDispatcher
         if (_track != null) {
             _track.soundTransform = new SoundTransform(_backgroundVolume);
         }
-    }
-
-    public function initZip (source :Object) :void
-    {
-        if (SOUND_ENABLED) {
-            new ZipMultiLoader(source, onLoaded, _contentDomain);
-        }
-    }
-
-    public function get loaded () :Boolean
-    {
-        return _loaded;
-    }
-
-    public function whenLoaded (callback :Function) :void
-    {
-        _eventMgr.conditionalCall(callback, loaded, this, Event.COMPLETE);
     }
 
     public function startBackgroundMusic (name :String, crossfade :Boolean = true,
@@ -182,7 +162,7 @@ public class SoundController extends EventDispatcher
             return;
         }
 
-        var sound :Sound = getSound(effect);
+        var sound :Sound = _soundFactory.getSound(effect.sound);
         if (sound == null) {
             log.warning("No sound found for effect", "effect", effect);
             return;
@@ -222,48 +202,6 @@ public class SoundController extends EventDispatcher
                 value.channel.stop();
             }
         });
-    }
-
-    protected function onLoaded (...ignored) :void
-    {
-        _loaded = true;
-        dispatchEvent(new Event(Event.COMPLETE));
-    }
-
-    protected function getSound (effect :SoundEffect) :Sound
-    {
-        var soundName :String = effect.sound;
-        var bytes :ByteArray = _sounds.get(soundName);
-        if (bytes == null) {
-            var cls :Class = _contentDomain.getDefinition(soundName) as Class;
-            var source :Sound = cls == null ? null : (new cls()) as Sound;
-            if (source == null) {
-                log.warning("Sound effect not found!", "name", soundName);
-            } else {
-                bytes = new ByteArray();
-                while (source.extract(bytes, 8192) > 0);
-                _sounds.put(soundName, bytes);
-            }
-        }
-
-        var offset :int = 0;
-        var sound :Sound = new Sound();
-        var provideSound :Function;
-        // each sample is 8 bytes in length, and we want to provide chunks of 8192 samples, as
-        // recommended by the docs
-        var sampleEventByteSize :int = 8192 * 8;
-        provideSound = function (event :SampleDataEvent) :void {
-            if (offset + sampleEventByteSize <= bytes.length) {
-                event.data.writeBytes(bytes, offset, sampleEventByteSize);
-                offset += sampleEventByteSize;
-
-            } else {
-                event.data.writeBytes(bytes, offset, bytes.length - offset);
-                _eventMgr.unregisterListener(sound, SampleDataEvent.SAMPLE_DATA, provideSound);
-            }
-        };
-        _eventMgr.registerListener(sound, SampleDataEvent.SAMPLE_DATA, provideSound);
-        return sound;
     }
 
     protected function bindChannelRemoval (key :String) :Function
@@ -341,10 +279,7 @@ public class SoundController extends EventDispatcher
         return id + ":" + effect.hashCode();
     }
 
-    protected var _contentDomain :ApplicationDomain = new ApplicationDomain(null);
     protected var _eventMgr :EventHandlerManager = new EventHandlerManager();
-    protected var _loaded :Boolean = false;
-    protected var _sounds :HashMap = new HashMap();
     protected var _channels :HashMap = new HashMap();
     protected var _tracks :HashMap = new HashMap();
     protected var _track :SoundChannel;
@@ -352,6 +287,7 @@ public class SoundController extends EventDispatcher
     protected var _tickBindings :Array = [];
     protected var _backgroundVolume :Number;
     protected var _effectsVolume :Number;
+    protected var _soundFactory :SoundFactory;
 
     protected static const DISTANCE_NORMALIZE :Number =
         Point.distance(new Point(0, 0), new Point(1, 1));
