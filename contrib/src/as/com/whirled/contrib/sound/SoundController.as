@@ -22,12 +22,14 @@ package com.whirled.contrib.sound {
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
+import flash.events.SampleDataEvent;
 import flash.geom.Point;
 import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
 import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
+import flash.utils.ByteArray;
 import flash.utils.getTimer; // function import
 
 import com.threerings.util.HashMap;
@@ -98,11 +100,6 @@ public class SoundController extends EventDispatcher
     public function whenLoaded (callback :Function) :void
     {
         _eventMgr.conditionalCall(callback, loaded, this, Event.COMPLETE);
-    }
-
-    public function whenBackgroundMusicComplete (callback :Function) :void
-    {
-        _eventMgr.conditionalCall(callback, _track == null, this, BACKGROUND_MUSIC_COMPLETE);
     }
 
     public function startBackgroundMusic (name :String, crossfade :Boolean = true,
@@ -236,16 +233,36 @@ public class SoundController extends EventDispatcher
     protected function getSound (effect :SoundEffect) :Sound
     {
         var soundName :String = effect.sound;
-        var sound :Sound = _sounds.get(soundName);
-        if (sound == null) {
+        var bytes :ByteArray = _sounds.get(soundName);
+        if (bytes == null) {
             var cls :Class = _contentDomain.getDefinition(soundName) as Class;
-            sound = cls == null ? null : (new cls()) as Sound;
-            if (sound == null) {
+            var source :Sound = cls == null ? null : (new cls()) as Sound;
+            if (source == null) {
                 log.warning("Sound effect not found!", "name", soundName);
             } else {
-                _sounds.put(soundName, sound);
+                bytes = new ByteArray();
+                while (source.extract(bytes, 8192) > 0);
+                _sounds.put(soundName, bytes);
             }
         }
+
+        var offset :int = 0;
+        var sound :Sound = new Sound();
+        var provideSound :Function;
+        // each sample is 8 bytes in length, and we want to provide chunks of 8192 samples, as
+        // recommended by the docs
+        var sampleEventByteSize :int = 8192 * 8;
+        provideSound = function (event :SampleDataEvent) :void {
+            if (offset + sampleEventByteSize <= bytes.length) {
+                event.data.writeBytes(bytes, offset, sampleEventByteSize);
+                offset += sampleEventByteSize;
+
+            } else {
+                event.data.writeBytes(bytes, offset, bytes.length - offset);
+                _eventMgr.unregisterListener(sound, SampleDataEvent.SAMPLE_DATA, provideSound);
+            }
+        };
+        _eventMgr.registerListener(sound, SampleDataEvent.SAMPLE_DATA, provideSound);
         return sound;
     }
 
