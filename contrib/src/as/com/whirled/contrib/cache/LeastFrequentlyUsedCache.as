@@ -100,6 +100,12 @@ public class LeastFrequentlyUsedCache
         }
 
         var values :Array = _cacheValues.values();
+        for each (var freqObj :FrequentObject in values) {
+            // So that the frequency isn't being constantly recalculated while the array is being
+            // sorted (as would happen if the frequency calculation were being done in the frequency
+            // getter), we iterate over the list and tell each obj to caculate its frequency first
+            freqObj.calculateFrequency();
+        }
         values.sortOn("frequency", Array.DESCENDING | Array.NUMERIC);
 
         var totalValue :int = 0;
@@ -109,10 +115,9 @@ public class LeastFrequentlyUsedCache
             if (totalValue > _maxValue) {
                 toRemove = values.splice(ii);
                 break;
-            } else if (totalValue == _maxValue && ii < values.length - 1) {
-                toRemove = values.splice(ii + 1);
-                break;
             }
+            // This value is copied down every time instead of outside of the loop so that when we
+            // break out, it has already been set to the correct value.
             _lastEvaluationTotal = totalValue;
         }
         if (toRemove.length > 0) {
@@ -177,21 +182,23 @@ class FrequentObject
         return _value;
     }
 
-    public function requested () :void
+    public function calculateFrequency () :void
     {
-        var now :int = getTimer();
-        _times.unshift(now);
+        var threshold :int = getTimer() - _threshold;
         _frequency = 0;
-        var ii :int
-        for (ii = 0; ii < Math.min(_maxTimes, _times.length); ii++) {
-            if (_times[ii] < now - _threshold) {
+        _times.length = Math.min(_maxTimes, _times.length);
+        for (var ii :int = 0; ii < _times.length; ii++) {
+            if (_times[ii] < threshold) {
+                _times.length = ii;
                 break;
             }
             _frequency += _times[ii];
         }
-        if (_times.length > ii) {
-            _times.length = ii;
-        }
+    }
+
+    public function requested () :void
+    {
+        _times.unshift(getTimer());
     }
 
     protected var _times :Array = [];
