@@ -21,5 +21,17 @@ public class NetConstants
         }
         return PERSISTENT + name;
     }
+
+    /**
+     * Transforms a persistent name back to a transient one. Has no effect for names
+     * that aren't already persistent.
+     */
+    public static function makeTransient (name :String) :String
+    {
+        if (PERSISTENT != name.substring(0, PERSISTENT.length)) {
+            return name;
+        }
+        return name.substring(PERSISTENT.length);
+    }
 }
 }
