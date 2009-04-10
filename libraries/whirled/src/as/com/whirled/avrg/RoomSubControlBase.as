@@ -123,7 +123,7 @@ public class RoomSubControlBase extends TargetedSubControl
      */
     public function getOccupantName (playerId :int) :String
     {
-        return callHostCode("room_getOccupantName_v1") as String;
+        return callHostCode("room_getOccupantName_v1", playerId) as String;
     }
 
     /**
