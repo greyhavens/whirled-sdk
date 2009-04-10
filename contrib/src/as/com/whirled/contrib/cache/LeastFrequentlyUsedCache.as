@@ -28,7 +28,7 @@ import com.threerings.util.Log;
 import com.threerings.util.HashMap;
 import com.threerings.util.MethodQueue;
 
-public class MostFrequentlyUsedCache
+public class LeastFrequentlyUsedCache
     implements Cache
 {
     /**
@@ -44,7 +44,7 @@ public class MostFrequentlyUsedCache
      * @param frequencyCount Only the last frequencyCount accesses will be considered for the
      *                       frequency calculation.
      */
-    public function MostFrequentlyUsedCache (cacheMissSource :DataSource,
+    public function LeastFrequentlyUsedCache (cacheMissSource :DataSource,
         maxValue :int = 1000, evaluator :CacheObjectEvaluator = null, evaluationTime :int = 1000,
         frequencyThreshold :int = 60000, frequencyCount :int = 5)
     {
@@ -145,7 +145,7 @@ public class MostFrequentlyUsedCache
     protected var _frequencyThreshold :int;
     protected var _frequencyCount :int;
 
-    private static const log :Log = Log.getLog(MostRecentlyUsedCache);
+    private static const log :Log = Log.getLog(LeastRecentlyUsedCache);
 }
 }
 

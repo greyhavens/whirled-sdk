@@ -28,7 +28,7 @@ import flash.utils.Timer;
 import com.threerings.util.Log;
 import com.threerings.util.MethodQueue;
 
-public class MostRecentlyUsedCache
+public class LeastRecentlyUsedCache
     implements Cache
 {
     /**
@@ -39,7 +39,7 @@ public class MostRecentlyUsedCache
      * @param evaluationTime The minimum amount of time that must pass between cache evaluations in
      *                       milliseconds.
      */
-    public function MostRecentlyUsedCache (cacheMissSource :DataSource,
+    public function LeastRecentlyUsedCache (cacheMissSource :DataSource,
         maxValue :int = 1000, evaluator :CacheObjectEvaluator = null, evaluationTime :int = 1000)
     {
         _missSource = cacheMissSource;
@@ -146,6 +146,6 @@ public class MostRecentlyUsedCache
     protected var _lastEvaluationTotal :int;
     protected var _timer :Timer;
 
-    private static const log :Log = Log.getLog(MostRecentlyUsedCache);
+    private static const log :Log = Log.getLog(LeastRecentlyUsedCache);
 }
 }
