@@ -56,12 +56,9 @@ public class NamespacePropGetControl extends EventDispatcher
     public function getPropertyNames (prefix :String = "") :Array
     {
         var outNames :Array = [];
-        for each (var propName :String in _propGetCtrl.getPropertyNames()) {
+        for each (var propName :String in _propGetCtrl.getPropertyNames(prefix)) {
             if (_nameUtil.isInNamespace(propName)) {
-                var decoded :String = _nameUtil.decode(propName);
-                if (StringUtil.startsWith(decoded, prefix)) {
-                    outNames.push(decoded);
-                }
+                outNames.push(_nameUtil.decode(propName));
             }
         }
 
