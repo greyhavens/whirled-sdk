@@ -192,7 +192,7 @@ class FrequentObject
                 _times.length = ii;
                 break;
             }
-            _frequency += _times[ii];
+            _frequency += _times[ii] - threshold;
         }
     }
 
