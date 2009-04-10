@@ -18,6 +18,13 @@ public class GameContentEvent extends Event
      */
     public static const PLAYER_CONTENT_ADDED :String = "PlayerContentAdded";
 
+    /**
+     * Indicates that the a player has consumed an item pack. contentType() for this event will
+     * always be ITEM_PACK.
+     * @eventType PlayerContentConsumed
+     */
+    public static const PLAYER_CONTENT_CONSUMED :String = "PlayerContentConsumed";
+
     /** Used to report item pack related events. */
     public static const ITEM_PACK :String = "item_pack";
 

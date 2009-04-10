@@ -13,6 +13,13 @@ import com.whirled.AbstractSubControl;
 [Event(name="CoinsAwarded", type="com.whirled.game.CoinsAwardedEvent")]
 
 /**
+ * Dispatched when this player has consumed an item pack.
+ *
+ * @eventType com.whirled.game.GameContentEvent.PLAYER_CONTENT_CONSUMED
+ */
+[Event(name="PlayerContentConsumed", type="com.whirled.game.GameContentEvent")]
+
+/**
  * Provides access to 'player' game services. Do not instantiate this class directly,
  * instead access it via GameControl.player.
  */
@@ -116,6 +123,28 @@ public class PlayerSubControl extends AbstractSubControl
     }
 
     /**
+     * Requests to consume the specified item pack. The player must currently own at least one copy
+     * of the item pack. This will display a standard dialog asking the player if they wish to
+     * consume the pack.
+     *
+     * <p> If the player accepts the request to consume the item pack, a
+     * GameContentEvent.PLAYER_CONTENT_CONSUMED event will be dispatched on this control.
+     *
+     * <p><em>Note:</em> this method may only be called on the client. It will always return false
+     * on the server.
+     *
+     * @param ident the identifier of the item pack to be consumed.
+     * @param msg a message to display in the dialog to help the player understand what's going on.
+     *
+     * @return true if the dialog was shown, false if the dialog was not shown because the player
+     * is known not to own at least one copy of the item pack.
+     */
+    public function requestConsumeItemPack (ident :String, msg :String) :Boolean
+    {
+        return (callHostCode("requestConsumeItemPack_v1", ident, msg) as Boolean);
+    }
+
+    /**
      * Returns true if this client's player (the default) or a specified player has the trophy
      * with the specified identifier.
      *
@@ -194,6 +223,7 @@ public class PlayerSubControl extends AbstractSubControl
 
         o["flowAwarded_v1"] = flowAwarded_v1; // old names. No real point in changing it.
         o["notifyGameContentAdded_v1"] = notifyGameContentAdded_v1;
+        o["notifyGameContentConsumed_v1"] = notifyGameContentConsumed_v1;
     }
 
     /**
@@ -208,12 +238,21 @@ public class PlayerSubControl extends AbstractSubControl
     }
 
     /**
-     * Private method to post a GameContentEvent.
+     * Private method to post a GameContentEvent.PLAYER_CONTENT_ADDED.
      */
-    private function notifyGameContentAdded_v1 (ctype :String, cident :String, playerId :int) :void
+    private function notifyGameContentAdded_v1 (type :String, ident :String, playerId :int) :void
     {
-        dispatch(new GameContentEvent(
-            GameContentEvent.PLAYER_CONTENT_ADDED, ctype, cident, playerId));
+        dispatch(new GameContentEvent(GameContentEvent.PLAYER_CONTENT_ADDED,
+                                      type, ident, playerId));
+    }
+
+    /**
+     * Private method to post a GameContentEvent.PLAYER_CONTENT_CONSUMED.
+     */
+    private function notifyGameContentConsumed_v1 (type :String, ident :String, playerId :int) :void
+    {
+        dispatch(new GameContentEvent(GameContentEvent.PLAYER_CONTENT_CONSUMED,
+                                      type, ident, playerId));
     }
 }
 }
