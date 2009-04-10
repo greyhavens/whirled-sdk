@@ -28,7 +28,22 @@ import com.threerings.util.Log;
 import com.threerings.util.HashMap;
 import com.threerings.util.MethodQueue;
 
-public class LeastFrequentlyUsedCache
+/**
+ * There are a variety of Least Frequently Used replacement policies used.  A strict LFU policy
+ * keeps a request count over all time, and replaces the entries with the lowest count.  Using
+ * that policy, the cache becomes polluted with items that were accessed frequently a long time
+ * ago but haven't been accessed recently.
+ *
+ * An LFU-Aging cache periodically removes counted requests that are too old.  This still requires
+ * some careful tuning because you have to decide how old "too old" is in your application.
+ *
+ * This cache builds on LFU-Aging by weighting each access request in favor keeping entries with
+ * recent requests.  The defaults for this cache dictate that requests that are older than 60
+ * seconds are discarded, and when more than 5 requests have been recorded in the last 60 seconds,
+ * only the most recent 5 are used in the cache expiration evaluation.  3 requests recorded 5
+ * seconds ago are worth much more than 3 requests recorded 58 seconds ago.
+ */
+public class LFUWeightedAgeCache
     implements Cache
 {
     /**
@@ -44,7 +59,7 @@ public class LeastFrequentlyUsedCache
      * @param frequencyCount Only the last frequencyCount accesses will be considered for the
      *                       frequency calculation.
      */
-    public function LeastFrequentlyUsedCache (cacheMissSource :DataSource,
+    public function LFUWeightedAgeCache (cacheMissSource :DataSource,
         maxValue :int = 1000, evaluator :CacheObjectEvaluator = null, evaluationTime :int = 1000,
         frequencyThreshold :int = 60000, frequencyCount :int = 5)
     {
@@ -150,7 +165,7 @@ public class LeastFrequentlyUsedCache
     protected var _frequencyThreshold :int;
     protected var _frequencyCount :int;
 
-    private static const log :Log = Log.getLog(LeastRecentlyUsedCache);
+    private static const log :Log = Log.getLog(LFUWeightedAgeCache);
 }
 }
 
