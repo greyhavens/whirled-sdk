@@ -130,6 +130,7 @@ public class PlayerSubControlBase extends TargetedSubControl
      * ident - string identifier of item pack
      * name - human readable name of item pack
      * mediaURL - URL for item pack content
+     * count - the number of copies of this item pack owned by this player
      * </pre>
      */
     public function getPlayerItemPacks () :Array

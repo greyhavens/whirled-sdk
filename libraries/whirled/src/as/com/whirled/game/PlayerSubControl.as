@@ -89,6 +89,7 @@ public class PlayerSubControl extends AbstractSubControl
      * ident - string identifier of item pack
      * name - human readable name of item pack
      * mediaURL - URL for item pack content
+     * count - the number of copies of this item pack owned by this player
      * </pre>
      *
      * <p>Note: Clients may only get the item packs of the current player. Server agents do not
