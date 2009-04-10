@@ -61,6 +61,11 @@ public class GameEvent
         return _trigger.hasTriggered();
     }
 
+    public function needServer () :Boolean
+    {
+        return _server;
+    }
+
     public function runEvent () :Boolean
     {
         if (_trigger.checkTriggered()) {

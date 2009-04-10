@@ -228,8 +228,12 @@ public class GameController
     public function addGameEvent (ge :GameEvent) :Boolean
     {
         if (ge != null) {
-            ge.id = EVENT_COUNTER++;
-            _events.push(ge);
+            if (ge.needServer()) {
+                ge.id = EVENT_COUNTER++;
+                _events.push(ge);
+            } else if (!PlatformerContext.gctrl.game.amServerAgent()) {
+                _events.push(ge);
+            }
             return true;
         }
         return false;
