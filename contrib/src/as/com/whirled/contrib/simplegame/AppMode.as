@@ -45,7 +45,14 @@ public class AppMode extends ObjectDB
         return _ctx;
     }
 
-    public function addSceneObject (obj :SimObject, displayParent :DisplayObjectContainer)
+    /**
+     * A convenience function that adds the given SceneObject to the mode and attaches its
+     * DisplayObject to the display list.
+     *
+     * @param displayParent the parent to attach the DisplayObject to, or null to attach
+     * directly to the AppMode's modeSprite.
+     */
+    public function addSceneObject (obj :SimObject, displayParent :DisplayObjectContainer = null)
         :SimObjectRef
     {
         if (!(obj is SceneComponent)) {
@@ -60,6 +67,9 @@ public class AppMode extends ObjectDB
                             "to a display parent");
         }
 
+        if (displayParent == null) {
+            displayParent = _modeSprite;
+        }
         displayParent.addChild(disp);
 
         return addObject(obj);
