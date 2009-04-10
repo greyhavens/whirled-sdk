@@ -90,6 +90,14 @@ public class RoomSubControlBase extends TargetedSubControl
     }
 
     /**
+     * Returns the name of this room.
+     */
+    public function getRoomName () :String
+    {
+        return callHostCode("room_getRoomName_v1") as String;
+    }
+
+    /**
      * Gets an array of the ids of all the players in this room.
      * The players are a subset of the occupants.
      */

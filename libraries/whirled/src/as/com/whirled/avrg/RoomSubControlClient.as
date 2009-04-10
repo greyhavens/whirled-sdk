@@ -62,14 +62,6 @@ public class RoomSubControlClient extends RoomSubControlBase
     }
 
     /**
-     * Get the name of this room.
-     */
-    public function getRoomName () :String
-    {
-        return callHostCode("room_getRoomName_v1") as String;
-    }
-
-    /**
      * Enumerates the ids of all entities in this room.
      *
      * @param type an optional filter to restrict the results to a particular type of entity,
