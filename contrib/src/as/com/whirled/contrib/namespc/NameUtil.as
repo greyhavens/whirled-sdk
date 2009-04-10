@@ -1,4 +1,4 @@
-package com.whirled.contrib.namespace {
+package com.whirled.contrib.namespc {
 
 import com.threerings.util.StringUtil;
 
