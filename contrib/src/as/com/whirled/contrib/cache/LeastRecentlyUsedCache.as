@@ -108,13 +108,12 @@ public class LeastRecentlyUsedCache
         var toRemove :Array = [];
         for (var ii :int = 0; ii < _cacheNames.length; ii++) {
             totalValue += _evaluator.getValue(_cacheValues[_cacheNames[ii]]);
-            if (totalValue > _maxValue) {
+            if (totalValue > _maxValue && ii > 0) {
                 toRemove = _cacheNames.splice(ii);
                 break;
-            } else if (totalValue == _maxValue && ii < _cacheNames.length - 1) {
-                toRemove = _cacheNames.splice(ii + 1);
-                break;
             }
+            // This value is copied down every time instead of outside of the loop so that when we
+            // break out, it has already been set to the correct value.
             _lastEvaluationTotal = totalValue;
         }
         if (toRemove.length > 0) {
