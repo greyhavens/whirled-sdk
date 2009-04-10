@@ -1,5 +1,6 @@
 package com.whirled.contrib.namespace {
 
+import com.threerings.util.StringUtil;
 import com.whirled.net.ElementChangedEvent;
 import com.whirled.net.PropertyChangedEvent;
 import com.whirled.net.PropertyGetSubControl;
@@ -39,7 +40,7 @@ public class NamespacePropGetControl extends EventDispatcher
     public function shutdown () :void
     {
         _propGetCtrl.removeEventListener(PropertyChangedEvent.PROPERTY_CHANGED, onPropChanged);
-        _propGetCtrl.addEventListener(ElementChangedEvent.ELEMENT_CHANGED, onElemChanged);
+        _propGetCtrl.removeEventListener(ElementChangedEvent.ELEMENT_CHANGED, onElemChanged);
     }
 
     public function get theNamespace () :String
@@ -54,11 +55,17 @@ public class NamespacePropGetControl extends EventDispatcher
 
     public function getPropertyNames (prefix :String = "") :Array
     {
-        var propNames :Array = _propGetCtrl.getPropertyNames(_nameUtil.encode(prefix));
-        return propNames.map(
-            function (name :String, index :int, arr :Array) :String {
-                return _nameUtil.decode(name);
-            });
+        var outNames :Array = [];
+        for each (var propName :String in _propGetCtrl.getPropertyNames()) {
+            if (_nameUtil.isInNamespace(propName)) {
+                var decoded :String = _nameUtil.decode(propName);
+                if (StringUtil.startsWith(decoded, prefix)) {
+                    outNames.push(decoded);
+                }
+            }
+        }
+
+        return outNames;
     }
 
     public function getTargetId () :int

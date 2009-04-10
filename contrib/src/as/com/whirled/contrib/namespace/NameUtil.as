@@ -21,7 +21,9 @@ public class NameUtil
 
     public function isInNamespace (val :String) :Boolean
     {
-        return (val.length > _suffix.length && StringUtil.endsWith(val, _suffix));
+        // The empty string is considered a valid property key,
+        // so if val == _suffix, we will still return true.
+        return StringUtil.endsWith(val, _suffix);
     }
 
     protected var _suffix :String;
