@@ -45,7 +45,8 @@ public class LeastRecentlyUsedCache
         _missSource = cacheMissSource;
         _maxValue = maxValue;
         _evaluator = evaluator == null ? new ObjectCountEvaluator() : evaluator;
-        _evaluationTime = evaluationTime;
+        _timer = new Timer(evaluationTime, 1);
+        _timer.addEventListener(TimerEvent.TIMER, evaluateCache);
     }
 
     // from Cache
@@ -84,31 +85,21 @@ public class LeastRecentlyUsedCache
         }
         _cacheNames.unshift(name);
         _cacheValues[name] = value;
-        // No point in running a cache that doesn't do its best to return values quickly.  We can
-        // run the evaluation on the next frame.
-        MethodQueue.callLater(evaluateCache);
+        // No point in running a cache that doesn't do its best to return values quickly.
+        // Run the evaluation later.
+        _timer.start(); // only starts the timer if it's not already running
         return value;
     }
 
-    protected function evaluateCache () :void
+    protected function evaluateCache (... ignored) :void
     {
-        var now :int = getTimer();
-        if (now < _nextEvaluation) {
-            if (_timer != null) {
-                // we already have an evaluation scheduled
-                return;
-            }
-
-            _timer = new Timer(_nextEvaluation - now, 1);
-            _timer.addEventListener(TimerEvent.TIMER_COMPLETE, timeout);
-            _timer.start();
-        }
+        _timer.reset(); // reset the timer, it will be run again after our next access.
 
         var totalValue :int = 0;
         var toRemove :Array = [];
         for (var ii :int = 0; ii < _cacheNames.length; ii++) {
             totalValue += _evaluator.getValue(_cacheValues[_cacheNames[ii]]);
-            if (totalValue > _maxValue && ii > 0) {
+            if (totalValue > _maxValue && ii > 0) { // ensure we keep at least one object
                 toRemove = _cacheNames.splice(ii);
                 break;
             }
@@ -122,15 +113,6 @@ public class LeastRecentlyUsedCache
                 delete _cacheValues[name];
             }
         }
-
-        _nextEvaluation = now + _evaluationTime;
-    }
-
-    protected function timeout (event :TimerEvent) :void
-    {
-        event.target.removeEventListener(TimerEvent.TIMER_COMPLETE, timeout);
-        _timer = null;
-        evaluateCache();
     }
 
     protected var _missSource :DataSource;
@@ -139,9 +121,6 @@ public class LeastRecentlyUsedCache
     protected var _cacheNames :Array = [];
     protected var _cacheValues :Dictionary = new Dictionary();
     protected var _stats :CacheStats = new CacheStats();
-    protected var _evaluationTime :int;
-    protected var _nextEvaluation :int = 0;
-    protected var _evaluationTimer :Timer;
     protected var _lastEvaluationTotal :int;
     protected var _timer :Timer;
 
