@@ -71,7 +71,18 @@ public class WhirledPlayerObject extends BodyObject
      */
     public boolean ownsGameContent (int gameId, byte type, String ident)
     {
-        return gameContent.containsKey(new GameContentOwnership(gameId, type, ident, 0));
+        return countGameContent(gameId, type, ident) > 0;
+    }
+
+    /**
+     * Returns the number of copies of the specified game content owned by this player.
+     * <em>Note:</em> the content must have previously been resolved, which happens when the player
+     * enters the game in question.
+     */
+    public int countGameContent (int gameId, byte type, String ident)
+    {
+        GameContentOwnership gco = gameContent.get(new GameContentOwnership(gameId, type, ident));
+        return (gco == null) ? 0 : gco.count;
     }
 
     // from BodyObject
