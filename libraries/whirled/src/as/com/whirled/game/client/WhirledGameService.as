@@ -1,7 +1,7 @@
 //
 // $Id$
 //
-// Copyright (c) 2007 Three Rings Design, Inc. Please do not redistribute.
+// Copyright (c) 2007-2009 Three Rings Design, Inc. Please do not redistribute.
 
 package com.whirled.game.client {
 
@@ -23,6 +23,9 @@ public interface WhirledGameService extends InvocationService
 
     // from Java interface WhirledGameService
     function checkDictionaryWord (arg1 :Client, arg2 :String, arg3 :String, arg4 :String, arg5 :InvocationService_ResultListener) :void;
+
+    // from Java interface WhirledGameService
+    function consumeItemPack (arg1 :Client, arg2 :String, arg3 :InvocationService_ConfirmListener) :void;
 
     // from Java interface WhirledGameService
     function endGame (arg1 :Client, arg2 :TypedArray /* of int */, arg3 :InvocationService_InvocationListener) :void;

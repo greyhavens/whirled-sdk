@@ -1,7 +1,7 @@
 //
 // $Id$
 //
-// Copyright (c) 2007 Three Rings Design, Inc. Please do not redistribute.
+// Copyright (c) 2007-2009 Three Rings Design, Inc. Please do not redistribute.
 
 package com.whirled.game.server;
 
@@ -46,6 +46,12 @@ public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarsh
         case WhirledGameMarshaller.CHECK_DICTIONARY_WORD:
             ((WhirledGameProvider)provider).checkDictionaryWord(
                 source, (String)args[0], (String)args[1], (String)args[2], (InvocationService.ResultListener)args[3]
+            );
+            return;
+
+        case WhirledGameMarshaller.CONSUME_ITEM_PACK:
+            ((WhirledGameProvider)provider).consumeItemPack(
+                source, (String)args[0], (InvocationService.ConfirmListener)args[1]
             );
             return;
 

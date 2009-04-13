@@ -1,7 +1,7 @@
 //
 // $Id$
 //
-// Copyright (c) 2007 Three Rings Design, Inc. Please do not redistribute.
+// Copyright (c) 2007-2009 Three Rings Design, Inc. Please do not redistribute.
 
 package com.whirled.game.server;
 
@@ -26,6 +26,12 @@ public interface WhirledGameProvider extends InvocationProvider
      * Handles a {@link WhirledGameService#checkDictionaryWord} request.
      */
     void checkDictionaryWord (ClientObject caller, String arg1, String arg2, String arg3, InvocationService.ResultListener arg4)
+        throws InvocationException;
+
+    /**
+     * Handles a {@link WhirledGameService#consumeItemPack} request.
+     */
+    void consumeItemPack (ClientObject caller, String arg1, InvocationService.ConfirmListener arg2)
         throws InvocationException;
 
     /**
