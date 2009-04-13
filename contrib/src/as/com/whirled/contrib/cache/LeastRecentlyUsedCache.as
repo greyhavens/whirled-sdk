@@ -26,7 +26,6 @@ import flash.utils.getTimer; // function import
 import flash.utils.Timer;
 
 import com.threerings.util.Log;
-import com.threerings.util.MethodQueue;
 
 public class LeastRecentlyUsedCache
     implements Cache
@@ -91,7 +90,7 @@ public class LeastRecentlyUsedCache
         return value;
     }
 
-    protected function evaluateCache (... ignored) :void
+    protected function evaluateCache (...ignored) :void
     {
         _timer.reset(); // reset the timer, it will be run again after our next access.
 

@@ -26,7 +26,6 @@ import flash.utils.Timer;
 
 import com.threerings.util.Log;
 import com.threerings.util.HashMap;
-import com.threerings.util.MethodQueue;
 
 /**
  * There are a variety of Least Frequently Used replacement policies used.  A strict LFU policy
@@ -66,7 +65,8 @@ public class LFUWeightedAgeCache
         _missSource = cacheMissSource;
         _maxValue = maxValue;
         _evaluator = evaluator == null ? new ObjectCountEvaluator() : evaluator;
-        _evaluationTime = evaluationTime;
+        _timer = new Timer(evaluationTime, 1);
+        _timer.addEventListener(TimerEvent.TIMER, evaluateCache);
         _frequencyThreshold = frequencyThreshold;
         _frequencyCount = frequencyCount;
     }
@@ -93,26 +93,18 @@ public class LFUWeightedAgeCache
             value = new FrequentObject(
                 name, _missSource.getObject(name), _frequencyThreshold, _frequencyCount);
             _cacheValues.put(name, value);
-            MethodQueue.callLater(evaluateCache);
+            // No point in running a cache that doesn't do its bets to return values quickly.
+            // Run the evaluation later.
+            _timer.start(); // only starts the timer if it's not already running
         }
 
         value.requested();
         return value.value;
     }
 
-    protected function evaluateCache () :void
+    protected function evaluateCache (...ignored) :void
     {
-        var now :int = getTimer();
-        if (now < _nextEvaluation) {
-            if (_timer != null) {
-                // we already have an evaluation scheduled
-                return;
-            }
-
-            _timer = new Timer(_nextEvaluation - now, 1);
-            _timer.addEventListener(TimerEvent.TIMER_COMPLETE, timeout);
-            _timer.start();
-        }
+        _timer.reset(); // reset the timer, it will be run again after our next access.
 
         var values :Array = _cacheValues.values();
         for each (var freqObj :FrequentObject in values) {
@@ -127,7 +119,7 @@ public class LFUWeightedAgeCache
         var toRemove :Array = [];
         for (var ii :int = 0; ii < values.length; ii++) {
             totalValue += _evaluator.getValue(values[ii].value);
-            if (totalValue > _maxValue) {
+            if (totalValue > _maxValue && ii > 0) { // ensure we keep at least on object
                 toRemove = values.splice(ii);
                 break;
             }
@@ -141,15 +133,6 @@ public class LFUWeightedAgeCache
                 _cacheValues.remove(value.name);
             }
         }
-
-        _nextEvaluation = now + _evaluationTime;
-    }
-
-    protected function timeout (event :TimerEvent) :void
-    {
-        event.target.removeEventListener(TimerEvent.TIMER_COMPLETE, timeout);
-        _timer = null;
-        evaluateCache();
     }
 
     protected var _missSource :DataSource;
@@ -157,9 +140,6 @@ public class LFUWeightedAgeCache
     protected var _evaluator :CacheObjectEvaluator;
     protected var _cacheValues :HashMap = new HashMap();
     protected var _stats :CacheStats = new CacheStats();
-    protected var _evaluationTime :int;
-    protected var _nextEvaluation :int = 0;
-    protected var _evaluationTimer :Timer;
     protected var _lastEvaluationTotal :int;
     protected var _timer :Timer;
     protected var _frequencyThreshold :int;
