@@ -107,6 +107,14 @@ public class TestGameManager extends WhirledGameManager
         endGame(caller, winnerIds, listener);
     }
 
+    // from interface WhirledGameProvider
+    public void consumeItemPack (ClientObject caller, String ident,
+                                 WhirledGameService.ConfirmListener listener)
+        throws InvocationException
+    {
+        listener.requestProcessed(); // fake it!
+    }
+
     @Override
     protected void didStartup ()
     {
