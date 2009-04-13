@@ -348,19 +348,21 @@ public class BaseGameBackend
      */
     protected function notifyGameContentAdded (type :int, ident :String, playerId :int) :void
     {
-        var ctype :String;
-        switch (type) {
-        case GameData.ITEM_DATA:
-            ctype = GameContentEvent.ITEM_PACK;
-            break;
-        case GameData.LEVEL_DATA:
-            ctype = GameContentEvent.LEVEL_PACK;
-            break;
-        default:
-            log.warning("Asked to notify content added for unknown type [type=" + type + "].");
-            return;
-        }
-        callUserCode("notifyGameContentAdded_v1", ctype, ident, playerId);
+        callUserCode("notifyGameContentAdded_v1", toContentType(type), ident, playerId);
+    }
+
+    /**
+     * This should be called by subclasses when they know that a user has consumed game content
+     * (they acknowledged the "Do you want to use this pack?" dialog and the necessary backend
+     * machinations have completed).
+     *
+     * @param type one of GameData.ITEM_DATA or GameData.LEVEL_DATA.
+     * @param ident the identifier of the content pack in question.
+     * @param playerId the id of the player that did the consuming.
+     */
+    protected function notifyGameContentConsumed (type :int, ident :String, playerId :int) :void
+    {
+        callUserCode("notifyGameContentConsumed_v1", toContentType(type), ident, playerId);
     }
 
     /**
@@ -619,6 +621,7 @@ public class BaseGameBackend
         o["awardPrize_v1"] = awardPrize_v1;
         o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
         o["getPlayerLevelPacks_v1"] = getPlayerLevelPacks_v1;
+        o["requestConsumeItemPack_v1"] = requestConsumeItemPack_v1;
 
         // .game
         o["endGame_v2"] = endGame_v2;
@@ -921,6 +924,11 @@ public class BaseGameBackend
         });
     }
 
+    protected function requestConsumeItemPack_v1 (ident :String, msg :String) :Boolean
+    {
+        return false; // default implementation always rejects consumption
+    }
+
     //---- .game -----------------------------------------------------------
 
     protected function sendChat_v1 (msg :String) :void
@@ -1150,9 +1158,7 @@ public class BaseGameBackend
 
     protected function getMyId_v1 () :int
     {
-        // Note: this is overridden in the thane backend
-        validateConnected();
-        return _ctx.getClient().getClientObject().getOid();
+        throw new Error("Abstract method");
     }
 
     //---- .game.seating ---------------------------------------------------
@@ -1461,6 +1467,21 @@ public class BaseGameBackend
             playerIds.push(isInited(occInfo) ? occInfo.bodyOid : 0);
         }
         return playerIds;
+    }
+
+    /**
+     * Helper function for notifyGameContentAdded and notifyGameContentConsumed.
+     */
+    protected static function toContentType (type :int) :String
+    {
+        switch (type) {
+        case GameData.ITEM_DATA:
+            return GameContentEvent.ITEM_PACK;
+        case GameData.LEVEL_DATA:
+            return GameContentEvent.LEVEL_PACK;
+        default:
+            throw new Error("Unknown game content type [type=" + type + "].");
+        }
     }
 
     protected var _ctx :PresentsContext;

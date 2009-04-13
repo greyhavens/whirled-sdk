@@ -7,6 +7,9 @@ import flash.display.DisplayObject;
 
 import com.threerings.crowd.util.CrowdContext;
 import com.threerings.util.MessageBundle;
+import com.threerings.util.MethodQueue;
+
+import com.whirled.game.data.GameData;
 import com.whirled.game.data.WhirledGameObject;
 
 /**
@@ -44,6 +47,16 @@ public class TestGameBackend extends WhirledGameBackend
         shot.x = (HeadShot.WIDTH - shot.width) / 2;
         shot.y = (HeadShot.HEIGHT - shot.height) / 2;
         return new HeadShot(shot);
+    }
+
+    // from WhirledGameBackend
+    override protected function requestConsumeItemPack_v1 (ident :String, msg :String) :Boolean
+    {
+        displayInfo(null, "Faking consumption of item pack '" + ident + "'.");
+        MethodQueue.callLater(function () :void {
+            notifyGameContentConsumed(GameData.ITEM_DATA, ident, getMyId_v1());
+        });
+        return true;
     }
 
     // Embed some media to be used as default headshots

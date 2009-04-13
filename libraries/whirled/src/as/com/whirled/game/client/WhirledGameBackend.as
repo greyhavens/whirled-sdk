@@ -440,6 +440,12 @@ public class WhirledGameBackend extends BaseGameBackend
 
     //---- .game -----------------------------------------------------------
 
+    override protected function getMyId_v1 () :int
+    {
+        validateConnected();
+        return _ctx.getClient().getClientObject().getOid();
+    }
+
     /**
      * Called by the client code when it is ready for the game to be started (if called before the
      * game ever starts) or rematched (if called after the game has ended).
