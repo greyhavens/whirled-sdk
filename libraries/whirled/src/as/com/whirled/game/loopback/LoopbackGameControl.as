@@ -231,7 +231,6 @@ public class LoopbackGameControl extends GameControl
         o["playerReady_v1"] = playerReady_v1;
 
         // Old methods: backwards compatability
-        //o["backToWhirled_v1"] = backToWhirled_v1;
         //o["getStageBounds_v1"] = getStageBounds_v1;
         //o["getHeadShot_v1"] = getHeadShot_v1;
         //o["setShowButtons_v1"] = setShowButtons_v1;

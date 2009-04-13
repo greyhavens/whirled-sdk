@@ -247,7 +247,6 @@ public class WhirledGameBackend extends BaseGameBackend
         o["playerReady_v1"] = playerReady_v1;
 
         // Old methods: backwards compatability
-        o["backToWhirled_v1"] = backToWhirled_v1;
         o["getStageBounds_v1"] = getStageBounds_v1;
         o["getHeadShot_v1"] = getHeadShot_v1;
         o["setShowButtons_v1"] = setShowButtons_v1;
@@ -506,14 +505,6 @@ public class WhirledGameBackend extends BaseGameBackend
     {
         setShowReplay_v1(rematch);
         // and discard the 'back' button preference.
-    }
-
-    /**
-     * Backwards compatibility. backToWhirled() was removed Aug 9, 2008.
-     */
-    protected function backToWhirled_v1 (showLobby :Boolean = false) :void
-    {
-        // don't do anything. Games can't do this anymore.
     }
 
     protected var _ctrl :WhirledGameController;
