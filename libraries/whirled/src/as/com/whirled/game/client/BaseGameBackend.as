@@ -890,7 +890,7 @@ public class BaseGameBackend
     protected function awardTrophy_v1 (
         ident :String, playerId :int = CURRENT_USER) :Boolean
     {
-        if (countPlayerData(GameData.TROPHY_DATA, ident, playerId) == 0) {
+        if (holdsTrophy_v1(ident, playerId)) {
             return false;
         }
 
@@ -1408,7 +1408,7 @@ public class BaseGameBackend
     /**
      * Dispatches the addition of an occupant to the user code, including starting the game if the
      * addition of the occupant means that the game is ready to start.
-     * 
+     *
      */
     protected function doOccupantAdded (occInfo :OccupantInfo) :void
     {
