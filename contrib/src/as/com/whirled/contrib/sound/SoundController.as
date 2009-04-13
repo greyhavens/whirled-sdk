@@ -44,10 +44,11 @@ public class SoundController extends EventDispatcher
 
     public static const BACKGROUND_MUSIC_COMPLETE :String = "backgroundMusicComplete";
 
-    public function SoundController (factory :SoundFactory, initialBackgroundVolume :Number = 0.5,
+    public function SoundController (factory :SoundFactory = null,
+        initialBackgroundVolume :Number = 0.5,
         initialEffectsVolume :Number = 0.5)
     {
-        _soundFactory = factory;
+        _soundFactory = factory == null ? new ApplicationDomainSoundFactory() : factory;
         _backgroundVolume = initialBackgroundVolume;
         _effectsVolume = initialEffectsVolume;
 
