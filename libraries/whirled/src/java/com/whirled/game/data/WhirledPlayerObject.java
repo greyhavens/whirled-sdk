@@ -71,11 +71,7 @@ public class WhirledPlayerObject extends BodyObject
      */
     public boolean ownsGameContent (int gameId, byte type, String ident)
     {
-        GameContentOwnership key = new GameContentOwnership();
-        key.gameId = gameId;
-        key.type = type;
-        key.ident = ident;
-        return gameContent.containsKey(key);
+        return gameContent.containsKey(new GameContentOwnership(gameId, type, ident, 0));
     }
 
     // from BodyObject

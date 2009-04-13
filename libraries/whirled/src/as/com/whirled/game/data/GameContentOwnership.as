@@ -12,7 +12,7 @@ import com.threerings.util.Equalable;
 import com.threerings.presents.dobj.DSet_Entry;
 
 /**
- * Contains information on an item owned by a player for a game.
+ * Contains information on content owned by a player for a game.
  */
 public class GameContentOwnership extends SimpleStreamableObject
     implements DSet_Entry, Comparable, Equalable
@@ -26,14 +26,19 @@ public class GameContentOwnership extends SimpleStreamableObject
     /** The identifier for this content. */
     public var ident :String;
 
+    /** The number of copies of this content owned by the player. */
+    public var count :int;
+
     /**
      * Creates an ownership record for the specified game, type and ident.
      */
-    public function GameContentOwnership (gameId :int = 0, type :int = 0, ident :String = null)
+    public function GameContentOwnership (gameId :int = 0, type :int = 0, ident :String = null,
+                                          count :int = 0)
     {
         this.gameId = gameId;
         this.type = type;
         this.ident = ident;
+        this.count = count;
     }
 
     // from Comparable
@@ -70,6 +75,7 @@ public class GameContentOwnership extends SimpleStreamableObject
         gameId = ins.readInt();
         type = ins.readByte();
         ident = (ins.readField(String) as String);
+        count = ins.readInt();
     }
 
     // from interface Streamable
@@ -79,6 +85,7 @@ public class GameContentOwnership extends SimpleStreamableObject
         out.writeInt(gameId);
         out.writeByte(type);
         out.writeField(ident);
+        out.writeInt(count);
     }
 }
 }

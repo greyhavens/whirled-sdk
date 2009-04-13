@@ -114,15 +114,14 @@ public class WhirledGameBackend extends BaseGameBackend
     }
 
     // from BaseGameBackend
-    override protected function playerOwnsData (type :int, ident :String, playerId :int) :Boolean
+    override protected function countPlayerData (type :int, ident :String, playerId :int) :int
     {
         if (playerId != CURRENT_USER && playerId != getMyId_v1()) {
             throw new Error("Query of other user data not allowed");
         }
-        var cfg :WhirledGameConfig = (_ctrl.getPlaceConfig() as WhirledGameConfig);
-        var plobj :WhirledPlayerObject =
-            _ctx.getClient().getClientObject() as WhirledPlayerObject;
-        return plobj.ownsGameContent(cfg.getGameId(), type, ident);
+        var cfg :WhirledGameConfig = _ctrl.getPlaceConfig() as WhirledGameConfig;
+        var plobj :WhirledPlayerObject = _ctx.getClient().getClientObject() as WhirledPlayerObject;
+        return plobj.countGameContent(cfg.getGameId(), type, ident);
     }
 
     /**

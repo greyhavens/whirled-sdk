@@ -76,7 +76,7 @@ public class ThaneGameBackend extends BaseGameBackend
     }
 
     // from BaseGameBackend
-    override protected function playerOwnsData (type :int, ident :String, playerId :int) :Boolean
+    override protected function countPlayerData (type :int, ident :String, playerId :int) :int
     {
         if (playerId == CURRENT_USER) {
             throw new Error("Server agent has no current user");
@@ -86,9 +86,9 @@ public class ThaneGameBackend extends BaseGameBackend
         var player :WhirledPlayerObject = getPlayer(playerId) as WhirledPlayerObject;
         if (player == null) {
             log.warning("Player " + playerId + " not found");
-            return false;
+            return 0;
         }
-        return player.ownsGameContent(cfg.getGameId(), type, ident)
+        return player.countGameContent(cfg.getGameId(), type, ident)
     }
 
     // from BaseGameBackend
@@ -146,7 +146,8 @@ public class ThaneGameBackend extends BaseGameBackend
     }
 
     // from BaseGameBackend
-    override protected function doOccupantRoleChanged (info :OccupantInfo, isPlayerNow :Boolean) :void
+    override protected function doOccupantRoleChanged (
+        info :OccupantInfo, isPlayerNow :Boolean) :void
     {
         if (_addedOccupants.indexOf(info.bodyOid) >= 0) {
             super.doOccupantRoleChanged(info, isPlayerNow);

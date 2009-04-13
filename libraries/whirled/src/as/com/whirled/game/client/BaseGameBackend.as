@@ -881,13 +881,13 @@ public class BaseGameBackend
     protected function holdsTrophy_v1 (
         ident :String, playerId :int = CURRENT_USER) :Boolean
     {
-        return playerOwnsData(GameData.TROPHY_DATA, ident, playerId);
+        return countPlayerData(GameData.TROPHY_DATA, ident, playerId) > 0;
     }
 
     protected function awardTrophy_v1 (
         ident :String, playerId :int = CURRENT_USER) :Boolean
     {
-        if (playerOwnsData(GameData.TROPHY_DATA, ident, playerId)) {
+        if (countPlayerData(GameData.TROPHY_DATA, ident, playerId) == 0) {
             return false;
         }
 
@@ -900,7 +900,7 @@ public class BaseGameBackend
     protected function awardPrize_v1 (
         ident :String, playerId :int = CURRENT_USER) :void
     {
-        if (!playerOwnsData(GameData.PRIZE_MARKER, ident, playerId)) {
+        if (countPlayerData(GameData.PRIZE_MARKER, ident, playerId) == 0) {
             _gameObj.prizeService.awardPrize(
                 _ctx.getClient(), ident, playerId, createLoggingConfirmListener("awardPrize"));
         }
@@ -909,15 +909,15 @@ public class BaseGameBackend
     protected function getPlayerItemPacks_v1 (
         playerId :int = CURRENT_USER) :Array
     {
-        return getItemPacks_v1(function (data :GameData) :Boolean {
-            return playerOwnsData(data.getType(), data.ident, playerId);
+        return getItemPacks_v1(function (data :GameData) :int {
+            return countPlayerData(data.getType(), data.ident, playerId);
         });
     }
 
     protected function getPlayerLevelPacks_v1 (playerId :int = CURRENT_USER) :Array
     {
         return getLevelPacks_v2(function (data :GameData) :Boolean {
-            return playerOwnsData(data.getType(), data.ident, playerId);
+            return countPlayerData(data.getType(), data.ident, playerId) > 0;
         });
     }
 
@@ -950,12 +950,17 @@ public class BaseGameBackend
     {
         var packs :Array = [];
         for each (var data :GameData in _gameObj.gameData) {
-            if (data.getType() != GameData.ITEM_DATA || (filter != null && !filter(data))) {
+            if (data.getType() != GameData.ITEM_DATA) {
+                continue;
+            }
+            var count :int = (filter == null) ? 1 : filter(data);
+            if (count == 0) {
                 continue;
             }
             packs.unshift({ ident: data.ident,
                             name: data.name,
-                            mediaURL: data.mediaURL });
+                            mediaURL: data.mediaURL,
+                            count: count });
         }
         return packs;
     }
@@ -1377,9 +1382,12 @@ public class BaseGameBackend
         return tarray;
     }
 
-    protected function playerOwnsData (type :int, ident :String, playerId :int) :Boolean
+    /**
+     * Returns the number of copies of the specified data that is owned by the player.
+     */
+    protected function countPlayerData (type :int, ident :String, playerId :int) :int
     {
-        return false; // this information is provided by the containing system
+        return 0; // this information is provided by the containing system
     }
 
     /**

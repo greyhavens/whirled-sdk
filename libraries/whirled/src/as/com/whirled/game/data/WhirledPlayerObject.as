@@ -50,21 +50,19 @@ public class WhirledPlayerObject extends BodyObject
      */
     public function isContentResolved (gameId :int) :Boolean
     {
-        return ownsGameContent(gameId, GameData.RESOLUTION_MARKER, RESOLVED);
+        return countGameContent(gameId, GameData.RESOLUTION_MARKER, RESOLVED) > 0;
     }
 
     /**
-     * Returns true if this player owns the specified piece of game content. <em>Note:</em> the
-     * content must have previously been resolved, which happens when the player enters the game in
-     * question.
+     * Returns the number of copies of the specified piece of game content owned by the player.
+     * <em>Note:</em> the content must have previously been resolved, which happens when the player
+     * enters the game in question.
      */
-    public function ownsGameContent (gameId :int, type :int, ident :String) :Boolean
+    public function countGameContent (gameId :int, type :int, ident :String) :int
     {
-        var key :GameContentOwnership = new GameContentOwnership();
-        key.gameId = gameId;
-        key.type = type;
-        key.ident = ident;
-        return gameContent.containsKey(key);
+        var entry :GameContentOwnership =
+            gameContent.get(new GameContentOwnership(gameId, type, ident)) as GameContentOwnership;
+        return (entry == null) ? 0 : entry.count;
     }
 
     // from BodyObject
