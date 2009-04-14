@@ -622,9 +622,8 @@ public class EntityControl extends AbstractControl
         o["hasConfigPanel_v1"] = hasConfigPanel_v1;
         o["getConfigPanel_v1"] = getConfigPanel_v1;
 
-        o["musicStarted_v1"] = musicStarted_v1;
+        o["musicStartStop_v1"] = musicStartStop_v1;
         o["musicId3_v1"] = musicId3_v1;
-        o["musicStopped_v1"] = musicStopped_v1;
 
         o["entityEntered_v1"] = entityEntered_v1;
         o["entityLeft_v1"] = entityLeft_v1;
@@ -785,21 +784,18 @@ public class EntityControl extends AbstractControl
         }
     }
 
-    protected function musicStarted_v1 () :void
+    /** @private */
+    protected function musicStartStop_v1 (started :Boolean) :void
     {
-        dispatchCtrlEvent(ControlEvent.MUSIC_STARTED);
+        dispatchCtrlEvent(started ? ControlEvent.MUSIC_STARTED : ControlEvent.MUSIC_STOPPED);
     }
 
+    /** @private */
     protected function musicId3_v1 (id3 :Object) :void
     {
         dispatchCtrlEvent(ControlEvent.MUSIC_ID3, null, id3);
     }
     
-    protected function musicStopped_v1 () :void
-    {
-        dispatchCtrlEvent(ControlEvent.MUSIC_STOPPED);
-    }
-
     /**
      * Check the status of the ticker, starting or stopping it as necessary.
      * @private
