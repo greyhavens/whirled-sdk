@@ -93,6 +93,28 @@ import flash.utils.Timer;
 [Event(name="entityMoved", type="com.whirled.ControlEvent")]
 
 /**
+ * Dispatched when music starts playing in the room. If the current user can hear it,
+ * id3 data *may* be available shortly after this event.
+ *
+ * @eventType com.whirled.ControlEvent.MUSIC_STARTED
+ */
+[Event(name="musicStarted", type="com.whirled.ControlEvent")]
+
+/**
+ * Dispatched when id3 data is known for a song.
+ *
+ * @eventType com.whirled.ControlEvent.MUSIC_ID3
+ */
+[Event(name="musicId3", type="com.whirled.ControlEvent")]
+
+/**
+ * Dispatched when music stops playing in the room.
+ *
+ * @eventType com.whirled.ControlEvent.MUSIC_STOPPED
+ */
+[Event(name="musicStopped", type="com.whirled.ControlEvent")]
+
+/**
  * Handles services that are available to all entities in a room. This includes dispatching
  * trigger events and maintaining memory.
  */
@@ -357,6 +379,17 @@ public class EntityControl extends AbstractControl
     }
 
     /**
+     * Get the id3 metadata of the currently playing music.
+     * This will be an Object roughly in the format of flash.media.Id3Info, except
+     * that only the "raw" names of id3 tags are supported.
+     * http://www.id3.org
+     */
+    public function getMusicId3 () :Object
+    {
+        return callHostCode("getMusicId3_v1");
+    }
+
+    /**
      * Enumerates the ids of all entities in this room.
      *
      * @param type an optional filter to restrict the results to a particular type of entity.
@@ -589,6 +622,10 @@ public class EntityControl extends AbstractControl
         o["hasConfigPanel_v1"] = hasConfigPanel_v1;
         o["getConfigPanel_v1"] = getConfigPanel_v1;
 
+        o["musicStarted_v1"] = musicStarted_v1;
+        o["musicId3_v1"] = musicId3_v1;
+        o["musicStopped_v1"] = musicStopped_v1;
+
         o["entityEntered_v1"] = entityEntered_v1;
         o["entityLeft_v1"] = entityLeft_v1;
         o["entityMoved_v2"] = entityMoved_v2;
@@ -746,6 +783,21 @@ public class EntityControl extends AbstractControl
         if (_hasControl) {
             dispatchCtrlEvent(ControlEvent.CHAT_RECEIVED, entityId, message);
         }
+    }
+
+    protected function musicStarted_v1 () :void
+    {
+        dispatchCtrlEvent(ControlEvent.MUSIC_STARTED);
+    }
+
+    protected function musicId3_v1 (id3 :Object) :void
+    {
+        dispatchCtrlEvent(ControlEvent.MUSIC_ID3, null, id3);
+    }
+    
+    protected function musicStopped_v1 () :void
+    {
+        dispatchCtrlEvent(ControlEvent.MUSIC_STOPPED);
     }
 
     /**
