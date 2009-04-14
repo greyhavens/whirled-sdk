@@ -13,6 +13,7 @@ import com.threerings.util.Log;
 
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
+import com.whirled.ControlEvent;
 
 import com.whirled.TargetedSubControl;
 
@@ -66,6 +67,21 @@ import com.whirled.TargetedSubControl;
  * @see com.whirled.EntityControl#sendSignal()
  */
 [Event(name="signalReceived", type="com.whirled.avrg.AVRGameRoomEvent")]
+
+/**
+ * Dispatched when music starts playing in the room. If the current user can hear it,
+ * id3 data *may* be available shortly after this event.
+ *
+ * @eventType com.whirled.ControlEvent.MUSIC_STARTED
+ */
+[Event(name="musicStarted", type="com.whirled.ControlEvent")]
+
+/**
+ * Dispatched when music stops playing in the room.
+ *
+ * @eventType com.whirled.ControlEvent.MUSIC_STOPPED
+ */
+[Event(name="musicStopped", type="com.whirled.ControlEvent")]
 
 /**
  * Provides AVR services for a single room to clients and server agents.
@@ -185,6 +201,14 @@ public class RoomSubControlBase extends TargetedSubControl
     }
 
     /** @private */
+    override protected function setUserProps (o :Object) :void
+    {
+        super.setUserProps(o);
+
+        o["musicStartStop_v1"] = musicStartStop_v1;
+    }
+
+    /** @private */
     internal function signalReceived_v1 (name :String, arg :Object) :void
     {
         dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.SIGNAL_RECEIVED, getRoomId(), name, arg));
@@ -258,6 +282,13 @@ public class RoomSubControlBase extends TargetedSubControl
         if (control != null) {
             control.appearanceChanged(locArray, orient, moving, idle);
         }
+    }
+
+    /** @private */
+    internal function musicStartStop_v1 (started :Boolean) :void
+    {
+        dispatch(new ControlEvent(
+            started ? ControlEvent.MUSIC_STARTED : ControlEvent.MUSIC_STOPPED));
     }
 
     /** @private */

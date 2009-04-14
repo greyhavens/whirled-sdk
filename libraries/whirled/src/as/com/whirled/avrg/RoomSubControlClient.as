@@ -31,6 +31,12 @@ import flash.utils.Dictionary;
  */
 [Event(name="chatReceived", type="com.whirled.ControlEvent")]
 
+/**
+ * Dispatched when id3 data is known for a song.
+ *
+ * @eventType com.whirled.ControlEvent.MUSIC_ID3
+ */
+[Event(name="musicId3", type="com.whirled.ControlEvent")]
 
 /**
  * Provides AVR services for a client player's current room.
@@ -100,6 +106,17 @@ public class RoomSubControlClient extends RoomSubControlBase
         return _mobControls[id] as MobSubControlClient;
     }
 
+    /**
+     * Get the id3 metadata of the currently playing music.
+     * This will be an Object roughly in the format of flash.media.Id3Info, except
+     * that only the "raw" names of id3 tags are supported.
+     * http://www.id3.org
+     */
+    public function getMusicId3 () :Object
+    {
+        return callHostCode("getMusicId3_v1");
+    }
+
     /** @private */
     override protected function setUserProps (o :Object) :void
     {
@@ -117,6 +134,7 @@ public class RoomSubControlClient extends RoomSubControlBase
         // the client backend does not send in targetId
         o["room_propertyWasSet_v1"] = _props.propertyWasSet_v1;
         o["receivedChat_v2"] = receivedChat_v2;
+        o["musicId3_v1"] = musicId3_v1;
     }
 
     /** @private */
@@ -143,6 +161,12 @@ public class RoomSubControlClient extends RoomSubControlBase
     {
         // called on the client when we leave a room; reset any awareness of MOBs
         _mobControls = new Dictionary();
+    }
+
+    /** @private */
+    internal function musicId3_v1 (id3 :Object) :void
+    {
+        dispatch(new ControlEvent(ControlEvent.MUSIC_ID3, null, id3));
     }
 
     /** @private */
