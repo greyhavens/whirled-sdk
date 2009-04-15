@@ -39,8 +39,11 @@ public class WhirledGameBackend extends BaseGameBackend
         _ctrl = ctrl;
 
         (_ctx as CrowdContext).getChatDirector().addChatDisplay(this);
+
+        // TODO: when we switch to player id instead of oid, do the right thing here
+        var myId :int = _ctx.getClient().getClientObject().getOid();
         _ctx.getClient().getClientObject().addListener(
-            _contentLner = new ContentListener(getMyId_v1(), getGameId(), this));
+            _contentLner = new ContentListener(myId, getGameId(), this));
     }
 
     public function setGameView (gameView :GameBox) :void
