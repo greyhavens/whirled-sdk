@@ -20,15 +20,6 @@ import com.whirled.AbstractSubControl;
 [Event(name="sizeChanged", type="com.whirled.avrg.AVRGameControlEvent")]
 
 /**
- * TEMPORARY. This event will be removed soon, and <b>no backwards compatibility will be
- * provided</b>. Use at your own risk. Better yet, don't use it at all, unless you are
- * wearing Tim Conkling's underwear.
- *
- * Dispatched when any party information has changed.
- */
-[Event(name="partyChanged", type="com.whirled.avrg.AVRGameControlEvent")]
-
-/**
  * Defines actions, accessors and callbacks available on the client only.
  */
 public class LocalSubControl extends AbstractSubControl
@@ -132,24 +123,6 @@ public class LocalSubControl extends AbstractSubControl
     public function getPaintableArea (full :Boolean = true) :Rectangle
     {
         return Rectangle(callHostCode("getPaintableArea_v1", full));
-    }
-
-    /**
-     * TEMPORARY. This method will be removed soon, and <b>no backwards compatibility will be
-     * provided</b>. Use at your own risk. Better yet, don't use it at all, unless you are
-     * wearing Tim Conkling's underwear.
-     *
-     * Get the party information of the local player, or null if they're not in a party.
-     * {
-     *     id: <partyId> (int)
-     *     name: <partyName> (String)
-     *     leaderId: <playerId> (int)
-     *     players: <playerIds> (Array of ints)
-     * }
-     */
-    public function getPartyInfo () :Object
-    {
-        return callHostCode("getPartyInfo_temp") as Object;
     }
 
     /**
@@ -323,8 +296,8 @@ public class LocalSubControl extends AbstractSubControl
      *    function createMobSprite (type :String) :DisplayObject;
      * </listing>
      *
-     * <p>Once created, the mob will be drawn in the room until the server agent despawns it. Clients
-     * should not attempt to remove the sprite. Each mob in a room has a corresponding
+     * <p>Once created, the mob will be drawn in the room until the server agent despawns it.
+     * Clients should not attempt to remove the sprite. Each mob in a room has a corresponding
      * <code>MobSubControlClient</code>. Games that use mobs should call this function during
      * initialization so that if the player is joining an in-progress game, all the previously
      * spawned mobs will be created.</p>
@@ -395,18 +368,12 @@ public class LocalSubControl extends AbstractSubControl
         super.setUserProps(o);
         o["panelResized_v1"] = panelResized_v1;
         o["hitTestPoint_v1"] = hitTestPoint_v1;
-        o["partyChanged_temp"] = partyChanged_temp;
     }
 
     /** @private */
     protected function panelResized_v1 () :void
     {
         dispatch(new AVRGameControlEvent(AVRGameControlEvent.SIZE_CHANGED));
-    }
-
-    protected function partyChanged_temp () :void
-    {
-        dispatch(new AVRGameControlEvent("partyChanged"));
     }
 
     /** @private */
