@@ -11,8 +11,7 @@ import com.whirled.game.client.ThaneGameController;
  */
 public class ThaneGameConfig extends BaseGameConfig
 {
-    public function ThaneGameConfig (
-        gameId :int = 0, gameDef :GameDefinition = null)
+    public function ThaneGameConfig (gameId :int = 0, gameDef :GameDefinition = null)
     {
         super(gameId, gameDef);
     }

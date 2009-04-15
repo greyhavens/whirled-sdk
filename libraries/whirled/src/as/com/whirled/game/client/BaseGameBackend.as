@@ -85,8 +85,7 @@ public class BaseGameBackend
 
     public var log :Log = Log.getLog(this);
 
-    public function BaseGameBackend (
-        ctx :PresentsContext, gameObj :WhirledGameObject)
+    public function BaseGameBackend (ctx :PresentsContext, gameObj :WhirledGameObject)
     {
         _ctx = ctx;
         _gameObj = gameObj;
@@ -120,6 +119,11 @@ public class BaseGameBackend
     public function isConnected () :Boolean
     {
         return (_userFuncs != null);
+    }
+
+    public function getGameId () :int
+    {
+        return getConfig().getGameId();
     }
 
     public function shutdown () :void
@@ -346,7 +350,7 @@ public class BaseGameBackend
      * @param ident the identifier of the content pack in question.
      * @param playerId the id of the player for whom the content was added.
      */
-    protected function notifyGameContentAdded (type :int, ident :String, playerId :int) :void
+    internal function notifyGameContentAdded (type :int, ident :String, playerId :int) :void
     {
         callUserCode("notifyGameContentAdded_v1", toContentType(type), ident, playerId);
     }
@@ -360,7 +364,7 @@ public class BaseGameBackend
      * @param ident the identifier of the content pack in question.
      * @param playerId the id of the player that did the consuming.
      */
-    protected function notifyGameContentConsumed (type :int, ident :String, playerId :int) :void
+    internal function notifyGameContentConsumed (type :int, ident :String, playerId :int) :void
     {
         callUserCode("notifyGameContentConsumed_v1", toContentType(type), ident, playerId);
     }
@@ -1093,13 +1097,6 @@ public class BaseGameBackend
             _ctx.getClient(), nextRoundDelay, createLoggingConfirmListener("endRound"));
     }
 
-//    protected function endGame_v2 (... winnerIds) :void
-//    {
-//        validateConnected();
-//        _gameObj.whirledGameService.endGame(
-//            _ctx.getClient(), toTypedIntArray(winnerIds), createLoggingConfirmListener("endGame"));
-//    }
-
     protected function endGame_v2 (... winnerIds) :void
     {
         validateConnected();
@@ -1365,8 +1362,7 @@ public class BaseGameBackend
      * Note: immediate defaults to true, even though immediate=false is the general case. We are
      * providing some backwards compatibility to old versions of setProperty_v1() that assumed
      * immediate and did not pass a 4th value.  All callers should now specify that value
-     * explicitly.
-     * (And of course, setProperty_v2 takes control of this situation.)
+     * explicitly. (And of course, setProperty_v2 takes control of this situation.)
      */
     protected function setProperty_v1 (
         propName :String, value :Object, index :int, immediate :Boolean = true) :void
@@ -1412,8 +1408,7 @@ public class BaseGameBackend
      */
     protected function doOccupantAdded (occInfo :OccupantInfo) :void
     {
-        callUserCode("occupantChanged_v1", occInfo.bodyOid,
-            isPlayer(occInfo.username), true);
+        callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username), true);
 
         if (!_gameStarted && _gameObj.isInPlay()) {
             gameStateChanged(true);
@@ -1433,8 +1428,7 @@ public class BaseGameBackend
      */
     protected function doOccupantRemoved (occInfo :OccupantInfo) :void
     {
-        callUserCode("occupantChanged_v1", occInfo.bodyOid,
-            isPlayer(occInfo.username), false);
+        callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username), false);
     }
 
     /**
@@ -1450,8 +1444,7 @@ public class BaseGameBackend
      */
     protected function doOccupantRoleChanged (occInfo :OccupantInfo, isPlayerNow :Boolean) :void
     {
-        // let the user code know about this by sending a "left" message followed by
-        // an "entered" message
+        // let the user code know about this by sending a "left" followed by an "entered" message
         callUserCode("occupantChanged_v1", occInfo.bodyOid, !isPlayerNow, false);
         callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayerNow, true);
     }
@@ -1485,14 +1478,11 @@ public class BaseGameBackend
     }
 
     protected var _ctx :PresentsContext;
+    protected var _gameObj :WhirledGameObject;
+    protected var _userFuncs :Object;
+    protected var _gameData :Object;
 
     protected var _userListener :MessageAdapter = new MessageAdapter(messageReceivedOnUserObject);
-
-    protected var _gameObj :WhirledGameObject;
-
-    protected var _userFuncs :Object;
-
-    protected var _gameData :Object;
 
     /** playerIndex -> callback functions waiting for the cookie. */
     protected var _cookieCallbacks :Dictionary;
@@ -1505,7 +1495,6 @@ public class BaseGameBackend
     protected var _gameStarted :Boolean = false;
 
     protected static const MAX_USER_COOKIE :int = 4096;
-
     protected static const CURRENT_USER :int = 0;
 }
 }

@@ -1,3 +1,6 @@
+//
+// $Id$
+
 package com.whirled.game.client {
 
 import flash.display.DisplayObject;
@@ -25,7 +28,7 @@ import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.WhirledPlayerObject;
 
 /**
- * Manages the backend of the game on a flash client.
+ * Manages the backend of the game on the Flash client.
  */
 public class WhirledGameBackend extends BaseGameBackend
 {
@@ -36,6 +39,8 @@ public class WhirledGameBackend extends BaseGameBackend
         _ctrl = ctrl;
 
         (_ctx as CrowdContext).getChatDirector().addChatDisplay(this);
+        _ctx.getClient().getClientObject().addListener(
+            _contentLner = new ContentListener(getMyId_v1(), getGameId(), this));
     }
 
     public function setGameView (gameView :GameBox) :void
@@ -45,19 +50,6 @@ public class WhirledGameBackend extends BaseGameBackend
         if (_stage == null) {
             _gameView.addEventListener(Event.ADDED_TO_STAGE, handleGrabStage);
         }
-    }
-
-    // from BaseGameBackend
-    override public function shutdown () :void
-    {
-        super.shutdown();
-
-        (_ctx as CrowdContext).getChatDirector().removeChatDisplay(this);
-
-        // once the usercode is incapable of calling setFrameRate and setStageQuality
-        // ensure they're reset to defaults
-        _stage.frameRate = 30;
-        _stage.quality = StageQuality.MEDIUM;
     }
 
     /**
@@ -85,8 +77,21 @@ public class WhirledGameBackend extends BaseGameBackend
         callUserCode("lobbyClosed_v1");
     }
 
-    /** @inheritDoc */
     // from BaseGameBackend
+    override public function shutdown () :void
+    {
+        super.shutdown();
+
+        (_ctx as CrowdContext).getChatDirector().removeChatDisplay(this);
+        _ctx.getClient().getClientObject().removeListener(_contentLner);
+
+        // once the usercode is incapable of calling setFrameRate and setStageQuality
+        // ensure they're reset to defaults
+        _stage.frameRate = 30;
+        _stage.quality = StageQuality.MEDIUM;
+    }
+
+    /** @inheritDoc */ // from BaseGameBackend
     override public function messageReceived (event :MessageEvent) :void
     {
         var name :String = event.getName();
@@ -99,15 +104,13 @@ public class WhirledGameBackend extends BaseGameBackend
         }
     }
 
-    /** @inheritDoc */
-    // from BaseGameBackend
+    /** @inheritDoc */ // from BaseGameBackend
     override protected function notifyControllerUserCodeIsConnected (autoReady :Boolean) :void
     {
         _ctrl.userCodeIsConnected(autoReady);
     }
 
-    /** @inheritDoc */
-    // from BaseGameBackend
+    /** @inheritDoc */ // from BaseGameBackend
     override protected function getConfig () :BaseGameConfig
     {
         return _ctrl.getPlaceConfig() as BaseGameConfig;
@@ -119,9 +122,8 @@ public class WhirledGameBackend extends BaseGameBackend
         if (playerId != CURRENT_USER && playerId != getMyId_v1()) {
             throw new Error("Query of other user data not allowed");
         }
-        var cfg :WhirledGameConfig = _ctrl.getPlaceConfig() as WhirledGameConfig;
         var plobj :WhirledPlayerObject = _ctx.getClient().getClientObject() as WhirledPlayerObject;
-        return plobj.countGameContent(cfg.getGameId(), type, ident);
+        return plobj.countGameContent(getGameId(), type, ident);
     }
 
     /**
@@ -508,10 +510,9 @@ public class WhirledGameBackend extends BaseGameBackend
     }
 
     protected var _ctrl :WhirledGameController;
-
     protected var _gameView :GameBox;
-
     protected var _stage :Stage;
+    protected var _contentLner :ContentListener;
 
     /** The function on the GameControl which we can use to directly dispatch events to the
      * user's game. */

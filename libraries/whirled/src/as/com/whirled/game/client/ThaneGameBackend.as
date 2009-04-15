@@ -4,18 +4,25 @@
 package com.whirled.game.client {
 
 import flash.utils.Dictionary;
-import com.threerings.crowd.data.BodyObject;
-import com.threerings.crowd.data.OccupantInfo;
-import com.threerings.crowd.data.PlaceObject;
-import com.threerings.parlor.game.data.GameObject;
+
+import com.threerings.util.HashMap;
+import com.threerings.util.Log;
+import com.threerings.util.Name;
+
 import com.threerings.presents.dobj.ElementUpdatedEvent;
 import com.threerings.presents.dobj.EntryAddedEvent;
 import com.threerings.presents.dobj.EntryUpdatedEvent;
 import com.threerings.presents.dobj.EntryRemovedEvent;
 import com.threerings.presents.util.SafeObjectManager;
+import com.threerings.presents.util.SafeSubscriber;
 import com.threerings.presents.util.PresentsContext;
-import com.threerings.util.Log;
-import com.threerings.util.Name;
+
+import com.threerings.crowd.data.BodyObject;
+import com.threerings.crowd.data.OccupantInfo;
+import com.threerings.crowd.data.PlaceObject;
+
+import com.threerings.parlor.game.data.GameObject;
+
 import com.whirled.game.data.BaseGameConfig;
 import com.whirled.game.data.ThaneGameConfig;
 import com.whirled.game.data.WhirledGameObject;
@@ -46,12 +53,14 @@ public class ThaneGameBackend extends BaseGameBackend
         return handleUserCodeConnect;
     }
 
+    // from BaseGameBackend
     override public function shutdown () :void
     {
         super.shutdown();
         _somgr.unsubscribeAll();
     }
 
+    // from BaseGameBackend
     override protected function getConfig () :BaseGameConfig
     {
         return _ctrl.getConfig();
@@ -82,20 +91,19 @@ public class ThaneGameBackend extends BaseGameBackend
             throw new Error("Server agent has no current user");
         }
 
-        var cfg :ThaneGameConfig = _ctrl.getConfig();
         var player :WhirledPlayerObject = getPlayer(playerId) as WhirledPlayerObject;
         if (player == null) {
             log.warning("Player " + playerId + " not found");
             return 0;
         }
-        return player.countGameContent(cfg.getGameId(), type, ident)
+        return player.countGameContent(getGameId(), type, ident)
     }
 
     // from BaseGameBackend
     override protected function occupantAdded (info :OccupantInfo) :void
     {
         if (isPlayer(info.username)) {
-            _somgr.subscribe(info.bodyOid, function (...ignored) :void {
+            preparePlayer(info.bodyOid, function () :void {
                 doOccupantAdded(info);
             });
 
@@ -105,52 +113,25 @@ public class ThaneGameBackend extends BaseGameBackend
     }
 
     // from BaseGameBackend
-    override protected function doOccupantAdded (info :OccupantInfo) :void
-    {
-        _addedOccupants.push(info.bodyOid);
-        super.doOccupantAdded(info);
-    }
-
-    // from BaseGameBackend
     override protected function occupantRemoved (info :OccupantInfo) :void
     {
-        if (isPlayer(info.username)) {
-            _somgr.unsubscribe(info.bodyOid);
-        }
-
-        doOccupantRemoved(info);
-    }
-
-    // from BaseGameBackend
-    override protected function doOccupantRemoved (info :OccupantInfo) :void
-    {
-        var idx :int = _addedOccupants.indexOf(info.bodyOid);
-        if (idx >= 0) {
-            _addedOccupants.splice(idx, 1);
-            super.doOccupantRemoved(info);
-        }
+        clearPlayer(info.bodyOid, function () :void {
+            doOccupantRemoved(info);
+        });
     }
 
     // from BaseGameBackend
     override protected function occupantRoleChanged (info :OccupantInfo, isPlayerNow :Boolean) :void
     {
         if (isPlayerNow) {
-            _somgr.subscribe(info.bodyOid, function (...ignored) :void {
+            preparePlayer(info.bodyOid, function () :void {
                 doOccupantRoleChanged(info, true);
             });
 
         } else {
-            doOccupantRoleChanged(info, false);
-            _somgr.unsubscribe(info.bodyOid);
-        }
-    }
-
-    // from BaseGameBackend
-    override protected function doOccupantRoleChanged (
-        info :OccupantInfo, isPlayerNow :Boolean) :void
-    {
-        if (_addedOccupants.indexOf(info.bodyOid) >= 0) {
-            super.doOccupantRoleChanged(info, isPlayerNow);
+            clearPlayer(info.bodyOid, function () :void {
+                doOccupantRoleChanged(info, false);
+            });
         }
     }
 
@@ -170,10 +151,49 @@ public class ThaneGameBackend extends BaseGameBackend
         return true;
     }
 
+    protected function preparePlayer (bodyOid :int, onReady :Function) :void
+    {
+        var player :Player = new Player();
+        player.subber = new SafeSubscriber(bodyOid, function (bobj :BodyObject) :void {
+            player.bobj = bobj;
+            player.clistener = new ContentListener(bodyOid, getGameId(), this);
+            player.bobj.addListener(player.clistener);
+            onReady();
+        }, function (oid :int, error :Error) :void {
+            log.warning("Failed to subscribe to player object", "oid", oid, "error", error)
+        });
+        player.subber.subscribe(_ctx.getDObjectManager());
+        _players.put(bodyOid, player);
+    }
+
+    protected function clearPlayer (bodyOid :int, onClear :Function) :void
+    {
+        var player :Player = _players.get(bodyOid);
+        if (player == null ) {
+            onClear(); // never were a player
+            return;
+        }
+
+        player.subber.unsubscribe(_ctx.getDObjectManager());
+        if (player.bobj != null) {
+            player.bobj.removeListener(player.clistener);
+            onClear(); // only call onClear if we were ready
+        }
+    }
+
     protected var _ctrl :ThaneGameController;
-
     protected var _somgr :SafeObjectManager;
-    protected var _addedOccupants :Array = new Array();
+    protected var _players :HashMap = new HashMap();
 }
 }
 
+import com.threerings.presents.util.SafeSubscriber;
+import com.threerings.crowd.data.BodyObject;
+import com.whirled.game.client.ContentListener;
+
+class Player
+{
+    public var subber :SafeSubscriber;
+    public var bobj :BodyObject;
+    public var clistener :ContentListener;
+}
