@@ -38,6 +38,13 @@ import com.whirled.net.impl.PropertySubControlImpl;
 [Event(name="taskCompleted", type="com.whirled.avrg.AVRGamePlayerEvent")]
 
 /**
+ * Dispatched when this player has consumed an item pack.
+ *
+ * @eventType com.whirled.game.GameContentEvent.PLAYER_CONTENT_CONSUMED
+ */
+[Event(name="PlayerContentConsumed", type="com.whirled.game.GameContentEvent")]
+
+/**
  * Provides services for a single player of an AVRG to the server agent and client.
  */
 public class PlayerSubControlBase extends TargetedSubControl

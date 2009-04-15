@@ -20,13 +20,6 @@ import com.whirled.net.MessageReceivedEvent;
 [Event(name="MsgReceived", type="com.whirled.net.MessageReceivedEvent")]
 
 /**
- * Dispatched when this player has consumed an item pack.
- *
- * @eventType com.whirled.game.GameContentEvent.PLAYER_CONTENT_CONSUMED
- */
-[Event(name="PlayerContentConsumed", type="com.whirled.game.GameContentEvent")]
-
-/**
  * Provides services for the client's player of an AVRG.
  * @see AVRGameControl#player
  */
@@ -69,7 +62,8 @@ public class PlayerSubControlClient extends PlayerSubControlBase
      * consume the pack.
      *
      * <p> If the player accepts the request to consume the item pack, a
-     * GameContentEvent.PLAYER_CONTENT_CONSUMED event will be dispatched on this control.
+     * GameContentEvent.PLAYER_CONTENT_CONSUMED event will be dispatched on this control (on both
+     * the client and server).
      *
      * @param ident the identifier of the item pack to be consumed.
      * @param msg a message to display in the dialog to help the player understand what's going on.
