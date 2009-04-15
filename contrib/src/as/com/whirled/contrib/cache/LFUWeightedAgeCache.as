@@ -46,6 +46,8 @@ public class LFUWeightedAgeCache
     implements Cache
 {
     /**
+     * @param cacheMissSource When the data is not found in the cache, it will be requested from
+     *                        this DataSource.
      * @param maxValue This maximum value of the objects in the cache.  If this value is exceeded,
      *                 the least frequently used entries are purged.
      * @param evaluator If no evaluator is provided, an ObjectCountEvaluator will be used, causing
