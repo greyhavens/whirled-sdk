@@ -142,6 +142,7 @@ public class AVRServerGameControl extends AbstractControl
         o["mobAppearanceChanged_v1"] = relayTo(getRoom, "mobAppearanceChanged_v1");
 
         o["signalReceived_v1"] = relayTo(getRoom, "signalReceived_v1");
+        o["musicStartStop_v1"] = relayTo(getRoom, "musicStartStop_v1");
 
         o["leftRoom_v1"] = relayTo(getPlayer, "leftRoom_v1");
         o["enteredRoom_v1"] = relayTo(getPlayer, "enteredRoom_v1");
