@@ -13,9 +13,6 @@ import com.threerings.io.TypedArray;
 import com.threerings.util.Log;
 
 import com.threerings.presents.dobj.ObjectAccessError;
-import com.threerings.presents.dobj.Subscriber;
-import com.threerings.presents.dobj.SubscriberAdapter;
-
 import com.threerings.presents.util.SafeSubscriber;
 
 import com.threerings.bureau.client.Agent;
@@ -45,13 +42,10 @@ public class BaseGameAgent extends Agent
         log.info("Starting agent", "agentObj", _agentObj);
 
         // subscribe to the game object
-        var delegator :Subscriber = 
-            new SubscriberAdapter(gameObjectAvailable, gameObjectRequestFailed);
-
         var gameOid :int = getGameOid();
         log.info("Subscribing to game object", "oid", gameOid);
 
-        _subscriber = new SafeSubscriber(gameOid, delegator);
+        _subscriber = new SafeSubscriber(gameOid, gameObjectAvailable, gameObjectRequestFailed);
         _subscriber.subscribe(_ctx.getDObjectManager());
 
         // download the code
@@ -122,7 +116,7 @@ public class BaseGameAgent extends Agent
         // This also initializes the controller
         _controller = createController();
 
-        // If the code didn't load for some reason, send the failure now that we have the game object
+        // if the code didn't load for some reason, send the failure now that we have the game obj
         if (_needToSendAgentFailedMessage) {
             flushTraceOutput();
             _controller.agentFailed();
