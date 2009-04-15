@@ -13,7 +13,6 @@ import com.threerings.presents.dobj.ElementUpdatedEvent;
 import com.threerings.presents.dobj.EntryAddedEvent;
 import com.threerings.presents.dobj.EntryUpdatedEvent;
 import com.threerings.presents.dobj.EntryRemovedEvent;
-import com.threerings.presents.util.SafeObjectManager;
 import com.threerings.presents.util.SafeSubscriber;
 import com.threerings.presents.util.PresentsContext;
 
@@ -39,11 +38,11 @@ public class ThaneGameBackend extends BaseGameBackend
     {
         super(ctx, gameObj);
         _ctrl = ctrl;
-        _somgr = new SafeObjectManager(_ctx.getDObjectManager(), Log.getLog(this));
 
-        for each (var id :* in getPlayersArray()) {
-            if (id != 0) {
-                _somgr.subscribe(id);
+        // create players for everyone already known to be in the game
+        for each (var bodyOid :* in getPlayersArray()) {
+            if (bodyOid != 0) {
+                preparePlayer(bodyOid, function () :void { /* noop */ });
             }
         }
     }
@@ -57,7 +56,10 @@ public class ThaneGameBackend extends BaseGameBackend
     override public function shutdown () :void
     {
         super.shutdown();
-        _somgr.unsubscribeAll();
+
+        for each (var bodyOid :int in _players.keys()) {
+            clearPlayer(bodyOid, function () :void { /* noop */ });
+        }
     }
 
     // from BaseGameBackend
@@ -81,7 +83,8 @@ public class ThaneGameBackend extends BaseGameBackend
 
     protected function getPlayer (oid :int) :BodyObject
     {
-        return _somgr.getObj(oid) as BodyObject;
+        var player :Player = _players.get(oid) as Player;
+        return (player == null) ? null : player.bobj;
     }
 
     // from BaseGameBackend
@@ -168,7 +171,7 @@ public class ThaneGameBackend extends BaseGameBackend
 
     protected function clearPlayer (bodyOid :int, onClear :Function) :void
     {
-        var player :Player = _players.get(bodyOid);
+        var player :Player = _players.remove(bodyOid);
         if (player == null ) {
             onClear(); // never were a player
             return;
@@ -182,7 +185,6 @@ public class ThaneGameBackend extends BaseGameBackend
     }
 
     protected var _ctrl :ThaneGameController;
-    protected var _somgr :SafeObjectManager;
     protected var _players :HashMap = new HashMap();
 }
 }
