@@ -109,10 +109,10 @@ public class TestGameManager extends WhirledGameManager
 
     // from interface WhirledGameProvider
     public void consumeItemPack (ClientObject caller, String ident,
-                                 WhirledGameService.ConfirmListener listener)
+                                 WhirledGameService.InvocationListener listener)
         throws InvocationException
     {
-        listener.requestProcessed(); // fake it!
+        // nada
     }
 
     @Override
