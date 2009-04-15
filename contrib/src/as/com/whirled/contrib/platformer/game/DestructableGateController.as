@@ -43,14 +43,14 @@ public class DestructableGateController extends GateController
     public function doHit (damage :Number, owner :int, inter :int, sowner :int) :void
     {
         if ((!_dg.playerImpervious && inter == Dynamic.ENEMY) || inter == Dynamic.GLOBAL) {
-            if (owner == PlatformerContext.myId) {
-                _dg.health -= damage;
+            if (sowner == PlatformerContext.myId) {
                 if (owner == sowner) {
+                    _dg.health -= damage;
                     PlatformerContext.net.sendMessage(
                             ShotMessage.shotHit(_dg.id, damage, inter, sowner));
+                    _dg.wasHit = true;
                 }
-                _dg.wasHit = true;
-            } else if (sowner != PlatformerContext.myId) {
+            } else if (sowner != owner) {
                 _dg.health -= damage;
             } else {
                 _dg.wasHit = true;

@@ -74,18 +74,20 @@ public class ShotMessage extends BaseGameMessage
     {
         var ba :ByteArray = (ba != null ? ba : new ByteArray());
         ba.writeByte(state);
-        ba.writeInt(id);
-        ba.writeFloat(damage);
         ba.writeByte(inter);
+        ba.writeInt(id);
+        ba.writeInt(owner);
+        ba.writeFloat(damage);
         return ba;
     }
 
     override public function fromBytes (ba :ByteArray) :void
     {
         state = ba.readByte();
-        id = ba.readInt();
-        damage = ba.readFloat();
         inter = ba.readByte();
+        id = ba.readInt();
+        owner = ba.readInt();
+        damage = ba.readFloat();
     }
 }
 }
