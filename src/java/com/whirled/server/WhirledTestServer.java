@@ -26,6 +26,7 @@ import com.google.inject.Injector;
 
 import com.samskivert.io.StreamUtil;
 import com.samskivert.util.CollectionUtil;
+import com.samskivert.util.RunAnywhere;
 import com.threerings.util.Name;
 import com.samskivert.util.StringUtil;
 
@@ -141,7 +142,12 @@ public class WhirledTestServer extends CrowdServer
                 ABCLibs abcLibs = new ABCLibs();
                 List<String> args = Lists.newArrayList();
                 args.add(System.getProperty("thane.path"));
-                args.add("-Dtimeout");
+                // TODO: Remove me when new Thane's re-ported to Win32
+                if (RunAnywhere.isWindows()) {
+                    args.add("-Dinterp");
+                } else {
+                    args.add("-Dtimeout");
+                }
                 args.addAll(abcLibs.getLibs("game-server-lib.", "game-server."));
                 args.add("--");
                 args.add(bureauId);
