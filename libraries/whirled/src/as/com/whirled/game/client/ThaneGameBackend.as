@@ -156,10 +156,11 @@ public class ThaneGameBackend extends BaseGameBackend
 
     protected function preparePlayer (bodyOid :int, onReady :Function) :void
     {
+        var self :ThaneGameBackend = this;
         var player :Player = new Player();
         player.subber = new SafeSubscriber(bodyOid, function (bobj :BodyObject) :void {
             player.bobj = bobj;
-            player.clistener = new ContentListener(bodyOid, getGameId(), this);
+            player.clistener = new ContentListener(bodyOid, getGameId(), self);
             player.bobj.addListener(player.clistener);
             onReady();
         }, function (oid :int, error :Error) :void {
