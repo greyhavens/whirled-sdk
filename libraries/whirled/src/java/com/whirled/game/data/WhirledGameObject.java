@@ -66,13 +66,13 @@ public class WhirledGameObject extends GameObject
      * currently playing. Each player vies to get their score the highest, and the coins are split
      * up according to the relative scores. */
     public static final int PROPORTIONAL = 3;
-    
+
     /** Value of {@link #agentState} when the agent is launched but not yet running. */
     public static final int AGENT_PENDING = 0;
-    
+
     /** Value of {@link #agentState} when everything is set to go. */
     public static final int AGENT_READY = 1;
-    
+
     /** Value of {@link #agentState} when the could not be launched for some reason. */
     public static final int AGENT_FAILED = 2;
 
@@ -97,6 +97,9 @@ public class WhirledGameObject extends GameObject
 
     /** The field name of the <code>whirledGameService</code> field. */
     public static final String WHIRLED_GAME_SERVICE = "whirledGameService";
+
+    /** The field name of the <code>contentService</code> field. */
+    public static final String CONTENT_SERVICE = "contentService";
 
     /** The field name of the <code>prizeService</code> field. */
     public static final String PRIZE_SERVICE = "prizeService";
@@ -124,22 +127,25 @@ public class WhirledGameObject extends GameObject
 
     /** The various game data available to this game. */
     public GameData[] gameData;
-    
+
     /** The current state of the game's agent. One of {@link #AGENT_PENDING}, {@link #AGENT_READY}
-     * or {@link #AGENT_FAILED}. Games with no agent will always have this set to 
+     * or {@link #AGENT_FAILED}. Games with no agent will always have this set to
      * {@link #AGENT_READY}. */
     public int agentState;
 
-    /** The service interface for requesting special things from the server. */
+    /** Provides game related services. */
     public WhirledGameMarshaller whirledGameService;
-    
-    /** The service interface for awarding prizes and trophies. */
+
+    /** Provides game content related services. */
+    public ContentMarshaller contentService;
+
+    /** Provides prize and trophy related services. */
     public PrizeMarshaller prizeService;
-    
-    /** The service interface for dealing with properties. */
+
+    /** Provides property related services. */
     public PropertySpaceMarshaller propertyService;
 
-    /** The service for sending messages to everyone in the game. */
+    /** Provides messaging services. */
     public WhirledGameMessageMarshaller messageService;
 
     // from PropertySpaceObject
@@ -331,6 +337,22 @@ public class WhirledGameObject extends GameObject
         requestAttributeChange(
             WHIRLED_GAME_SERVICE, value, ovalue);
         this.whirledGameService = value;
+    }
+
+    /**
+     * Requests that the <code>contentService</code> field be set to the
+     * specified value. The local value will be updated immediately and an
+     * event will be propagated through the system to notify all listeners
+     * that the attribute did change. Proxied copies of this object (on
+     * clients) will apply the value change when they received the
+     * attribute changed notification.
+     */
+    public void setContentService (ContentMarshaller value)
+    {
+        ContentMarshaller ovalue = this.contentService;
+        requestAttributeChange(
+            CONTENT_SERVICE, value, ovalue);
+        this.contentService = value;
     }
 
     /**

@@ -40,13 +40,13 @@ import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.turn.server.TurnGameManager;
 
-import com.whirled.game.data.WhirledGameCodes;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.WhirledGameOccupantInfo;
 import com.whirled.game.data.UserCookie;
 import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.ThaneGameConfig;
 import com.whirled.game.data.GameDefinition;
+import com.whirled.game.server.ContentDispatcher;
 
 import com.whirled.bureau.data.BureauTypes;
 import com.whirled.bureau.data.GameAgentObject;
@@ -57,7 +57,7 @@ import static com.whirled.game.Log.log;
  * A manager for whirled games.
  */
 public abstract class WhirledGameManager extends GameManager
-    implements WhirledGameCodes, WhirledGameProvider, TurnGameManager, PrizeProvider
+    implements WhirledGameProvider, TurnGameManager, ContentProvider, PrizeProvider
 {
     /** The default class name to use for the game agent. */
     public static final String DEFAULT_SERVER_CLASS = "Server";
@@ -700,6 +700,7 @@ public abstract class WhirledGameManager extends GameManager
         };
 
         _gameObj.setWhirledGameService(_invmgr.registerDispatcher(new WhirledGameDispatcher(this)));
+        _gameObj.setContentService(_invmgr.registerDispatcher(new ContentDispatcher(this)));
         _gameObj.setPrizeService(_invmgr.registerDispatcher(new PrizeDispatcher(this)));
         _gameObj.setPropertyService(_invmgr.registerDispatcher(
             new PropertySpaceDispatcher(_propertySpaceHandler)));

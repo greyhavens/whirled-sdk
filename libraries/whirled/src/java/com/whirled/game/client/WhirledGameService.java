@@ -135,9 +135,4 @@ public interface WhirledGameService extends InvocationService
      * Request to set our cookie.
      */
     public void setCookie (Client client, byte[] cookie, int playerId, InvocationListener listener);
-
-    /**
-     * Requests to consume the specified item pack.
-     */
-    public void consumeItemPack (Client client, String ident, ConfirmListener listener);
 }

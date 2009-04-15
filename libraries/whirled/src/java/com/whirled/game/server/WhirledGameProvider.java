@@ -29,12 +29,6 @@ public interface WhirledGameProvider extends InvocationProvider
         throws InvocationException;
 
     /**
-     * Handles a {@link WhirledGameService#consumeItemPack} request.
-     */
-    void consumeItemPack (ClientObject caller, String arg1, InvocationService.ConfirmListener arg2)
-        throws InvocationException;
-
-    /**
      * Handles a {@link WhirledGameService#endGame} request.
      */
     void endGame (ClientObject caller, int[] arg1, InvocationService.InvocationListener arg2)

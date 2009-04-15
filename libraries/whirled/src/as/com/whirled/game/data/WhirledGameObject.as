@@ -87,16 +87,19 @@ public class WhirledGameObject extends GameObject
      * <code>AGENT_READY</code> or <code>AGENT_FAILED</code>. */
     public var agentState :int;
 
-    /** The service interface for requesting special things from the server. */
+    /** Provides game related services. */
     public var whirledGameService :WhirledGameMarshaller;
 
-    /** The service interface for awarding prizes and trophies. */
+    /** Provides game content related services. */
+    public var contentService :ContentMarshaller;
+
+    /** Provides prize and trophy related services. */
     public var prizeService :PrizeMarshaller;
     
-    /** The service interface for requesting property changes from the server. */
+    /** Provides property related services. */
     public var propertyService :PropertySpaceMarshaller;
 
-    /** The service interface for sending messages. */
+    /** Provides messaging services. */
     public var messageService :WhirledGameMessageMarshaller;
 
     // from PropertySpaceObject
@@ -152,6 +155,7 @@ public class WhirledGameObject extends GameObject
         gameData = TypedArray(ins.readObject());
         agentState = ins.readInt();
         whirledGameService = WhirledGameMarshaller(ins.readObject());
+        contentService = ContentMarshaller(ins.readObject());
         prizeService = PrizeMarshaller(ins.readObject());
         propertyService = PropertySpaceMarshaller(ins.readObject());
         messageService = WhirledGameMessageMarshaller(ins.readObject());

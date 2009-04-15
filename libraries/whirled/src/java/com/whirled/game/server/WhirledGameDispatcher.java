@@ -49,12 +49,6 @@ public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarsh
             );
             return;
 
-        case WhirledGameMarshaller.CONSUME_ITEM_PACK:
-            ((WhirledGameProvider)provider).consumeItemPack(
-                source, (String)args[0], (InvocationService.ConfirmListener)args[1]
-            );
-            return;
-
         case WhirledGameMarshaller.END_GAME:
             ((WhirledGameProvider)provider).endGame(
                 source, (int[])args[0], (InvocationService.InvocationListener)args[1]
