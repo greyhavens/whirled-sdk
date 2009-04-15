@@ -88,23 +88,18 @@ public class PlayerSubControlClient extends PlayerSubControlBase
         super.setUserProps(o);
 
         o["taskCompleted_v1"] = taskCompleted_v1;
+        o["notifyGameContentAdded_v1"] = notifyGameContentAdded_v1;
+        o["notifyGameContentConsumed_v1"] = notifyGameContentConsumed_v1;
 
         // the client backend does not send in targetId
         o["player_propertyWasSet_v1"] = _props.propertyWasSet_v1;
 
         o["player_messageReceived_v1"] = player_messageReceived_v1;
-        o["player_contentConsumed_v1"] = player_contentConsumed_v1;
     }
 
     private function player_messageReceived_v1 (name :String, value :Object, sender :int) :void
     {
         dispatch(new MessageReceivedEvent(name, value, sender));
-    }
-
-    private function player_contentConsumed_v1 (type :String, ident :String, playerId :int) :void
-    {
-        dispatch(new GameContentEvent(GameContentEvent.PLAYER_CONTENT_CONSUMED,
-                                      type, ident, playerId));
     }
 }
 }

@@ -7,6 +7,7 @@ package com.whirled.avrg {
 
 import com.whirled.AbstractControl;
 import com.whirled.TargetedSubControl;
+import com.whirled.game.GameContentEvent;
 import com.whirled.net.PropertySubControl;
 import com.whirled.net.impl.PropertySubControlImpl;
 
@@ -257,8 +258,23 @@ public class PlayerSubControlBase extends TargetedSubControl
     /** @private */
     internal function enteredRoom_v1 (newScene :int) :void
     {
-        dispatch(new AVRGamePlayerEvent(
-            AVRGamePlayerEvent.ENTERED_ROOM, _targetId, null, newScene));
+        dispatch(new AVRGamePlayerEvent(AVRGamePlayerEvent.ENTERED_ROOM,
+                                        _targetId, null, newScene));
+    }
+
+    /** @private */
+    internal function notifyGameContentAdded_v1 (type :String, ident :String, playerId :int) :void
+    {
+        dispatch(new GameContentEvent(GameContentEvent.PLAYER_CONTENT_ADDED,
+                                      type, ident, playerId));
+    }
+
+    /** @private */
+    internal function notifyGameContentConsumed_v1 (
+        type :String, ident :String, playerId :int) :void
+    {
+        dispatch(new GameContentEvent(GameContentEvent.PLAYER_CONTENT_CONSUMED,
+                                      type, ident, playerId));
     }
 
     /** @private */

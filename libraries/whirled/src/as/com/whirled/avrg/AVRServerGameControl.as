@@ -153,6 +153,9 @@ public class AVRServerGameControl extends AbstractControl
 
         o["playerJoinedGame_v1"] = playerJoinedGame_v1;
         o["playerLeftGame_v1"] = playerLeftGame_v1;
+
+        o["notifyGameContentAdded_v1"] = notifyGameContentAdded_v1;
+        o["notifyGameContentConsumed_v1"] = notifyGameContentConsumed_v1;
     }
 
     /** @private */
@@ -216,6 +219,16 @@ public class AVRServerGameControl extends AbstractControl
             ctrl.roomUnloaded_v1();
             delete _roomControls[roomId];
         }
+    }
+
+    private function notifyGameContentAdded_v1 (type :String, ident :String, playerId :int) :void
+    {
+        getPlayer(playerId).notifyGameContentAdded_v1(type, ident, playerId);
+    }
+
+    private function notifyGameContentConsumed_v1 (type :String, ident :String, playerId :int) :void
+    {
+        getPlayer(playerId).notifyGameContentConsumed_v1(type, ident, playerId);
     }
 
     /** @private */

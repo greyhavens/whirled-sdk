@@ -343,33 +343,6 @@ public class BaseGameBackend
     }
 
     /**
-     * This should be called by subclasses when they know that a user has dynamically added game
-     * content (like if they purchase an item or level pack).
-     *
-     * @param type one of GameData.ITEM_DATA or GameData.LEVEL_DATA.
-     * @param ident the identifier of the content pack in question.
-     * @param playerId the id of the player for whom the content was added.
-     */
-    internal function notifyGameContentAdded (type :int, ident :String, playerId :int) :void
-    {
-        callUserCode("notifyGameContentAdded_v1", toContentType(type), ident, playerId);
-    }
-
-    /**
-     * This should be called by subclasses when they know that a user has consumed game content
-     * (they acknowledged the "Do you want to use this pack?" dialog and the necessary backend
-     * machinations have completed).
-     *
-     * @param type one of GameData.ITEM_DATA or GameData.LEVEL_DATA.
-     * @param ident the identifier of the content pack in question.
-     * @param playerId the id of the player that did the consuming.
-     */
-    internal function notifyGameContentConsumed (type :int, ident :String, playerId :int) :void
-    {
-        callUserCode("notifyGameContentConsumed_v1", toContentType(type), ident, playerId);
-    }
-
-    /**
      * Access the configuration of our game. This is an abstract method and must be provided
      * by subclasses.
      */
@@ -1460,21 +1433,6 @@ public class BaseGameBackend
             playerIds.push(isInited(occInfo) ? occInfo.bodyOid : 0);
         }
         return playerIds;
-    }
-
-    /**
-     * Helper function for notifyGameContentAdded and notifyGameContentConsumed.
-     */
-    protected static function toContentType (type :int) :String
-    {
-        switch (type) {
-        case GameData.ITEM_DATA:
-            return GameContentEvent.ITEM_PACK;
-        case GameData.LEVEL_DATA:
-            return GameContentEvent.LEVEL_PACK;
-        default:
-            throw new Error("Unknown game content type [type=" + type + "].");
-        }
     }
 
     protected var _ctx :PresentsContext;
