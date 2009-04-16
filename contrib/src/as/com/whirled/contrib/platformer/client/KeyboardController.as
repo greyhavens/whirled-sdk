@@ -194,17 +194,23 @@ public class KeyboardController
     }
     protected function updateACS (event :KeyboardEvent) :void
     {
-        if (event.shiftKey) {
+        if (event.keyCode == KeyboardCodes.SHIFT) {
+            // do nothing
+        } else if (event.shiftKey) {
             markPressed(KeyboardCodes.SHIFT);
         } else {
             _downKeys[KeyboardCodes.SHIFT] = false;
         }
-        if (event.altKey) {
+        if (event.keyCode == KeyboardCodes.ALTERNATE) {
+            // do nothing
+        } else if (event.altKey) {
             markPressed(KeyboardCodes.ALTERNATE);
         } else {
             _downKeys[KeyboardCodes.ALTERNATE] = false;
         }
-        if (event.ctrlKey) {
+        if (event.keyCode == KeyboardCodes.CONTROL) {
+            // do nothing
+        } else if (event.ctrlKey) {
             markPressed(KeyboardCodes.CONTROL);
         } else {
             _downKeys[KeyboardCodes.CONTROL] = false;

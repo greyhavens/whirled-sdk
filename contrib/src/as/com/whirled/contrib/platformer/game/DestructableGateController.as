@@ -46,8 +46,8 @@ public class DestructableGateController extends GateController
             if (sowner == PlatformerContext.myId) {
                 if (owner == sowner) {
                     _dg.health -= damage;
-                    PlatformerContext.net.sendMessage(
-                            ShotMessage.shotHit(_dg.id, damage, inter, sowner));
+                    PlatformerContext.net.notLocalSend(
+                            ShotMessage.shotHit, _dg.id, damage, inter, sowner);
                     _dg.wasHit = true;
                 }
             } else if (sowner != owner) {

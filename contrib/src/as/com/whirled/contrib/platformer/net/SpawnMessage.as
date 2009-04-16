@@ -55,9 +55,10 @@ public class SpawnMessage extends BaseGameMessage
         return create(REMOVE, id, store ? 1 : 0);
     }
 
-    public static function spawnIndex (idx :int, x :Number = 0, y :Number = 0) :SpawnMessage
+    public static function spawnIndex (
+            idx :int, x :Number = 0, y :Number = 0, free :Boolean = false) :SpawnMessage
     {
-        return create(SPAWN, 0, idx, x, y);
+        return create(SPAWN, (free ? 1 : 0), idx, x, y);
     }
 
     public static function changeOwner (id :int, owner :int) :SpawnMessage
