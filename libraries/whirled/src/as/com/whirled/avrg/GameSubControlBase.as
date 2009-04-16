@@ -55,18 +55,17 @@ public class GameSubControlBase extends AbstractSubControl
      */
     public function getPartyIds () :Array /* of int */
     {
-        return []; // TODO
+        return callHostCode("game_getPartyIds_v1");
     }
 
     /**
-     * Get the party control for the specified party, or null if there is no such party.
+     * Get the party control for the specified party.
      */
     public function getPartyControl (partyId :int) :PartySubControl
     {
-        // TODO
-        // retrieve the party info from the host. If valid, populate and return a PartySubControl
-        // We may want to cache each party's subcontrol until the party leaves
-        return null;
+        var ctrl :PartySubControl = new PartySubControl(this, partyId);
+        ctrl.gotHostPropsFriend(_funcs);
+        return ctrl;
     }
 
     /**
