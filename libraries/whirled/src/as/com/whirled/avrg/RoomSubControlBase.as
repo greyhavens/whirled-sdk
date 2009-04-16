@@ -151,6 +151,15 @@ public class RoomSubControlBase extends TargetedSubControl
     }
 
     /**
+     * Get the playerId of the owner of the currently playing music, aka the player who added it
+     * to the playlist, or 0 if there is no music currently playing.
+     */
+    public function getMusicOwnerId () :int
+    {
+        return callHostCode("getMusicOwner_v1");
+    }
+
+    /**
      * Returns an array of <code>String</code>s corresponding to the ids of all the MOBs in this
      * room.
      * @see http://wiki.whirled.com/Mobs

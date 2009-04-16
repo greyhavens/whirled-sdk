@@ -390,6 +390,15 @@ public class EntityControl extends AbstractControl
     }
 
     /**
+     * Get the playerId of the owner of the currently playing music, aka the player who added it
+     * to the playlist, or 0 if there is no music currently playing.
+     */
+    public function getMusicOwnerId () :int
+    {
+        return callHostCode("getMusicOwner_v1");
+    }
+
+    /**
      * Enumerates the ids of all entities in this room.
      *
      * @param type an optional filter to restrict the results to a particular type of entity.
