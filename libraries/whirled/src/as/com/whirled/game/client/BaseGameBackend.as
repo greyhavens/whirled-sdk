@@ -113,6 +113,22 @@ public class BaseGameBackend
         disp.addEventListener("controlConnect", handleUserCodeConnect);
     }
 
+    public function callUserCode (name :String, ... args) :*
+    {
+        if (_userFuncs != null) {
+            try {
+                var func :Function = (_userFuncs[name] as Function);
+                if (func != null) {
+                    return func.apply(null, args);
+                }
+
+            } catch (err :Error) {
+                reportGameError("Error in user-code: " + err, err);
+            }
+        }
+        return undefined;
+    }
+
     /**
      * Are we connected to the usercode on the front-end?
      */
@@ -547,22 +563,6 @@ public class BaseGameBackend
     {
         // here we would handle adapting old functions to a new version
         _userFuncs = o;
-    }
-
-    protected function callUserCode (name :String, ... args) :*
-    {
-        if (_userFuncs != null) {
-            try {
-                var func :Function = (_userFuncs[name] as Function);
-                if (func != null) {
-                    return func.apply(null, args);
-                }
-
-            } catch (err :Error) {
-                reportGameError("Error in user-code: " + err, err);
-            }
-        }
-        return undefined;
     }
 
     protected function populateProperties (o :Object) :void
