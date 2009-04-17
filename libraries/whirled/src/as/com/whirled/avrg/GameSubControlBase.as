@@ -167,6 +167,7 @@ public class GameSubControlBase extends AbstractSubControl
         o["game_partyLeft_v1"] = partyLeft_v1;
         o["party_playerEntered_v1"] = party_playerEntered_v1;
         o["party_playerLeft_v1"] = party_playerLeft_v1;
+        o["party_leaderChanged_v1"] = party_leaderChanged_v1;
     }
 
     /** @private */
@@ -196,6 +197,12 @@ public class GameSubControlBase extends AbstractSubControl
     protected function party_playerLeft_v1 (partyId :int, playerId :int, ... rest) :void
     {
         dispatchParty(partyId, AVRGameControlEvent.PLAYER_LEFT_PARTY, null, playerId);
+    }
+
+    /** @private */
+    protected function party_leaderChanged_v1 (partyId :int, playerId :int, ... rest) :void
+    {
+        dispatchParty(partyId, AVRGameControlEvent.PARTY_LEADER_CHANGED, null, playerId);
     }
 
     /**
