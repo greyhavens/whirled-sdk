@@ -87,7 +87,7 @@ public class PartySubControl extends TargetedSubControl
 //     */
 //    public function getLeaderId () :int
 //    {
-//        return 0; // TODO
+//        return callHostCode("party_getLeaderId_v1");
 //    }
 
     /**
