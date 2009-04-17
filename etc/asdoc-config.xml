@@ -1,7 +1,7 @@
 <flex-config>
   <window-title>Whirled API Documentation</window-title>
   <main-title>Whirled API Documentation</main-title>
-  <footer>Copyright&#160;&#169;&#160;2008 Three Rings Design, Inc.</footer>
+  <footer>Copyright&#160;&#169;&#160;2007-2009 Three Rings Design, Inc.</footer>
   <packages>
     <package>
       <string>com.threerings.flash</string>
@@ -22,6 +22,10 @@
     <package>
       <string>com.whirled.game</string>
       <string>Used for developing Games.</string>
+    </package>
+    <package>
+      <string>com.whirled.game.loopback</string>
+      <string>Used for developing single-player games that utilize data services without the network.</string>
     </package>
     <package>
       <string>com.whirled.net</string>
