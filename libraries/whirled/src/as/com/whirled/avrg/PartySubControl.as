@@ -73,7 +73,7 @@ public class PartySubControl extends TargetedSubControl
     }
 
     /**
-     * Get the group logo.
+     * Get the group logo, or null if called from the server agent.
      * If the party is no longer present, null will be returned.
      */
     public function getGroupLogo () :DisplayObject
