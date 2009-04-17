@@ -5,6 +5,8 @@
 
 package com.whirled.avrg {
 
+import com.threerings.util.WeakValueHashMap;
+
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
 import com.whirled.net.MessageReceivedEvent;
@@ -17,6 +19,20 @@ import com.whirled.net.MessageReceivedEvent;
  * @see AgentSubControl#sendMessage
  */
 [Event(name="MsgReceived", type="com.whirled.net.MessageReceivedEvent")]
+
+/**
+ * Dispatched when a party arrives in the game.
+ *
+ * @eventType com.whirled.avrg.AVRGameControlEvent.PARTY_ENTERED
+ */
+[Event(name="partyEntered", type="com.whirled.avrg.AVRGameControlEvent")]
+
+/**
+ * Dispatched when a party leaves the game.
+ *
+ * @eventType com.whirled.avrg.AVRGameControlEvent.PARTY_LEFT
+ */
+[Event(name="partyLeft", type="com.whirled.avrg.AVRGameControlEvent")]
 
 /**
  * Provides AVR game services for server agents and clients.
@@ -59,12 +75,18 @@ public class GameSubControlBase extends AbstractSubControl
     }
 
     /**
-     * Get the party control for the specified party.
+     * Get the party control for the specified party. Note that this will always
+     * return a PartySubControl, even for partyIds that are not present in the game.
+     * Be careful.
      */
     public function getPartyControl (partyId :int) :PartySubControl
     {
-        var ctrl :PartySubControl = new PartySubControl(this, partyId);
-        ctrl.gotHostPropsFriend(_funcs);
+        var ctrl :PartySubControl = _parties.get(partyId);
+        if (ctrl == null) {
+            ctrl = new PartySubControl(this, partyId);
+            ctrl.gotHostPropsFriend(_funcs);
+            _parties.put(partyId, ctrl);
+        }
         return ctrl;
     }
 
@@ -141,6 +163,10 @@ public class GameSubControlBase extends AbstractSubControl
         super.setUserProps(o);
 
         o["game_messageReceived_v1"] = messageReceived;
+        o["game_partyEntered_v1"] = partyEntered_v1;
+        o["game_partyLeft_v1"] = partyLeft_v1;
+        o["party_playerEntered_v1"] = party_playerEntered_v1;
+        o["party_playerLeft_v1"] = party_playerLeft_v1;
     }
 
     /** @private */
@@ -148,5 +174,43 @@ public class GameSubControlBase extends AbstractSubControl
     {
         dispatch(new MessageReceivedEvent(name, value, sender));
     }
+
+    /** @private */
+    protected function partyEntered_v1 (partyId :int, ... rest) :void
+    {
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PARTY_ENTERED, null, partyId));
+    }
+
+    protected function partyLeft_v1 (partyId :int, ... rest) :void
+    {
+        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PARTY_LEFT, null, partyId));
+    }
+
+    /** @private */
+    protected function party_playerEntered_v1 (partyId :int, playerId :int, ... rest) :void
+    {
+        dispatchParty(partyId, AVRGameControlEvent.PLAYER_ENTERED_PARTY, null, playerId);
+    }
+
+    /** @private */
+    protected function party_playerLeft_v1 (partyId :int, playerId :int, ... rest) :void
+    {
+        dispatchParty(partyId, AVRGameControlEvent.PLAYER_LEFT_PARTY, null, playerId);
+    }
+
+    /**
+     * Internal convenience function for dispatching events on a PartySubControl.
+     * @private
+     */
+    protected function dispatchParty (partyId :int, event :String, name :String, arg :Object) :void
+    {
+        var ctrl :PartySubControl = _parties.get(partyId);
+        if (ctrl != null) {
+            ctrl.dispatchFriend(new AVRGameControlEvent(event, name, arg));
+        }
+    }
+
+    /** @private */
+    protected var _parties :WeakValueHashMap = new WeakValueHashMap();
 }
 }

@@ -3,10 +3,29 @@
 
 package com.whirled.avrg {
 
+import flash.events.Event;
+
 import flash.display.DisplayObject;
 
 import com.whirled.TargetedSubControl;
 
+/**
+ * Dispatched when a player arrives in this party.
+ *
+ * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_ENTERED_PARTY
+ */
+[Event(name="playerEnteredParty", type="com.whirled.avrg.AVRGameControlEvent")]
+
+/**
+ * Dispatched when a player leaves this party.
+ *
+ * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_LEFT_PARTY
+ */
+[Event(name="playerLeftParty", type="com.whirled.avrg.AVRGameControlEvent")]
+
+/**
+ * Provides services on a particular party.
+ */
 public class PartySubControl extends TargetedSubControl
 {
     /** @private */
@@ -76,10 +95,29 @@ public class PartySubControl extends TargetedSubControl
         return callHostCode("party_getPlayerIds_v1");
     }
 
+    /**
+     * Attempt to move the entire party to a new room. You cannot make them appear to leave
+     * via exit coords.
+     *
+     * <p>Hard-wiring valid room ids should be avoided. Room ids can be obtained from properties
+     * stored by an admininstrative interface or from a server agent message containing currently
+     * active rooms.</p>
+     */
+    public function moveToRoom (roomId :int) :void
+    {
+        callHostCode("party_moveToRoom_v1", roomId);
+    }
+
     /** @private */
     internal function gotHostPropsFriend (o :Object) :void
     {
         gotHostProps(o);
+    }
+
+    /** @private */
+    internal function dispatchFriend (event :Event) :void
+    {
+        super.dispatch(event);
     }
 }
 }
