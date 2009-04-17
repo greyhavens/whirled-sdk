@@ -794,7 +794,7 @@ public class EntityControl extends AbstractControl
     }
 
     /** @private */
-    protected function musicStartStop_v1 (started :Boolean) :void
+    protected function musicStartStop_v1 (started :Boolean, ... rest) :void
     {
         dispatchCtrlEvent(started ? ControlEvent.MUSIC_STARTED : ControlEvent.MUSIC_STOPPED);
     }

@@ -294,7 +294,7 @@ public class RoomSubControlBase extends TargetedSubControl
     }
 
     /** @private */
-    internal function musicStartStop_v1 (started :Boolean) :void
+    internal function musicStartStop_v1 (started :Boolean, ... rest) :void
     {
         dispatch(new ControlEvent(
             started ? ControlEvent.MUSIC_STARTED : ControlEvent.MUSIC_STOPPED));
