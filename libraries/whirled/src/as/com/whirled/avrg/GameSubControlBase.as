@@ -79,7 +79,7 @@ public class GameSubControlBase extends AbstractSubControl
      * return a PartySubControl, even for partyIds that are not present in the game.
      * Be careful.
      */
-    public function getPartyControl (partyId :int) :PartySubControl
+    public function getParty (partyId :int) :PartySubControl
     {
         var ctrl :PartySubControl = _parties.get(partyId);
         if (ctrl == null) {
