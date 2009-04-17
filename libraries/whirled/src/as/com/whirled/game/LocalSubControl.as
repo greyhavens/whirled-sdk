@@ -100,8 +100,10 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
-     * Is the game being played in a "Whirled embed", and not on the main site?
-     * In the game testing environment, this will always be false. 
+     * Is the game being played in a "Whirled embed"?
+     *
+     * @return true if the game is being played on some 3rd-party site, or false if
+     * on whirled.com or in the game testing environment.
      */
     public function isEmbedded () :Boolean
     {
