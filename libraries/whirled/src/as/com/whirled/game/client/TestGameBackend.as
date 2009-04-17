@@ -42,9 +42,9 @@ public class TestGameBackend extends WhirledGameBackend
         var isFirstOccupant :Boolean = _gameObj.occupants.size() > 0 &&
                                        _gameObj.occupants.get(0) == occupant;
         var shot :DisplayObject = isFirstOccupant ? new HEADSHOT_1() : new HEADSHOT_2();
-        shot.x = (HeadShot.WIDTH - shot.width) / 2;
-        shot.y = (HeadShot.HEIGHT - shot.height) / 2;
-        return new HeadShot(shot);
+        shot.x = (Thumbnail.WIDTH - shot.width) / 2;
+        shot.y = (Thumbnail.HEIGHT - shot.height) / 2;
+        return new Thumbnail(shot);
     }
 
     // from WhirledGameBackend

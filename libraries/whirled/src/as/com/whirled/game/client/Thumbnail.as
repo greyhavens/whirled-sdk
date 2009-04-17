@@ -7,15 +7,18 @@ import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.geom.Point;
 
-public class HeadShot extends Sprite
+/**
+ * A special sprite for returning a Msoy thumbnail icon to usercode.
+ */
+public class Thumbnail extends Sprite
 {
     public static const WIDTH :int = 80;
     public static const HEIGHT :int = 60;
 
-    public function HeadShot (headshot :DisplayObject = null)
+    public function Thumbnail (thumb :DisplayObject = null)
     {
-        if (headshot != null) {
-            super.addChild(headshot);
+        if (thumb != null) {
+            super.addChild(thumb);
         }
     }
 

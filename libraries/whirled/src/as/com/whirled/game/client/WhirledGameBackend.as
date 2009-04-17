@@ -439,7 +439,7 @@ public class WhirledGameBackend extends BaseGameBackend
         validateConnected();
 
         // in here, we just return a blank
-        return new HeadShot();
+        return new Thumbnail();
     }
 
     //---- .game -----------------------------------------------------------
@@ -499,7 +499,7 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     protected function getHeadShot_v1 (occupant :int, callback :Function) :void
     {
-        // this callback was defined to return a Sprite, and HeadShot is one, so this is safe
+        // this callback was defined to return a Sprite, and Thumbnail is one, so this is safe
         callback(Sprite(getHeadShot_v2(occupant)), true);
     }
 
