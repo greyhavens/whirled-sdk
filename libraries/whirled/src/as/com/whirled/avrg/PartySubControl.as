@@ -37,8 +37,9 @@ public class PartySubControl extends TargetedSubControl
     /**
      * Get the party id, which is only used to identify a transient party instance. Parties
      * come and go. No permanent identification should be done with this id.
+     * This method is a little redundant, because you need to know the id to get this control?
      */
-    public function getId () :int
+    public function getPartyId () :int
     {
         return _targetId;
     }
