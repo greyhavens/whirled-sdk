@@ -81,6 +81,9 @@ public class PartySubControl extends TargetedSubControl
         return callHostCode("party_getGroupLogo_v1");
     }
 
+//    /**
+//     * Get the leaderId of this party.
+//     */
 //    public function getLeaderId () :int
 //    {
 //        return 0; // TODO
@@ -95,18 +98,18 @@ public class PartySubControl extends TargetedSubControl
         return callHostCode("party_getPlayerIds_v1");
     }
 
-    /**
-     * Attempt to move the entire party to a new room. You cannot make them appear to leave
-     * via exit coords.
-     *
-     * <p>Hard-wiring valid room ids should be avoided. Room ids can be obtained from properties
-     * stored by an admininstrative interface or from a server agent message containing currently
-     * active rooms.</p>
-     */
-    public function moveToRoom (roomId :int) :void
-    {
-        callHostCode("party_moveToRoom_v1", roomId);
-    }
+//    /**
+//     * Attempt to move the entire party to a new room. You cannot make them appear to leave
+//     * via exit coords.
+//     *
+//     * <p>Hard-wiring valid room ids should be avoided. Room ids can be obtained from properties
+//     * stored by an admininstrative interface or from a server agent message containing currently
+//     * active rooms.</p>
+//     */
+//    public function moveToRoom (roomId :int) :void
+//    {
+//        callHostCode("party_moveToRoom_v1", roomId);
+//    }
 
     /** @private */
     internal function gotHostPropsFriend (o :Object) :void
