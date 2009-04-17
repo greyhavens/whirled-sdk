@@ -24,6 +24,13 @@ import com.whirled.TargetedSubControl;
 [Event(name="playerLeftParty", type="com.whirled.avrg.AVRGameControlEvent")]
 
 /**
+ * Dispatched when the leader of the party changes.
+ *
+ * @eventType com.whirled.avrg.AVRGameControlEvent.PARTY_LEADER_CHANGED
+ */
+[Event(name="partyLeaderChanged", type="com.whirled.avrg.AVRGameControlEvent")]
+
+/**
  * Provides services on a particular party.
  */
 public class PartySubControl extends TargetedSubControl
@@ -82,13 +89,13 @@ public class PartySubControl extends TargetedSubControl
         return callHostCode("party_getGroupLogo_v1");
     }
 
-//    /**
-//     * Get the leaderId of this party.
-//     */
-//    public function getLeaderId () :int
-//    {
-//        return callHostCode("party_getLeaderId_v1");
-//    }
+    /**
+     * Get the leaderId of this party.
+     */
+    public function getLeaderId () :int
+    {
+        return callHostCode("party_getLeaderId_v1");
+    }
 
     /**
      * Get the player ids in this party that are in this place.

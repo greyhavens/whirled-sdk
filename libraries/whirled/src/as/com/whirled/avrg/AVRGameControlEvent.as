@@ -91,6 +91,15 @@ public class AVRGameControlEvent extends Event
     public static const PLAYER_LEFT_PARTY :String = "playerLeftParty";
 
     /**
+     * An event type dispatched on a PartySubControl when the leader changes.
+     * <br/><b>name</b> - not used
+     * <br/><b>value</b> - the playerId of the new leader
+     *
+     * @eventType playerLeftParty
+     */
+    public static const PARTY_LEADER_CHANGED :String = "partyLeaderChanged";
+
+    /**
      * Retrieves the 'name' for this event, which is a String value
      * whose meaning is determined by the event type.
      */
