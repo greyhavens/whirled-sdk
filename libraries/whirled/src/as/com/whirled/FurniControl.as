@@ -65,15 +65,6 @@ public class FurniControl extends EntityControl
     }
 
     /**
-     * Set that this piece of furniture has action. That is, it will do something when you
-     * click it. This will make it glow when the user hovers their mouse over it.
-     */
-    public function setHasAction (hasAction :Boolean) :void
-    {
-        callHostCode("setHasAction_v1", hasAction);
-    }
-
-    /**
      * @private
      */
     override protected function setUserProps (o :Object) :void
