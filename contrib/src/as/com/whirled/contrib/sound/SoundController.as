@@ -20,8 +20,10 @@
 
 package com.whirled.contrib.sound {
 
+import flash.errors.IOError;
 import flash.events.Event;
 import flash.events.EventDispatcher;
+import flash.events.IOErrorEvent;
 import flash.geom.Point;
 import flash.media.Sound;
 import flash.media.SoundChannel;
@@ -98,7 +100,15 @@ public class SoundController extends EventDispatcher
                 log.warning("level pack for track not found", "name", name);
                 return;
             }
-            _tracks.put(name, trackSound = new Sound(new URLRequest(trackURL)));
+            trackSound = new Sound();
+            trackSound.addEventListener(IOErrorEvent.IO_ERROR, function (...ignored) :void {});
+            try {
+                trackSound.load(new URLRequest(trackURL));
+            } catch (ioe :IOError) {
+                log.warning("Failed to load background music", "ioe", ioe);
+                return;
+            }
+            _tracks.put(name, trackSound);
         }
 
         if (crossfade) {
