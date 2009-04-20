@@ -128,6 +128,6 @@ public class ThrottlingMessageManager extends MessageManager
     protected var _trackReceived :int;
     protected var _trackAdjustRate :int;
 
-    protected static const TRACK_RATE :int = 500;
+    protected static const TRACK_RATE :int = 300;
 }
 }
