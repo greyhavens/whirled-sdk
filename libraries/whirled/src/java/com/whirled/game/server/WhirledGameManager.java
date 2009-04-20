@@ -699,13 +699,13 @@ public abstract class WhirledGameManager extends GameManager
             }
         };
 
-        _gameObj.setWhirledGameService(_invmgr.registerDispatcher(new WhirledGameDispatcher(this)));
-        _gameObj.setContentService(_invmgr.registerDispatcher(new ContentDispatcher(this)));
-        _gameObj.setPrizeService(_invmgr.registerDispatcher(new PrizeDispatcher(this)));
-        _gameObj.setPropertyService(_invmgr.registerDispatcher(
-            new PropertySpaceDispatcher(_propertySpaceHandler)));
-        _gameObj.setMessageService(_invmgr.registerDispatcher(
-            new WhirledGameMessageDispatcher(_messageHandler)));
+        _gameObj.setWhirledGameService(addDispatcher(new WhirledGameDispatcher(this)));
+        _gameObj.setContentService(addDispatcher(new ContentDispatcher(this)));
+        _gameObj.setPrizeService(addDispatcher(new PrizeDispatcher(this)));
+        _gameObj.setPropertyService(
+            addDispatcher(new PropertySpaceDispatcher(_propertySpaceHandler)));
+        _gameObj.setMessageService(
+            addDispatcher(new WhirledGameMessageDispatcher(_messageHandler)));
         _gameObj.setUserCookies(new DSet<UserCookie>());
 
         // register an agent for this game if required
@@ -849,11 +849,6 @@ public abstract class WhirledGameManager extends GameManager
     @Override
     protected void didShutdown ()
     {
-        _invmgr.clearDispatcher(_gameObj.whirledGameService);
-        _invmgr.clearDispatcher(_gameObj.contentService);
-        _invmgr.clearDispatcher(_gameObj.prizeService);
-        _invmgr.clearDispatcher(_gameObj.propertyService);
-        _invmgr.clearDispatcher(_gameObj.messageService);
         stopTickers();
 
         if (_gameAgent != null) {
