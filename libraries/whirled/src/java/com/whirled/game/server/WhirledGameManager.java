@@ -850,6 +850,7 @@ public abstract class WhirledGameManager extends GameManager
     protected void didShutdown ()
     {
         _invmgr.clearDispatcher(_gameObj.whirledGameService);
+        _invmgr.clearDispatcher(_gameObj.contentService);
         _invmgr.clearDispatcher(_gameObj.prizeService);
         _invmgr.clearDispatcher(_gameObj.propertyService);
         _invmgr.clearDispatcher(_gameObj.messageService);
