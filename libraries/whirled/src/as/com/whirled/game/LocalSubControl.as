@@ -242,6 +242,20 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /**
+     * Shows the Whirled page identified by the supplied token.
+     *
+     * @param token the token that identifies the page to be shown. This is <em>not</em> the full
+     * URL, just the part after http://www.whirled.com/#. For example: passing "me" would show the
+     * Me page. Passing "shop-l_5_343" would show the shop page for the Kawaii Knight avatar.
+     *
+     * @return true if the page was shown, false if it could not be shown for some reason.
+     */
+    public function showPage (token :String) :Boolean
+    {
+        return callHostCode("showPage_v1", token);
+    }
+
+    /**
      * Opens the web page for all the games at whirled. (Does nothing in the test environment)
      */
     public function showAllGames () :void

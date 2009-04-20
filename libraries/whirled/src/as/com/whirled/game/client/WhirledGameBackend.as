@@ -239,6 +239,7 @@ public class WhirledGameBackend extends BaseGameBackend
         o["setFrameRate_v1"] = setFrameRate_v1;
         o["setShowReplay_v1"] = setShowReplay_v1;
         o["setStageQuality_v1"] = setStageQuality_v1;
+        o["showPage_v1"] = showPage_v1;
         o["showAllGames_v1"] = showAllGames_v1;
         o["showGameLobby_v1"] = showGameLobby_v1;
         o["showGameShop_v1"] = showGameShop_v1;
@@ -367,6 +368,17 @@ public class WhirledGameBackend extends BaseGameBackend
     protected function setMappedScores_v1 (scores :Object) :void
     {
         (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setMappedScores(scores);
+    }
+
+    /**
+     * Opens a Whirled page with the given token.  At this point there is no access to the rest of
+     * Whirled, so display a message for testing purposes.  This will be overridden and completed
+     * by a subclass with access to the rest of Whirled.
+     */
+    protected function showPage_v1 (token :String) :Boolean
+    {
+    	displayInfo(null, "showPage() failed because game is not connected to Whirled.");
+        return false;
     }
 
     protected function showAllGames_v1 () :void

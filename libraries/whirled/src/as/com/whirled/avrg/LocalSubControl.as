@@ -319,7 +319,21 @@ public class LocalSubControl extends AbstractSubControl
     {
         return _mobSpriteExporter;
     }
-    
+
+    /**
+     * Shows the Whirled page identified by the supplied token.
+     *
+     * @param token the token that identifies the page to be shown. This is <em>not</em> the full
+     * URL, just the part after http://www.whirled.com/#. For example: passing "me" would show the
+     * Me page. Passing "shop-l_5_343" would show the shop page for the Kawaii Knight avatar.
+     *
+     * @return true if the page was shown, false if it could not be shown for some reason.
+     */
+    public function showPage (token :String) :Boolean
+    {
+        return callHostCode("showPage_v1", token);
+    }
+
     /**
      * Instructs the game client to open the game invite page, allowing the player to invite friends
      * to play this game.
@@ -328,12 +342,12 @@ public class LocalSubControl extends AbstractSubControl
      * @param token Optional token that will be included on the URL and eventually passed back to
      * the game when an invited friend goes to the URL.  This allows the game to start in
      * a different state than usual.
-     */ 
+     */
     public function showInvitePage (defmsg :String, token :String = "") :void
     {
         callHostCode("showInvitePage_v1", defmsg, token);
     }
-    
+
     /**
      * Retrieves the token, if any, that was used to launch the game.  If the player entered into
      * the game via a URL that contained a token (provided by the game via showInvitePage), this
@@ -345,7 +359,7 @@ public class LocalSubControl extends AbstractSubControl
     {
         return callHostCode("getInviteToken_v1");
     }
-    
+
     /**
      * Retrieves the ID of the member who invited the current player to this game (using the page
      * shown by <code>showInvitePage</code>. Returns 0 if the player did not start the game via an
