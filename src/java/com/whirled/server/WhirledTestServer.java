@@ -48,6 +48,7 @@ import com.threerings.parlor.data.Parameter;
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.server.ParlorManager;
 import com.threerings.parlor.server.ParlorSender;
+import com.threerings.parlor.game.data.UserIdentifier;
 
 import com.whirled.bureau.data.BureauTypes;
 import com.whirled.game.data.GameDefinition;
@@ -114,7 +115,7 @@ public class WhirledTestServer extends CrowdServer
         });
 
         // initialize our managers
-        GameManager.setUserIdentifier(new GameManager.UserIdentifier() {
+        GameManager.setUserIdentifier(new UserIdentifier() {
             public int getUserId (BodyObject bobj) {
                 String username = bobj.username.toString();
                 try {
