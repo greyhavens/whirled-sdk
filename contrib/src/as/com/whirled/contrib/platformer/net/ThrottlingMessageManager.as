@@ -60,6 +60,23 @@ public class ThrottlingMessageManager extends MessageManager
         _maxRate = maxRate;
     }
 
+    public function flushQueue () :void
+    {
+        if (_queue.msgs != null) {
+            super.sendMessage(_queue);
+            _queue = new QueueMessage();
+            if (DEBUG) {
+                _sent++;
+                if (_sent == 10) {
+                    var now :int = getTimer();
+                    trace("sent 10 messages in " + (now - _lastSent));
+                    _lastSent = now;
+                    _sent = 0;
+                }
+            }
+        }
+    }
+
     override public function shutdown () :void
     {
         _timer.stop();
@@ -75,19 +92,7 @@ public class ThrottlingMessageManager extends MessageManager
 
     protected function onTimer (... ignored) :void
     {
-        if (_queue.msgs != null) {
-            super.sendMessage(_queue);
-            _queue = new QueueMessage();
-            if (DEBUG) {
-                _sent++;
-                if (_sent == 10) {
-                    var now :int = getTimer();
-                    trace("sent 10 messages in " + (now - _lastSent));
-                    _lastSent = now;
-                    _sent = 0;
-                }
-            }
-        }
+        flushQueue();
         if (_tracker != null) {
             var diff :int = getTimer() - _lastTrackAdjust;
             if (diff > _trackAdjustRate) {
