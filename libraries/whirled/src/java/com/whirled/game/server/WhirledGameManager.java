@@ -84,11 +84,6 @@ public abstract class WhirledGameManager extends GameManager
         _winnerOids = winnerOids;
     }
 
-    /**
-     * Returns the persistent user id for the supplied name.
-     */
-    public abstract int getPlayerPersistentId (Name name);
-
     @Override // from GameManager
     public void occupantInRoom (final BodyObject caller)
     {
@@ -428,7 +423,7 @@ public abstract class WhirledGameManager extends GameManager
         // indicate that we're looking up a cookie
         _cookieLookups.add(playerOid);
 
-        int ppId = getPlayerPersistentId(body);
+        int ppId = getPlayerPersistentId(body.getVisibleName());
         _cookMgr.getCookie(_gameconfig.getGameId(), ppId, new ResultListener<byte[]>() {
             public void requestCompleted (byte[] result) {
                 // note that we're done with this lookup
@@ -456,7 +451,8 @@ public abstract class WhirledGameManager extends GameManager
         BodyObject player = validateWritePermission(caller, playerId);
 
         // persist this new cookie
-        _cookMgr.setCookie(_gameconfig.getGameId(), getPlayerPersistentId(player), value);
+        _cookMgr.setCookie(
+            _gameconfig.getGameId(), getPlayerPersistentId(player.getVisibleName()), value);
 
         // and update the distributed object
         UserCookie cookie = new UserCookie(player.getOid(), value);
