@@ -479,7 +479,9 @@ public class SimpleActorBounds extends ActorBounds
                     var amax :Number = Math.max(col.y1, col.y2);
                     if (amax > maxY ||
                             (amax == maxY && Math.abs(col.iy) < Math.abs(attached.iy)) ||
-                            (attached.yIntersecting(base) && col.yIntersecting(base))) {
+                            (attached.yIntersecting(base) && col.yIntersecting(base)) ||
+                            (Math.abs(attached.iy) > actor.maxWalkable &&
+                                    Math.abs(col.iy) <= actor.maxWalkable)) {
                         if (attached != null && Math.abs(col.iy) > actor.maxWalkable &&
                                 Math.abs(attached.iy) <= actor.maxWalkable) {
                             continue;
