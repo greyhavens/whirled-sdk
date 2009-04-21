@@ -59,12 +59,6 @@ public interface WhirledGameProvider extends InvocationProvider
         throws InvocationException;
 
     /**
-     * Handles a {@link WhirledGameService#fakePlayerReady} request.
-     */
-    void fakePlayerReady (ClientObject caller, int arg1, InvocationService.InvocationListener arg2)
-        throws InvocationException;
-
-    /**
      * Handles a {@link WhirledGameService#getCookie} request.
      */
     void getCookie (ClientObject caller, int arg1, InvocationService.InvocationListener arg2)
@@ -86,6 +80,12 @@ public interface WhirledGameProvider extends InvocationProvider
      * Handles a {@link WhirledGameService#getFromCollection} request.
      */
     void getFromCollection (ClientObject caller, String arg1, boolean arg2, int arg3, String arg4, int arg5, InvocationService.ConfirmListener arg6)
+        throws InvocationException;
+
+    /**
+     * Handles a {@link WhirledGameService#makePlayerAI} request.
+     */
+    void makePlayerAI (ClientObject caller, int arg1, InvocationService.InvocationListener arg2)
         throws InvocationException;
 
     /**

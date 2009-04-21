@@ -120,21 +120,8 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         ]);
     }
 
-    /** The method id used to dispatch <code>fakePlayerReady</code> requests. */
-    public static const FAKE_PLAYER_READY :int = 8;
-
-    // from interface WhirledGameService
-    public function fakePlayerReady (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void
-    {
-        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener3.listener = arg3;
-        sendRequest(arg1, FAKE_PLAYER_READY, [
-            Integer.valueOf(arg2), listener3
-        ]);
-    }
-
     /** The method id used to dispatch <code>getCookie</code> requests. */
-    public static const GET_COOKIE :int = 9;
+    public static const GET_COOKIE :int = 8;
 
     // from interface WhirledGameService
     public function getCookie (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void
@@ -147,7 +134,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch <code>getDictionaryLetterSet</code> requests. */
-    public static const GET_DICTIONARY_LETTER_SET :int = 10;
+    public static const GET_DICTIONARY_LETTER_SET :int = 9;
 
     // from interface WhirledGameService
     public function getDictionaryLetterSet (arg1 :Client, arg2 :String, arg3 :String, arg4 :int, arg5 :InvocationService_ResultListener) :void
@@ -160,7 +147,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch <code>getDictionaryWords</code> requests. */
-    public static const GET_DICTIONARY_WORDS :int = 11;
+    public static const GET_DICTIONARY_WORDS :int = 10;
 
     // from interface WhirledGameService
     public function getDictionaryWords (arg1 :Client, arg2 :String, arg3 :String, arg4 :int, arg5 :InvocationService_ResultListener) :void
@@ -173,7 +160,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch <code>getFromCollection</code> requests. */
-    public static const GET_FROM_COLLECTION :int = 12;
+    public static const GET_FROM_COLLECTION :int = 11;
 
     // from interface WhirledGameService
     public function getFromCollection (arg1 :Client, arg2 :String, arg3 :Boolean, arg4 :int, arg5 :String, arg6 :int, arg7 :InvocationService_ConfirmListener) :void
@@ -182,6 +169,19 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         listener7.listener = arg7;
         sendRequest(arg1, GET_FROM_COLLECTION, [
             arg2, langBoolean.valueOf(arg3), Integer.valueOf(arg4), arg5, Integer.valueOf(arg6), listener7
+        ]);
+    }
+
+    /** The method id used to dispatch <code>makePlayerAI</code> requests. */
+    public static const MAKE_PLAYER_AI :int = 12;
+
+    // from interface WhirledGameService
+    public function makePlayerAI (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void
+    {
+        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener3.listener = arg3;
+        sendRequest(arg1, MAKE_PLAYER_AI, [
+            Integer.valueOf(arg2), listener3
         ]);
     }
 

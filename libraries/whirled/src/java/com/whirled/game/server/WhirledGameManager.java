@@ -18,6 +18,9 @@ import com.samskivert.util.RandomUtil;
 import com.samskivert.util.ResultListener;
 import com.samskivert.util.StringUtil;
 
+import com.threerings.util.Name;
+
+import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationCodes;
 import com.threerings.presents.dobj.AccessController;
@@ -26,7 +29,6 @@ import com.threerings.presents.dobj.DSet;
 import com.threerings.presents.dobj.MessageEvent;
 import com.threerings.presents.dobj.ObjectDeathListener;
 import com.threerings.presents.dobj.ObjectDestroyedEvent;
-import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.server.InvocationException;
 
 import com.threerings.crowd.data.BodyObject;
@@ -36,6 +38,7 @@ import com.threerings.crowd.server.CrowdObjectAccess;
 
 import com.threerings.bureau.server.BureauRegistry;
 
+import com.threerings.parlor.game.data.GameAI;
 import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.turn.server.TurnGameManager;
@@ -81,7 +84,12 @@ public abstract class WhirledGameManager extends GameManager
         _winnerOids = winnerOids;
     }
 
-    @Override
+    /**
+     * Returns the persistent user id for the supplied name.
+     */
+    public abstract int getPlayerPersistentId (Name name);
+
+    @Override // from GameManager
     public void occupantInRoom (final BodyObject caller)
     {
         resolveContentOwnership(caller, new ResultListener<Void>() {
@@ -460,17 +468,22 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     // from WhirledGameProvider
-    public void fakePlayerReady (ClientObject caller, int playerId,
-                                 InvocationService.InvocationListener listener)
+    public void makePlayerAI (ClientObject caller, int playerId,
+                              InvocationService.InvocationListener listener)
         throws InvocationException
     {
         if (!isAgent(caller)) {
             throw new InvocationException(InvocationCodes.ACCESS_DENIED);
         }
 
-        // remove this player from the pending set (TODO: when we switch to tracking players by
-        // permanent id instead of oid this will need some jockeying)
-        _pendingOids.remove(playerId);
+        // find this player's position and put an AI therein
+        for (int pidx = 0; pidx < getPlayerSlots(); pidx++) {
+            Name pname = _gameObj.players[pidx];
+            if (pname != null && getPlayerPersistentId(pname) == playerId) {
+                setAI(pidx, new GameAI(0, 0));
+                break;
+            }
+        }
 
         // possibly do players all here processing
         if (allPlayersReady()) {

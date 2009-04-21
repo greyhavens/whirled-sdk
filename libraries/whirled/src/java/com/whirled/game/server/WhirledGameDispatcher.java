@@ -79,12 +79,6 @@ public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarsh
             );
             return;
 
-        case WhirledGameMarshaller.FAKE_PLAYER_READY:
-            ((WhirledGameProvider)provider).fakePlayerReady(
-                source, ((Integer)args[0]).intValue(), (InvocationService.InvocationListener)args[1]
-            );
-            return;
-
         case WhirledGameMarshaller.GET_COOKIE:
             ((WhirledGameProvider)provider).getCookie(
                 source, ((Integer)args[0]).intValue(), (InvocationService.InvocationListener)args[1]
@@ -106,6 +100,12 @@ public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarsh
         case WhirledGameMarshaller.GET_FROM_COLLECTION:
             ((WhirledGameProvider)provider).getFromCollection(
                 source, (String)args[0], ((Boolean)args[1]).booleanValue(), ((Integer)args[2]).intValue(), (String)args[3], ((Integer)args[4]).intValue(), (InvocationService.ConfirmListener)args[5]
+            );
+            return;
+
+        case WhirledGameMarshaller.MAKE_PLAYER_AI:
+            ((WhirledGameProvider)provider).makePlayerAI(
+                source, ((Integer)args[0]).intValue(), (InvocationService.InvocationListener)args[1]
             );
             return;
 

@@ -111,21 +111,8 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         });
     }
 
-    /** The method id used to dispatch {@link #fakePlayerReady} requests. */
-    public static final int FAKE_PLAYER_READY = 8;
-
-    // from interface WhirledGameService
-    public void fakePlayerReady (Client arg1, int arg2, InvocationService.InvocationListener arg3)
-    {
-        ListenerMarshaller listener3 = new ListenerMarshaller();
-        listener3.listener = arg3;
-        sendRequest(arg1, FAKE_PLAYER_READY, new Object[] {
-            Integer.valueOf(arg2), listener3
-        });
-    }
-
     /** The method id used to dispatch {@link #getCookie} requests. */
-    public static final int GET_COOKIE = 9;
+    public static final int GET_COOKIE = 8;
 
     // from interface WhirledGameService
     public void getCookie (Client arg1, int arg2, InvocationService.InvocationListener arg3)
@@ -138,7 +125,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #getDictionaryLetterSet} requests. */
-    public static final int GET_DICTIONARY_LETTER_SET = 10;
+    public static final int GET_DICTIONARY_LETTER_SET = 9;
 
     // from interface WhirledGameService
     public void getDictionaryLetterSet (Client arg1, String arg2, String arg3, int arg4, InvocationService.ResultListener arg5)
@@ -151,7 +138,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #getDictionaryWords} requests. */
-    public static final int GET_DICTIONARY_WORDS = 11;
+    public static final int GET_DICTIONARY_WORDS = 10;
 
     // from interface WhirledGameService
     public void getDictionaryWords (Client arg1, String arg2, String arg3, int arg4, InvocationService.ResultListener arg5)
@@ -164,7 +151,7 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     }
 
     /** The method id used to dispatch {@link #getFromCollection} requests. */
-    public static final int GET_FROM_COLLECTION = 12;
+    public static final int GET_FROM_COLLECTION = 11;
 
     // from interface WhirledGameService
     public void getFromCollection (Client arg1, String arg2, boolean arg3, int arg4, String arg5, int arg6, InvocationService.ConfirmListener arg7)
@@ -173,6 +160,19 @@ public class WhirledGameMarshaller extends InvocationMarshaller
         listener7.listener = arg7;
         sendRequest(arg1, GET_FROM_COLLECTION, new Object[] {
             arg2, Boolean.valueOf(arg3), Integer.valueOf(arg4), arg5, Integer.valueOf(arg6), listener7
+        });
+    }
+
+    /** The method id used to dispatch {@link #makePlayerAI} requests. */
+    public static final int MAKE_PLAYER_AI = 12;
+
+    // from interface WhirledGameService
+    public void makePlayerAI (Client arg1, int arg2, InvocationService.InvocationListener arg3)
+    {
+        ListenerMarshaller listener3 = new ListenerMarshaller();
+        listener3.listener = arg3;
+        sendRequest(arg1, MAKE_PLAYER_AI, new Object[] {
+            Integer.valueOf(arg2), listener3
         });
     }
 

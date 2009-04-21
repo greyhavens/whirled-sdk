@@ -619,7 +619,6 @@ public class BaseGameBackend
         o["sendChat_v1"] = sendChat_v1;
         o["startNextTurn_v1"] = startNextTurn_v1;
         o["getMyId_v1"] = getMyId_v1;
-        o["playerReady_v2"] = playerReady_v2;
 
         // .game.seating
         o["getPlayers_v1"] = getPlayers_v1;
@@ -1128,11 +1127,6 @@ public class BaseGameBackend
     }
 
     protected function getMyId_v1 () :int
-    {
-        throw new Error("Abstract method");
-    }
-
-    protected function playerReady_v2 (playerId :int) :void
     {
         throw new Error("Abstract method");
     }

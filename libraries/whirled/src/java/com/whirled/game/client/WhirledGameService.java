@@ -137,8 +137,8 @@ public interface WhirledGameService extends InvocationService
     public void setCookie (Client client, byte[] cookie, int playerId, InvocationListener listener);
 
     /**
-     * Requests that the specified player be marked as ready. This is used by a game's server code
+     * Requests that the specified player be marked as an AI. This is used by a game's server code
      * if it wishes to take over for a departed player in a multiplayer game.
      */
-    public void fakePlayerReady (Client client, int playerId, InvocationListener listener);
+    public void makePlayerAI (Client client, int playerId, InvocationListener listener);
 }

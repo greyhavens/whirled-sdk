@@ -217,17 +217,29 @@ public class GameSubControl extends AbstractSubControl
      *
      * <p> This method is also used for rematches: once a game has started and finished, all
      * clients can call this function again to start a new game.
-     *
-     * <p> Note: this can also be called by the server agent on behalf of a departed player.  That
-     * should <em>only</em> be used if the server agent plans to take over for the departed player
-     * with an AI opponent.
      */
-    public function playerReady (playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/) :void
+    public function playerReady () :void
     {
         if (_seatingCtrl == null) {
             throw new Error("playerReady() is only applicable to seated games.");
         }
-        callHostCode("playerReady_v2", playerId);
+        callHostCode("playerReady_v1");
+    }
+
+    /**
+     * Tells the system that the server agent will take over for the specified player. If a game
+     * wishes the take over the control for a departed player to allow the other players to
+     * continue to play with an AI in that player's position or without the player entirely, this
+     * method can be used. Only call this method for players that have left the game.
+     *
+     * <p> Note: this method can only be called by the server agent.
+     */
+    public function takeOverPlayer (playerId :int) :void
+    {
+        if (_seatingCtrl == null) {
+            throw new Error("takeOverPlayer() is only applicable to seated games.");
+        }
+        callHostCode("takeOverPlayer_v1", playerId);
     }
 
     /**

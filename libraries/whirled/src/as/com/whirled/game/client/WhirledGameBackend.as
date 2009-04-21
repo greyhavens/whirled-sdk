@@ -250,9 +250,9 @@ public class WhirledGameBackend extends BaseGameBackend
 
         // .game
         o["isMyTurn_v1"] = isMyTurn_v1;
+        o["playerReady_v1"] = playerReady_v1;
 
         // Old methods: backwards compatability
-        o["playerReady_v1"] = playerReady_v1;
         o["getStageBounds_v1"] = getStageBounds_v1;
         o["getHeadShot_v1"] = getHeadShot_v1;
         o["setShowButtons_v1"] = setShowButtons_v1;
@@ -463,13 +463,12 @@ public class WhirledGameBackend extends BaseGameBackend
         return _ctx.getClient().getClientObject().getOid();
     }
 
-    /** @inheritDoc */
-    override protected function playerReady_v2 (ignoredPlayerId :int) :void
+    protected function playerReady_v1 () :void
     {
         if (isParty()) {
-            // I'd like to throw an error, but some old games incorrectly call this
-            // and we don't want to break them, so just log it here, but we throw an Error
-            // in newer versions of GameSubControl.
+            // I'd like to throw an error, but some old games incorrectly call this and we don't
+            // want to break them, so just log it here, but we throw an Error in newer versions of
+            // GameSubControl.
             reportGameError("playerReady() is only applicable to seated games.");
             return;
         }
@@ -493,14 +492,6 @@ public class WhirledGameBackend extends BaseGameBackend
     }
 
     //---- backwards compatability -----------------------------------------
-
-    /**
-     * A backwards compatible method.
-     */
-    protected function playerReady_v1 () :void
-    {
-        playerReady_v2(0);
-    }
 
     /**
      * Backwards compatability. Added June 18, 2007, removed Oct 24, 2007. There

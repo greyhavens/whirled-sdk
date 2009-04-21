@@ -52,7 +52,16 @@ public class ThaneGameBackend extends BaseGameBackend
         return handleUserCodeConnect;
     }
 
-    // from BaseGameBackend
+    /** @inheritDoc */ // from BaseGameBackend
+    override protected function populateProperties (o :Object) :void
+    {
+        super.populateProperties(o);
+
+        // .game
+        o["takeOverPlayer_v1"] = takeOverPlayer_v1;
+    }
+
+    /** @inheritDoc */ // from BaseGameBackend
     override public function shutdown () :void
     {
         super.shutdown();
@@ -62,7 +71,7 @@ public class ThaneGameBackend extends BaseGameBackend
         }
     }
 
-    // from BaseGameBackend
+    /** @inheritDoc */ // from BaseGameBackend
     override protected function getConfig () :BaseGameConfig
     {
         return _ctrl.getConfig();
@@ -72,19 +81,18 @@ public class ThaneGameBackend extends BaseGameBackend
 
     //---- .game -----------------------------------------------------------
 
-    /** @inheritDoc */
+    /** @inheritDoc */ // from BaseGameBackend
     override protected function getMyId_v1 () :int
     {
         validateConnected();
         return SERVER_AGENT_ID;
     }
 
-    /** @inheritDoc */
-    override protected function playerReady_v2 (playerId :int) :void
+    protected function takeOverPlayer_v1 (playerId :int) :void
     {
         validateConnected();
-        _gameObj.whirledGameService.fakePlayerReady(
-            _ctx.getClient(), playerId, createLoggingConfirmListener("fakePlayerReady"));
+        _gameObj.whirledGameService.makePlayerAI(
+            _ctx.getClient(), playerId, createLoggingConfirmListener("makePlayerAI"));
     }
 
     // --------------------------
