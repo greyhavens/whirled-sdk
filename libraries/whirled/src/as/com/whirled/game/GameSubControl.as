@@ -222,7 +222,7 @@ public class GameSubControl extends AbstractSubControl
      * should <em>only</em> be used if the server agent plans to take over for the departed player
      * with an AI opponent.
      */
-    public function playerReady (playerId :int = PlayerSubControl.CURRENT_USER) :void
+    public function playerReady (playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/) :void
     {
         if (_seatingCtrl == null) {
             throw new Error("playerReady() is only applicable to seated games.");
