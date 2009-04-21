@@ -101,7 +101,10 @@ import flash.utils.Timer;
 [Event(name="musicStarted", type="com.whirled.ControlEvent")]
 
 /**
- * Dispatched when id3 data is known for a song.
+ * Dispatched when id3 data is found in the currently playing song. Apparently many mp3
+ * files contain both 2.* id3 data, near the beginning of the file, and 1.* data, found at
+ * the end, and so flash dispatches each set of data as it finds it. And we just pass
+ * it along to you.
  *
  * @eventType com.whirled.ControlEvent.MUSIC_ID3
  */
