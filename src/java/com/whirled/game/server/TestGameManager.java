@@ -61,7 +61,7 @@ public class TestGameManager extends WhirledGameManager
         systemMessage(null, "Trophy awarded: " + ident);
 
         // persist it in java preferences
-        _prefs.putBoolean(getPlayerPersistentId(plobj) + ":" + ident, true);
+        _prefs.putBoolean(getPlayerPersistentId(plobj.getVisibleName()) + ":" + ident, true);
     }
 
     // from interface WhirledGameProvider
@@ -152,7 +152,7 @@ public class TestGameManager extends WhirledGameManager
     protected void resolveContentOwnership (BodyObject body, ResultListener<Void> listener)
     {
         WhirledPlayerObject plobj = (WhirledPlayerObject)body;
-        String pidPrefix = getPlayerPersistentId(plobj) + ":";
+        String pidPrefix = getPlayerPersistentId(plobj.getVisibleName()) + ":";
         int gameId = _gameconfig.getGameId();
         if (plobj.isContentResolved(gameId)) {
             listener.requestCompleted(null);
