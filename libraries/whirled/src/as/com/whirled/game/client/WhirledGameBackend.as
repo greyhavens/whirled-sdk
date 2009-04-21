@@ -80,7 +80,7 @@ public class WhirledGameBackend extends BaseGameBackend
         callUserCode("lobbyClosed_v1");
     }
 
-    // from BaseGameBackend
+    /** @inheritDoc */ // from BaseGameBackend
     override public function shutdown () :void
     {
         super.shutdown();
@@ -119,7 +119,7 @@ public class WhirledGameBackend extends BaseGameBackend
         return _ctrl.getPlaceConfig() as BaseGameConfig;
     }
 
-    // from BaseGameBackend
+    /** @inheritDoc */ // from BaseGameBackend
     override protected function countPlayerData (type :int, ident :String, playerId :int) :int
     {
         if (playerId != CURRENT_USER && playerId != getMyId_v1()) {
@@ -172,7 +172,7 @@ public class WhirledGameBackend extends BaseGameBackend
         _keyDispatcher(evt.clone());
     }
 
-    // from BaseGameBackend
+    /** @inheritDoc */ // from BaseGameBackend
     override protected function messageReceivedOnUserObject (event :MessageEvent) :void
     {
         var name :String = event.getName();
@@ -199,7 +199,7 @@ public class WhirledGameBackend extends BaseGameBackend
         }
     }
 
-    // from BaseGameBackend
+    /** @inheritDoc */ // from BaseGameBackend
     override protected function reportGameError (msg :String, err :Error = null) :void
     {
         super.reportGameError(msg, err);
@@ -208,7 +208,7 @@ public class WhirledGameBackend extends BaseGameBackend
         (_ctx as CrowdContext).getChatDirector().displayAttention(null, MessageBundle.taint(msg));
     }
 
-    // from BaseGameBackend
+    /** @inheritDoc */ // from BaseGameBackend
     override protected function setUserCodeProperties (o :Object) :void
     {
         super.setUserCodeProperties(o);
@@ -217,7 +217,7 @@ public class WhirledGameBackend extends BaseGameBackend
         _keyDispatcher = (o["dispatchEvent_v1"] as Function);
     }
 
-    // from BaseGameBackend
+    /** @inheritDoc */ // from BaseGameBackend
     override protected function populateProperties (o :Object) :void
     {
         super.populateProperties(o);
@@ -250,9 +250,9 @@ public class WhirledGameBackend extends BaseGameBackend
 
         // .game
         o["isMyTurn_v1"] = isMyTurn_v1;
-        o["playerReady_v1"] = playerReady_v1;
 
         // Old methods: backwards compatability
+        o["playerReady_v1"] = playerReady_v1;
         o["getStageBounds_v1"] = getStageBounds_v1;
         o["getHeadShot_v1"] = getHeadShot_v1;
         o["setShowButtons_v1"] = setShowButtons_v1;
@@ -456,17 +456,15 @@ public class WhirledGameBackend extends BaseGameBackend
 
     //---- .game -----------------------------------------------------------
 
+    /** @inheritDoc */
     override protected function getMyId_v1 () :int
     {
         validateConnected();
         return _ctx.getClient().getClientObject().getOid();
     }
 
-    /**
-     * Called by the client code when it is ready for the game to be started (if called before the
-     * game ever starts) or rematched (if called after the game has ended).
-     */
-    protected function playerReady_v1 () :void
+    /** @inheritDoc */
+    override protected function playerReady_v2 (ignoredPlayerId :int) :void
     {
         if (isParty()) {
             // I'd like to throw an error, but some old games incorrectly call this
@@ -486,6 +484,7 @@ public class WhirledGameBackend extends BaseGameBackend
 
     //---- .game.seating ---------------------------------------------------
 
+    /** @inheritDoc */
     override protected function getMyPosition_v1 () :int
     {
         validateConnected();
@@ -494,6 +493,14 @@ public class WhirledGameBackend extends BaseGameBackend
     }
 
     //---- backwards compatability -----------------------------------------
+
+    /**
+     * A backwards compatible method.
+     */
+    protected function playerReady_v1 () :void
+    {
+        playerReady_v2(0);
+    }
 
     /**
      * Backwards compatability. Added June 18, 2007, removed Oct 24, 2007. There

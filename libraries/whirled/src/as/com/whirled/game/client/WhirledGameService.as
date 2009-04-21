@@ -40,6 +40,9 @@ public interface WhirledGameService extends InvocationService
     function endTurn (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
+    function fakePlayerReady (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
+
+    // from Java interface WhirledGameService
     function getCookie (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService

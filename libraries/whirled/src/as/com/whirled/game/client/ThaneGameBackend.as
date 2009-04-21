@@ -79,6 +79,14 @@ public class ThaneGameBackend extends BaseGameBackend
         return SERVER_AGENT_ID;
     }
 
+    /** @inheritDoc */
+    override protected function playerReady_v2 (playerId :int) :void
+    {
+        validateConnected();
+        _gameObj.whirledGameService.fakePlayerReady(
+            _ctx.getClient(), playerId, createLoggingConfirmListener("fakePlayerReady"));
+    }
+
     // --------------------------
 
     protected function getPlayer (oid :int) :BodyObject

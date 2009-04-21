@@ -211,17 +211,23 @@ public class GameSubControl extends AbstractSubControl
     }
 
     /**
-     * If the game was not configured to auto-start, which is determined by the 2nd parameter
-     * to the GameControl constructor, then all player clients must call this function to let the
-     * server know that they are ready, at which point the game will be started. Once a game is
-     * over, all clients can call this function again to start a new game.
+     * If the game was not configured to auto-start, which is determined by the 2nd parameter to
+     * the GameControl constructor, then all player clients must call this function to let the
+     * server know that they are ready, at which point the game will be started.
+     *
+     * <p> This method is also used for rematches: once a game has started and finished, all
+     * clients can call this function again to start a new game.
+     *
+     * <p> Note: this can also be called by the server agent on behalf of a departed player.  That
+     * should <em>only</em> be used if the server agent plans to take over for the departed player
+     * with an AI opponent.
      */
-    public function playerReady () :void
+    public function playerReady (playerId :int = PlayerSubControl.CURRENT_USER) :void
     {
         if (_seatingCtrl == null) {
             throw new Error("playerReady() is only applicable to seated games.");
         }
-        callHostCode("playerReady_v1");
+        callHostCode("playerReady_v2", playerId);
     }
 
     /**

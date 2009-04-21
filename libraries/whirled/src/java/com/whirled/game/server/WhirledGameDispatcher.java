@@ -79,6 +79,12 @@ public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarsh
             );
             return;
 
+        case WhirledGameMarshaller.FAKE_PLAYER_READY:
+            ((WhirledGameProvider)provider).fakePlayerReady(
+                source, ((Integer)args[0]).intValue(), (InvocationService.InvocationListener)args[1]
+            );
+            return;
+
         case WhirledGameMarshaller.GET_COOKIE:
             ((WhirledGameProvider)provider).getCookie(
                 source, ((Integer)args[0]).intValue(), (InvocationService.InvocationListener)args[1]

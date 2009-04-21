@@ -440,8 +440,8 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     // from WhirledGameProvider
-    public void setCookie (ClientObject caller, byte[] value,
-                           int playerId, InvocationService.InvocationListener listener)
+    public void setCookie (ClientObject caller, byte[] value, int playerId,
+                           InvocationService.InvocationListener listener)
         throws InvocationException
     {
         validateUser(caller);
@@ -459,6 +459,25 @@ public abstract class WhirledGameManager extends GameManager
         }
     }
 
+    // from WhirledGameProvider
+    public void fakePlayerReady (ClientObject caller, int playerId,
+                                 InvocationService.InvocationListener listener)
+        throws InvocationException
+    {
+        if (!isAgent(caller)) {
+            throw new InvocationException(InvocationCodes.ACCESS_DENIED);
+        }
+
+        // remove this player from the pending set (TODO: when we switch to tracking players by
+        // permanent id instead of oid this will need some jockeying)
+        _pendingOids.remove(playerId);
+
+        // possibly do players all here processing
+        if (allPlayersReady()) {
+            playersAllHere();
+        }
+    }
+
     /**
      * Called privately by the ThaneGameController when an agent's code is all set to go
      * and the game can startup.
@@ -467,9 +486,9 @@ public abstract class WhirledGameManager extends GameManager
     {
         log.info("Agent ready for " + caller);
         _gameAgentReady = true;
-
         _gameObj.setAgentState(WhirledGameObject.AGENT_READY);
 
+        // possibly do players all here processing
         if (allPlayersReady()) {
             playersAllHere();
         }

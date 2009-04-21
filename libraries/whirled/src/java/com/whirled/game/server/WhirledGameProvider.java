@@ -59,6 +59,12 @@ public interface WhirledGameProvider extends InvocationProvider
         throws InvocationException;
 
     /**
+     * Handles a {@link WhirledGameService#fakePlayerReady} request.
+     */
+    void fakePlayerReady (ClientObject caller, int arg1, InvocationService.InvocationListener arg2)
+        throws InvocationException;
+
+    /**
      * Handles a {@link WhirledGameService#getCookie} request.
      */
     void getCookie (ClientObject caller, int arg1, InvocationService.InvocationListener arg2)
