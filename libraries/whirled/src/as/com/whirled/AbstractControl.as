@@ -172,7 +172,8 @@ public class AbstractControl extends EventDispatcher
      * Secret function to dispatch events.
      * @private
      */
-    protected function dispatch (event :Event) :void
+    // TODO: make this a whirled_internal namespace method.
+    public function dispatch (event :Event) :void
     {
         try {
             super.dispatchEvent(event);
