@@ -32,6 +32,11 @@ public class SimObjectRef
         return _obj;
     }
 
+    public function get isLive () :Boolean
+    {
+        return (null != _obj);
+    }
+
     public function get isNull () :Boolean
     {
         return (null == _obj);
