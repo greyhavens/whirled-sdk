@@ -18,16 +18,16 @@ public class ControlEvent extends Event
      * changed. Your code should react to this event and possibly redraw
      * the actor, taking into account the orientation and whether the
      * actor is moving or sleeping.
-     * name: unused
-     * value: unused
+     * </br><b>name</b> - unused
+     * </br><b>value</b> - unused
      *
      * @eventType appearanceChanged
      */
     public static const APPEARANCE_CHANGED :String = "appearanceChanged";
 
     /** An event type dispatched when a message is received.
-     * name: message name
-     * value: message value
+     * </br><b>name</b> - message name
+     * </br><b>value</b> - message value
      *
      * @eventType messageReceived
      */
@@ -35,16 +35,16 @@ public class ControlEvent extends Event
 
     /** An event type dispatched when a signal is received.
      * Dispatched only to the instance in control.
-     * name: signal name
-     * value: signal value
+     * </br><b>name</b> - signal name
+     * </br><b>value</b> - signal value
      *
      * @eventType signalReceived
      */
     public static const SIGNAL_RECEIVED :String = "signalRecieved";
 
     /** An event type dispatched when an action is triggered.
-     * name: action name 
-     * value: action value
+     * </br><b>name</b> - action name
+     * </br><b>value</b> - action value
      *
      * @eventType actionTriggered
      */
@@ -52,16 +52,16 @@ public class ControlEvent extends Event
 
     /** An event type dispatched to actors to indicate that they should
      * be in the specified state.
-     * name: state name
-     * value: unused
+     * </br><b>name</b> - state name
+     * </br><b>value</b> - unused
      *
      * @eventType stateChanged
      */
     public static const STATE_CHANGED :String = "stateChanged";
 
     /** An event type dispatched when this avatar speaks.
-     * name: unused
-     * value: unused
+     * </br><b>name</b> - unused
+     * </br><b>value</b> - unused
      *
      * @eventType avatarSpoke
      */
@@ -69,16 +69,16 @@ public class ControlEvent extends Event
 
     /** An event type dispatched when this client-side instance of the item
      * has gained "control" over the other client-side instances.
-     * name: unused
-     * value: unused
+     * </br><b>name</b> - unused
+     * </br><b>value</b> - unused
      *
      * @eventType controlAcquired
      */
     public static const CONTROL_ACQUIRED :String = "controlAcquired";
 
     /** An event type dispatched when the memory has changed.
-     * name: memory name
-     * value: memory value
+     * </br><b>name</b> - memory name
+     * </br><b>value</b> - memory value
      *
      * @eventType memoryChanged
      */
@@ -86,8 +86,8 @@ public class ControlEvent extends Event
 
     /** An event type dispatched to all entities when someone chats.
      * Note that only the instance in control receives this event.
-     * name: the speaker's entity ID
-     * value: chat message
+     * </br><b>name</b> - the speaker's entity ID
+     * </br><b>value</b> - chat message
      *
      * @eventType chatReceived
      */
@@ -96,8 +96,8 @@ public class ControlEvent extends Event
     /** An event type dispatched to Furniture and Toys when the mouse is over them.
      * Note that the normal MouseEvents will be blocked if the furniture has an action,
      * so this is necessary to make doorways that react to mouse hovering.
-     * name: unused
-     * value: unused
+     * </br><b>name</b> - unused
+     * </br><b>value</b> - unused
      *
      * @eventType hoverOver
      */
@@ -106,8 +106,8 @@ public class ControlEvent extends Event
     /** An event type dispatched to Furniture and Toys when the mouse is leaves them.
      * Note that the normal MouseEvents will be blocked if the furniture has an action,
      * so this is necessary to make doorways that react to mouse hovering.
-     * name: unused
-     * value: unused
+     * </br><b>name</b> - unused
+     * </br><b>value</b> - unused
      *
      * @eventType hoverOut
      */
@@ -116,8 +116,8 @@ public class ControlEvent extends Event
     /**
      * An event dispatched when a new entity has been added to the room.
      * Note: only the instance in control receives this event.
-     * name: The new entity ID
-     * value: unused
+     * </br><b>name</b> - The new entity ID
+     * </br><b>value</b> - unused
      *
      * @eventType entityEntered
      */
@@ -126,10 +126,10 @@ public class ControlEvent extends Event
     /**
      * An event dispatched when an actor begins and ends walking within the room.
      * Note: only the instance in control receives this event.
-     * name: The moving entity's ID
-     * value: If the actor has started moving, this is an array containing the logical location it
-     *   is moving to. Null when this event fires in response to the actor arriving at its
-     *   destination.
+     * </br><b>name</b> - The moving entity's ID
+     * </br><b>value</b> - If the actor has started moving, this is an array containing the
+     *   logical location it is moving to. Null when this event fires in response to the actor
+     *   arriving at its destination.
      *
      * @eventType entityMoved
      */
@@ -139,8 +139,8 @@ public class ControlEvent extends Event
     /**
      * An event dispatched when an entity has been removed from the room.
      * Note: only the instance in control receives this event.
-     * name: The entity ID. Note that this will no longer exist in the room.
-     * value: unused
+     * </br><b>name</b> - The entity ID. Note that this will no longer exist in the room.
+     * </br><b>value</b> - unused
      *
      * @eventType entityLeft
      */
@@ -148,8 +148,8 @@ public class ControlEvent extends Event
 
     /**
      * An event dispatched when some music starts playing.
-     * name: unused
-     * value: unused
+     * </br><b>name</b> - unused
+     * </br><b>value</b> - unused
      *
      * @eventType musicStarted
      */
@@ -157,8 +157,8 @@ public class ControlEvent extends Event
 
     /**
      * An event that may be dispatched soon after music starts playing.
-     * name: unused
-     * value: an Object from which id3 tags may be read.
+     * </br><b>name</b> - unused
+     * </br><b>value</b> - an Object from which id3 tags may be read.
      *
      * @eventType musicId3
      */
@@ -166,8 +166,8 @@ public class ControlEvent extends Event
 
     /**
      * An event dispatched when some music stops playing.
-     * name: unused
-     * value: unused
+     * </br><b>name</b> - unused
+     * </br><b>value</b> - unused
      *
      * @eventType musicStopped
      */

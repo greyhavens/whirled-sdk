@@ -94,7 +94,10 @@ import flash.utils.Timer;
 
 /**
  * Dispatched when music starts playing in the room. If the current user can hear it,
- * id3 data *may* be available shortly after this event.
+ * id3 data *may* be available shortly after this event. The sequence of events goes like this:
+ * MUSIC_STARTED, 0 or more MUSIC_ID3 tags, MUSIC_STOPPED. Note however that you may not get
+ * a MUSIC_STARTED event if the music starts playing prior to your entity initializing. Calling
+ * getMusicOwnerId() can tell you definitively if there is music currently playing.
  *
  * @eventType com.whirled.ControlEvent.MUSIC_STARTED
  */
@@ -111,7 +114,7 @@ import flash.utils.Timer;
 [Event(name="musicId3", type="com.whirled.ControlEvent")]
 
 /**
- * Dispatched when music stops playing in the room.
+ * Dispatched when music stops playing in the room. @see #event:MUSIC_STARTED
  *
  * @eventType com.whirled.ControlEvent.MUSIC_STOPPED
  */
