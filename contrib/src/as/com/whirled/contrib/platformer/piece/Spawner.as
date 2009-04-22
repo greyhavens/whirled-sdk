@@ -211,6 +211,14 @@ public class Spawner extends RectDynamic
             (spawnCount < totalSpawns || spawns != null || spawns.length > 0);
     }
 
+    override public function getNewOwner (closest :int) :int
+    {
+        if (spawning > 0) {
+            return owner;
+        }
+        return super.getNewOwner(closest);
+    }
+
     override public function toBytes (bytes :ByteArray = null) :ByteArray
     {
         bytes = super.toBytes(bytes);
