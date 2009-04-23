@@ -46,13 +46,13 @@ import flash.utils.Dictionary;
  * is immediate, you are reading the properties that have already been distributed. When a client
  * connects to an already-running game, any properties already set will be available.
  *
- * Neessages can be sent by either a server agent or a client at a maximum rate of 10 messages per
+ * Messages can be sent by either a server agent or a client at a maximum rate of 10 messages per
  * second.  Messages sent at a greater rate will be buffered until sending them will not cause this
  * limit to be  exceeded.  A message sent to all players counts as a single message against this
  * limit.  Changing a property value also counts as sending a single message.
- * 
- * The doBatch method can be used to combine a number of otherwise unrelated messages or property 
- * changes into a single unit so that they count only once against the limit.  
+ *
+ * The doBatch method can be used to combine a number of otherwise unrelated messages or property
+ * changes into a single unit so that they count only once against the limit.
  * @see #doBatch
  */
 public class NetSubControl extends AbstractSubControl
@@ -175,8 +175,8 @@ public class NetSubControl extends AbstractSubControl
      *
      * @param messageName The message to send.
      * @param value The value to attach to the message.
-     * @param playerId if <code>TO_ALL</code> (or unset), sends to all players, 
-     * otherwise the message will be private to just one player; if the game employs a server agent, 
+     * @param playerId if <code>TO_ALL</code> (or unset), sends to all players,
+     * otherwise the message will be private to just one player; if the game employs a server agent,
      * <code>TO_SERVER_AGENT</code> may be used to send a message only to the server.
      * @see #TO_ALL
      * @see #TO_SERVER_AGENT

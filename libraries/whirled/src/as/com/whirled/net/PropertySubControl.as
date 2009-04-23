@@ -15,7 +15,7 @@ public interface PropertySubControl extends PropertyGetSubControl
      *
      * <p>You may not set your own classes as properties. However, you can serialize your data
      * into a ByteArray and set that.</p>
-     * 
+     *
      * <p><b>Note</b>: top-level Dictionarys must have int keys, the intention is to use
      * occupantIds as keys.</p>
      *
@@ -32,7 +32,7 @@ public interface PropertySubControl extends PropertyGetSubControl
      * @param immediate if true, the value is updated immediately in the local object. Otherwise
      * any old value will remain in effect until the PropertyChangedEvent arrives after
      * a round-trip to the server.
-     * 
+     *
      * @example
      * <listing version="3.0">
      * // demonstrates expert-level difference between setting values in an array and an object.
@@ -41,12 +41,31 @@ public interface PropertySubControl extends PropertyGetSubControl
      * var arrayTest :Array = [ o, o ];
      * _ctrl.net.set("object", objTest);
      * _ctrl.net.set("array", arrayTest);
-     * 
+     *
      * // Later, when reading those values back out:
      * var obj :Object = _ctrl.net.get("object");
      * var array :Array = _ctrl.net.get("array") as Array;
      * trace("array: " + (array[0] == array[1])); // traces false
      * trace("object: " + (obj[0] == obj[1])); // traces true
+     * </listing>
+     *
+     * @example
+     * <listing version="3.0">
+     * // demonstrates potentially surprising results when immediate=true
+     * _ctrl.set("myProp", 1, true);
+     * _ctrl.set("myProp", 2, true);
+     *
+     * // Some time later, a PropertyChangedEvent will come back from the server, changing
+     * // "myProp" back to 1 very briefly, before the second PropertyChangedEvent occurs
+     * // and sets it to 2 again.
+     *
+     * _ctrl.set("myProp", int(_ctrl.get("myProp")) + 1, true);
+     *
+     * // If the above line is executed after the first PropertyChangedEvent arrives, but
+     * // before the second, myProp's final value will be 2. If it's executed after the second
+     * // event arrives, myProps final value will be 3.
+     *
+     * trace(_ctrl.get("myProp")); // might trace "2", might trace "3"
      * </listing>
      *
      * @see Array
