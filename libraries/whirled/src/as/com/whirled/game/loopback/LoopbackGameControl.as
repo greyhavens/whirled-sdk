@@ -42,10 +42,6 @@ public class LoopbackGameControl extends GameControl
             _myId = LOOPBACK_PLAYER_ID;
         }
 
-        if (_whirledCtrl == null) {
-            _whirledCtrl = new GameControl(disp, autoReady);
-        }
-
         _isPartyGame = isPartyGame;
 
         _disp.root.loaderInfo.sharedEvents.addEventListener(
@@ -1324,8 +1320,6 @@ public class LoopbackGameControl extends GameControl
 
     protected static var _playerLoopback :LoopbackGameControl;
     protected static var _serverLoopback :LoopbackGameControl;
-
-    protected static var _whirledCtrl :GameControl;
 
     protected static const LOOPBACK_PLAYER_ID :int = 1;
     protected static const SERVER_AGENT_ID :int = int.MIN_VALUE;
