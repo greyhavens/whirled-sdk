@@ -498,7 +498,7 @@ public class Collider
     protected var _boundLines :Array = new Array();
     protected var _boundLineSections :Array = new Array();
     protected var _sindex :SectionalIndex;
-    protected var _tickCounter :int;
+    protected var _tickCounter :int = 1;
 
     protected const MIN_DELTA :Number = 1/100;
 
