@@ -41,28 +41,28 @@ public class LoopbackGameControl extends GameControl
                                          completelyOffline :Boolean = false)
     {
         _disp = disp;
-
-        if (isServer) {
-            _serverLoopback = this;
-            _myId = SERVER_AGENT_ID;
-        } else {
-            _playerLoopback = this;
-            _myId = LOOPBACK_PLAYER_ID;
-        }
-
         _isPartyGame = isPartyGame;
 
-        _disp.root.loaderInfo.sharedEvents.addEventListener(
-            "controlConnect", handleUserCodeConnect, false, int.MAX_VALUE);
-
-        super(_disp, autoReady);
-
-        if (false && _whirledCtrl == null && !completelyOffline) {
-            var ctrl :GameControl = new GameControl(disp, autoReady);
+        // Instantiate a real connection to Whirled, to forward certain requests to?
+        if (_whirledCtrl == null && !completelyOffline) {
+            var ctrl :GameControl = new GameControl(disp, false);
             if (ctrl.isConnected()) {
                 _whirledCtrl = ctrl;
             }
         }
+
+        if (isServer) {
+            _serverLoopback = this;
+            _serverAgentId = SERVER_AGENT_ID;
+        } else {
+            _playerLoopback = this;
+            _playerId = (_whirledCtrl != null ? _whirledCtrl.game.getMyId() : 1);
+        }
+
+        _disp.root.loaderInfo.sharedEvents.addEventListener(
+            "controlConnect", handleUserCodeConnect, false, int.MAX_VALUE);
+
+        super(_disp, false);
 
         if (_whirledCtrl != null) {
             // If we're connected to whirled, we'll route a handful of requests to whirled,
@@ -77,6 +77,10 @@ public class LoopbackGameControl extends GameControl
             redispatch(StateChangedEvent.GAME_STARTED, _whirledCtrl.game, this.game);
             redispatch(StateChangedEvent.GAME_ENDED, _whirledCtrl.game, this.game);
             redispatch(UserChatEvent.USER_CHAT, _whirledCtrl.game, this.game);
+        }
+
+        if (autoReady && this.isPlayer) {
+            callHostCode("playerReady_v1");
         }
     }
 
@@ -123,12 +127,6 @@ public class LoopbackGameControl extends GameControl
         var ourProps :Object = new Object();
         populateProperties(ourProps);
         props["hostProps"] = ourProps;
-
-        // determine whether to automatically start the game in a backwards compatible way
-        var autoReady :Boolean = ("autoReady_v1" in userProps) ? userProps["autoReady_v1"] : true;
-        if (autoReady && !_isPartyGame && this.isPlayer) {
-            playerReady_v1();
-        }
     }
 
     protected function setUserCodeProperties (o :Object) :void
@@ -182,35 +180,35 @@ public class LoopbackGameControl extends GameControl
         routeFunction(o, "testAndSetProperty_v1", testAndSetProperty_v1, false);
 
         // .player
-        routeFunction(o, "getUserCookie_v2", getUserCookie_v2, false);
-        routeFunction(o, "getCookie_v1", getCookie_v1, false);
-        routeFunction(o, "setUserCookie_v1", setUserCookie_v1, false);
-        routeFunction(o, "setCookie_v1", setCookie_v1, false);
-        routeFunction(o, "holdsTrophy_v1", holdsTrophy_v1, false);
-        routeFunction(o, "awardTrophy_v1", awardTrophy_v1, false);
-        routeFunction(o, "awardPrize_v1", awardPrize_v1, false);
-        routeFunction(o, "getPlayerItemPacks_v1", getPlayerItemPacks_v1, false);
-        routeFunction(o, "getPlayerLevelPacks_v1", getPlayerLevelPacks_v1, false);
-        routeFunction(o, "requestConsumeItemPack_v1", requestConsumeItemPack_v1, false);
+        routeFunction(o, "getUserCookie_v2", getUserCookie_v2, true);
+        routeFunction(o, "getCookie_v1", getCookie_v1, true);
+        routeFunction(o, "setUserCookie_v1", setUserCookie_v1, true);
+        routeFunction(o, "setCookie_v1", setCookie_v1, true);
+        routeFunction(o, "holdsTrophy_v1", holdsTrophy_v1, true);
+        routeFunction(o, "awardTrophy_v1", awardTrophy_v1, true);
+        routeFunction(o, "awardPrize_v1", awardPrize_v1, true);
+        routeFunction(o, "getPlayerItemPacks_v1", getPlayerItemPacks_v1, true);
+        routeFunction(o, "getPlayerLevelPacks_v1", getPlayerLevelPacks_v1, true);
+        routeFunction(o, "requestConsumeItemPack_v1", requestConsumeItemPack_v1, true);
 
         // .game
-        routeFunction(o, "endGame_v2", endGame_v2, false);
-        routeFunction(o, "endGameWithScores_v1", endGameWithScores_v1, false);
-        routeFunction(o, "endGameWithWinners_v1", endGameWithWinners_v1, false);
+        routeFunction(o, "endGame_v2", endGame_v2, true);
+        routeFunction(o, "endGameWithScores_v1", endGameWithScores_v1, true);
+        routeFunction(o, "endGameWithWinners_v1", endGameWithWinners_v1, true);
         routeFunction(o, "endRound_v1", endRound_v1, false);
         routeFunction(o, "getRound_v1", getRound_v1, false);
         routeFunction(o, "getTurnHolder_v1", getTurnHolder_v1, false);
-        routeFunction(o, "isInPlay_v1", isInPlay_v1, false);
-        routeFunction(o, "restartGameIn_v1", restartGameIn_v1, false);
+        routeFunction(o, "isInPlay_v1", isInPlay_v1, true);
+        routeFunction(o, "restartGameIn_v1", restartGameIn_v1, true);
         routeFunction(o, "startNextTurn_v1", startNextTurn_v1, false);
         routeFunction(o, "getControllerId_v1", getControllerId_v1, false);
-        routeFunction(o, "getLevelPacks_v2", getLevelPacks_v2, false);
-        routeFunction(o, "getItemPacks_v1", getItemPacks_v1, false);
-        routeFunction(o, "loadLevelPackData_v1", loadLevelPackData_v1, false);
-        routeFunction(o, "loadItemPackData_v1", loadItemPackData_v1, false);
+        routeFunction(o, "getLevelPacks_v2", getLevelPacks_v2, true);
+        routeFunction(o, "getItemPacks_v1", getItemPacks_v1, true);
+        routeFunction(o, "loadLevelPackData_v1", loadLevelPackData_v1, true);
+        routeFunction(o, "loadItemPackData_v1", loadItemPackData_v1, true);
         routeFunction(o, "getOccupants_v1", getOccupants_v1, false);
         routeFunction(o, "getOccupantName_v1", getOccupantName_v1, false);
-        routeFunction(o, "sendChat_v1", sendChat_v1, false);
+        routeFunction(o, "sendChat_v1", sendChat_v1, true);
         routeFunction(o, "getMyId_v1", getMyId_v1, false);
 
         // .game.seating
@@ -219,9 +217,9 @@ public class LoopbackGameControl extends GameControl
         routeFunction(o, "getMyPosition_v1", getMyPosition_v1, false);
 
         // .services
-        routeFunction(o, "checkDictionaryWord_v2", checkDictionaryWord_v2, false);
-        routeFunction(o, "getDictionaryLetterSet_v2", getDictionaryLetterSet_v2, false);
-        routeFunction(o, "getDictionaryWords_v1", getDictionaryWords_v1, false);
+        routeFunction(o, "checkDictionaryWord_v2", checkDictionaryWord_v2, true);
+        routeFunction(o, "getDictionaryLetterSet_v2", getDictionaryLetterSet_v2, true);
+        routeFunction(o, "getDictionaryWords_v1", getDictionaryWords_v1, true);
         routeFunction(o, "setTicker_v1", setTicker_v1, false);
 
         // .services.bags
@@ -242,33 +240,33 @@ public class LoopbackGameControl extends GameControl
         /* WhirledGameBackend */
 
         // GameControl
-        routeFunction(o, "focusContainer_v1", focusContainer_v1, false);
+        routeFunction(o, "focusContainer_v1", focusContainer_v1, true);
 
         // .local
-        routeFunction(o, "alterKeyEvents_v1", alterKeyEvents_v1, false);
-        routeFunction(o, "clearScores_v1", clearScores_v1, false);
-        routeFunction(o, "filter_v1", filter_v1, false);
-        routeFunction(o, "getHeadShot_v2", getHeadShot_v2, false);
-        routeFunction(o, "getSize_v1", getSize_v1, false);
-        routeFunction(o, "isEmbedded_v1", isEmbedded_v1, false);
-        routeFunction(o, "localChat_v1", localChat_v1, false);
-        routeFunction(o, "setMappedScores_v1", setMappedScores_v1, false);
-        routeFunction(o, "setOccupantsLabel_v1", setOccupantsLabel_v1, false);
-        routeFunction(o, "setPlayerScores_v1", setPlayerScores_v1, false);
-        routeFunction(o, "setFrameRate_v1", setFrameRate_v1, false);
-        routeFunction(o, "setShowReplay_v1", setShowReplay_v1, false);
-        routeFunction(o, "setStageQuality_v1", setStageQuality_v1, false);
-        routeFunction(o, "showAllGames_v1", showAllGames_v1, false);
-        routeFunction(o, "showGameLobby_v1", showGameLobby_v1, false);
-        routeFunction(o, "showGameShop_v1", showGameShop_v1, false);
-        routeFunction(o, "showTrophies_v1", showTrophies_v1, false);
-        routeFunction(o, "showInvitePage_v1", showInvitePage_v1, false);
-        routeFunction(o, "getInviteToken_v1", getInviteToken_v1, false);
-        routeFunction(o, "getInviterMemberId_v1", getInviterMemberId_v1, false);
+        routeFunction(o, "alterKeyEvents_v1", alterKeyEvents_v1, true);
+        routeFunction(o, "clearScores_v1", clearScores_v1, true);
+        routeFunction(o, "filter_v1", filter_v1, true);
+        routeFunction(o, "getHeadShot_v2", getHeadShot_v2, true);
+        routeFunction(o, "getSize_v1", getSize_v1, true);
+        routeFunction(o, "isEmbedded_v1", isEmbedded_v1, true);
+        routeFunction(o, "localChat_v1", localChat_v1, true);
+        routeFunction(o, "setMappedScores_v1", setMappedScores_v1, true);
+        routeFunction(o, "setOccupantsLabel_v1", setOccupantsLabel_v1, true);
+        routeFunction(o, "setPlayerScores_v1", setPlayerScores_v1, true);
+        routeFunction(o, "setFrameRate_v1", setFrameRate_v1, true);
+        routeFunction(o, "setShowReplay_v1", setShowReplay_v1, true);
+        routeFunction(o, "setStageQuality_v1", setStageQuality_v1, true);
+        routeFunction(o, "showAllGames_v1", showAllGames_v1, true);
+        routeFunction(o, "showGameLobby_v1", showGameLobby_v1, true);
+        routeFunction(o, "showGameShop_v1", showGameShop_v1, true);
+        routeFunction(o, "showTrophies_v1", showTrophies_v1, true);
+        routeFunction(o, "showInvitePage_v1", showInvitePage_v1, true);
+        routeFunction(o, "getInviteToken_v1", getInviteToken_v1, true);
+        routeFunction(o, "getInviterMemberId_v1", getInviterMemberId_v1, true);
 
         // .game
         routeFunction(o, "isMyTurn_v1", isMyTurn_v1, false);
-        routeFunction(o, "playerReady_v1", playerReady_v1, false);
+        routeFunction(o, "playerReady_v1", playerReady_v1, true);
 
         // Old methods: backwards compatability
         //routeFunction(o, "getStageBounds_v1", getStageBounds_v1, false);
@@ -282,7 +280,8 @@ public class LoopbackGameControl extends GameControl
         var f :Function;
         if (rerouteToWhirled && _whirledCtrl != null) {
             f = function (...args) :* {
-                return _whirledCtrl.callHostCode(name, args);
+                args.unshift(name);
+                return _whirledCtrl.callHostCode.apply(null, args);
             };
         } else {
             f = offlineImpl;
@@ -329,7 +328,7 @@ public class LoopbackGameControl extends GameControl
         validateValue(value);
 
         var messageOp :Function = function () :void {
-            receiveMessage(messageName, value, _myId, playerId);
+            receiveMessage(messageName, value, getMyId_v1(), playerId);
         };
 
         if (_transactionCount > 0) {
@@ -342,7 +341,7 @@ public class LoopbackGameControl extends GameControl
     protected static function receiveMessage (messageName :String, value :Object, fromId :int,
                                               toId :int) :void
     {
-        if ((toId == TO_ALL || toId == LOOPBACK_PLAYER_ID) && _playerLoopback != null) {
+        if ((toId == TO_ALL || toId == _playerId) && _playerLoopback != null) {
             _playerLoopback.receiveMessageLocally(messageName, value, fromId);
         }
 
@@ -523,7 +522,7 @@ public class LoopbackGameControl extends GameControl
             }
         }
 
-        if (playerId == LOOPBACK_PLAYER_ID && _playerLoopback != null) {
+        if (playerId == _playerId && _playerLoopback != null) {
             return _playerLoopback._awardedTrophies.contains(ident);
         } else {
             return false;
@@ -543,7 +542,7 @@ public class LoopbackGameControl extends GameControl
             return false;
         }
 
-        if (playerId == LOOPBACK_PLAYER_ID) {
+        if (playerId == _playerId) {
             _playerLoopback._awardedTrophies.add(ident);
             return true;
         }
@@ -583,7 +582,7 @@ public class LoopbackGameControl extends GameControl
 
     protected function isMyTurn_v1 () :Boolean
     {
-        return (_myId == _turnHolderId);
+        return (getMyId_v1() == _turnHolderId);
     }
 
     protected function getRound_v1 () :int
@@ -598,7 +597,7 @@ public class LoopbackGameControl extends GameControl
 
     protected function startNextTurn_v1 (nextPlayerId :int) :void
     {
-        if (nextPlayerId != LOOPBACK_PLAYER_ID) {
+        if (nextPlayerId != _playerId) {
             // TODO: what should we do here?
             return;
         }
@@ -668,8 +667,8 @@ public class LoopbackGameControl extends GameControl
     protected function endGame_v2 (... winnerIds) :void
     {
         var loserIds :Array = [];
-        if (!ArrayUtil.contains(winnerIds, LOOPBACK_PLAYER_ID)) {
-            loserIds.push(LOOPBACK_PLAYER_ID);
+        if (!ArrayUtil.contains(winnerIds, _playerId)) {
+            loserIds.push(_playerId);
         }
 
         endGameWithWinners_v1(winnerIds, loserIds, 0) // WhirledGameControl.CASCADING_PAYOUT
@@ -679,7 +678,7 @@ public class LoopbackGameControl extends GameControl
         winnerIds :Array, loserIds :Array, payoutType :int) :void
     {
         var endGameOp :Function = function () :void {
-            changeGameState(false, ArrayUtil.contains(winnerIds, LOOPBACK_PLAYER_ID), payoutType);
+            changeGameState(false, ArrayUtil.contains(winnerIds, _playerId), payoutType);
         };
 
         MethodQueue.callLater(endGameOp);
@@ -691,7 +690,7 @@ public class LoopbackGameControl extends GameControl
         payoutType :int, gameMode :int = 0) :void
     {
         var endGameOp :Function = function () :void {
-            var loopbackPlayerIdx :int = playerIds.indexOf(LOOPBACK_PLAYER_ID);
+            var loopbackPlayerIdx :int = playerIds.indexOf(_playerId);
             var loopbackPlayerScore :int;
             if (loopbackPlayerIdx >= 0 && loopbackPlayerIdx < scores.length) {
                 loopbackPlayerScore = scores[loopbackPlayerScore];
@@ -737,7 +736,7 @@ public class LoopbackGameControl extends GameControl
             return;
         }
 
-        if (_myId == LOOPBACK_PLAYER_ID) {
+        if (this.isPlayer) {
             var startOp :Function = function () :void {
                 changeGameState(true);
             };
@@ -782,10 +781,10 @@ public class LoopbackGameControl extends GameControl
 
         var chatOp :Function = function () :void {
             if (_playerLoopback != null) {
-                _playerLoopback.receiveChat(_myId, msg);
+                _playerLoopback.receiveChat(getMyId_v1(), msg);
             }
             if (_serverLoopback != null) {
-                _serverLoopback.receiveChat(_myId, msg);
+                _serverLoopback.receiveChat(getMyId_v1(), msg);
             }
         };
 
@@ -827,22 +826,22 @@ public class LoopbackGameControl extends GameControl
 
     protected function getControllerId_v1 () :int
     {
-        return (_playerLoopback != null ? LOOPBACK_PLAYER_ID : 0);
+        return (_playerLoopback != null ? _playerId : 0);
     }
 
     protected function getOccupants_v1 () :Array
     {
-        return (_playerLoopback != null ? [ LOOPBACK_PLAYER_ID ] : []);
+        return (_playerLoopback != null ? [ _playerId ] : []);
     }
 
     protected function getOccupantName_v1 (playerId :int) :String
     {
-        return (playerId == LOOPBACK_PLAYER_ID ? "Loopback Player" : null);
+        return (playerId == _playerId ? "Loopback Player" : null);
     }
 
     protected function getMyId_v1 () :int
     {
-        return _myId;
+        return (this.isServer ? _serverAgentId : _playerId);
     }
 
     protected function focusContainer_v1 () :void
@@ -854,17 +853,17 @@ public class LoopbackGameControl extends GameControl
 
     protected function getPlayerPosition_v1 (playerId :int) :int
     {
-        return (playerId == LOOPBACK_PLAYER_ID ? 0 : -1);
+        return (playerId == _playerId ? 0 : -1);
     }
 
     protected function getPlayers_v1 () :Array
     {
-        return (_playerLoopback != null ? [ LOOPBACK_PLAYER_ID ] : []);
+        return (_playerLoopback != null ? [ _playerId ] : []);
     }
 
     protected function getMyPosition_v1 () :int
     {
-        return getPlayerPosition_v1(_myId);
+        return getPlayerPosition_v1(getMyId_v1());
     }
 
     //---- .services -------------------------------------------------------
@@ -1355,7 +1354,6 @@ public class LoopbackGameControl extends GameControl
 
     protected var _disp :DisplayObject;
 
-    protected var _myId :int;
     protected var _userFuncs :Object;
     protected var _gameData :Object = new Object();
 
@@ -1371,6 +1369,9 @@ public class LoopbackGameControl extends GameControl
 
     protected var log :Log = Log.getLog(this);
 
+    protected static var _playerId :int;
+    protected static var _serverAgentId :int;
+
     protected static var _isPartyGame :Boolean;
     protected static var _gameStarted :Boolean;
     protected static var _roundStarted :Boolean = true;
@@ -1384,7 +1385,6 @@ public class LoopbackGameControl extends GameControl
 
     protected static var _whirledCtrl :GameControl;
 
-    protected static const LOOPBACK_PLAYER_ID :int = 1;
     protected static const SERVER_AGENT_ID :int = int.MIN_VALUE;
 
     protected static const TO_ALL :int = 0;
