@@ -45,7 +45,8 @@ public class AbstractSubControl extends AbstractControl
      */
     override public function callHostCode (name :String, ... args) :*
     {
-        return _parent.callHostCode(name, args);
+        args.unshift(name);
+        return _parent.callHostCode.apply(null, args);
     }
 
     /** @private */
