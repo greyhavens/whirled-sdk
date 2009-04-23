@@ -384,6 +384,7 @@ public class BoardSprite extends Sprite
     protected function handleDynamicAdded (d :Dynamic, group :String) :void
     {
         var ds :DynamicSprite = PieceSpriteFactory.getDynamicSprite(d);
+        ds.setParticleCallback(addParticleEffect);
         if (d is Actor) {
             _layers[ACTOR_LAYER].addDynamicSprite(ds);
         } else if (d is Shot) {
@@ -391,7 +392,6 @@ public class BoardSprite extends Sprite
         } else {
             _layers[BACK_DYNAMIC_LAYER].addDynamicSprite(ds);
         }
-        ds.setParticleCallback(addParticleEffect);
     }
 
     protected function handleDynamicRemoved (d :Dynamic, group :String) :void

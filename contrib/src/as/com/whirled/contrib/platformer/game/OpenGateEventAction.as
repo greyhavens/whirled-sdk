@@ -33,7 +33,7 @@ public class OpenGateEventAction extends EventAction
 
     override public function run () :void
     {
-        var d :Dynamic = _gctrl.getBoard().getDynamic(_id);
+        var d :Dynamic = _gctrl.getBoard().getDynamicInsById(_id);
         if (d is Gate) {
             (d as Gate).open = true;
         }
