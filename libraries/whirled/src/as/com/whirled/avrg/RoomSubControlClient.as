@@ -150,13 +150,13 @@ public class RoomSubControlClient extends RoomSubControlBase
     /** @private */
     internal function receivedChat_v2 (entityId :String, msg :String) :void
     {
-        dispatch(new ControlEvent(ControlEvent.CHAT_RECEIVED, entityId, msg));
+        dispatchEvent(new ControlEvent(ControlEvent.CHAT_RECEIVED, entityId, msg));
     }
 
     /** @private */
     internal function messageReceived_v1 (name :String, value :Object, sender :int) :void
     {
-        dispatch(new MessageReceivedEvent(name, value, sender));
+        dispatchEvent(new MessageReceivedEvent(name, value, sender));
     }
 
     /** @private */
@@ -169,7 +169,7 @@ public class RoomSubControlClient extends RoomSubControlBase
     /** @private */
     internal function musicId3_v1 (id3 :Object) :void
     {
-        dispatch(new ControlEvent(ControlEvent.MUSIC_ID3, null, id3));
+        dispatchEvent(new ControlEvent(ControlEvent.MUSIC_ID3, null, id3));
     }
 
     /** @private */

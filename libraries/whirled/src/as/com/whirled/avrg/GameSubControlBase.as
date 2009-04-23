@@ -84,7 +84,7 @@ public class GameSubControlBase extends AbstractSubControl
         var ctrl :PartySubControl = _parties.get(partyId);
         if (ctrl == null) {
             ctrl = new PartySubControl(this, partyId);
-            ctrl.gotHostPropsFriend(_funcs);
+            ctrl.gotHostProps(_funcs);
             _parties.put(partyId, ctrl);
         }
         return ctrl;
@@ -173,18 +173,18 @@ public class GameSubControlBase extends AbstractSubControl
     /** @private */
     protected function messageReceived (name :String, value :Object, sender :int) :void
     {
-        dispatch(new MessageReceivedEvent(name, value, sender));
+        dispatchEvent(new MessageReceivedEvent(name, value, sender));
     }
 
     /** @private */
     protected function partyEntered_v1 (partyId :int, ... rest) :void
     {
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PARTY_ENTERED, null, partyId));
+        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PARTY_ENTERED, null, partyId));
     }
 
     protected function partyLeft_v1 (partyId :int, ... rest) :void
     {
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.PARTY_LEFT, null, partyId));
+        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PARTY_LEFT, null, partyId));
     }
 
     /** @private */
@@ -213,7 +213,7 @@ public class GameSubControlBase extends AbstractSubControl
     {
         var ctrl :PartySubControl = _parties.get(partyId);
         if (ctrl != null) {
-            ctrl.dispatchFriend(new AVRGameControlEvent(event, name, arg));
+            ctrl.dispatchEvent(new AVRGameControlEvent(event, name, arg));
         }
     }
 

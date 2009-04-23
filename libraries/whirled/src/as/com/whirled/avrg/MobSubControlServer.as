@@ -29,7 +29,7 @@ public class MobSubControlServer extends MobSubControlBase
      */
     public function moveTo (x :Number, y :Number, z :Number) :void
     {
-        RoomSubControlServer(_parent).callHostCodeFriend("moveMob_v1", _id, x, y, z);
+        RoomSubControlServer(_parent).callHostCode("moveMob_v1", _id, x, y, z);
     }
 }
 }

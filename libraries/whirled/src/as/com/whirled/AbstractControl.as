@@ -20,6 +20,10 @@ import flash.events.EventDispatcher;
  */
 [Event(name="unload", type="flash.events.Event")]
 
+[Exclude(name="dispatchEvent", kind="method")]
+[Exclude(name="willTrigger", kind="method")]
+[Exclude(name="hasEventListener", kind="method")]
+
 /**
  * The abstract base class for all controls and subcontrols.
  */
@@ -65,6 +69,7 @@ public class AbstractControl extends EventDispatcher
     /**
      * Registers an event listener.
      */
+    // inherited from EventDispatcher, but we generate fucked-up asdocs
     override public function addEventListener (
         type :String, listener :Function, useCapture :Boolean = false, priority :int = 0,
         useWeakReference :Boolean = false) :void
@@ -75,6 +80,7 @@ public class AbstractControl extends EventDispatcher
     /**
      * Unregisters an event listener.
      */
+    // inherited from EventDispatcher, but we generate fucked-up asdocs
     override public function removeEventListener (
         type :String, listener :Function, useCapture :Boolean = false) :void
     {
@@ -128,7 +134,7 @@ public class AbstractControl extends EventDispatcher
     protected function handleUnload (event :Event) :void
     {
         // redispatch the unload event to listeners of this object
-        dispatch(event);
+        dispatchEvent(event);
     }
 
     /**
@@ -138,57 +144,29 @@ public class AbstractControl extends EventDispatcher
     protected function setUserProps (o :Object) :void
     {
         for each (var ctrl :AbstractSubControl in _subControls) {
-            ctrl.setUserPropsFriend(o);
+            ctrl.setUserProps(o);
         }
     }
 
     /**
-     * Grab any properties needed from our host code.
+     * WHIRLED INTERNAL. Grab any properties needed from our host code.
      * @private
      */
-    protected function gotHostProps (o :Object) :void
+    public function gotHostProps (o :Object) :void
     {
         // by default, we just use these props as our _funcs
         _funcs = o;
 
         for each (var ctrl :AbstractSubControl in _subControls) {
-            ctrl.gotHostPropsFriend(o);
+            ctrl.gotHostProps(o);
         }
     }
 
     /**
-     * Your own events may not be dispatched here.
+     * WHIRLED INTERNAL. Call a method exposed by the host code.
      * @private
      */
-    override public function dispatchEvent (event :Event) :Boolean
-    {
-        // Ideally we want to not be an EventDispatcher so that people
-        // won't try to do this on us, but if we do that, then some other
-        // object will be the target during dispatch, and that's weird.
-        throw new IllegalOperationError();
-    }
-
-    /**
-     * Secret function to dispatch events.
-     * @private
-     */
-    // TODO: make this a whirled_internal namespace method.
-    public function dispatch (event :Event) :void
-    {
-        try {
-            super.dispatchEvent(event);
-        } catch (err :Error) {
-            // AFAIK, this will never happen: dispatchEvent catches and copes with all exceptions.
-            trace("Error dispatching event to user code.");
-            trace(err.getStackTrace());
-        }
-    }
-
-    /**
-     * Call a method exposed by the host code.
-     * @private
-     */
-    protected function callHostCode (name :String, ... args) :*
+    public function callHostCode (name :String, ... args) :*
     {
         if (_funcs != null) {
             try {
@@ -211,16 +189,6 @@ public class AbstractControl extends EventDispatcher
         // if we get here then either _funcs is not null, but our function is not there, or
         // _funcs is null but checkIsConnected() thinks everything is ok.
         return undefined;
-    }
-
-    /**
-     * Exposed to sub controls.
-     * @private
-     */
-    internal function callHostCodeFriend (name :String, args :Array) :*
-    {
-        args.unshift(name);
-        return callHostCode.apply(this, args);
     }
 
     /**

@@ -469,7 +469,7 @@ public class GameSubControl extends AbstractSubControl
     }
 
     /** @private */
-    override protected function gotHostProps (o :Object) :void
+    override public function gotHostProps (o :Object) :void
     {
         super.gotHostProps(o);
 
@@ -500,7 +500,7 @@ public class GameSubControl extends AbstractSubControl
      */
     private function controlDidChange_v1 () :void
     {
-        dispatch(new StateChangedEvent(StateChangedEvent.CONTROL_CHANGED));
+        dispatchEvent(new StateChangedEvent(StateChangedEvent.CONTROL_CHANGED));
     }
 
     /**
@@ -508,7 +508,7 @@ public class GameSubControl extends AbstractSubControl
      */
     private function turnDidChange_v1 () :void
     {
-        dispatch(new StateChangedEvent(StateChangedEvent.TURN_CHANGED));
+        dispatchEvent(new StateChangedEvent(StateChangedEvent.TURN_CHANGED));
     }
 
     /**
@@ -516,7 +516,7 @@ public class GameSubControl extends AbstractSubControl
      */
     private function gameStateChanged_v1 (started :Boolean) :void
     {
-        dispatch(new StateChangedEvent(started ? StateChangedEvent.GAME_STARTED
+        dispatchEvent(new StateChangedEvent(started ? StateChangedEvent.GAME_STARTED
                                                : StateChangedEvent.GAME_ENDED));
     }
 
@@ -525,7 +525,7 @@ public class GameSubControl extends AbstractSubControl
      */
     private function roundStateChanged_v1 (started :Boolean) :void
     {
-        dispatch(new StateChangedEvent(started ? StateChangedEvent.ROUND_STARTED
+        dispatchEvent(new StateChangedEvent(started ? StateChangedEvent.ROUND_STARTED
                                                : StateChangedEvent.ROUND_ENDED));
     }
 
@@ -534,7 +534,7 @@ public class GameSubControl extends AbstractSubControl
      */
     private function occupantChanged_v1 (occupantId :int, player :Boolean, enter :Boolean) :void
     {
-        dispatch(new OccupantChangedEvent(
+        dispatchEvent(new OccupantChangedEvent(
             enter ? OccupantChangedEvent.OCCUPANT_ENTERED
                   : OccupantChangedEvent.OCCUPANT_LEFT, occupantId, player));
     }
@@ -544,7 +544,7 @@ public class GameSubControl extends AbstractSubControl
      */
     private function userChat_v1 (speaker :int, message :String) :void
     {
-        dispatch(new UserChatEvent(speaker, message));
+        dispatchEvent(new UserChatEvent(speaker, message));
     }
 
     /** Contains any custom game configuration data. @private */

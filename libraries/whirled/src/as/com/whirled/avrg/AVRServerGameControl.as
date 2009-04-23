@@ -77,7 +77,7 @@ public class AVRServerGameControl extends AbstractControl
         if (ctrl == null) {
             // This throws an error if the room isn't loaded
             ctrl = new RoomSubControlServer(this, roomId);
-            ctrl.gotHostPropsFriend(_funcs);
+            ctrl.gotHostProps(_funcs);
             _roomControls[roomId] = ctrl;
         }
         return ctrl;
@@ -96,7 +96,7 @@ public class AVRServerGameControl extends AbstractControl
         if (ctrl == null) {
             // This throws an error if the player isn't loaded
             ctrl = new PlayerSubControlServer(this, playerId);
-            ctrl.gotHostPropsFriend(_funcs);
+            ctrl.gotHostProps(_funcs);
             _playerControls[playerId] = ctrl;
         }
         return ctrl;
@@ -177,14 +177,14 @@ public class AVRServerGameControl extends AbstractControl
     /** @private */
     protected function playerJoinedGame_v1 (playerId :int) :void
     {
-        game.dispatchFriend(new AVRGameControlEvent(
+        game.dispatchEvent(new AVRGameControlEvent(
             AVRGameControlEvent.PLAYER_JOINED_GAME, null, playerId));
     }
 
     /** @private */
     protected function playerLeftGame_v1 (playerId :int) :void
     {
-        game.dispatchFriend(new AVRGameControlEvent(
+        game.dispatchEvent(new AVRGameControlEvent(
             AVRGameControlEvent.PLAYER_QUIT_GAME, null, playerId));
         delete _playerControls[playerId];
     }

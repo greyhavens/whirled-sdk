@@ -118,17 +118,5 @@ public class PartySubControl extends TargetedSubControl
 //    {
 //        callHostCode("party_moveToRoom_v1", roomId);
 //    }
-
-    /** @private */
-    internal function gotHostPropsFriend (o :Object) :void
-    {
-        gotHostProps(o);
-    }
-
-    /** @private */
-    internal function dispatchFriend (event :Event) :void
-    {
-        super.dispatch(event);
-    }
 }
 }

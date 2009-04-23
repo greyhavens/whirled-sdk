@@ -235,7 +235,7 @@ public class PlayerSubControl extends AbstractSubControl
     private function flowAwarded_v1 (amount :int, percentile :int) :Boolean
     {
         var evt :CoinsAwardedEvent = new CoinsAwardedEvent(amount, percentile);
-        dispatch(evt);
+        dispatchEvent(evt);
         return evt.isDefaultPrevented();
     }
 
@@ -244,8 +244,8 @@ public class PlayerSubControl extends AbstractSubControl
      */
     private function notifyGameContentAdded_v1 (type :String, ident :String, playerId :int) :void
     {
-        dispatch(new GameContentEvent(GameContentEvent.PLAYER_CONTENT_ADDED,
-                                      type, ident, playerId));
+        dispatchEvent(
+            new GameContentEvent(GameContentEvent.PLAYER_CONTENT_ADDED, type, ident, playerId));
     }
 
     /**
@@ -253,8 +253,8 @@ public class PlayerSubControl extends AbstractSubControl
      */
     private function notifyGameContentConsumed_v1 (type :String, ident :String, playerId :int) :void
     {
-        dispatch(new GameContentEvent(GameContentEvent.PLAYER_CONTENT_CONSUMED,
-                                      type, ident, playerId));
+        dispatchEvent(
+            new GameContentEvent(GameContentEvent.PLAYER_CONTENT_CONSUMED, type, ident, playerId));
     }
 }
 }

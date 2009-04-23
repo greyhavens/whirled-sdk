@@ -74,12 +74,6 @@ public class GameSubControlServer extends GameSubControlBase
     }
 
     /** @private */
-    internal function dispatchFriend (event :Event) :void
-    {
-        super.dispatch(event);
-    }
-
-    /** @private */
     override protected function createSubControls () :Array
     {
         _props = new PropertySubControlImpl(

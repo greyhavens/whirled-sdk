@@ -129,7 +129,7 @@ public class GameControl extends AbstractControl
      * boundary.
      * @private
      */
-    override protected function gotHostProps (o :Object) :void
+    override public function gotHostProps (o :Object) :void
     {
         super.gotHostProps(o);
 

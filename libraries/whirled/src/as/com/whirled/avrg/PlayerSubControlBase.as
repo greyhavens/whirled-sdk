@@ -252,36 +252,36 @@ public class PlayerSubControlBase extends TargetedSubControl
     {
         var evt :AVRGamePlayerEvent = new AVRGamePlayerEvent(
             AVRGamePlayerEvent.TASK_COMPLETED, _targetId, task, amount, true);
-        dispatch(evt);
+        dispatchEvent(evt);
         return evt.isDefaultPrevented();
     }
 
     /** @private */
     internal function leftRoom_v1 (scene :int) :void
     {
-        dispatch(new AVRGamePlayerEvent(AVRGamePlayerEvent.LEFT_ROOM, _targetId, null, scene));
+        dispatchEvent(new AVRGamePlayerEvent(AVRGamePlayerEvent.LEFT_ROOM, _targetId, null, scene));
     }
 
     /** @private */
     internal function enteredRoom_v1 (newScene :int) :void
     {
-        dispatch(new AVRGamePlayerEvent(AVRGamePlayerEvent.ENTERED_ROOM,
-                                        _targetId, null, newScene));
+        dispatchEvent(
+            new AVRGamePlayerEvent(AVRGamePlayerEvent.ENTERED_ROOM, _targetId, null, newScene));
     }
 
     /** @private */
     internal function notifyGameContentAdded_v1 (type :String, ident :String, playerId :int) :void
     {
-        dispatch(new GameContentEvent(GameContentEvent.PLAYER_CONTENT_ADDED,
-                                      type, ident, playerId));
+        dispatchEvent(
+            new GameContentEvent(GameContentEvent.PLAYER_CONTENT_ADDED, type, ident, playerId));
     }
 
     /** @private */
     internal function notifyGameContentConsumed_v1 (
         type :String, ident :String, playerId :int) :void
     {
-        dispatch(new GameContentEvent(GameContentEvent.PLAYER_CONTENT_CONSUMED,
-                                      type, ident, playerId));
+        dispatchEvent(
+            new GameContentEvent(GameContentEvent.PLAYER_CONTENT_CONSUMED, type, ident, playerId));
     }
 
     /** @private */

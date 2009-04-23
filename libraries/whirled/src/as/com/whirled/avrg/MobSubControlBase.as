@@ -40,13 +40,7 @@ public class MobSubControlBase extends AbstractSubControl
         _orient = orient;
         _isMoving = moving;
         // "sleeping" is ignored in this class
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.MOB_APPEARANCE_CHANGED));
-    }
-
-    /** @private */
-    internal function gotHostPropsFriend (o :Object) :void
-    {
-        super.gotHostProps(o);
+        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.MOB_APPEARANCE_CHANGED));
     }
 
     /** @private */

@@ -111,13 +111,7 @@ public class RoomSubControlServer extends RoomSubControlBase
     }
 
     /** @private */
-    internal function gotHostPropsFriend (o :Object) :void
-    {
-        gotHostProps(o);
-    }
-
-    /** @private */
-    override protected function gotHostProps (o :Object) :void
+    override public function gotHostProps (o :Object) :void
     {
         super.gotHostProps(o);
 
@@ -142,7 +136,7 @@ public class RoomSubControlServer extends RoomSubControlBase
     /** @private -- relayed from AVRServerGameControl when signal received. */
     internal function roomUnloaded_v1 () :void
     {
-        dispatch(new AVRGameRoomEvent(AVRGameRoomEvent.ROOM_UNLOADED, _targetId));
+        dispatchEvent(new AVRGameRoomEvent(AVRGameRoomEvent.ROOM_UNLOADED, _targetId));
     }
 
     /** @private */

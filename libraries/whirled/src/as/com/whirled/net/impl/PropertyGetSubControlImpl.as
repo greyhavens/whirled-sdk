@@ -49,11 +49,11 @@ public class PropertyGetSubControlImpl extends TargetedSubControl
         name :String, newValue :Object, oldValue :Object, key :Object) :void
     {
         if (key == null) {
-            dispatch(new PropertyChangedEvent(PropertyChangedEvent.PROPERTY_CHANGED,
-                                              name, newValue, oldValue));
+            dispatchEvent(new PropertyChangedEvent(
+                PropertyChangedEvent.PROPERTY_CHANGED, name, newValue, oldValue));
         } else {
-            dispatch(new ElementChangedEvent(ElementChangedEvent.ELEMENT_CHANGED,
-                                             name, newValue, oldValue, int(key)));
+            dispatchEvent(new ElementChangedEvent(
+                ElementChangedEvent.ELEMENT_CHANGED, name, newValue, oldValue, int(key)));
         }
     }
 

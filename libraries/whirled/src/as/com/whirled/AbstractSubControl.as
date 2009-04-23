@@ -43,25 +43,9 @@ public class AbstractSubControl extends AbstractControl
     /**
      * @private
      */
-    override protected function callHostCode (name :String, ... args) :*
+    override public function callHostCode (name :String, ... args) :*
     {
-        return _parent.callHostCodeFriend(name, args);
-    }
-
-    /**
-     * @private
-     */
-    internal function setUserPropsFriend (o :Object) :void
-    {
-        setUserProps(o);
-    }
-
-    /**
-     * @private
-     */
-    internal function gotHostPropsFriend (o :Object) :void
-    {
-        gotHostProps(o);
+        return _parent.callHostCode(name, args);
     }
 
     /** @private */

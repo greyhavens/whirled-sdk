@@ -342,7 +342,7 @@ public class LocalSubControl extends AbstractSubControl
     {
         super.setUserProps(o);
 
-        o["dispatchEvent_v1"] = dispatch; // for re-dispatching keyboard events
+        o["dispatchEvent_v1"] = dispatchEvent; // for re-dispatching keyboard events
         o["sizeChanged_v1"] = sizeChanged_v1;
         o["lobbyClosed_v1"] = lobbyClosed_v1;
     }
@@ -352,7 +352,7 @@ public class LocalSubControl extends AbstractSubControl
      */
     private function sizeChanged_v1 (size :Point) :void
     {
-        dispatch(new SizeChangedEvent(size));
+        dispatchEvent(new SizeChangedEvent(size));
     }
 
     /**
@@ -360,7 +360,7 @@ public class LocalSubControl extends AbstractSubControl
      */
     private function lobbyClosed_v1 () :void
     {
-        dispatch(new LobbyClosedEvent());
+        dispatchEvent(new LobbyClosedEvent());
     }
 }
 }

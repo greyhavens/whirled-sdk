@@ -387,7 +387,7 @@ public class LocalSubControl extends AbstractSubControl
     /** @private */
     protected function panelResized_v1 () :void
     {
-        dispatch(new AVRGameControlEvent(AVRGameControlEvent.SIZE_CHANGED));
+        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.SIZE_CHANGED));
     }
 
     /** @private */

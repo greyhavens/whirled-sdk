@@ -647,7 +647,7 @@ public class EntityControl extends AbstractControl
     }
 
     /** @private */
-    override protected function gotHostProps (o :Object) :void
+    override public function gotHostProps (o :Object) :void
     {
         super.gotHostProps(o);
 
@@ -676,13 +676,15 @@ public class EntityControl extends AbstractControl
     }
 
     /**
+     * WHIRLED INTERNAL. 
      * Helper method to dispatch a ControlEvent, avoiding creation if there are no listeners.
+     * @private
      */
-    internal function dispatchCtrlEvent (
+    public function dispatchCtrlEvent (
         ctrlEvent :String, key :String = null, value :Object = null) :void
     {
         if (hasEventListener(ctrlEvent)) {
-            dispatch(new ControlEvent(ctrlEvent, key, value));
+            dispatchEvent(new ControlEvent(ctrlEvent, key, value));
         }
     }
 
@@ -822,7 +824,7 @@ public class EntityControl extends AbstractControl
                 // we may be creating the timer for the first time
                 _ticker = new Timer(_tickInterval);
                 // re-route it
-                _ticker.addEventListener(TimerEvent.TIMER, dispatch);
+                _ticker.addEventListener(TimerEvent.TIMER, dispatchEvent);
 
             } else {
                 // we may just be committing a new interval

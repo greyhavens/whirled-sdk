@@ -200,7 +200,7 @@ public class NetSubControl extends AbstractSubControl
     /**
      * @private
      */
-    override protected function gotHostProps (o :Object) :void
+    override public function gotHostProps (o :Object) :void
     {
         super.gotHostProps(o);
 
@@ -247,10 +247,10 @@ public class NetSubControl extends AbstractSubControl
         name :String, newValue :Object, oldValue :Object, key :Object) :void
     {
         if (key == null) {
-            dispatch(new PropertyChangedEvent(PropertyChangedEvent.PROPERTY_CHANGED,
+            dispatchEvent(new PropertyChangedEvent(PropertyChangedEvent.PROPERTY_CHANGED,
                 name, newValue, oldValue));
         } else {
-            dispatch(new ElementChangedEvent(ElementChangedEvent.ELEMENT_CHANGED,
+            dispatchEvent(new ElementChangedEvent(ElementChangedEvent.ELEMENT_CHANGED,
                 name, newValue, oldValue, int(key)));
         }
     }
@@ -260,7 +260,7 @@ public class NetSubControl extends AbstractSubControl
      */
     private function messageReceived_v2 (name :String, value :Object, sender :int) :void
     {
-        dispatch(new MessageReceivedEvent(name, value, sender));
+        dispatchEvent(new MessageReceivedEvent(name, value, sender));
     }
 
     /** Game properties. @private */
