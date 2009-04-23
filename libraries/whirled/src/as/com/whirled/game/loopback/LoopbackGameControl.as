@@ -12,12 +12,19 @@ import com.threerings.util.MethodQueue;
 import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringUtil;
 import com.threerings.util.Util;
+import com.whirled.game.CoinsAwardedEvent;
+import com.whirled.game.GameContentEvent;
 import com.whirled.game.GameControl;
+import com.whirled.game.LobbyClosedEvent;
+import com.whirled.game.SizeChangedEvent;
+import com.whirled.game.StateChangedEvent;
+import com.whirled.game.UserChatEvent;
 import com.whirled.game.client.PropertySpaceHelper;
 
 import flash.display.DisplayObject;
 import flash.errors.IllegalOperationError;
 import flash.events.Event;
+import flash.events.EventDispatcher;
 import flash.events.TimerEvent;
 import flash.geom.Point;
 import flash.utils.ByteArray;
@@ -30,7 +37,8 @@ public class LoopbackGameControl extends GameControl
     public function LoopbackGameControl (disp :DisplayObject,
                                          isServer :Boolean,
                                          isPartyGame :Boolean,
-                                         autoReady :Boolean = true)
+                                         autoReady :Boolean = true,
+                                         completelyOffline :Boolean = false)
     {
         _disp = disp;
 
@@ -48,6 +56,37 @@ public class LoopbackGameControl extends GameControl
             "controlConnect", handleUserCodeConnect, false, int.MAX_VALUE);
 
         super(_disp, autoReady);
+
+        if (false && _whirledCtrl == null && !completelyOffline) {
+            var ctrl :GameControl = new GameControl(disp, autoReady);
+            if (ctrl.isConnected()) {
+                _whirledCtrl = ctrl;
+            }
+        }
+
+        if (_whirledCtrl != null) {
+            // If we're connected to whirled, we'll route a handful of requests to whirled,
+            // and route a handful of events back to the game
+            redispatch(SizeChangedEvent.SIZE_CHANGED, _whirledCtrl.local, this.local);
+            redispatch(LobbyClosedEvent.LOBBY_CLOSED, _whirledCtrl.local, this.local);
+
+            redispatch(CoinsAwardedEvent.COINS_AWARDED, _whirledCtrl.player, this.player);
+            redispatch(GameContentEvent.PLAYER_CONTENT_ADDED, _whirledCtrl.player, this.player);
+            redispatch(GameContentEvent.PLAYER_CONTENT_CONSUMED, _whirledCtrl.player, this.player);
+
+            redispatch(StateChangedEvent.GAME_STARTED, _whirledCtrl.game, this.game);
+            redispatch(StateChangedEvent.GAME_ENDED, _whirledCtrl.game, this.game);
+            redispatch(UserChatEvent.USER_CHAT, _whirledCtrl.game, this.game);
+        }
+    }
+
+    protected function redispatch (eventType :String, source :EventDispatcher,
+        target :EventDispatcher) :void
+    {
+        source.addEventListener(eventType,
+            function (e :Event) :void {
+                target.dispatchEvent(e);
+            });
     }
 
     /**
@@ -134,106 +173,122 @@ public class LoopbackGameControl extends GameControl
         o["gameInfo"] = createGameInfo();*/
 
         // GameControl
-        o["commitTransaction"] = commitTransaction_v1;
-        o["startTransaction"] = startTransaction_v1;
+        routeFunction(o, "commitTransaction", commitTransaction_v1, false);
+        routeFunction(o, "startTransaction", startTransaction_v1, false);
 
         // .net
-        o["sendMessage_v2"] = sendMessage_v2;
-        o["setProperty_v2"] = setProperty_v2;
-        o["testAndSetProperty_v1"] = testAndSetProperty_v1;
+        routeFunction(o, "sendMessage_v2", sendMessage_v2, false);
+        routeFunction(o, "setProperty_v2", setProperty_v2, false);
+        routeFunction(o, "testAndSetProperty_v1", testAndSetProperty_v1, false);
 
         // .player
-        o["getUserCookie_v2"] = getUserCookie_v2;
-        o["getCookie_v1"] = getCookie_v1;
-        o["setUserCookie_v1"] = setUserCookie_v1;
-        o["setCookie_v1"] = setCookie_v1;
-        o["holdsTrophy_v1"] = holdsTrophy_v1;
-        o["awardTrophy_v1"] = awardTrophy_v1;
-        o["awardPrize_v1"] = awardPrize_v1;
-        o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
-        o["getPlayerLevelPacks_v1"] = getPlayerLevelPacks_v1;
+        routeFunction(o, "getUserCookie_v2", getUserCookie_v2, false);
+        routeFunction(o, "getCookie_v1", getCookie_v1, false);
+        routeFunction(o, "setUserCookie_v1", setUserCookie_v1, false);
+        routeFunction(o, "setCookie_v1", setCookie_v1, false);
+        routeFunction(o, "holdsTrophy_v1", holdsTrophy_v1, false);
+        routeFunction(o, "awardTrophy_v1", awardTrophy_v1, false);
+        routeFunction(o, "awardPrize_v1", awardPrize_v1, false);
+        routeFunction(o, "getPlayerItemPacks_v1", getPlayerItemPacks_v1, false);
+        routeFunction(o, "getPlayerLevelPacks_v1", getPlayerLevelPacks_v1, false);
+        routeFunction(o, "requestConsumeItemPack_v1", requestConsumeItemPack_v1, false);
 
         // .game
-        o["endGame_v2"] = endGame_v2;
-        o["endGameWithScores_v1"] = endGameWithScores_v1;
-        o["endGameWithWinners_v1"] = endGameWithWinners_v1;
-        o["endRound_v1"] = endRound_v1;
-        o["getRound_v1"] = getRound_v1;
-        o["getTurnHolder_v1"] = getTurnHolder_v1;
-        o["isInPlay_v1"] = isInPlay_v1;
-        o["restartGameIn_v1"] = restartGameIn_v1;
-        o["startNextTurn_v1"] = startNextTurn_v1;
-        o["getControllerId_v1"] = getControllerId_v1;
-        o["getLevelPacks_v2"] = getLevelPacks_v2;
-        o["getItemPacks_v1"] = getItemPacks_v1;
-        o["loadLevelPackData_v1"] = loadLevelPackData_v1;
-        o["loadItemPackData_v1"] = loadItemPackData_v1;
-        o["getOccupants_v1"] = getOccupants_v1;
-        o["getOccupantName_v1"] = getOccupantName_v1;
-        o["sendChat_v1"] = sendChat_v1;
-        o["getMyId_v1"] = getMyId_v1;
+        routeFunction(o, "endGame_v2", endGame_v2, false);
+        routeFunction(o, "endGameWithScores_v1", endGameWithScores_v1, false);
+        routeFunction(o, "endGameWithWinners_v1", endGameWithWinners_v1, false);
+        routeFunction(o, "endRound_v1", endRound_v1, false);
+        routeFunction(o, "getRound_v1", getRound_v1, false);
+        routeFunction(o, "getTurnHolder_v1", getTurnHolder_v1, false);
+        routeFunction(o, "isInPlay_v1", isInPlay_v1, false);
+        routeFunction(o, "restartGameIn_v1", restartGameIn_v1, false);
+        routeFunction(o, "startNextTurn_v1", startNextTurn_v1, false);
+        routeFunction(o, "getControllerId_v1", getControllerId_v1, false);
+        routeFunction(o, "getLevelPacks_v2", getLevelPacks_v2, false);
+        routeFunction(o, "getItemPacks_v1", getItemPacks_v1, false);
+        routeFunction(o, "loadLevelPackData_v1", loadLevelPackData_v1, false);
+        routeFunction(o, "loadItemPackData_v1", loadItemPackData_v1, false);
+        routeFunction(o, "getOccupants_v1", getOccupants_v1, false);
+        routeFunction(o, "getOccupantName_v1", getOccupantName_v1, false);
+        routeFunction(o, "sendChat_v1", sendChat_v1, false);
+        routeFunction(o, "getMyId_v1", getMyId_v1, false);
 
         // .game.seating
-        o["getPlayers_v1"] = getPlayers_v1;
-        o["getPlayerPosition_v1"] = getPlayerPosition_v1;
-        o["getMyPosition_v1"] = getMyPosition_v1;
+        routeFunction(o, "getPlayers_v1", getPlayers_v1, false);
+        routeFunction(o, "getPlayerPosition_v1", getPlayerPosition_v1, false);
+        routeFunction(o, "getMyPosition_v1", getMyPosition_v1, false);
 
         // .services
-        o["checkDictionaryWord_v2"] = checkDictionaryWord_v2;
-        o["getDictionaryLetterSet_v2"] = getDictionaryLetterSet_v2;
-        o["getDictionaryWords_v1"] = getDictionaryWords_v1;
-        o["setTicker_v1"] = setTicker_v1;
+        routeFunction(o, "checkDictionaryWord_v2", checkDictionaryWord_v2, false);
+        routeFunction(o, "getDictionaryLetterSet_v2", getDictionaryLetterSet_v2, false);
+        routeFunction(o, "getDictionaryWords_v1", getDictionaryWords_v1, false);
+        routeFunction(o, "setTicker_v1", setTicker_v1, false);
 
         // .services.bags
-        o["getFromCollection_v2"] = getFromCollection_v2;
-        o["mergeCollection_v1"] = mergeCollection_v1;
-        o["populateCollection_v1"] = populateCollection_v1;
+        routeFunction(o, "getFromCollection_v2", getFromCollection_v2, false);
+        routeFunction(o, "mergeCollection_v1", mergeCollection_v1, false);
+        routeFunction(o, "populateCollection_v1", populateCollection_v1, false);
 
         // Old methods: backwards compatability
-        //o["awardFlow_v1"] = awardFlow_v1;
-        //o["awardFlow_v2"] = awardFlow_v2;
-        //o["checkDictionaryWord_v1"] = checkDictionaryWord_v1;
-        //o["endTurn_v2"] = startNextTurn_v1; // it's the same!
-        //o["getAvailableFlow_v1"] = getAvailableFlow_v1;
-        //o["getDictionaryLetterSet_v1"] = getDictionaryLetterSet_v1;
-        //o["setProperty_v1"] = setProperty_v1;
-        //o["getLevelPacks_v1"] = getLevelPacks_v1;
+        //routeFunction(o, "awardFlow_v1", awardFlow_v1, false);
+        //routeFunction(o, "awardFlow_v2", awardFlow_v2, false);
+        //routeFunction(o, "checkDictionaryWord_v1", checkDictionaryWord_v1, false);
+        //routeFunction(o, "endTurn_v2", startNextTurn_v1, false); // it's the same!
+        //routeFunction(o, "getAvailableFlow_v1", getAvailableFlow_v1, false);
+        //routeFunction(o, "getDictionaryLetterSet_v1", getDictionaryLetterSet_v1, false);
+        //routeFunction(o, "setProperty_v1", setProperty_v1, false);
+        //routeFunction(o, "getLevelPacks_v1", getLevelPacks_v1, false);
 
         /* WhirledGameBackend */
 
         // GameControl
-        o["focusContainer_v1"] = focusContainer_v1;
+        routeFunction(o, "focusContainer_v1", focusContainer_v1, false);
 
         // .local
-        o["alterKeyEvents_v1"] = alterKeyEvents_v1;
-        o["clearScores_v1"] = clearScores_v1;
-        o["filter_v1"] = filter_v1;
-        o["getHeadShot_v2"] = getHeadShot_v2;
-        o["getSize_v1"] = getSize_v1;
-        o["isEmbedded_v1"] = isEmbedded_v1;
-        o["localChat_v1"] = localChat_v1;
-        o["setMappedScores_v1"] = setMappedScores_v1;
-        o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
-        o["setPlayerScores_v1"] = setPlayerScores_v1;
-        o["setFrameRate_v1"] = setFrameRate_v1;
-        o["setShowReplay_v1"] = setShowReplay_v1;
-        o["setStageQuality_v1"] = setStageQuality_v1;
-        o["showAllGames_v1"] = showAllGames_v1;
-        o["showGameLobby_v1"] = showGameLobby_v1;
-        o["showGameShop_v1"] = showGameShop_v1;
-        o["showTrophies_v1"] = showTrophies_v1;
-        o["showInvitePage_v1"] = showInvitePage_v1;
-        o["getInviteToken_v1"] = getInviteToken_v1;
-        o["getInviterMemberId_v1"] = getInviterMemberId_v1;
+        routeFunction(o, "alterKeyEvents_v1", alterKeyEvents_v1, false);
+        routeFunction(o, "clearScores_v1", clearScores_v1, false);
+        routeFunction(o, "filter_v1", filter_v1, false);
+        routeFunction(o, "getHeadShot_v2", getHeadShot_v2, false);
+        routeFunction(o, "getSize_v1", getSize_v1, false);
+        routeFunction(o, "isEmbedded_v1", isEmbedded_v1, false);
+        routeFunction(o, "localChat_v1", localChat_v1, false);
+        routeFunction(o, "setMappedScores_v1", setMappedScores_v1, false);
+        routeFunction(o, "setOccupantsLabel_v1", setOccupantsLabel_v1, false);
+        routeFunction(o, "setPlayerScores_v1", setPlayerScores_v1, false);
+        routeFunction(o, "setFrameRate_v1", setFrameRate_v1, false);
+        routeFunction(o, "setShowReplay_v1", setShowReplay_v1, false);
+        routeFunction(o, "setStageQuality_v1", setStageQuality_v1, false);
+        routeFunction(o, "showAllGames_v1", showAllGames_v1, false);
+        routeFunction(o, "showGameLobby_v1", showGameLobby_v1, false);
+        routeFunction(o, "showGameShop_v1", showGameShop_v1, false);
+        routeFunction(o, "showTrophies_v1", showTrophies_v1, false);
+        routeFunction(o, "showInvitePage_v1", showInvitePage_v1, false);
+        routeFunction(o, "getInviteToken_v1", getInviteToken_v1, false);
+        routeFunction(o, "getInviterMemberId_v1", getInviterMemberId_v1, false);
 
         // .game
-        o["isMyTurn_v1"] = isMyTurn_v1;
-        o["playerReady_v1"] = playerReady_v1;
+        routeFunction(o, "isMyTurn_v1", isMyTurn_v1, false);
+        routeFunction(o, "playerReady_v1", playerReady_v1, false);
 
         // Old methods: backwards compatability
-        //o["getStageBounds_v1"] = getStageBounds_v1;
-        //o["getHeadShot_v1"] = getHeadShot_v1;
-        //o["setShowButtons_v1"] = setShowButtons_v1;
+        //routeFunction(o, "getStageBounds_v1", getStageBounds_v1, false);
+        //routeFunction(o, "getHeadShot_v1", getHeadShot_v1, false);
+        //routeFunction(o, "setShowButtons_v1", setShowButtons_v1, false);
+    }
+
+    protected function routeFunction (o :Object, name :String, offlineImpl :Function,
+        rerouteToWhirled :Boolean) :void
+    {
+        var f :Function;
+        if (rerouteToWhirled && _whirledCtrl != null) {
+            f = function (...args) :* {
+                return _whirledCtrl.callHostCode(name, args);
+            };
+        } else {
+            f = offlineImpl;
+        }
+
+        o[name] = f;
     }
 
     //---- GameControl -----------------------------------------------------
@@ -511,6 +566,12 @@ public class LoopbackGameControl extends GameControl
     {
         // no-op
         return [];
+    }
+
+    protected function requestConsumeItemPack_v1 (ident :String, msg :String) :Boolean
+    {
+        // no-op
+        return false;
     }
 
     //---- .game -----------------------------------------------------------
@@ -1320,6 +1381,8 @@ public class LoopbackGameControl extends GameControl
 
     protected static var _playerLoopback :LoopbackGameControl;
     protected static var _serverLoopback :LoopbackGameControl;
+
+    protected static var _whirledCtrl :GameControl;
 
     protected static const LOOPBACK_PLAYER_ID :int = 1;
     protected static const SERVER_AGENT_ID :int = int.MIN_VALUE;
