@@ -13,6 +13,13 @@ import com.whirled.AbstractSubControl;
 [Event(name="CoinsAwarded", type="com.whirled.game.CoinsAwardedEvent")]
 
 /**
+ * Dispatched when this player has purchased new game content.
+ *
+ * @eventType com.whirled.game.GameContentEvent.PLAYER_CONTENT_ADDED
+ */
+[Event(name="PlayerContentAdded", type="com.whirled.game.GameContentEvent")]
+
+/**
  * Dispatched when this player has consumed an item pack.
  *
  * @eventType com.whirled.game.GameContentEvent.PLAYER_CONTENT_CONSUMED
@@ -44,8 +51,8 @@ public class PlayerSubControl extends AbstractSubControl
     }
 
     /**
-     * Get the user-specific game data for the specified occupant. The first time this is requested 
-     * per game instance it will be retrieved from the database. After that, it will be returned 
+     * Get the user-specific game data for the specified occupant. The first time this is requested
+     * per game instance it will be retrieved from the database. After that, it will be returned
      * from memory.
      *
      * @param callback the function that will be called when the cookie has loaded.
