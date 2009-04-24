@@ -527,21 +527,13 @@ public abstract class WhirledGameManager extends GameManager
     @Override // from GameManager
     public boolean allPlayersReady ()
     {
-        if (!super.allPlayersReady()) {
-            return false;
-        }
-
-        if (requiresAgent()) {
-            return _gameAgent != null && _gameAgentReady;
-        }
-
-        return true;
+        return super.allPlayersReady() && ((_gameAgent == null) || _gameAgentReady);
     }
 
     @Override // from PlayManager
     public boolean isAgent (ClientObject caller)
     {
-        return _gameAgent != null && _gameAgent.clientOid == caller.getOid();
+        return (_gameAgent != null) && (_gameAgent.clientOid == caller.getOid());
     }
 
     /**
@@ -738,9 +730,13 @@ public abstract class WhirledGameManager extends GameManager
 
         // register an agent for this game if required
         _gameAgent = createAgent();
-        if (_gameAgent != null) {
-            _bureauReg.startAgent(_gameAgent);
 
+        // set agent state to ready if the game doesn't require one
+        if (_gameAgent == null) {
+            _gameObj.setAgentState(WhirledGameObject.AGENT_READY);
+
+        } else  {
+            _bureauReg.startAgent(_gameAgent);
             // if the agent dies and we didn't destroy it, notify the client
             _gameAgent.addListener(new ObjectDeathListener() {
                 public void objectDestroyed (ObjectDestroyedEvent event) {
@@ -751,26 +747,12 @@ public abstract class WhirledGameManager extends GameManager
                 }
             });
         }
-
-        // set agent state to ready if the game doesn't require one
-        if (_gameAgent == null) {
-            _gameObj.setAgentState(WhirledGameObject.AGENT_READY);
-        }
     }
 
     /**
-     * Check if this game requires an agent.
-     */
-    protected boolean requiresAgent ()
-    {
-        WhirledGameConfig cfg = (WhirledGameConfig)_gameconfig;
-        String code = cfg.getGameDefinition().getServerMediaPath(cfg.getGameId());
-        return !StringUtil.isBlank(code);
-    }
-
-    /**
-     * Creates the agent for this game. An agent is optional server-side code for a
-     * game and is managed by the {@link BureauRegistry}.
+     * Creates the agent for this game. An agent is optional server-side code for a game and is
+     * managed by the {@link BureauRegistry}.
+     *
      * @return the new agent object or null if the game does not require it
      */
     protected GameAgentObject createAgent ()
