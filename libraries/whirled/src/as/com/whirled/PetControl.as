@@ -1,7 +1,7 @@
 //
 // $Id$
 //
-// Copyright (c) 2007 Three Rings Design, Inc.  Please do not redistribute.
+// Copyright (c) 2007-2009 Three Rings Design, Inc. Please do not redistribute.
 
 package com.whirled {
 

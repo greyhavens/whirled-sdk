@@ -1,3 +1,8 @@
+//
+// $Id$
+//
+// Copyright (c) 2007-2009 Three Rings Design, Inc. Please do not redistribute.
+
 /*
 nochump.util.zip.ZipError
 Copyright (C) 2007 David Chang (dchang@nochump.com)

@@ -1,3 +1,8 @@
+//
+// $Id$
+//
+// Copyright (c) 2007-2009 Three Rings Design, Inc. Please do not redistribute.
+
 package com.whirled.bureau.client {
 
 /** Interface to allow agents to load and unload the code that they're running. */
