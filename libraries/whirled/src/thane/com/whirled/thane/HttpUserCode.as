@@ -1,6 +1,8 @@
 package com.whirled.thane {
 
-import avmplus.Domain;
+import avmplus.Yard;
+import avmplus.Puddle;
+
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.IOErrorEvent;
@@ -8,8 +10,13 @@ import flash.events.ProgressEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
+import flash.utils.setTimeout;
+
 import com.adobe.net.URI;
+
+import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+
 import com.whirled.bureau.client.UserCodeLoader;
 import com.whirled.bureau.client.UserCode;
 
@@ -30,14 +37,12 @@ public class HttpUserCode
         _url = url;
         _className = className;
         _callback = callback;
+        _traceListener = traceListener;
 
-        _bridge = new EventDispatcher();
-        if (traceListener != null) {
-            _bridge.addEventListener(TraceEvent.TRACE, function (evt :TraceEvent) :void {
-                if (evt.trace != null) {
-                    traceListener(evt.trace.join(" "));
-                }
-            });
+        _yardBit = _yardBits.get(url);
+        if (_yardBit != null) {
+            setTimeout(yardBitAvailable, 0);
+            return;
         }
 
         _loader = new URLLoader();
@@ -51,14 +56,9 @@ public class HttpUserCode
     // from UserCode
     public function connect (connectListener :Function) :void
     {
-        try {
-            _bridge.addEventListener("controlConnect", connectListener);
-            _instance = new _class();
-            log.info("New server instantiated!");
-        }
-        finally {
-            _bridge = null; // prevent connecting twice
-        }
+        _yardBit.bridge.addEventListener("controlConnect", connectListener);
+        _instance = new _class();
+        log.info("New server instantiated!");
     }
 
     /** @inheritDoc */
@@ -66,8 +66,8 @@ public class HttpUserCode
     public function release () :void
     {
         log.info("Releasing " + this);
-        if (_domain != null) {
-            Thane.unspawnDomain(_domain);
+        if (_yardBit != null) {
+            Thane.unspawnYard(_yardBit.id);
         }
         releaseReferences();
     }
@@ -75,15 +75,15 @@ public class HttpUserCode
     /** @inheritDoc */
     public function outputTrace (str :String, err :Error = null) :void
     {
-        Thane.outputToTrace(_domain, str, err);
+        Thane.outputToTrace(_yardBit.yard, str, err);
     }
 
     /** @inheritDoc */
     // from Object
     public function toString () :String
     {
-        return "HttpUserCode [url=" + _url + ", className=" + _className + ", domainId=" +
-            _domainId + ", domain=" + _domain + ", class=" + _class + ", instance=" + _instance +
+        return "HttpUserCode [url=" + _url + ", className=" + _className + ", yardId=" +
+            _yardId + ", class=" + _class + ", instance=" + _instance +
             "]";
     }
 
@@ -100,33 +100,64 @@ public class HttpUserCode
         var success :Boolean = false;
 
         try {
-            _domainId = "UserCode-" + (++_lastId);
-            var consoleTracePrefix :String = _domainId + ": ";
-            _domain = Thane.spawnDomain(_domainId, consoleTracePrefix, _bridge);
-            _domain.loadBytes(_loader.data);
-            _loader = null;
-            _class = _domain.getClass(_className);
-            success = _class != null;
+            // check again if the yard was resolved while we were waiting
+            _yardBit = _yardBits.get(_yardId);
+            if (_yardBit == null) {
+                _yardBit = new YardBit();
+                _yardBit.id = "Yard#" + (++ _lastId);
+                _yardBit.bridge = new EventDispatcher();
+
+                if (_traceListener != null) {
+                    _yardBit.bridge.addEventListener(TraceEvent.TRACE, relayTrace);
+                }
+
+                trace("Creating new yard: " + _yardBit.id);
+                _yardBit.yard = Thane.spawnYard(
+                    _yardBit.id, _loader.data, _yardBit.id + ": ", _yardBit.bridge);
+
+                _yardBits.put(_yardId, _yardBit);
+            }
+            yardBitAvailable();
 
         } catch (err :Error) {
-            log.info("Error loading user code: " + err.getStackTrace());
+            log.error("Error loading user code: " + err.getStackTrace());
             outputTrace("Could not instantiate server class", err);
+            informCaller(false);
 
         } finally {
+            _loader = null;
 
-            try {
-                _callback(success ? this : null);
+        }
+    }
 
-            } catch (err :Error) {
-                log.warning("Error invoking callback: " + err.getStackTrace());
-                releaseReferences();
-            }
+    protected function relayTrace (evt :TraceEvent) :void {
+        if (evt.trace != null) {
+            _traceListener(evt.trace.join(" "));
+        }
+    }
 
-            _callback = null;
+    protected function yardBitAvailable () :void
+    {
+        _puddle = new Puddle(_yardBit.yard);
+        trace("Created new puddle within yard: " + _yardBit.id);
+        _class = _puddle.domain.getClass(_className);
+        informCaller(_class != null);
+    }
 
-            if (!success) {
-                release();
-            }
+    protected function informCaller (success :Boolean) :void
+    {
+        try {
+            _callback(success ? this : null);
+
+        } catch (err :Error) {
+            log.warning("Error invoking callback: " + err.getStackTrace());
+            releaseReferences();
+        }
+
+        _callback = null;
+
+        if (!success) {
+            release();
         }
     }
 
@@ -134,8 +165,8 @@ public class HttpUserCode
     protected function releaseReferences () :void
     {
         _loader = null;
-        _bridge = null;
-        _domain = null;
+        _puddle = null;
+        _yardBit = null;
         _class = null;
         _instance = null;
     }
@@ -144,13 +175,27 @@ public class HttpUserCode
     protected var _className :String;
     protected var _callback :Function;
     protected var _loader :URLLoader;
-    protected var _bridge :EventDispatcher;
-    protected var _domainId :String;
-    protected var _domain :Domain;
+    protected var _traceListener :Function;
+    protected var _yardId :String;
+    protected var _yardBit :YardBit;
+    protected var _puddle :Puddle;
     protected var _class :Class;
     protected var _instance :Object;
 
     protected static var _lastId :int;
+    protected static var _yardBits :HashMap = new HashMap();
 }
 
+}
+
+import avmplus.Yard;
+import avmplus.Puddle;
+
+import flash.events.EventDispatcher;
+
+class YardBit
+{
+    public var id :String;
+    public var bridge :EventDispatcher;
+    public var yard :Yard;
 }
