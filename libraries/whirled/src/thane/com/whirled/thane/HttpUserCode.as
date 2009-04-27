@@ -10,6 +10,7 @@ import flash.events.ProgressEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
+import flash.utils.Dictionary;
 import flash.utils.setTimeout;
 
 import com.adobe.net.URI;
@@ -107,10 +108,6 @@ public class HttpUserCode
                 _yardBit.id = "Yard#" + (++ _lastId);
                 _yardBit.bridge = new EventDispatcher();
 
-                if (_traceListener != null) {
-                    _yardBit.bridge.addEventListener(TraceEvent.TRACE, relayTrace);
-                }
-
                 trace("Creating new yard: " + _yardBit.id);
                 _yardBit.yard = Thane.spawnYard(
                     _yardBit.id, _loader.data, _yardBit.id + ": ", _yardBit.bridge);
@@ -130,18 +127,26 @@ public class HttpUserCode
         }
     }
 
-    protected function relayTrace (evt :TraceEvent) :void {
-        if (evt.trace != null) {
-            _traceListener(evt.trace.join(" "));
-        }
-    }
-
     protected function yardBitAvailable () :void
     {
         _puddle = new Puddle(_yardBit.yard);
+
         trace("Created new puddle within yard: " + _yardBit.id);
         _class = _puddle.domain.getClass(_className);
+
+        // listen for all trace events coming in on the bridge
+        _yardBit.bridge.addEventListener(TraceEvent.TRACE, relayTrace);
+
         informCaller(_class != null);
+    }
+
+    protected function relayTrace (evt :TraceEvent) :void {
+        if (evt.trace != null) {
+            // this trace is for us if _className resolves to _class on its domain
+            if (_class === evt.domain.getClass(_className)) {
+                _traceListener(evt.trace.join(" "));
+            }
+        }
     }
 
     protected function informCaller (success :Boolean) :void
@@ -182,6 +187,8 @@ public class HttpUserCode
     protected var _instance :Object;
 
     protected static var _lastId :int;
+
+    // track yardbits per URL
     protected static var _yardBits :HashMap = new HashMap();
 }
 
