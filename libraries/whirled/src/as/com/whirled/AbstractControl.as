@@ -6,9 +6,7 @@
 package com.whirled {
 
 import flash.display.DisplayObject;
-
 import flash.errors.IllegalOperationError;
-
 import flash.events.Event;
 import flash.events.EventDispatcher;
 
@@ -143,7 +141,7 @@ public class AbstractControl extends EventDispatcher
      * Populate any properties or functions we want to expose to the host code.
      * @private
      */
-    protected function setUserProps (o :Object) :void
+    public function setUserProps (o :Object) :void
     {
         for each (var ctrl :AbstractSubControl in _subControls) {
             ctrl.setUserProps(o);
