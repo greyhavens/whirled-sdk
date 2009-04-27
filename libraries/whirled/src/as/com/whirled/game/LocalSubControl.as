@@ -324,7 +324,7 @@ public class LocalSubControl extends AbstractSubControl
      */
     public function getInviteToken () :String
     {
-    	return callHostCode("getInviteToken_v1");
+        return callHostCode("getInviteToken_v1");
     }
 
     /**
@@ -334,13 +334,13 @@ public class LocalSubControl extends AbstractSubControl
      */
     public function getInviterMemberId () :int
     {
-    	return callHostCode("getInviterMemberId_v1");
+        return callHostCode("getInviterMemberId_v1");
     }
 
     /**
      * @private
      */
-    override protected function setUserProps (o :Object) :void
+    override public function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
 

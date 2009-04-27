@@ -13,14 +13,14 @@ import com.threerings.util.Util;
 /**
  * Dispatched when the user controlling this avatar speaks. You may trigger a speak animation off
  * of this event.
- * 
+ *
  * @eventType com.whirled.ControlEvent.AVATAR_SPOKE
  */
 [Event(name="avatarSpoke", type="com.whirled.ControlEvent")]
 
 /**
  * Dispatched when the user or game controlling this avatar triggers an action.
- * 
+ *
  * @eventType com.whirled.ControlEvent.ACTION_TRIGGERED
  * @see com.whirled.avrg.PlayerSubControlBase#playAvatarAction()
  */
@@ -134,7 +134,7 @@ public class AvatarControl extends ActorControl
     /**
      * @private
      */
-    override protected function setUserProps (o :Object) :void
+    override public function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
 
@@ -161,7 +161,7 @@ public class AvatarControl extends ActorControl
         dispatchCtrlEvent(ControlEvent.AVATAR_SPOKE);
     }
 
-    /** 
+    /**
      * Get the names of all the current actions.
      * @private
      */

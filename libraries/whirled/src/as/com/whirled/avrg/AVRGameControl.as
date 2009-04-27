@@ -83,7 +83,7 @@ public class AVRGameControl extends AbstractControl
     }
 
     /** @private */
-    override protected function setUserProps (o :Object) :void
+    override public function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
         o["requestMobSprite_v1"] = requestMobSprite_v1;
@@ -126,14 +126,14 @@ public class AVRGameControl extends AbstractControl
     }
 
     /** @private */
-    internal function leftRoom_v1 (scene :int) :void    
+    internal function leftRoom_v1 (scene :int) :void
     {
         _player.leftRoom_v1(scene);
         _room.leftRoom();
     }
 
     /** @private */
-    internal function enteredRoom_v1 (scene :int) :void    
+    internal function enteredRoom_v1 (scene :int) :void
     {
         _player.enteredRoom_v1(scene);
     }

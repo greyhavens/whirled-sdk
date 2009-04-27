@@ -48,7 +48,7 @@ public class GameControl extends AbstractControl
     public static const BACKDROP_SHOP :String = "backdrops";
     public static const TOY_SHOP :String = "toys";
     public static const PET_SHOP :String = "pets";
-  
+
     /**
      * Creates a GameControl that connects to the Whirled game system.
      *
@@ -119,7 +119,7 @@ public class GameControl extends AbstractControl
      * security boundary.
      * @private
      */
-    override protected function setUserProps (o :Object) :void
+    override public function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
 

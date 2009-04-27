@@ -367,7 +367,7 @@ public class LocalSubControl extends AbstractSubControl
      */
     public function getInviterMemberId () :int
     {
-    	return callHostCode("getInviterMemberId_v1");
+        return callHostCode("getInviterMemberId_v1");
     }
 
     /** @private */
@@ -377,7 +377,7 @@ public class LocalSubControl extends AbstractSubControl
     }
 
     /** @private */
-    override protected function setUserProps (o :Object) :void
+    override public function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
         o["panelResized_v1"] = panelResized_v1;

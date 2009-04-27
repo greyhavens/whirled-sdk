@@ -231,7 +231,7 @@ public class EntityControl extends AbstractControl
 
     /**
      * Get the "environment" in which this entity is presently running.
-     * 
+     *
      * @return one of the ENV_VIEWER, ENV_SHOP, or ENV_ROOM constants,
      * or null if we're not connected.
      */
@@ -625,7 +625,7 @@ public class EntityControl extends AbstractControl
      * Populate any properties that we provide back to whirled.
      * @private
      */
-    override protected function setUserProps (o :Object) :void
+    override public function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
 
@@ -676,7 +676,7 @@ public class EntityControl extends AbstractControl
     }
 
     /**
-     * WHIRLED INTERNAL. 
+     * WHIRLED INTERNAL.
      * Helper method to dispatch a ControlEvent, avoiding creation if there are no listeners.
      * @private
      */
@@ -812,7 +812,7 @@ public class EntityControl extends AbstractControl
     {
         dispatchCtrlEvent(ControlEvent.MUSIC_ID3, null, id3);
     }
-    
+
     /**
      * Check the status of the ticker, starting or stopping it as necessary.
      * @private

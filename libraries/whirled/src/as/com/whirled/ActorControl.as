@@ -133,7 +133,7 @@ public class ActorControl extends EntityControl
     /**
      * @private
      */
-    override protected function setUserProps (o :Object) :void
+    override public function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
 

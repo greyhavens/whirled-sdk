@@ -26,7 +26,7 @@ import flash.utils.Dictionary;
 
 /**
  * Dispatched to entities when they overhear chatter in the room.
- * 
+ *
  * @eventType com.whirled.ControlEvent.CHAT_RECEIVED
  */
 [Event(name="chatReceived", type="com.whirled.ControlEvent")]
@@ -121,7 +121,7 @@ public class RoomSubControlClient extends RoomSubControlBase
     }
 
     /** @private */
-    override protected function setUserProps (o :Object) :void
+    override public function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
 

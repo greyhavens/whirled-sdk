@@ -105,7 +105,7 @@ public class GameSubControl extends AbstractSubControl
     public static const PROPORTIONAL :int = 3;
 
 
-    /** ID constant returned by <code>getMyId</code> when called by a game's server agent. 
+    /** ID constant returned by <code>getMyId</code> when called by a game's server agent.
      * @see #getMyId() */
     public static const SERVER_AGENT_ID :int = int.MIN_VALUE;
 
@@ -133,7 +133,7 @@ public class GameSubControl extends AbstractSubControl
      */
     public function getConfig () :Object
     {
-        return _gameConfig; 
+        return _gameConfig;
     }
 
     /**
@@ -203,7 +203,7 @@ public class GameSubControl extends AbstractSubControl
         callHostCode("loadItemPackData_v1", ident, onLoaded, onFailure);
     }
 
-    /** 
+    /**
      * Send a system chat message that will be seen by everyone in the game room,
      * even observers.
      */
@@ -275,7 +275,7 @@ public class GameSubControl extends AbstractSubControl
     {
         return int(callHostCode("getMyId_v1"));
     }
-    
+
     /**
      * Returns true if we are in control of this game. False if another client is in control.
      * Always returns false when called from the game's server agent.
@@ -292,7 +292,7 @@ public class GameSubControl extends AbstractSubControl
     {
         return getMyId() == SERVER_AGENT_ID;
     }
-    
+
     /**
      * Returns the player id of the client that is in control of this game.
      */
@@ -300,7 +300,7 @@ public class GameSubControl extends AbstractSubControl
     {
         return int(callHostCode("getControllerId_v1"));
     }
-    
+
     /**
      * Returns the player id of the current turn holder, or 0 if it's nobody's turn.
      */
@@ -458,7 +458,7 @@ public class GameSubControl extends AbstractSubControl
     }
 
     /** @private */
-    override protected function setUserProps (o :Object) :void
+    override public function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
 

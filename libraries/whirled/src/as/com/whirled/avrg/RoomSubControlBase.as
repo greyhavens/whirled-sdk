@@ -214,7 +214,7 @@ public class RoomSubControlBase extends TargetedSubControl
     }
 
     /** @private */
-    override protected function setUserProps (o :Object) :void
+    override public function setUserProps (o :Object) :void
     {
         super.setUserProps(o);
 
