@@ -82,8 +82,8 @@ public class HttpUserCode
     // from Object
     public function toString () :String
     {
-        return "HttpUserCode [url=" + _url + ", className=" + _className + ", yardId=" +
-            _yardId + ", class=" + _class + ", instance=" + _instance +
+        return "HttpUserCode [url=" + _url + ", className=" + _className + ", yard=" +
+            _yard.id + ", class=" + _class + ", instance=" + _instance +
             "]";
     }
 
@@ -101,7 +101,7 @@ public class HttpUserCode
 
         try {
             // check again if the yard was resolved while we were waiting
-            _yardBit = _yardBits.get(_yardId);
+            _yardBit = _yardBits.get(_url);
             if (_yardBit == null) {
                 _yardBit = new YardBit();
                 _yardBit.id = "Yard#" + (++ _lastId);
@@ -115,7 +115,7 @@ public class HttpUserCode
                 _yardBit.yard = Thane.spawnYard(
                     _yardBit.id, _loader.data, _yardBit.id + ": ", _yardBit.bridge);
 
-                _yardBits.put(_yardId, _yardBit);
+                _yardBits.put(_url, _yardBit);
             }
             yardBitAvailable();
 
@@ -176,7 +176,6 @@ public class HttpUserCode
     protected var _callback :Function;
     protected var _loader :URLLoader;
     protected var _traceListener :Function;
-    protected var _yardId :String;
     protected var _yardBit :YardBit;
     protected var _puddle :Puddle;
     protected var _class :Class;
