@@ -10,7 +10,6 @@ import flash.events.ProgressEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
-import flash.utils.Dictionary;
 import flash.utils.setTimeout;
 
 import com.adobe.net.URI;
@@ -67,9 +66,10 @@ public class HttpUserCode
     public function release () :void
     {
         log.info("Releasing " + this);
-        if (_yardBit != null) {
-            Thane.unspawnYard(_yardBit.id);
-        }
+// TODO: It's high time we figure out for sure how to nuke a domain.
+//        if (_yardBit != null) {
+//            Thane.unspawnYard(_yardBit.id);
+//        }
         releaseReferences();
     }
 
@@ -104,14 +104,13 @@ public class HttpUserCode
             // check again if the yard was resolved while we were waiting
             _yardBit = _yardBits.get(_url);
             if (_yardBit == null) {
-                _yardBit = new YardBit();
-                _yardBit.id = "Yard#" + (++ _lastId);
-                _yardBit.bridge = new EventDispatcher();
+                var id :String = "Yard#" + (++ _lastId);
+                var bridge :EventDispatcher = new EventDispatcher();
 
-                trace("Creating new yard: " + _yardBit.id);
-                _yardBit.yard = Thane.spawnYard(
-                    _yardBit.id, _loader.data, _yardBit.id + ": ", _yardBit.bridge);
+                trace("Creating new yard: " + id);
+                var yard :Yard = Thane.spawnYard(id, _loader.data, id + ": ", bridge);
 
+                _yardBit = new YardBit(id, yard, bridge, _className);
                 _yardBits.put(_url, _yardBit);
             }
             yardBitAvailable();
@@ -134,19 +133,11 @@ public class HttpUserCode
         trace("Created new puddle within yard: " + _yardBit.id);
         _class = _puddle.domain.getClass(_className);
 
-        // listen for all trace events coming in on the bridge
-        _yardBit.bridge.addEventListener(TraceEvent.TRACE, relayTrace);
+        // map this class to the associated trace listener (yeah this is weird)
+        _yardBit.listeners[_class] = _traceListener;
+        _traceListener = null;
 
         informCaller(_class != null);
-    }
-
-    protected function relayTrace (evt :TraceEvent) :void {
-        if (evt.trace != null) {
-            // this trace is for us if _className resolves to _class on its domain
-            if (_class === evt.domain.getClass(_className)) {
-                _traceListener(evt.trace.join(" "));
-            }
-        }
     }
 
     protected function informCaller (success :Boolean) :void
@@ -169,6 +160,10 @@ public class HttpUserCode
     /** Set everything we've used to null. */
     protected function releaseReferences () :void
     {
+        if (_class != null && _yardBit != null) {
+            delete _yardBit.listeners[_class];
+        }
+
         _loader = null;
         _puddle = null;
         _yardBit = null;
@@ -199,14 +194,41 @@ import avmplus.Puddle;
 
 import flash.events.EventDispatcher;
 
+import flash.utils.Dictionary;
+
 class YardBit
 {
     public var id :String;
-    public var bridge :EventDispatcher;
     public var yard :Yard;
+    public var bridge :EventDispatcher;
+    public var className :String;
+    public var listeners :Dictionary = new Dictionary();
+
+    public function YardBit (id :String, yard :Yard, bridge :EventDispatcher, className :String)
+    {
+        this.id = id;
+        this.yard = yard;
+        this.bridge = bridge;
+        this.className = className;
+
+        bridge.addEventListener(TraceEvent.TRACE, relayTrace);
+    }
 
     public function toString () :String
     {
         return "[Yard id=" + id + "]";
+    }
+
+    protected function relayTrace (evt :TraceEvent) :void
+    {
+        if (evt.trace != null) {
+            var cls :Class = evt.domain.getClass(className);
+            var fun :Function = listeners[cls];
+            if (fun == null) {
+                trace("Eek, got a trace I couldn't place: " + evt.trace.join(" "));
+                return;
+            }
+            fun(evt.trace.join(" "));
+        }
     }
 }
