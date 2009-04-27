@@ -88,7 +88,6 @@ public class ThrottlingMessageManager extends MessageManager
         flushQueue();
         if (!PlatformerContext.gctrl.game.amServerAgent() && getTimer() - _lastSent > _keepAlive) {
             _gameCtrl.net.sendMessage("ping", null);
-            trace("sending Ping");
             _lastSent = getTimer();
         }
         if (_tracker != null) {
