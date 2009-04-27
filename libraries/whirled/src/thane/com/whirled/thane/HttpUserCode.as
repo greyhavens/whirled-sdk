@@ -83,7 +83,7 @@ public class HttpUserCode
     public function toString () :String
     {
         return "HttpUserCode [url=" + _url + ", className=" + _className + ", yard=" +
-            _yard.id + ", class=" + _class + ", instance=" + _instance +
+            _yardBit + ", class=" + _class + ", instance=" + _instance +
             "]";
     }
 
@@ -197,4 +197,9 @@ class YardBit
     public var id :String;
     public var bridge :EventDispatcher;
     public var yard :Yard;
+
+    public function toString () :String
+    {
+        return "[Yard id=" + id + "]";
+    }
 }
