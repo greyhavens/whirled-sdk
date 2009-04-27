@@ -26,12 +26,12 @@ import flash.utils.getTimer;
 
 import com.whirled.game.GameControl;
 import com.whirled.net.MessageReceivedEvent;
+import com.whirled.contrib.platformer.PlatformerContext;
 
 public class ThrottlingMessageManager extends MessageManager
 {
-    public static const DEBUG :Boolean = false;
-
-    public function ThrottlingMessageManager (gameCtrl :GameControl, rate :int)
+    public function ThrottlingMessageManager (
+            gameCtrl :GameControl, rate :int, keepAlive :int = DEFAULT_KEEP_ALIVE)
     {
         super(gameCtrl);
         _minRate = rate;
@@ -39,6 +39,7 @@ public class ThrottlingMessageManager extends MessageManager
         _timer.addEventListener(TimerEvent.TIMER, onTimer);
         _timer.start();
         _lastSent = getTimer();
+        _keepAlive = DEFAULT_KEEP_ALIVE;
     }
 
     public function trackRateAgainstId (
@@ -65,15 +66,7 @@ public class ThrottlingMessageManager extends MessageManager
         if (_queue.msgs != null) {
             super.sendMessage(_queue);
             _queue = new QueueMessage();
-            if (DEBUG) {
-                _sent++;
-                if (_sent == 10) {
-                    var now :int = getTimer();
-                    trace("sent 10 messages in " + (now - _lastSent));
-                    _lastSent = now;
-                    _sent = 0;
-                }
-            }
+            _lastSent = getTimer();
         }
     }
 
@@ -93,6 +86,11 @@ public class ThrottlingMessageManager extends MessageManager
     protected function onTimer (... ignored) :void
     {
         flushQueue();
+        if (!PlatformerContext.gctrl.game.amServerAgent() && getTimer() - _lastSent > _keepAlive) {
+            _gameCtrl.net.sendMessage("ping", null);
+            trace("sending Ping");
+            _lastSent = getTimer();
+        }
         if (_tracker != null) {
             var diff :int = getTimer() - _lastTrackAdjust;
             if (diff > _trackAdjustRate) {
@@ -124,7 +122,6 @@ public class ThrottlingMessageManager extends MessageManager
 
     protected var _queue :QueueMessage = new QueueMessage();
     protected var _timer :Timer;
-    protected var _sent :int;
     protected var _lastSent :int;
     protected var _maxRate :int;
     protected var _minRate :int;
@@ -132,7 +129,9 @@ public class ThrottlingMessageManager extends MessageManager
     protected var _lastTrackAdjust :int;
     protected var _trackReceived :int;
     protected var _trackAdjustRate :int;
+    protected var _keepAlive :int;
 
     protected static const TRACK_RATE :int = 300;
+    protected static const DEFAULT_KEEP_ALIVE :int = 10000;
 }
 }
