@@ -39,9 +39,9 @@ public class HttpUserCode
         _callback = callback;
         _traceListener = traceListener;
 
-        _yardBit = _yardBits.get(url);
-        if (_yardBit != null) {
-            setTimeout(yardBitAvailable, 0);
+        _yard = _yards.get(url);
+        if (_yard != null) {
+            setTimeout(yardAvailable, 0);
             return;
         }
 
@@ -56,35 +56,32 @@ public class HttpUserCode
     // from UserCode
     public function connect (connectListener :Function) :void
     {
-        _yardBit.bridge.addEventListener("controlConnect", connectListener);
+        _connectListener = connectListener;
+        _bridge.addEventListener("controlConnect", _connectListener);
         _instance = new _class();
-        log.info("New server instantiated!");
+        info("New server instantiated: " + _instance);
     }
 
     /** @inheritDoc */
     // from UserCode
     public function release () :void
     {
-        log.info("Releasing " + this);
-// TODO: It's high time we figure out for sure how to nuke a domain.
-//        if (_yardBit != null) {
-//            Thane.unspawnYard(_yardBit.id);
-//        }
+        info("Releasing: " + _instance);
         releaseReferences();
     }
 
     /** @inheritDoc */
     public function outputTrace (str :String, err :Error = null) :void
     {
-        Thane.outputToTrace(_yardBit.yard, str, err);
+        Thane.outputToTrace(_puddle, str, err);
     }
 
     /** @inheritDoc */
     // from Object
     public function toString () :String
     {
-        return "HttpUserCode [url=" + _url + ", className=" + _className + ", yard=" +
-            _yardBit + ", class=" + _class + ", instance=" + _instance +
+        return "HttpUserCode [url=" + _url + ", className=" + _className + ", puddle=" +
+            _puddleId + ", class=" + _class + ", instance=" + _instance +
             "]";
     }
 
@@ -100,20 +97,26 @@ public class HttpUserCode
     {
         var success :Boolean = false;
 
+        // check again if the yard was resolved while we were waiting
+        _yard = _yards.get(_url);
+        if (_yard == null) {
+            _yard = new Yard(_loader.data);
+            _yards.put(_url, _yard);
+        }
+        yardAvailable();
+    }
+
+    protected function yardAvailable () :void
+    {
         try {
-            // check again if the yard was resolved while we were waiting
-            _yardBit = _yardBits.get(_url);
-            if (_yardBit == null) {
-                var id :String = "Yard#" + (++ _lastId);
-                var bridge :EventDispatcher = new EventDispatcher();
+            _puddleId = "Puddle#" + (++ _lastId);
+            _bridge = new EventDispatcher();
+            _puddle = Thane.spawnPuddle(_puddleId, _yard, _puddleId + ": ", _bridge);
 
-                trace("Creating new yard: " + id);
-                var yard :Yard = Thane.spawnYard(id, _loader.data, id + ": ", bridge);
+            _bridge.addEventListener(TraceEvent.TRACE, relayTrace);
+            _class = _puddle.domain.getClass(_className);
 
-                _yardBit = new YardBit(id, yard, bridge, _className);
-                _yardBits.put(_url, _yardBit);
-            }
-            yardBitAvailable();
+            info("Successfully spawned " + _puddleId + " with usercode class: " + _class);
 
         } catch (err :Error) {
             log.error("Error loading user code: " + err.getStackTrace());
@@ -122,22 +125,25 @@ public class HttpUserCode
 
         } finally {
             _loader = null;
+        }
 
+        informCaller(_class != null);
+    }
+
+    protected function relayTrace (evt :TraceEvent) :void
+    {
+        if (evt.trace != null) {
+            if (_traceListener == null) {
+                trace("Eek, got a trace I couldn't place: " + evt.trace.join(" "));
+                return;
+            }
+            _traceListener(evt.trace.join(" "));
         }
     }
 
-    protected function yardBitAvailable () :void
+    protected function info (msg :String) :void
     {
-        _puddle = new Puddle(_yardBit.yard);
-
-        trace("Created new puddle within yard: " + _yardBit.id);
-        _class = _puddle.domain.getClass(_className);
-
-        // map this class to the associated trace listener (yeah this is weird)
-        _yardBit.listeners[_class] = _traceListener;
-        _traceListener = null;
-
-        informCaller(_class != null);
+        log.info(_puddleId + ": " + msg);
     }
 
     protected function informCaller (success :Boolean) :void
@@ -160,75 +166,40 @@ public class HttpUserCode
     /** Set everything we've used to null. */
     protected function releaseReferences () :void
     {
-        if (_class != null && _yardBit != null) {
-            delete _yardBit.listeners[_class];
-        }
+        _bridge.removeEventListener(TraceEvent.TRACE, relayTrace);
+        _bridge.removeEventListener("controlConnect", _connectListener);
+        _bridge = null;
 
-        _loader = null;
+        _connectListener = null;
+        _traceListener = null;
+
+        if (_puddle != null) {
+            Thane.unspawnPuddle(_puddleId);
+        }
         _puddle = null;
-        _yardBit = null;
+        _yard = null;
+
         _class = null;
         _instance = null;
     }
 
     protected var _url :String;
+    protected var _puddleId :String;
     protected var _className :String;
     protected var _callback :Function;
     protected var _loader :URLLoader;
+    protected var _bridge: EventDispatcher;
     protected var _traceListener :Function;
-    protected var _yardBit :YardBit;
+    protected var _connectListener :Function;
+    protected var _yard :Yard;
     protected var _puddle :Puddle;
     protected var _class :Class;
     protected var _instance :Object;
 
     protected static var _lastId :int;
 
-    // track yardbits per URL
-    protected static var _yardBits :HashMap = new HashMap();
+    // track yards per URL
+    protected static var _yards :HashMap = new HashMap();
 }
 
-}
-
-import avmplus.Yard;
-import avmplus.Puddle;
-
-import flash.events.EventDispatcher;
-
-import flash.utils.Dictionary;
-
-class YardBit
-{
-    public var id :String;
-    public var yard :Yard;
-    public var bridge :EventDispatcher;
-    public var className :String;
-    public var listeners :Dictionary = new Dictionary();
-
-    public function YardBit (id :String, yard :Yard, bridge :EventDispatcher, className :String)
-    {
-        this.id = id;
-        this.yard = yard;
-        this.bridge = bridge;
-        this.className = className;
-
-        bridge.addEventListener(TraceEvent.TRACE, relayTrace);
-    }
-
-    public function toString () :String
-    {
-        return "[Yard id=" + id + "]";
-    }
-
-    protected function relayTrace (evt :TraceEvent) :void
-    {
-        if (evt.trace != null) {
-            var cls :Class = evt.domain.getClass(className);
-            var fun :Function = listeners[cls];
-            if (fun == null) {
-                trace("Eek, got a trace I couldn't place: " + evt.trace.join(" "));
-                return;
-            }
-            fun(evt.trace.join(" "));
-        }
-    }
 }
