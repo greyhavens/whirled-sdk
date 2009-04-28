@@ -10,8 +10,10 @@ import com.threerings.util.Name;
 import com.threerings.util.Controller;
 import com.threerings.presents.dobj.AttributeChangeListener;
 import com.threerings.presents.dobj.AttributeChangedEvent;
+import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.bureau.util.BureauContext;
 import com.threerings.parlor.game.data.GameObject;
+import com.threerings.parlor.game.data.UserIdentifier;
 import com.threerings.parlor.turn.client.TurnGameControllerDelegate;
 import com.whirled.bureau.client.BaseGameAgent;
 import com.whirled.bureau.client.GameAgentController;
@@ -26,6 +28,11 @@ public class ThaneGameController extends Controller
 {
     /** The backend we dispatch game events to. */
     public var backend :ThaneGameBackend;
+
+    public static function setUserIdentifier (userIder :UserIdentifier) :void
+    {
+        _userIder = userIder;
+    }
 
     /** Creates a new controller. The controller is not usable until <code>init</code> is
      *  called. */
@@ -61,6 +68,14 @@ public class ThaneGameController extends Controller
         _gameObj = null;
     }
 
+    /**
+     * Convert the occupant info to a permanent id.
+     */
+    public function infoToId (occInfo :OccupantInfo) :int
+    {
+        return _userIder.getUserId(occInfo.username);
+    }
+
     /** @inheritDoc */
     // from GameAgentController
     public function agentReady () :void
@@ -90,7 +105,7 @@ public class ThaneGameController extends Controller
     {
         var name :String = event.getName();
 
-        if (WhirledGameObject.CONTROLLER_OID == name) {
+        if (WhirledGameObject.CONTROLLER_ID == name) {
             backend.controlDidChange();
 
         } else if (WhirledGameObject.ROUND_ID == name) {
@@ -121,7 +136,6 @@ public class ThaneGameController extends Controller
                 turnDidChange(thname);
             }
         }
-
     }
 
     /**
@@ -239,6 +253,9 @@ public class ThaneGameController extends Controller
 
     /** The name of the turn holder field. */
     protected var _thfield :String;
+
+    /** The *required* user identifier. */
+    protected static var _userIder :UserIdentifier;
 
     protected static const _log :Log = Log.getLog(ThaneGameController);
 }

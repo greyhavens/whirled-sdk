@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 import com.samskivert.util.ArrayIntSet;
 import com.samskivert.util.CollectionUtil;
 import com.samskivert.util.Interval;
+import com.samskivert.util.IntIntMap;
 import com.samskivert.util.IntListUtil;
 import com.samskivert.util.RandomUtil;
 import com.samskivert.util.ResultListener;
@@ -76,12 +77,44 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
-     * Configures the oids of the winners of this game. If a game manager delegate wishes to handle
+     * Configures the ids of the winners of this game. If a game manager delegate wishes to handle
      * winner assignment, it should call this method and then call {@link #endGame}.
      */
-    public void setWinners (int[] winnerOids)
+    public void setWinners (int[] winnerIds)
     {
-        _winnerOids = winnerOids;
+        _winnerIds = winnerIds;
+    }
+
+    @Override // from PlaceManager
+    public void bodyWillEnter (BodyObject body)
+    {
+        super.bodyWillEnter(body);
+
+        int id = getPlayerPersistentId(body);
+        _idToOid.put(id, body.getOid());
+
+        // if we have no controller, then our new friend gets control
+        if (_gameObj.controllerId == 0) {
+            _gameObj.setControllerId(id);
+        }
+    }
+
+    @Override // from PlaceManager
+    public void bodyWillLeave (BodyObject body)
+    {
+        super.bodyWillLeave(body);
+
+        int id = getPlayerPersistentId(body);
+        _idToOid.remove(id);
+        // if this player was the controller, reassign control
+        if (id == _gameObj.controllerId) {
+            _gameObj.setControllerId(getControllerId());
+        }
+
+        // nix any of this player's cookies
+        if (_gameObj.userCookies != null && _gameObj.userCookies.containsKey(id)) {
+            _gameObj.removeFromUserCookies(id);
+        }
     }
 
     @Override // from GameManager
@@ -208,12 +241,12 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     // from WhirledGameProvider
-    public void endGame (ClientObject caller, int[] winnerOids,
+    public void endGame (ClientObject caller, int[] winnerIds,
                          InvocationService.InvocationListener listener)
         throws InvocationException
     {
         validateCanEndGame(caller);
-        setWinners(winnerOids);
+        setWinners(winnerIds);
         endGame();
     }
 
@@ -400,43 +433,43 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     // from WhirledGameProvider
-    public void getCookie (ClientObject caller, final int playerOid,
+    public void getCookie (ClientObject caller, final int playerId,
                            InvocationService.InvocationListener listener)
         throws InvocationException
     {
-        if (_gameObj.userCookies != null && _gameObj.userCookies.containsKey(playerOid)) {
+        if (_gameObj.userCookies != null && _gameObj.userCookies.containsKey(playerId)) {
             // already loaded: we do nothing
             return;
         }
 
         // we only start looking up the cookie if nobody else already is
-        if (_cookieLookups.contains(playerOid)) {
+        if (_cookieLookups.contains(playerId)) {
             return;
         }
 
-        BodyObject body = getOccupantByOid(playerOid);
+        BodyObject body = getOccupantById(playerId);
         if (body == null) {
-            log.debug("getCookie() called with invalid occupant [occupantId=" + playerOid + "].");
+            log.debug("getCookie() called with invalid occupant", "occupantId", playerId);
             throw new InvocationException(INTERNAL_ERROR);
         }
 
         // indicate that we're looking up a cookie
-        _cookieLookups.add(playerOid);
+        _cookieLookups.add(playerId);
 
-        int ppId = getPlayerPersistentId(body.getVisibleName());
-        _cookMgr.getCookie(_gameconfig.getGameId(), ppId, new ResultListener<byte[]>() {
+        final int bodyOid = body.getOid();
+        _cookMgr.getCookie(_gameconfig.getGameId(), playerId, new ResultListener<byte[]>() {
             public void requestCompleted (byte[] result) {
                 // note that we're done with this lookup
-                _cookieLookups.remove(playerOid);
+                _cookieLookups.remove(playerId);
                 // result may be null: that's ok, it means we've looked up the user's nonexistent
                 // cookie; also only set the cookie if the player is still in the room
-                if (_gameObj.occupants.contains(playerOid) && _gameObj.isActive()) {
-                    _gameObj.addToUserCookies(new UserCookie(playerOid, result));
+                if (_gameObj.occupants.contains(bodyOid) && _gameObj.isActive()) {
+                    _gameObj.addToUserCookies(new UserCookie(playerId, result));
                 }
             }
 
             public void requestFailed (Exception cause) {
-                log.warning("Unable to retrieve cookie [cause=" + cause + "].");
+                log.warning("Unable to retrieve cookie", cause);
                 requestCompleted(null);
             }
         });
@@ -448,14 +481,13 @@ public abstract class WhirledGameManager extends GameManager
         throws InvocationException
     {
         validateUser(caller);
-        BodyObject player = validateWritePermission(caller, playerId);
+        validateWritePermission(caller, playerId);
 
         // persist this new cookie
-        _cookMgr.setCookie(
-            _gameconfig.getGameId(), getPlayerPersistentId(player.getVisibleName()), value);
+        _cookMgr.setCookie(_gameconfig.getGameId(), playerId, value);
 
         // and update the distributed object
-        UserCookie cookie = new UserCookie(player.getOid(), value);
+        UserCookie cookie = new UserCookie(playerId, value);
         if (_gameObj.userCookies.containsKey(cookie.getKey())) {
             _gameObj.updateUserCookies(cookie);
         } else {
@@ -468,9 +500,7 @@ public abstract class WhirledGameManager extends GameManager
                               InvocationService.InvocationListener listener)
         throws InvocationException
     {
-        if (!isAgent(caller)) {
-            throw new InvocationException(InvocationCodes.ACCESS_DENIED);
-        }
+        requireAgent(caller);
 
         // find this player's position and put an AI therein
         for (int pidx = 0; pidx < getPlayerSlots(); pidx++) {
@@ -493,7 +523,7 @@ public abstract class WhirledGameManager extends GameManager
      */
     public void agentReady (ClientObject caller)
     {
-        log.info("Agent ready for " + caller);
+        log.info("Agent ready", "caller", caller);
         _gameAgentReady = true;
         _gameObj.setAgentState(WhirledGameObject.AGENT_READY);
 
@@ -508,7 +538,7 @@ public abstract class WhirledGameManager extends GameManager
      */
     public void agentFailed (ClientObject caller)
     {
-        log.info("Agent failed for " + caller);
+        log.info("Agent failed", "caller", caller);
 
         _gameObj.setAgentState(WhirledGameObject.AGENT_FAILED);
 
@@ -560,7 +590,7 @@ public abstract class WhirledGameManager extends GameManager
     public BodyObject checkWritePermission (ClientObject caller, int playerId)
     {
         if (isAgent(caller)) {
-            return (playerId != 0) ? getOccupantByOid(playerId) : null;
+            return (playerId != 0) ? getOccupantById(playerId) : null;
         }
         return (playerId == 0) ? (BodyObject) caller : null;
     }
@@ -598,15 +628,32 @@ public abstract class WhirledGameManager extends GameManager
         }
 
         // otherwise... this must be the agent
+        requireAgent(caller);
+    }
+
+    /**
+     * Require that the caller be the Agent before proceeding.
+     */
+    protected void requireAgent (ClientObject caller)
+        throws InvocationException
+    {
         if (!isAgent(caller)) {
             throw new InvocationException(InvocationCodes.ACCESS_DENIED);
         }
     }
 
     /**
-     * Get the specified player body by Oid.
+     * Get the player's index, by id, or -1.
      */
-    protected BodyObject getPlayerByOid (int oid)
+    protected int getPlayerIndexById (int id)
+    {
+        return IntListUtil.indexOf(_playerOids, _idToOid.get(id));
+    }
+
+    /**
+     * Get the specified player body by id.
+     */
+    protected BodyObject getPlayerById (int id)
     {
         // verify that they're a player
         switch (getMatchType()) {
@@ -615,24 +662,22 @@ public abstract class WhirledGameManager extends GameManager
             break;
 
         default:
-            if (!IntListUtil.contains(_playerOids, oid)) {
+            if (-1 == getPlayerIndexById(id)) {
                 return null; // not a player!
             }
             break;
         }
 
-        return getOccupantByOid(oid);
+        return getOccupantById(id);
     }
 
     /**
      * Get the specified occupant body by Oid.
      */
-    protected BodyObject getOccupantByOid (int oid)
+    protected BodyObject getOccupantById (int id)
     {
-        if (!_gameObj.occupants.contains(oid)) {
-            return null;
-        }
-        return (BodyObject)_omgr.getObject(oid);
+        int oid = _idToOid.get(id);
+        return (oid == -1) ? null : (BodyObject)_omgr.getObject(oid);
     }
 
     /**
@@ -692,7 +737,7 @@ public abstract class WhirledGameManager extends GameManager
             }
         };
 
-        _messageHandler = new WhirledGameMessageHandler(_gameObj) {
+        _messageHandler = new WhirledGameMessageHandler(_gameObj, _userIder) {
             @Override protected void validateSender (ClientObject caller)
                 throws InvocationException {
                 WhirledGameManager.this.validateUser(caller);
@@ -706,7 +751,7 @@ public abstract class WhirledGameManager extends GameManager
                         target = (ClientObject)_omgr.getObject(_gameAgent.clientOid);
                     }
                 } else {
-                    target = getPlayerByOid(id);
+                    target = getPlayerById(id);
                 }
                 if (target == null) {
                     throw new InvocationException("m.player_not_around");
@@ -793,45 +838,20 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     @Override // from PlaceManager
-    protected void bodyEntered (int bodyOid)
-    {
-        super.bodyEntered(bodyOid);
-
-        // if we have no controller, then our new friend gets control
-        if (_gameObj.controllerOid == 0) {
-            _gameObj.setControllerOid(bodyOid);
-        }
-    }
-
-    @Override // from PlaceManager
     protected void bodyUpdated (OccupantInfo info)
     {
         super.bodyUpdated(info);
 
         // if the controller just disconnected, reassign control
-        if (info.status == OccupantInfo.DISCONNECTED && info.bodyOid == _gameObj.controllerOid) {
-            _gameObj.setControllerOid(getControllerOid());
+        if (info.status == OccupantInfo.DISCONNECTED) {
+            if (getPlayerPersistentId(info.username) == _gameObj.controllerId) {
+                _gameObj.setControllerId(getControllerId());
+            }
 
-        // if everyone in the room was disconnected and this client just reconnected, it becomes
-        // the new controller
-        } else if (_gameObj.controllerOid == 0) {
-            _gameObj.setControllerOid(info.bodyOid);
-        }
-    }
-
-    @Override // from PlaceManager
-    protected void bodyLeft (int bodyOid)
-    {
-        super.bodyLeft(bodyOid);
-
-        // if this player was the controller, reassign control
-        if (bodyOid == _gameObj.controllerOid) {
-            _gameObj.setControllerOid(getControllerOid());
-        }
-
-        // nix any of this player's cookies
-        if (_gameObj.userCookies != null && _gameObj.userCookies.containsKey(bodyOid)) {
-            _gameObj.removeFromUserCookies(bodyOid);
+        } else if (_gameObj.controllerId == 0) {
+            // if everyone in the room was disconnected and this client just reconnected, it becomes
+            // the new controller
+            _gameObj.setControllerId(getPlayerPersistentId(info.username));
         }
     }
 
@@ -904,14 +924,14 @@ public abstract class WhirledGameManager extends GameManager
     @Override
     protected void assignWinners (boolean[] winners)
     {
-        if (_winnerOids != null) {
-            for (int oid : _winnerOids) {
-                int index = IntListUtil.indexOf(_playerOids, oid);
+        if (_winnerIds != null) {
+            for (int id : _winnerIds) {
+                int index = getPlayerIndexById(id);
                 if (index >= 0 && index < winners.length) {
                     winners[index] = true;
                 }
             }
-            _winnerOids = null;
+            _winnerIds = null;
         }
     }
 
@@ -932,11 +952,11 @@ public abstract class WhirledGameManager extends GameManager
      * Returns the oid of a player to whom to assign control of the game or zero if no players
      * qualify for control.
      */
-    protected int getControllerOid ()
+    protected int getControllerId ()
     {
         for (OccupantInfo info : _gameObj.occupantInfo) {
             if (info.status != OccupantInfo.DISCONNECTED) {
-                return info.bodyOid;
+                return getPlayerPersistentId(info.username);
             }
         }
         return 0;
@@ -1023,11 +1043,14 @@ public abstract class WhirledGameManager extends GameManager
     /** The map of tickers, lazy-initialized. */
     protected Map<String, Ticker> _tickers;
 
+    /** Maps player id to oid. */
+    protected IntIntMap _idToOid = new IntIntMap();
+
     /** Tracks which cookies are currently being retrieved from the db. */
     protected ArrayIntSet _cookieLookups = new ArrayIntSet();
 
-    /** The array of winner oids, after the user has filled it in. */
-    protected int[] _winnerOids;
+    /** The array of winner ids, after the user has filled it in. */
+    protected int[] _winnerIds;
 
     /** Tracks whether or not we've auto-started a non-seated game. Unfortunately there's no way to
      * derive this from existing game state. */

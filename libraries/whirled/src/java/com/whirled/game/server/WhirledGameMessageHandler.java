@@ -4,6 +4,8 @@ import com.threerings.presents.client.InvocationService.InvocationListener;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.dobj.DObject;
 import com.threerings.presents.server.InvocationException;
+import com.threerings.crowd.data.BodyObject;
+import com.threerings.parlor.game.data.UserIdentifier;
 import com.whirled.game.data.WhirledGameObject;
 import com.whirled.game.data.WhirledPlayerObject;
 
@@ -23,9 +25,10 @@ public abstract class WhirledGameMessageHandler
      * Creates a new message handler.
      * @param messageTarget the subscribers to this object are the audience of messages
      */
-    public WhirledGameMessageHandler (DObject messageTarget)
+    public WhirledGameMessageHandler (DObject messageTarget, UserIdentifier userIder)
     {
         _messageTarget = messageTarget;
+        _userIder = userIder;
     }
 
     /**
@@ -49,8 +52,8 @@ public abstract class WhirledGameMessageHandler
         throws InvocationException;
 
     // from WhirledGameMessageProvider
-    public void sendMessage (ClientObject caller, String msgName, Object msgValue,
-        InvocationListener listener)
+    public void sendMessage (
+        ClientObject caller, String msgName, Object msgValue, InvocationListener listener)
         throws InvocationException
     {
         validateSender(caller);
@@ -60,13 +63,14 @@ public abstract class WhirledGameMessageHandler
     }
 
     // from WhirledGameMessageProvider
-    public void sendPrivateMessage (ClientObject caller, String msgName, Object msgValue,
-        int[] members, InvocationListener listener)
+    public void sendPrivateMessage (
+        ClientObject caller, String msgName, Object msgValue, int[] members,
+        InvocationListener listener)
         throws InvocationException
     {
         validateSender(caller);
 
-        ClientObject []targets = new ClientObject[members.length];
+        ClientObject[] targets = new ClientObject[members.length];
         for (int ii = 0; ii < members.length; ++ii) {
             targets[ii] = getAudienceMember(members[ii]);
         }
@@ -93,18 +97,9 @@ public abstract class WhirledGameMessageHandler
         if (isAgent(caller)) {
             return AGENT;
         }
-        return resolvePlayerId(caller);
+        return _userIder.getUserId(((BodyObject)caller).getVisibleName());
     }
 
-    /**
-     * Converts a client object to the client's notion of "player id". In whirled, the player id is 
-     * the oid of the client object. A subclass will be required for msoy to override and return the 
-     * member id.
-     */
-    protected int resolvePlayerId (ClientObject caller)
-    {
-        return caller.getOid();
-    }
-    
     protected DObject _messageTarget;
+    protected UserIdentifier _userIder;
 }

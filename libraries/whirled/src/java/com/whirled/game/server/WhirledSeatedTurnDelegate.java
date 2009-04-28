@@ -38,7 +38,7 @@ public class WhirledSeatedTurnDelegate extends TurnGameManagerDelegate
             int nextId = _nextPlayerId;
             _nextPlayerId = 0;
 
-            BodyObject nextPlayer = ((WhirledGameManager) _plmgr).getPlayerByOid(nextId);
+            BodyObject nextPlayer = ((WhirledGameManager) _plmgr).getPlayerById(nextId);
             if (nextPlayer != null) {
                 int index = ListUtil.indexOf(_turnGame.getPlayers(), nextPlayer.getVisibleName());
                 if (index != -1) {

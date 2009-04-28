@@ -52,8 +52,8 @@ public class WhirledGameObject extends GameObject
     /** The field name of the <code>roundId</code> field. */
     public static const ROUND_ID :String = "roundId";
 
-    /** The field name of the <code>controllerOid</code> field. */
-    public static const CONTROLLER_OID :String = "controllerOid";
+    /** The field name of the <code>controllerId</code> field. */
+    public static const CONTROLLER_ID :String = "controllerId";
 
     /** The field name of the <code>turnHolder</code> field. */
     public static const TURN_HOLDER :String = "turnHolder";
@@ -74,7 +74,7 @@ public class WhirledGameObject extends GameObject
 
     /** The client that is in control of this game. The first client to enter will be assigned
      * control and control will subsequently be reassigned if that client disconnects or leaves. */
-    public var controllerOid :int;
+    public var controllerId :int;
 
     /** The current turn holder. */
     public var turnHolder :Name;
@@ -151,7 +151,7 @@ public class WhirledGameObject extends GameObject
     protected function readDefaultFields (ins :ObjectInputStream) :void
     {
         roundId = ins.readInt();
-        controllerOid = ins.readInt();
+        controllerId = ins.readInt();
         turnHolder = Name(ins.readObject());
         userCookies = DSet(ins.readObject());
         gameData = TypedArray(ins.readObject());

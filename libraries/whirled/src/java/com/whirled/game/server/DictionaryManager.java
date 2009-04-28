@@ -163,7 +163,7 @@ public class DictionaryManager
                 InputStream in = getClass().getClassLoader().getResourceAsStream(path);
                 _dictionaries.put(key, new Dictionary(locale, dictionary, new GZIPInputStream(in)));
             } catch (Exception e) {
-                log.warning("Failed to load dictionary [path=" + path + "].", e);
+                log.warning("Failed to load dictionary", "path", path, e);
             }
         }
         return _dictionaries.get(key);
@@ -199,14 +199,13 @@ public class DictionaryManager
                 }
 
             } else {
-                log.warning("Missing dictionary file [locale=" + locale +
-                        ", dictionary=" + dictionary + "].");
+                log.warning("Missing dictionary file", "locale", locale, "dict", dictionary);
             }
 
             initializeLetterCounts(letters);
 
-            log.debug("Loaded dictionary [locale=" + locale + ", dictionary=" + dictionary +
-                        ", words=" + _words.size() + ", letters=" + letters + "].");
+            log.debug("Loaded dictionary", "locale", locale, "dictionary", dictionary,
+                "words", _words.size(), "letters", letters);
         }
 
         /** Checks if the specified word exists in the word list */

@@ -80,8 +80,8 @@ public class WhirledGameObject extends GameObject
     /** The field name of the <code>roundId</code> field. */
     public static final String ROUND_ID = "roundId";
 
-    /** The field name of the <code>controllerOid</code> field. */
-    public static final String CONTROLLER_OID = "controllerOid";
+    /** The field name of the <code>controllerId</code> field. */
+    public static final String CONTROLLER_ID = "controllerId";
 
     /** The field name of the <code>turnHolder</code> field. */
     public static final String TURN_HOLDER = "turnHolder";
@@ -117,7 +117,7 @@ public class WhirledGameObject extends GameObject
 
     /** The client that is in control of this game. The first client to enter will be assigned
      * control and control will subsequently be reassigned if that client disconnects or leaves. */
-    public int controllerOid;
+    public int controllerId;
 
     /** The current turn holder. */
     public Name turnHolder;
@@ -196,19 +196,19 @@ public class WhirledGameObject extends GameObject
     }
 
     /**
-     * Requests that the <code>controllerOid</code> field be set to the
+     * Requests that the <code>controllerId</code> field be set to the
      * specified value. The local value will be updated immediately and an
      * event will be propagated through the system to notify all listeners
      * that the attribute did change. Proxied copies of this object (on
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
-    public void setControllerOid (int value)
+    public void setControllerId (int value)
     {
-        int ovalue = this.controllerOid;
+        int ovalue = this.controllerId;
         requestAttributeChange(
-            CONTROLLER_OID, Integer.valueOf(value), Integer.valueOf(ovalue));
-        this.controllerOid = value;
+            CONTROLLER_ID, Integer.valueOf(value), Integer.valueOf(ovalue));
+        this.controllerId = value;
     }
 
     /**

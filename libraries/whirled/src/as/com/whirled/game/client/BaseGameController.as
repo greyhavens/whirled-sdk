@@ -100,7 +100,7 @@ public class BaseGameController extends GameController
     override public function attributeChanged (event :AttributeChangedEvent) :void
     {
         var name :String = event.getName();
-        if (WhirledGameObject.CONTROLLER_OID == name) {
+        if (WhirledGameObject.CONTROLLER_ID == name) {
             backend.controlDidChange();
         } else if (WhirledGameObject.ROUND_ID == name) {
             if ((event.getValue() as int) > 0) {

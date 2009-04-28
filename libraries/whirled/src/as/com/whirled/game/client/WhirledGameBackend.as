@@ -21,6 +21,7 @@ import com.threerings.util.Name;
 import com.threerings.presents.dobj.MessageEvent;
 
 import com.threerings.crowd.data.BodyObject;
+import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.util.CrowdContext;
 
 import com.whirled.game.data.BaseGameConfig;
@@ -448,7 +449,7 @@ public class WhirledGameBackend extends BaseGameBackend
         displayInfo(null, "Would display trophies popup, but we're in the test environment.");
     }
 
-    protected function getHeadShot_v2 (occupant :int) :DisplayObject
+    protected function getHeadShot_v2 (occupantId :int) :DisplayObject
     {
         validateConnected();
 
@@ -462,7 +463,7 @@ public class WhirledGameBackend extends BaseGameBackend
     override protected function getMyId_v1 () :int
     {
         validateConnected();
-        return _ctx.getClient().getClientObject().getOid();
+        return _ctrl.nameToId(getUsername());
     }
 
     protected function playerReady_v1 () :void
@@ -522,6 +523,11 @@ public class WhirledGameBackend extends BaseGameBackend
     {
         setShowReplay_v1(rematch);
         // and discard the 'back' button preference.
+    }
+
+    override protected function infoToId (occInfo :OccupantInfo) :int
+    {
+        return _ctrl.infoToId(occInfo);
     }
 
     protected var _ctrl :WhirledGameController;

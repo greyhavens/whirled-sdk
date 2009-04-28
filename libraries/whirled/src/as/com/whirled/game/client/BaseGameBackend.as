@@ -96,6 +96,12 @@ public class BaseGameBackend
 
         _gameObj.addListener(this);
         _ctx.getClient().getClientObject().addListener(_userListener);
+
+        for each (var info :OccupantInfo in gameObj.occupants.toArray()) {
+            if (isInited(info)) {
+                _idsToName[infoToId(info)] = info.username;
+            }
+        }
     }
 
     public function forceClassInclusion () :void
@@ -249,8 +255,13 @@ public class BaseGameBackend
             var oldInfo :WhirledGameOccupantInfo = (event.getOldEntry() as WhirledGameOccupantInfo);
             // Only report someone else if they transitioned from uninitialized to initialized
             // Note that our own occupantInfo will never pass this test, that is correct.
-            if (!isInited(oldInfo) && isInited(occInfo)) {
-                occupantAdded(occInfo);
+            if (isInited(occInfo)) {
+                if (!isInited(oldInfo)) {
+                    occupantAdded(occInfo);
+                } else {
+                    // update their name
+                    _idsToName[infoToId(occInfo)] = occInfo.username;
+                }
             }
             break;
         }
@@ -343,10 +354,10 @@ public class BaseGameBackend
     public function displayMessage (msg :ChatMessage, alreadyDisplayed :Boolean) :Boolean
     {
         if (msg is UserMessage && msg.localtype == ChatCodes.PLACE_CHAT_TYPE) {
-            var occInfo :OccupantInfo = _gameObj.getOccupantInfo((msg as UserMessage).speaker);
+            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(UserMessage(msg).speaker);
             // the game doesn't hear about the chat until the speaker is initialized
             if (isInited(occInfo)) {
-                callUserCode("userChat_v1", occInfo.bodyOid, msg.message);
+                callUserCode("userChat_v1", infoToId(occInfo), msg.message);
             }
         }
         return true;
@@ -732,8 +743,8 @@ public class BaseGameBackend
         var logger :InvocationService_ConfirmListener = createLoggingConfirmListener("sendMessage");
         if (playerId == TO_ALL) {
             _gameObj.messageService.sendMessage(_ctx.getClient(), messageName, encoded, logger);
-        }
-        else {
+
+        } else {
             var players :TypedArray = TypedArray.create(int);
             players.push(playerId);
             _gameObj.messageService.sendPrivateMessage(_ctx.getClient(), messageName, encoded,
@@ -1020,7 +1031,7 @@ public class BaseGameBackend
         var occs :Array = [];
         for each (var occInfo :OccupantInfo in _gameObj.occupantInfo.toArray()) {
             if (isInited(occInfo)) {
-                occs.push(occInfo.bodyOid);
+                occs.push(infoToId(occInfo));
             }
         }
         return occs;
@@ -1029,21 +1040,21 @@ public class BaseGameBackend
     protected function getOccupantName_v1 (playerId :int) :String
     {
         validateConnected();
-        var occInfo :OccupantInfo = (_gameObj.occupantInfo.get(playerId) as OccupantInfo);
-        return isInited(occInfo) ? occInfo.username.toString() : null;
+        var name :Name = _idsToName[playerId]; // contains only mapping for init'd players
+        return (name == null) ? null : name.toString();
     }
 
     protected function getControllerId_v1 () :int
     {
         validateConnected();
-        return _gameObj.controllerOid;
+        return _gameObj.controllerId;
     }
 
     protected function getTurnHolder_v1 () :int
     {
         validateConnected();
         var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.turnHolder);
-        return isInited(occInfo) ? occInfo.bodyOid : 0;
+        return isInited(occInfo) ? infoToId(occInfo) : 0;
     }
 
     protected function getRound_v1 () :int
@@ -1084,7 +1095,7 @@ public class BaseGameBackend
         for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
             var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
             if (isInited(occInfo)) {
-                loserIds.push(occInfo.bodyOid);
+                loserIds.push(infoToId(occInfo));
             }
         }
         endGameWithWinners_v1(winnerIds, loserIds, 0) // WhirledGameControl.CASCADING_PAYOUT
@@ -1097,21 +1108,21 @@ public class BaseGameBackend
 
         // pass the buck straight on through, the server will validate everything
         _gameObj.whirledGameService.endGameWithWinners(
-            _ctx.getClient(), toTypedIntArray(winnerIds), toTypedIntArray(loserIds), payoutType,
-            createLoggingConfirmListener("endGameWithWinners"));
+            _ctx.getClient(), TypedArray.create(int, winnerIds), TypedArray.create(int, loserIds),
+            payoutType, createLoggingConfirmListener("endGameWithWinners"));
     }
 
     // gameMode was added on Oct-23-2008, most games will continue to use the default mode, but new
     // games may pass a non-zero value to make use of per-mode score distributions
-    protected function endGameWithScores_v1 (playerIds :Array, scores :Array /* of int */,
-        payoutType :int, gameMode :int = 0) :void
+    protected function endGameWithScores_v1 (
+        playerIds :Array, scores :Array /* of int */, payoutType :int, gameMode :int = 0) :void
     {
         validateConnected();
 
         // pass the buck straight on through, the server will validate everything
         _gameObj.whirledGameService.endGameWithScores(
-            _ctx.getClient(), toTypedIntArray(playerIds), toTypedIntArray(scores), payoutType,
-            gameMode, createLoggingConfirmListener("endGameWithScores"));
+            _ctx.getClient(), TypedArray.create(int, playerIds), TypedArray.create(int, scores),
+            payoutType, gameMode, createLoggingConfirmListener("endGameWithScores"));
     }
 
     protected function restartGameIn_v1 (seconds :int) :void
@@ -1138,11 +1149,8 @@ public class BaseGameBackend
     protected function getPlayerPosition_v1 (playerId :int) :int
     {
         validateConnected();
-        var occInfo :OccupantInfo = (_gameObj.occupantInfo.get(playerId) as OccupantInfo);
-        if (!isInited(occInfo)) {
-            return -1;
-        }
-        return _gameObj.getPlayerIndex(occInfo.username);
+        var name :Name = _idsToName[playerId]; // contains only inited occs
+        return (name == null) ? -1 : _gameObj.getPlayerIndex(name);
     }
 
     protected function getPlayers_v1 () :Array
@@ -1178,10 +1186,10 @@ public class BaseGameBackend
         };
         var success :Function = function (result :String) :void {
             // splice the resulting string, and return as array
-            var r : Array = result.split(",");
+            var r :Array = result.split(",");
             callback(r);
         };
-        listener = createLoggingResultListener("checkDictionaryWord", failure, success);
+        listener = createLoggingResultListener("getDictionaryLetterSet", failure, success);
 
         // just relay the data over to the server
         _gameObj.whirledGameService.getDictionaryLetterSet(
@@ -1199,10 +1207,10 @@ public class BaseGameBackend
         };
         var success :Function = function (result :String) :void {
             // splice the resulting string, and return as array
-            var r : Array = result.split(",");
+            var r :Array = result.split(",");
             callback(r);
         };
-        listener = createLoggingResultListener("checkDictionaryWord", failure, success);
+        listener = createLoggingResultListener("getDictionaryWords", failure, success);
 
         // just relay the data over to the server
         _gameObj.whirledGameService.getDictionaryWords(
@@ -1220,7 +1228,7 @@ public class BaseGameBackend
         };
         var success :Function = function (result :Object) :void {
             // server returns a boolean, so convert it and send it over
-            var r : Boolean = result as Boolean;
+            var r :Boolean = result as Boolean;
             callback(word, r);
         };
         listener = createLoggingResultListener("checkDictionaryWord", failure, success);
@@ -1350,16 +1358,6 @@ public class BaseGameBackend
     // --------------------------
 
     /**
-     * Converts a Flash array of ints to a TypedArray for delivery over the wire to the server.
-     */
-    protected function toTypedIntArray (array :Array) :TypedArray
-    {
-        var tarray :TypedArray = TypedArray.create(int);
-        tarray.addAll(array);
-        return tarray;
-    }
-
-    /**
      * Returns the number of copies of the specified data that is owned by the player.
      */
     protected function countPlayerData (type :int, ident :String, playerId :int) :int
@@ -1383,7 +1381,9 @@ public class BaseGameBackend
      */
     protected function doOccupantAdded (occInfo :OccupantInfo) :void
     {
-        callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username), true);
+        var id :int = infoToId(occInfo);
+        _idsToName[id] = occInfo.username;
+        callUserCode("occupantChanged_v1", id, isPlayer(occInfo.username), true);
 
         if (!_gameStarted && _gameObj.isInPlay()) {
             gameStateChanged(true);
@@ -1403,7 +1403,9 @@ public class BaseGameBackend
      */
     protected function doOccupantRemoved (occInfo :OccupantInfo) :void
     {
-        callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayer(occInfo.username), false);
+        var id :int = infoToId(occInfo);
+        callUserCode("occupantChanged_v1", id, isPlayer(occInfo.username), false);
+        delete _idsToName[id];
     }
 
     /**
@@ -1419,9 +1421,10 @@ public class BaseGameBackend
      */
     protected function doOccupantRoleChanged (occInfo :OccupantInfo, isPlayerNow :Boolean) :void
     {
+        var id :int = infoToId(occInfo);
         // let the user code know about this by sending a "left" followed by an "entered" message
-        callUserCode("occupantChanged_v1", occInfo.bodyOid, !isPlayerNow, false);
-        callUserCode("occupantChanged_v1", occInfo.bodyOid, isPlayerNow, true);
+        callUserCode("occupantChanged_v1", id, !isPlayerNow, false);
+        callUserCode("occupantChanged_v1", id, isPlayerNow, true);
     }
 
     /**
@@ -1432,9 +1435,17 @@ public class BaseGameBackend
         var playerIds :Array = [];
         for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
             var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
-            playerIds.push(isInited(occInfo) ? occInfo.bodyOid : 0);
+            playerIds.push(isInited(occInfo) ? infoToId(occInfo) : 0);
         }
         return playerIds;
+    }
+
+    /**
+     * Get the persistent id for this occupantInfo. This is required for whirled games.
+     */
+    protected function infoToId (occInfo :OccupantInfo) :int
+    {
+        throw new Error("abstract");
     }
 
     protected var _ctx :PresentsContext;
@@ -1443,6 +1454,9 @@ public class BaseGameBackend
     protected var _gameData :Object;
 
     protected var _userListener :MessageAdapter = new MessageAdapter(messageReceivedOnUserObject);
+
+    /** Maps ids to name for inited occupants. */
+    protected var _idsToName :Dictionary = new Dictionary();
 
     /** playerIndex -> callback functions waiting for the cookie. */
     protected var _cookieCallbacks :Dictionary;

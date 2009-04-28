@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.samskivert.util.RandomUtil;
 
 import com.threerings.crowd.data.BodyObject;
+import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.data.PlaceObject;
 
@@ -46,19 +47,13 @@ public class WhirledPartyTurnDelegate extends GameManagerDelegate
         super.bodyEntered(bodyOid);
 
         if (_ordering != null) {
-            _ordering.add(bodyOid);
+            _ordering.add(infoToId(_plobj.occupantInfo.get(bodyOid)));
         }
     }
 
-    @Override
-    public void bodyLeft (int bodyOid)
-    {
-        super.bodyLeft(bodyOid);
-
-        if (_ordering != null) {
-            _ordering.remove(bodyOid);
-        }
-    }
+    // NOTE: We can't remove the ordering id in bodyLeft since we can't map the oid to an id
+    // after the body has left. So we leave it in _ordering, and it will be cleaned out
+    // when next visited in setNextTurn().
 
     @Override
     public void gameDidEnd ()
@@ -104,8 +99,9 @@ public class WhirledPartyTurnDelegate extends GameManagerDelegate
      */
     protected boolean setNextTurn (int nextPlayerId)
     {
-        BodyObject nextPlayer = ((WhirledGameManager) _plmgr).getOccupantByOid(nextPlayerId);
+        BodyObject nextPlayer = ((WhirledGameManager) _plmgr).getOccupantById(nextPlayerId);
         if (nextPlayer == null) {
+            _ordering.remove(nextPlayerId); // clean up the ordering, we can't remove on bodyLeft
             return false;
         }
 
@@ -126,9 +122,9 @@ public class WhirledPartyTurnDelegate extends GameManagerDelegate
      */
     protected void createOrdering ()
     {
-        List<Integer> list = Lists.newArrayListWithExpectedSize(_plobj.occupants.size());
-        for (int ii = _plobj.occupants.size() - 1; ii >= 0; ii--) {
-            list.add(_plobj.occupants.get(ii));
+        List<Integer> list = Lists.newArrayListWithExpectedSize(_plobj.occupantInfo.size());
+        for (OccupantInfo occInfo : _plobj.occupantInfo) {
+            list.add(infoToId(occInfo));
         }
 
         // randomize the list
@@ -136,6 +132,11 @@ public class WhirledPartyTurnDelegate extends GameManagerDelegate
 
         // and start out the ordering using that random order
         _ordering = new LinkedHashSet<Integer>(list);
+    }
+
+    protected int infoToId (OccupantInfo info)
+    {
+        return ((WhirledGameManager) _plmgr).getPlayerPersistentId(info.username);
     }
 
     /** The place object. */
