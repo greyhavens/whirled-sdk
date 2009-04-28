@@ -26,6 +26,7 @@ import com.threerings.crowd.data.BodyMarshaller;
 import com.threerings.crowd.data.LocationMarshaller;
 
 import com.threerings.parlor.data.ParlorMarshaller;
+import com.threerings.parlor.game.client.GameController;
 
 import com.whirled.game.client.TestGameController;
 import com.whirled.game.client.TestService;
@@ -52,6 +53,9 @@ public class WhirledClient extends CrowdClient
 
         // set the quality to MEDIUM, just like it is in whirled.
         stage.quality = StageQuality.MEDIUM;
+
+        // set up the user identifier
+        GameController.setUserIdentifier(new TestUserIdentifier());
 
         // prior to logging on to a server, set up our security policy for that server
         addClientObserver(new ClientAdapter(clientWillLogon)); 
@@ -109,4 +113,24 @@ public class WhirledClient extends CrowdClient
 
     protected var _ctx :WhirledContext;
 }
+}
+
+import com.threerings.util.Name;
+import com.threerings.util.StringUtil;
+
+import com.threerings.parlor.game.data.UserIdentifier;
+
+class TestUserIdentifier
+    implements UserIdentifier
+{
+    public function getUserId (name :Name) :int
+    {
+        var username :String = name.toString();
+        try {
+            return StringUtil.parseInteger(username.substring(username.lastIndexOf("_")+1));
+        } catch (e :Error) {
+            // below
+        }
+        return -1 * Math.abs(StringUtil.hashCode(username));
+    }
 }

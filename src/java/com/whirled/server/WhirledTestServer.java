@@ -121,7 +121,7 @@ public class WhirledTestServer extends CrowdServer
                 try {
                     return Integer.parseInt(username.substring(username.lastIndexOf("_")+1));
                 } catch (Exception e) {
-                    return 0;
+                    return -1 * Math.abs(username.hashCode());
                 }
             }
         });
