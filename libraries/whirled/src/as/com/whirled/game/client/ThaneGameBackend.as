@@ -42,9 +42,10 @@ public class ThaneGameBackend extends BaseGameBackend
         _ctrl = ctrl;
 
         // create players for everyone already known to be in the game
-        for each (var bodyOid :* in getPlayersArray()) {
-            if (bodyOid != 0) {
-                preparePlayer(bodyOid, function () :void { /* noop */ });
+        for each (var name :Name in _gameObj.players) {
+            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(name);
+            if (occInfo != null) {
+                preparePlayer(occInfo.bodyOid, function () :void {});
             }
         }
     }
