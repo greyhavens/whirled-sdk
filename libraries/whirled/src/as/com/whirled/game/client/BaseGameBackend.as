@@ -97,7 +97,7 @@ public class BaseGameBackend
         _gameObj.addListener(this);
         _ctx.getClient().getClientObject().addListener(_userListener);
 
-        for each (var info :OccupantInfo in gameObj.occupants.toArray()) {
+        for each (var info :OccupantInfo in gameObj.occupantInfo.toArray()) {
             if (isInited(info)) {
                 _idsToName[infoToId(info)] = info.username;
             }
