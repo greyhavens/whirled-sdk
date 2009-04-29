@@ -54,6 +54,11 @@ public class ParticleLayer extends Layer
         }
     }
 
+    override public function get displayCount () :int
+    {
+        return numChildren;
+    }
+
     protected static const BUFFER :Number = Metrics.DISPLAY_HEIGHT/2;
 }
 }

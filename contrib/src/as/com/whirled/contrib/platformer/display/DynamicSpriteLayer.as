@@ -32,6 +32,11 @@ public class DynamicSpriteLayer extends Layer
         scaleY = Metrics.SCALE;
     }
 
+    override public function get displayCount () :int
+    {
+        return numChildren;
+    }
+
     public function addDynamicSprite (ds :DynamicSprite) :void
     {
         _dynamics.push(ds);

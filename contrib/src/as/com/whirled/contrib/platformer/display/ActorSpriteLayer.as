@@ -31,6 +31,11 @@ public class ActorSpriteLayer extends DynamicSpriteLayer
         addChild(_deathLayer);
     }
 
+    override public function get displayCount () :int
+    {
+        return super.displayCount - 1 + _deathLayer.numChildren;
+    }
+
     override public function update (nX :Number, nY :Number, scale :Number = 1) :void
     {
         super.update(nX, nY, scale);

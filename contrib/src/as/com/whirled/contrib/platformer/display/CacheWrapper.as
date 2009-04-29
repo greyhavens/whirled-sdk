@@ -50,13 +50,13 @@ public class CacheWrapper
             _filter = null;
         }
         if (_disp is MovieClip) {
-            (_disp as MovieClip).gotoAndPlay(1);
+            //(_disp as MovieClip).gotoAndPlay(1);
         }
     }
 
     public function reset (...ignored) :void
     {
-        _disp.removeEventListener(Event.COMPLETE, onComplete);
+        _disp.removeEventListener(Event.COMPLETE, reset);
         for each (var listener :DispListener in _listeners) {
             _disp.removeEventListener(listener.event, listener.func);
         }

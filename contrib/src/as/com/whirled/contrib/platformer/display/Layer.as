@@ -41,6 +41,11 @@ public class Layer extends Sprite
     {
     }
 
+    public function get displayCount () :int
+    {
+        return 0;
+    }
+
     /** Set to true and all coordinates will be floored. */
     protected var _snapToPixel :Boolean = true;
 }

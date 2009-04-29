@@ -62,7 +62,7 @@ public class DynamicSprite extends Sprite
         this.scaleY = Metrics.SCALE;
         */
 
-        if (dy.soundEvents != null) {
+        if (dy.soundEvents != null && disp != null) {
             if ((dy.soundEvents.length % 2) != 0) {
                 trace("Dynamic.soundEvents must be even in length! [" + dy + "]");
                 return;
@@ -70,8 +70,8 @@ public class DynamicSprite extends Sprite
             for (var ii :int = 0; ii < dy.soundEvents.length; ii += 2) {
                 var soundEffect :SoundEffect =
                     PlatformerContext.getSoundEffect(dy.soundEvents[ii+1] as String);
-                disp.addEventListener(dy.soundEvents[ii] as String,
-                    bindSoundEffectPlayback(soundEffect));
+                registerDispEventListener(
+                        dy.soundEvents[ii] as String, bindSoundEffectPlayback(soundEffect));
             }
         }
     }
@@ -224,6 +224,17 @@ public class DynamicSprite extends Sprite
         }
     }
 
+    protected function registerDispEventListener (event :String, func :Function) :void
+    {
+        if (_disp != null) {
+            _disp.addEventListener(event, func);
+            if (_listeners == null) {
+                _listeners = new Object();
+            }
+            _listeners[event] = func;
+        }
+    }
+
     protected function bindSoundEffectPlayback (soundEffect :SoundEffect) :Function
     {
         return function (...ignored) :void {
@@ -244,6 +255,7 @@ public class DynamicSprite extends Sprite
             if (event.target == disp) {
                 event.stopPropagation();
                 disp.parent.removeChild(disp);
+                disp.removeEventListener(Event.COMPLETE, arguments.callee);
             }
         });
         node.addChild(disp);
@@ -294,8 +306,11 @@ public class DynamicSprite extends Sprite
             if (_disp.parent == this) {
                 removeChild(_disp);
             }
+            for (var event :String in _listeners) {
+                _disp.removeEventListener(event, _listeners[event]);
+            }
             if (_dynamic.useCache()) {
-                PieceSpriteFactory.pushCache(_dynamic.sprite, _disp);
+                //PieceSpriteFactory.pushCache(_dynamic.sprite, _disp);
             }
             _disp = null;
         }
@@ -357,6 +372,7 @@ public class DynamicSprite extends Sprite
     protected var _disp :DisplayObject;
     protected var _particleCallback :Function;
     protected var _static :Boolean;
+    protected var _listeners :Object;
 
     protected var _hitLeft :Number = 0;
     protected var _hitFilter :ColorMatrixFilter;

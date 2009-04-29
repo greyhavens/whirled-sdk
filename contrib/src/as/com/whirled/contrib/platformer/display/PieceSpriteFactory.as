@@ -240,6 +240,9 @@ public class PieceSpriteFactory
             }
         }
         ret.cacheAsBitmap = true;
+        if (ret is MovieClip) {
+            (ret as MovieClip).enabled = false;
+        }
         return ret;
     }
 

@@ -85,11 +85,11 @@ public class SimpleActorBounds extends ActorBounds
     override public function updateBounds () :void
     {
         if (_lines == null) {
-            _lines = new Array();
-            _lines.push(dynLD(0, 0, 0, actor.height, ACTOR_BOUND));
-            _lines.push(dynLD(0, actor.height, actor.width, actor.height, ACTOR_BOUND));
-            _lines.push(dynLD(actor.width, actor.height, actor.width, 0, ACTOR_BOUND));
-            _lines.push(dynLD(actor.width, 0, 0, 0, ACTOR_BOUND));
+            _lines = new Array(4);
+            _lines[0] = dynLD(0, 0, 0, actor.height, ACTOR_BOUND);
+            _lines[1] = dynLD(0, actor.height, actor.width, actor.height, ACTOR_BOUND);
+            _lines[2] = dynLD(actor.width, actor.height, actor.width, 0, ACTOR_BOUND);
+            _lines[3] = dynLD(actor.width, 0, 0, 0, ACTOR_BOUND);
         } else {
             dynUpdateLD(_lines[0], 0, 0, 0, actor.height);
             dynUpdateLD(_lines[1], 0, actor.height, actor.width, actor.height);
@@ -112,7 +112,7 @@ public class SimpleActorBounds extends ActorBounds
      */
     public function simpleCollide (ab :SimpleActorBounds) :Boolean
     {
-        return simpleCollideLines (ab.getBoundLines());
+        return simpleCollideLines(ab.getBoundLines());
     }
 
     public function simpleCollideLines (olines :Array) :Boolean
@@ -178,14 +178,15 @@ public class SimpleActorBounds extends ActorBounds
                 !ld.polyIntersecting(_lines)) {
                 continue;
             }
+            var line1 :LineData = _lines[1];
             if ((BoundData.blockOuter(ld.type, actor.projCollider) &&
-                    ld.isOutside(_lines[1].x1, _lines[1].y1 + delta) &&
-                    ld.isOutside(_lines[1].x2, _lines[1].y2 + delta) &&
-                    !ld.isLineOutside(_lines[1])) ||
+                    ld.isOutside(line1.x1, line1.y1 + delta) &&
+                    ld.isOutside(line1.x2, line1.y2 + delta) &&
+                    !ld.isLineOutside(line1)) ||
                     (BoundData.blockInner(ld.type, actor.projCollider) &&
-                    ld.isInside(_lines[1].x1, _lines[1].y1 + delta) &&
-                    ld.isInside(_lines[1].x2, _lines[1].y2 + delta) &&
-                    !ld.isLineInside(_lines[1]))) {
+                    ld.isInside(line1.x1, line1.y1 + delta) &&
+                    ld.isInside(line1.x2, line1.y2 + delta) &&
+                    !ld.isLineInside(line1))) {
                 actor.height = oldHeight;
                 updateBounds();
                 return false;

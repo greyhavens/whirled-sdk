@@ -82,9 +82,11 @@ public class BoardSprite extends Sprite
         _layers = new Array(NUM_LAYERS);
         layerTicks = new Array(NUM_LAYERS);
         _layerEnabled = new Array(NUM_LAYERS);
+        _layerCount = new Array(NUM_LAYERS);
         for (var ii :int = 0; ii < NUM_LAYERS; ii++) {
             _layerEnabled[ii] = true;
             layerTicks[ii] = 0;
+            _layerCount[ii] = 0;
         }
         var bxml :XML = _board.getBackgroundXML();
         if (bxml != null) {
@@ -202,6 +204,19 @@ public class BoardSprite extends Sprite
         }
     }
 
+    public function getCount () :String
+    {
+        var str :String = "Sprite Count: ";
+        for (var ii :int; ii < NUM_LAYERS; ii++) {
+            var count :int = _layerCount[ii];
+            _layerCount[ii] = 0;
+            if (count > 0) {
+                str += "(" + _layers[ii].name + ": " + count + "), ";
+            }
+        }
+        return str;
+    }
+
     public function get centerX () :Number
     {
         return _centerX;
@@ -297,6 +312,9 @@ public class BoardSprite extends Sprite
         _lastDelta = delta;
         if (_cameraCtrl != null) {
             _cameraCtrl.tick(delta);
+        }
+        for (var ii :int; ii < NUM_LAYERS; ii++) {
+            _layerCount[ii] = Math.max(_layerCount[ii], _layers[ii].displayCount);
         }
     }
 
@@ -439,6 +457,7 @@ public class BoardSprite extends Sprite
     /** The board layer. */
     protected var _layers :Array;
     protected var _layerEnabled :Array;
+    protected var _layerCount :Array;
 
     protected var _centerX :Number = 0;
     protected var _centerY :Number = 0;
