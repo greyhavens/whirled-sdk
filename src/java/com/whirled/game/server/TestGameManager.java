@@ -61,7 +61,7 @@ public class TestGameManager extends WhirledGameManager
         systemMessage(null, "Trophy awarded: " + ident);
 
         // persist it in java preferences
-        _prefs.putBoolean(getPlayerPersistentId(plobj.getVisibleName()) + ":" + ident, true);
+        _prefs.putBoolean(playerId + ":" + ident, true);
     }
 
     // from interface WhirledGameProvider
@@ -87,10 +87,11 @@ public class TestGameManager extends WhirledGameManager
         int highScore = 0;
         ArrayIntSet winners = new ArrayIntSet();
         for (int ii = 0; ii < playerIds.length; ii++) {
-            if (scores[ii] > highScore) {
-                winners.clear();
-                winners.add(playerIds[ii]);
-            } else if (scores[ii] == highScore) {
+            if (scores[ii] >= highScore) {
+                if (scores[ii] > highScore) {
+                    highScore = scores[ii];
+                    winners.clear();
+                }
                 winners.add(playerIds[ii]);
             }
         }
@@ -137,12 +138,12 @@ public class TestGameManager extends WhirledGameManager
     /**
      * Award some fake coins, so that game creators can test the CoinsAwardedEvent.
      */
-    protected void awardFakeCoins (int[] playerOids)
+    protected void awardFakeCoins (int[] playerIds)
     {
-        for (int playerOid : playerOids) {
-            ClientObject cliObj = (ClientObject)_omgr.getObject(playerOid);
-            if (cliObj != null) {
-                cliObj.postMessage(WhirledGameObject.COINS_AWARDED_MESSAGE,
+        for (int playerId : playerIds) {
+            BodyObject bobj = getOccupantById(playerId);
+            if (bobj != null) {
+                bobj.postMessage(WhirledGameObject.COINS_AWARDED_MESSAGE,
                     10 /*coins*/, 49 /*percentile*/, Boolean.TRUE /*for real?*/);
             }
         }
@@ -152,13 +153,13 @@ public class TestGameManager extends WhirledGameManager
     protected void resolveContentOwnership (BodyObject body, ResultListener<Void> listener)
     {
         WhirledPlayerObject plobj = (WhirledPlayerObject)body;
-        String pidPrefix = getPlayerPersistentId(plobj.getVisibleName()) + ":";
         int gameId = _gameconfig.getGameId();
         if (plobj.isContentResolved(gameId)) {
             listener.requestCompleted(null);
             return;
         }
 
+        String pidPrefix = getPlayerPersistentId(plobj) + ":";
         plobj.startTransaction();
         try {
             for (String key : _prefs.keys()) {
