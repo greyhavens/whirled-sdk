@@ -44,7 +44,7 @@ public class ThaneGameBackend extends BaseGameBackend
         // create players for everyone already known to be in the game
         for each (var name :Name in _gameObj.players) {
             var occInfo :OccupantInfo = _gameObj.getOccupantInfo(name);
-            if (occInfo != null) {
+            if (occInfo != null && isInited(occInfo)) {
                 preparePlayer(occInfo.bodyOid, function () :void {});
             }
         }
