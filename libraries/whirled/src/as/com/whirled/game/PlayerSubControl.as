@@ -57,7 +57,11 @@ public class PlayerSubControl extends AbstractSubControl
      */
     public function getPartyId (occupantId :int = CURRENT_USER) :int
     {
-        return callHostCode("player_getPartyId_v1") as int;
+        // the backend for this particular function doesn't know about CURRENT_USER, so translate
+        if (occupantId == CURRENT_USER) {
+            occupantId = GameControl(_parent).game.getMyId();
+        }
+        return callHostCode("player_getPartyId_v1", occupantId) as int;
     }
 
     /**
