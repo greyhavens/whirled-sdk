@@ -36,6 +36,7 @@ import com.threerings.util.Log;
 import com.threerings.util.MethodQueue;
 
 import com.whirled.contrib.EventHandlerManager;
+import com.whirled.contrib.LevelPackManager;
 import com.whirled.contrib.LevelPacks;
 
 [Event(name="backgroundMusicComplete", type="flash.events.Event")]
@@ -46,13 +47,24 @@ public class SoundController extends EventDispatcher
 
     public static const BACKGROUND_MUSIC_COMPLETE :String = "backgroundMusicComplete";
 
+    /**
+     * @param factory The sound factory to use to fetch sound effects.  If none is provided,
+     *                a default ApplicationDomainSoundFactory is created that uses the currentDomain
+     * @param initialBackgroundVolume The initial value of the background volume
+     * @param initialEffectsVolume The initial volume of sound effects
+     * @param levelPackMgr Background music is defined as MP3s that are loaded out of game level
+     *                     packs.  If no LevelPackManager is provided, LevelPacks.getGlobalManager()
+     *                     is used.
+     */
     public function SoundController (factory :SoundFactory = null,
         initialBackgroundVolume :Number = 0.5,
-        initialEffectsVolume :Number = 0.5)
+        initialEffectsVolume :Number = 0.5,
+        levelPackMgr :LevelPackManager = null)
     {
         _soundFactory = factory == null ? new ApplicationDomainSoundFactory() : factory;
         _backgroundVolume = initialBackgroundVolume;
         _effectsVolume = initialEffectsVolume;
+        _levelPackMgr = levelPackMgr == null ? LevelPacks.getGlobalManager() : levelPackMgr;
 
         MethodQueue.callLater(tick);
     }
@@ -95,7 +107,7 @@ public class SoundController extends EventDispatcher
 
         var trackSound :Sound = _tracks.get(_trackName = name) as Sound;
         if (_track == null) {
-            var trackURL :String = LevelPacks.getMediaURL(name);
+            var trackURL :String = _levelPackMgr.getMediaURL(name);
             if (trackURL == null) {
                 log.warning("level pack for track not found", "name", name);
                 return;
@@ -289,6 +301,7 @@ public class SoundController extends EventDispatcher
     protected var _backgroundVolume :Number;
     protected var _effectsVolume :Number;
     protected var _soundFactory :SoundFactory;
+    protected var _levelPackMgr :LevelPackManager;
 
     protected static const DISTANCE_NORMALIZE :Number =
         Point.distance(new Point(0, 0), new Point(1, 1));

@@ -71,6 +71,14 @@ public class LevelPacks
         return _mgr.getLevelPacks();
     }
 
+    /**
+     * Returns the concrete LevelPackManager used by all of the static functions in this class.
+     */
+    public static function getGlobalManager () :LevelPackManager
+    {
+        return _mgr;
+    }
+
     protected static var _mgr :LevelPackManager = new LevelPackManager();
 }
 }
