@@ -38,8 +38,8 @@ public class WhirledGameBackend extends BaseGameBackend
     public function WhirledGameBackend (
         ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :WhirledGameController)
     {
+        _ctrl = ctrl; // set this first, needed in super().
         super(ctx, gameObj);
-        _ctrl = ctrl;
 
         (_ctx as CrowdContext).getChatDirector().addChatDisplay(this);
 
