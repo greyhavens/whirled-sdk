@@ -3,42 +3,88 @@
 //
 // Copyright (c) 2007-2009 Three Rings Design, Inc. Please do not redistribute.
 
-package com.whirled.avrg {
+package com.whirled.party {
 
 import flash.events.Event;
 
 import flash.display.DisplayObject;
 
+import com.whirled.AbstractControl;
 import com.whirled.TargetedSubControl;
 
 /**
  * Dispatched when a player arrives in this party.
  *
- * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_ENTERED_PARTY
+ * @eventType com.whirled.party.PartySubControl.PLAYER_ENTERED_PARTY
  */
-[Event(name="playerEnteredParty", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="playerEnteredParty", type="com.whirled.ControlEvent")]
 
 /**
  * Dispatched when a player leaves this party.
  *
- * @eventType com.whirled.avrg.AVRGameControlEvent.PLAYER_LEFT_PARTY
+ * @eventType com.whirled.party.PartySubControl.PLAYER_LEFT_PARTY
  */
-[Event(name="playerLeftParty", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="playerLeftParty", type="com.whirled.ControlEvent")]
 
 /**
  * Dispatched when the leader of the party changes.
  *
- * @eventType com.whirled.avrg.AVRGameControlEvent.PARTY_LEADER_CHANGED
+ * @eventType com.whirled.party.PartySubControl.PARTY_LEADER_CHANGED
  */
-[Event(name="partyLeaderChanged", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="partyLeaderChanged", type="com.whirled.ControlEvent")]
 
 /**
  * Provides services on a particular party.
  */
 public class PartySubControl extends TargetedSubControl
 {
+    /**
+     * An event type dispatched on the GameSubControl when a party joins the game.
+     * <br/><b>name</b> - not used
+     * <br/><b>value</b> - partyId
+     *
+     * @eventType partyEntered
+     */
+    public static const PARTY_ENTERED :String = "partyEntered";
+
+    /**
+     * An event type dispatched on the GameSubControl when a party leaves the game.
+     * <br/><b>name</b> - not used
+     * <br/><b>value</b> - partyId
+     *
+     * @eventType partyLeft
+     */
+    public static const PARTY_LEFT :String = "partyLeft";
+
+    /**
+     * An event type dispatched on a PartySubControl when a player joins that party.
+     * <br/><b>name</b> - not used
+     * <br/><b>value</b> - the playerId
+     *
+     * @eventType playerEnteredParty
+     */
+    public static const PLAYER_ENTERED_PARTY :String = "playerEnteredParty";
+
+    /**
+     * An event type dispatched on a PartySubControl when a player leaves that party.
+     * <br/><b>name</b> - not used
+     * <br/><b>value</b> - the playerId
+     *
+     * @eventType playerLeftParty
+     */
+    public static const PLAYER_LEFT_PARTY :String = "playerLeftParty";
+
+    /**
+     * An event type dispatched on a PartySubControl when the leader changes.
+     * <br/><b>name</b> - not used
+     * <br/><b>value</b> - the playerId of the new leader
+     *
+     * @eventType playerLeftParty
+     */
+    public static const PARTY_LEADER_CHANGED :String = "partyLeaderChanged";
+
     /** @private */
-    public function PartySubControl (parent :GameSubControlBase, partyId :int)
+    public function PartySubControl (parent :AbstractControl, partyId :int)
     {
         super(parent, partyId);
     }

@@ -55,51 +55,6 @@ public class AVRGameControlEvent extends Event
     public static const MOB_APPEARANCE_CHANGED :String = "mobAppearanceChanged";
 
     /**
-     * An event type dispatched on the GameSubControl when a party joins the game.
-     * <br/><b>name</b> - not used
-     * <br/><b>value</b> - partyId
-     *
-     * @eventType partyEntered
-     */
-    public static const PARTY_ENTERED :String = "partyEntered";
-
-    /**
-     * An event type dispatched on the GameSubControl when a party leaves the game.
-     * <br/><b>name</b> - not used
-     * <br/><b>value</b> - partyId
-     *
-     * @eventType partyLeft
-     */
-    public static const PARTY_LEFT :String = "partyLeft";
-
-    /**
-     * An event type dispatched on a PartySubControl when a player joins that party.
-     * <br/><b>name</b> - not used
-     * <br/><b>value</b> - the playerId
-     *
-     * @eventType playerEnteredParty
-     */ 
-    public static const PLAYER_ENTERED_PARTY :String = "playerEnteredParty";
-
-    /**
-     * An event type dispatched on a PartySubControl when a player leaves that party.
-     * <br/><b>name</b> - not used
-     * <br/><b>value</b> - the playerId
-     *
-     * @eventType playerLeftParty
-     */
-    public static const PLAYER_LEFT_PARTY :String = "playerLeftParty";
-
-    /**
-     * An event type dispatched on a PartySubControl when the leader changes.
-     * <br/><b>name</b> - not used
-     * <br/><b>value</b> - the playerId of the new leader
-     *
-     * @eventType playerLeftParty
-     */
-    public static const PARTY_LEADER_CHANGED :String = "partyLeaderChanged";
-
-    /**
      * Retrieves the 'name' for this event, which is a String value
      * whose meaning is determined by the event type.
      */

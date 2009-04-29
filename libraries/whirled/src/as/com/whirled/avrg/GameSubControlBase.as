@@ -5,11 +5,12 @@
 
 package com.whirled.avrg {
 
-import com.threerings.util.WeakValueHashMap;
-
 import com.whirled.AbstractControl;
 import com.whirled.AbstractSubControl;
+import com.whirled.ControlEvent;
 import com.whirled.net.MessageReceivedEvent;
+import com.whirled.party.PartyHelper;
+import com.whirled.party.PartySubControl;
 
 /**
  * Dispatched when a message arrives with information that is not part of the shared game state.
@@ -23,16 +24,16 @@ import com.whirled.net.MessageReceivedEvent;
 /**
  * Dispatched when a party arrives in the game.
  *
- * @eventType com.whirled.avrg.AVRGameControlEvent.PARTY_ENTERED
+ * @eventType com.whirled.party.PartySubControl.PARTY_ENTERED
  */
-[Event(name="partyEntered", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="partyEntered", type="com.whirled.ControlEvent")]
 
 /**
  * Dispatched when a party leaves the game.
  *
- * @eventType com.whirled.avrg.AVRGameControlEvent.PARTY_LEFT
+ * @eventType com.whirled.party.PartySubControl.PARTY_LEFT
  */
-[Event(name="partyLeft", type="com.whirled.avrg.AVRGameControlEvent")]
+[Event(name="partyLeft", type="com.whirled.ControlEvent")]
 
 /**
  * Provides AVR game services for server agents and clients.
@@ -42,6 +43,7 @@ public class GameSubControlBase extends AbstractSubControl
     /** @private */
     public function GameSubControlBase (ctrl :AbstractControl)
     {
+        _partyHelper = new PartyHelper(this);
         super(ctrl);
     }
 
@@ -81,13 +83,7 @@ public class GameSubControlBase extends AbstractSubControl
      */
     public function getParty (partyId :int) :PartySubControl
     {
-        var ctrl :PartySubControl = _parties.get(partyId);
-        if (ctrl == null) {
-            ctrl = new PartySubControl(this, partyId);
-            ctrl.gotHostProps(_funcs);
-            _parties.put(partyId, ctrl);
-        }
-        return ctrl;
+        return _partyHelper.getParty(partyId, _funcs);
     }
 
     /**
@@ -163,11 +159,7 @@ public class GameSubControlBase extends AbstractSubControl
         super.setUserProps(o);
 
         o["game_messageReceived_v1"] = messageReceived;
-        o["game_partyEntered_v1"] = partyEntered_v1;
-        o["game_partyLeft_v1"] = partyLeft_v1;
-        o["party_playerEntered_v1"] = party_playerEntered_v1;
-        o["party_playerLeft_v1"] = party_playerLeft_v1;
-        o["party_leaderChanged_v1"] = party_leaderChanged_v1;
+        _partyHelper.setUserProps(o);
     }
 
     /** @private */
@@ -177,47 +169,6 @@ public class GameSubControlBase extends AbstractSubControl
     }
 
     /** @private */
-    protected function partyEntered_v1 (partyId :int, ... rest) :void
-    {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PARTY_ENTERED, null, partyId));
-    }
-
-    protected function partyLeft_v1 (partyId :int, ... rest) :void
-    {
-        dispatchEvent(new AVRGameControlEvent(AVRGameControlEvent.PARTY_LEFT, null, partyId));
-    }
-
-    /** @private */
-    protected function party_playerEntered_v1 (partyId :int, playerId :int, ... rest) :void
-    {
-        dispatchParty(partyId, AVRGameControlEvent.PLAYER_ENTERED_PARTY, null, playerId);
-    }
-
-    /** @private */
-    protected function party_playerLeft_v1 (partyId :int, playerId :int, ... rest) :void
-    {
-        dispatchParty(partyId, AVRGameControlEvent.PLAYER_LEFT_PARTY, null, playerId);
-    }
-
-    /** @private */
-    protected function party_leaderChanged_v1 (partyId :int, playerId :int, ... rest) :void
-    {
-        dispatchParty(partyId, AVRGameControlEvent.PARTY_LEADER_CHANGED, null, playerId);
-    }
-
-    /**
-     * Internal convenience function for dispatching events on a PartySubControl.
-     * @private
-     */
-    protected function dispatchParty (partyId :int, event :String, name :String, arg :Object) :void
-    {
-        var ctrl :PartySubControl = _parties.get(partyId);
-        if (ctrl != null) {
-            ctrl.dispatchEvent(new AVRGameControlEvent(event, name, arg));
-        }
-    }
-
-    /** @private */
-    protected var _parties :WeakValueHashMap = new WeakValueHashMap();
+    protected var _partyHelper :PartyHelper;
 }
 }

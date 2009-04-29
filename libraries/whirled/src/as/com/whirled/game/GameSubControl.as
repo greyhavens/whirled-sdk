@@ -5,7 +5,12 @@
 
 package com.whirled.game {
 
+import com.threerings.util.WeakValueHashMap;
+
 import com.whirled.AbstractSubControl;
+import com.whirled.ControlEvent;
+import com.whirled.party.PartyHelper;
+import com.whirled.party.PartySubControl;
 
 /**
  * Dispatched when the controller changes for the game.
@@ -71,6 +76,20 @@ import com.whirled.AbstractSubControl;
 [Event(name="UserChat", type="com.whirled.game.UserChatEvent")]
 
 /**
+ * Dispatched when a party arrives in the game.
+ *
+ * @eventType com.whirled.party.PartySubControl.PARTY_ENTERED
+ */
+[Event(name="partyEntered", type="com.whirled.ControlEvent")]
+
+/**
+ * Dispatched when a party leaves the game.
+ *
+ * @eventType com.whirled.party.PartySubControl.PARTY_LEFT
+ */
+[Event(name="partyLeft", type="com.whirled.ControlEvent")]
+
+/**
  * Access game-specific controls. Do not instantiate this class yourself.
  * Access it via GameControl.game.
  */
@@ -114,6 +133,7 @@ public class GameSubControl extends AbstractSubControl
      */
     public function GameSubControl (parent :GameControl)
     {
+        _partyHelper = new PartyHelper(this);
         super(parent);
     }
 
@@ -457,6 +477,24 @@ public class GameSubControl extends AbstractSubControl
         callHostCode("restartGameIn_v1", seconds);
     }
 
+    /**
+     * Return the ids of all parties presently in this game.
+     */
+    public function getPartyIds () :Array /* of int */
+    {
+        return callHostCode("game_getPartyIds_v1");
+    }
+
+    /**
+     * Get the party control for the specified party. Note that this will always
+     * return a PartySubControl, even for partyIds that are not present in the game.
+     * Be careful.
+     */
+    public function getParty (partyId :int) :PartySubControl
+    {
+        return _partyHelper.getParty(partyId, _funcs);
+    }
+
     /** @private */
     override public function setUserProps (o :Object) :void
     {
@@ -468,6 +506,8 @@ public class GameSubControl extends AbstractSubControl
         o["roundStateChanged_v1"] = roundStateChanged_v1;
         o["occupantChanged_v1"] = occupantChanged_v1;
         o["userChat_v1"] = userChat_v1;
+
+        _partyHelper.setUserProps(o);
     }
 
     /** @private */
@@ -554,5 +594,8 @@ public class GameSubControl extends AbstractSubControl
 
     /** The seating sub-control. @private */
     protected var _seatingCtrl :SeatingSubControl;
+
+    /** @private */
+    protected var _partyHelper :PartyHelper;
 }
 }
