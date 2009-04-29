@@ -525,9 +525,9 @@ public class WhirledGameBackend extends BaseGameBackend
         // and discard the 'back' button preference.
     }
 
-    override protected function infoToId (occInfo :OccupantInfo) :int
+    override protected function nameToId (name :Name) :int
     {
-        return _ctrl.infoToId(occInfo.username);
+        return _ctrl.nameToId(name);
     }
 
     protected var _ctrl :WhirledGameController;

@@ -1441,11 +1441,19 @@ public class BaseGameBackend
     }
 
     /**
+     * Get the persistent id for this player's name. This is required for whirled games.
+     */
+    protected function nameToId (name :Name) :int
+    {
+        throw new Error("abstract");
+    }
+
+    /**
      * Get the persistent id for this occupantInfo. This is required for whirled games.
      */
     protected function infoToId (occInfo :OccupantInfo) :int
     {
-        throw new Error("abstract");
+        return nameToId(occInfo.username);
     }
 
     protected var _ctx :PresentsContext;

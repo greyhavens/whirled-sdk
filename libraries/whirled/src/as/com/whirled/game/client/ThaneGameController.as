@@ -8,13 +8,16 @@ package com.whirled.game.client {
 import com.threerings.util.Log;
 import com.threerings.util.Name;
 import com.threerings.util.Controller;
+
 import com.threerings.presents.dobj.AttributeChangeListener;
 import com.threerings.presents.dobj.AttributeChangedEvent;
-import com.threerings.crowd.data.OccupantInfo;
-import com.threerings.bureau.util.BureauContext;
+
 import com.threerings.parlor.game.data.GameObject;
 import com.threerings.parlor.game.data.UserIdentifier;
 import com.threerings.parlor.turn.client.TurnGameControllerDelegate;
+
+import com.threerings.bureau.util.BureauContext;
+
 import com.whirled.bureau.client.BaseGameAgent;
 import com.whirled.bureau.client.GameAgentController;
 import com.whirled.game.data.ThaneGameConfig;
@@ -72,11 +75,11 @@ public class ThaneGameController extends Controller
     }
 
     /**
-     * Convert the occupant info to a permanent id.
+     * Convert the player's name to a permanent id.
      */
-    public function infoToId (occInfo :OccupantInfo) :int
+    public function nameToId (name :Name) :int
     {
-        return _userIder.getUserId(occInfo.username);
+        return _userIder.getUserId(name);
     }
 
     /** @inheritDoc */

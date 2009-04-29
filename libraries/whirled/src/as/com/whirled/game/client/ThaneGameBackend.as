@@ -45,7 +45,7 @@ public class ThaneGameBackend extends BaseGameBackend
         for each (var name :Name in _gameObj.players) {
             var occInfo :OccupantInfo = _gameObj.getOccupantInfo(name);
             if (isInited(occInfo)) {
-                preparePlayer(occInfo.bodyOid, function () :void {});
+                preparePlayer(occInfo.bodyOid, infoToId(occInfo), function () :void {});
             }
         }
     }
@@ -74,8 +74,8 @@ public class ThaneGameBackend extends BaseGameBackend
     {
         super.shutdown();
 
-        for each (var bodyOid :int in _players.keys()) {
-            clearPlayer(bodyOid, function () :void { /* noop */ });
+        for each (var playerId :int in _players.keys()) {
+            clearPlayer(playerId, function () :void { /* noop */ });
         }
     }
 
@@ -105,9 +105,9 @@ public class ThaneGameBackend extends BaseGameBackend
 
     // --------------------------
 
-    protected function getPlayer (oid :int) :BodyObject
+    protected function getPlayer (playerId :int) :BodyObject
     {
-        var player :Player = _players.get(oid) as Player;
+        var player :Player = _players.get(playerId) as Player;
         return (player == null) ? null : player.bobj;
     }
 
@@ -118,16 +118,9 @@ public class ThaneGameBackend extends BaseGameBackend
             throw new Error("Server agent has no current user");
         }
 
-        // check out the levels of redirection here
-        var name :Name = _idsToName[playerId];
-        if (name != null) {
-            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(name);
-            if (occInfo != null) {
-                var player :WhirledPlayerObject = getPlayer(occInfo.bodyOid) as WhirledPlayerObject;
-                if (player != null) {
-                    return player.countGameContent(getGameId(), type, ident)
-                }
-            }
+        var player :WhirledPlayerObject = getPlayer(playerId) as WhirledPlayerObject;
+        if (player != null) {
+            return player.countGameContent(getGameId(), type, ident);
         }
 
         // not found
@@ -139,7 +132,7 @@ public class ThaneGameBackend extends BaseGameBackend
     override protected function occupantAdded (info :OccupantInfo) :void
     {
         if (isPlayer(info.username)) {
-            preparePlayer(info.bodyOid, function () :void {
+            preparePlayer(info.bodyOid, infoToId(info), function () :void {
                 doOccupantAdded(info);
             });
 
@@ -160,7 +153,7 @@ public class ThaneGameBackend extends BaseGameBackend
     override protected function occupantRoleChanged (info :OccupantInfo, isPlayerNow :Boolean) :void
     {
         if (isPlayerNow) {
-            preparePlayer(info.bodyOid, function () :void {
+            preparePlayer(info.bodyOid, infoToId(info), function () :void {
                 doOccupantRoleChanged(info, true);
             });
 
@@ -179,15 +172,15 @@ public class ThaneGameBackend extends BaseGameBackend
         }
 
         for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
-            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
-            if (getPlayer(occInfo.bodyOid) == null) {
+            var info :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
+            if (getPlayer(infoToId(info)) == null) {
                 return false;
             }
         }
         return true;
     }
 
-    protected function preparePlayer (bodyOid :int, onReady :Function) :void
+    protected function preparePlayer (bodyOid :int, playerId :int, onReady :Function) :void
     {
         var self :ThaneGameBackend = this;
         var player :Player = new Player();
@@ -200,12 +193,12 @@ public class ThaneGameBackend extends BaseGameBackend
             log.warning("Failed to subscribe to player object", "oid", oid, "error", error)
         });
         player.subber.subscribe(_ctx.getDObjectManager());
-        _players.put(bodyOid, player);
+        _players.put(playerId, player);
     }
 
-    protected function clearPlayer (bodyOid :int, onClear :Function) :void
+    protected function clearPlayer (playerId :int, onClear :Function) :void
     {
-        var player :Player = _players.remove(bodyOid);
+        var player :Player = _players.remove(playerId);
         if (player == null ) {
             onClear(); // never were a player
             return;
@@ -218,9 +211,9 @@ public class ThaneGameBackend extends BaseGameBackend
         }
     }
 
-    override protected function infoToId (occInfo :OccupantInfo) :int
+    override protected function nameToId (name :Name) :int
     {
-        return _ctrl.infoToId(occInfo);
+        return _ctrl.nameToId(name);
     }
 
     protected var _ctrl :ThaneGameController;
