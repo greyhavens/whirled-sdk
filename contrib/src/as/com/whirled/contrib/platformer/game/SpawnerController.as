@@ -97,7 +97,7 @@ public class SpawnerController extends RectDynamicController
                 if (_spawnDelay > 0) {
                     _spawnDelay -= delta;
                 }
-                if (_spawnDelay <= 0 && _spawner.spawning != _spawnId) {
+                if (_spawnDelay <= 0 || _spawner.spawning != _spawnId) {
                     spawn();
                 }
             }
