@@ -29,6 +29,7 @@ public class TestGameBackend extends WhirledGameBackend
         super.populateProperties(o);
 
         o["game_getPartyIds_v1"] = game_getPartyIds_v1;
+        o["player_getPartyId_v1"] = player_getPartyId_v1;
         // the rest of the party-related methods are OK as missing, since we never return a partyIds
     }
 
@@ -67,6 +68,11 @@ public class TestGameBackend extends WhirledGameBackend
     protected function game_getPartyIds_v1 () :Array
     {
         return []; // no parties in the test env.
+    }
+
+    protected function player_getPartyId_v1 (playerId :int) :int
+    {
+        return 0; // no parties in the test env.
     }
 
     // Embed some media to be used as default headshots

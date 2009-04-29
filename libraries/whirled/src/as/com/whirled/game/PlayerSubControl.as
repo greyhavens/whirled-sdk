@@ -53,6 +53,14 @@ public class PlayerSubControl extends AbstractSubControl
     }
 
     /**
+     * Get the specified player's partyId, or 0 if they're not in a party.
+     */
+    public function getPartyId (occupantId :int = CURRENT_USER) :int
+    {
+        return callHostCode("player_getPartyId_v1") as int;
+    }
+
+    /**
      * Get the user-specific game data for the specified occupant. The first time this is requested
      * per game instance it will be retrieved from the database. After that, it will be returned
      * from memory.

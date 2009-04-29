@@ -63,9 +63,10 @@ public class ThaneGameBackend extends BaseGameBackend
         // .game
         o["takeOverPlayer_v1"] = takeOverPlayer_v1;
 
-        // party. If there were a TestThaneGameBackend, we'd put this there, but there
+        // Party. TODO? If there were a TestThaneGameBackend, we'd put this there, but there
         // isn't so we put it here and let it get overridden in MsoyThaneGameBackend
         o["game_getPartyIds_v1"] = function () :Array { return [] };
+        o["player_getPartyId_v1"] = function (playerId :int) :int { return 0 };
     }
 
     /** @inheritDoc */ // from BaseGameBackend
