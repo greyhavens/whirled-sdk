@@ -23,6 +23,15 @@ public class TestGameBackend extends WhirledGameBackend
         super(ctx, gameObj, ctrl);
     }
 
+    // from WhirledGameBackend
+    override protected function populateProperties (o :Object) :void
+    {
+        super.populateProperties(o);
+
+        o["game_getPartyIds_v1"] = game_getPartyIds_v1;
+        // the rest of the party-related methods are OK as missing, since we never return a partyIds
+    }
+
     // from BaseGameBackend
     override protected function reportGameError (msg :String, err :Error = null) :void
     {
@@ -53,6 +62,11 @@ public class TestGameBackend extends WhirledGameBackend
     override protected function requestConsumeItemPack_v1 (ident :String, msg :String) :Boolean
     {
         return false; // TODO: to test things properly we really need to get the server involved
+    }
+
+    protected function game_getPartyIds_v1 () :Array
+    {
+        return []; // no parties in the test env.
     }
 
     // Embed some media to be used as default headshots
