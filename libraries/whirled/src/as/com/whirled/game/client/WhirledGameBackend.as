@@ -527,7 +527,7 @@ public class WhirledGameBackend extends BaseGameBackend
 
     override protected function infoToId (occInfo :OccupantInfo) :int
     {
-        return _ctrl.infoToId(occInfo);
+        return _ctrl.infoToId(occInfo.username);
     }
 
     protected var _ctrl :WhirledGameController;
