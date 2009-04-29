@@ -184,6 +184,7 @@
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/loopback/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/net/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/avrg/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/party/*.as"/>
     </copy>
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg value="-load-config"/>
@@ -266,6 +267,7 @@
       <fileset dir="${projects.dir}/nenya" includes="src/as/com/threerings/flash/**"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/avrg/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/party/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/avrg/server/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/game/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/game/loopback/*.as"/>
