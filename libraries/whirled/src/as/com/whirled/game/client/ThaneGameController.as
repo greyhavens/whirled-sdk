@@ -26,6 +26,9 @@ import com.whirled.game.data.WhirledGameObject;
 public class ThaneGameController extends Controller
     implements AttributeChangeListener, GameAgentController
 {
+    // reference this class so that it gets linked in, even though we don't use it in production
+    TestUserIdentifier;
+
     /** The backend we dispatch game events to. */
     public var backend :ThaneGameBackend;
 
