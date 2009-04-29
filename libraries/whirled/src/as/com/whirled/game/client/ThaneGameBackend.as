@@ -113,12 +113,21 @@ public class ThaneGameBackend extends BaseGameBackend
             throw new Error("Server agent has no current user");
         }
 
-        var player :WhirledPlayerObject = getPlayer(playerId) as WhirledPlayerObject;
-        if (player == null) {
-            log.warning("Player " + playerId + " not found");
-            return 0;
+        // check out the levels of redirection here
+        var name :Name = _idsToName[playerId];
+        if (name != null) {
+            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(name);
+            if (occInfo != null) {
+                var player :WhirledPlayerObject = getPlayer(occInfo.bodyOid) as WhirledPlayerObject;
+                if (player != null) {
+                    return player.countGameContent(getGameId(), type, ident)
+                }
+            }
         }
-        return player.countGameContent(getGameId(), type, ident)
+
+        // not found
+        log.warning("Player not found", "playerId", playerId);
+        return 0;
     }
 
     // from BaseGameBackend
