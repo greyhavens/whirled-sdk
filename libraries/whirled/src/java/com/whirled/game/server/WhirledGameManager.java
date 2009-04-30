@@ -510,13 +510,12 @@ public abstract class WhirledGameManager extends GameManager
                 // clear out the player's name from the players array so that Thane and the client
                 // code know this is no longer a real player
                 _gameObj.setPlayersAt(null, pidx);
+                // possibly do players all here processing
+                if (allPlayersReady()) {
+                    playersAllHere();
+                }
                 break;
             }
-        }
-
-        // possibly do players all here processing
-        if (allPlayersReady()) {
-            playersAllHere();
         }
     }
 
