@@ -25,6 +25,7 @@ import com.threerings.util.MessageBundle;
 import com.threerings.util.Name;
 import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.StringUtil;
+import com.threerings.util.Util;
 
 import com.threerings.presents.client.ConfirmAdapter;
 import com.threerings.presents.client.ResultAdapter;
@@ -191,7 +192,7 @@ public class BaseGameBackend
     {
         if (started && !readyToStart()) {
             // We're waiting to dispatch GAME_STARTED until the API is prepared to give out valid
-            // player data for the current players. See entryUpdated/entryAdded.
+            // player data for the current players. See doOccupantAdded.
             return;
         }
 
@@ -445,13 +446,7 @@ public class BaseGameBackend
 
     protected function readyToStart () :Boolean
     {
-        for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
-            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
-            if (!isInited(occInfo)) {
-                return false;
-            }
-        }
-        return true;
+        return getPlayerInfos().every(Util.adapt(isInited));
     }
 
     /**
@@ -1091,12 +1086,8 @@ public class BaseGameBackend
         // no one is a loser because we're not going to declare that all watchers automatically be
         // considered as players and thus contribute to the winners' booty
         var loserIds :Array = [];
-        // party games have a zero length players array
-        for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
-            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
-            if (isInited(occInfo)) {
-                loserIds.push(infoToId(occInfo));
-            }
+        for each (var info :OccupantInfo in getPlayerInfos().filter(Util.adapt(isInited))) {
+            loserIds.push(infoToId(occInfo));
         }
         endGameWithWinners_v1(winnerIds, loserIds, 0) // WhirledGameControl.CASCADING_PAYOUT
     }
@@ -1156,7 +1147,7 @@ public class BaseGameBackend
     protected function getPlayers_v1 () :Array
     {
         validateConnected();
-        return getPlayersArray();
+        return getPlayerIds();
     }
 
     protected function getMyPosition_v1 () :int
@@ -1377,7 +1368,6 @@ public class BaseGameBackend
     /**
      * Dispatches the addition of an occupant to the user code, including starting the game if the
      * addition of the occupant means that the game is ready to start.
-     *
      */
     protected function doOccupantAdded (occInfo :OccupantInfo) :void
     {
@@ -1428,13 +1418,31 @@ public class BaseGameBackend
     }
 
     /**
-     * Retrieve an array of player ids, translated from OccupantInfo.
+     * Returns an array of OccupantInfo for all players in the game. Players that have been taken
+     * over by the server are omitted from this array. Players that have not been taken over by the
+     * server but are not in the game room have null in their slot.
      */
-    protected function getPlayersArray () :Array
+    protected function getPlayerInfos () :Array
+    {
+        var infos :Array = [];
+        for each (var name :Name in _gameObj.players) {
+            if (name == null) {
+                continue; // this player is an AI, skip them
+            }
+            infos.push(_gameObj.getOccupantInfo(name));
+        }
+        return infos;
+    }
+
+    /**
+     * Returns an array of ids for all players in the game. Players that have been taken over by
+     * the server or that are not yet initialized have a 0 filled in for their slot.
+     */
+    protected function getPlayerIds () :Array
     {
         var playerIds :Array = [];
-        for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
-            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
+        for each (var name :Name in _gameObj.players) {
+            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(name);
             playerIds.push(isInited(occInfo) ? infoToId(occInfo) : 0);
         }
         return playerIds;

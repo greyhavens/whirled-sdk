@@ -42,10 +42,9 @@ public class ThaneGameBackend extends BaseGameBackend
         _ctrl = ctrl;
 
         // create players for everyone already known to be in the game
-        for each (var name :Name in _gameObj.players) {
-            var occInfo :OccupantInfo = _gameObj.getOccupantInfo(name);
-            if (isInited(occInfo)) {
-                preparePlayer(occInfo.bodyOid, infoToId(occInfo), function () :void {});
+        for each (var info :OccupantInfo in getPlayerInfos()) {
+            if (isInited(info)) {
+                preparePlayer(info.bodyOid, infoToId(info), function () :void {});
             }
         }
     }
@@ -171,8 +170,7 @@ public class ThaneGameBackend extends BaseGameBackend
             return false;
         }
 
-        for (var ii :int = 0; ii < _gameObj.players.length; ii++) {
-            var info :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.players[ii] as Name);
+        for each (var info :OccupantInfo in getPlayerInfos()) {
             if (getPlayer(infoToId(info)) == null) {
                 return false;
             }

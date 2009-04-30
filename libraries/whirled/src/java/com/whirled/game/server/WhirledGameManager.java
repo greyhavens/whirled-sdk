@@ -507,6 +507,9 @@ public abstract class WhirledGameManager extends GameManager
             Name pname = _gameObj.players[pidx];
             if (pname != null && getPlayerPersistentId(pname) == playerId) {
                 setAI(pidx, new GameAI(0, 0));
+                // clear out the player's name from the players array so that Thane and the client
+                // code know this is no longer a real player
+                _gameObj.setPlayersAt(pidx, null);
                 break;
             }
         }
