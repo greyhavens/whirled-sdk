@@ -111,5 +111,28 @@ public interface PropertySubControl extends PropertyGetSubControl
      * a round-trip to the server.
      */
     function setIn (propName :String, key :int, value :Object, immediate :Boolean = false) :void;
+
+    /**
+     * Execute the specified function as a batch of commands that will be sent to the server
+     * together.  Messages can be sent no faster than a rate of 10 per second.  Using doBatch groups
+     * a number of set or sendMessage operations so that they are treated as a single unit towards
+     * this limit. For best performance, it should be used whenever a number of values are being set
+     * at once.
+     *
+     * @example
+     * <listing version="3.0">
+     * _ctrl.doBatch(function () :void {
+     *     _ctrl.net.set("board", new Array(100));
+     *     _ctrl.net.set("scores", new Dictionary());
+     *     _ctrl.net.set("captures", 0);
+     * });
+     * </listing>
+     *
+     * Note that it guarantees that those events get processed by the server as a unit, but
+     * the results will not come back as a unit. So, for instance, when you receive the
+     * PropertyChangedEvent for "board", checking the value of "scores" will still return
+     * the old value.
+     */
+    function doBatch (fn :Function, ... args) :void;
 }
 }
