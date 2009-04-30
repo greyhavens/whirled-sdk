@@ -103,6 +103,18 @@ public class PlayerSubControl extends AbstractSubControl
     }
 
     /**
+     * Returns true if this player is a full registered member of Whirled, false if they are an
+     * anonymous guest. Games that wish to grant additional functionality to fully-registered
+     * members thereby encouraging guests to register for Whirled are themselves encouraged!
+     *
+     * <p>Note: this will always return false in the test environment.</p>
+     */
+    public function isRegistered () :Boolean
+    {
+        return Boolean(callHostCode("isRegistered_v1"));
+    }
+
+    /**
      * Returns all item packs owned by this client's player (the default) or a specified player.
      * The packs are returned as an array of objects with the following properties:
      *

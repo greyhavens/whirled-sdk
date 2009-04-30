@@ -601,6 +601,7 @@ public class BaseGameBackend
         o["getCookie_v1"] = getCookie_v1;
         o["setUserCookie_v1"] = setUserCookie_v1;
         o["setCookie_v1"] = setCookie_v1;
+        o["isRegistered_v1"] = isRegistered_v1;
         o["holdsTrophy_v1"] = holdsTrophy_v1;
         o["awardTrophy_v1"] = awardTrophy_v1;
         o["awardPrize_v1"] = awardPrize_v1;
@@ -866,6 +867,11 @@ public class BaseGameBackend
         return true;
     }
 
+    protected function isRegistered_v1 (playerId :int = CURRENT_USER) :Boolean
+    {
+        return false; // derived classes do The Right Thing (tm)
+    }
+
     protected function holdsTrophy_v1 (
         ident :String, playerId :int = CURRENT_USER) :Boolean
     {
@@ -1087,7 +1093,7 @@ public class BaseGameBackend
         // considered as players and thus contribute to the winners' booty
         var loserIds :Array = [];
         for each (var info :OccupantInfo in getPlayerInfos().filter(Util.adapt(isInited))) {
-            loserIds.push(infoToId(occInfo));
+            loserIds.push(infoToId(info));
         }
         endGameWithWinners_v1(winnerIds, loserIds, 0) // WhirledGameControl.CASCADING_PAYOUT
     }
