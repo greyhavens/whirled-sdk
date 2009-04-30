@@ -5,6 +5,8 @@
 
 package com.whirled.game {
 
+import com.threerings.util.WeakValueHashMap;
+
 import com.whirled.AbstractSubControl;
 
 import com.whirled.net.ElementChangedEvent;
@@ -231,13 +233,13 @@ public class NetSubControl extends AbstractSubControl
      */
     protected function getPlayerMessager (playerId :int) :MessageSubControl
     {
-        var ctrl :MessageSubControl = _playerCtrls[playerId];
+        var ctrl :MessageSubControl = _playerCtrls.get(playerId);
         if (ctrl == null) {
-            // TODO: we should garbage collect these when a player has left the game
-            ctrl = _playerCtrls[playerId] = new MessageSubControlAdapter(_parent,
+            ctrl = new MessageSubControlAdapter(_parent,
                 function (name :String, value :Object) :void {
                     sendMessage(name, value, playerId);
                 });
+            _playerCtrls.put(playerId, ctrl);
         }
         return ctrl;
     }
@@ -275,6 +277,6 @@ public class NetSubControl extends AbstractSubControl
     protected var _playersMsgCtrl :MessageSubControl;
 
     /* @private */
-    protected var _playerCtrls :Dictionary = new Dictionary();
+    protected var _playerCtrls :WeakValueHashMap = new WeakValueHashMap();
 }
 }

@@ -19,7 +19,7 @@ public class UserChatEvent extends Event
     public static const USER_CHAT :String = "UserChat";
 
     /**
-     * Get the name of the user who spoke.
+     * Get player id of the speaker.
      */
     public function get speaker () :int
     {
