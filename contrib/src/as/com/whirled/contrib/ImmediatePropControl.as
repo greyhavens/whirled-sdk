@@ -124,6 +124,12 @@ public class ImmediatePropControl extends EventDispatcher
         return _propCtrl.getTargetId();
     }
 
+    public function doBatch (fn :Function, ...args) :void
+    {
+        args.unshift(fn);
+        _propCtrl.doBatch.apply(null, args);
+    }
+
     protected var _propCtrl :PropertySubControl;
     // we store a local copy of all our properties
     protected var _localProps :HashMap = new HashMap();

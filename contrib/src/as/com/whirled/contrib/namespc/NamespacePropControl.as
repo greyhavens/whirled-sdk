@@ -28,6 +28,12 @@ public class NamespacePropControl extends NamespacePropGetControl
         _propCtrl.setIn(_nameUtil.encode(propName), key, value, immediate);
     }
 
+    public function doBatch (fn :Function, ...args) :void
+    {
+        args.unshift(fn);
+        _propCtrl.doBatch.apply(null, args);
+    }
+
     protected var _propCtrl :PropertySubControl;
 }
 
