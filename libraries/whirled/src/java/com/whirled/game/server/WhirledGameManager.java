@@ -125,7 +125,7 @@ public abstract class WhirledGameManager extends GameManager
                 setAsInitialized(caller);
             }
             public void requestFailed (Exception cause) {
-                log.warning("Ownership content resolution failed!", "game", getGameId(),
+                log.warning("Ownership content resolution failed!", "game", where(),
                             "caller", caller.username, cause);
             }
         });
@@ -439,7 +439,7 @@ public abstract class WhirledGameManager extends GameManager
 
         BodyObject body = getOccupantById(playerId);
         if (body == null) {
-            log.debug("getCookie() called with invalid occupant", "game", getGameId(),
+            log.debug("getCookie() called with invalid occupant", "game", where(),
                       "occupantId", playerId);
             throw new InvocationException(INTERNAL_ERROR);
         }
@@ -460,7 +460,7 @@ public abstract class WhirledGameManager extends GameManager
             }
 
             public void requestFailed (Exception cause) {
-                log.warning("Unable to retrieve cookie", "game", getGameId(), cause);
+                log.warning("Unable to retrieve cookie", "game", where(), cause);
                 requestCompleted(null);
             }
         });
@@ -516,7 +516,7 @@ public abstract class WhirledGameManager extends GameManager
      */
     public void agentReady (ClientObject caller)
     {
-        log.info("Agent ready", "game", getGameId(), "caller", caller);
+        log.info("Agent ready", "game", where(), "caller", caller);
         _gameAgentReady = true;
         _gameObj.setAgentState(WhirledGameObject.AGENT_READY);
 
@@ -531,7 +531,7 @@ public abstract class WhirledGameManager extends GameManager
      */
     public void agentFailed (ClientObject caller)
     {
-        log.info("Agent failed", "game", getGameId(), "caller", caller);
+        log.info("Agent failed", "game", where(), "caller", caller);
 
         _gameObj.setAgentState(WhirledGameObject.AGENT_FAILED);
 
@@ -779,7 +779,7 @@ public abstract class WhirledGameManager extends GameManager
             _gameAgent.addListener(new ObjectDeathListener() {
                 public void objectDestroyed (ObjectDestroyedEvent event) {
                     if (_gameAgent != null) {
-                        log.info("Game agent destroyed", "game", getGameId());
+                        log.info("Game agent destroyed", "game", where());
                         _gameObj.setAgentState(WhirledGameObject.AGENT_FAILED);
                     }
                 }
