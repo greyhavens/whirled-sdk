@@ -221,6 +221,8 @@ public class NetSubControl extends AbstractSubControl
 
         _playersMsgCtrl = new MessageSubControlAdapter(_parent,
             function (name :String, value :Object) :void {
+                // TODO: this is exactly like sendMessage. We want a new way to send
+                // to everyone BUT the server agent.
                 sendMessage(name, value, TO_ALL);
             });
 
