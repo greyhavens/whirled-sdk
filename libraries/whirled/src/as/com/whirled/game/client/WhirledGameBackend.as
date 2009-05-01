@@ -105,6 +105,9 @@ public class WhirledGameBackend extends BaseGameBackend
             // chat sent by the game, route to our displayInfo
             localChat_v1(String(event.getArgs()[0]));
 
+        } else if (WhirledGameObject.USER_MESSAGE_EXCLUDE_AGENT == name) {
+            dispatchUserMessage(event); // since we ain't an agent
+
         } else {
             super.messageReceived(event);
         }

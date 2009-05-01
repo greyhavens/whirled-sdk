@@ -20,6 +20,9 @@ public abstract class WhirledGameMessageHandler
 
     /** The magic player id constant to indicate a message is from the server agent. */
     public static final int AGENT = Integer.MIN_VALUE;
+
+    /** The magic constant to send a message to everyone but the agent. */
+    public static final int EXCLUDE_AGENT = Integer.MIN_VALUE + 1;
     
     /**
      * Creates a new message handler.
@@ -70,12 +73,18 @@ public abstract class WhirledGameMessageHandler
     {
         validateSender(caller);
 
+        int senderId = getMessageSenderId(caller);
+        if ((members.length == 1) && (members[0] == EXCLUDE_AGENT)) {
+            _messageTarget.postMessage(WhirledGameObject.USER_MESSAGE_EXCLUDE_AGENT,
+                msgName, msgValue, senderId);
+            return; // all done
+        }
+
         ClientObject[] targets = new ClientObject[members.length];
         for (int ii = 0; ii < members.length; ++ii) {
             targets[ii] = getAudienceMember(members[ii]);
         }
         
-        int senderId = getMessageSenderId(caller);
         String systemMsgName = WhirledPlayerObject.getMessageName(_messageTarget.getOid());
         for (ClientObject target : targets) {
             if (target == null) {

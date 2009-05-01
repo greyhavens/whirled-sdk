@@ -747,6 +747,7 @@ public class BaseGameBackend
             _gameObj.messageService.sendMessage(_ctx.getClient(), messageName, encoded, logger);
 
         } else {
+            // included here is handling EXCLUDE_AGENT, which happens on the server
             var players :TypedArray = TypedArray.create(int);
             players.push(playerId);
             _gameObj.messageService.sendPrivateMessage(_ctx.getClient(), messageName, encoded,

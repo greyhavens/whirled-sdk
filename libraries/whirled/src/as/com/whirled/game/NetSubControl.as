@@ -90,7 +90,8 @@ public class NetSubControl extends AbstractSubControl
     }
 
     /**
-     * Provides a control with which to send messages to all the players of this game.
+     * Provides a control with which to send messages to all the players of this game, excluding
+     * any agent.
      * @see #sendMessage
      */
     public function get players () :MessageSubControl
@@ -179,7 +180,7 @@ public class NetSubControl extends AbstractSubControl
      *
      * @param messageName The message to send.
      * @param value The value to attach to the message.
-     * @param playerId if <code>TO_ALL</code> (or unset), sends to all players,
+     * @param playerId if <code>TO_ALL</code> (or unset), sends to everyone (including the agent),
      * otherwise the message will be private to just one player; if the game employs a server agent,
      * <code>TO_SERVER_AGENT</code> may be used to send a message only to the server.
      * @see #TO_ALL
@@ -221,9 +222,7 @@ public class NetSubControl extends AbstractSubControl
 
         _playersMsgCtrl = new MessageSubControlAdapter(_parent,
             function (name :String, value :Object) :void {
-                // TODO: this is exactly like sendMessage. We want a new way to send
-                // to everyone BUT the server agent.
-                sendMessage(name, value, TO_ALL);
+                sendMessage(name, value, EXCLUDE_AGENT);
             });
 
         return [ _agentMsgCtrl, _playersMsgCtrl ];
@@ -280,5 +279,8 @@ public class NetSubControl extends AbstractSubControl
 
     /* @private */
     protected var _playerCtrls :WeakValueHashMap = new WeakValueHashMap();
+
+    /** A special constant for sending a message to players only, and not the agent. */
+    protected static const EXCLUDE_AGENT :int = int.MIN_VALUE + 1;
 }
 }

@@ -30,6 +30,9 @@ public class WhirledGameObject extends GameObject
     /** The identifier for a MessageEvent containing a user message. */
     public static final String USER_MESSAGE = "Umsg";
 
+    /** The identifier for a MessageEvent containing a user message. */
+    public static final String USER_MESSAGE_EXCLUDE_AGENT = "UmsgEA";
+
     /** The identifier for a MessageEvent containing game-system chat. */
     public static final String GAME_CHAT = "Uchat";
 
