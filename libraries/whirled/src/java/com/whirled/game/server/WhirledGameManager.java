@@ -80,9 +80,9 @@ public abstract class WhirledGameManager extends GameManager
      * Configures the ids of the winners of this game. If a game manager delegate wishes to handle
      * winner assignment, it should call this method and then call {@link #endGame}.
      */
-    public void setWinners (int[] winnerIds)
+    public void setWinners (Name[] winners)
     {
-        _winnerIds = winnerIds;
+        _winners = winners;
     }
 
     @Override // from PlaceManager
@@ -238,16 +238,6 @@ public abstract class WhirledGameManager extends GameManager
                 }
             }.schedule(nextRoundDelay * 1000L);
         }
-    }
-
-    // from WhirledGameProvider
-    public void endGame (ClientObject caller, int[] winnerIds,
-                         InvocationService.InvocationListener listener)
-        throws InvocationException
-    {
-        validateCanEndGame(caller);
-        setWinners(winnerIds);
-        endGame();
     }
 
     // from WhirledGameProvider
@@ -926,14 +916,14 @@ public abstract class WhirledGameManager extends GameManager
     @Override
     protected void assignWinners (boolean[] winners)
     {
-        if (_winnerIds != null) {
-            for (int id : _winnerIds) {
-                int index = getPlayerIndexById(id);
+        if (_winners != null) {
+            for (Name name : _winners) {
+                int index = getPlayerIndex(name);
                 if (index >= 0 && index < winners.length) {
                     winners[index] = true;
                 }
             }
-            _winnerIds = null;
+            _winners = null;
         }
     }
 
@@ -1051,8 +1041,8 @@ public abstract class WhirledGameManager extends GameManager
     /** Tracks which cookies are currently being retrieved from the db. */
     protected ArrayIntSet _cookieLookups = new ArrayIntSet();
 
-    /** The array of winner ids, after the user has filled it in. */
-    protected int[] _winnerIds;
+    /** The array of winners, non-null after a call to {@link #setWinners}. */
+    protected Name[] _winners;
 
     /** Tracks whether or not we've auto-started a non-seated game. Unfortunately there's no way to
      * derive this from existing game state. */

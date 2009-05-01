@@ -190,5 +190,5 @@ public interface WhirledGame
     /**
      * End the game. The specified player indexes are winners!
      */
-    public void endGame (int... winners);
+    public void endGame (int[] winnerIds, int[] loserIds, int payoutType);
 }

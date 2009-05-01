@@ -25,9 +25,6 @@ public interface WhirledGameService extends InvocationService
     function checkDictionaryWord (arg1 :Client, arg2 :String, arg3 :String, arg4 :String, arg5 :InvocationService_ResultListener) :void;
 
     // from Java interface WhirledGameService
-    function endGame (arg1 :Client, arg2 :TypedArray /* of int */, arg3 :InvocationService_InvocationListener) :void;
-
-    // from Java interface WhirledGameService
     function endGameWithScores (arg1 :Client, arg2 :TypedArray /* of int */, arg3 :TypedArray /* of int */, arg4 :int, arg5 :int, arg6 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService

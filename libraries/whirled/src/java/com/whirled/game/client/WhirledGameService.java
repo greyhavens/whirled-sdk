@@ -26,11 +26,6 @@ public interface WhirledGameService extends InvocationService
     public void endRound (Client client, int nextRoundDelay, InvocationListener listener);
 
     /**
-     * Request to end the game, with the specified player oids assigned as winners.
-     */
-    public void endGame (Client client, int[] winnerOids, InvocationListener listener);
-
-    /**
      * Ends the active game, declaring the specified players to be winners and losers and paying
      * out coins using the specified payout type (defined in {@link WhirledGame}).
      */

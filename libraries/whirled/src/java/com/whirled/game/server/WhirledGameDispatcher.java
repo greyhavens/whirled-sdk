@@ -49,12 +49,6 @@ public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarsh
             );
             return;
 
-        case WhirledGameMarshaller.END_GAME:
-            ((WhirledGameProvider)provider).endGame(
-                source, (int[])args[0], (InvocationService.InvocationListener)args[1]
-            );
-            return;
-
         case WhirledGameMarshaller.END_GAME_WITH_SCORES:
             ((WhirledGameProvider)provider).endGameWithScores(
                 source, (int[])args[0], (int[])args[1], ((Integer)args[2]).intValue(), ((Integer)args[3]).intValue(), (InvocationService.InvocationListener)args[4]

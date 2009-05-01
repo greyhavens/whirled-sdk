@@ -302,10 +302,10 @@ public class GameObjectImpl
     }
 
     // from WhirledGame
-    public void endGame (int... winners)
+    public void endGame (int[] winnerIds, int[] loserIds, int payoutType)
     {
-        _gameObj.whirledGameService.endGame(_ctx.getClient(), winners,
-            createLoggingListener("endGame"));
+        _gameObj.whirledGameService.endGameWithWinners(
+            _ctx.getClient(), winnerIds, loserIds, payoutType, createLoggingListener("endGame"));
     }
 
     /**
