@@ -79,23 +79,8 @@ public class TestGameManager extends WhirledGameManager
         throws InvocationException
     {
         validateCanEndGame(caller);
-
-        // TODO: award based on relative scores?
         awardFakeCoins(playerIds);
-
-        // TODO: validate player ids?
-        int highScore = 0;
-        ArrayIntSet winners = new ArrayIntSet();
-        for (int ii = 0; ii < playerIds.length; ii++) {
-            if (scores[ii] >= highScore) {
-                if (scores[ii] > highScore) {
-                    highScore = scores[ii];
-                    winners.clear();
-                }
-                winners.add(playerIds[ii]);
-            }
-        }
-        endGame(caller, winners.toIntArray(), listener);
+        endGame();
     }
 
     // from interface WhirledGameProvider
@@ -105,7 +90,7 @@ public class TestGameManager extends WhirledGameManager
     {
         validateCanEndGame(caller);
         awardFakeCoins(winnerIds);
-        endGame(caller, winnerIds, listener);
+        endGame();
     }
 
     // from interface WhirledGameProvider
