@@ -310,11 +310,8 @@ public class BaseGameBackend
     {
         var name :String = event.getName();
         if (WhirledGameObject.USER_MESSAGE == name) {
-            var args :Array = event.getArgs();
-            var mname :String = (args[0] as String);
-            var data :Object = ObjectMarshaller.decode(args[1]);
-            var senderId :int = (args[2] as int);
-            dispatchMessageReceived(mname, data, senderId);
+            dispatchUserMessage(event);
+
         } else if (WhirledGameObject.TICKER == name) {
             var targs :Array = event.getArgs();
             dispatchMessageReceived((targs[0] as String), (targs[1] as int), 0);
@@ -505,11 +502,7 @@ public class BaseGameBackend
     {
         var name :String = event.getName();
         if (WhirledPlayerObject.isFromGame(name, _gameObj.getOid())) {
-            var args :Array = event.getArgs();
-            var mname :String = (args[0] as String);
-            var data :Object = ObjectMarshaller.decode(args[1]);
-            var senderId :int = (args[2] as int);
-            dispatchMessageReceived(mname, data, senderId);
+            dispatchUserMessage(event);
         }
     }
 
@@ -693,6 +686,19 @@ public class BaseGameBackend
     protected function isParty () :Boolean
     {
         return (getConfig().getMatchType() == GameConfig.PARTY);
+    }
+
+    /**
+     * Helper method for dispatching a message that may have come from more than one source
+     * and/or message name.
+     */
+    protected function dispatchUserMessage (event :MessageEvent) :void
+    {
+        var args :Array = event.getArgs();
+        var mname :String = (args[0] as String);
+        var data :Object = ObjectMarshaller.decode(args[1]);
+        var senderId :int = (args[2] as int);
+        dispatchMessageReceived(mname, data, senderId);
     }
 
     /**
