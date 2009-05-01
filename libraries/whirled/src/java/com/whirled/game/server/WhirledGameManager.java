@@ -125,8 +125,8 @@ public abstract class WhirledGameManager extends GameManager
                 setAsInitialized(caller);
             }
             public void requestFailed (Exception cause) {
-                log.warning(
-                    "Ownership content resolution failed!", "caller", caller.username, cause);
+                log.warning("Ownership content resolution failed!", "game", getGameId(),
+                            "caller", caller.username, cause);
             }
         });
 
@@ -439,7 +439,8 @@ public abstract class WhirledGameManager extends GameManager
 
         BodyObject body = getOccupantById(playerId);
         if (body == null) {
-            log.debug("getCookie() called with invalid occupant", "occupantId", playerId);
+            log.debug("getCookie() called with invalid occupant", "game", getGameId(),
+                      "occupantId", playerId);
             throw new InvocationException(INTERNAL_ERROR);
         }
 
@@ -447,7 +448,7 @@ public abstract class WhirledGameManager extends GameManager
         _cookieLookups.add(playerId);
 
         final int bodyOid = body.getOid();
-        _cookMgr.getCookie(_gameconfig.getGameId(), playerId, new ResultListener<byte[]>() {
+        _cookMgr.getCookie(getGameId(), playerId, new ResultListener<byte[]>() {
             public void requestCompleted (byte[] result) {
                 // note that we're done with this lookup
                 _cookieLookups.remove(playerId);
@@ -459,7 +460,7 @@ public abstract class WhirledGameManager extends GameManager
             }
 
             public void requestFailed (Exception cause) {
-                log.warning("Unable to retrieve cookie", cause);
+                log.warning("Unable to retrieve cookie", "game", getGameId(), cause);
                 requestCompleted(null);
             }
         });
@@ -474,7 +475,7 @@ public abstract class WhirledGameManager extends GameManager
         validateWritePermission(caller, playerId);
 
         // persist this new cookie
-        _cookMgr.setCookie(_gameconfig.getGameId(), playerId, value);
+        _cookMgr.setCookie(getGameId(), playerId, value);
 
         // and update the distributed object
         UserCookie cookie = new UserCookie(playerId, value);
@@ -515,7 +516,7 @@ public abstract class WhirledGameManager extends GameManager
      */
     public void agentReady (ClientObject caller)
     {
-        log.info("Agent ready", "caller", caller);
+        log.info("Agent ready", "game", getGameId(), "caller", caller);
         _gameAgentReady = true;
         _gameObj.setAgentState(WhirledGameObject.AGENT_READY);
 
@@ -530,7 +531,7 @@ public abstract class WhirledGameManager extends GameManager
      */
     public void agentFailed (ClientObject caller)
     {
-        log.info("Agent failed", "caller", caller);
+        log.info("Agent failed", "game", getGameId(), "caller", caller);
 
         _gameObj.setAgentState(WhirledGameObject.AGENT_FAILED);
 
@@ -778,7 +779,7 @@ public abstract class WhirledGameManager extends GameManager
             _gameAgent.addListener(new ObjectDeathListener() {
                 public void objectDestroyed (ObjectDestroyedEvent event) {
                     if (_gameAgent != null) {
-                        log.info("Game agent destroyed", "gameObj", _gameObj.which());
+                        log.info("Game agent destroyed", "game", getGameId());
                         _gameObj.setAgentState(WhirledGameObject.AGENT_FAILED);
                     }
                 }
@@ -796,8 +797,7 @@ public abstract class WhirledGameManager extends GameManager
     {
         WhirledGameConfig cfg = (WhirledGameConfig)_gameconfig;
         GameDefinition def = cfg.getGameDefinition();
-        int id = cfg.getGameId();
-        String code = def.getServerMediaPath(id);
+        String code = def.getServerMediaPath(getGameId());
 
         if (StringUtil.isBlank(code)) {
             return null;
@@ -805,7 +805,7 @@ public abstract class WhirledGameManager extends GameManager
 
         GameAgentObject gameAgentObj = new GameAgentObject();
         gameAgentObj.gameOid = _gameObj.getOid();
-        gameAgentObj.config = new ThaneGameConfig(id, def, cfg.params);
+        gameAgentObj.config = new ThaneGameConfig(getGameId(), def, cfg.params);
         gameAgentObj.bureauId = getBureauId();
         // We assume this is a thane/tamarin abc pacakage. TODO: do we need to check that?
         gameAgentObj.bureauType = BureauTypes.THANE_BUREAU_TYPE;
@@ -825,8 +825,7 @@ public abstract class WhirledGameManager extends GameManager
     {
         WhirledGameConfig cfg = (WhirledGameConfig)_gameconfig;
         GameDefinition def = cfg.getGameDefinition();
-        int id = cfg.getGameId();
-        return BureauTypes.GAME_BUREAU_ID_PREFIX + def.getBureauId(id);
+        return BureauTypes.GAME_BUREAU_ID_PREFIX + def.getBureauId(getGameId());
     }
 
     @Override // from PlaceManager
