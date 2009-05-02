@@ -54,6 +54,7 @@ import com.threerings.crowd.data.PlaceObject;
 
 import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.data.GameObject;
+import com.threerings.parlor.game.data.UserIdentifier;
 
 import com.whirled.game.GameContentEvent;
 import com.whirled.game.client.PropertySpaceHelper;
@@ -1466,7 +1467,7 @@ public class BaseGameBackend
      */
     protected function nameToId (name :Name) :int
     {
-        throw new Error("abstract");
+        return UserIdentifier.getUserId(name);
     }
 
     /**

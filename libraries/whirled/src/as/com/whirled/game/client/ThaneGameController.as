@@ -13,7 +13,6 @@ import com.threerings.presents.dobj.AttributeChangeListener;
 import com.threerings.presents.dobj.AttributeChangedEvent;
 
 import com.threerings.parlor.game.data.GameObject;
-import com.threerings.parlor.game.data.UserIdentifier;
 import com.threerings.parlor.turn.client.TurnGameControllerDelegate;
 
 import com.threerings.bureau.util.BureauContext;
@@ -34,11 +33,6 @@ public class ThaneGameController extends Controller
 
     /** The backend we dispatch game events to. */
     public var backend :ThaneGameBackend;
-
-    public static function setUserIdentifier (userIder :UserIdentifier) :void
-    {
-        _userIder = userIder;
-    }
 
     /** Creates a new controller. The controller is not usable until <code>init</code> is
      *  called. */
@@ -72,14 +66,6 @@ public class ThaneGameController extends Controller
         backend.shutdown();
 
         _gameObj = null;
-    }
-
-    /**
-     * Convert the player's name to a permanent id.
-     */
-    public function nameToId (name :Name) :int
-    {
-        return _userIder.getUserId(name);
     }
 
     /** @inheritDoc */
@@ -259,9 +245,6 @@ public class ThaneGameController extends Controller
 
     /** The name of the turn holder field. */
     protected var _thfield :String;
-
-    /** The *required* user identifier. */
-    protected static var _userIder :UserIdentifier;
 
     protected static const _log :Log = Log.getLog(ThaneGameController);
 }

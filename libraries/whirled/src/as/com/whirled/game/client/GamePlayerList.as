@@ -33,6 +33,7 @@ import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 
 import com.threerings.parlor.game.data.GameObject;
+import com.threerings.parlor.game.data.UserIdentifier;
 
 import com.threerings.parlor.turn.data.TurnGameObject;
 
@@ -66,7 +67,7 @@ public class GamePlayerList extends PlayerList
             record.setup(occInfo);
 
             _byName.put(occInfo.username, record);
-            _byOid.put(occInfo.bodyOid, record);
+            _byId.put(UserIdentifier.getUserId(occInfo.username), record);
             addItem(record);
         }
 
@@ -104,7 +105,7 @@ public class GamePlayerList extends PlayerList
         _gameObj.removeListener(this);
         _gameObj = null;
 
-        _byOid.clear();
+        _byId.clear();
         _byName.clear();
         _players.removeAll();
     }
@@ -194,7 +195,7 @@ public class GamePlayerList extends PlayerList
     public function setMappedScores (scores :Object) :void
     {
         for (var playerId :Object in scores) {
-            var record :GamePlayerRecord = _byOid.get(int(playerId));
+            var record :GamePlayerRecord = _byId.get(int(playerId));
             if (record != null) {
                 var data :Object = scores[playerId];
                 if (data is Array) {
@@ -239,7 +240,7 @@ public class GamePlayerList extends PlayerList
             }
             record.setup(occInfo);
 
-            _byOid.put(occInfo.bodyOid, record);
+            _byId.put(UserIdentifier.getUserId(occInfo.username), record);
             if (newRecord) {
                 _byName.put(occInfo.username, record);
                 addItem(record);
@@ -256,7 +257,7 @@ public class GamePlayerList extends PlayerList
         if (event.getName() == PlaceObject.OCCUPANT_INFO) {
             // I guess we might be updating the name or the headshot
             var occInfo :OccupantInfo = (event.getEntry() as OccupantInfo);
-            var record :GamePlayerRecord = _byOid.get(occInfo.bodyOid) as GamePlayerRecord;
+            var record :GamePlayerRecord = _byName.get(occInfo.username) as GamePlayerRecord;
             record.setup(occInfo);
             itemUpdated(record);
         }
@@ -267,9 +268,10 @@ public class GamePlayerList extends PlayerList
     {
         if (event.getName() == PlaceObject.OCCUPANT_INFO) {
             var occInfo :OccupantInfo = (event.getOldEntry() as OccupantInfo);
-            var record :GamePlayerRecord = _byOid.remove(occInfo.bodyOid) as GamePlayerRecord;
+            var record :GamePlayerRecord =
+                _byId.remove(UserIdentifier.getUserId(occInfo.username)) as GamePlayerRecord;
 
-            // if this is a player, strip the oid but leave it in the lists
+            // if this is a player, strip the id but leave it in the lists
             if (ArrayUtil.contains(_gameObj.players, occInfo.username)) {
                 record.setup(null);
                 itemUpdated(record);
@@ -296,8 +298,8 @@ public class GamePlayerList extends PlayerList
     /** An optional label for the list of players. */
     protected var _label :Label;
 
-    /** A mapping of oid -> record */
-    protected var _byOid :HashMap = new HashMap();
+    /** A mapping of id -> record */
+    protected var _byId :HashMap = new HashMap();
 
     /** A mapping of name -> record. */
     protected var _byName :HashMap = new HashMap();

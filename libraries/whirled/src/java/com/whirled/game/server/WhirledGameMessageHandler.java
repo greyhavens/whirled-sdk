@@ -28,10 +28,9 @@ public abstract class WhirledGameMessageHandler
      * Creates a new message handler.
      * @param messageTarget the subscribers to this object are the audience of messages
      */
-    public WhirledGameMessageHandler (DObject messageTarget, UserIdentifier userIder)
+    public WhirledGameMessageHandler (DObject messageTarget)
     {
         _messageTarget = messageTarget;
-        _userIder = userIder;
     }
 
     /**
@@ -106,9 +105,8 @@ public abstract class WhirledGameMessageHandler
         if (isAgent(caller)) {
             return AGENT;
         }
-        return _userIder.getUserId(((BodyObject)caller).getVisibleName());
+        return UserIdentifier.getUserId(((BodyObject)caller).getVisibleName());
     }
 
     protected DObject _messageTarget;
-    protected UserIdentifier _userIder;
 }

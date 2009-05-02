@@ -8,10 +8,12 @@ import com.threerings.util.StringUtil;
 
 import com.threerings.parlor.game.data.UserIdentifier;
 
+/**
+ * Simply holds a function we use to identify users.
+ */
 public class TestUserIdentifier
-    implements UserIdentifier
 {
-    public function getUserId (name :Name) :int
+    public static function getUserId (name :Name) :int
     {
         var username :String = name.toString();
         try {

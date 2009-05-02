@@ -209,11 +209,6 @@ public class ThaneGameBackend extends BaseGameBackend
         }
     }
 
-    override protected function nameToId (name :Name) :int
-    {
-        return _ctrl.nameToId(name);
-    }
-
     protected var _ctrl :ThaneGameController;
     protected var _players :HashMap = new HashMap();
 }

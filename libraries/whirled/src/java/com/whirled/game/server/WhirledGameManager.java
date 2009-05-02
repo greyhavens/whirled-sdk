@@ -730,7 +730,7 @@ public abstract class WhirledGameManager extends GameManager
             }
         };
 
-        _messageHandler = new WhirledGameMessageHandler(_gameObj, _userIder) {
+        _messageHandler = new WhirledGameMessageHandler(_gameObj) {
             @Override protected void validateSender (ClientObject caller)
                 throws InvocationException {
                 WhirledGameManager.this.validateUser(caller);

@@ -466,7 +466,7 @@ public class WhirledGameBackend extends BaseGameBackend
     override protected function getMyId_v1 () :int
     {
         validateConnected();
-        return _ctrl.nameToId(getUsername());
+        return nameToId(getUsername());
     }
 
     protected function playerReady_v1 () :void
@@ -526,11 +526,6 @@ public class WhirledGameBackend extends BaseGameBackend
     {
         setShowReplay_v1(rematch);
         // and discard the 'back' button preference.
-    }
-
-    override protected function nameToId (name :Name) :int
-    {
-        return _ctrl.nameToId(name);
     }
 
     protected var _ctrl :WhirledGameController;
