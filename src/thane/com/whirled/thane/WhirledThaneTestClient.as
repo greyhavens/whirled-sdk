@@ -4,14 +4,15 @@
 package com.whirled.thane {
 
 import avmplus.System;
+import com.threerings.parlor.game.data.UserIdentifier;
 import com.whirled.bureau.client.WhirledBureauClient;
 import com.whirled.thane.HttpUserCodeLoader;
-import com.whirled.game.client.ThaneGameController;
 import com.whirled.game.client.TestUserIdentifier;
+import com.whirled.game.client.ThaneGameController;
 
 public class WhirledThaneTestClient
 {
-    ThaneGameController.setUserIdentifier(new TestUserIdentifier());
+    UserIdentifier.setIder(TestUserIdentifier.getUserId);
     WhirledBureauClient.main(System.argv, "0", new HttpUserCodeLoader(), cleanup);
 
     protected static function cleanup (client :WhirledBureauClient) :void

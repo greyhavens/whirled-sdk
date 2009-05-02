@@ -115,7 +115,7 @@ public class WhirledTestServer extends CrowdServer
         });
 
         // initialize our managers
-        GameManager.setUserIdentifier(new UserIdentifier() {
+        UserIdentifier.setIder(new UserIdentifier.Ider() {
             public int getUserId (Name name) {
                 String username = name.toString();
                 try {

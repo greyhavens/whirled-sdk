@@ -26,7 +26,7 @@ import com.threerings.crowd.data.BodyMarshaller;
 import com.threerings.crowd.data.LocationMarshaller;
 
 import com.threerings.parlor.data.ParlorMarshaller;
-import com.threerings.parlor.game.client.GameController;
+import com.threerings.parlor.game.data.UserIdentifier;
 
 import com.whirled.game.client.TestGameController;
 import com.whirled.game.client.TestService;
@@ -56,7 +56,7 @@ public class WhirledClient extends CrowdClient
         stage.quality = StageQuality.MEDIUM;
 
         // set up the user identifier
-        GameController.setUserIdentifier(new TestUserIdentifier());
+        UserIdentifier.setIder(TestUserIdentifier.getUserId);
 
         // prior to logging on to a server, set up our security policy for that server
         addClientObserver(new ClientAdapter(clientWillLogon)); 
