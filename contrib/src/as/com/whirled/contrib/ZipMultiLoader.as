@@ -106,7 +106,7 @@ public class ZipMultiLoader extends EventDispatcher
         }
 
         // set up the zip reading state to virginal
-        _sources = [ ];
+        _sources = new Array(_zip.entries.length); 
         _zipIx = 0;
 
         // and start chomping entries asynchronously
@@ -130,6 +130,7 @@ public class ZipMultiLoader extends EventDispatcher
 
         } catch (e :Error) {
             _completeCallback(e);
+            return;
         }
 
         // arrange an immediate callback to ourselves for the next entry
