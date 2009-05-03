@@ -821,13 +821,7 @@ public class BaseGameBackend
     protected function getCookie_v1 (callback :Function, occupantId :int) :void
     {
         validateConnected();
-
-        if (occupantId == CURRENT_USER) {
-            occupantId = getMyId_v1();
-            if (occupantId == SERVER_AGENT_ID) {
-                throw new Error("Server agent must provide a player id here");
-            }
-        }
+        occupantId = transformId(occupantId);
 
         // see if that cookie is already published
         if (_gameObj.userCookies != null) {
@@ -863,6 +857,7 @@ public class BaseGameBackend
         cookie :Object, occupantId :int = CURRENT_USER) :Boolean
     {
         validateConnected();
+        occupantId = transformId(occupantId);
         validateValue(cookie);
         var ba :ByteArray = (ObjectMarshaller.encode(cookie, false) as ByteArray);
         if (ba.length > MAX_USER_COOKIE) {
@@ -1460,6 +1455,20 @@ public class BaseGameBackend
             playerIds.push(isInited(occInfo) ? infoToId(occInfo) : 0);
         }
         return playerIds;
+    }
+
+    /**
+     * Turn the CURRENT_USER id into a real id, rejecting the agent.
+     */
+    protected function transformId (id :int) :int
+    {
+        if (id == CURRENT_USER) {
+            id = getMyId_v1();
+            if (id == SERVER_AGENT_ID) {
+                throw new Error("Server agent must provide a player id here");
+            }
+        }
+        return id;
     }
 
     /**
