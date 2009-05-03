@@ -31,6 +31,7 @@ import flash.net.URLRequest;
 import flash.system.ApplicationDomain;
 
 import flash.utils.ByteArray;
+import flash.utils.setTimeout;
 
 import com.threerings.util.MultiLoader;
 
@@ -97,22 +98,50 @@ public class ZipMultiLoader extends EventDispatcher
     protected function bytesAvailable (bytes :ByteArray) :void
     {
         bytes.position = 0;
-        var zip :ZipFile;
         try {
-            zip = new ZipFile(bytes);
+            _zip = new ZipFile(bytes);
         } catch (zipError :ZipError) {
             _completeCallback(zipError);
             return;
         }
 
-        var sources :Array = zip.entries.map(function (entry :ZipEntry, ... rest) :ByteArray {
-            return zip.getInput(entry);
-        });
-        MultiLoader.getLoaders(sources, _completeCallback, false, _appDom);
+        // set up the zip reading state to virginal
+        _sources = [ ];
+        _zipIx = 0;
+
+        // and start chomping entries asynchronously
+        getNextZipFileEntry();
+    }
+
+    protected function getNextZipFileEntry () :void
+    {
+        try {
+            if (_zipIx >= _zip.size) {
+                // if we're done, kick off loader & exit
+                MultiLoader.getLoaders(_sources, _completeCallback, false, _appDom);
+                return;
+            }
+
+            // if not yet done, retrieve & store the ix:th zip file entry
+            _sources[_zipIx] = _zip.getInput(_zip.entries[_zipIx]);
+            // bump our index
+            _zipIx ++;
+            // and fall out of block to set up the callback
+
+        } catch (e :Error) {
+            _completeCallback(e);
+        }
+
+        // arrange an immediate callback to ourselves for the next entry
+        setTimeout(getNextZipFileEntry, 1);
     }
 
     protected var _completeCallback :Function;
     protected var _appDom :ApplicationDomain;
     protected var _loader :URLLoader;
+
+    protected var _sources :Array;
+    protected var _zip :ZipFile;
+    protected var _zipIx :int;
 }
 }
