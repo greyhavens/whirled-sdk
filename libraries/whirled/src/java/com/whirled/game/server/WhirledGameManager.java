@@ -472,7 +472,8 @@ public abstract class WhirledGameManager extends GameManager
         throws InvocationException
     {
         validateUser(caller);
-        validateWritePermission(caller, playerId);
+        // make sure the playerId is valid
+        playerId = validatePlayerId(caller, playerId);
 
         // persist this new cookie
         _cookMgr.setCookie(getGameId(), playerId, value);
@@ -671,6 +672,39 @@ public abstract class WhirledGameManager extends GameManager
     {
         int oid = _idToOid.get(id);
         return (oid == -1) ? null : (BodyObject)_omgr.getObject(oid);
+    }
+
+    /**
+     * Validate that the specified playerId is valid, and transform it into a persistent form.
+     */
+    protected int validatePlayerId (ClientObject caller, int playerId)
+        throws InvocationException
+    {
+        if (playerId == 0) {
+            if (isAgent(caller)) {
+                throw new InvocationException(InvocationCodes.ACCESS_DENIED);
+            }
+            // transform it
+            playerId = getPlayerPersistentId((BodyObject) caller);
+        }
+
+        if (getMatchType() == GameConfig.PARTY) {
+            // it has to be someone here
+            if (_idToOid.containsKey(playerId)) {
+                return playerId; // success
+            }
+
+        } else {
+            // it has to be one of the players, EVEN IF ABSENT, and not a watcher
+            for (Name name : _gameObj.players) {
+                if (playerId == getPlayerPersistentId(name)) {
+                    return playerId; // success
+                }
+            }
+        }
+
+        // failure
+        throw new InvocationException(InvocationCodes.ACCESS_DENIED);
     }
 
     /**
@@ -940,7 +974,7 @@ public abstract class WhirledGameManager extends GameManager
     }
 
     /**
-     * Returns the oid of a player to whom to assign control of the game or zero if no players
+     * Returns the id of a player to whom to assign control of the game or zero if no players
      * qualify for control.
      */
     protected int getControllerId ()
