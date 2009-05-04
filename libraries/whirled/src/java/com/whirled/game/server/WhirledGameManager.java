@@ -690,7 +690,7 @@ public abstract class WhirledGameManager extends GameManager
 
         if (getMatchType() == GameConfig.PARTY) {
             // it has to be someone here
-            if (-1 != _idToOid.get(playerId)) {
+            if (_idToOid.containsKey(playerId)) {
                 return playerId; // success
             }
 
