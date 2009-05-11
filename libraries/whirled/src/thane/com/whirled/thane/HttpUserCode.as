@@ -166,9 +166,11 @@ public class HttpUserCode
     /** Set everything we've used to null. */
     protected function releaseReferences () :void
     {
-        _bridge.removeEventListener(TraceEvent.TRACE, relayTrace);
-        _bridge.removeEventListener("controlConnect", _connectListener);
-        _bridge = null;
+        if (_bridge != null) {
+            _bridge.removeEventListener(TraceEvent.TRACE, relayTrace);
+            _bridge.removeEventListener("controlConnect", _connectListener);
+            _bridge = null;
+        }
 
         _connectListener = null;
         _traceListener = null;
