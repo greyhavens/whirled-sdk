@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.namespc {
 
+import com.whirled.contrib.EventHandlerManager;
 import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.MessageSubControl;
 
@@ -57,14 +58,13 @@ public class NamespaceMessageControl extends EventDispatcher
     protected function onMsgReceived (e :MessageReceivedEvent) :void
     {
         if (_nameUtil.isInNamespace(e.name)) {
-            dispatchEvent(new MessageReceivedEvent(_nameUtil.decode(e.name), e.value));
+            dispatchEvent(new MessageReceivedEvent(_nameUtil.decode(e.name), e.value, e.senderId));
         }
     }
 
     protected var _nameUtil :NameUtil;
     protected var _outMsg :MessageSubControl;
     protected var _inMsg :EventDispatcher;
-    protected var _events :EventHandlerManager = new EventHandlerManager();
 }
 
 }
