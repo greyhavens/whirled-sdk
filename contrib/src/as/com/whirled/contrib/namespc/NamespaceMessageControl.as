@@ -20,7 +20,6 @@
 
 package com.whirled.contrib.namespc {
 
-import com.whirled.contrib.EventHandlerManager;
 import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.MessageSubControl;
 
