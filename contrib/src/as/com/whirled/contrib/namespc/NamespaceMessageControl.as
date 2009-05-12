@@ -20,7 +20,6 @@
 
 package com.whirled.contrib.namespc {
 
-import com.whirled.contrib.EventHandlerManager;
 import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.MessageSubControl;
 
@@ -29,24 +28,30 @@ import flash.events.EventDispatcher;
 public class NamespaceMessageControl extends EventDispatcher
     implements MessageSubControl
 {
-    public function NamespaceMessageControl (theNamespace :String, msgCtrl :MessageSubControl,
-        msgReceiver :EventDispatcher = null)
+    public function NamespaceMessageControl (theNamespace :String, outMsg :MessageSubControl = null,
+        inMsg :EventDispatcher = null)
     {
         _nameUtil = new NameUtil(theNamespace);
-        if (msgReceiver != null) {
-            _events.registerListener(msgReceiver, MessageReceivedEvent.MESSAGE_RECEIVED,
-                onMsgReceived);
+        _outMsg = outMsg;
+        _inMsg = inMsg;
+
+        if (_inMsg != null) {
+            _inMsg.addEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, onMsgReceived);
         }
     }
 
     public function shutdown () :void
     {
-        _events.freeAllHandlers();
+        if (_inMsg != null) {
+            _inMsg.removeEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, onMsgReceived);
+        }
     }
 
     public function sendMessage (name :String, value :Object = null) :void
     {
-        _msgCtrl.sendMessage(_nameUtil.encode(name), value);
+        if (_outMsg != null) {
+            _outMsg.sendMessage(_nameUtil.encode(name), value);
+        }
     }
 
     protected function onMsgReceived (e :MessageReceivedEvent) :void
@@ -57,7 +62,8 @@ public class NamespaceMessageControl extends EventDispatcher
     }
 
     protected var _nameUtil :NameUtil;
-    protected var _msgCtrl :MessageSubControl;
+    protected var _outMsg :MessageSubControl;
+    protected var _inMsg :EventDispatcher;
     protected var _events :EventHandlerManager = new EventHandlerManager();
 }
 
