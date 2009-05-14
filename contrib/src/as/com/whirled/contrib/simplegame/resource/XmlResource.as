@@ -27,6 +27,7 @@ import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
+import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
@@ -65,6 +66,8 @@ public class XmlResource
             loadFromURL(_loadParams["url"]);
         } else if (_loadParams.hasOwnProperty("embeddedClass")) {
             loadFromEmbeddedClass(_loadParams["embeddedClass"]);
+        } else if (_loadParams.hasOwnProperty("text")) {
+            loadFromText(_loadParams["text"]);
         } else {
             throw new Error("XmlResourceLoader: either 'url' or 'embeddedClass' must be " +
                             "specified in loadParams");
@@ -74,6 +77,7 @@ public class XmlResource
     protected function loadFromURL (urlString :String) :void
     {
         _urlLoader = new URLLoader();
+        _urlLoader.dataFormat = URLLoaderDataFormat.TEXT;
         _urlLoader.addEventListener(Event.COMPLETE, onComplete);
         _urlLoader.addEventListener(IOErrorEvent.IO_ERROR, handleLoadError);
         _urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, handleLoadError);
@@ -85,6 +89,11 @@ public class XmlResource
     {
         var ba :ByteArray = ByteArray(new theClass());
         instantiateXml(ba.readUTFBytes(ba.length));
+    }
+
+    protected function loadFromText (text :String) :void
+    {
+        instantiateXml(text);
     }
 
     public function unload () :void
