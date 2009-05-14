@@ -69,7 +69,7 @@ public class XmlResource
         } else if (_loadParams.hasOwnProperty("text")) {
             loadFromText(_loadParams["text"]);
         } else {
-            throw new Error("XmlResourceLoader: either 'url' or 'embeddedClass' must be " +
+            throw new Error("XmlResourceLoader: 'url', 'embeddedClass', or 'text' must be " +
                             "specified in loadParams");
         }
     }
