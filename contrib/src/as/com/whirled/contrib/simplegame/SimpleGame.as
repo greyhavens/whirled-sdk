@@ -3,15 +3,14 @@ package com.whirled.contrib.simplegame {
 import com.whirled.contrib.simplegame.audio.*;
 import com.whirled.contrib.simplegame.resource.*;
 
+import flash.display.Sprite;
+import flash.events.IEventDispatcher;
+
 public class SimpleGame
 {
     public function SimpleGame (config :Config)
     {
-        if (config.hostSprite == null) {
-            throw new Error("Config.hostSprite must not be null");
-        }
-
-        _ctx.mainLoop = new MainLoop(_ctx, config.hostSprite, config.keyDispatcher);
+        _ctx.mainLoop = new MainLoop(_ctx);
         _ctx.audio = new AudioManager(_ctx, config.maxAudioChannels);
         _ctx.rsrcs = new ResourceManager();
 
@@ -24,10 +23,10 @@ public class SimpleGame
         _ctx.mainLoop.addUpdatable(_ctx.audio);
     }
 
-    public function run () :void
+    public function run (hostSprite :Sprite, keyDispatcher :IEventDispatcher = null) :void
     {
         _ctx.mainLoop.setup();
-        _ctx.mainLoop.run();
+        _ctx.mainLoop.run(hostSprite, keyDispatcher);
     }
 
     public function shutdown () :void

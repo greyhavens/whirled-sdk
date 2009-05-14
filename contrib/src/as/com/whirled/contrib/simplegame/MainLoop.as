@@ -37,16 +37,9 @@ public class MainLoop extends EventDispatcher
     public static const HAS_STOPPED :String = "HasStopped";
     public static const HAS_SHUTDOWN :String = "HasShutdown";
 
-    public function MainLoop (ctx :SGContext, hostSprite :Sprite,
-        keyDispatcher :IEventDispatcher = null)
+    public function MainLoop (ctx :SGContext)
     {
-        if (null == hostSprite) {
-            throw new ArgumentError("hostSprite must be non-null");
-        }
-
         _ctx = ctx;
-        _hostSprite = hostSprite;
-        _keyDispatcher = (null != keyDispatcher ? keyDispatcher : _hostSprite);
     }
 
     /**
@@ -103,11 +96,18 @@ public class MainLoop extends EventDispatcher
      * Kicks off the MainLoop. Game updates will start happening after this
      * function is called.
      */
-    public function run () :void
+    public function run (hostSprite :Sprite, keyDispatcher :IEventDispatcher = null) :void
     {
         if (_running) {
-            return;
+            throw new Error("already running");
         }
+
+        if (null == hostSprite) {
+            throw new ArgumentError("hostSprite must not be null");
+        }
+
+        _hostSprite = hostSprite;
+        _keyDispatcher = (null != keyDispatcher ? keyDispatcher : _hostSprite);
 
         // ensure that proper setup has completed
         setup();
