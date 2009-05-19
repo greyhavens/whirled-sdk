@@ -101,7 +101,7 @@ public class TimerManager
     /**
      * Creates, but doesn't run, a new ManagedTimer.
      */
-    public function createTimer (delay :Number, repeatCount :int, timerCallback :Function,
+    public function createTimer (delay :Number, repeatCount :int, timerCallback :Function = null,
         completeCallback :Function = null) :ManagedTimer
     {
         var managedTimer :ManagedTimerImpl = new ManagedTimerImpl();
