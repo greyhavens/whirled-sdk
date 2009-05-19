@@ -39,15 +39,6 @@ public class XmlReader
             });
     }
 
-    public static function getEnumAttr (xml :XML, name :String, enumCls :Class,
-        defaultValue :* = undefined) :Enum
-    {
-        return getAttr(xml, name, defaultValue,
-            function (attrString :String) :Enum {
-                return Enum.valueOf(enumCls, attrString.toUpperCase());
-            });
-    }
-
     public static function getUintAttr (xml :XML, name :String, defaultValue :* = undefined) :uint
     {
         return getAttr(xml, name, defaultValue, StringUtil.parseUnsignedInteger);
