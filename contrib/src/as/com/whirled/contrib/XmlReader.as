@@ -1,5 +1,6 @@
 package com.whirled.contrib {
 
+import com.threerings.util.Enum;
 import com.threerings.util.StringUtil;
 
 public class XmlReader
@@ -29,12 +30,21 @@ public class XmlReader
         return (null != xml.attribute(name)[0]);
     }
 
-    public static function getEnumAttr (xml :XML, name :String, stringMapping :Array,
+    public static function getStringArrayAttr (xml :XML, name :String, stringMapping :Array,
         defaultValue :* = undefined) :int
     {
         return getAttr(xml, name, defaultValue,
             function (attrString :String) :int {
-                return parseEnum(attrString, stringMapping);
+                return parseStringMember(attrString, stringMapping);
+            });
+    }
+
+    public static function getEnumAttr (xml :XML, name :String, enumCls :Class,
+        defaultValue :* = undefined) :Enum
+    {
+        return getAttr(xml, name, defaultValue,
+            function (attrString :String) :Enum {
+                return Enum.valueOf(enumCls, attrString.toUpperCase());
             });
     }
 
@@ -93,7 +103,7 @@ public class XmlReader
         return value;
     }
 
-    protected static function parseEnum (stringVal :String, stringMapping :Array) :int
+    protected static function parseStringMember (stringVal :String, stringMapping :Array) :int
     {
         var value :int;
         var foundValue :Boolean;
