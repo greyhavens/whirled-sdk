@@ -51,9 +51,12 @@ public class AppMode extends ObjectDB
      *
      * @param displayParent the parent to attach the DisplayObject to, or null to attach
      * directly to the AppMode's modeSprite.
+     *
+     * @param displayIdx the index at which the object will be added to displayParent,
+     * or -1 to add to the end of displayParent
      */
-    public function addSceneObject (obj :SimObject, displayParent :DisplayObjectContainer = null)
-        :SimObjectRef
+    public function addSceneObject (obj :SimObject, displayParent :DisplayObjectContainer = null,
+        displayIdx :int = -1) :SimObjectRef
     {
         if (!(obj is SceneComponent)) {
             throw new Error("obj must implement SceneComponent");
@@ -70,7 +73,12 @@ public class AppMode extends ObjectDB
         if (displayParent == null) {
             displayParent = _modeSprite;
         }
-        displayParent.addChild(disp);
+
+        if (displayIdx < 0 || displayIdx >= displayParent.numChildren) {
+            displayParent.addChild(disp);
+        } else {
+            displayParent.addChildAt(disp, displayIdx);
+        }
 
         return addObject(obj);
     }
