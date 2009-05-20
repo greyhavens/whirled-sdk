@@ -697,7 +697,7 @@ public abstract class WhirledGameManager extends GameManager
         } else {
             // it has to be one of the players, EVEN IF ABSENT, and not a watcher
             for (Name name : _gameObj.players) {
-                if (playerId == getPlayerPersistentId(name)) {
+                if (name != null && playerId == getPlayerPersistentId(name)) {
                     return playerId; // success
                 }
             }
