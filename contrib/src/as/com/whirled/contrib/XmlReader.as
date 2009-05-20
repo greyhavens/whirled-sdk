@@ -39,23 +39,6 @@ public class XmlReader
             });
     }
 
-    /**
-     * This function assumes that the Enum class in question uses all upper case members, and will
-     * do toUpperCase() on XML values before calling Enum.valueOf.  If this is not true for a
-     * specific Enum class and the XML values always use the correct case, this method can be
-     * used instead:
-     *
-     * XmlReader.getAttr(xml, name, MyEnum.valueOf) as MyEnum
-     */
-    public static function getEnumAttr (xml :XML, name :String, enumCls :Class,
-        defaultValue :* = undefined) :Enum
-    {
-        return getAttr(xml, name, defaultValue,
-            function (attrString :String) :Enum {
-                return Enum.valueOf(enumCls, attrString.toUpperCase());
-            });
-    }
-
     public static function getUintAttr (xml :XML, name :String, defaultValue :* = undefined) :uint
     {
         return getAttr(xml, name, defaultValue, StringUtil.parseUnsignedInteger);
