@@ -43,9 +43,9 @@ public class XmlReader
         defaultValue :* = undefined) :Enum
     {
         return getAttr(xml, name, defaultValue,
-            function (attrString :String) :int {
+            function (attrString :String) :Enum {
                 return Enum.valueOf(enumCls, attrString.toUpperCase());
-            }):
+            });
     }
 
     public static function getUintAttr (xml :XML, name :String, defaultValue :* = undefined) :uint
@@ -135,5 +135,4 @@ public class XmlReader
         return value;
     }
 }
-
 }
