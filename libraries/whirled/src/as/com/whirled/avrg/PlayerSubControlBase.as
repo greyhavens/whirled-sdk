@@ -239,6 +239,22 @@ public class PlayerSubControlBase extends TargetedSubControl
         callHostCode("setAvatarOrientation_v1", orient);
     }
 
+    /**
+     * Returns this player's current coin balance.
+     */
+    public function getCoins () :int
+    {
+        return int(callHostCode("getCoins_v1"));
+    }
+
+    /**
+     * Returns this player's current bar balance.
+     */
+    public function getBars () :int
+    {
+        return int(callHostCode("getBars_v1"));
+    }
+
     /** @private */
     override protected function createSubControls () :Array
     {

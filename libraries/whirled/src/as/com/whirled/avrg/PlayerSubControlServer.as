@@ -95,5 +95,37 @@ public class PlayerSubControlServer extends PlayerSubControlBase
     {
         callHostCode("player_sendMessage_v1", name, value);
     }
+
+    /**
+     * Purchases the item pack with the specified identifier on behalf of the player. If the
+     * purchase cannot be completed due to a lack of funds or other reason the player will be
+     * notified via chat feedback. A GameContentEvent.PLAYER_CONTENT_ADDED event will be issued if
+     * the purchase succeeds.
+     *
+     * <p> Note: this funtionality is only allowed for approved games. This method will silently
+     * fail for unapproved games. The approval process is still being developed. </p>
+     */
+    public function purchaseItemPack (ident :String) :void
+    {
+        callHostCode("purchaseItemPack_v1", ident);
+    }
+
+    /**
+     * Consumes the specified item pack for this player. The player must currently own at least one
+     * copy of the item pack. On success, a GameContentEvent.PLAYER_CONTENT_CONSUMED event will be
+     * dispatched on this control (on both the client and server).
+     *
+     * <p> Note: this funtionality is only allowed for approved games. This method will silently
+     * fail for unapproved games. The approval process is still being developed. </p>
+     *
+     * @param ident the identifier of the item pack to be consumed.
+     *
+     * @return true if the consume request was sent, false if the the player is known not to own at
+     * least one copy of the item pack.
+     */
+    public function consumeItemPack (ident :String) :Boolean
+    {
+        return (callHostCode("consumeItemPack_v1", ident) as Boolean);
+    }
 }
 }
