@@ -39,7 +39,7 @@ public class ContentDispatcher extends InvocationDispatcher<ContentMarshaller>
         switch (methodId) {
         case ContentMarshaller.CONSUME_ITEM_PACK:
             ((ContentProvider)provider).consumeItemPack(
-                source, (String)args[0], (InvocationService.InvocationListener)args[1]
+                source, ((Integer)args[0]).intValue(), (String)args[1], (InvocationService.InvocationListener)args[2]
             );
             return;
 

@@ -24,12 +24,12 @@ public class ContentMarshaller extends InvocationMarshaller
     public static final int CONSUME_ITEM_PACK = 1;
 
     // from interface ContentService
-    public void consumeItemPack (Client arg1, String arg2, InvocationService.InvocationListener arg3)
+    public void consumeItemPack (Client arg1, int arg2, String arg3, InvocationService.InvocationListener arg4)
     {
-        ListenerMarshaller listener3 = new ListenerMarshaller();
-        listener3.listener = arg3;
+        ListenerMarshaller listener4 = new ListenerMarshaller();
+        listener4.listener = arg4;
         sendRequest(arg1, CONSUME_ITEM_PACK, new Object[] {
-            arg2, listener3
+            Integer.valueOf(arg2), arg3, listener4
         });
     }
 }
