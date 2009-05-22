@@ -32,4 +32,17 @@ public class ContentMarshaller extends InvocationMarshaller
             Integer.valueOf(arg2), arg3, listener4
         });
     }
+
+    /** The method id used to dispatch {@link #purchaseItemPack} requests. */
+    public static final int PURCHASE_ITEM_PACK = 2;
+
+    // from interface ContentService
+    public void purchaseItemPack (Client arg1, int arg2, String arg3, InvocationService.InvocationListener arg4)
+    {
+        ListenerMarshaller listener4 = new ListenerMarshaller();
+        listener4.listener = arg4;
+        sendRequest(arg1, PURCHASE_ITEM_PACK, new Object[] {
+            Integer.valueOf(arg2), arg3, listener4
+        });
+    }
 }

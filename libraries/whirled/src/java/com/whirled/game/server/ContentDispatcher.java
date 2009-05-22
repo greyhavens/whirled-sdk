@@ -43,6 +43,12 @@ public class ContentDispatcher extends InvocationDispatcher<ContentMarshaller>
             );
             return;
 
+        case ContentMarshaller.PURCHASE_ITEM_PACK:
+            ((ContentProvider)provider).purchaseItemPack(
+                source, ((Integer)args[0]).intValue(), (String)args[1], (InvocationService.InvocationListener)args[2]
+            );
+            return;
+
         default:
             super.dispatchRequest(source, methodId, args);
             return;

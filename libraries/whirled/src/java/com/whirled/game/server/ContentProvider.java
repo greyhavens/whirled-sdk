@@ -21,4 +21,10 @@ public interface ContentProvider extends InvocationProvider
      */
     void consumeItemPack (ClientObject caller, int arg1, String arg2, InvocationService.InvocationListener arg3)
         throws InvocationException;
+
+    /**
+     * Handles a {@link ContentService#purchaseItemPack} request.
+     */
+    void purchaseItemPack (ClientObject caller, int arg1, String arg2, InvocationService.InvocationListener arg3)
+        throws InvocationException;
 }

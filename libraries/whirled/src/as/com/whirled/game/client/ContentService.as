@@ -16,5 +16,8 @@ public interface ContentService extends InvocationService
 {
     // from Java interface ContentService
     function consumeItemPack (arg1 :Client, arg2 :int, arg3 :String, arg4 :InvocationService_InvocationListener) :void;
+
+    // from Java interface ContentService
+    function purchaseItemPack (arg1 :Client, arg2 :int, arg3 :String, arg4 :InvocationService_InvocationListener) :void;
 }
 }
