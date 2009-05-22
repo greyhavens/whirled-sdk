@@ -63,7 +63,7 @@ public class PlayerSubControlClient extends PlayerSubControlBase
      *
      * <p> If the player accepts the request to consume the item pack, a
      * GameContentEvent.PLAYER_CONTENT_CONSUMED event will be dispatched on this control (on both
-     * the client and server).
+     * the client and server). </p>
      *
      * @param ident the identifier of the item pack to be consumed.
      * @param msg a message to display in the dialog to help the player understand what's going on.
