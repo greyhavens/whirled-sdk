@@ -94,7 +94,15 @@ public class TestGameManager extends WhirledGameManager
     }
 
     // from interface WhirledGameProvider
-    public void consumeItemPack (ClientObject caller, String ident,
+    public void purchaseItemPack (ClientObject caller, int playerId, String ident,
+                                 WhirledGameService.InvocationListener listener)
+        throws InvocationException
+    {
+        // nada
+    }
+
+    // from interface WhirledGameProvider
+    public void consumeItemPack (ClientObject caller, int playerId, String ident,
                                  WhirledGameService.InvocationListener listener)
         throws InvocationException
     {
