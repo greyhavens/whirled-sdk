@@ -63,7 +63,7 @@ public class GamePlayerList extends PlayerList
 
         // find all the current occupants and add them to the set
         for each (var occInfo :OccupantInfo in _gameObj.occupantInfo.toArray()) {
-            record = new GamePlayerRecord();
+            record = createNewRecord();
             record.setup(occInfo);
 
             _byName.put(occInfo.username, record);
@@ -76,7 +76,7 @@ public class GamePlayerList extends PlayerList
             record = _byName.get(name) as GamePlayerRecord;
             var newRecord :Boolean = (record == null);
             if (newRecord) {
-                record = new GamePlayerRecord();
+                record = createNewRecord();
                 record.setupAbsent(name);
             }
 
@@ -236,7 +236,7 @@ public class GamePlayerList extends PlayerList
             var record :GamePlayerRecord = _byName.get(occInfo.username) as GamePlayerRecord;
             var newRecord :Boolean = (record == null);
             if (newRecord) {
-                record = new GamePlayerRecord();
+                record = createNewRecord();
             }
             record.setup(occInfo);
 
@@ -288,6 +288,11 @@ public class GamePlayerList extends PlayerList
     override protected function getRenderingClass () :Class
     {
         return GamePlayerRenderer;
+    }
+
+    protected function createNewRecord () :GamePlayerRecord
+    {
+        return new GamePlayerRecord();
     }
 
     private static const log :Log = Log.getLog(GamePlayerList);

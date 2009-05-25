@@ -179,7 +179,7 @@ import com.threerings.util.Name;
 class DefaultNameLabelCreator 
     implements NameLabelCreator
 {
-    public function createLabel (name :Name) :NameLabel
+    public function createLabel (name :Name, extraInfo :Object) :NameLabel
     {
         return new NameLabelImpl(name);
     }
@@ -254,7 +254,7 @@ class PlayerRenderer extends HBox
             if (creator != null && name != null) {
                 // anything implementing IUIComponent (which NameLabel extends) should be a safe
                 // cast to DisplayObject
-                addChild(creator.createLabel(name) as DisplayObject);
+                addChild(creator.createLabel(name, null) as DisplayObject);
             }
         }
     }

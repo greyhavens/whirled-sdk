@@ -64,10 +64,11 @@ public class GamePlayerRenderer extends HBox
             var record :GamePlayerRecord = dataArray[1] as GamePlayerRecord;
             if (_currentName == null || !_currentName.equals(record.name) ||
                 _currentName.toString() != record.name.toString()) {
-                if (_nameLabel != null && contains(_nameLabel as DisplayObject)) {
-                    removeChild(_nameLabel as DisplayObject);
+                if (_nameLabel != null && contains(DisplayObject(_nameLabel))) {
+                    removeChild(DisplayObject(_nameLabel));
                 }
-                addChildAt((_nameLabel = creator.createLabel(record.name)) as DisplayObject, 0);
+                _nameLabel = creator.createLabel(record.name, record.getExtraInfo());
+                addChildAt(DisplayObject(_nameLabel), 0);
                 _nameLabel.percentWidth = 100;
                 _currentName = record.name;
             }
@@ -76,8 +77,8 @@ public class GamePlayerRenderer extends HBox
             _scoreLabel.setStyle("textAlign", (record.scoreData is Number) ? "right" : "left");
 
         } else {
-            if (_nameLabel != null && contains(_nameLabel as DisplayObject)) {
-                removeChild(_nameLabel as DisplayObject);
+            if (_nameLabel != null && contains(DisplayObject(_nameLabel))) {
+                removeChild(DisplayObject(_nameLabel));
             }
             _nameLabel = null;
             _currentName = null;

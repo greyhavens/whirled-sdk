@@ -71,6 +71,15 @@ public class GamePlayerRecord
         status = PlayerList.STATUS_GONE;
     }
 
+    /**
+     * Get any extra info about this player.
+     * Used by subclasses.
+     */
+    public function getExtraInfo () :Object
+    {
+        return null;
+    }
+
     // from Comparable
     public function compareTo (other :Object) :int
     {
@@ -90,11 +99,15 @@ public class GamePlayerRecord
                     var thatLeft :Boolean = (that.status == PlayerList.STATUS_GONE);
                     cmp = compare(thatLeft, thisLeft);
                     if (cmp == 0) {
-                        // if equal, compare by name (lowest first)
-                        cmp = compare("" + that.name, "" + name);
+                        // if equal, compare by extraInfo (might need tweaking)
+                        cmp = compare(this.getExtraInfo(), that.getExtraInfo());
                         if (cmp == 0) {
-                            // if equal, compare by oid
-                            cmp = compare(this.oid, that.oid);
+                            // if equal, compare by name (lowest first)
+                            cmp = compare("" + that.name, "" + name);
+                            if (cmp == 0) {
+                                // if equal, compare by oid
+                                cmp = compare(this.oid, that.oid);
+                            }
                         }
                     }
                 }
