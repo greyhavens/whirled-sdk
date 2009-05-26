@@ -87,8 +87,12 @@ public class XmlResource
 
     protected function loadFromEmbeddedClass (theClass :Class) :void
     {
-        var ba :ByteArray = ByteArray(new theClass());
-        instantiateXml(ba.readUTFBytes(ba.length));
+        try {
+            var ba :ByteArray = ByteArray(new theClass());
+            instantiateXml(ba.readUTFBytes(ba.length));
+        } catch (e :TypeError) {
+            instantiateXml(XML(theClass.data));
+        }
     }
 
     protected function loadFromText (text :String) :void
