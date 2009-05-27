@@ -42,7 +42,7 @@ public class WeightedArray
         calculateTotalChance();
 
         if (_data.length == 0 || _totalChance <= 0) {
-            return null;
+            return undefined;
         }
 
         var rand :Number = Rand.nextNumberRange(0, _totalChance, _defaultRandStreamId);
@@ -55,7 +55,7 @@ public class WeightedArray
         }
 
         // How did we get here?
-        return null;
+        return undefined;
     }
 
     public function getAllData () :Array
