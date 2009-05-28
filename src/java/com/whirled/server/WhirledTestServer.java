@@ -1,5 +1,7 @@
 //
 // $Id$
+//
+// Copyright (c) 2007-2009 Three Rings Design, Inc. Please do not redistribute.
 
 package com.whirled.server;
 
@@ -26,9 +28,11 @@ import com.google.inject.Injector;
 
 import com.samskivert.io.StreamUtil;
 import com.samskivert.util.CollectionUtil;
+import com.samskivert.util.Lifecycle;
 import com.samskivert.util.RunAnywhere;
-import com.threerings.util.Name;
 import com.samskivert.util.StringUtil;
+
+import com.threerings.util.Name;
 
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.data.InvocationCodes;
@@ -37,7 +41,6 @@ import com.threerings.presents.server.ClientManager;
 import com.threerings.presents.server.ClientResolver;
 import com.threerings.presents.server.PresentsSession;
 import com.threerings.presents.server.SessionFactory;
-import com.threerings.presents.server.ShutdownManager;
 
 import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.server.CrowdServer;
@@ -69,7 +72,7 @@ import static com.whirled.Log.log;
  * Handles setting up the Whirled standalone test server.
  */
 public class WhirledTestServer extends CrowdServer
-    implements TestProvider, ShutdownManager.Shutdowner
+    implements TestProvider, Lifecycle.ShutdownComponent
 {
     /** Configures dependencies needed by the Whirled test services. */
     public static class Module extends CrowdServer.Module
@@ -102,7 +105,7 @@ public class WhirledTestServer extends CrowdServer
         super.init(injector);
 
         // we need to register with the shutdowner
-        _shutmgr.registerShutdowner(this);
+        _lifecycle.addComponent(this);
 
         // configure the client manager to use the appropriate client class
         _clmgr.setSessionFactory(new SessionFactory() {
@@ -167,7 +170,7 @@ public class WhirledTestServer extends CrowdServer
             public void clientSessionDidEnd (PresentsSession client) {
                 // shut down the server when the last non-buraeu disconnects
                 if (_clmgr.getConnectionCount() == _bureauClients) {
-                    _shutmgr.shutdown();
+                    queueShutdown();
                 }
             }
             public void clientSessionDidStart (PresentsSession client) {
@@ -183,7 +186,7 @@ public class WhirledTestServer extends CrowdServer
         prepareGame();
     }
 
-    // from interface ShutdownManager.Shutdowner
+    // from interface Lifecycle.ShutdownComponent
     public void shutdown ()
     {
         // shut down our http server
