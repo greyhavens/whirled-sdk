@@ -67,6 +67,15 @@ public class XmlReader
         return getAttr(xml, name, defaultValue);
     }
 
+    public static function getEnumAttr (xml :XML, name :String, enumClazz :Class,
+        defaultValue :* = undefined) :*
+    {
+        return getAttr(xml, name, defaultValue,
+            function (value :String) :Enum {
+                return Enum.valueOf(enumClazz, value);
+            });
+    }
+
     public static function getAttr (xml :XML, name :String, defaultValue :*,
         parseFunction :Function = null) :*
     {
