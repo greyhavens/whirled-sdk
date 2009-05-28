@@ -34,6 +34,8 @@ import com.whirled.avrg.LocalSubControl;
 import com.whirled.avrg.MobSubControlClient;
 import com.whirled.avrg.AgentSubControl;
 
+import com.whirled.party.PartySubControl;
+
 import com.whirled.net.PropertyChangedEvent;
 import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.PropertySubControl;
@@ -66,6 +68,7 @@ public class Definitions
         AVRGameRoomEvent.AVATAR_CHANGED,
         AVRGameRoomEvent.MOB_CONTROL_AVAILABLE,
         AVRGameRoomEvent.SIGNAL_RECEIVED,
+        AVRGameRoomEvent.ROOM_UNLOADED,
         MessageReceivedEvent.MESSAGE_RECEIVED
     ];
 
@@ -81,6 +84,15 @@ public class Definitions
         AVRGamePlayerEvent.ENTERED_ROOM,
         AVRGamePlayerEvent.LEFT_ROOM,
         MessageReceivedEvent.MESSAGE_RECEIVED
+    ];
+
+    /** All events that may occur on PartySubControl. */
+    public static const PARTY_EVENTS :Array = [
+        PartySubControl.PARTY_ENTERED,
+        PartySubControl.PARTY_LEFT,
+        PartySubControl.PLAYER_ENTERED_PARTY,
+        PartySubControl.PLAYER_LEFT_PARTY,
+        PartySubControl.PARTY_LEADER_CHANGED,
     ];
 
     /** All events that may occur on LocalSubControl. */
@@ -104,6 +116,7 @@ public class Definitions
         _funcs.local = createLocalFuncs();
         _funcs.agent = createAgentFuncs();
         _funcs.mob = createMobFuncs();
+        _funcs.party = createPartyFuncs();
         _funcs.serverMisc = createServerMiscFuncs();
         _funcs.serverRoom = createServerRoomFuncs();
         _funcs.serverGame = createServerGameFuncs();
@@ -183,24 +196,36 @@ public class Definitions
         forEach(_ctrl.player, PLAYER_EVENTS);
         forEach(_ctrl.player.props, NET_EVENTS);
         forEach(_ctrl.local, CLIENT_EVENTS);
+        //forEach(_ctrl.party, CLIENT_EVENTS);
     }
 
     protected function createRoomFuncs () :Array
     {
         var room :RoomSubControlClient = _ctrl.room;
         var funcs :Array = [
-            new FunctionSpec("getRoomId", room.getRoomId, []),
-            new FunctionSpec("getPlayerIds", room.getPlayerIds, []),
+            new FunctionSpec("getRoomId", room.getRoomId),
+            new FunctionSpec("getRoomName", room.getRoomName),
+            new FunctionSpec("getPlayerIds", room.getPlayerIds),
             new FunctionSpec("isPlayerHere", room.isPlayerHere, [
                 new Parameter("id", int)]),
+            new FunctionSpec("getOccupantIds", room.getOccupantIds),
+            new FunctionSpec("getOccupantName", room.getOccupantName, [
+                new Parameter("playerId", int)]),
+            new FunctionSpec("getMusicOwnerId", room.getMusicOwnerId),
+            new FunctionSpec("getSpawnedMobs", room.getSpawnedMobs),
+            new FunctionSpec("getRoomBounds", room.getRoomBounds),
             new FunctionSpec("getAvatarInfo", room.getAvatarInfo, [
                 new Parameter("playerId", int)]),
-            new FunctionSpec("getRoomBounds", room.getRoomBounds),
+
+            // client-only
             new FunctionSpec("getEntityIds", room.getEntityIds, [
-                new Parameter("type", String)]),
+                new Parameter("type", String, Parameter.OPTIONAL|Parameter.NULLABLE)]),
             new FunctionSpec("getEntityProperty", room.getEntityProperty, [
                 new Parameter("key", String),
-                new Parameter("entityId", String)])
+                new Parameter("entityId", String, Parameter.OPTIONAL|Parameter.NULLABLE)]),
+            new FunctionSpec("canManageRoom", room.canManageRoom, [
+                new Parameter("memberId", int, Parameter.OPTIONAL)]),
+            new FunctionSpec("getMusicId3", room.getMusicId3)
         ];
 
         pushPropsFuncs(funcs, room.props);
@@ -213,8 +238,19 @@ public class Definitions
 
         var funcs :Array = [
             new FunctionSpec("getPlayerIds", game.getPlayerIds),
-            new FunctionSpec("getItemPacks", game.getItemPacks),
+            new FunctionSpec("getOccupantName", game.getOccupantName, [
+                new Parameter("playerId", int)]),
+            new FunctionSpec("getPartyIds", game.getPartyIds),
             new FunctionSpec("getLevelPacks", game.getLevelPacks),
+            new FunctionSpec("getItemPacks", game.getItemPacks),
+            new FunctionSpec("loadLevelPackData", game.loadLevelPackData, [
+                new Parameter("ident", String),
+                new CallbackParameter("onLoaded"),
+                new CallbackParameter("onFailure")]),
+            new FunctionSpec("loadItemPackData", game.loadItemPackData, [
+                new Parameter("ident", String),
+                new CallbackParameter("onLoaded"),
+                new CallbackParameter("onFailure")]),
         ];
         pushPropsFuncs(funcs, game.props);
         return funcs;
@@ -226,11 +262,16 @@ public class Definitions
 
         var funcs :Array = [
             new FunctionSpec("getPlayerId", player.getPlayerId),
+            new FunctionSpec("getPlayerName", player.getPlayerName),
+            new FunctionSpec("getPartyId", player.getPartyId),
+            new FunctionSpec("getRoomId", player.getRoomId),
+            new FunctionSpec("moveToRoom", player.moveToRoom, [
+                new Parameter("roomId", int),
+                new ArrayParameter("exitCoords", Number, Parameter.OPTIONAL|Parameter.NULLABLE)]),
             new FunctionSpec("deactivateGame", player.deactivateGame),
-            new FunctionSpec("getAvatarMasterItemId", player.getAvatarMasterItemId),
-            new FunctionSpec("holdsTrophy", player.holdsTrophy, [new Parameter("ident", String)]),
             new FunctionSpec("getPlayerItemPacks", player.getPlayerItemPacks),
             new FunctionSpec("getPlayerLevelPacks", player.getPlayerLevelPacks),
+            new FunctionSpec("holdsTrophy", player.holdsTrophy, [new Parameter("ident", String)]),
             new FunctionSpec("completeTask", player.completeTask, [
                 new Parameter("taskId", String),
                 new Parameter("payout", Number)]),
@@ -247,6 +288,15 @@ public class Definitions
                 new Parameter("orient", Number)]),
             new FunctionSpec("setAvatarOrientation", player.setAvatarOrientation, [
                 new Parameter("orient", Number)]),
+            new FunctionSpec("getCoins", player.getCoins),
+            new FunctionSpec("getBars", player.getBars),
+
+            // client-only
+            new FunctionSpec("getAvatarMasterItemId", player.getAvatarMasterItemId),
+            new FunctionSpec("requestConsumeItemPack", player.requestConsumeItemPack, [
+                new Parameter("ident", String),
+                new Parameter("msg", String)]),
+
         ];
         pushPropsFuncs(funcs, player.props);
         pushPropsSetFuncs(funcs, player.props);
@@ -294,6 +344,8 @@ public class Definitions
             new FunctionSpec("setMobSpriteExporter", local.setMobSpriteExporter, [
                 new CallbackParameter("exporter")]),
             new FunctionSpec("getMobSpriteExporter", getMobSpriteExporter),
+            new FunctionSpec("showPage", local.showPage, [
+                new Parameter("token", String)]),
             new FunctionSpec("showInvitePage", local.showInvitePage, [
                 new Parameter("defmsg", String),
                 new Parameter("token", String, Parameter.OPTIONAL)]),
@@ -334,11 +386,57 @@ public class Definitions
         }
 
         return [
-            new FunctionSpec("setHotSpot", setHotSpot, [idParam, new Parameter("x", Number), 
-                new Parameter("y", Number), new Parameter("height", Number, Parameter.OPTIONAL)]), 
-            new FunctionSpec("setDecoration", setDecoration, [idParam]),
+            new FunctionSpec("setHotSpot", setHotSpot, [idParam,
+                new Parameter("x", Number), 
+                new Parameter("y", Number),
+                new Parameter("height", Number, Parameter.OPTIONAL)]),
+            new FunctionSpec("setDecoration", setDecoration, [idParam]), // TODO
             new FunctionSpec("removeDecoration", removeDecoration, [idParam]),
             ];
+    }
+
+    protected function createPartyFuncs () :Array
+    {
+        var proxies :Array = [
+            ["getPartyId", function (ctrl :PartySubControl) :Function {
+                return ctrl.getPartyId;
+            }],
+            ["getName", function (ctrl :PartySubControl) :Function {
+                return ctrl.getName;
+            }],
+            ["getGroupId", function (ctrl :PartySubControl) :Function {
+                return ctrl.getGroupId;
+            }],
+            ["getGroupName", function (ctrl :PartySubControl) :Function {
+                return ctrl.getGroupName;
+            }],
+            ["getGroupLogo", function (ctrl :PartySubControl) :Function {
+                return ctrl.getGroupLogo;
+            }],
+            ["getLeaderId", function (ctrl :PartySubControl) :Function {
+                return ctrl.getLeaderId;
+            }],
+            ["getPlayerIds", function (ctrl :PartySubControl) :Function {
+                return ctrl.getPlayerIds;
+            }]];
+
+        function hookup (proxy :Function) :Function {
+            return function (...args) :* {
+                trace("Got args: " + StringUtil.toString(args));
+                var id :int = args.shift() as int;
+                trace("Popped id " + id + ", args now " + StringUtil.toString(args));
+                return proxy(_ctrl.game.getParty(id)).apply(null, args);
+            }
+        }
+
+        var idParam :Parameter = new Parameter("partyId", int);
+        var funcs :Array = [];
+        for each (var tuple :Array in proxies) {
+            var name :String = tuple[0] as String;
+            var func :Function = tuple[1] as Function;
+            funcs.push(new FunctionSpec(name, hookup(func), [idParam]));
+        }
+        return funcs;
     }
 
     protected function pushPropsFuncs (funcs :Array, props :PropertyGetSubControl) :void
