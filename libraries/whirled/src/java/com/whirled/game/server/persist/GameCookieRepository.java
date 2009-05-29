@@ -44,7 +44,7 @@ public class GameCookieRepository extends DepotRepository
         if (cookie != null) {
             store(new GameCookieRecord(gameId, playerId, cookie));
         } else {
-            delete(GameCookieRecord.class, GameCookieRecord.getKey(gameId, playerId));
+            delete(GameCookieRecord.getKey(gameId, playerId));
         }
     }
 
