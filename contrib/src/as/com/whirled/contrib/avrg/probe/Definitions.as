@@ -366,77 +366,56 @@ public class Definitions
 
     protected function createMobFuncs () :Array
     {
-        var idParam :Parameter = new Parameter("id", String);
-        
-        function mob (id :String) :MobSubControlClient {
-            return _ctrl.room.getMobSubControl(id);
-        }
+        var mob :TargetedSubCtrlDef = new TargetedSubCtrlDef(
+            _ctrl.room.getMobSubControl, new Parameter("id", String));
 
-        function setHotSpot (id :String, ...args) :* {
-            return mob(id).setHotSpot.apply(null, args);
-        }
+        mob.addMethod("setHotSpot", function (ctrl :MobSubControlClient) :Function {
+            return ctrl.setHotSpot;
+        }, [new Parameter("x", Number),
+            new Parameter("y", Number),
+            new Parameter("height", Number, Parameter.OPTIONAL)]);
 
-        function setDecoration (id :String, ...args) :* {
-            args.unshift(_makeDecoration());
-            return mob(id).setDecoration.apply(null, args);
-        }
+        mob.addMethod("setDecoration", function (ctrl :MobSubControlClient) :Function {
+            return function (...args) :* {
+                args.unshift(_makeDecoration());
+                return ctrl.setDecoration.apply(null, args);
+            }
+        });
 
-        function removeDecoration (id :String, ...args) :* {
-            return mob(id).removeDecoration.apply(null, args);
-        }
+        mob.addMethod("removeDecoration", function (ctrl :MobSubControlClient) :Function {
+            return ctrl.removeDecoration;
+        });
 
-        return [
-            new FunctionSpec("setHotSpot", setHotSpot, [idParam,
-                new Parameter("x", Number), 
-                new Parameter("y", Number),
-                new Parameter("height", Number, Parameter.OPTIONAL)]),
-            new FunctionSpec("setDecoration", setDecoration, [idParam]), // TODO
-            new FunctionSpec("removeDecoration", removeDecoration, [idParam]),
-            ];
+        return mob.toSpecs();
     }
 
     protected function createPartyFuncs () :Array
     {
-        var proxies :Array = [
-            ["getPartyId", function (ctrl :PartySubControl) :Function {
-                return ctrl.getPartyId;
-            }],
-            ["getName", function (ctrl :PartySubControl) :Function {
-                return ctrl.getName;
-            }],
-            ["getGroupId", function (ctrl :PartySubControl) :Function {
-                return ctrl.getGroupId;
-            }],
-            ["getGroupName", function (ctrl :PartySubControl) :Function {
-                return ctrl.getGroupName;
-            }],
-            ["getGroupLogo", function (ctrl :PartySubControl) :Function {
-                return ctrl.getGroupLogo;
-            }],
-            ["getLeaderId", function (ctrl :PartySubControl) :Function {
-                return ctrl.getLeaderId;
-            }],
-            ["getPlayerIds", function (ctrl :PartySubControl) :Function {
-                return ctrl.getPlayerIds;
-            }]];
+        var party :TargetedSubCtrlDef = new TargetedSubCtrlDef(
+            _ctrl.game.getParty, new Parameter("partyId", int));
 
-        function hookup (proxy :Function) :Function {
-            return function (...args) :* {
-                trace("Got args: " + StringUtil.toString(args));
-                var id :int = args.shift() as int;
-                trace("Popped id " + id + ", args now " + StringUtil.toString(args));
-                return proxy(_ctrl.game.getParty(id)).apply(null, args);
-            }
-        }
-
-        var idParam :Parameter = new Parameter("partyId", int);
-        var funcs :Array = [];
-        for each (var tuple :Array in proxies) {
-            var name :String = tuple[0] as String;
-            var func :Function = tuple[1] as Function;
-            funcs.push(new FunctionSpec(name, hookup(func), [idParam]));
-        }
-        return funcs;
+        party.addMethod("getPartyId", function (ctrl :PartySubControl) :Function {
+            return ctrl.getPartyId;
+        });
+        party.addMethod("getName", function (ctrl :PartySubControl) :Function {
+            return ctrl.getName;
+        });
+        party.addMethod("getGroupId", function (ctrl :PartySubControl) :Function {
+            return ctrl.getGroupId;
+        });
+        party.addMethod("getGroupName", function (ctrl :PartySubControl) :Function {
+            return ctrl.getGroupName;
+        });
+        party.addMethod("getGroupLogo", function (ctrl :PartySubControl) :Function {
+            return ctrl.getGroupLogo;
+        });
+        party.addMethod("getLeaderId", function (ctrl :PartySubControl) :Function {
+            return ctrl.getLeaderId;
+        });
+        party.addMethod("getPlayerIds", function (ctrl :PartySubControl) :Function {
+            return ctrl.getPlayerIds;
+        });
+        return party.toSpecs();
     }
 
     protected function pushPropsFuncs (funcs :Array, props :PropertyGetSubControl) :void
