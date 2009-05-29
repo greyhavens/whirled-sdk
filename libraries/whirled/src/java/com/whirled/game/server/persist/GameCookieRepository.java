@@ -31,8 +31,7 @@ public class GameCookieRepository extends DepotRepository
      */
     public byte[] getCookie (int gameId, int playerId)
     {
-        GameCookieRecord record = load(
-            GameCookieRecord.class, GameCookieRecord.getKey(gameId, playerId));
+        GameCookieRecord record = load(GameCookieRecord.getKey(gameId, playerId));
         return record != null ? record.cookie : null;
     }
 
