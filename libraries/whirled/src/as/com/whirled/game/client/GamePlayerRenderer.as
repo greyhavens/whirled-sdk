@@ -63,14 +63,16 @@ public class GamePlayerRenderer extends HBox
             var creator :NameLabelCreator = dataArray[0] as NameLabelCreator;
             var record :GamePlayerRecord = dataArray[1] as GamePlayerRecord;
             if (_currentName == null || !_currentName.equals(record.name) ||
-                _currentName.toString() != record.name.toString()) {
+                    _currentExtra != record.getExtraInfo() ||
+                    _currentName.toString() != record.name.toString()) {
                 if (_nameLabel != null && contains(DisplayObject(_nameLabel))) {
                     removeChild(DisplayObject(_nameLabel));
                 }
-                _nameLabel = creator.createLabel(record.name, record.getExtraInfo());
+                _currentName = record.name;
+                _currentExtra = record.getExtraInfo();
+                _nameLabel = creator.createLabel(_currentName, _currentExtra);
                 addChildAt(DisplayObject(_nameLabel), 0);
                 _nameLabel.percentWidth = 100;
-                _currentName = record.name;
             }
             _nameLabel.setStatus(record.status);
             _scoreLabel.text = (record.scoreData == null) ? "" : String(record.scoreData);
@@ -94,6 +96,8 @@ public class GamePlayerRenderer extends HBox
     /** The Name that is currently being displayed on the NameLable.  We only fetch a new label if
      * the Name changes. */
     protected var _currentName :Name;
+
+    protected var _currentExtra :Object;
 
     /** The label used to display score data, if applicable. */
     protected var _scoreLabel :Label;
