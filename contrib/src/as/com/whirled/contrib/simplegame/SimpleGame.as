@@ -14,7 +14,7 @@ public class SimpleGame
         _ctx.audio = new AudioManager(_ctx, config.maxAudioChannels);
         _ctx.mainLoop.addUpdatable(_ctx.audio);
 
-        if (config.externalResourceManager != null) {
+        if (config.externalResourceManager == null) {
             _ctx.rsrcs = new ResourceManager();
             _ownsResourceManager = true;
 
