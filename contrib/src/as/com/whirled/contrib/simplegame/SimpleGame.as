@@ -12,15 +12,22 @@ public class SimpleGame
     {
         _ctx.mainLoop = new MainLoop(_ctx);
         _ctx.audio = new AudioManager(_ctx, config.maxAudioChannels);
-        _ctx.rsrcs = new ResourceManager();
-
-        // add resource factories
-        _ctx.rsrcs.registerResourceType("image", ImageResource);
-        _ctx.rsrcs.registerResourceType("swf", SwfResource);
-        _ctx.rsrcs.registerResourceType("xml", XmlResource);
-        _ctx.rsrcs.registerResourceType("sound", SoundResource);
-
         _ctx.mainLoop.addUpdatable(_ctx.audio);
+
+        if (config.externalResourceManager != null) {
+            _ctx.rsrcs = new ResourceManager();
+            _ownsResourceManager = true;
+
+            // add resource factories
+            _ctx.rsrcs.registerResourceType("image", ImageResource);
+            _ctx.rsrcs.registerResourceType("swf", SwfResource);
+            _ctx.rsrcs.registerResourceType("xml", XmlResource);
+            _ctx.rsrcs.registerResourceType("sound", SoundResource);
+
+        } else {
+            _ctx.rsrcs = config.externalResourceManager;
+            _ownsResourceManager = false;
+        }
     }
 
     public function run (hostSprite :Sprite, keyDispatcher :IEventDispatcher = null) :void
@@ -33,7 +40,10 @@ public class SimpleGame
     {
         _ctx.mainLoop.shutdown();
         _ctx.audio.shutdown();
-        _ctx.rsrcs.shutdown();
+
+        if (_ownsResourceManager) {
+            _ctx.rsrcs.shutdown();
+        }
     }
 
     public function get ctx () :SGContext
@@ -42,6 +52,7 @@ public class SimpleGame
     }
 
     protected var _ctx :SGContext = new SGContext();
+    protected var _ownsResourceManager :Boolean;
 }
 
 }
