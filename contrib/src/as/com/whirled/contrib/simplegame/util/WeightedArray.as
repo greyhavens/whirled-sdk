@@ -58,10 +58,24 @@ public class WeightedArray
         return undefined;
     }
 
+    /**
+     * Get an array of all of the items that can be returned by this WeightedArray.
+     */
     public function getAllData () :Array
     {
         return _data.map(function (wd :WeightedData, ...ignored) :* {
             return wd.data;
+        });
+    }
+
+    /**
+     * The function argument should have the following signature:
+     * function (item :*, chance :Number) :void.  It will be called once per item in the array.
+     */
+    public function forEach (callback :Function) :void
+    {
+        _data.forEach(function (wd :WeightedData, ...ignored) :void {
+            callback(wd.data, wd.chance);
         });
     }
 
