@@ -161,7 +161,7 @@ public abstract class PropertySpaceHelper
                 state.put(entry.getKey(), decodeFromStore(entry.getValue()));
 
             } catch (Exception e) {
-                log.warning("Failed to decode property", "key", entry.getKey(), 
+                log.warning("Failed to decode property", "key", entry.getKey(),
                     "value", StringUtil.toString(entry.getValue()), e);
             }
         }
@@ -171,10 +171,11 @@ public abstract class PropertySpaceHelper
     /**
      * Initializes the given {@link PropertySpaceObject} with a previously existing mapping
      * of property names to property values, as e.g. created by the {@link #recordsToProperties}
-     * method.
+     * method. The 'live' boolean is true if this distributed object has existing subscribers
+     * who should be caught up with the state change.
      */
     public static void initWithProperties (
-        PropertySpaceObject psObj, Map<String, Object> properties)
+        PropertySpaceObject psObj, Map<String, Object> properties, boolean live)
     {
         // clear the data structures
         psObj.getUserProps().clear();
@@ -184,7 +185,7 @@ public abstract class PropertySpaceHelper
         psObj.getUserProps().putAll(properties);
 
         // if this is a distributed object, catch all our listeners up on the initial state
-        if (psObj instanceof DObject) {
+        if (live && (psObj instanceof DObject)) {
             DObject plObj = (DObject) psObj;
             plObj.startTransaction();
             for (Map.Entry<String, Object> entry : properties.entrySet()) {
@@ -210,7 +211,7 @@ public abstract class PropertySpaceHelper
                 dirtyState.put(propName, encodeForStore(allState.get(propName)));
 
             } catch (Exception e) {
-                log.warning("Failed to encode property", "psObj", obj, "key", propName, 
+                log.warning("Failed to encode property", "psObj", obj, "key", propName,
                     "value", StringUtil.toString(allState.get(propName)), e);
             }
         }
