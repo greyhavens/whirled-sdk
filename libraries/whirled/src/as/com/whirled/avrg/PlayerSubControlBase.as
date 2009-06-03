@@ -241,6 +241,9 @@ public class PlayerSubControlBase extends TargetedSubControl
 
     /**
      * Returns this player's current coin balance.
+     *
+     * <p> Note: this funtionality is only allowed for approved games. This method will silently
+     * fail for unapproved games. The approval process is still being developed. </p>
      */
     public function getCoins () :int
     {
@@ -249,6 +252,9 @@ public class PlayerSubControlBase extends TargetedSubControl
 
     /**
      * Returns this player's current bar balance.
+     *
+     * <p> Note: this funtionality is only allowed for approved games. This method will silently
+     * fail for unapproved games. The approval process is still being developed. </p>
      */
     public function getBars () :int
     {
