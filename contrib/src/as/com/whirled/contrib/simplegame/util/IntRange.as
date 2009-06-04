@@ -20,13 +20,13 @@
 
 package com.whirled.contrib.simplegame.util {
 
-public class IntRangeDeprecated
+public class IntRange
 {
     public var min :int;
     public var max :int;
     public var defaultRandStreamId :uint;
 
-    public function IntRangeDeprecated (min :int, max :int, defaultRandStreamId :uint)
+    public function IntRange (min :int, max :int, defaultRandStreamId :uint)
     {
         this.min = min;
         this.max = max;
@@ -35,13 +35,13 @@ public class IntRangeDeprecated
 
     public function next (randStreamId :int = -1) :Number
     {
-        return Rand.nextIntRange(
+        return Rand.nextIntInRange(
             min, max, (randStreamId >= 0 ? randStreamId : defaultRandStreamId));
     }
 
-    public function clone () :IntRangeDeprecated
+    public function clone () :IntRange
     {
-        return new IntRangeDeprecated(min, max, defaultRandStreamId);
+        return new IntRange(min, max, defaultRandStreamId);
     }
 }
 
