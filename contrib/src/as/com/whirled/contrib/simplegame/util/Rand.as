@@ -50,7 +50,7 @@ public class Rand
     /** Returns a random element from the given Array. */
     public static function nextElement (arr :Array, streamId :uint) :*
     {
-        return (arr.length > 0 ? arr[nextIntRange(0, arr.length, streamId)] : undefined);
+        return (arr.length > 0 ? arr[nextIntInRange(0, arr.length - 1, streamId)] : undefined);
     }
 
     /** Returns an integer in the range [0, MAX) */
@@ -59,10 +59,19 @@ public class Rand
         return getStream(streamId).nextInt();
     }
 
-    /** Returns an int in the range [low, high) */
+    /**
+     * Returns an int in the range [low, high)
+     * @deprecated use {@link #nextIntInRange}
+     */
     public static function nextIntRange (low :int, high :int, streamId :uint) :int
     {
-        return low + getStream(streamId).nextInt(high - low);
+        return nextIntInRange(low, high - 1, streamId);
+    }
+
+    /** Returns an int in the range [min, max] */
+    public static function nextIntInRange (min :int, max :int, streamId :uint) :int
+    {
+        return min + getStream(streamId).nextInt(max - min + 1);
     }
 
     /** Returns a Boolean. */
@@ -77,8 +86,17 @@ public class Rand
         return getStream(streamId).nextNumber();
     }
 
-    /** Returns a Number in the range [low, high) */
+    /**
+     * Returns a Number in the range [low, high)
+     * @deprecated use {@link #nextNumberInRange}
+     */
     public static function nextNumberRange (low :Number, high :Number, streamId :uint) :Number
+    {
+        return nextNumberInRange(low, high, streamId);
+    }
+
+    /** Returns a Number in the range [low, high) */
+    public static function nextNumberInRange (low :Number, high :Number, streamId :uint) :Number
     {
         return low + (getStream(streamId).nextNumber() * (high - low));
     }

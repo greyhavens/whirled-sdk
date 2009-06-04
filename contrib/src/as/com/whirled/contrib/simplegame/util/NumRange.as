@@ -35,7 +35,7 @@ public class NumRange
 
     public function next (randStreamId :int = -1) :Number
     {
-        return Rand.nextNumberRange(
+        return Rand.nextNumberInRange(
             min, max, (randStreamId >= 0 ? randStreamId : defaultRandStreamId));
     }
 

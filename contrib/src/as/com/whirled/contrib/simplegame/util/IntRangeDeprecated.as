@@ -16,17 +16,17 @@
 //
 // Copyright 2008 Three Rings Design
 //
-// $Id$
+// $Id: IntRange.as 7231 2009-01-23 20:17:52Z tim $
 
 package com.whirled.contrib.simplegame.util {
 
-public class IntRange
+public class IntRangeDeprecated
 {
     public var min :int;
     public var max :int;
     public var defaultRandStreamId :uint;
 
-    public function IntRange (min :int, max :int, defaultRandStreamId :uint)
+    public function IntRangeDeprecated (min :int, max :int, defaultRandStreamId :uint)
     {
         this.min = min;
         this.max = max;
@@ -39,9 +39,9 @@ public class IntRange
             min, max, (randStreamId >= 0 ? randStreamId : defaultRandStreamId));
     }
 
-    public function clone () :IntRange
+    public function clone () :IntRangeDeprecated
     {
-        return new IntRange(min, max, defaultRandStreamId);
+        return new IntRangeDeprecated(min, max, defaultRandStreamId);
     }
 }
 
