@@ -207,7 +207,8 @@
     <mkdir dir="${sdk.build}/contrib/docs"/>
     <delete dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
-      <fileset dir="contrib/src/as" includes="com/whirled/**/*.as"/>
+      <fileset dir="contrib/src/as" includes="com/whirled/**/*.as"
+        excludes="com/whirled/contrib/platformer/editor/**/*.as"/>
     </copy>
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
