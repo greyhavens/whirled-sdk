@@ -13,7 +13,6 @@ import com.samskivert.depot.DepotRepository;
 import com.samskivert.depot.PersistenceContext;
 import com.samskivert.depot.PersistentRecord;
 import com.samskivert.depot.clause.Where;
-import com.samskivert.depot.operator.In;
 
 /**
  * Provides storage services for user cookies used in games.
@@ -52,7 +51,7 @@ public class GameCookieRepository extends DepotRepository
      */
     public void purgePlayers (Collection<Integer> playerIds)
     {
-        deleteAll(GameCookieRecord.class, new Where(new In(GameCookieRecord.USER_ID, playerIds)));
+        deleteAll(GameCookieRecord.class, new Where(GameCookieRecord.USER_ID.in(playerIds)));
     }
 
     @Override // from DepotRepository
