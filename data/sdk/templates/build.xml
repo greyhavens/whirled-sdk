@@ -23,6 +23,10 @@
   <!-- if you wish to name your server agent class something besides "Server", uncomment and edit this line -->
   <!--<property name="app.server-agent" value="subpackage/Server"/>-->
 
+  <!-- if you wish to specify an additional flex config file to use with your project, uncomment -->
+  <!-- and edit this line -->
+  <!--<property name="app.additional-config" value="config.xml"/>-->
+
   <!-- include the standard build script -->
   <import file="../etc/project-include.xml"/>
 
