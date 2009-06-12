@@ -120,7 +120,7 @@
       <arg value="${app.name}.abc"/>
       <arg value="${app.name}.server.swf"/>
     </java>
-    <!--<delete file="${app.name}.server.swf"/>-->
+    <delete file="${app.name}.server.swf"/>
   </target>
 
   <!-- zip things up for remixables -->
