@@ -24,7 +24,7 @@
   <!-- used to make our projects -->
   <taskdef name="newproject" classpathref="classpath" classname="com.whirled.tools.NewProjectTask"/>
   <target name="newgame" depends="prepare-flex">
-    <newproject type="Game" templates="templates" serveragentinfourl="http://wiki.whirled.com/Server_Agents"/>
+    <newproject type="Game" templates="templates" serveragentinfourl="http://wiki.whirled.com/Server_Agent"/>
   </target>
   <target name="newavatar" depends="prepare-flex">
     <newproject type="Avatar" templates="templates"/>
@@ -45,7 +45,7 @@
     <newproject type="AVRG" templates="templates"/>
   </target>
   <target name="newproject" depends="prepare-flex">
-    <newproject templates="templates" serveragentinfourl="http://wiki.whirled.com/Server_Agents"/>
+    <newproject templates="templates" serveragentinfourl="http://wiki.whirled.com/Server_Agent"/>
   </target>
 
   <!-- runs the FAT server with GUI -->
