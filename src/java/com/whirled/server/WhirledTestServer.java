@@ -108,7 +108,7 @@ public class WhirledTestServer extends CrowdServer
         _lifecycle.addComponent(this);
 
         // configure the client manager to use the appropriate client class
-        _clmgr.setSessionFactory(new SessionFactory() {
+        _clmgr.setDefaultSessionFactory(new SessionFactory() {
             public Class<? extends PresentsSession> getSessionClass (AuthRequest areq) {
                 return WhirledTestSession.class;
             }
@@ -139,8 +139,6 @@ public class WhirledTestServer extends CrowdServer
         // register ourselves as handling the test service
         _invmgr.registerDispatcher(new TestDispatcher(this), InvocationCodes.GLOBAL_GROUP);
 
-        _bureauReg.init();
-        _bureauReg.setDefaultSessionFactory();
         _bureauReg.setLauncher(BureauTypes.THANE_BUREAU_TYPE, new BureauRegistry.Launcher() {
             public void launchBureau (String bureauId, String token) throws IOException {
                 ABCLibs abcLibs = new ABCLibs();
