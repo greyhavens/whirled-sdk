@@ -20,12 +20,29 @@
 
 package com.whirled.contrib.simplegame.resource {
 
-public interface Resource
+public class Resource
 {
-    function get resourceName () :String;
+    public function Resource (resourceName :String)
+    {
+        _resourceName = resourceName;
+    }
 
-    function load (completeCallback :Function, errorCallback :Function) :void;
-    function unload () :void;
+    public function get resourceName () :String
+    {
+        return _resourceName;
+    }
+
+    internal function load (completeCallback :Function, errorCallback :Function) :void
+    {
+        // subclasses implement
+    }
+
+    internal function unload () :void
+    {
+        // subclasses implement
+    }
+
+    protected var _resourceName :String;
 }
 
 }

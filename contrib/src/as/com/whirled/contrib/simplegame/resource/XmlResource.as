@@ -31,20 +31,14 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
-public class XmlResource
-    implements Resource
+public class XmlResource extends Resource
 {
     public function XmlResource (resourceName :String, loadParams :Object,
         objectGenerator :Function = null)
     {
-        _resourceName = resourceName;
+        super(resourceName);
         _loadParams = loadParams;
         _objectGenerator = objectGenerator;
-    }
-
-    public function get resourceName () :String
-    {
-        return _resourceName;
     }
 
     public function get xml () :XML
@@ -57,7 +51,7 @@ public class XmlResource
         return _generatedObject;
     }
 
-    public function load (completeCallback :Function, errorCallback :Function) :void
+    override internal function load (completeCallback :Function, errorCallback :Function) :void
     {
         _completeCallback = completeCallback;
         _errorCallback = errorCallback;
@@ -100,7 +94,7 @@ public class XmlResource
         instantiateXml(text);
     }
 
-    public function unload () :void
+    override internal function unload () :void
     {
         if (null != _urlLoader) {
             try {
@@ -149,7 +143,6 @@ public class XmlResource
         _errorCallback(this, "XmlResourceLoader (" + _resourceName + "): " + errText);
     }
 
-    protected var _resourceName :String;
     protected var _loadParams :Object;
     protected var _urlLoader :URLLoader;
     protected var _xml :XML;

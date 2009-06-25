@@ -28,8 +28,7 @@ import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
 import flash.utils.ByteArray;
 
-public class ImageResource
-    implements Resource
+public class ImageResource extends Resource
 {
     public static function instantiateBitmap (rsrcs :ResourceManager, resourceName :String) :Bitmap
     {
@@ -43,17 +42,13 @@ public class ImageResource
 
     public function ImageResource (resourceName :String, loadParams :Object)
     {
-        _resourceName = resourceName;
+        super(resourceName);
+
         _loadParams = loadParams;
 
         _loader = new Loader();
         _loader.contentLoaderInfo.addEventListener(Event.INIT, onInit);
         _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
-    }
-
-    public function get resourceName () :String
-    {
-        return _resourceName;
     }
 
     public function get bitmapData () :BitmapData
@@ -67,7 +62,7 @@ public class ImageResource
         return new Bitmap(this.bitmapData, pixelSnapping, smoothing);
     }
 
-    public function load (completeCallback :Function, errorCallback :Function) :void
+    override internal function load (completeCallback :Function, errorCallback :Function) :void
     {
         _completeCallback = completeCallback;
         _errorCallback = errorCallback;
@@ -85,7 +80,7 @@ public class ImageResource
         }
     }
 
-    public function unload () :void
+    override internal function unload () :void
     {
         try {
             _loader.close();
@@ -106,7 +101,6 @@ public class ImageResource
         _errorCallback(this, "ImageResourceLoader (" + _resourceName + "): " + e.text);
     }
 
-    protected var _resourceName :String;
     protected var _loadParams :Object;
     protected var _loader :Loader;
     protected var _completeCallback :Function;

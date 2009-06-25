@@ -35,8 +35,7 @@ import flash.system.LoaderContext;
 import flash.utils.ByteArray;
 import flash.utils.Dictionary;
 
-public class SwfResource
-    implements Resource
+public class SwfResource extends Resource
 {
     public static function instantiateMovieClip (
         rsrcs :ResourceManager, resourceName :String, className :String,
@@ -117,17 +116,12 @@ public class SwfResource
 
     public function SwfResource (resourceName :String, loadParams :Object)
     {
-        _resourceName = resourceName;
+        super(resourceName);
         _loadParams = loadParams;
 
         _loader = new Loader();
         _loader.contentLoaderInfo.addEventListener(Event.INIT, onInit);
         _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
-    }
-
-    public function get resourceName () :String
-    {
-        return _resourceName;
     }
 
     public function get displayRoot () :DisplayObject
@@ -161,7 +155,7 @@ public class SwfResource
         return getSymbol(name) as Class;
     }
 
-    public function load (completeCallback :Function, errorCallback :Function) :void
+    override internal function load (completeCallback :Function, errorCallback :Function) :void
     {
         _completeCallback = completeCallback;
         _errorCallback = errorCallback;
@@ -188,7 +182,7 @@ public class SwfResource
         }
     }
 
-    public function unload () :void
+    override internal function unload () :void
     {
         try {
             if (!_loaded) {
@@ -219,7 +213,6 @@ public class SwfResource
     }
 
     protected var _loaded :Boolean;
-    protected var _resourceName :String;
     protected var _loadParams :Object;
     protected var _loader :Loader;
     protected var _completeCallback :Function;

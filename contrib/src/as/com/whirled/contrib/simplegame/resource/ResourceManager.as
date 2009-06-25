@@ -21,7 +21,6 @@
 package com.whirled.contrib.simplegame.resource {
 
 import com.threerings.util.ArrayUtil;
-import com.threerings.util.Assert;
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 
@@ -41,64 +40,32 @@ public class ResourceManager
     public function queueResourceLoad (resourceType :String, resourceName: String, loadParams :*)
         :void
     {
-        // check for existing resource with the same name
-        if (resourceExists(resourceName)) {
-            throw new Error("A resource named '" + resourceName + "' already exists");
+        if (_pendingSet == null) {
+            _pendingSet = new ResourceSet(this);
         }
 
-        var rsrc :Resource = createResource(resourceType, resourceName, loadParams);
-        if (null == rsrc) {
-            throw new Error("No ResourceLoader for '" + resourceType + "' resource type");
-        }
-
-        if (_pendingResources == null) {
-            _pendingResources = new ResourceSet();
-        }
-
-        _pendingResources.pendingResources.put(resourceName, rsrc);
+        _pendingSet.queueResourceLoad(resourceType, resourceName, loadParams);
     }
 
-    public function loadQueuedResources (loadCompleteCallback :Function = null,
-        loadErrorCallback :Function = null) :void
+    public function loadQueuedResources (onLoaded :Function = null, onLoadErr :Function = null)
+        :void
     {
-        if (_pendingResources == null) {
+        if (_pendingSet == null) {
             throw new Error("No resources queued for loading");
         }
 
-        _pendingResources.completeCallback = loadCompleteCallback;
-        _pendingResources.errorCallback = loadErrorCallback;
-
-        var rsrcSet :ResourceSet = _pendingResources;
-        rsrcSet.loading = true;
-        _loadingResources.push(rsrcSet);
-        _pendingResources = null;
-
-        for each (var rsrc :Resource in rsrcSet.pendingResources.values()) {
-            rsrc.load(
-                function (loadedRsrc :Resource) :void {
-                    onSingleResourceLoaded(loadedRsrc, rsrcSet);
-                },
-                function (errorRsrc :Resource, err :String) :void {
-                    onSingleResourceError(errorRsrc, err, rsrcSet);
-                });
-
-            // don't continue if the load operation has been canceled/errored
-            if (!rsrcSet.loading) {
-                break;
-            }
-        }
+        _pendingSet.load(onLoaded, onLoadErr);
+        _pendingSet = null;
     }
 
     public function cancelLoad () :void
     {
-        var rsrc :Resource;
-        for each (var rsrcSet :ResourceSet in _loadingResources) {
-            rsrcSet.cancelLoad();
+        var loadingSets :Array = _loadingSets;
+        for each (var rsrcSet :ResourceSet in loadingSets) {
+            rsrcSet.unload();
         }
 
-        _loadingResources = [];
-
-        _pendingResources = null;
+        _pendingSet = null;
     }
 
     public function getResource (resourceName :String) :Resource
@@ -132,10 +99,10 @@ public class ResourceManager
 
     public function get isLoading () :Boolean
     {
-        return _loadingResources.length > 0;
+        return _loadingSets.length > 0;
     }
 
-    protected function createResource (resourceType :String, resourceName :String, loadParams :*)
+    internal function createResource (resourceType :String, resourceName :String, loadParams :*)
         :Resource
     {
         var loaderClass :Class = _resourceClasses.get(resourceType);
@@ -146,99 +113,36 @@ public class ResourceManager
         return null;
     }
 
-    protected function onSingleResourceLoaded (rsrc :Resource, rsrcSet :ResourceSet) :void
+    internal function setResourceSetLoading (resourceSet :ResourceSet, loading :Boolean) :void
     {
-        var removedObj :Resource = rsrcSet.pendingResources.remove(rsrc.resourceName);
-        Assert.isTrue(removedObj == rsrc);
-        rsrcSet.loadedResources.put(rsrc.resourceName, rsrc);
-
-        // Did we finish loading?
-        if (rsrcSet.pendingResources.size() == 0) {
-            rsrcSet.loading = false;
-            ArrayUtil.removeFirst(_loadingResources, rsrcSet);
-
-            // Move all resources from the ResourceSet into our _resources map
-            for each (var loadedRsrc :Resource in rsrcSet.loadedResources.values()) {
-                _resources.put(loadedRsrc.resourceName, loadedRsrc);
-            }
-
-            if (rsrcSet.completeCallback != null) {
-                rsrcSet.completeCallback();
-            }
-        }
-    }
-
-    protected function onSingleResourceError (rsrc :Resource, err :String, rsrcSet :ResourceSet) :void
-    {
-        log.warning("Resource load error: " + err);
-
-        // upon error, cancel all pending loads in this set
-        rsrcSet.cancelLoad();
-        ArrayUtil.removeFirst(_loadingResources, rsrcSet);
-
-        if (rsrcSet.errorCallback != null) {
-            rsrcSet.errorCallback(err);
-        }
-    }
-
-    protected function resourceExists (name :String) :Boolean
-    {
-        // Have we loaded, are we loading, or are we about to load a resource with
-        // the given name?
-        if (_resources.containsKey(name)) {
-            return true;
-        } else if (_pendingResources != null && _pendingResources.resourceExists(name)) {
-            return true;
+        if (loading) {
+            _loadingSets.push(resourceSet);
         } else {
-            for each (var loadingSet :ResourceSet in _loadingResources) {
-                if (loadingSet.resourceExists(name)) {
-                    return true;
-                }
+            ArrayUtil.removeFirst(_loadingSets, resourceSet);
+        }
+    }
+
+    internal function addResources (resources :Array) :void
+    {
+        var rsrc :Resource;
+        // validate all resources before adding them
+        for each (rsrc in resources) {
+            if (getResource(rsrc.resourceName) != null) {
+                throw new Error("A resource named '" + rsrc.resourceName + "' already exists");
             }
         }
-
-        return false;
+        for each (rsrc in resources) {
+            _resources.put(rsrc.resourceName, rsrc);
+        }
     }
 
     protected var _resources :HashMap = new HashMap(); // Map<name, resource>
-    protected var _pendingResources :ResourceSet;
-    protected var _loadingResources :Array = [];
+    protected var _pendingSet :ResourceSet;
+    protected var _loadingSets :Array = [];
 
     protected var _resourceClasses :HashMap = new HashMap();
 
     protected static var log :Log = Log.getLog(ResourceManager);
 }
 
-}
-
-import com.threerings.util.HashMap;
-import com.whirled.contrib.simplegame.resource.Resource;
-
-class ResourceSet
-{
-    public var pendingResources :HashMap = new HashMap(); // Map<name, resource>
-    public var loadedResources :HashMap = new HashMap(); // Map<name, resource>
-    public var completeCallback :Function;
-    public var errorCallback :Function;
-    public var loading :Boolean;
-
-    public function cancelLoad () :void
-    {
-        if (loading) {
-            var rsrc :Resource;
-            for each (rsrc in pendingResources.values()) {
-                rsrc.unload();
-            }
-            for each (rsrc in loadedResources.values()) {
-                rsrc.unload();
-            }
-
-            loading = false;
-        }
-    }
-
-    public function resourceExists (name :String) :Boolean
-    {
-        return (pendingResources.containsKey(name) || loadedResources.containsKey(name));
-    }
 }

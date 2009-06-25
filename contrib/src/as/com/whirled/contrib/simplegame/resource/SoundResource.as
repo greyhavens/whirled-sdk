@@ -25,8 +25,7 @@ import flash.events.IOErrorEvent;
 import flash.media.Sound;
 import flash.net.URLRequest;
 
-public class SoundResource
-    implements Resource
+public class SoundResource extends Resource
 {
     public static const TYPE_SFX :int = 0;
     public static const TYPE_MUSIC :int = 1;
@@ -34,13 +33,8 @@ public class SoundResource
 
     public function SoundResource (resourceName :String, loadParams :Object)
     {
-        _resourceName = resourceName;
+        super(resourceName);
         _loadParams = loadParams;
-    }
-
-    public function get resourceName () :String
-    {
-        return _resourceName;
     }
 
     public function get sound () :Sound
@@ -68,7 +62,7 @@ public class SoundResource
         return _pan;
     }
 
-    public function load (completeCallback :Function, errorCallback :Function) :void
+    override internal function load (completeCallback :Function, errorCallback :Function) :void
     {
         _completeCallback = completeCallback;
         _errorCallback = errorCallback;
@@ -114,7 +108,7 @@ public class SoundResource
         }
     }
 
-    public function unload () :void
+    override internal function unload () :void
     {
         try {
             if (null != _sound) {
@@ -140,7 +134,6 @@ public class SoundResource
         _errorCallback(this, "SoundResourceLoader (" + _resourceName + "): " + errString);
     }
 
-    protected var _resourceName :String;
     protected var _loadParams :Object;
     protected var _sound :Sound;
     protected var _type :int;
