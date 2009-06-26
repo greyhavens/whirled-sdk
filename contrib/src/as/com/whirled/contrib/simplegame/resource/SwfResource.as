@@ -116,8 +116,7 @@ public class SwfResource extends Resource
 
     public function SwfResource (resourceName :String, loadParams :Object)
     {
-        super(resourceName);
-        _loadParams = loadParams;
+        super(resourceName, loadParams);
 
         _loader = new Loader();
         _loader.contentLoaderInfo.addEventListener(Event.INIT, onInit);
@@ -155,7 +154,7 @@ public class SwfResource extends Resource
         return getSymbol(name) as Class;
     }
 
-    override internal function load (completeCallback :Function, errorCallback :Function) :void
+    override protected function load (completeCallback :Function, errorCallback :Function) :void
     {
         _completeCallback = completeCallback;
         _errorCallback = errorCallback;
@@ -182,7 +181,7 @@ public class SwfResource extends Resource
         }
     }
 
-    override internal function unload () :void
+    override protected function unload () :void
     {
         try {
             if (!_loaded) {
@@ -203,17 +202,16 @@ public class SwfResource extends Resource
 
     protected function onInit (...ignored) :void
     {
-        _completeCallback(this);
+        _completeCallback();
         _loaded = true;
     }
 
     protected function onError (e :IOErrorEvent) :void
     {
-        _errorCallback(this, "SwfResourceLoader (" + _resourceName + "): " + e.text);
+        _errorCallback("SwfResourceLoader (" + _resourceName + "): " + e.text);
     }
 
     protected var _loaded :Boolean;
-    protected var _loadParams :Object;
     protected var _loader :Loader;
     protected var _completeCallback :Function;
     protected var _errorCallback :Function;

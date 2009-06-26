@@ -42,9 +42,7 @@ public class ImageResource extends Resource
 
     public function ImageResource (resourceName :String, loadParams :Object)
     {
-        super(resourceName);
-
-        _loadParams = loadParams;
+        super(resourceName, loadParams);
 
         _loader = new Loader();
         _loader.contentLoaderInfo.addEventListener(Event.INIT, onInit);
@@ -62,7 +60,7 @@ public class ImageResource extends Resource
         return new Bitmap(this.bitmapData, pixelSnapping, smoothing);
     }
 
-    override internal function load (completeCallback :Function, errorCallback :Function) :void
+    override protected function load (completeCallback :Function, errorCallback :Function) :void
     {
         _completeCallback = completeCallback;
         _errorCallback = errorCallback;
@@ -80,7 +78,7 @@ public class ImageResource extends Resource
         }
     }
 
-    override internal function unload () :void
+    override protected function unload () :void
     {
         try {
             _loader.close();
@@ -93,15 +91,14 @@ public class ImageResource extends Resource
 
     protected function onInit (e :Event) :void
     {
-        _completeCallback(this);
+        _completeCallback();
     }
 
     protected function onError (e :IOErrorEvent) :void
     {
-        _errorCallback(this, "ImageResourceLoader (" + _resourceName + "): " + e.text);
+        _errorCallback("ImageResourceLoader (" + _resourceName + "): " + e.text);
     }
 
-    protected var _loadParams :Object;
     protected var _loader :Loader;
     protected var _completeCallback :Function;
     protected var _errorCallback :Function;

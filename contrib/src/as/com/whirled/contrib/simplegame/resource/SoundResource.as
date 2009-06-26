@@ -33,8 +33,7 @@ public class SoundResource extends Resource
 
     public function SoundResource (resourceName :String, loadParams :Object)
     {
-        super(resourceName);
-        _loadParams = loadParams;
+        super(resourceName, loadParams);
     }
 
     public function get sound () :Sound
@@ -62,10 +61,10 @@ public class SoundResource extends Resource
         return _pan;
     }
 
-    override internal function load (completeCallback :Function, errorCallback :Function) :void
+    override protected function load (onLoaded :Function, onLoadErr :Function) :void
     {
-        _completeCallback = completeCallback;
-        _errorCallback = errorCallback;
+        _onLoaded = onLoaded;
+        _onLoadErr = onLoadErr;
 
         // parse loadParams
         _type = (_loadParams.hasOwnProperty("type") && _loadParams["type"] == "music" ?
@@ -108,7 +107,7 @@ public class SoundResource extends Resource
         }
     }
 
-    override internal function unload () :void
+    override protected function unload () :void
     {
         try {
             if (null != _sound) {
@@ -121,7 +120,7 @@ public class SoundResource extends Resource
 
     protected function onInit (...ignored) :void
     {
-        _completeCallback(this);
+        _onLoaded();
     }
 
     protected function onIOError (e :IOErrorEvent) :void
@@ -131,18 +130,17 @@ public class SoundResource extends Resource
 
     protected function onError (errString :String) :void
     {
-        _errorCallback(this, "SoundResourceLoader (" + _resourceName + "): " + errString);
+        _onLoadErr("SoundResourceLoader (" + _resourceName + "): " + errString);
     }
 
-    protected var _loadParams :Object;
     protected var _sound :Sound;
     protected var _type :int;
     protected var _priority :int;
     protected var _volume :Number;
     protected var _pan :Number;
 
-    protected var _completeCallback :Function;
-    protected var _errorCallback :Function;
+    protected var _onLoaded :Function;
+    protected var _onLoadErr :Function;
 }
 
 }

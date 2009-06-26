@@ -20,11 +20,16 @@
 
 package com.whirled.contrib.simplegame.resource {
 
+import com.whirled.contrib.simplegame.util.Loadable;
+
 public class Resource
 {
-    public function Resource (resourceName :String)
+    public function Resource (resourceName :String, loadParams :*)
     {
         _resourceName = resourceName;
+        _loadParams = loadParams;
+
+        _loadable = new LoadableResource(load, unload);
     }
 
     public function get resourceName () :String
@@ -32,17 +37,48 @@ public class Resource
         return _resourceName;
     }
 
-    internal function load (completeCallback :Function, errorCallback :Function) :void
+    protected function load (onLoaded :Function, onLoadErr :Function) :void
     {
         // subclasses implement
     }
 
-    internal function unload () :void
+    protected function unload () :void
     {
         // subclasses implement
+    }
+
+    internal function get loadable () :Loadable
+    {
+        return _loadable;
     }
 
     protected var _resourceName :String;
+    protected var _loadParams :*;
+    protected var _loadable :Loadable;
 }
 
+}
+
+import com.whirled.contrib.simplegame.util.Loadable;
+
+class LoadableResource extends Loadable
+{
+    public function LoadableResource (loadFn :Function, unloadFn :Function)
+    {
+        _loadFn = loadFn;
+        _unloadFn = unloadFn;
+    }
+
+    override protected function doLoad () :void
+    {
+        _loadFn(onLoaded, onLoadErr);
+    }
+
+    override protected function doUnload () :void
+    {
+        _unloadFn();
+    }
+
+    protected var _loadFn :Function;
+    protected var _unloadFn :Function;
 }

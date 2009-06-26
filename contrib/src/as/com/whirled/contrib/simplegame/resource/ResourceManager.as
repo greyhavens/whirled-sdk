@@ -79,17 +79,8 @@ public class ResourceManager
 
         rsrc = _resources.remove(name);
         if (null != rsrc) {
-            rsrc.unload();
+            rsrc.loadable.unload();
         }
-    }
-
-    public function unloadAll () :void
-    {
-        for each (var rsrc :Resource in _resources.values()) {
-            rsrc.unload();
-        }
-
-        _resources = new HashMap();
     }
 
     public function isResourceLoaded (name :String) :Boolean
@@ -100,6 +91,15 @@ public class ResourceManager
     public function get isLoading () :Boolean
     {
         return _loadingSets.length > 0;
+    }
+
+    protected function unloadAll () :void
+    {
+        for each (var rsrc :Resource in _resources.values()) {
+            rsrc.loadable.unload();
+        }
+
+        _resources = new HashMap();
     }
 
     internal function createResource (resourceType :String, resourceName :String, loadParams :*)
@@ -133,6 +133,13 @@ public class ResourceManager
         }
         for each (rsrc in resources) {
             _resources.put(rsrc.resourceName, rsrc);
+        }
+    }
+
+    internal function removeResources (resources :Array) :void
+    {
+        for each (var rsrc :Resource in resources) {
+            _resources.remove(rsrc.resourceName);
         }
     }
 

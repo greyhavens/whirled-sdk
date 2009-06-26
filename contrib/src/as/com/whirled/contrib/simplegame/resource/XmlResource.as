@@ -36,8 +36,7 @@ public class XmlResource extends Resource
     public function XmlResource (resourceName :String, loadParams :Object,
         objectGenerator :Function = null)
     {
-        super(resourceName);
-        _loadParams = loadParams;
+        super(resourceName, loadParams);
         _objectGenerator = objectGenerator;
     }
 
@@ -51,7 +50,7 @@ public class XmlResource extends Resource
         return _generatedObject;
     }
 
-    override internal function load (completeCallback :Function, errorCallback :Function) :void
+    override protected function load (completeCallback :Function, errorCallback :Function) :void
     {
         _completeCallback = completeCallback;
         _errorCallback = errorCallback;
@@ -65,6 +64,17 @@ public class XmlResource extends Resource
         } else {
             throw new Error("XmlResourceLoader: 'url', 'embeddedClass', or 'text' must be " +
                             "specified in loadParams");
+        }
+    }
+
+    override protected function unload () :void
+    {
+        if (null != _urlLoader) {
+            try {
+                _urlLoader.close();
+            } catch (e :Error) {
+                // swallow the exception
+            }
         }
     }
 
@@ -94,17 +104,6 @@ public class XmlResource extends Resource
         instantiateXml(text);
     }
 
-    override internal function unload () :void
-    {
-        if (null != _urlLoader) {
-            try {
-                _urlLoader.close();
-            } catch (e :Error) {
-                // swallow the exception
-            }
-        }
-    }
-
     protected function onComplete (...ignored) :void
     {
         instantiateXml(_urlLoader.data);
@@ -130,7 +129,7 @@ public class XmlResource extends Resource
             }
         }
 
-        _completeCallback(this);
+        _completeCallback();
     }
 
     protected function handleLoadError (e :ErrorEvent) :void
@@ -140,10 +139,9 @@ public class XmlResource extends Resource
 
     protected function onError (errText :String) :void
     {
-        _errorCallback(this, "XmlResourceLoader (" + _resourceName + "): " + errText);
+        _errorCallback("XmlResourceLoader (" + _resourceName + "): " + errText);
     }
 
-    protected var _loadParams :Object;
     protected var _urlLoader :URLLoader;
     protected var _xml :XML;
     protected var _generatedObject :*;

@@ -22,10 +22,9 @@ package com.whirled.contrib.simplegame.resource {
 
 import com.threerings.util.HashMap;
 import com.threerings.util.Log;
-import com.whirled.contrib.simplegame.util.Loadable;
+import com.whirled.contrib.simplegame.util.LoadableBatch;
 
-public class ResourceSet
-    implements Loadable
+public class ResourceSet extends LoadableBatch
 {
     public function ResourceSet (rm :ResourceManager)
     {
@@ -35,12 +34,7 @@ public class ResourceSet
     public function queueResourceLoad (resourceType :String, resourceName: String, loadParams :*)
         :void
     {
-        if (_loading || _loaded) {
-            throw new Error("Can't queue new resources while a ResourceSet is loading or loaded");
-        }
-
-        // check for existing resource with the same name
-        if (resourceExists(resourceName)) {
+        if (_resources.containsKey(resourceName)) {
             throw new Error("A resource named '" + resourceName + "' already exists");
         }
 
@@ -49,130 +43,44 @@ public class ResourceSet
             throw new Error("Unrecognized Resource type '" + resourceType + "'");
         }
 
+        addLoadable(rsrc.loadable);
         _resources.put(resourceName, rsrc);
     }
 
-    public function load (onLoaded :Function = null, onLoadErr :Function = null) :void
+    override protected function doLoad () :void
     {
-        if (_loaded && onLoaded != null) {
-            onLoaded();
-
-        } else if (!_loaded) {
-            if (onLoaded != null) {
-                _onLoadedCallbacks.push(onLoaded);
-            }
-            if (onLoadErr != null) {
-                _onLoadErrCallbacks.push(onLoadErr);
-            }
-
-            if (!_loading) {
-                loadNow();
-            }
-        }
+        _rm.setResourceSetLoading(this, true);
+        super.doLoad();
     }
 
-    public function unload () :void
+    override protected function onLoaded () :void
     {
         _rm.setResourceSetLoading(this, false);
-
-        for each (var rsrc :Resource in _resources.values()) {
-            rsrc.unload();
+        // add resources to the ResourceManager
+        try {
+            _rm.addResources(_resources.values());
+        } catch (e :Error) {
+            onLoadErr(e.message);
+            return;
         }
 
-        _loaded = false;
-        _loading = false;
-        _loadedResources = [];
-        _onLoadedCallbacks = [];
-        _onLoadErrCallbacks = [];
+        super.onLoaded();
     }
 
-    public function get isLoaded () :Boolean
+    override protected function onLoadCanceled () :void
     {
-        return _loaded;
+        _rm.setResourceSetLoading(this, false);
+        super.onLoadCanceled();
     }
 
-    protected function loadNow () :void
+    override protected function doUnload () :void
     {
-        _loading = true;
-        _rm.setResourceSetLoading(this, true);
-        for each (var rsrc :Resource in _resources.values()) {
-            rsrc.load(
-                function (loadedRsrc :Resource) :void {
-                    onSingleResourceLoaded(loadedRsrc);
-                },
-                function (errorRsrc :Resource, err :String) :void {
-                    onSingleResourceError(errorRsrc, err);
-                });
-
-            // don't continue if the load operation has been canceled/errored
-            if (!_loading) {
-                break;
-            }
-        }
-    }
-
-    protected function onSingleResourceLoaded (rsrc :Resource) :void
-    {
-        _loadedResources.push(rsrc);
-
-        // Did we finish loading?
-        if (_loadedResources.length == _resources.size()) {
-            _loading = false;
-            _rm.setResourceSetLoading(this, false);
-
-            // add resources to the ResourceManager
-            try {
-                _rm.addResources(_loadedResources);
-            } catch (e :Error) {
-                onError(e.message);
-                return;
-            }
-
-            var callbacks :Array = _onLoadedCallbacks;
-
-            _onLoadedCallbacks = [];
-            _onLoadErrCallbacks = [];
-            _loadedResources = [];
-            _loaded = true;
-            _loading = false;
-
-            for each (var callback :Function in callbacks) {
-                callback();
-            }
-        }
-    }
-
-    protected function onSingleResourceError (rsrc :Resource, err :String) :void
-    {
-        onError(err);
-    }
-
-    protected function onError (err :String) :void
-    {
-        var callbacks :Array = _onLoadErrCallbacks;
-
-        log.warning("Resource load error: " + err);
-        unload();
-
-        for each (var callback :Function in callbacks) {
-            callback(err);
-        }
-    }
-
-    protected function resourceExists (name :String) :Boolean
-    {
-        return (_resources.containsKey(name));
+        super.doUnload();
+        _rm.removeResources(_resources.values());
     }
 
     protected var _rm :ResourceManager;
-
-    protected var _resources :HashMap = new HashMap(); // Map<name, Resource>
-    protected var _loadedResources :Array = []; // Array<Resource>
-
-    protected var _onLoadedCallbacks :Array = [];
-    protected var _onLoadErrCallbacks :Array = [];
-    protected var _loading :Boolean;
-    protected var _loaded :Boolean;
+    protected var _resources :HashMap = new HashMap();
 
     protected static const log :Log = Log.getLog(ResourceSet);
 }
