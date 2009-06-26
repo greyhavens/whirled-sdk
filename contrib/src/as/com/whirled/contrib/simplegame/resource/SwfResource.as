@@ -159,6 +159,8 @@ public class SwfResource extends Resource
         _completeCallback = completeCallback;
         _errorCallback = errorCallback;
         // parse loadParams
+        var context :LoaderContext = new LoaderContext();
+
         if (_loadParams.hasOwnProperty("useSubDomain") && !Boolean(_loadParams["useSubDomain"])) {
             context.applicationDomain = ApplicationDomain.currentDomain;
         } else {
