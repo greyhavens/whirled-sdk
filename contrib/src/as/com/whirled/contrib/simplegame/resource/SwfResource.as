@@ -158,26 +158,30 @@ public class SwfResource extends Resource
     {
         _completeCallback = completeCallback;
         _errorCallback = errorCallback;
-
         // parse loadParams
+        try {
+            var context :LoaderContext = new LoaderContext();
+            context.allowLoadBytesCodeExecution = true;
 
-        var context :LoaderContext = new LoaderContext();
-        if (_loadParams.hasOwnProperty("useSubDomain") && !Boolean(_loadParams["useSubDomain"])) {
-            context.applicationDomain = ApplicationDomain.currentDomain;
-        } else {
-            // default to loading symbols into a subdomain
-            context.applicationDomain = new ApplicationDomain(ApplicationDomain.currentDomain);
-        }
+            if (_loadParams.hasOwnProperty("useSubDomain") && !Boolean(_loadParams["useSubDomain"])) {
+                context.applicationDomain = ApplicationDomain.currentDomain;
+            } else {
+                // default to loading symbols into a subdomain
+                context.applicationDomain = new ApplicationDomain(ApplicationDomain.currentDomain);
+            }
 
-        if (_loadParams.hasOwnProperty("url")) {
-            _loader.load(new URLRequest(_loadParams["url"]), context);
-        } else if (_loadParams.hasOwnProperty("bytes")) {
-            _loader.loadBytes(_loadParams["bytes"], context);
-        } else if (_loadParams.hasOwnProperty("embeddedClass")) {
-            _loader.loadBytes(ByteArray(new _loadParams["embeddedClass"]()), context);
-        } else {
-            throw new Error("SwfResourceLoader: one of 'url', 'bytes', or 'embeddedClass' must " +
-                            "be specified in loadParams");
+            if (_loadParams.hasOwnProperty("url")) {
+                _loader.load(new URLRequest(_loadParams["url"]), context);
+            } else if (_loadParams.hasOwnProperty("bytes")) {
+                _loader.loadBytes(_loadParams["bytes"], context);
+            } else if (_loadParams.hasOwnProperty("embeddedClass")) {
+                _loader.loadBytes(ByteArray(new _loadParams["embeddedClass"]()), context);
+            } else {
+                throw new Error("SwfResourceLoader: one of 'url', 'bytes', or 'embeddedClass' must " +
+                                "be specified in loadParams");
+            }
+        } catch (err :Error) {
+            trace("SwfResource.load", "_resourceName=" + _resourceName, "error=" + err);
         }
     }
 
