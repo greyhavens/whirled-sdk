@@ -24,6 +24,18 @@ import com.threerings.util.Log;
 
 public class LoadableBatch extends Loadable
 {
+    /**
+     * Creates a new LoadableBatch.
+     *
+     * @param loadInSequence if true, loads all Loadables one by one (useful if there are
+     * dependencies between the Loadables). Otherwise, loads all Loadables simultaneously.
+     * Defaults to false.
+     */
+    public function LoadableBatch (loadInSequence :Boolean = false)
+    {
+        _loadInSequence = loadInSequence;
+    }
+
     public function addLoadable (loadable :Loadable) :void
     {
         if (_loading || _loaded) {
@@ -37,8 +49,9 @@ public class LoadableBatch extends Loadable
     {
         for each (var loadable :Loadable in _allObjects) {
             loadOneObject(loadable);
-            // don't continue if the load operation has been canceled/errored
-            if (!_loading) {
+            // don't continue if the load operation has been canceled/errored,
+            // or if we're loading in sequence
+            if (!_loading || _loadInSequence) {
                 break;
             }
         }
@@ -68,9 +81,12 @@ public class LoadableBatch extends Loadable
     {
         _loadedObjects.push(loadable);
 
-        // Did we finish loading?
         if (_loadedObjects.length == _allObjects.length) {
+            // We finished loading
             onLoaded();
+        } else if (_loadInSequence) {
+            // We have more to load
+            loadOneObject(_allObjects[_loadedObjects.length]);
         }
     }
 
@@ -79,6 +95,7 @@ public class LoadableBatch extends Loadable
         onLoadErr(err);
     }
 
+    protected var _loadInSequence :Boolean;
     protected var _allObjects :Array = []; // Array<Loadable>
     protected var _loadedObjects :Array = []; // Array<Loadable>
 }

@@ -3,6 +3,8 @@
 
 package com.whirled.contrib.simplegame.util {
 
+import com.threerings.util.Log;
+
 public class Loadable
 {
     public function load (onLoaded :Function = null, onLoadErr :Function = null) :void
@@ -60,6 +62,8 @@ public class Loadable
 
     protected function onLoadErr (err :String) :void
     {
+        log.error("load error: " + err);
+
         var callbacks :Array = _onLoadErrCallbacks;
         unload();
         for each (var callback :Function in callbacks) {
@@ -96,6 +100,8 @@ public class Loadable
     protected var _onLoadErrCallbacks :Array = [];
     protected var _loading :Boolean;
     protected var _loaded :Boolean;
+
+    protected static const log :Log = Log.getLog(Loadable);
 }
 
 }

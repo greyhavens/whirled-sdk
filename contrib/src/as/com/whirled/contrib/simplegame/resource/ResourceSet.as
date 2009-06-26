@@ -26,8 +26,9 @@ import com.whirled.contrib.simplegame.util.LoadableBatch;
 
 public class ResourceSet extends LoadableBatch
 {
-    public function ResourceSet (rm :ResourceManager)
+    public function ResourceSet (rm :ResourceManager, loadInSequence :Boolean = false)
     {
+        super(loadInSequence);
         _rm = rm;
     }
 
@@ -56,15 +57,22 @@ public class ResourceSet extends LoadableBatch
     override protected function onLoaded () :void
     {
         _rm.setResourceSetLoading(this, false);
+        if(addLoadedResources()) {
+            super.onLoaded();
+        }
+    }
+
+    protected function addLoadedResources () :Boolean
+    {
         // add resources to the ResourceManager
         try {
             _rm.addResources(_resources.values());
         } catch (e :Error) {
             onLoadErr(e.message);
-            return;
+            return false;
         }
 
-        super.onLoaded();
+        return true;
     }
 
     override protected function onLoadCanceled () :void

@@ -73,16 +73,6 @@ public class ResourceManager
         return (_resources.get(resourceName) as Resource);
     }
 
-    public function unload (name :String) :void
-    {
-        var rsrc :Resource;
-
-        rsrc = _resources.remove(name);
-        if (null != rsrc) {
-            rsrc.loadable.unload();
-        }
-    }
-
     public function isResourceLoaded (name :String) :Boolean
     {
         return (null != getResource(name));
