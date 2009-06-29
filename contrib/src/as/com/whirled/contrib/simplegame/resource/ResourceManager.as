@@ -68,6 +68,17 @@ public class ResourceManager
         _pendingSet = null;
     }
 
+    /**
+     * @deprecated
+     */
+    public function unload (resourceName :String) :void
+    {
+        var rsrc :Resource = (_resources.remove(resourceName));
+        if (rsrc != null) {
+            rsrc.loadable.unload();
+        }
+    }
+
     public function getResource (resourceName :String) :Resource
     {
         return (_resources.get(resourceName) as Resource);
