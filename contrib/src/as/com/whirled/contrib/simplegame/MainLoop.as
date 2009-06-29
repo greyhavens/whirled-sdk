@@ -120,6 +120,9 @@ public class MainLoop extends EventDispatcher
         _keyDispatcher.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 
         _lastTime = this.elapsedSeconds;
+
+        // Handle initial mode transitions made since MainLoop creation
+        handleModeTransitions();
     }
 
     /**
