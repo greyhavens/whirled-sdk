@@ -37,9 +37,9 @@ import flash.utils.Dictionary;
 
 public class SwfResource extends Resource
 {
-    public static function instantiateMovieClip (
-        rsrcs :ResourceManager, resourceName :String, className :String,
-        disableMouseInteraction :Boolean = false, fromCache :Boolean = false) :MovieClip
+    public static function instantiateMovieClip (rsrcs :ResourceManager, resourceName :String,
+        className :String, disableMouseInteraction :Boolean = false, fromCache :Boolean = false)
+        :MovieClip
     {
         var theClass :Class = getClass(rsrcs, resourceName, className);
         if (theClass != null) {
@@ -158,9 +158,16 @@ public class SwfResource extends Resource
     {
         _completeCallback = completeCallback;
         _errorCallback = errorCallback;
-        // parse loadParams
+
         var context :LoaderContext = new LoaderContext();
 
+        // allowLoadBytesCodeExecution is an AIR-only LoaderContext property that must be true
+        // to avoid 'SecurityError: Error #3015' when loading swfs with executable code
+        try {
+            Object(context)["allowLoadBytesCodeExecution"] = true;
+        } catch (e :Error) {}
+
+        // parse loadParams
         if (_loadParams.hasOwnProperty("useSubDomain") && !Boolean(_loadParams["useSubDomain"])) {
             context.applicationDomain = ApplicationDomain.currentDomain;
         } else {
