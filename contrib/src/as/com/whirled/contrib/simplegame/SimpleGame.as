@@ -28,8 +28,12 @@ import flash.events.IEventDispatcher;
 
 public class SimpleGame
 {
-    public function SimpleGame (config :Config)
+    public function SimpleGame (config :Config = null)
     {
+        if (config == null) {
+            config = new Config();
+        }
+
         _ctx.mainLoop = new MainLoop(_ctx);
         _ctx.audio = new AudioManager(_ctx, config.maxAudioChannels);
         _ctx.mainLoop.addUpdatable(_ctx.audio);
