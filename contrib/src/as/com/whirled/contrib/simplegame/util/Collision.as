@@ -62,10 +62,14 @@ public class Collision
     /**
      * Returns a value in [0, 1] that indicates the distance that circle A's path
      * must be scaled to avoid intersecting with circle B, or -1 if no interesection
-     * occurs.
+     * occurs. The two circles must not already be intersecting.
      *
-     * "direction" must be a unit-length vector. The two circles must not already be
-     * intersecting.
+     * @param cA the moving circle's center point
+     * @param rA the moving circle's radius
+     * @param directionA the moving circle's movement vector (must be unit length)
+     * @param distanceA the distance the moving circle is traveling
+     * @param cB the static circle's center point
+     * @param rB the static circle's radius
      */
     public static function movingCircleIntersectsStaticCircle (
         cA :Vector2,
@@ -113,10 +117,14 @@ public class Collision
     /**
      * Returns a value in [0, 1] that indicates the distance that the two circles'
      * paths must be scaled to avoid intersecting each other, or -1 if no interesection
-     * will occurs.
+     * will occurs. The two circles must not already be intersecting.
      *
-     * dA and dB *don't* need to be unit length vectors. The two circles must not already be
-     * intersecting.
+     * @param cA circle A's center point
+     * @param rA circle A's radius
+     * @param dA circle A's movement offset
+     * @param cB circle B's center point
+     * @param rB circle B's radius
+     * @param dB circle B's movement offset
      */
     public static function movingCirclesIntersect (
         cA :Vector2,
@@ -127,7 +135,7 @@ public class Collision
         dB :Vector2) :Number
     {
         var direction :Vector2 = dA.subtract(dB);
-        var distance :Number = dA.normalizeLocalAndGetLength();
+        var distance :Number = direction.normalizeLocalAndGetLength();
 
         return movingCircleIntersectsStaticCircle(cA, rA, direction, distance, cB, rB);
     }
