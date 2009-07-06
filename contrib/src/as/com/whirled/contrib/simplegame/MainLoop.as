@@ -397,6 +397,7 @@ public class MainLoop extends EventDispatcher
             _hostSprite.removeEventListener(Event.ENTER_FRAME, update);
             _keyDispatcher.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
             _keyDispatcher.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+            clearModeStackNow();
             _running = false;
             dispatchEvent(new Event(HAS_STOPPED));
 
@@ -424,10 +425,18 @@ public class MainLoop extends EventDispatcher
         }
     }
 
+    protected function clearModeStackNow () :void
+    {
+        _pendingModeTransitionQueue = [];
+        if (_modeStack.length > 0) {
+            popAllModes();
+            handleModeTransitions();
+        }
+    }
+
     protected function shutdownNow () :void
     {
-        popAllModes();
-        handleModeTransitions();
+        clearModeStackNow();
 
         _ctx = null;
         _hostSprite = null;
