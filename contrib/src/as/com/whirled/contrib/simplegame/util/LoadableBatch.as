@@ -47,6 +47,12 @@ public class LoadableBatch extends Loadable
 
     override protected function doLoad () :void
     {
+        // If we don't have any objects to load, we're done!
+        if (_allObjects.length == 0) {
+            onLoaded();
+            return;
+        }
+
         for each (var loadable :Loadable in _allObjects) {
             loadOneObject(loadable);
             // don't continue if the load operation has been canceled/errored,
