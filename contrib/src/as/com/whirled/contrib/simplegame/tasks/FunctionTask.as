@@ -29,8 +29,8 @@ public class FunctionTask
 {
     public function FunctionTask (fn :Function)
     {
-        if (null == fn || fn.length > 1) {
-            throw new ArgumentError("fn must be non-null, and must accept either 0 or 1 arguments");
+        if (null == fn) {
+            throw new ArgumentError("fn must be non-null");
         }
 
         _fn = fn;
@@ -38,12 +38,7 @@ public class FunctionTask
 
     public function update (dt :Number, obj :SimObject) :Boolean
     {
-        if (_fn.length == 0) {
-            _fn();
-        } else {
-            _fn(obj);
-        }
-
+        _fn();
         return true;
     }
 
