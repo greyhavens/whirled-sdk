@@ -373,11 +373,18 @@ public class MainLoop extends EventDispatcher
 
     protected function update (e :Event) :void
     {
-        handleModeTransitions();
-
         // how much time has elapsed since last frame?
         var newTime :Number = this.elapsedSeconds;
         var dt :Number = newTime - _lastTime;
+
+        // If we have pending mode transitions, handle them, and discount
+        // the time that it took to perform this processing, so that changing
+        // modes doesn't result in stuttery behavior
+        if (_pendingModeTransitionQueue.length > 0) {
+            handleModeTransitions();
+            newTime = this.elapsedSeconds;
+            dt = 1 / 30; // Assume 30 fps is our target. Should this be configurable?
+        }
 
         _fps = 1 / dt;
 
