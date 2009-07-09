@@ -232,6 +232,7 @@
 
     <!-- start the server which will start up the clients -->
     <java classname="com.whirled.server.WhirledTestServer" fork="true">
+      <sysproperty key="java.awt.headless" value="true"/>
       <sysproperty key="whirled.root" value="${build.root}"/>
       <sysproperty key="players" value="${players}"/>
       <sysproperty key="remotePlayers" value="${remotePlayers}"/>
