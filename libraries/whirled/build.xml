@@ -49,6 +49,9 @@
        <include name="**/*"/>
       </fileset>
     </copy>
+    <!-- defines our various presents ant tasks -->
+    <taskdef resource="com/threerings/presents/tools.properties"
+             classpath="${deploy.dir}/lib/narya-tools.jar"/>
   </target>
 
   <!-- generates fields for persistent record classes -->
@@ -69,8 +72,6 @@
 
   <!-- generates additional methods for distributed object classes -->
   <target name="gendobj" depends="prepare-java"> 
-    <taskdef name="dobj" classpathref="classpath"
-             classname="com.threerings.presents.tools.GenDObjectTask"/>
     <!-- make sure the dobject class files are all compiled -->
     <javac srcdir="src/java" destdir="${classes.dir}" includeAntRuntime="false" debug="on"
            optimize="${build.optimize}" deprecation="on" target="1.5">
@@ -78,38 +79,34 @@
       <include name="**/*Object.java"/>
     </javac>
     <!-- now generate the associated files -->
-    <dobj classpathref="classpath">
+    <gendobj classpathref="classpath">
       <fileset dir="src/java" includes="**/*Object.java"/>
-    </dobj>
+    </gendobj>
   </target>
 
   <!-- generates marshaller and dispatcher classes for all invocation service declarations -->
   <target name="genservice" depends="prepare-java">
-    <taskdef name="service" classpathref="classpath"
-             classname="com.threerings.presents.tools.GenServiceTask"/>
     <!-- make sure the service class files are all compiled -->
     <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" deprecation="on" target="1.5">
       <classpath refid="classpath"/>
       <include name="**/*Service.java"/>
     </javac>
     <!-- now generate the associated files -->
-    <service header="lib/SOURCE_HEADER" asroot="${asrc.dir}" classpathref="classpath">
+    <genservice header="lib/SOURCE_HEADER" asroot="${asrc.dir}" classpathref="classpath">
       <fileset dir="${src.dir}">
         <include name="**/*Service.java"/>
       </fileset>
-    </service>
+    </genservice>
   </target>
 
   <!-- generates ActionScript versions of our Streamable classes -->
   <target name="genascript" depends="dist">
-    <taskdef name="genscript" classpathref="classpath"
-             classname="com.threerings.presents.tools.GenActionScriptTask"/>
     <!-- now generate the associated files -->
-    <genscript header="lib/SOURCE_HEADER" asroot="${asrc.dir}">
+    <genascript header="lib/SOURCE_HEADER" asroot="${asrc.dir}">
       <fileset dir="${src.dir}">
         <include name="**/whirled/data/*.java"/>
       </fileset>
-    </genscript>
+    </genascript>
   </target>
 
   <!-- build the java class files -->

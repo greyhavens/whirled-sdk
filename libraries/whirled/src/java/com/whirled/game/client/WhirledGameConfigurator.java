@@ -19,8 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
-
+import com.samskivert.io.StreamUtil;
 import com.samskivert.swing.HGroupLayout;
 import com.samskivert.swing.SimpleSlider;
 
@@ -242,9 +241,9 @@ public class WhirledGameConfigurator extends SwingGameConfigurator
 
                     try {
                         if (_param.binary) {
-                            _data = IOUtils.toByteArray(new FileInputStream(file));
+                            _data = StreamUtil.toByteArray(new FileInputStream(file));
                         } else {
-                            _data = IOUtils.toString(new FileReader(file));
+                            _data = StreamUtil.toString(new FileReader(file));
                         }
                         _show.setText(file.getName());
 
