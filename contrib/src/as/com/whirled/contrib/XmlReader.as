@@ -17,8 +17,9 @@ public class XmlReader
             if (undefined !== defaultValue) {
                 return defaultValue;
             } else {
-                throw new XmlReadError("In node '" + String(xml.localName()) +
-                    "': error accessing child '" + name + "': child does not exist");
+                throw new XmlReadError(
+                    "error accessing child '" + name + "': child does not exist",
+                    xml);
             }
         }
 
@@ -87,8 +88,9 @@ public class XmlReader
             if (undefined !== defaultValue) {
                 return defaultValue;
             } else {
-                throw new XmlReadError("In node '" + String(xml.localName()) +
-                    "': error reading attribute '" + name + "': attribute does not exist");
+                throw new XmlReadError(
+                    "error reading attribute '" + name + "': attribute does not exist",
+                    xml);
             }
         }
 
@@ -96,8 +98,7 @@ public class XmlReader
         try {
             value = (null != parseFunction ? parseFunction(attr) : attr);
         } catch (e :ArgumentError) {
-            throw new XmlReadError("In node '" + String(xml.localName()) +
-                "': error reading attribute '" + name + "': " + e.message);
+            throw new XmlReadError("error reading attribute '" + name + "': " + e.message, xml);
         }
 
         return value;
