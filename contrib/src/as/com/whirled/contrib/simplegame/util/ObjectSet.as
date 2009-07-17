@@ -20,79 +20,63 @@
 
 package com.whirled.contrib.simplegame.util {
 
+import com.threerings.util.ObjectMap;
 import com.threerings.util.Set;
-
-import flash.utils.Dictionary;
 
 public class ObjectSet
     implements Set
 {
+    /** @inheritDoc */
     public function add (o :Object) :Boolean
     {
-        if (contains(o)) {
-            return false;
-        } else {
-            _dict[o] = null;
-            ++_size;
-            return true;
-        }
+        return (_objectMap.put(o, null) === undefined);
     }
 
+    /** @inheritDoc */
     public function remove (o :Object) :Boolean
     {
-        if (contains(o)) {
-            delete _dict[o];
-            --_size;
-            return true;
-        } else {
-            return false;
-        }
+        return (_objectMap.remove(o) !== undefined);
     }
 
+    /** @inheritDoc */
     public function clear () :void
     {
-        for (var key :* in _dict) {
-            delete _dict[key];
-        }
-
-        _size = 0;
+        _objectMap.clear();
     }
 
+    /** @inheritDoc */
     public function contains (o :Object) :Boolean
     {
-        return (undefined !== _dict[o]);
+        return _objectMap.containsKey(o);
     }
 
+    /** @inheritDoc */
     public function size () :int
     {
-        return _size;
+        return _objectMap.size();
     }
 
+    /** @inheritDoc */
     public function isEmpty () :Boolean
     {
-        return (0 == _size);
+        return _objectMap.isEmpty();
     }
 
+    /** @inheritDoc */
     public function toArray () :Array
     {
-        var arr :Array = new Array();
-
-        for (var key :* in _dict) {
-            arr.push(key);
-        }
-
-        return arr;
+        return _objectMap.keys();
     }
 
+    /** @inheritDoc */
     public function forEach (callback :Function) :void
     {
-        for (var key :* in _dict) {
+        _objectMap.forEach(function (key :Object, ...ignored) :void {
             callback(key);
-        }
+        });
     }
 
-    protected var _dict :Dictionary = new Dictionary();
-    protected var _size :int = 0;
+    protected var _objectMap :ObjectMap = new ObjectMap();
 }
 
 }
