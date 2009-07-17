@@ -69,9 +69,9 @@
       <arg value="-library-path+=${build.root}/dist/lib/whirledlib.swc"/>
       <arg value="-library-path+=${app.library-dir}"/>
       <arg value="${flex.debug-arg}"/>
-      <arg value="-compiler.source-path=${app.source-dir}"/>
+      <arg value="-compiler.source-path+=${app.source-dir}"/>
       <arg value="-use-network=${flex.use-network}"/>
-      <arg value="-compiler.source-path=${build.root}/contrib/src/as"/>
+      <arg value="-compiler.source-path+=${build.root}/contrib/src/as"/>
       <arg value="${app.source-extras.arg}"/>
       <arg value="${app.lib-extras.arg}"/>
       <arg value="-file-specs"/>
@@ -96,9 +96,9 @@
       <arg value="-library-path+=${build.root}/dist/lib/whirledlib.swc"/>
       <arg value="-library-path+=${app.library-dir}"/>
       <arg value="${flex.debug-arg}"/>
-      <arg value="-compiler.source-path=${app.source-dir}"/>
+      <arg value="-compiler.source-path+=${app.source-dir}"/>
       <arg value="-use-network=${flex.use-network}"/>
-      <arg value="-compiler.source-path=${build.root}/contrib/src/as"/>
+      <arg value="-compiler.source-path+=${build.root}/contrib/src/as"/>
       <arg value="${app.source-extras.arg}"/>
       <arg value="${app.lib-extras.arg}"/>
       <arg value="-file-specs"/>
