@@ -20,7 +20,6 @@
 
 package com.whirled.contrib.simplegame.tasks {
 
-import com.threerings.util.ClassUtil;
 import com.whirled.contrib.simplegame.*;
 import com.whirled.contrib.simplegame.components.*;
 import com.whirled.contrib.simplegame.objects.*;
@@ -29,7 +28,8 @@ import flash.display.MovieClip;
 
 import mx.effects.easing.Linear;
 
-public class PlayFramesTask implements ObjectTask
+public class PlayFramesTask
+    implements ObjectTask
 {
     public function PlayFramesTask (startFrame :int, endFrame :int, totalTime :Number,
         movie :MovieClip = null)
