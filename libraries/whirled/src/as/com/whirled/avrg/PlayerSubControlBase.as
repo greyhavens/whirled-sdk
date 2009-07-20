@@ -86,20 +86,6 @@ public class PlayerSubControlBase extends TargetedSubControl
     }
 
     /**
-     * Returns information on this player's friends. An array will be returned containing objects
-     * which contain the following data:
-     * <pre>
-     * { friendId :int // the player id of the friend
-     *   name :String  // the friend's Whirled name
-     *   facebookId :String } // the friend's Facebook id or null if this is not known
-     * </pre>
-     */
-    public function getFriendInfo () :Array
-    {
-        return callHostCode("player_getFriendInfo_v1") as Array;
-    }
-
-    /**
      * Get the party id of this player.
      */
     public function getPartyId () :int

@@ -46,6 +46,16 @@ public class PlayerSubControlClient extends PlayerSubControlBase
     }
 
     /**
+     * Returns the Facebook id of this player or null. The Facebook id is only available to games
+     * that have specified a Facebook app configuration for their game and only when the player is
+     * playing the game through the Facebook app.
+     */
+    public function getFacebookId () :String
+    {
+        return callHostCode("getFacebookId_v1");
+    }
+
+    /**
      * Returns the master item id of the avatar being worn by the player, or zero for
      * guests (ghosts) or people wearing the default tofu. The master id will be the
      * same for all purchased copies of a particular catalog avatar and will be a
