@@ -46,13 +46,18 @@ public class PlayerSubControlClient extends PlayerSubControlBase
     }
 
     /**
-     * Returns the Facebook id of this player or null. The Facebook id is only available to games
-     * that have specified a Facebook app configuration for their game and only when the player is
-     * playing the game through the Facebook app.
+     * Returns the player's Facebook info in a two element array. The first element is the player's
+     * Facebook id the second is their current Facebook session token (or the empty string if we
+     * have no session token information for the player). The return value will be null if the
+     * player is not currently playing the game through the game's Facebook app.
+     *
+     * <p> The Facebook id is only available to games that have specified a Facebook app
+     * configuration for their game and only when the player is playing the game through the
+     * Facebook app. </p>
      */
-    public function getFacebookId () :String
+    public function getFacebookInfo () :Array
     {
-        return callHostCode("getFacebookId_v1");
+        return callHostCode("getFacebookInfo_v1");
     }
 
     /**
