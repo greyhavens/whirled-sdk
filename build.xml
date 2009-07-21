@@ -11,7 +11,7 @@
 
   <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"   value="libraries"/>
-  <property name="projects"       value="samskivert,depot,thane,narya,nenya,vilya,whirled"/>
+  <property name="projects" value="samskivert,depot,flash-utils,thane,narya,nenya,vilya,whirled"/>
   <import file="build/etc/build-support.xml"/>
 
   <!-- include bits to do the necessary Flex SDK path jockeying -->
@@ -104,6 +104,7 @@
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
       <arg value="-compiler.optimize"/>
+      <arg value="-library-path+=${deploy.dir}/lib/ooolib.swc"/>
       <arg value="-library-path+=${deploy.dir}/lib/naryalib.swc"/>
       <arg value="-library-path+=${deploy.dir}/lib/player-env.swc"/>
       <arg value="-library-path+=${deploy.dir}/lib/nenyalib.swc"/>
@@ -132,6 +133,7 @@
       <arg value="${deploy.dir}/lib/thane.swc"/>
       <arg value="-compiler.library-path"/>
       <arg value="${deploy.dir}/lib/thane-env.swc"/>
+      <arg value="${deploy.dir}/lib/ooolib.swc"/>
       <arg value="${deploy.dir}/lib/naryalib.swc"/>
       <arg value="${deploy.dir}/lib/nenyalib.swc"/>
       <arg value="${deploy.dir}/lib/vilyalib.swc"/>
@@ -191,6 +193,7 @@
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
+      <arg line="-library-path ${deploy.dir}/lib/ooolib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/player-env.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
@@ -214,6 +217,7 @@
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
       <arg line="-library-path ${flex.path}/frameworks/libs/air"/>
+      <arg line="-library-path ${deploy.dir}/lib/ooolib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/player-env.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>

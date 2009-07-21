@@ -23,7 +23,7 @@ package com.whirled.contrib.platformer.client {
 import flash.display.StageQuality;
 import flash.net.SharedObject;
 
-import com.threerings.flash.MathUtil;
+import com.threerings.util.MathUtil;
 import com.threerings.util.Config;
 
 import com.whirled.contrib.platformer.client.ClientPlatformerContext;

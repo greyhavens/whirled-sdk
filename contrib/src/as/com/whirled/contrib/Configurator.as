@@ -35,7 +35,7 @@ import flash.text.TextFormat;
 
 import flash.utils.setTimeout;
 
-import com.threerings.flash.SimpleTextButton;
+import com.threerings.ui.SimpleTextButton;
 import com.threerings.util.Log;
 
 import com.whirled.EntityControl;

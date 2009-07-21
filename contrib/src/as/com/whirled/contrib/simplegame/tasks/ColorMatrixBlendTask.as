@@ -20,7 +20,7 @@
 
 package com.whirled.contrib.simplegame.tasks {
 
-import com.threerings.flash.FilterUtil;
+import com.threerings.display.FilterUtil;
 import com.whirled.contrib.ColorMatrix;
 import com.whirled.contrib.simplegame.ObjectMessage;
 import com.whirled.contrib.simplegame.ObjectTask;

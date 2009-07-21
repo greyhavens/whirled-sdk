@@ -1,6 +1,6 @@
 package com.whirled.contrib.simplegame.objects {
 
-import com.threerings.flash.MathUtil;
+import com.threerings.util.MathUtil;
 import com.whirled.contrib.simplegame.SimObject;
 
 import flash.display.DisplayObject;

@@ -24,7 +24,7 @@ import flash.events.EventDispatcher;
 import flash.events.KeyboardEvent;
 import flash.utils.getTimer;
 
-import com.threerings.util.KeyboardCodes;
+import com.threerings.ui.KeyboardCodes;
 
 public class KeyboardController
 {

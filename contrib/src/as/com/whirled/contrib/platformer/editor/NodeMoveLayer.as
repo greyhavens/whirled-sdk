@@ -28,7 +28,7 @@ import flash.geom.Matrix;
 
 import com.threerings.util.Log;
 
-import com.threerings.flash.MathUtil;
+import com.threerings.util.MathUtil;
 
 import com.whirled.contrib.platformer.display.Layer;
 import com.whirled.contrib.platformer.util.Metrics;

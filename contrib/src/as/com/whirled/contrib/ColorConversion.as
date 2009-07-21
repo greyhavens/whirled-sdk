@@ -23,7 +23,7 @@ package com.whirled.contrib {
 import flash.display.MovieClip;
 import flash.geom.ColorTransform;
 
-import com.threerings.flash.MathUtil;
+import com.threerings.util.MathUtil;
 
 /**
  * Various tools for converting between different color models and applying 

@@ -31,10 +31,10 @@ import flash.geom.Point;
 
 import mx.core.UIComponent;
 
-import com.threerings.util.KeyboardCodes;
+import com.threerings.ui.KeyboardCodes;
 import com.threerings.util.Log;
 
-import com.threerings.flash.MathUtil;
+import com.threerings.util.MathUtil;
 
 import com.whirled.contrib.platformer.board.Board;
 import com.whirled.contrib.platformer.display.Layer;

@@ -42,7 +42,7 @@ import mx.collections.IHierarchicalData;
 import mx.events.FlexEvent;
 
 import com.threerings.util.ClassUtil;
-import com.threerings.util.KeyboardCodes;
+import com.threerings.ui.KeyboardCodes;
 
 import com.whirled.contrib.platformer.board.Board;
 

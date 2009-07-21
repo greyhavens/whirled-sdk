@@ -42,7 +42,7 @@ import com.whirled.contrib.platformer.piece.Spawner;
 
 import com.threerings.util.ClassUtil;
 import com.threerings.util.HashMap;
-import com.threerings.util.KeyboardCodes;
+import com.threerings.ui.KeyboardCodes;
 
 public class GameController
 {
