@@ -63,6 +63,7 @@
       <arg value="-library-path+=${build.root}/dist/lib/flexlib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/tweener.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/player-env.swc"/>
+      <arg value="-library-path+=${build.root}/dist/lib/ooolib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/naryalib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/nenyalib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/vilyalib.swc"/>
@@ -90,6 +91,7 @@
       <arg value="-external-library-path"/>
       <arg value="${build.root}/dist/lib/thane.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/player-env.swc"/>
+      <arg value="-library-path+=${build.root}/dist/lib/ooolib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/naryalib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/nenyalib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/vilyalib.swc"/>
