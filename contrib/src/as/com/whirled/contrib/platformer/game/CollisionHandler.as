@@ -22,7 +22,7 @@ package com.whirled.contrib.platformer.game {
 
 import com.whirled.contrib.platformer.board.ColliderDetails;
 
-import com.threerings.util.ClassUtil;
+import com.threerings.util.env.Environment;
 
 public class CollisionHandler
 {
@@ -44,7 +44,7 @@ public class CollisionHandler
      */
     public function handlesSubclass (ch :CollisionHandler) :Boolean
     {
-        return ClassUtil.isAssignableAs(ch._handledClass, _handledClass);
+        return Environment.isAssignableAs(ch._handledClass, _handledClass);
     }
 
     public function collide (source :Object, target :Object, cd :ColliderDetails) :void
