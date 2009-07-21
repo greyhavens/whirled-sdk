@@ -12,7 +12,7 @@ import mx.containers.Canvas;
 import com.threerings.util.Name;
 import com.threerings.util.Log;
 
-import com.threerings.flash.MediaContainer;
+import com.threerings.media.MediaContainer;
 
 import com.threerings.flex.CommandButton;
 import com.threerings.flex.FlexUtil;

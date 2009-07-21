@@ -21,7 +21,7 @@ import mx.skins.ProgrammaticSkin;
 
 import com.threerings.crowd.chat.client.ChatCantStealFocus;
 
-import com.threerings.flash.MediaContainer;
+import com.threerings.media.MediaContainer;
 
 public class GameBox extends VBox
     implements ChatCantStealFocus
