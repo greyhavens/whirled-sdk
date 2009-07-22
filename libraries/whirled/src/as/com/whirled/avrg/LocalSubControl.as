@@ -70,6 +70,21 @@ public class LocalSubControl extends AbstractSubControl
 //    // event: ROOM_AREA_CHANGED
 
     /**
+     * Hide or show the chrome, the UI for Whirled itself. There is no return value, there is
+     * no way to check if it's showing or not. Why would you want that? Just set it to what
+     * you need and it will no-op if it's already in that mode.
+     *
+     * TODO: use at your own risk. At present we're not sure how much of the chrome we'll allow
+     * you to hide, so while it hides it all now, it's very possible that it will just minimize
+     * things in the future. We may also remove this. So, go ahead and use it, but it
+     * might not work the same way forever.
+     */
+    public function setShowChrome (show :Boolean) :void
+    {
+        callHostCode("setShowChrome_v1", show);
+    }
+
+    /**
      * Get the room bounds in "room pixels".
      * This will be a 3-element array corresponding to [ width, height, depth ].
      * These values are *not* real pixels. Rather, if an avatar is 100 pixels wide
