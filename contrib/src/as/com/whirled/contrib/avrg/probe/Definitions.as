@@ -318,6 +318,8 @@ public class Definitions
         return [
             new FunctionSpec("feedback", local.feedback, [
                 new Parameter("msg", String)]),
+            new FunctionSpec("setShowChrome", local.setShowChrome, [
+                new Parameter("show", Boolean)]),
             new FunctionSpec("getPaintableArea", local.getPaintableArea, [
                 new Parameter("full", Boolean, Parameter.OPTIONAL)]),
             new FunctionSpec("paintableToRoom", local.paintableToRoom, [
