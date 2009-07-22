@@ -164,7 +164,7 @@ public class FunctionPanel extends Sprite
                 output("Calling " + _selected.spec.name + " with arguments " + 
                     ClientPanel.toString(params));
             }
-            var value :Object = _selected.spec.func.apply(null, params);
+            var value :* = _selected.spec.func.apply(null, params);
             output("Result: " + ClientPanel.toString(value));
 
         } catch (e :Error) {

@@ -42,10 +42,10 @@ import com.threerings.util.ClassUtil;
 public class ClientPanel extends Sprite
 {
     /**
-     * Converts an object to a string, interpreting fields directly if it is a simple object.
+     * Converts a reference to a string, interpreting fields directly if it is a simple object.
      * Also has a special case for <code>AVRGameAvatar</code> because it has no toString method.
      */
-    public static function toString (obj :Object) :String
+    public static function toString (obj :*) :String
     {
         if (ClassUtil.tinyClassName(obj) == 'AVRGameAvatar') {
             return StringUtil.simpleToString(obj);

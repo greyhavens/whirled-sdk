@@ -142,7 +142,7 @@ public class ServerModule
                 trace("Calling " + fnSpec.name + " (" + evt.value.name + ") with arguments " + 
                       StringUtil.toString(args));
                 try {
-                    var value :Object = fnSpec.func.apply(null, args);
+                    var value :* = fnSpec.func.apply(null, args);
                     trace("Result: " + StringUtil.toString(value));
                     result.status = "succeeded";
                     result.result = value;
