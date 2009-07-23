@@ -5,6 +5,8 @@
 
 package com.whirled.avrg {
 
+import flash.display.DisplayObject;
+
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
@@ -82,6 +84,24 @@ public class LocalSubControl extends AbstractSubControl
     public function setShowChrome (show :Boolean) :void
     {
         callHostCode("setShowChrome_v1", show);
+    }
+
+//    /**
+//     * Set the display object that will be used as the overlay for rendering things outside
+//     * the room view.
+//     */
+//    public function setOverlay (overlay :DisplayObject) :void
+//    {
+//        callHostCode("setOverlay_v1", overlay);
+//    }
+
+    /**
+     * Set the boundaries of the room view in paintable coordinates, or null to have the room
+     * try to use the full area (default).
+     */
+    public function setRoomViewBounds (roomBounds :Rectangle) :void
+    {
+        callHostCode("setRoomViewBounds_v1", roomBounds);
     }
 
     /**
