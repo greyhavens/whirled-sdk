@@ -42,6 +42,9 @@ public class RectangleParameter extends Parameter
     // from Parameter
     override public function parse (input :String) :Object
     {
+        if (input == "null") {
+            return null;
+        }
         var params :Array = new ArrayParameter("", Number).parse(input) as Array;
         if (params.length != 4) {
             throw new Error("Expected four numbers separated by commas");
