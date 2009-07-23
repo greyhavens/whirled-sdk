@@ -16,28 +16,26 @@
 //
 // Copyright 2008 Three Rings Design
 //
-// $Id$
+// $Id: PointParameter.as 6232 2008-10-21 15:10:33Z jamie $
 
 package com.whirled.contrib.avrg.probe {
 
-import flash.geom.Point;
-import com.threerings.util.StringUtil;
-import com.threerings.util.Util;
+import flash.geom.Rectangle;
 
 /**
- * Parameter type to be used when a <code>Point</code> is expected. Parsing is very simple and uses
- * the text before the first comma as the x value and after the comma as the y value.
+ * Parameter type to be used when a <code>Rectangle</code> is expected.
+ * Paramters are parsed as comma-separated.
  */
-public class PointParameter extends Parameter
+public class RectangleParameter extends Parameter
 {
     /**
-     * Creates a new point parameter.
+     * Creates a new rectangle parameter.
      * @param name the name of the parameter
      * @param flash optional flags to pass to the superclass
      */
-    public function PointParameter (name :String, flags :uint = 0)
+    public function RectangleParameter (name :String, flags :uint = 0)
     {
-        super(name, Point, flags);
+        super(name, Rectangle, flags);
     }
 
     /** @inheritDoc */
@@ -45,10 +43,10 @@ public class PointParameter extends Parameter
     override public function parse (input :String) :Object
     {
         var params :Array = new ArrayParameter("", Number).parse(input) as Array;
-        if (params.length != 2) {
-            throw new Error("Expected two numbers separated by a comma");
+        if (params.length != 4) {
+            throw new Error("Expected four numbers separated by commas");
         }
-        return new Point(params[0], params[1]);
+        return new Rectangle(params[0], params[1], params[2], params[3]);
     }
 }
 }

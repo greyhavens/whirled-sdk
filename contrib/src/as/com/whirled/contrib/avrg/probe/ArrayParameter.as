@@ -20,6 +20,8 @@
 
 package com.whirled.contrib.avrg.probe {
 
+import com.threerings.util.Util;
+
 /**
  * Parameter type used when an array is expected. Parses a simple sequence of values in brackets
  * such as [1,2,3] or ["1", "2", "3"]. Commas within items like ["0,2"] will not work.
@@ -37,36 +39,28 @@ public class ArrayParameter extends Parameter
         type :Class, 
         flags :uint=0)
     {
-        super(name, Array, flags);
-        _underlying = type;
+        super(name, type, flags);
+    }
+
+    /** @inheritDoc */
+    // from Parameter
+    override public function get type () :Class
+    {
+        return Array;
     }
 
     /** @inheritDoc */
     // from Parameter
     override public function get typeDisplay () :String
     {
-        return "Array (" + _underlying + ")";
+        return "Array (" + super.typeDisplay + ")";
     }
 
     /** @inheritDoc */
     // from Parameter
     override public function parse (input :String) :Object
     {
-        var temp :Parameter = new Parameter("", _underlying);
-        var value :Array = [];
-        var pos :int = 0;
-        while (pos < input.length) {
-            var comma :int = input.indexOf(",", pos);
-            if (comma == -1) {
-                comma = input.length;
-            }
-            value.push(temp.parse(input.slice(pos, comma)));
-            pos = comma + 1;
-        }
-        return value;
+        return input.split(",").map(Util.adapt(super.parse));
     }
-
-    protected var _underlying :Class;
 }
-
 }

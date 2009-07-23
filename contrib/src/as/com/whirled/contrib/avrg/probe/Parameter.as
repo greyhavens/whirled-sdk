@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.avrg.probe {
 
+import com.threerings.util.ClassUtil;
 import com.threerings.util.StringUtil;
 
 /**
@@ -48,22 +49,6 @@ public class Parameter
     public static function isAlpha (char :String) :Boolean
     {
         return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_".indexOf(char) >= 0;
-    }
-
-    /**
-     * Tests if a character is whitespace.
-     */
-    public static function isWhitespace (char :String) :Boolean
-    {
-        return StringUtil.isWhitespace(char);
-    }
-
-    /**
-     * Trims a string's leading and trailing whitespace.
-     */
-    public static function trim (str :String) :String
-    {
-        return StringUtil.trim(str);
     }
 
     /**
@@ -105,20 +90,7 @@ public class Parameter
      */
     public function get typeDisplay () :String
     {
-        if (_type == String) {
-            return "String";
-
-        } else if (_type == int) {
-            return "int";
-
-        } else if (_type == Boolean) {
-            return "Bool";
-
-        } else if (_type == Number) {
-            return "Number";
-        }
-
-        return "" + _type;
+        return ClassUtil.tinyClassName(_type);
     }
 
     /**
@@ -129,8 +101,12 @@ public class Parameter
     {
         if (_type == String) {
             return input;
+        }
 
-        } else if (_type == int) {
+        // trim all other inputs
+        input = StringUtil.trim(input);
+
+        if (_type == int) {
             return StringUtil.parseInteger(input);
 
         } else if (_type == Boolean) {
@@ -147,8 +123,7 @@ public class Parameter
             return StringUtil.parseNumber(input);
         }
 
-        throw new Error("Parsing for parameter type " + type + 
-            " not implemented");
+        throw new Error("Parsing for parameter type " + type + " not implemented");
     }
 
     /**
@@ -171,5 +146,4 @@ public class Parameter
     protected var _type :Class;
     protected var _flags :uint;
 }
-
 }

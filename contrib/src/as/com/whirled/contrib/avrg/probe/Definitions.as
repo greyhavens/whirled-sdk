@@ -322,6 +322,8 @@ public class Definitions
                 new Parameter("show", Boolean)]),
             new FunctionSpec("getPaintableArea", local.getPaintableArea, [
                 new Parameter("full", Boolean, Parameter.OPTIONAL)]),
+            new FunctionSpec("setRoomViewBounds", local.setRoomViewBounds, [
+                new RectangleParameter("bounds")]),
             new FunctionSpec("paintableToRoom", local.paintableToRoom, [
                 new PointParameter("p")]),
             new FunctionSpec("roomToPaintable", local.roomToPaintable, [

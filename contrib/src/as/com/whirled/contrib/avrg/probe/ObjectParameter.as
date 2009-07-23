@@ -58,6 +58,7 @@ public class ObjectParameter extends Parameter
 }
 
 import flash.utils.Dictionary;
+import com.threerings.util.StringUtil;
 import com.whirled.contrib.avrg.probe.Parameter;
 
 class ParseError extends Error
@@ -187,7 +188,7 @@ function parseObject (input :String, pos :int) :Object
     
     while (pos < input.length) {
         var next :String = input.charAt(pos);
-        if (Parameter.isWhitespace(next)) {
+        if (StringUtil.isWhitespace(next)) {
             ++pos;
             continue;
         }
