@@ -27,6 +27,13 @@ public class SimObjectRef
         return g_null;
     }
 
+    public function destroyObject () :void
+    {
+        if (null != _obj) {
+            _obj.destroySelf();
+        }
+    }
+
     public function get object () :SimObject
     {
         return _obj;
