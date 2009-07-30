@@ -179,9 +179,9 @@
     <mkdir dir="${sdk.build}/docs"/>
     <delete dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
-      <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/**"
-               excludes="**/MessageBundle.as **/MessageManager.as **/HashObjectMap.as"/>
-      <fileset dir="${projects.dir}/nenya/src/as" includes="com/threerings/flash/**"/>
+      <fileset dir="${projects.dir}/flash-utils/src/as" includes="com/threerings/**"
+               excludes="**/MessageBundle.as **/MessageManager.as"/>
+      <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/**"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/loopback/*.as"/>
@@ -259,18 +259,19 @@
     </copy>
     <mkdir dir="${sdk.build}/lib"/>
     <copy todir="${sdk.build}">
-      <fileset dir="${projects.dir}/narya">
-        <include name="src/as/com/threerings/util/**"/>
+      <fileset dir="${projects.dir}/flash-utils">
+        <include name="src/as/com/threerings/**"/>
         <exclude name="**/MessageBundle.as"/>
         <exclude name="**/MessageManager.as"/>
-        <exclude name="**/HashObjectMap.as"/>
+        <exclude name="**/TimeUtil.as"/>
+      </fileset>
+      <fileset dir="${projects.dir}/narya">
+        <include name="src/as/com/threerings/util/**"/>
         <exclude name="**/Streamable*.as"/>
         <exclude name="**/Name.as"/>
         <exclude name="**/langBoolean.as"/>
         <exclude name="**/ObjectMarshaller.as"/>
-        <exclude name="**/TimeUtil.as"/>
       </fileset>
-      <fileset dir="${projects.dir}/nenya" includes="src/as/com/threerings/flash/**"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/avrg/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/party/*.as"/>
