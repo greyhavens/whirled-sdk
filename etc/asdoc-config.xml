@@ -4,8 +4,24 @@
   <footer>Copyright&#160;&#169;&#160;2007-2009 Three Rings Design, Inc.</footer>
   <packages>
     <package>
-      <string>com.threerings.flash</string>
+      <string>com.threerings.display</string>
       <string>Contains display utilities and random useful bits.</string>
+    </package>
+    <package>
+      <string>com.threerings.geom</string>
+      <string>Some geometic utility classes.</string>
+    </package>
+    <package>
+      <string>com.threerings.media</string>
+      <string>Media playing classes.</string>
+    </package>
+    <package>
+      <string>com.threerings.text</string>
+      <string>TextField utilities.</string>
+    </package>
+    <package>
+      <string>com.threerings.ui</string>
+      <string>Utilities for building simple user interfaces.</string>
     </package>
     <package>
       <string>com.threerings.util</string>
@@ -29,7 +45,11 @@
     </package>
     <package>
       <string>com.whirled.net</string>
-      <string>Network related shared and utility classes.</string>
+      <string>Network related shared code and utility classes.</string>
+    </package>
+    <package>
+      <string>com.whirled.party</string>
+      <string>Party related shared code.</string>
     </package>
   </packages>
 </flex-config>
