@@ -77,7 +77,7 @@ public class EventHandlers
         dispatcher :IEventDispatcher, event :String, useCapture :Boolean = false,
         priority :int = 0) :void
     {
-        _mgr.conditionalCall(callback, callNow, dispatcher, event, useCapture, priority);
+        _mgr.callWhenTrue(callback, callNow, dispatcher, event, useCapture, priority);
     }
 
     /**

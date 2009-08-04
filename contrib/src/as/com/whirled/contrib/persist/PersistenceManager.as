@@ -61,7 +61,7 @@ public class PersistenceManager extends EventDispatcher
      */
     public function whenLoaded (callback :Function) :void
     {
-        _eventMgr.conditionalCall(callback, loaded, this, Event.COMPLETE);
+        _eventMgr.callWhenTrue(callback, loaded, this, Event.COMPLETE);
     }
 
     /**
