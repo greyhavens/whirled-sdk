@@ -86,7 +86,7 @@ public class EventHandlerManager
      * Will either call a given function now, or defer it based on the boolean parameter.  If the
      * parameter is false, the function will be registered as a one-shot callback on the dispatcher
      */
-    public function conditionalCall (callback :Function, callNow :Boolean,
+    public function callWhenTrue (callback :Function, callNow :Boolean,
         dispatcher :IEventDispatcher, event :String, useCapture :Boolean = false,
         priority :int = 0) :void
     {

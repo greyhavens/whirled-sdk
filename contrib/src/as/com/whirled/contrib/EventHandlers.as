@@ -69,12 +69,12 @@ public class EventHandlers
         _mgr.registerUnload(dispatcher);
     }
 
-    /** 
-     * Will either call a given function now, or defer it based on the boolean parameter.  If the 
+    /**
+     * Will either call a given function now, or defer it based on the boolean parameter.  If the
      * parameter is false, the function will be registered as a one-shot callback on the dispatcher
      */
-    public static function conditionalCall (callback :Function, callNow :Boolean, 
-        dispatcher :IEventDispatcher, event :String, useCapture :Boolean = false, 
+    public static function callWhenTrue (callback :Function, callNow :Boolean,
+        dispatcher :IEventDispatcher, event :String, useCapture :Boolean = false,
         priority :int = 0) :void
     {
         _mgr.conditionalCall(callback, callNow, dispatcher, event, useCapture, priority);
@@ -82,13 +82,13 @@ public class EventHandlers
 
     /**
      * Will register a listener on a dispatcher for an event until the trigger event has been
-     * dispatched on the trigger dispatcher.  Useful for attaching listeners until an object 
+     * dispatched on the trigger dispatcher.  Useful for attaching listeners until an object
      * has been REMOVED_FROM_STAGE or UNLOADed.
      *
      * All associated event listeners use the default useCapture and priority settings.
      */
     public static function registerListenerUntil (triggerDispatcher :IEventDispatcher,
-        triggerEvent :String, dispatcher :IEventDispatcher, event :String, 
+        triggerEvent :String, dispatcher :IEventDispatcher, event :String,
         listener :Function) :void
     {
         registerListener(dispatcher, event, listener);
