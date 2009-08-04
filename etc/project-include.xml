@@ -56,7 +56,7 @@
   <!-- handles the heavy lifting for compile/debug -->
   <target name="build" depends="prepare-flex">
     <property name="flex.debug-arg" value="-externs=DummyValueIgnore"/>
-    <exec executable="${flex.path}/bin/mxmlc" failonerror="true">
+    <java jar="${flex.path}/lib/mxmlc.jar" failonerror="true" fork="true" maxmemory="1024M">
       <arg value="-load-config=${etc.dir}/whirled-config.xml"/>
       <arg value="${app.additional-config.arg}"/>
       <arg value="-link-report=${link-report.file}"/>
@@ -80,13 +80,13 @@
       <arg value="${app.source-dir}/${app.package-dir}/${app.name}.${app.source-suffix}"/>
       <arg value="-output"/>
       <arg value="${app.name}.swf"/>
-    </exec>
+    </java>
   </target>
 
   <!-- Build our server-side abc file -->
   <target name="build-server" if="app.enable-server-agent">
     <property name="flex.debug-arg" value="-externs=DummyValueIgnore"/>
-    <exec executable="${flex.path}/bin/mxmlc" failonerror="true">
+    <java jar="${flex.path}/lib/mxmlc.jar" failonerror="true" fork="true" maxmemory="1024M">
       <arg value="-load-config=${etc.dir}/thane-config.xml"/>
       <arg value="${app.additional-config.arg}"/>
       <arg value="-external-library-path"/>
@@ -108,7 +108,7 @@
       <arg value="${app.source-dir}/${app.server-agent-package-dir}/${app.server-agent}.${app.source-suffix}"/>
       <arg value="-output"/>
       <arg value="${app.name}.server.swf"/>
-    </exec>
+    </java>
 
     <echo message="Turning .swfs into .abcs..."/>
 
