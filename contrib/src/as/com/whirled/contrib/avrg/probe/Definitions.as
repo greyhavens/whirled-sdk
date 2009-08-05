@@ -350,6 +350,9 @@ public class Definitions
             new FunctionSpec("getMobSpriteExporter", getMobSpriteExporter),
             new FunctionSpec("showPage", local.showPage, [
                 new Parameter("token", String)]),
+            new FunctionSpec("navigateToURL", local.navigateToURL, [
+                new Parameter("url", String),
+                new Parameter("target", String, Parameter.OPTIONAL)]),
             new FunctionSpec("showInvitePage", local.showInvitePage, [
                 new Parameter("defmsg", String),
                 new Parameter("token", String, Parameter.OPTIONAL)]),
