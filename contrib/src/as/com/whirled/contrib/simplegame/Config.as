@@ -33,6 +33,13 @@ public class Config
      * Defaults to null.
      */
     public var externalResourceManager :ResourceManager;
+
+    /**
+     * If the framerate drops below this value, the MainLoop will artificially reduce the
+     * time delta passed to update() functions, causing the game to slow down but animate
+     * more smoothly. Defaults to 15.
+     */
+    public var minFrameRate :Number = 15;
 }
 
 }

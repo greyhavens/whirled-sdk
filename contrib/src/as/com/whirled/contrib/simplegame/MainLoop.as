@@ -37,9 +37,10 @@ public class MainLoop extends EventDispatcher
     public static const HAS_STOPPED :String = "HasStopped";
     public static const HAS_SHUTDOWN :String = "HasShutdown";
 
-    public function MainLoop (ctx :SGContext)
+    public function MainLoop (ctx :SGContext, minFrameRate :Number)
     {
         _ctx = ctx;
+        _minFrameRate = minFrameRate;
     }
 
     /**
@@ -229,7 +230,7 @@ public class MainLoop extends EventDispatcher
     /** Returns the number of seconds that have elapsed since the application started. */
     public function get elapsedSeconds () :Number
     {
-        return (getTimer() / 1000); // getTimer() returns a value in milliseconds
+        return (flash.utils.getTimer() / 1000); // getTimer() returns a value in milliseconds
     }
 
     /**
@@ -384,6 +385,9 @@ public class MainLoop extends EventDispatcher
             handleModeTransitions();
             newTime = this.elapsedSeconds;
             dt = 1 / 30; // Assume 30 fps is our target. Should this be configurable?
+        } else {
+            // Ensure that our time deltas don't get too large
+            dt = Math.min(1 / _minFrameRate, dt);
         }
 
         _fps = 1 / dt;
@@ -456,6 +460,7 @@ public class MainLoop extends EventDispatcher
     }
 
     protected var _ctx :SGContext;
+    protected var _minFrameRate :Number;
     protected var _hostSprite :Sprite;
     protected var _keyDispatcher :IEventDispatcher;
 

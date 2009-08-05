@@ -34,7 +34,7 @@ public class SimpleGame
             config = new Config();
         }
 
-        _ctx.mainLoop = new MainLoop(_ctx);
+        _ctx.mainLoop = new MainLoop(_ctx, config.minFrameRate);
         _ctx.audio = new AudioManager(_ctx, config.maxAudioChannels);
         _ctx.mainLoop.addUpdatable(_ctx.audio);
 
