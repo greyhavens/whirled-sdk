@@ -151,7 +151,7 @@ public class LocalSubControl extends AbstractSubControl
      * narrow rooms, or when the room view is zoomed out.
      *
      * @return a Rectangle containing the bounds of the paintable area, or null if the area is not
-     * defined
+     * defined, for example if full=false and the player is not in a room.
      *
      * @see #event:sizeChanged
      */
@@ -367,6 +367,29 @@ public class LocalSubControl extends AbstractSubControl
     public function showPage (token :String) :Boolean
     {
         return callHostCode("showPage_v1", token);
+    }
+
+    /**
+     * Navigate to the specified url, targetting the specified window/tab.
+     * Normally, the security boundary in which your game runs prevents you from
+     * using flash.net.navigateToURL() with a target of "_self" or "_top"
+     * (which would unload whirled and your game!), but this method will try to do its
+     * best to let you do that. It will fall back to loading the url with a blank target,
+     * if possible, or if your game is not 'approved'.
+     * <p> Note: be extremely careful with how you construct this URL and be aware that if
+     * partially based on user input, the input should be thoroughly scrubbed to prevent
+     * surprises. </p>
+     * <p> Note: using a non-null target is only allowed for approved games, and will silently
+     * fall back to null for unapproved games. The approval process is still being developed. </p>
+     *
+     * @param url a URLRequest or String.
+     * @param preferredTarget the window or tab into which to load. Null will load into a new
+     * window/tab, or you specify a name, or use one of the special values: "_top", "_parent",
+     * or "_self".
+     */
+    public function navigateToURL (url :Object, preferredTarget :String = null) :void
+    {
+        callHostCode("navigateToURL_v1", url, preferredTarget);
     }
 
     /**
