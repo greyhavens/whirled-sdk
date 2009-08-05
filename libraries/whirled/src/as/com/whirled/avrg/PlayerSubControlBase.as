@@ -104,9 +104,10 @@ public class PlayerSubControlBase extends TargetedSubControl
     }
 
     /**
-     * Instructs this player's client to move to the specified room. The given exit coordinates are
-     * a 3-tuple specifying in room coordinates where the avatar should appear to walk to when
-     * leaving the room. If not given, the avatar will just disappear.
+     * Instructs this player's client to move to the specified room, or pass 0 to put the player
+     * in no room. The given exit coordinates are a 3-tuple specifying in room coordinates
+     * where the avatar should appear to walk to when leaving the room.
+     * If not given, the avatar will just disappear.
      *
      * <p>Hard-wiring valid room ids should be avoided. Room ids can be obtained from properties
      * stored by an admininstrative interface or from a server agent message containing currently
@@ -242,7 +243,7 @@ public class PlayerSubControlBase extends TargetedSubControl
     /**
      * Returns this player's current coin balance.
      *
-     * <p> Note: this funtionality is only allowed for approved games. This method will silently
+     * <p> Note: this functionality is only allowed for approved games. This method will silently
      * fail for unapproved games. The approval process is still being developed. </p>
      */
     public function getCoins () :int
@@ -253,7 +254,7 @@ public class PlayerSubControlBase extends TargetedSubControl
     /**
      * Returns this player's current bar balance.
      *
-     * <p> Note: this funtionality is only allowed for approved games. This method will silently
+     * <p> Note: this functionality is only allowed for approved games. This method will silently
      * fail for unapproved games. The approval process is still being developed. </p>
      */
     public function getBars () :int

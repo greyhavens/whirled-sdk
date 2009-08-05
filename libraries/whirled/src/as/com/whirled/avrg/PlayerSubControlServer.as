@@ -102,7 +102,7 @@ public class PlayerSubControlServer extends PlayerSubControlBase
      * notified via chat feedback. A GameContentEvent.PLAYER_CONTENT_ADDED event will be issued if
      * the purchase succeeds.
      *
-     * <p> Note: this funtionality is only allowed for approved games. This method will silently
+     * <p> Note: this functionality is only allowed for approved games. This method will silently
      * fail for unapproved games. The approval process is still being developed. </p>
      */
     public function purchaseItemPack (ident :String) :void
@@ -115,7 +115,7 @@ public class PlayerSubControlServer extends PlayerSubControlBase
      * copy of the item pack. On success, a GameContentEvent.PLAYER_CONTENT_CONSUMED event will be
      * dispatched on this control (on both the client and server).
      *
-     * <p> Note: this funtionality is only allowed for approved games. This method will silently
+     * <p> Note: this functionality is only allowed for approved games. This method will silently
      * fail for unapproved games. The approval process is still being developed. </p>
      *
      * @param ident the identifier of the item pack to be consumed.
