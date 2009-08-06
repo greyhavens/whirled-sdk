@@ -385,7 +385,9 @@ public class MainLoop extends EventDispatcher
             handleModeTransitions();
             newTime = this.elapsedSeconds;
             dt = 1 / 30; // Assume 30 fps is our target. Should this be configurable?
-        } else {
+        }
+
+        if (_minFrameRate > 0) {
             // Ensure that our time deltas don't get too large
             dt = Math.min(1 / _minFrameRate, dt);
         }
