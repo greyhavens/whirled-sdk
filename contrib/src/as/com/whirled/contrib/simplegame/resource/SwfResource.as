@@ -102,18 +102,6 @@ public class SwfResource extends Resource
         return rsrcs.getResource(resourceName) as SwfResource;
     }
 
-    protected static function getClass (rsrcs :ResourceManager, resourceName :String,
-        className :String) :Class
-    {
-        var swf :SwfResource = getSwf(rsrcs, resourceName);
-        return (null != swf ? swf.getClass(className) : null);
-    }
-
-    protected static function getCache (c :Class) :Array
-    {
-        return (_mcCache[c] == null ? _mcCache[c] = new Array() : _mcCache[c]);
-    }
-
     public function SwfResource (resourceName :String, loadParams :Object)
     {
         super(resourceName, loadParams);
@@ -121,11 +109,6 @@ public class SwfResource extends Resource
         _loader = new Loader();
         _loader.contentLoaderInfo.addEventListener(Event.INIT, onInit);
         _loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
-    }
-
-    public function get displayRoot () :DisplayObject
-    {
-        return _loader.content;
     }
 
     public function getSymbol (name :String) :Object
@@ -152,6 +135,11 @@ public class SwfResource extends Resource
     public function getClass (name :String) :Class
     {
         return getSymbol(name) as Class;
+    }
+
+    public function get displayRoot () :DisplayObject
+    {
+        return _loader.content;
     }
 
     override protected function load (completeCallback :Function, errorCallback :Function) :void
@@ -215,6 +203,18 @@ public class SwfResource extends Resource
     protected function onError (e :IOErrorEvent) :void
     {
         _errorCallback("SwfResourceLoader (" + _resourceName + "): " + e.text);
+    }
+
+    protected static function getClass (rsrcs :ResourceManager, resourceName :String,
+        className :String) :Class
+    {
+        var swf :SwfResource = getSwf(rsrcs, resourceName);
+        return (null != swf ? swf.getClass(className) : null);
+    }
+
+    protected static function getCache (c :Class) :Array
+    {
+        return (_mcCache[c] == null ? _mcCache[c] = new Array() : _mcCache[c]);
     }
 
     protected var _loaded :Boolean;
