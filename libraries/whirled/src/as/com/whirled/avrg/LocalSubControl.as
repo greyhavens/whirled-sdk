@@ -71,15 +71,45 @@ public class LocalSubControl extends AbstractSubControl
 //
 //    // event: ROOM_AREA_CHANGED
 
+
     /**
-     * Hide or show the chrome, the UI for Whirled itself. There is no return value, there is
-     * no way to check if it's showing or not. Why would you want that? Just set it to what
-     * you need and it will no-op if it's already in that mode.
+     * Request to show a particular UI element. Some of this can be accomplished presently
+     * by calling showPage, but that might not always work. If we move inventory into an
+     * in-flash popup, for example, then this method should always work, but showPage may
+     * cease to exist (although maybe we'll analyze the args and make it work).
      *
-     * TODO: use at your own risk. At present we're not sure how much of the chrome we'll allow
-     * you to hide, so while it hides it all now, it's very possible that it will just minimize
-     * things in the future. We may also remove this. So, go ahead and use it, but it
-     * might not work the same way forever.
+     * @param element a constant from @see com.whirled.avrg.UIConstants
+     * @param arg an element-specific argument, or an Object hash containing multiple args.
+     * See the documentation for each constant in UIConstants.
+     */
+    public function showUI (element :int, arg :Object = null) :void
+    {
+        callHostCode("showUI_v1", element, arg);
+    }
+
+    /**
+     * Request to hide a particular UI element, if showing.
+     */
+    public function hideUI (element :int) :void
+    {
+        callHostCode("hideUI_v1", element);
+    }
+
+    /**
+     * Is the particular UI element showing?
+     */
+    public function isUIShowing (element :int) :Boolean
+    {
+        return Boolean(callHostCode("isUIShowing_v1", element));
+    }
+
+    // TODO: events when certain UI elements are shown/hidden, either as a result of these methods
+    // or from the user doing it themselves.
+
+    /**
+     * Hide or show the chrome, the UI for Whirled itself.
+     * <p> Note: this method is only allowed for approved games, and will silently
+     * fail for unapproved games. The approval process is still being developed. </p>
      */
     public function setShowChrome (show :Boolean) :void
     {
