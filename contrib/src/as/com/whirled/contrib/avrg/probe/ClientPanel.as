@@ -75,17 +75,17 @@ public class ClientPanel extends Sprite
         _tabPanel.addTab("client", new Button("Client"), client);
 
         var key :String;
-        for each (key in _defs.getFuncKeys(false)) {
-            client.addTab(key, new Button(key.substr(0, 1).toUpperCase() + key.substr(1)), 
-                new FunctionPanel(_ctrl, _defs.getFuncs(key), false));
+        for each (key in _defs.getControls(false)) {
+            client.addTab(key, new Button(StringUtil.capitalize(key)),
+                new FunctionPanel(_ctrl, _defs.getFuncs(false, key), false));
         }
 
         var server :TabPanel = new TabPanel();
         _tabPanel.addTab("server", new Button("Server"), server);
 
-        for each (key in _defs.getFuncKeys(true)) {
-            server.addTab(key, new Button(key.substr(6)), 
-                new FunctionPanel(_ctrl, _defs.getFuncs(key), true));
+        for each (key in _defs.getControls(true)) {
+            server.addTab(key, new Button(StringUtil.capitalize(key)),
+                new FunctionPanel(_ctrl, _defs.getFuncs(true, key), true));
         }
 
         addEventListener(Event.ADDED_TO_STAGE, handleAdded);
