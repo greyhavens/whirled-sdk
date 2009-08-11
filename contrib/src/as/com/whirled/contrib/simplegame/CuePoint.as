@@ -23,7 +23,7 @@ package com.whirled.contrib.simplegame {
 import com.threerings.util.HashMap;
 
 /**
- * A simple mechanism for synchronizing logic across disconnected objects.
+ * A simple mechanism for synchronizing logic across objects.
  */
 public class CuePoint
 {
