@@ -88,6 +88,10 @@ public class ClientPanel extends Sprite
                 new FunctionPanel(_ctrl, _defs.getFuncs(true, key), true));
         }
 
+        if (_ctrl.local.mobSpriteExporter == null) {
+            _ctrl.local.setMobSpriteExporter(createMob);
+        }
+
         addEventListener(Event.ADDED_TO_STAGE, handleAdded);
         addEventListener(Event.REMOVED_FROM_STAGE, handleRemoved);
     }
@@ -103,11 +107,11 @@ public class ClientPanel extends Sprite
         trace("Adding client panel");
         _defs.addListenerToAll(logEvent);
 
-        _ctrl.player.addEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, handleGameMessage);
-
         if (_ctrl.local.mobSpriteExporter == null) {
             _ctrl.local.setMobSpriteExporter(createMob);
         }
+
+        _ctrl.player.addEventListener(MessageReceivedEvent.MESSAGE_RECEIVED, handleGameMessage);
     }
 
     public function handleRemoved (evt :Event) :void

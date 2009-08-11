@@ -352,7 +352,7 @@ public class Definitions
             new FunctionSpec("requestConsumeItemPack", player.requestConsumeItemPack, [
                 new Parameter("ident", String),
                 new Parameter("msg", String)]),
-
+            new FunctionSpec("getFacebookInfo", player.getFacebookInfo),
         ];
         pushPropsFuncs(funcs, player.props);
         pushPropsSetFuncs(funcs, player.props);
