@@ -80,6 +80,15 @@ public class Rand
         return getStream(streamId).nextBoolean();
     }
 
+    /**
+     * Returns true (chance * 100)% of the time.
+     * @param chance a number in the range [0, 1)
+     */
+    public static function nextChance (streamId :uint, chance :Number) :Boolean
+    {
+        return nextNumber(streamId) < chance;
+    }
+
     /** Returns a Number in the range [0.0, 1.0) */
     public static function nextNumber (streamId :uint) :Number
     {
