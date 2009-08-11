@@ -34,22 +34,43 @@ public class WeightedArray
         }
 
         _data.push(new WeightedData(data, chance));
-        _totalChanceCalculated = false;
+        _dataDirty = true;
     }
 
-    public function getNextData () :*
+    public function getNextData (randStream :int = -1) :*
     {
-        calculateTotalChance();
+        updateData();
 
-        if (_data.length == 0 || _totalChance <= 0) {
+        if (_data.length == 0) {
             return undefined;
         }
 
-        var rand :Number = Rand.nextNumberRange(0, _totalChance, _defaultRandStreamId);
-        var maxValue :Number = 0;
-        for each (var wd :WeightedData in _data) {
-            maxValue += wd.chance;
-            if (rand < maxValue) {
+        if (randStream < 0) {
+            randStream = _defaultRandStreamId;
+        }
+
+        var max :Number = WeightedData(_data[_data.length - 1]).max;
+        var val :Number = Rand.nextNumberRange(0, max, _defaultRandStreamId);
+
+        // binary-search the set of WeightedData
+        var loIdx :int = 0;
+        var hiIdx :int = _data.length - 1;
+        for (;;) {
+            if (loIdx > hiIdx) {
+                // something's broken
+                break;
+            }
+
+            var idx :int = loIdx + ((hiIdx - loIdx) * 0.5);
+            var wd :WeightedData = _data[idx];
+            if (val < wd.min) {
+                // too high
+                hiIdx = idx - 1;
+            } else if (val >= wd.max) {
+                // too low
+                loIdx = idx + 1;
+            } else {
+                // hit!
                 return wd.data;
             }
         }
@@ -84,21 +105,21 @@ public class WeightedArray
         return _data.length;
     }
 
-    protected function calculateTotalChance () :void
+    protected function updateData () :void
     {
-        if (!_totalChanceCalculated) {
-            _totalChance = 0;
+        if (_dataDirty) {
+            var totalVal :Number = 0;
             for each (var wd :WeightedData in _data) {
-                _totalChance += wd.chance;
+                wd.min = totalVal;
+                totalVal += wd.chance;
             }
 
-            _totalChanceCalculated = true;
+            _dataDirty = false;
         }
     }
 
     protected var _defaultRandStreamId :int;
-    protected var _totalChance :Number;
-    protected var _totalChanceCalculated :Boolean;
+    protected var _dataDirty :Boolean;
 
     protected var _data :Array = [];
 }
@@ -109,6 +130,12 @@ class WeightedData
 {
     public var data :*;
     public var chance :Number;
+    public var min :Number;
+
+    public function get max () :Number
+    {
+        return min + chance;
+    }
 
     public function WeightedData (data :*, chance :Number)
     {
