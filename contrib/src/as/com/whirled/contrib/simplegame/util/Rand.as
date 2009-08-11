@@ -84,7 +84,7 @@ public class Rand
      * Returns true (chance * 100)% of the time.
      * @param chance a number in the range [0, 1)
      */
-    public static function nextChance (streamId :uint, chance :Number) :Boolean
+    public static function nextChance (chance :Number, streamId :uint) :Boolean
     {
         return nextNumber(streamId) < chance;
     }
