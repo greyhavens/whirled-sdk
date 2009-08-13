@@ -15,9 +15,9 @@ import com.threerings.presents.client.InvocationService_InvocationListener;
 public interface ContentService extends InvocationService
 {
     // from Java interface ContentService
-    function consumeItemPack (arg1 :Client, arg2 :int, arg3 :String, arg4 :InvocationService_InvocationListener) :void;
+    function consumeItemPack (arg1 :int, arg2 :String, arg3 :InvocationService_InvocationListener) :void;
 
     // from Java interface ContentService
-    function purchaseItemPack (arg1 :Client, arg2 :int, arg3 :String, arg4 :InvocationService_InvocationListener) :void;
+    function purchaseItemPack (arg1 :int, arg2 :String, arg3 :InvocationService_InvocationListener) :void;
 }
 }

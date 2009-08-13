@@ -15,9 +15,9 @@ import com.threerings.presents.client.InvocationService_InvocationListener;
 public interface PrizeService extends InvocationService
 {
     // from Java interface PrizeService
-    function awardPrize (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
+    function awardPrize (arg1 :String, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
 
     // from Java interface PrizeService
-    function awardTrophy (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
+    function awardTrophy (arg1 :String, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
 }
 }

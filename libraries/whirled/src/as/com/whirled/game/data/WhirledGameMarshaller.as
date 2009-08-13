@@ -33,12 +33,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const ADD_TO_COLLECTION :int = 1;
 
     // from interface WhirledGameService
-    public function addToCollection (arg1 :Client, arg2 :String, arg3 :TypedArray /* of class [B */, arg4 :Boolean, arg5 :InvocationService_InvocationListener) :void
+    public function addToCollection (arg1 :String, arg2 :TypedArray /* of class [B */, arg3 :Boolean, arg4 :InvocationService_InvocationListener) :void
     {
-        var listener5 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener5.listener = arg5;
-        sendRequest(arg1, ADD_TO_COLLECTION, [
-            arg2, arg3, langBoolean.valueOf(arg4), listener5
+        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener4.listener = arg4;
+        sendRequest(ADD_TO_COLLECTION, [
+            arg1, arg2, langBoolean.valueOf(arg3), listener4
         ]);
     }
 
@@ -46,12 +46,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const CHECK_DICTIONARY_WORD :int = 2;
 
     // from interface WhirledGameService
-    public function checkDictionaryWord (arg1 :Client, arg2 :String, arg3 :String, arg4 :String, arg5 :InvocationService_ResultListener) :void
+    public function checkDictionaryWord (arg1 :String, arg2 :String, arg3 :String, arg4 :InvocationService_ResultListener) :void
     {
-        var listener5 :InvocationMarshaller_ResultMarshaller = new InvocationMarshaller_ResultMarshaller();
-        listener5.listener = arg5;
-        sendRequest(arg1, CHECK_DICTIONARY_WORD, [
-            arg2, arg3, arg4, listener5
+        var listener4 :InvocationMarshaller_ResultMarshaller = new InvocationMarshaller_ResultMarshaller();
+        listener4.listener = arg4;
+        sendRequest(CHECK_DICTIONARY_WORD, [
+            arg1, arg2, arg3, listener4
         ]);
     }
 
@@ -59,12 +59,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const END_GAME_WITH_SCORES :int = 3;
 
     // from interface WhirledGameService
-    public function endGameWithScores (arg1 :Client, arg2 :TypedArray /* of int */, arg3 :TypedArray /* of int */, arg4 :int, arg5 :int, arg6 :InvocationService_InvocationListener) :void
+    public function endGameWithScores (arg1 :TypedArray /* of int */, arg2 :TypedArray /* of int */, arg3 :int, arg4 :int, arg5 :InvocationService_InvocationListener) :void
     {
-        var listener6 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener6.listener = arg6;
-        sendRequest(arg1, END_GAME_WITH_SCORES, [
-            arg2, arg3, Integer.valueOf(arg4), Integer.valueOf(arg5), listener6
+        var listener5 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener5.listener = arg5;
+        sendRequest(END_GAME_WITH_SCORES, [
+            arg1, arg2, Integer.valueOf(arg3), Integer.valueOf(arg4), listener5
         ]);
     }
 
@@ -72,12 +72,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const END_GAME_WITH_WINNERS :int = 4;
 
     // from interface WhirledGameService
-    public function endGameWithWinners (arg1 :Client, arg2 :TypedArray /* of int */, arg3 :TypedArray /* of int */, arg4 :int, arg5 :InvocationService_InvocationListener) :void
+    public function endGameWithWinners (arg1 :TypedArray /* of int */, arg2 :TypedArray /* of int */, arg3 :int, arg4 :InvocationService_InvocationListener) :void
     {
-        var listener5 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener5.listener = arg5;
-        sendRequest(arg1, END_GAME_WITH_WINNERS, [
-            arg2, arg3, Integer.valueOf(arg4), listener5
+        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener4.listener = arg4;
+        sendRequest(END_GAME_WITH_WINNERS, [
+            arg1, arg2, Integer.valueOf(arg3), listener4
         ]);
     }
 
@@ -85,12 +85,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const END_ROUND :int = 5;
 
     // from interface WhirledGameService
-    public function endRound (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void
+    public function endRound (arg1 :int, arg2 :InvocationService_InvocationListener) :void
     {
-        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener3.listener = arg3;
-        sendRequest(arg1, END_ROUND, [
-            Integer.valueOf(arg2), listener3
+        var listener2 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener2.listener = arg2;
+        sendRequest(END_ROUND, [
+            Integer.valueOf(arg1), listener2
         ]);
     }
 
@@ -98,12 +98,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const END_TURN :int = 6;
 
     // from interface WhirledGameService
-    public function endTurn (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void
+    public function endTurn (arg1 :int, arg2 :InvocationService_InvocationListener) :void
     {
-        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener3.listener = arg3;
-        sendRequest(arg1, END_TURN, [
-            Integer.valueOf(arg2), listener3
+        var listener2 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener2.listener = arg2;
+        sendRequest(END_TURN, [
+            Integer.valueOf(arg1), listener2
         ]);
     }
 
@@ -111,12 +111,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const GET_COOKIE :int = 7;
 
     // from interface WhirledGameService
-    public function getCookie (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void
+    public function getCookie (arg1 :int, arg2 :InvocationService_InvocationListener) :void
     {
-        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener3.listener = arg3;
-        sendRequest(arg1, GET_COOKIE, [
-            Integer.valueOf(arg2), listener3
+        var listener2 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener2.listener = arg2;
+        sendRequest(GET_COOKIE, [
+            Integer.valueOf(arg1), listener2
         ]);
     }
 
@@ -124,12 +124,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const GET_DICTIONARY_LETTER_SET :int = 8;
 
     // from interface WhirledGameService
-    public function getDictionaryLetterSet (arg1 :Client, arg2 :String, arg3 :String, arg4 :int, arg5 :InvocationService_ResultListener) :void
+    public function getDictionaryLetterSet (arg1 :String, arg2 :String, arg3 :int, arg4 :InvocationService_ResultListener) :void
     {
-        var listener5 :InvocationMarshaller_ResultMarshaller = new InvocationMarshaller_ResultMarshaller();
-        listener5.listener = arg5;
-        sendRequest(arg1, GET_DICTIONARY_LETTER_SET, [
-            arg2, arg3, Integer.valueOf(arg4), listener5
+        var listener4 :InvocationMarshaller_ResultMarshaller = new InvocationMarshaller_ResultMarshaller();
+        listener4.listener = arg4;
+        sendRequest(GET_DICTIONARY_LETTER_SET, [
+            arg1, arg2, Integer.valueOf(arg3), listener4
         ]);
     }
 
@@ -137,12 +137,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const GET_DICTIONARY_WORDS :int = 9;
 
     // from interface WhirledGameService
-    public function getDictionaryWords (arg1 :Client, arg2 :String, arg3 :String, arg4 :int, arg5 :InvocationService_ResultListener) :void
+    public function getDictionaryWords (arg1 :String, arg2 :String, arg3 :int, arg4 :InvocationService_ResultListener) :void
     {
-        var listener5 :InvocationMarshaller_ResultMarshaller = new InvocationMarshaller_ResultMarshaller();
-        listener5.listener = arg5;
-        sendRequest(arg1, GET_DICTIONARY_WORDS, [
-            arg2, arg3, Integer.valueOf(arg4), listener5
+        var listener4 :InvocationMarshaller_ResultMarshaller = new InvocationMarshaller_ResultMarshaller();
+        listener4.listener = arg4;
+        sendRequest(GET_DICTIONARY_WORDS, [
+            arg1, arg2, Integer.valueOf(arg3), listener4
         ]);
     }
 
@@ -150,12 +150,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const GET_FROM_COLLECTION :int = 10;
 
     // from interface WhirledGameService
-    public function getFromCollection (arg1 :Client, arg2 :String, arg3 :Boolean, arg4 :int, arg5 :String, arg6 :int, arg7 :InvocationService_ConfirmListener) :void
+    public function getFromCollection (arg1 :String, arg2 :Boolean, arg3 :int, arg4 :String, arg5 :int, arg6 :InvocationService_ConfirmListener) :void
     {
-        var listener7 :InvocationMarshaller_ConfirmMarshaller = new InvocationMarshaller_ConfirmMarshaller();
-        listener7.listener = arg7;
-        sendRequest(arg1, GET_FROM_COLLECTION, [
-            arg2, langBoolean.valueOf(arg3), Integer.valueOf(arg4), arg5, Integer.valueOf(arg6), listener7
+        var listener6 :InvocationMarshaller_ConfirmMarshaller = new InvocationMarshaller_ConfirmMarshaller();
+        listener6.listener = arg6;
+        sendRequest(GET_FROM_COLLECTION, [
+            arg1, langBoolean.valueOf(arg2), Integer.valueOf(arg3), arg4, Integer.valueOf(arg5), listener6
         ]);
     }
 
@@ -163,12 +163,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const MAKE_PLAYER_AI :int = 11;
 
     // from interface WhirledGameService
-    public function makePlayerAI (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void
+    public function makePlayerAI (arg1 :int, arg2 :InvocationService_InvocationListener) :void
     {
-        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener3.listener = arg3;
-        sendRequest(arg1, MAKE_PLAYER_AI, [
-            Integer.valueOf(arg2), listener3
+        var listener2 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener2.listener = arg2;
+        sendRequest(MAKE_PLAYER_AI, [
+            Integer.valueOf(arg1), listener2
         ]);
     }
 
@@ -176,12 +176,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const MERGE_COLLECTION :int = 12;
 
     // from interface WhirledGameService
-    public function mergeCollection (arg1 :Client, arg2 :String, arg3 :String, arg4 :InvocationService_InvocationListener) :void
+    public function mergeCollection (arg1 :String, arg2 :String, arg3 :InvocationService_InvocationListener) :void
     {
-        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener4.listener = arg4;
-        sendRequest(arg1, MERGE_COLLECTION, [
-            arg2, arg3, listener4
+        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener3.listener = arg3;
+        sendRequest(MERGE_COLLECTION, [
+            arg1, arg2, listener3
         ]);
     }
 
@@ -189,12 +189,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const RESTART_GAME_IN :int = 13;
 
     // from interface WhirledGameService
-    public function restartGameIn (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void
+    public function restartGameIn (arg1 :int, arg2 :InvocationService_InvocationListener) :void
     {
-        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener3.listener = arg3;
-        sendRequest(arg1, RESTART_GAME_IN, [
-            Integer.valueOf(arg2), listener3
+        var listener2 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener2.listener = arg2;
+        sendRequest(RESTART_GAME_IN, [
+            Integer.valueOf(arg1), listener2
         ]);
     }
 
@@ -202,12 +202,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const SET_COOKIE :int = 14;
 
     // from interface WhirledGameService
-    public function setCookie (arg1 :Client, arg2 :ByteArray, arg3 :int, arg4 :InvocationService_InvocationListener) :void
+    public function setCookie (arg1 :ByteArray, arg2 :int, arg3 :InvocationService_InvocationListener) :void
     {
-        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener4.listener = arg4;
-        sendRequest(arg1, SET_COOKIE, [
-            arg2, Integer.valueOf(arg3), listener4
+        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener3.listener = arg3;
+        sendRequest(SET_COOKIE, [
+            arg1, Integer.valueOf(arg2), listener3
         ]);
     }
 
@@ -215,12 +215,12 @@ public class WhirledGameMarshaller extends InvocationMarshaller
     public static const SET_TICKER :int = 15;
 
     // from interface WhirledGameService
-    public function setTicker (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void
+    public function setTicker (arg1 :String, arg2 :int, arg3 :InvocationService_InvocationListener) :void
     {
-        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener4.listener = arg4;
-        sendRequest(arg1, SET_TICKER, [
-            arg2, Integer.valueOf(arg3), listener4
+        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener3.listener = arg3;
+        sendRequest(SET_TICKER, [
+            arg1, Integer.valueOf(arg2), listener3
         ]);
     }
 }

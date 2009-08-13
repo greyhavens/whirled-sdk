@@ -9,8 +9,8 @@ import com.threerings.presents.client.Client;
 import com.threerings.presents.client.InvocationService_InvocationListener;
 import com.threerings.presents.data.InvocationMarshaller;
 import com.threerings.presents.data.InvocationMarshaller_ListenerMarshaller;
-import com.threerings.util.Integer;
 import com.threerings.util.langBoolean;
+import com.threerings.util.Integer;
 import com.whirled.game.client.PropertySpaceService;
 
 /**
@@ -27,12 +27,12 @@ public class PropertySpaceMarshaller extends InvocationMarshaller
     public static const SET_PROPERTY :int = 1;
 
     // from interface PropertySpaceService
-    public function setProperty (arg1 :Client, arg2 :String, arg3 :Object, arg4 :Integer, arg5 :Boolean, arg6 :Boolean, arg7 :Object, arg8 :InvocationService_InvocationListener) :void
+    public function setProperty (arg1 :String, arg2 :Object, arg3 :Integer, arg4 :Boolean, arg5 :Boolean, arg6 :Object, arg7 :InvocationService_InvocationListener) :void
     {
-        var listener8 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener8.listener = arg8;
-        sendRequest(arg1, SET_PROPERTY, [
-            arg2, arg3, arg4, langBoolean.valueOf(arg5), langBoolean.valueOf(arg6), arg7, listener8
+        var listener7 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener7.listener = arg7;
+        sendRequest(SET_PROPERTY, [
+            arg1, arg2, arg3, langBoolean.valueOf(arg4), langBoolean.valueOf(arg5), arg6, listener7
         ]);
     }
 }

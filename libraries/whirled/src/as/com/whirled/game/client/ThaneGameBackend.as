@@ -99,7 +99,7 @@ public class ThaneGameBackend extends BaseGameBackend
     {
         validateConnected();
         _gameObj.whirledGameService.makePlayerAI(
-            _ctx.getClient(), playerId, createLoggingConfirmListener("makePlayerAI"));
+            playerId, createLoggingConfirmListener("makePlayerAI"));
     }
 
     // --------------------------

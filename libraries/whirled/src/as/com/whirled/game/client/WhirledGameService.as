@@ -19,48 +19,48 @@ import flash.utils.ByteArray;
 public interface WhirledGameService extends InvocationService
 {
     // from Java interface WhirledGameService
-    function addToCollection (arg1 :Client, arg2 :String, arg3 :TypedArray /* of class [B */, arg4 :Boolean, arg5 :InvocationService_InvocationListener) :void;
+    function addToCollection (arg1 :String, arg2 :TypedArray /* of class [B */, arg3 :Boolean, arg4 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function checkDictionaryWord (arg1 :Client, arg2 :String, arg3 :String, arg4 :String, arg5 :InvocationService_ResultListener) :void;
+    function checkDictionaryWord (arg1 :String, arg2 :String, arg3 :String, arg4 :InvocationService_ResultListener) :void;
 
     // from Java interface WhirledGameService
-    function endGameWithScores (arg1 :Client, arg2 :TypedArray /* of int */, arg3 :TypedArray /* of int */, arg4 :int, arg5 :int, arg6 :InvocationService_InvocationListener) :void;
+    function endGameWithScores (arg1 :TypedArray /* of int */, arg2 :TypedArray /* of int */, arg3 :int, arg4 :int, arg5 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function endGameWithWinners (arg1 :Client, arg2 :TypedArray /* of int */, arg3 :TypedArray /* of int */, arg4 :int, arg5 :InvocationService_InvocationListener) :void;
+    function endGameWithWinners (arg1 :TypedArray /* of int */, arg2 :TypedArray /* of int */, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function endRound (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
+    function endRound (arg1 :int, arg2 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function endTurn (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
+    function endTurn (arg1 :int, arg2 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function getCookie (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
+    function getCookie (arg1 :int, arg2 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function getDictionaryLetterSet (arg1 :Client, arg2 :String, arg3 :String, arg4 :int, arg5 :InvocationService_ResultListener) :void;
+    function getDictionaryLetterSet (arg1 :String, arg2 :String, arg3 :int, arg4 :InvocationService_ResultListener) :void;
 
     // from Java interface WhirledGameService
-    function getDictionaryWords (arg1 :Client, arg2 :String, arg3 :String, arg4 :int, arg5 :InvocationService_ResultListener) :void;
+    function getDictionaryWords (arg1 :String, arg2 :String, arg3 :int, arg4 :InvocationService_ResultListener) :void;
 
     // from Java interface WhirledGameService
-    function getFromCollection (arg1 :Client, arg2 :String, arg3 :Boolean, arg4 :int, arg5 :String, arg6 :int, arg7 :InvocationService_ConfirmListener) :void;
+    function getFromCollection (arg1 :String, arg2 :Boolean, arg3 :int, arg4 :String, arg5 :int, arg6 :InvocationService_ConfirmListener) :void;
 
     // from Java interface WhirledGameService
-    function makePlayerAI (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
+    function makePlayerAI (arg1 :int, arg2 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function mergeCollection (arg1 :Client, arg2 :String, arg3 :String, arg4 :InvocationService_InvocationListener) :void;
+    function mergeCollection (arg1 :String, arg2 :String, arg3 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function restartGameIn (arg1 :Client, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
+    function restartGameIn (arg1 :int, arg2 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function setCookie (arg1 :Client, arg2 :ByteArray, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
+    function setCookie (arg1 :ByteArray, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameService
-    function setTicker (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void;
+    function setTicker (arg1 :String, arg2 :int, arg3 :InvocationService_InvocationListener) :void;
 }
 }

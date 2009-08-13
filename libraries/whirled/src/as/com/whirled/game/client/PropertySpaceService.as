@@ -16,6 +16,6 @@ import com.threerings.util.Integer;
 public interface PropertySpaceService extends InvocationService
 {
     // from Java interface PropertySpaceService
-    function setProperty (arg1 :Client, arg2 :String, arg3 :Object, arg4 :Integer, arg5 :Boolean, arg6 :Boolean, arg7 :Object, arg8 :InvocationService_InvocationListener) :void;
+    function setProperty (arg1 :String, arg2 :Object, arg3 :Integer, arg4 :Boolean, arg5 :Boolean, arg6 :Object, arg7 :InvocationService_InvocationListener) :void;
 }
 }

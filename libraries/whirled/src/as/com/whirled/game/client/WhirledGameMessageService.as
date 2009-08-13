@@ -16,9 +16,9 @@ import com.threerings.presents.client.InvocationService_InvocationListener;
 public interface WhirledGameMessageService extends InvocationService
 {
     // from Java interface WhirledGameMessageService
-    function sendMessage (arg1 :Client, arg2 :String, arg3 :Object, arg4 :InvocationService_InvocationListener) :void;
+    function sendMessage (arg1 :String, arg2 :Object, arg3 :InvocationService_InvocationListener) :void;
 
     // from Java interface WhirledGameMessageService
-    function sendPrivateMessage (arg1 :Client, arg2 :String, arg3 :Object, arg4 :TypedArray /* of int */, arg5 :InvocationService_InvocationListener) :void;
+    function sendPrivateMessage (arg1 :String, arg2 :Object, arg3 :TypedArray /* of int */, arg4 :InvocationService_InvocationListener) :void;
 }
 }

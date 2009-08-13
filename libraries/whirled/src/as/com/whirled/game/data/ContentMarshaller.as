@@ -26,12 +26,12 @@ public class ContentMarshaller extends InvocationMarshaller
     public static const CONSUME_ITEM_PACK :int = 1;
 
     // from interface ContentService
-    public function consumeItemPack (arg1 :Client, arg2 :int, arg3 :String, arg4 :InvocationService_InvocationListener) :void
+    public function consumeItemPack (arg1 :int, arg2 :String, arg3 :InvocationService_InvocationListener) :void
     {
-        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener4.listener = arg4;
-        sendRequest(arg1, CONSUME_ITEM_PACK, [
-            Integer.valueOf(arg2), arg3, listener4
+        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener3.listener = arg3;
+        sendRequest(CONSUME_ITEM_PACK, [
+            Integer.valueOf(arg1), arg2, listener3
         ]);
     }
 
@@ -39,12 +39,12 @@ public class ContentMarshaller extends InvocationMarshaller
     public static const PURCHASE_ITEM_PACK :int = 2;
 
     // from interface ContentService
-    public function purchaseItemPack (arg1 :Client, arg2 :int, arg3 :String, arg4 :InvocationService_InvocationListener) :void
+    public function purchaseItemPack (arg1 :int, arg2 :String, arg3 :InvocationService_InvocationListener) :void
     {
-        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener4.listener = arg4;
-        sendRequest(arg1, PURCHASE_ITEM_PACK, [
-            Integer.valueOf(arg2), arg3, listener4
+        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener3.listener = arg3;
+        sendRequest(PURCHASE_ITEM_PACK, [
+            Integer.valueOf(arg1), arg2, listener3
         ]);
     }
 }

@@ -745,13 +745,13 @@ public class BaseGameBackend
         var encoded :Object = ObjectMarshaller.encode(value, false);
         var logger :InvocationService_ConfirmListener = createLoggingConfirmListener("sendMessage");
         if (playerId == TO_ALL) {
-            _gameObj.messageService.sendMessage(_ctx.getClient(), messageName, encoded, logger);
+            _gameObj.messageService.sendMessage(messageName, encoded, logger);
 
         } else {
             // included here is handling EXCLUDE_AGENT, which happens on the server
             var players :TypedArray = TypedArray.create(int);
             players.push(playerId);
-            _gameObj.messageService.sendPrivateMessage(_ctx.getClient(), messageName, encoded,
+            _gameObj.messageService.sendPrivateMessage(messageName, encoded,
                 players, logger);
         }
     }
@@ -772,9 +772,8 @@ public class BaseGameBackend
 
         var encoded :Object = PropertySpaceHelper.encodeProperty(value, (key == null));
         var ikey :Integer = (key == null) ? null : new Integer(int(key));
-        _gameObj.propertyService.setProperty(
-            _ctx.getClient(), propName, encoded, ikey, isArray,
-            false, null, createLoggingConfirmListener("setProperty"));
+        _gameObj.propertyService.setProperty(propName, encoded, ikey, isArray, false, null,
+            createLoggingConfirmListener("setProperty"));
         if (immediate) {
             // we re-decode so that it looks like it came off the net
             try {
@@ -805,7 +804,7 @@ public class BaseGameBackend
         var encodedValue :Object = PropertySpaceHelper.encodeProperty(value, true);
         var encodedTestValue :Object = PropertySpaceHelper.encodeProperty(testValue, true);
         _gameObj.propertyService.setProperty(
-            _ctx.getClient(), propName, encodedValue, null, false, true, encodedTestValue,
+            propName, encodedValue, null, false, true, encodedTestValue,
             createLoggingConfirmListener("testAndSetProperty"));
     }
 
@@ -844,7 +843,7 @@ public class BaseGameBackend
 
         // request it to be made so by the server
         _gameObj.whirledGameService.getCookie(
-            _ctx.getClient(), occupantId, createLoggingConfirmListener("getCookie"));
+            occupantId, createLoggingConfirmListener("getCookie"));
     }
 
     protected function setUserCookie_v1 (
@@ -866,7 +865,7 @@ public class BaseGameBackend
         }
 
         _gameObj.whirledGameService.setCookie(
-            _ctx.getClient(), ba, occupantId, createLoggingConfirmListener("setCookie"));
+            ba, occupantId, createLoggingConfirmListener("setCookie"));
         return true;
     }
 
@@ -889,7 +888,7 @@ public class BaseGameBackend
         }
 
         _gameObj.prizeService.awardTrophy(
-            _ctx.getClient(), ident, playerId, createLoggingConfirmListener("awardTrophy"));
+            ident, playerId, createLoggingConfirmListener("awardTrophy"));
 
         return true;
     }
@@ -899,7 +898,7 @@ public class BaseGameBackend
     {
         if (countPlayerData(GameData.PRIZE_MARKER, ident, playerId) == 0) {
             _gameObj.prizeService.awardPrize(
-                _ctx.getClient(), ident, playerId, createLoggingConfirmListener("awardPrize"));
+                ident, playerId, createLoggingConfirmListener("awardPrize"));
         }
     }
 
@@ -1077,14 +1076,14 @@ public class BaseGameBackend
     {
         validateConnected();
         _gameObj.whirledGameService.endTurn(
-            _ctx.getClient(), nextPlayerId, createLoggingConfirmListener("endTurn"));
+            nextPlayerId, createLoggingConfirmListener("endTurn"));
     }
 
     protected function endRound_v1 (nextRoundDelay :int) :void
     {
         validateConnected();
         _gameObj.whirledGameService.endRound(
-            _ctx.getClient(), nextRoundDelay, createLoggingConfirmListener("endRound"));
+            nextRoundDelay, createLoggingConfirmListener("endRound"));
     }
 
     protected function endGame_v2 (... winnerIds) :void
@@ -1108,7 +1107,7 @@ public class BaseGameBackend
 
         // pass the buck straight on through, the server will validate everything
         _gameObj.whirledGameService.endGameWithWinners(
-            _ctx.getClient(), TypedArray.create(int, winnerIds), TypedArray.create(int, loserIds),
+            TypedArray.create(int, winnerIds), TypedArray.create(int, loserIds),
             payoutType, createLoggingConfirmListener("endGameWithWinners"));
     }
 
@@ -1121,7 +1120,7 @@ public class BaseGameBackend
 
         // pass the buck straight on through, the server will validate everything
         _gameObj.whirledGameService.endGameWithScores(
-            _ctx.getClient(), TypedArray.create(int, playerIds), TypedArray.create(int, scores),
+            TypedArray.create(int, playerIds), TypedArray.create(int, scores),
             payoutType, gameMode, createLoggingConfirmListener("endGameWithScores"));
     }
 
@@ -1136,7 +1135,7 @@ public class BaseGameBackend
             return;
         }
         _gameObj.whirledGameService.restartGameIn(
-            _ctx.getClient(), seconds, createLoggingConfirmListener("restartGameIn"));
+            seconds, createLoggingConfirmListener("restartGameIn"));
     }
 
     protected function getMyId_v1 () :int
@@ -1172,7 +1171,7 @@ public class BaseGameBackend
         validateConnected();
         validateName(tickerName);
         _gameObj.whirledGameService.setTicker(
-            _ctx.getClient(), tickerName, msOfDelay, createLoggingConfirmListener("setTicker"));
+            tickerName, msOfDelay, createLoggingConfirmListener("setTicker"));
     }
 
     protected function getDictionaryLetterSet_v2 (
@@ -1192,8 +1191,7 @@ public class BaseGameBackend
         listener = createLoggingResultListener("getDictionaryLetterSet", failure, success);
 
         // just relay the data over to the server
-        _gameObj.whirledGameService.getDictionaryLetterSet(
-            _ctx.getClient(), locale, dictionary, count, listener);
+        _gameObj.whirledGameService.getDictionaryLetterSet(locale, dictionary, count, listener);
     }
 
     protected function getDictionaryWords_v1 (
@@ -1213,8 +1211,7 @@ public class BaseGameBackend
         listener = createLoggingResultListener("getDictionaryWords", failure, success);
 
         // just relay the data over to the server
-        _gameObj.whirledGameService.getDictionaryWords(
-            _ctx.getClient(), locale, dictionary, count, listener);
+        _gameObj.whirledGameService.getDictionaryWords(locale, dictionary, count, listener);
     }
 
     protected function checkDictionaryWord_v2 (
@@ -1234,8 +1231,7 @@ public class BaseGameBackend
         listener = createLoggingResultListener("checkDictionaryWord", failure, success);
 
         // just relay the data over to the server
-        _gameObj.whirledGameService.checkDictionaryWord(
-            _ctx.getClient(), locale, dictionary, word, listener);
+        _gameObj.whirledGameService.checkDictionaryWord(locale, dictionary, word, listener);
     }
 
     //---- .services.bags --------------------------------------------------
@@ -1245,8 +1241,8 @@ public class BaseGameBackend
         validateConnected();
         validateName(srcColl);
         validateName(intoColl);
-        _gameObj.whirledGameService.mergeCollection(_ctx.getClient(),
-            srcColl, intoColl, createLoggingConfirmListener("mergeCollection"));
+        _gameObj.whirledGameService.mergeCollection(srcColl, intoColl,
+            createLoggingConfirmListener("mergeCollection"));
     }
 
     /**
@@ -1263,8 +1259,7 @@ public class BaseGameBackend
         validateValue(values);
 
         var encodedValues :TypedArray = (ObjectMarshaller.encode(values, true) as TypedArray);
-        _gameObj.whirledGameService.addToCollection(
-            _ctx.getClient(), collName, encodedValues, clearExisting,
+        _gameObj.whirledGameService.addToCollection(collName, encodedValues, clearExisting,
             createLoggingConfirmListener("populateCollection"));
     }
 
@@ -1298,7 +1293,7 @@ public class BaseGameBackend
         }
 
         _gameObj.whirledGameService.getFromCollection(
-            _ctx.getClient(), collName, consume, count, msgOrPropName, playerId, listener);
+            collName, consume, count, msgOrPropName, playerId, listener);
     }
 
     //---- backwards compatability -----------------------------------------

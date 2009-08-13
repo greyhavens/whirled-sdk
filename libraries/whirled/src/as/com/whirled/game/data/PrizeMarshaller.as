@@ -26,12 +26,12 @@ public class PrizeMarshaller extends InvocationMarshaller
     public static const AWARD_PRIZE :int = 1;
 
     // from interface PrizeService
-    public function awardPrize (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void
+    public function awardPrize (arg1 :String, arg2 :int, arg3 :InvocationService_InvocationListener) :void
     {
-        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener4.listener = arg4;
-        sendRequest(arg1, AWARD_PRIZE, [
-            arg2, Integer.valueOf(arg3), listener4
+        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener3.listener = arg3;
+        sendRequest(AWARD_PRIZE, [
+            arg1, Integer.valueOf(arg2), listener3
         ]);
     }
 
@@ -39,12 +39,12 @@ public class PrizeMarshaller extends InvocationMarshaller
     public static const AWARD_TROPHY :int = 2;
 
     // from interface PrizeService
-    public function awardTrophy (arg1 :Client, arg2 :String, arg3 :int, arg4 :InvocationService_InvocationListener) :void
+    public function awardTrophy (arg1 :String, arg2 :int, arg3 :InvocationService_InvocationListener) :void
     {
-        var listener4 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
-        listener4.listener = arg4;
-        sendRequest(arg1, AWARD_TROPHY, [
-            arg2, Integer.valueOf(arg3), listener4
+        var listener3 :InvocationMarshaller_ListenerMarshaller = new InvocationMarshaller_ListenerMarshaller();
+        listener3.listener = arg3;
+        sendRequest(AWARD_TROPHY, [
+            arg1, Integer.valueOf(arg2), listener3
         ]);
     }
 }
