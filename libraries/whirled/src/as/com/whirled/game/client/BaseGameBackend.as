@@ -350,7 +350,7 @@ public class BaseGameBackend
     }
 
     // from ChatDisplay
-    public function displayMessage (msg :ChatMessage, alreadyDisplayed :Boolean) :Boolean
+    public function displayMessage (msg :ChatMessage) :void
     {
         if (msg is UserMessage && msg.localtype == ChatCodes.PLACE_CHAT_TYPE) {
             var occInfo :OccupantInfo = _gameObj.getOccupantInfo(UserMessage(msg).speaker);
@@ -359,7 +359,6 @@ public class BaseGameBackend
                 callUserCode("userChat_v1", infoToId(occInfo), msg.message);
             }
         }
-        return true;
     }
 
     /**
