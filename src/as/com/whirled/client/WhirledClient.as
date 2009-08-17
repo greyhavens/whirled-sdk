@@ -29,8 +29,10 @@ import com.threerings.parlor.data.ParlorMarshaller;
 import com.threerings.parlor.game.data.UserIdentifier;
 
 import com.whirled.game.client.TestGameController;
+import com.whirled.game.client.TestService;
 import com.whirled.game.client.TestUserIdentifier;
 import com.whirled.game.data.TestGameDefinition;
+import com.whirled.game.data.TestMarshaller;
 import com.whirled.game.data.WhirledGameConfig;
 import com.whirled.game.data.WhirledPlayerObject;
 
@@ -57,7 +59,7 @@ public class WhirledClient extends CrowdClient
         UserIdentifier.setIder(TestUserIdentifier.getUserId);
 
         // prior to logging on to a server, set up our security policy for that server
-        addClientObserver(new ClientAdapter(clientWillLogon));
+        addClientObserver(new ClientAdapter(clientWillLogon)); 
 
         setServer("localhost", DEFAULT_SERVER_PORTS);
         logon();
@@ -72,6 +74,7 @@ public class WhirledClient extends CrowdClient
 
         var c :Class;
         c = ParlorMarshaller;
+        c = TestMarshaller;
         c = WhirledGameConfig;
         c = TestGameDefinition;
         c = TestGameController;
@@ -80,6 +83,15 @@ public class WhirledClient extends CrowdClient
         [ResourceBundle("global")]
         [ResourceBundle("chat")]
         var rb :ResourceBundle;
+    }
+
+    // from Client
+    override public function gotClientObject (clobj :ClientObject) :void
+    {
+        super.gotClientObject(clobj);
+
+        // let the server know we're ready to play
+        (_ctx.getClient().requireService(TestService) as TestService).clientReady();
     }
 
     /**
