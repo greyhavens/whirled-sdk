@@ -142,6 +142,7 @@
       <arg value="-output"/>
       <arg value="${deploy.dir}/game-server-lib.swc"/>
       <arg value="-compiler.source-path=src/thane"/>
+      <arg value="-include-sources=src/as/com/whirled/game"/>
       <arg value="-include-sources=src/thane/com/whirled/thane/WhirledThaneTestClientReferences.as"/>
     </java>
 
