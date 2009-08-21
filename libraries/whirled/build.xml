@@ -173,6 +173,7 @@
       <arg value="dist/thane-config.xml"/>
       <arg value="-compiler.external-library-path"/>
       <arg value="${deploy.dir}/lib/thane${extdep.suffix}.swc"/>
+      <arg value="${deploy.dir}/lib/ooolib.swc"/>
       <arg value="${deploy.dir}/lib/naryalib.swc"/>
       <arg value="${deploy.dir}/lib/nenyalib.swc"/>
       <arg value="${deploy.dir}/lib/vilyalib.swc"/>
