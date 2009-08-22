@@ -62,7 +62,6 @@
       <arg value="-link-report=${link-report.file}"/>
       <arg value="-library-path+=${build.root}/dist/lib/flexlib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/tweener.swc"/>
-      <arg value="-library-path+=${build.root}/dist/lib/player-env.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/ooolib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/naryalib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/nenyalib.swc"/>
@@ -91,7 +90,6 @@
       <arg value="${app.additional-config.arg}"/>
       <arg value="-external-library-path"/>
       <arg value="${build.root}/dist/lib/thane.swc"/>
-      <arg value="-library-path+=${build.root}/dist/lib/player-env.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/ooolib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/naryalib.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/nenyalib.swc"/>
@@ -386,7 +384,6 @@
             <unavailable dir="/export/whirled/dist/lib">
               <include name="flexlib.swc"/>
               <include name="tweener.swc"/>
-              <include name="player-env.swc"/>
               <include name="naryalib.swc"/>
               <include name="nenyalib.swc"/>
               <include name="vilyalib.swc"/>
