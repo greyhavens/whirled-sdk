@@ -106,7 +106,6 @@
       <arg value="-compiler.optimize"/>
       <arg value="-library-path+=${deploy.dir}/lib/ooolib.swc"/>
       <arg value="-library-path+=${deploy.dir}/lib/naryalib.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/player-env.swc"/>
       <arg value="-library-path+=${deploy.dir}/lib/nenyalib.swc"/>
       <arg value="-library-path+=${deploy.dir}/lib/vilyalib.swc"/>
       <arg value="-library-path+=${deploy.dir}/lib/whirledlib.swc"/>
@@ -132,7 +131,6 @@
       <arg value="-compiler.external-library-path"/>
       <arg value="${deploy.dir}/lib/thane.swc"/>
       <arg value="-compiler.library-path"/>
-      <arg value="${deploy.dir}/lib/thane-env.swc"/>
       <arg value="${deploy.dir}/lib/ooolib.swc"/>
       <arg value="${deploy.dir}/lib/naryalib.swc"/>
       <arg value="${deploy.dir}/lib/nenyalib.swc"/>
@@ -196,7 +194,6 @@
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
       <arg line="-library-path ${deploy.dir}/lib/ooolib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/player-env.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
@@ -220,7 +217,6 @@
       <arg line="-library-path ${flex.path}/frameworks/libs/air"/>
       <arg line="-library-path ${deploy.dir}/lib/ooolib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/player-env.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/tweener.swc"/>
@@ -284,8 +280,6 @@
       <fileset dir="${projects.dir}/whirled" includes="src/as/nochump/**"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
     </copy>
-    <copy file="${projects.dir}/narya/src/player/com/threerings/util/env/Environment.as"
-          tofile="${sdk.build}/src/as/com/threerings/util/env/Environment.as"/>
     <!-- copy contributed files -->
     <mkdir dir="${sdk.build}/contrib"/>
     <copy todir="${sdk.build}/contrib">
