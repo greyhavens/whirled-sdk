@@ -32,6 +32,10 @@
       <string>Contains implementations of the com.threerings.util.Map interface. You should create instances using the com.threerings.util.Maps factory.</string>
     </package>
     <package>
+      <string>com.threerings.util.sets</string>
+      <string>Contains implementations of the com.threerings.util.Set interface. You should create instances using the com.threerings.util.Set factory.</string>
+    </package>
+    <package>
       <string>com.whirled</string>
       <string>Used for developing Avatars, Toys and other Whirled entities.</string>
     </package>
