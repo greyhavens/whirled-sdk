@@ -14,8 +14,9 @@ import flash.utils.setTimeout;
 
 import com.adobe.net.URI;
 
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 import com.whirled.bureau.client.UserCodeLoader;
 import com.whirled.bureau.client.UserCode;
@@ -201,7 +202,7 @@ public class HttpUserCode
     protected static var _lastId :int;
 
     // track yards per URL
-    protected static var _yards :HashMap = new HashMap();
+    protected static var _yards :Map = Maps.newMapOf(String);
 }
 
 }
