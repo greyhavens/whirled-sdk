@@ -30,10 +30,7 @@ public class LevelPackManager
      */
     public function init (levelPacks :Array) :void
     {
-        if (_levelPacks.size() > 0) {
-            _levelPacks = new HashMap();
-        }
-
+        _levelPacks.clear();
         for each (var levelPack :Object in levelPacks) {
             _levelPacks.put(levelPack.ident, new LevelPack(levelPack.ident, levelPack.name,
                                                            levelPack.mediaURL, levelPack.premium));

@@ -30,7 +30,7 @@ import com.threerings.util.Maps;
 /**
  * A flash9-compatible SoundFactory that simply pulls sounds out of a provided ApplicationDomain.
  * Once sounds have been fetched from the ApplicationDomain once, they are cached in a local
- * HashMap.
+ * Map.
  */
 public class ApplicationDomainSoundFactory
     implements SoundFactory

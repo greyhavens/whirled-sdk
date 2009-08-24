@@ -21,8 +21,9 @@
 package com.whirled.contrib.simplegame.resource {
 
 import com.threerings.util.ArrayUtil;
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 public class ResourceManager
 {

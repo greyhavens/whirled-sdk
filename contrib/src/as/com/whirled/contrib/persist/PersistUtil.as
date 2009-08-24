@@ -23,12 +23,14 @@ package com.whirled.contrib.persist {
 import flash.utils.IDataInput;
 import flash.utils.IDataOutput;
 
+import com.threerings.util.ClassUtil;
 import com.threerings.util.Enum;
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 public class PersistUtil
 {
-    public static function serializeHashMap (output :IDataOutput, map :HashMap,
+    public static function serializeHashMap (output :IDataOutput, map :Map,
         serializeKey :Function = null, serializeValue :Function = null) :void
     {
         serializeKey = serializeKey == null ? serializeObject : serializeKey;
@@ -40,19 +42,19 @@ public class PersistUtil
         });
     }
 
-    public static function serializeEnumIntMap (output :IDataOutput, map :HashMap) :void
+    public static function serializeEnumIntMap (output :IDataOutput, map :Map) :void
     {
         serializeHashMap(output, map, serializeEnum, serializeInt);
     }
 
-    public static function serializeEnumStringMap (output :IDataOutput, map :HashMap) :void
+    public static function serializeEnumStringMap (output :IDataOutput, map :Map) :void
     {
         serializeHashMap(output, map, serializeEnum, serializeString);
     }
 
     public static function serializeSingleTypeMap (serializeFn :Function) :Function
     {
-        return function (output :IDataOutput, map :HashMap) :void {
+        return function (output :IDataOutput, map :Map) :void {
             serializeHashMap(output, map, serializeFn, serializeFn);
         }
     }
@@ -78,37 +80,43 @@ public class PersistUtil
     }
 
     public static function deserializeHashMap (input :IDataInput, deserializeKey :Function = null,
-        deserializeValue :Function = null) :HashMap
+        deserializeValue :Function = null) :Map
     {
         deserializeKey = deserializeKey == null ? deserializeObject : deserializeKey;
         deserializeValue = deserializeValue == null ? deserializeObject : deserializeValue;
-        var map :HashMap = new HashMap();
+        var map :Map = null;
         var size :int = input.readInt();
         for (var ii :int = 0; ii < size; ii++) {
             var key :Object = deserializeKey(input);
             var value :Object = deserializeValue(input);
+            if (map == null) {
+                map = Maps.newMapOf(ClassUtil.getClass(key));
+            }
             map.put(key, value);
+        }
+        if (map == null) {
+            map = Maps.newDictionaryMap();
         }
         return map;
     }
 
     public static function deserializeEnumIntMap (keyEnum :Class) :Function
     {
-        return function (input :IDataInput) :HashMap {
+        return function (input :IDataInput) :Map {
             return deserializeHashMap(input, deserializeEnum(keyEnum), deserializeInt);
         };
     }
 
     public static function deserializeEnumStringMap (keyEnum :Class) :Function
     {
-        return function (input :IDataInput) :HashMap {
+        return function (input :IDataInput) :Map {
             return deserializeHashMap(input, deserializeEnum(keyEnum), deserializeString);
         }
     }
 
     public static function deserializeSingleTypeMap (deserializeFn :Function) :Function
     {
-        return function (input :IDataInput) :HashMap {
+        return function (input :IDataInput) :Map {
             return deserializeHashMap(input, deserializeFn, deserializeFn);
         }
     }

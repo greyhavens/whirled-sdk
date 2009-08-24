@@ -96,8 +96,6 @@ public class Board
         }
         for each (var name :String in _groupNames) {
             _dynamicIns[name] = new Object();
-            //_dynamicIns[name] = new HashMap();
-            //_dynamicIns[name] = new Array();
             if (boardHas(name)) {
                 loadDynamics(_xml.board[0][name][0], _dynamicIns[name]);
             }
