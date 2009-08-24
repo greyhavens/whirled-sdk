@@ -23,7 +23,7 @@ public class BaseGameConfig extends GameConfig
 {
     /** Our configuration parameters. These will be seeded with the defaults from the game
      * definition and then configured by the player in the lobby. */
-    public var params :StreamableHashMap = new StreamableHashMap();
+    public var params :StreamableHashMap = new StreamableHashMap(String);
 
     public function BaseGameConfig (gameId :int = 0, gameDef :GameDefinition = null)
     {

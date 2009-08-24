@@ -122,7 +122,7 @@ public class WhirledGameConfigurator extends FlexGameConfigurator
 
         // if there were any custom XML configs, flush those as well.
         if (_customConfigs.length > 0) {
-            var params :StreamableHashMap = new StreamableHashMap();
+            var params :StreamableHashMap = new StreamableHashMap(String);
 
             for (var ii :int = 0; ii < _customConfigs.length; ii += 2) {
                 var ident :String = String(_customConfigs[ii]);
