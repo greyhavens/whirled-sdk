@@ -157,7 +157,7 @@ public class PlayerList extends VBox
     protected var _labelCreator :NameLabelCreator;
     protected var _list :AmbidextrousList;
     protected var _players :ArrayCollection = new ArrayCollection();
-    protected var _values :Map = Maps.newHashMap();
+    protected var _values :Map = Maps.newMapOf(Hashable);
 }
 }
 
@@ -207,7 +207,7 @@ class NameLabelImpl extends Label
     protected static const PRESENT_NAME_COLOR :uint = 0x000000;
 
     /** The color of the name label when a player is absent. */
-    protected static const ABSENT_NAME_COLOR :uint =0x777777;
+    protected static const ABSENT_NAME_COLOR :uint = 0x777777;
 }
 
 /**
