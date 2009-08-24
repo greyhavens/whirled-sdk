@@ -3,7 +3,8 @@
 
 package com.whirled.party {
 
-import com.threerings.util.WeakValueHashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 import com.whirled.AbstractControl;
 import com.whirled.ControlEvent;
@@ -86,6 +87,6 @@ public class PartyHelper
     protected var _host :AbstractControl;
 
     /** @private */
-    protected var _parties :WeakValueHashMap = new WeakValueHashMap();
+    protected var _parties :Map = Maps.newWeakValueMap(Maps.newMapOf(int));
 }
 }

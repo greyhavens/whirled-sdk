@@ -7,8 +7,9 @@ package com.whirled.game.client {
 
 import flash.utils.Dictionary;
 
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.threerings.util.Name;
 
 import com.threerings.presents.dobj.ElementUpdatedEvent;
@@ -210,7 +211,7 @@ public class ThaneGameBackend extends BaseGameBackend
     }
 
     protected var _ctrl :ThaneGameController;
-    protected var _players :HashMap = new HashMap();
+    protected var _players :Map = Maps.newMapOf(int);
 }
 }
 

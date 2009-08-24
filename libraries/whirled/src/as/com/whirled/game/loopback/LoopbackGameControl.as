@@ -6,12 +6,14 @@
 package com.whirled.game.loopback {
 
 import com.threerings.util.ArrayUtil;
-import com.threerings.util.HashMap;
-import com.threerings.util.HashSet;
-import com.threerings.util.Integer;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
+import com.threerings.util.Integer;
 import com.threerings.util.MethodQueue;
 import com.threerings.util.ObjectMarshaller;
+import com.threerings.util.Set;
+import com.threerings.util.Sets;
 import com.threerings.util.StringUtil;
 import com.threerings.util.Util;
 import com.whirled.game.CoinsAwardedEvent;
@@ -1359,8 +1361,8 @@ public class LoopbackGameControl extends GameControl
     protected var _userFuncs :Object;
     protected var _gameData :Object = new Object();
 
-    protected var _userCookies :HashMap = new HashMap();
-    protected var _awardedTrophies :HashSet = new HashSet();
+    protected var _userCookies :Map = Maps.newMapOf(String);
+    protected var _awardedTrophies :Set = Sets.newSetOf(String);
 
     protected var _curTransaction :Array;
     protected var _transactionCount :int;
@@ -1379,8 +1381,8 @@ public class LoopbackGameControl extends GameControl
     protected static var _roundStarted :Boolean = true;
     protected static var _roundId :int;
     protected static var _turnHolderId :int;
-    protected static var _tickers :HashMap = new HashMap(); // Map<name:String, ticker:Ticker>
-    protected static var _bags :HashMap = new HashMap(); // Map<name:String, bag:Array>
+    protected static var _tickers :Map = Maps.newMapOf(String); // Map<name:String, ticker:Ticker>
+    protected static var _bags :Map = Maps.newMapOf(String); // Map<name:String, bag:Array>
 
     protected static var _playerLoopback :LoopbackGameControl;
     protected static var _serverLoopback :LoopbackGameControl;

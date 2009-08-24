@@ -11,14 +11,16 @@ import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
 import com.threerings.io.Streamable;
 
-import com.threerings.util.HashMap;
+import com.threerings.util.Maps;
+import com.threerings.util.maps.ForwardingMap;
 import com.threerings.util.ObjectMarshaller;
 
-public class GameMap extends HashMap
+public class GameMap extends ForwardingMap
     implements Streamable
 {
     public function GameMap (dict :Dictionary = null)
     {
+        super(Maps.newMapOf(int));
         if (dict != null) {
             populate(dict);
         }

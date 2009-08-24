@@ -5,8 +5,6 @@
 
 package com.whirled.game {
 
-import com.threerings.util.WeakValueHashMap;
-
 import com.whirled.AbstractSubControl;
 import com.whirled.ControlEvent;
 import com.whirled.party.PartyHelper;

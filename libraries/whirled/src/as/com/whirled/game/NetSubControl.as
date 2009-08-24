@@ -5,7 +5,8 @@
 
 package com.whirled.game {
 
-import com.threerings.util.WeakValueHashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 import com.whirled.AbstractSubControl;
 
@@ -278,7 +279,7 @@ public class NetSubControl extends AbstractSubControl
     protected var _playersMsgCtrl :MessageSubControl;
 
     /* @private */
-    protected var _playerCtrls :WeakValueHashMap = new WeakValueHashMap();
+    protected var _playerCtrls :Map = Maps.newWeakValueMap(Maps.newMapOf(int));
 
     /** A special constant for sending a message to players only, and not the agent. */
     protected static const EXCLUDE_AGENT :int = int.MIN_VALUE + 1;

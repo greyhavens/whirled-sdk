@@ -15,7 +15,8 @@ import mx.core.ScrollPolicy;
 
 import com.threerings.util.Comparable;
 import com.threerings.util.Hashable;
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.threerings.util.Name;
 
 import com.threerings.flex.AmbidextrousList;
@@ -156,7 +157,7 @@ public class PlayerList extends VBox
     protected var _labelCreator :NameLabelCreator;
     protected var _list :AmbidextrousList;
     protected var _players :ArrayCollection = new ArrayCollection();
-    protected var _values :HashMap = new HashMap();
+    protected var _values :Map = Maps.newHashMap();
 }
 }
 

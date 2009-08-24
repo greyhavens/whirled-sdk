@@ -16,8 +16,9 @@ import mx.collections.Sort;
 import mx.controls.Label;
 
 import com.threerings.util.ArrayUtil;
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.threerings.util.Name;
 
 import com.threerings.presents.dobj.AttributeChangeListener;
@@ -304,9 +305,9 @@ public class GamePlayerList extends PlayerList
     protected var _label :Label;
 
     /** A mapping of id -> record */
-    protected var _byId :HashMap = new HashMap();
+    protected var _byId :Map = Maps.newMapOf(int);
 
     /** A mapping of name -> record. */
-    protected var _byName :HashMap = new HashMap();
+    protected var _byName :Map = Maps.newMapOf(Name);
 }
 }
