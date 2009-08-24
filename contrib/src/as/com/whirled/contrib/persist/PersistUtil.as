@@ -95,7 +95,7 @@ public class PersistUtil
             map.put(key, value);
         }
         if (map == null) {
-            map = Maps.newDictionaryMap();
+            map = Maps.newMapOf(Object);
         }
         return map;
     }
