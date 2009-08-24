@@ -20,7 +20,8 @@
 
 package com.whirled.contrib.simplegame {
 
-import com.threerings.util.SortedHashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.whirled.contrib.EventHandlerManager;
 import com.whirled.contrib.simplegame.tasks.ParallelTask;
 import com.whirled.contrib.simplegame.tasks.TaskContainer;
@@ -321,7 +322,7 @@ public class SimObject extends EventDispatcher
     protected var _anonymousTasks :ParallelTask = new ParallelTask();
 
     // stores a mapping from String to ParallelTask
-    protected var _namedTasks :SortedHashMap = new SortedHashMap(SortedHashMap.STRING_KEYS);
+    protected var _namedTasks :Map = Maps.newSortedMapOf(String);
 
     protected var _updatingTasks :Boolean;
 

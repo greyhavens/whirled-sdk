@@ -20,8 +20,9 @@
 
 package com.whirled.contrib.simplegame.net {
 
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 import flash.events.EventDispatcher;
 import flash.utils.ByteArray;
@@ -58,7 +59,7 @@ public class BasicMessageManager extends EventDispatcher
         return msg;
     }
 
-    protected var _messageTypes :HashMap = new HashMap();
+    protected var _messageTypes :Map = Maps.newMapOf(String);
 
     protected const log :Log = Log.getLog(this);
 }

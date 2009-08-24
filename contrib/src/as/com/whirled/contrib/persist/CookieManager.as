@@ -27,15 +27,16 @@ import flash.utils.ByteArray;
 import flash.utils.Timer;
 import flash.utils.getTimer; // function import
 
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 import com.whirled.game.GameControl;
 import com.whirled.game.PlayerSubControl;
 
 public class CookieManager extends EventDispatcher
 {
-    public function CookieManager (gameCtrl :GameControl, properties :HashMap,
+    public function CookieManager (gameCtrl :GameControl, properties :Map,
         cookieFactory :CookieFactory, playerId :int = 0 /*PlayerSubControl.CURRENT_USER*/,
         debugLogging :Boolean = false)
     {
@@ -44,7 +45,7 @@ public class CookieManager extends EventDispatcher
         _propertyDefaults = properties;
         _playerId = playerId;
         _debug = debugLogging;
-        _properties = new HashMap();
+        _properties = Maps.newMapOf(String);
 
         _gameCtrl.player.getCookie(gotCookie, _playerId);
     }
@@ -193,8 +194,8 @@ public class CookieManager extends EventDispatcher
 
     protected var _gameCtrl :GameControl;
     protected var _cookieFactory :CookieFactory;
-    protected var _properties :HashMap;
-    protected var _propertyDefaults :HashMap;
+    protected var _properties :Map;
+    protected var _propertyDefaults :Map;
     protected var _loaded :Boolean = false;
     protected var _lastWrite :int = 0;
     protected var _timer :Timer = null;

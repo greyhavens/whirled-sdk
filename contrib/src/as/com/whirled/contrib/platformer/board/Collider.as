@@ -23,7 +23,6 @@ package com.whirled.contrib.platformer.board {
 import flash.geom.Point;
 import flash.utils.getTimer;
 
-import com.threerings.util.HashMap;
 import com.threerings.util.ClassUtil;
 
 import com.whirled.contrib.platformer.PlatformerContext;

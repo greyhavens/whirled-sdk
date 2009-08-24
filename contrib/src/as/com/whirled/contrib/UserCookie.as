@@ -27,8 +27,9 @@ import flash.events.TimerEvent;
 import flash.utils.ByteArray;
 import flash.utils.Timer;
 
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 import com.whirled.game.GameControl;
 
@@ -419,7 +420,7 @@ public class UserCookie
 
     protected var _control :GameControl;
     protected var _cookieDef :Array;
-    protected var _parameters :HashMap = new HashMap();
+    protected var _parameters :Map = Maps.newMapOf(String);
     protected var _dirty :Boolean = false;
     protected var _timer :Timer;
     protected var _readOnly :Boolean = false;

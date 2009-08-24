@@ -38,7 +38,8 @@ import mx.core.ScrollPolicy;
 
 import mx.events.FlexEvent;
 
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 import com.whirled.contrib.platformer.piece.Piece;
 import com.whirled.contrib.platformer.piece.PieceFactory;
@@ -172,7 +173,7 @@ public class PieceEditDetails extends Canvas
         if (_detailTypes != null) {
             return;
         }
-        _detailTypes = new HashMap();
+        _detailTypes = Maps.newMapOf(String);
         _detailTypes.put("cname", function (attr :XML) :Detail {
             return new ComboDetail(
                 attr, _pfac.getShortPieceClasses(), function (option :String) :String {
@@ -200,6 +201,6 @@ public class PieceEditDetails extends Canvas
 
     protected var _p :Piece;
 
-    protected static var _detailTypes :HashMap;
+    protected static var _detailTypes :Map;
 }
 }

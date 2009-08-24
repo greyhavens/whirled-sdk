@@ -25,7 +25,8 @@ import flash.utils.getTimer; // function import
 import flash.utils.Timer;
 
 import com.threerings.util.Log;
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 /**
  * There are a variety of Least Frequently Used replacement policies used.  A strict LFU policy
@@ -140,7 +141,7 @@ public class LFUWeightedAgeCache
     protected var _missSource :DataSource;
     protected var _maxValue :int;
     protected var _evaluator :CacheObjectEvaluator;
-    protected var _cacheValues :HashMap = new HashMap();
+    protected var _cacheValues :Map = Maps.newMapOf(String);
     protected var _stats :CacheStats = new CacheStats();
     protected var _lastEvaluationTotal :int;
     protected var _timer :Timer;

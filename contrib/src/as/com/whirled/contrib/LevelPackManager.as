@@ -20,7 +20,8 @@
 
 package com.whirled.contrib {
 
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 public class LevelPackManager
 {
@@ -81,6 +82,6 @@ public class LevelPackManager
         return _levelPacks.values();
     }
 
-    protected var _levelPacks :HashMap = new HashMap();
+    protected var _levelPacks :Map = Maps.newMapOf(String);
 }
 }

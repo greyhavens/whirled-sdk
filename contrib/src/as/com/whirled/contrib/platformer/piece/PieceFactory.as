@@ -20,7 +20,8 @@
 
 package com.whirled.contrib.platformer.piece {
 
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.threerings.util.ClassUtil;
 
 public class PieceFactory
@@ -175,9 +176,9 @@ public class PieceFactory
         }
     }
 
-    protected var _pieceMap :HashMap = new HashMap();
-    protected var _listeners :HashMap = new HashMap();
-    protected var _pieceClasses :HashMap = new HashMap();
+    protected var _pieceMap :Map = Maps.newMapOf(String);
+    protected var _listeners :Map = Maps.newMapOf(String);
+    protected var _pieceClasses :Map = Maps.newMapOf(String);
     protected var _defaultClass :String;
 }
 }

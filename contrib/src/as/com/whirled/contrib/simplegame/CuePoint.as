@@ -20,7 +20,8 @@
 
 package com.whirled.contrib.simplegame {
 
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 /**
  * A simple mechanism for synchronizing logic across objects.
@@ -81,7 +82,7 @@ public class CuePoint
     protected var _cued :Boolean;
 
     // Map<name, waitCount>
-    protected static var _cuePoints :HashMap = new HashMap();
+    protected static var _cuePoints :Map = Maps.newMapOf(String);
 }
 
 }

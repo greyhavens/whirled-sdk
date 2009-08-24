@@ -22,7 +22,8 @@ package com.whirled.contrib.platformer.board {
 
 import com.threerings.util.ArrayIterator;
 import com.threerings.util.ClassUtil;
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.piece.Actor;
@@ -661,7 +662,7 @@ public class Board
     protected var _shots :Object = new Object();
     protected var _bound :Array = new Array();
 
-    protected var _listeners :HashMap = new HashMap();
+    protected var _listeners :Map = Maps.newMapOf(String);
 
     protected var _groupNames :Array;
 

@@ -1,6 +1,7 @@
 package com.whirled.contrib {
 
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.threerings.util.StringUtil;
 import com.whirled.net.ElementChangedEvent;
 import com.whirled.net.PropertyChangedEvent;
@@ -132,7 +133,7 @@ public class ImmediatePropControl extends EventDispatcher
 
     protected var _propCtrl :PropertySubControl;
     // we store a local copy of all our properties
-    protected var _localProps :HashMap = new HashMap();
+    protected var _localProps :Map = Maps.newMapOf(String);
 }
 
 }

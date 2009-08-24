@@ -20,7 +20,6 @@
 
 package com.whirled.contrib.simplegame.net {
 
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
 import com.whirled.contrib.EventHandlerManager;
 import com.whirled.game.GameControl;

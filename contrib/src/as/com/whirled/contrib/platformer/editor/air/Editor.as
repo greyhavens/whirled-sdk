@@ -36,8 +36,9 @@ import mx.controls.Label;
 import mx.core.WindowedApplication;
 import mx.events.FlexNativeMenuEvent;
 
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 import com.whirled.contrib.platformer.PlatformerContext;
 
@@ -406,7 +407,7 @@ public class Editor extends TabNavigator
     protected var _spriteFactoryInit :Function = PieceSpriteFactory.init;
     protected var _pieceEditView :PieceEditView;
     protected var _window :WindowedApplication;
-    protected var _openLevels :HashMap = new HashMap();
+    protected var _openLevels :Map = Maps.newMapOf(String);
 
     protected static const log :Log = Log.getLog(Editor);
 

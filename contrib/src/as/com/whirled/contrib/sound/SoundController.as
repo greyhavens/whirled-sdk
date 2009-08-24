@@ -31,8 +31,9 @@ import flash.media.SoundTransform;
 import flash.net.URLRequest;
 import flash.utils.getTimer; // function import
 
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.threerings.util.MethodQueue;
 
 import com.whirled.contrib.EventHandlerManager;
@@ -293,8 +294,8 @@ public class SoundController extends EventDispatcher
     }
 
     protected var _eventMgr :EventHandlerManager = new EventHandlerManager();
-    protected var _channels :HashMap = new HashMap();
-    protected var _tracks :HashMap = new HashMap();
+    protected var _channels :Map = Maps.newMapOf(String);
+    protected var _tracks :Map = Maps.newMapOf(String);
     protected var _track :SoundChannel;
     protected var _trackName :String;
     protected var _tickBindings :Array = [];

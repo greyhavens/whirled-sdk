@@ -100,7 +100,7 @@ public class ResourceManager
             rsrc.loadable.unload();
         }
 
-        _resources = new HashMap();
+        _resources.clear();
     }
 
     internal function createResource (resourceType :String, resourceName :String, loadParams :*)
@@ -144,11 +144,11 @@ public class ResourceManager
         }
     }
 
-    protected var _resources :HashMap = new HashMap(); // Map<name, resource>
+    protected var _resources :Map = Maps.newMapOf(String); // Map<name, resource>
     protected var _pendingSet :ResourceSet;
     protected var _loadingSets :Array = [];
 
-    protected var _resourceClasses :HashMap = new HashMap();
+    protected var _resourceClasses :Map = Maps.newMapOf(String);
 
     protected static var log :Log = Log.getLog(ResourceManager);
 }

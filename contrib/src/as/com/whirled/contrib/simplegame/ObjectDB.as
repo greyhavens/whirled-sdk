@@ -22,7 +22,8 @@ package com.whirled.contrib.simplegame {
 
 import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.whirled.contrib.EventHandlerManager;
 import com.whirled.contrib.simplegame.tasks.*;
 
@@ -385,10 +386,10 @@ public class ObjectDB extends EventDispatcher
     protected var _objectsPendingRemoval :Array;
 
     /** stores a mapping from String to Object */
-    protected var _namedObjects :HashMap = new HashMap();
+    protected var _namedObjects :Map = Maps.newMapOf(String);
 
     /** stores a mapping from String to Array */
-    protected var _groupedObjects :HashMap = new HashMap();
+    protected var _groupedObjects :Map = Maps.newMapOf(String);
 
     protected var _events :EventHandlerManager = new EventHandlerManager();
 }

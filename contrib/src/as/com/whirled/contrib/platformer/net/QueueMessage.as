@@ -22,8 +22,6 @@ package com.whirled.contrib.platformer.net {
 
 import flash.utils.ByteArray;
 
-import com.threerings.util.HashMap;
-
 public class QueueMessage extends BaseGameMessage
 {
     public static const NAME :String = "queue";

@@ -41,7 +41,8 @@ import com.whirled.contrib.platformer.piece.Shot;
 import com.whirled.contrib.platformer.piece.Spawner;
 
 import com.threerings.util.ClassUtil;
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.threerings.ui.KeyboardCodes;
 
 public class GameController
@@ -398,11 +399,11 @@ public class GameController
         return MAX_TICK;
     }
 
-    protected var _controllers :Array = new Array();
-    protected var _actorMap :HashMap = new HashMap();
-    protected var _shotMap :HashMap = new HashMap();
-    protected var _dynamicMap :HashMap = new HashMap();
-    protected var _events :Array = new Array();
+    protected var _controllers :Array = [];
+    protected var _actorMap :Map = Maps.newMapOf(String);
+    protected var _shotMap :Map = Maps.newMapOf(String);
+    protected var _dynamicMap :Map = Maps.newMapOf(String);
+    protected var _events :Array = [];
     protected var _defaultActorClass :Class;
     protected var _defaultShotClass :Class;
     protected var _defaultDynamicClass :Class;

@@ -24,7 +24,8 @@ import flash.events.EventDispatcher;
 import flash.utils.ByteArray;
 import flash.utils.getTimer;
 
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 import com.whirled.game.GameControl;
 import com.whirled.net.MessageReceivedEvent;
@@ -144,7 +145,7 @@ public class MessageManager extends EventDispatcher
     }
 
     protected var _gameCtrl :GameControl;
-    protected var _msgTypes :HashMap = new HashMap();
+    protected var _msgTypes :Map = Maps.newMapOf(String);
     protected var _lastRec :int;
     protected var _rec :int;
 }

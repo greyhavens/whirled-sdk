@@ -20,8 +20,9 @@
 
 package com.whirled.contrib.simplegame.resource {
 
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.whirled.contrib.simplegame.util.LoadableBatch;
 
 public class ResourceSet extends LoadableBatch
@@ -88,7 +89,7 @@ public class ResourceSet extends LoadableBatch
     }
 
     protected var _rm :ResourceManager;
-    protected var _resources :HashMap = new HashMap();
+    protected var _resources :Map = Maps.newMapOf(String);
 
     protected static const log :Log = Log.getLog(ResourceSet);
 }

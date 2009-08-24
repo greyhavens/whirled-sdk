@@ -31,7 +31,8 @@ import flash.net.URLRequest;
 
 import flash.utils.getTimer;
 
-import com.threerings.util.HashMap;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.threerings.util.Log;
 
 /**
@@ -246,7 +247,7 @@ public class Jukebox
     protected static var _frameDispatcher :IEventDispatcher;
     protected static var _eventMgr :EventHandlerManager;
 
-    protected static var _sounds :HashMap = new HashMap();
+    protected static var _sounds :Map = Maps.newMapOf(String);
 
     protected static var _loopCallback :Function = null;
 

@@ -20,15 +20,17 @@
 
 package com.whirled.contrib.sound {
 
-import com.threerings.util.HashSet;
+import com.threerings.util.Maps;
 import com.threerings.util.RandomUtil;
 import com.threerings.util.StringUtil;
+import com.threerings.util.sets.MapSet;
 
-public class EffectSet extends HashSet
+public class EffectSet extends MapSet
     implements SoundEffect
 {
     public function EffectSet (name :String, playType :PlayType, initialEffects :Array = null)
     {
+        super(Maps.newMapOf(String));
         _name = name;
         _playType = playType;
 

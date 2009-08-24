@@ -25,8 +25,9 @@ import flash.events.EventDispatcher;
 
 import com.whirled.game.GameControl;
 
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 import com.whirled.game.PlayerSubControl;
 import com.whirled.game.OccupantChangedEvent;
@@ -86,8 +87,8 @@ public class PersistenceManager extends EventDispatcher
 
     protected function init () :void
     {
-        _trophyProperties = new HashMap();
-        var cookiePropertyMaps :HashMap = new HashMap();
+        _trophyProperties = Maps.newMapOf(String);
+        var cookiePropertyMaps :Map = Maps.newMapOf(int);
         for each (var prototype :PropertyPrototype in getPrototypes()) {
             switch (prototype.type) {
             case PropertyType.TROPHY:
@@ -100,9 +101,10 @@ public class PersistenceManager extends EventDispatcher
                     new TrophyPrizeProperty(prototype.name, _gameCtrl, prototype.playerId));
 
             case PropertyType.COOKIE:
-                var cookieProperties :HashMap = cookiePropertyMaps.get(prototype.playerId);
+                var cookieProperties :Map = cookiePropertyMaps.get(prototype.playerId);
                 if (cookieProperties == null) {
-                    cookiePropertyMaps.put(prototype.playerId, cookieProperties = new HashMap());
+                    cookiePropertyMaps.put(prototype.playerId,
+                        cookieProperties = Maps.newMapOf(String));
                 }
                 cookieProperties.put(prototype.name, prototype);
                 break;
@@ -115,7 +117,7 @@ public class PersistenceManager extends EventDispatcher
         }
 
         _loaded = true;
-        _cookieManagers = new HashMap();
+        _cookieManagers = Maps.newMapOf(int);
         for each (var playerId :int in cookiePropertyMaps.keys()) {
             if (_debugLogging) {
                 log.debug("adding CookieManager [" + playerId + "]");
@@ -173,7 +175,7 @@ public class PersistenceManager extends EventDispatcher
         init();
     }
 
-    protected function createCookieManager (cookieProperties :HashMap, playerId :int) :CookieManager
+    protected function createCookieManager (cookieProperties :Map, playerId :int) :CookieManager
     {
         return new CookieManager(
                 _gameCtrl, cookieProperties, _cookieFactory, playerId, _debugLogging);
@@ -185,8 +187,8 @@ public class PersistenceManager extends EventDispatcher
     protected var _cookieFactory :CookieFactory;
     protected var _debugLogging :Boolean;
     protected var _loaded :Boolean = false;
-    protected var _trophyProperties :HashMap;
-    protected var _cookieManagers :HashMap;
+    protected var _trophyProperties :Map;
+    protected var _cookieManagers :Map;
     protected var _eventMgr :EventHandlerManager;
 }
 }

@@ -31,8 +31,9 @@ import flash.system.ApplicationDomain;
 import flash.utils.ByteArray;
 
 import com.threerings.util.ClassUtil;
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 import com.threerings.util.MultiLoader;
 
 import com.whirled.contrib.ZipMultiLoader;
@@ -310,7 +311,7 @@ public class PieceSpriteFactory
     }
 
     protected static var _duplicate :Boolean;
-    protected static var _spriteMap :HashMap = new HashMap();
+    protected static var _spriteMap :Map = Maps.newMapOf(String);
     protected static var _instanceMap :Object = new Object();
     protected static var _defaultPieceSprite :Class;
     protected static var _defaultDynamicSprite :Class;

@@ -23,8 +23,9 @@ package com.whirled.contrib.sound {
 import flash.media.Sound;
 import flash.system.ApplicationDomain;
 
-import com.threerings.util.HashMap;
 import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
 
 /**
  * A flash9-compatible SoundFactory that simply pulls sounds out of a provided ApplicationDomain.
@@ -58,7 +59,7 @@ public class ApplicationDomainSoundFactory
     }
 
     protected var _appDom :ApplicationDomain;
-    protected var _sounds :HashMap = new HashMap();
+    protected var _sounds :Map = Maps.newMapOf(String);
 
     private static const log :Log = Log.getLog(ApplicationDomainSoundFactory);
 }
