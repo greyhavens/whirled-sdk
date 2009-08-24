@@ -927,7 +927,7 @@ public class LoopbackGameControl extends GameControl
                 function (name :String, ticker :Ticker) :void {
                     ticker.timer.stop();
                 });
-            _tickers = new HashMap();
+            _tickers.clear();
         }
     }
 
