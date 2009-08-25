@@ -178,9 +178,7 @@
     <mkdir dir="${sdk.build}/docs"/>
     <delete dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
-      <fileset dir="${projects.dir}/flash-utils/src/as" includes="com/threerings/**"
-               excludes="**/MessageBundle.as **/MessageManager.as"/>
-      <fileset dir="${projects.dir}/narya/src/as" includes="com/threerings/util/**"/>
+      <fileset dir="${projects.dir}/flash-utils/src/as" includes="com/threerings/**"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/loopback/*.as"/>
