@@ -87,6 +87,6 @@ public class PartyHelper
     protected var _host :AbstractControl;
 
     /** @private */
-    protected var _parties :Map = Maps.newWeakValueMap(Maps.newMapOf(int));
+    protected var _parties :Map = Maps.newBuilder(int).makeWeakValues().build();
 }
 }

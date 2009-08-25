@@ -279,7 +279,7 @@ public class NetSubControl extends AbstractSubControl
     protected var _playersMsgCtrl :MessageSubControl;
 
     /* @private */
-    protected var _playerCtrls :Map = Maps.newWeakValueMap(Maps.newMapOf(int));
+    protected var _playerCtrls :Map = Maps.newBuilder(int).makeWeakValues().build();
 
     /** A special constant for sending a message to players only, and not the agent. */
     protected static const EXCLUDE_AGENT :int = int.MIN_VALUE + 1;
