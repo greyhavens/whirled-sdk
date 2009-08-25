@@ -33,7 +33,7 @@
     </package>
     <package>
       <string>com.threerings.util.sets</string>
-      <string>Contains implementations of the com.threerings.util.Set interface. You should create instances using the com.threerings.util.Set factory.</string>
+      <string>Contains implementations of the com.threerings.util.Set interface. You should create instances using the com.threerings.util.Sets factory.</string>
     </package>
     <package>
       <string>com.whirled</string>
