@@ -207,9 +207,13 @@
   </target>
 
   <target name="test-game" depends="delete-abc,copy-abc">
-    <!-- First, detect the CPU architecture; apparently Java uses both amd64 and x86_64 -->
+    <!-- The CPU architecture is 64-bit if Java reports 'amd64' or 'x86_64', unless we're
+         running under Mac, in which case we're always 32-bit. -->
     <condition property="arch" value="64" else="32">
-      <or><os arch="amd64"/><os arch="x86_64"/></or>
+      <and>
+        <or><os arch="amd64"/><os arch="x86_64"/></or>
+        <not><os name="Mac OS X"/></not>
+      </and>
     </condition>
     <condition property="arch.id" value="Windows-${arch}" else="${os.name}-${arch}">
       <os family="Windows"/>
