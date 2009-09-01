@@ -33,13 +33,13 @@ public class WeightedArray
         _dataDirty = true;
     }
 
-    public function push (data :*, chance :Number) :void
+    public function push (data :*, relativeChance :Number) :void
     {
-        if (chance <= 0) {
-            throw new ArgumentError("chance must be > 0");
+        if (relativeChance <= 0) {
+            throw new ArgumentError("relativeChance must be > 0");
         }
 
-        _data.push(new WeightedData(data, chance));
+        _data.push(new WeightedData(data, relativeChance));
         _dataDirty = true;
     }
 
@@ -97,13 +97,37 @@ public class WeightedArray
 
     /**
      * The function argument should have the following signature:
-     * function (item :*, chance :Number) :void.  It will be called once per item in the array.
+     * function (item :*, relativeChance :Number) :void.
+     * It will be called once per item in the array.
      */
     public function forEach (callback :Function) :void
     {
         _data.forEach(function (wd :WeightedData, ...ignored) :void {
-            callback(wd.data, wd.chance);
+            callback(wd.data, wd.relativeChance);
         });
+    }
+
+    /**
+     * @return the percentage chance - a value in [0, 1] - that the given data will be returned
+     * from a call to getNextData(), given the relative chance of all other data in the array.
+     */
+    public function getAbsoluteChance (data :*) :Number
+    {
+        updateData();
+
+        if (_data.length == 0) {
+            return 0;
+        }
+
+        var max :Number = WeightedData(_data[_data.length - 1]).max;
+        var dataChance :Number = 0;
+        forEach(function (thisData :*, relativeChance :Number) :void {
+            if (thisData === data) {
+                dataChance += relativeChance;
+            }
+        });
+
+        return dataChance / max;
     }
 
     public function get length () :int
@@ -117,7 +141,7 @@ public class WeightedArray
             var totalVal :Number = 0;
             for each (var wd :WeightedData in _data) {
                 wd.min = totalVal;
-                totalVal += wd.chance;
+                totalVal += wd.relativeChance;
             }
 
             _dataDirty = false;
@@ -135,17 +159,17 @@ public class WeightedArray
 class WeightedData
 {
     public var data :*;
-    public var chance :Number;
+    public var relativeChance :Number;
     public var min :Number;
 
     public function get max () :Number
     {
-        return min + chance;
+        return min + relativeChance;
     }
 
-    public function WeightedData (data :*, chance :Number)
+    public function WeightedData (data :*, relativeChance :Number)
     {
         this.data = data;
-        this.chance = chance;
+        this.relativeChance = relativeChance;
     }
 }
