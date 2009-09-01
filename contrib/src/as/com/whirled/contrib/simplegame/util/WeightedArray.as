@@ -27,6 +27,12 @@ public class WeightedArray
         _defaultRandStreamId = defaultRandStreamId;
     }
 
+    public function clear () :void
+    {
+        _data = [];
+        _dataDirty = true;
+    }
+
     public function push (data :*, chance :Number) :void
     {
         if (chance <= 0) {
