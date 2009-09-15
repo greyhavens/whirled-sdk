@@ -197,8 +197,12 @@ public class WhirledGameConfigurator extends SwingGameConfigurator
             return label;
         }
 
-        public boolean equals (Object other) {
+        @Override public boolean equals (Object other) {
             return (other instanceof Choice) && choice.equals(((Choice) other).choice);
+        }
+
+        @Override public int hashCode () {
+            return choice.hashCode();
         }
     }
 

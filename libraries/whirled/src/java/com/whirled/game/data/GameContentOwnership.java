@@ -5,6 +5,8 @@
 
 package com.whirled.game.data;
 
+import com.google.common.base.Objects;
+
 import com.threerings.presents.dobj.DSet.Entry;
 import com.threerings.io.SimpleStreamableObject;
 
@@ -75,5 +77,11 @@ public class GameContentOwnership extends SimpleStreamableObject
     public boolean equals (Object other)
     {
         return (compareTo((GameContentOwnership)other) == 0);
+    }
+    
+    @Override // from Object
+    public int hashCode ()
+    {
+    	return Objects.hashCode(gameId, type, ident, count);
     }
 }
