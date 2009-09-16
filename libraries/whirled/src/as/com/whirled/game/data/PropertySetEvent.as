@@ -13,8 +13,8 @@ import com.threerings.io.ObjectOutputStream;
 import com.threerings.io.Streamer;
 
 import com.threerings.util.Integer;
+import com.threerings.util.Joiner;
 import com.threerings.util.ObjectMarshaller;
-import com.threerings.util.StringBuilder;
 
 import com.threerings.presents.dobj.DObject;
 import com.threerings.presents.dobj.NamedEvent;
@@ -104,11 +104,10 @@ public class PropertySetEvent extends NamedEvent
         }
     }
 
-    override protected function toStringBuf (buf :StringBuilder) :void
+    override protected function toStringJoiner (j :Joiner) :void
     {
-        buf.append("PropertySetEvent ");
-        super.toStringBuf(buf);
-        buf.append(", key=").append(_key).append(", isArray=").append(_isArray);
+        super.toStringJoiner(j);
+        j.add("key", _key, "isArray", _isArray);
     }
 
     /** The client-side data that is assigned to this property. */
