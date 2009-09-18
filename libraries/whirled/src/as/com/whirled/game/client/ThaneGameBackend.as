@@ -56,20 +56,6 @@ public class ThaneGameBackend extends BaseGameBackend
     }
 
     /** @inheritDoc */ // from BaseGameBackend
-    override protected function populateProperties (o :Object) :void
-    {
-        super.populateProperties(o);
-
-        // .game
-        o["takeOverPlayer_v1"] = takeOverPlayer_v1;
-
-        // Party. TODO? If there were a TestThaneGameBackend, we'd put this there, but there
-        // isn't so we put it here and let it get overridden in MsoyThaneGameBackend
-        o["game_getPartyIds_v1"] = function () :Array { return [] };
-        o["player_getPartyId_v1"] = function (playerId :int) :int { return 0 };
-    }
-
-    /** @inheritDoc */ // from BaseGameBackend
     override public function shutdown () :void
     {
         super.shutdown();
@@ -90,17 +76,29 @@ public class ThaneGameBackend extends BaseGameBackend
     //---- .game -----------------------------------------------------------
 
     /** @inheritDoc */ // from BaseGameBackend
-    override protected function getMyId_v1 () :int
+    override public_api function getMyId_v1 () :int
     {
         validateConnected();
         return SERVER_AGENT_ID;
     }
 
-    protected function takeOverPlayer_v1 (playerId :int) :void
+    public_api function takeOverPlayer_v1 (playerId :int) :void
     {
         validateConnected();
         _gameObj.whirledGameService.makePlayerAI(
             playerId, createLoggingConfirmListener("makePlayerAI"));
+    }
+
+    //---- .party -----------------------------------------------------------
+
+    public_api function game_getPartyIds_v1 () :Array
+    {
+        return [];
+    }
+
+    public_api function player_getPartyId_v1 (playerId :int) :int
+    {
+        return 0;
     }
 
     // --------------------------
