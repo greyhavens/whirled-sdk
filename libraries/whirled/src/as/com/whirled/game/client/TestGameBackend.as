@@ -23,6 +23,16 @@ public class TestGameBackend extends WhirledGameBackend
         super(ctx, gameObj, ctrl);
     }
 
+    // from WhirledGameBackend
+    override protected function populateProperties (o :Object) :void
+    {
+        super.populateProperties(o);
+
+        o["game_getPartyIds_v1"] = game_getPartyIds_v1;
+        o["player_getPartyId_v1"] = player_getPartyId_v1;
+        // the rest of the party-related methods are OK as missing, since we never return a partyIds
+    }
+
     // from BaseGameBackend
     override protected function reportGameError (msg :String, err :Error = null) :void
     {
@@ -36,7 +46,7 @@ public class TestGameBackend extends WhirledGameBackend
     }
 
     // from WhirledGameBackend
-    override public_api function getHeadShot_v2 (occupant :int) :DisplayObject
+    override protected function getHeadShot_v2 (occupant :int) :DisplayObject
     {
         validateConnected();
 
@@ -50,17 +60,17 @@ public class TestGameBackend extends WhirledGameBackend
     }
 
     // from WhirledGameBackend
-    override public_api function requestConsumeItemPack_v1 (ident :String, msg :String) :Boolean
+    override protected function requestConsumeItemPack_v1 (ident :String, msg :String) :Boolean
     {
         return false; // TODO: to test things properly we really need to get the server involved
     }
 
-    public_api function game_getPartyIds_v1 () :Array
+    protected function game_getPartyIds_v1 () :Array
     {
         return []; // no parties in the test env.
     }
 
-    public_api function player_getPartyId_v1 (playerId :int) :int
+    protected function player_getPartyId_v1 (playerId :int) :int
     {
         return 0; // no parties in the test env.
     }

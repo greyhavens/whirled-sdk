@@ -35,8 +35,6 @@ import com.whirled.game.data.WhirledPlayerObject;
  */
 public class WhirledGameBackend extends BaseGameBackend
 {
-    public namespace api_function;
-
     public function WhirledGameBackend (
         ctx :CrowdContext, gameObj :WhirledGameObject, ctrl :WhirledGameController)
     {
@@ -74,7 +72,7 @@ public class WhirledGameBackend extends BaseGameBackend
      */
     public function sizeChanged () :void
     {
-        callUserCode("sizeChanged_v1", public_api::getSize_v1());
+        callUserCode("sizeChanged_v1", getSize_v1());
     }
 
     /**
@@ -105,7 +103,7 @@ public class WhirledGameBackend extends BaseGameBackend
         var name :String = event.getName();
         if (WhirledGameObject.GAME_CHAT == name) {
             // chat sent by the game, route to our displayInfo
-            public_api::localChat_v1(String(event.getArgs()[0]));
+            localChat_v1(String(event.getArgs()[0]));
 
         } else if (WhirledGameObject.USER_MESSAGE_EXCLUDE_AGENT == name) {
             dispatchUserMessage(event); // since we ain't an agent
@@ -130,7 +128,7 @@ public class WhirledGameBackend extends BaseGameBackend
     /** @inheritDoc */ // from BaseGameBackend
     override protected function countPlayerData (type :int, ident :String, playerId :int) :int
     {
-        if (playerId != CURRENT_USER && playerId != public_api::getMyId_v1()) {
+        if (playerId != CURRENT_USER && playerId != getMyId_v1()) {
             throw new Error("Query of other user data not allowed");
         }
         var plobj :WhirledPlayerObject = _ctx.getClient().getClientObject() as WhirledPlayerObject;
@@ -225,6 +223,47 @@ public class WhirledGameBackend extends BaseGameBackend
         _keyDispatcher = (o["dispatchEvent_v1"] as Function);
     }
 
+    /** @inheritDoc */ // from BaseGameBackend
+    override protected function populateProperties (o :Object) :void
+    {
+        super.populateProperties(o);
+
+        // GameControl
+        o["focusContainer_v1"] = focusContainer_v1;
+
+        // .local
+        o["alterKeyEvents_v1"] = alterKeyEvents_v1;
+        o["clearScores_v1"] = clearScores_v1;
+        o["filter_v1"] = filter_v1;
+        o["getHeadShot_v2"] = getHeadShot_v2;
+        o["getSize_v1"] = getSize_v1;
+        o["isEmbedded_v1"] = isEmbedded_v1;
+        o["localChat_v1"] = localChat_v1;
+        o["setMappedScores_v1"] = setMappedScores_v1;
+        o["setOccupantsLabel_v1"] = setOccupantsLabel_v1;
+        o["setPlayerScores_v1"] = setPlayerScores_v1;
+        o["setFrameRate_v1"] = setFrameRate_v1;
+        o["setShowReplay_v1"] = setShowReplay_v1;
+        o["setStageQuality_v1"] = setStageQuality_v1;
+        o["showPage_v1"] = showPage_v1;
+        o["showAllGames_v1"] = showAllGames_v1;
+        o["showGameLobby_v1"] = showGameLobby_v1;
+        o["showGameShop_v1"] = showGameShop_v1;
+        o["showTrophies_v1"] = showTrophies_v1;
+        o["showInvitePage_v1"] = showInvitePage_v1;
+        o["getInviteToken_v1"] = getInviteToken_v1;
+        o["getInviterMemberId_v1"] = getInviterMemberId_v1;
+
+        // .game
+        o["isMyTurn_v1"] = isMyTurn_v1;
+        o["playerReady_v1"] = playerReady_v1;
+
+        // Old methods: backwards compatability
+        o["getStageBounds_v1"] = getStageBounds_v1;
+        o["getHeadShot_v1"] = getHeadShot_v1;
+        o["setShowButtons_v1"] = setShowButtons_v1;
+    }
+
     /**
      * We've already tried notifying usercode, now do a framework-level notification
      * of the coin awarding.
@@ -242,7 +281,7 @@ public class WhirledGameBackend extends BaseGameBackend
 
     //---- GameControl -----------------------------------------------------
 
-    public_api function focusContainer_v1 () :void
+    protected function focusContainer_v1 () :void
     {
         validateConnected();
         _gameView.setFocus();
@@ -250,7 +289,7 @@ public class WhirledGameBackend extends BaseGameBackend
 
     //---- .local ----------------------------------------------------------
 
-    public_api function alterKeyEvents_v1 (keyEventType :String, add :Boolean) :void
+    protected function alterKeyEvents_v1 (keyEventType :String, add :Boolean) :void
     {
         validateConnected();
         if (add) {
@@ -260,14 +299,14 @@ public class WhirledGameBackend extends BaseGameBackend
         }
     }
 
-    public_api function localChat_v1 (msg :String) :void
+    protected function localChat_v1 (msg :String) :void
     {
         validateChat(msg);
         // The sendChat() messages will end up being routed through this method on each client.
         displayInfo(null, MessageBundle.taint(msg), WhirledGameCodes.USERGAME_CHAT_TYPE);
     }
 
-    public_api function filter_v1 (text :String) :String
+    protected function filter_v1 (text :String) :String
     {
         return (_ctx as CrowdContext).getChatDirector().filter(text, null, true);
     }
@@ -275,22 +314,22 @@ public class WhirledGameBackend extends BaseGameBackend
     /**
      * Get the size of the game area.
      */
-    public_api function getSize_v1 () :Point
+    protected function getSize_v1 () :Point
     {
         return new Point(_gameView.width, _gameView.height);
     }
 
-    public_api function isEmbedded_v1 () :Boolean
+    protected function isEmbedded_v1 () :Boolean
     {
         return false;
     }
 
-    public_api function setShowReplay_v1 (show :Boolean) :void
+    protected function setShowReplay_v1 (show :Boolean) :void
     {
         (_ctrl.getPlaceView() as WhirledGamePanel).setShowReplay(show);
     }
 
-    public_api function setFrameRate_v1 (frameRate :Number, quality :String = null) :void
+    protected function setFrameRate_v1 (frameRate :Number, quality :String = null) :void
     {
         validateConnected(); // so that the game can't futz the frame rate after we disconnect it!
 
@@ -301,11 +340,11 @@ public class WhirledGameBackend extends BaseGameBackend
         // To preserve backwards compatibility, the quality arg is now optional, but if specified
         // we must still let it work.
         if (quality != null) {
-            public_api::setStageQuality_v1(quality);
+            setStageQuality_v1(quality);
         }
     }
 
-    public_api function setStageQuality_v1 (quality :String) :void
+    protected function setStageQuality_v1 (quality :String) :void
     {
         validateConnected(); // it's important not to let any still-running game code
         // alter the frame rate after we've "shut it off" and restored the whirled default quality
@@ -314,25 +353,25 @@ public class WhirledGameBackend extends BaseGameBackend
         _stage.quality = quality;
     }
 
-    public_api function setOccupantsLabel_v1 (label :String) :void
+    protected function setOccupantsLabel_v1 (label :String) :void
     {
         (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setLabel(label);
     }
 
-    public_api function clearScores_v1 (clearValue :Object = null,
+    protected function clearScores_v1 (clearValue :Object = null,
         sortValuesToo :Boolean = false) :void
     {
         (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().clearScores(
             clearValue, sortValuesToo);
     }
 
-    public_api function setPlayerScores_v1 (scores :Array, sortValues :Array = null) :void
+    protected function setPlayerScores_v1 (scores :Array, sortValues :Array = null) :void
     {
         (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setPlayerScores(
             scores, sortValues);
     }
 
-    public_api function setMappedScores_v1 (scores :Object) :void
+    protected function setMappedScores_v1 (scores :Object) :void
     {
         (_ctrl.getPlaceView() as WhirledGamePanel).getPlayerList().setMappedScores(scores);
     }
@@ -342,13 +381,13 @@ public class WhirledGameBackend extends BaseGameBackend
      * Whirled, so display a message for testing purposes.  This will be overridden and completed
      * by a subclass with access to the rest of Whirled.
      */
-    public_api function showPage_v1 (token :String) :Boolean
+    protected function showPage_v1 (token :String) :Boolean
     {
     	displayInfo(null, "showPage() failed because game is not connected to Whirled.");
         return false;
     }
 
-    public_api function showAllGames_v1 () :void
+    protected function showAllGames_v1 () :void
     {
         displayInfo(null, "showAllGames failed because game is not connected to Whirled.");
     }
@@ -358,7 +397,7 @@ public class WhirledGameBackend extends BaseGameBackend
      * access to the rest of Whirled, so display a message for testing purposes.  This will be
      * overridden and completed by a subclass with access to the rest of Whirled.
      */
-    public_api function showGameShop_v1 (itemType :String, catalogId :int = 0) :void
+    protected function showGameShop_v1 (itemType :String, catalogId :int = 0) :void
     {
         displayInfo(null, "Open game shop failed because game is not connected to Whirled.");
     }
@@ -368,7 +407,7 @@ public class WhirledGameBackend extends BaseGameBackend
      * rest of Whirled, so display a message for testing purposes.  This will be overridden and
      * completed by a subclass with access to the rest of Whirled.
      */
-    public_api function showInvitePage_v1 (defmsg :String, token :String = "") :void
+    protected function showInvitePage_v1 (defmsg :String, token :String = "") :void
     {
     	displayInfo(null, "Open game invite page failed because game is not connected to Whirled.");
     }
@@ -377,7 +416,7 @@ public class WhirledGameBackend extends BaseGameBackend
      * Retrieves the invite token.  At this point, there is no way to retrieve the token, so a
      * message is displayed indicating they must be in Whirled.
      */
-    public_api function getInviteToken_v1 () :String
+    protected function getInviteToken_v1 () :String
     {
     	displayInfo(null, "Cannot retrieve invite token because game is not connected to Whirled.");
     	return null;
@@ -388,7 +427,7 @@ public class WhirledGameBackend extends BaseGameBackend
      * point, there is no way to retrieve this ID, so a message is displayed indicating they must
      * be in Whirled.
      */
-    public_api function getInviterMemberId_v1 () :int
+    protected function getInviterMemberId_v1 () :int
     {
     	displayInfo(null,
             "Cannot retrieve inviter's member ID because game is not connected to Whirled.");
@@ -399,7 +438,7 @@ public class WhirledGameBackend extends BaseGameBackend
      * Display a feedback message, since we're not connected. This will be overridden and
      * completed by a subclass with access to the rest of Whirled.
      */
-    public_api function showGameLobby_v1 (multiplayer :Boolean) :void
+    protected function showGameLobby_v1 (multiplayer :Boolean) :void
     {
         displayInfo(null, "Would display a game lobby, but we're in the test environment.");
     }
@@ -408,12 +447,12 @@ public class WhirledGameBackend extends BaseGameBackend
      * Displays the trophies awarded by this game in a popup.  This will be overridden and
      * completed by a subclass with access to the rest of Whirled.
      */
-    public_api function showTrophies_v1 () :void
+    protected function showTrophies_v1 () :void
     {
         displayInfo(null, "Would display trophies popup, but we're in the test environment.");
     }
 
-    public_api function getHeadShot_v2 (occupantId :int) :DisplayObject
+    protected function getHeadShot_v2 (occupantId :int) :DisplayObject
     {
         validateConnected();
 
@@ -424,13 +463,13 @@ public class WhirledGameBackend extends BaseGameBackend
     //---- .game -----------------------------------------------------------
 
     /** @inheritDoc */
-    override public_api function getMyId_v1 () :int
+    override protected function getMyId_v1 () :int
     {
         validateConnected();
         return nameToId(getUsername());
     }
 
-    public_api function playerReady_v1 () :void
+    protected function playerReady_v1 () :void
     {
         if (isParty()) {
             // I'd like to throw an error, but some old games incorrectly call this and we don't
@@ -442,7 +481,7 @@ public class WhirledGameBackend extends BaseGameBackend
         _ctrl.playerIsReady();
     }
 
-    public_api function isMyTurn_v1 () :Boolean
+    protected function isMyTurn_v1 () :Boolean
     {
         validateConnected();
         return getUsername().equals(_gameObj.turnHolder);
@@ -451,7 +490,7 @@ public class WhirledGameBackend extends BaseGameBackend
     //---- .game.seating ---------------------------------------------------
 
     /** @inheritDoc */
-    override public_api function getMyPosition_v1 () :int
+    override protected function getMyPosition_v1 () :int
     {
         validateConnected();
         return _gameObj.getPlayerIndex(
@@ -465,27 +504,27 @@ public class WhirledGameBackend extends BaseGameBackend
      * probably aren't many/any games that used this "in the wild", so we may be able to remove
      * this at some point.
      */
-    public_api function getStageBounds_v1 () :Rectangle
+    protected function getStageBounds_v1 () :Rectangle
     {
-        var size :Point = public_api::getSize_v1();
+        var size :Point = getSize_v1();
         return new Rectangle(0, 0, size.x, size.y);
     }
 
     /**
      * A backwards compatible method.
      */
-    public_api function getHeadShot_v1 (occupant :int, callback :Function) :void
+    protected function getHeadShot_v1 (occupant :int, callback :Function) :void
     {
         // this callback was defined to return a Sprite, and Thumbnail is one, so this is safe
-        callback(Sprite(public_api::getHeadShot_v2(occupant)), true);
+        callback(Sprite(getHeadShot_v2(occupant)), true);
     }
 
     /**
      * Backwards compatibility. setShowButtons() was removed Aug 9, 2008.
      */
-    public_api function setShowButtons_v1 (rematch :Boolean, back :Boolean) :void
+    protected function setShowButtons_v1 (rematch :Boolean, back :Boolean) :void
     {
-        public_api::setShowReplay_v1(rematch);
+        setShowReplay_v1(rematch);
         // and discard the 'back' button preference.
     }
 
