@@ -56,6 +56,8 @@ import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.data.GameObject;
 import com.threerings.parlor.game.data.UserIdentifier;
 
+import com.whirled.client.BackendHelper;
+
 import com.whirled.game.GameContentEvent;
 import com.whirled.game.client.PropertySpaceHelper;
 import com.whirled.game.data.BaseGameConfig;
@@ -86,6 +88,11 @@ public class BaseGameBackend
      * Magic number for sending a message to all players.
      */
     public static const TO_ALL :int = 0;
+
+    /**
+     * A namespace marker for functions and properties that should be exposed to user code.
+     */
+    public namespace public_api = "http://www.whirled.com/code/asdocs/";
 
     public var log :Log = Log.getLog(this);
 
@@ -549,9 +556,9 @@ public class BaseGameBackend
         var userProps :Object = props.userProps;
         setUserCodeProperties(userProps);
 
-        var ourProps :Object = new Object();
+        var ourProps :Object = {};
         populateProperties(ourProps);
-        props[hostPropName] = ourProps;
+        props[hostPropName] = new BackendHelper(this, public_api, ourProps);
 
         // determine whether to automatically start the game in a backwards compatible way
         var autoReady :Boolean = ("autoReady_v1" in userProps) ? userProps["autoReady_v1"] : true;
@@ -566,100 +573,12 @@ public class BaseGameBackend
         _userFuncs = o;
     }
 
+    /**
+     * Populate any api functions or properties that are not defined directly in this backend.
+     */
     protected function populateProperties (o :Object) :void
     {
-        // straight data
-        o["gameData"] = _gameData;
-
-        // convert our game config from a HashMap to a Dictionary
-        var gameConfig :Object = {};
-        var cfg :BaseGameConfig = getConfig();
-        cfg.params.forEach(function (key :Object, value :Object) :void {
-            gameConfig[key] = (value is Boxed) ? Boxed(value).unbox() : value;
-        });
-        o["gameConfig"] = gameConfig;
-        o["gameInfo"] = createGameInfo();
-
-        // GameControl
-        o["commitTransaction"] = commitTransaction_v1;
-        o["startTransaction"] = startTransaction_v1;
-
-        // .net
-        o["sendMessage_v2"] = sendMessage_v2;
-        o["setProperty_v2"] = setProperty_v2;
-        o["testAndSetProperty_v1"] = testAndSetProperty_v1;
-
-        // .player
-        o["getUserCookie_v2"] = getUserCookie_v2;
-        o["getCookie_v1"] = getCookie_v1;
-        o["setUserCookie_v1"] = setUserCookie_v1;
-        o["setCookie_v1"] = setCookie_v1;
-        o["isRegistered_v1"] = isRegistered_v1;
-        o["holdsTrophy_v1"] = holdsTrophy_v1;
-        o["awardTrophy_v1"] = awardTrophy_v1;
-        o["awardPrize_v1"] = awardPrize_v1;
-        o["getPlayerItemPacks_v1"] = getPlayerItemPacks_v1;
-        o["getPlayerLevelPacks_v1"] = getPlayerLevelPacks_v1;
-        o["requestConsumeItemPack_v1"] = requestConsumeItemPack_v1;
-
-        // .game
-        o["endGame_v2"] = endGame_v2;
-        o["endGameWithScores_v1"] = endGameWithScores_v1;
-        o["endGameWithWinners_v1"] = endGameWithWinners_v1;
-        o["endRound_v1"] = endRound_v1;
-        o["getControllerId_v1"] = getControllerId_v1;
-        o["getLevelPacks_v2"] = getLevelPacks_v2;
-        o["getItemPacks_v1"] = getItemPacks_v1;
-        o["loadLevelPackData_v1"] = loadLevelPackData_v1;
-        o["loadItemPackData_v1"] = loadItemPackData_v1;
-        o["getOccupants_v1"] = getOccupants_v1;
-        o["getOccupantName_v1"] = getOccupantName_v1;
-        o["getRound_v1"] = getRound_v1;
-        o["getTurnHolder_v1"] = getTurnHolder_v1;
-        o["isInPlay_v1"] = isInPlay_v1;
-        o["restartGameIn_v1"] = restartGameIn_v1;
-        o["sendChat_v1"] = sendChat_v1;
-        o["startNextTurn_v1"] = startNextTurn_v1;
-        o["getMyId_v1"] = getMyId_v1;
-
-        // .game.seating
-        o["getPlayers_v1"] = getPlayers_v1;
-        o["getPlayerPosition_v1"] = getPlayerPosition_v1;
-        o["getMyPosition_v1"] = getMyPosition_v1;
-
-        // .services
-        o["checkDictionaryWord_v2"] = checkDictionaryWord_v2;
-        o["getDictionaryLetterSet_v2"] = getDictionaryLetterSet_v2;
-        o["getDictionaryWords_v1"] = getDictionaryWords_v1;
-        o["setTicker_v1"] = setTicker_v1;
-
-        // .services.bags
-        o["getFromCollection_v2"] = getFromCollection_v2;
-        o["mergeCollection_v1"] = mergeCollection_v1;
-        o["populateCollection_v1"] = populateCollection_v1;
-
-        // Old methods: backwards compatability
-        o["awardFlow_v1"] = awardFlow_v1;
-        o["awardFlow_v2"] = awardFlow_v2;
-        o["checkDictionaryWord_v1"] = checkDictionaryWord_v1;
-        o["endTurn_v2"] = startNextTurn_v1; // it's the same!
-        o["getAvailableFlow_v1"] = getAvailableFlow_v1;
-        o["getDictionaryLetterSet_v1"] = getDictionaryLetterSet_v1;
-        o["setProperty_v1"] = setProperty_v1;
-        o["getLevelPacks_v1"] = getLevelPacks_v1;
-    }
-
-    /**
-     * Populate a small gameInfo property to communicate attributes to clients.
-     */
-    protected function createGameInfo () :Object
-    {
-        var o :Object = {};
-
-        // for now, all we indicate is the game type
-        o["type"] = getGameInfoType();
-
-        return o;
+        // nothing here. Used only in subclasses.
     }
 
     /**
@@ -714,28 +633,57 @@ public class BaseGameBackend
         }
     }
 
+    /**
+     * Populate a small gameInfo property to communicate attributes to clients.
+     */
+    public_api function get gameInfo () :Object
+    {
+        var o :Object = {};
+
+        // for now, all we indicate is the game type
+        o["type"] = getGameInfoType();
+
+        return o;
+    }
+
+    public_api function get gameData () :Object
+    {
+        return _gameData;
+    }
+
+    public_api function get gameConfig () :Object
+    {
+        // convert our game config from a HashMap to a Dictionary
+        var obj :Object = {};
+        var cfg :BaseGameConfig = getConfig();
+        cfg.params.forEach(function (key :Object, value :Object) :void {
+            obj[key] = (value is Boxed) ? Boxed(value).unbox() : value;
+        });
+        return obj;
+    }
+
     //---- GameControl -----------------------------------------------------
 
     /**
      * Starts a transaction that will group all game state changes into a single message.
      */
-    protected function startTransaction_v1 () :void
+    public_api function startTransaction () :void
     {
         validateConnected();
         _ctx.getClient().getInvocationDirector().startTransaction();
     }
 
     /**
-     * Commits a transaction started with <code>startTransaction_v1</code>.
+     * Commits a transaction started with <code>startTransaction</code>.
      */
-    protected function commitTransaction_v1 () :void
+    public_api function commitTransaction () :void
     {
         _ctx.getClient().getInvocationDirector().commitTransaction();
     }
 
     //---- .net ------------------------------------------------------------
 
-    protected function sendMessage_v2 (messageName :String, value :Object, playerId :int) :void
+    public_api function sendMessage_v2 (messageName :String, value :Object, playerId :int) :void
     {
         validateConnected();
         validateName(messageName);
@@ -763,7 +711,7 @@ public class BaseGameBackend
      * immediate and did not pass a 4th value.  All callers should now specify that value
      * explicitly.
      */
-    protected function setProperty_v2 (
+    public_api function setProperty_v2 (
         propName :String, value :Object, key :Object, isArray :Boolean, immediate :Boolean) :void
     {
         validateConnected();
@@ -790,7 +738,7 @@ public class BaseGameBackend
      * Newer code will only pass in propName, value, testValue. Older code will also pass in the
      * index, but that's ok as long as it's -1.
      */
-    protected function testAndSetProperty_v1 (
+    public_api function testAndSetProperty_v1 (
         propName :String, value :Object, testValue :Object, index :int = -1) :void
     {
         if (index != -1) {
@@ -809,14 +757,14 @@ public class BaseGameBackend
 
     //---- .player ---------------------------------------------------------
 
-    protected function getUserCookie_v2 (playerId :int, callback :Function) :void
+    public_api function getUserCookie_v2 (playerId :int, callback :Function) :void
     {
-        getCookie_v1(function (cookie :Object, ...unused) :void {
+        public_api::getCookie_v1(function (cookie :Object, ...unused) :void {
             callback(cookie);
         }, playerId);
     }
 
-    protected function getCookie_v1 (callback :Function, occupantId :int) :void
+    public_api function getCookie_v1 (callback :Function, occupantId :int) :void
     {
         validateConnected();
         occupantId = transformId(occupantId);
@@ -845,13 +793,13 @@ public class BaseGameBackend
             occupantId, createLoggingConfirmListener("getCookie"));
     }
 
-    protected function setUserCookie_v1 (
+    public_api function setUserCookie_v1 (
         cookie :Object, playerId :int = CURRENT_USER) :Boolean
     {
-        return setCookie_v1(cookie, playerId);
+        return public_api::setCookie_v1(cookie, playerId);
     }
 
-    protected function setCookie_v1 (
+    public_api function setCookie_v1 (
         cookie :Object, occupantId :int = CURRENT_USER) :Boolean
     {
         validateConnected();
@@ -868,21 +816,21 @@ public class BaseGameBackend
         return true;
     }
 
-    protected function isRegistered_v1 (playerId :int = CURRENT_USER) :Boolean
+    public_api function isRegistered_v1 (playerId :int = CURRENT_USER) :Boolean
     {
         return false; // derived classes do The Right Thing (tm)
     }
 
-    protected function holdsTrophy_v1 (
+    public_api function holdsTrophy_v1 (
         ident :String, playerId :int = CURRENT_USER) :Boolean
     {
         return countPlayerData(GameData.TROPHY_DATA, ident, playerId) > 0;
     }
 
-    protected function awardTrophy_v1 (
+    public_api function awardTrophy_v1 (
         ident :String, playerId :int = CURRENT_USER) :Boolean
     {
-        if (holdsTrophy_v1(ident, playerId)) {
+        if (public_api::holdsTrophy_v1(ident, playerId)) {
             return false;
         }
 
@@ -892,7 +840,7 @@ public class BaseGameBackend
         return true;
     }
 
-    protected function awardPrize_v1 (
+    public_api function awardPrize_v1 (
         ident :String, playerId :int = CURRENT_USER) :void
     {
         if (countPlayerData(GameData.PRIZE_MARKER, ident, playerId) == 0) {
@@ -901,29 +849,28 @@ public class BaseGameBackend
         }
     }
 
-    protected function getPlayerItemPacks_v1 (
-        playerId :int = CURRENT_USER) :Array
+    public_api function getPlayerItemPacks_v1 (playerId :int = CURRENT_USER) :Array
     {
-        return getItemPacks_v1(function (data :GameData) :int {
+        return public_api::getItemPacks_v1(function (data :GameData) :int {
             return countPlayerData(data.getType(), data.ident, playerId);
         });
     }
 
-    protected function getPlayerLevelPacks_v1 (playerId :int = CURRENT_USER) :Array
+    public_api function getPlayerLevelPacks_v1 (playerId :int = CURRENT_USER) :Array
     {
-        return getLevelPacks_v2(function (data :GameData) :Boolean {
+        return public_api::getLevelPacks_v2(function (data :GameData) :Boolean {
             return countPlayerData(data.getType(), data.ident, playerId) > 0;
         });
     }
 
-    protected function requestConsumeItemPack_v1 (ident :String, msg :String) :Boolean
+    public_api function requestConsumeItemPack_v1 (ident :String, msg :String) :Boolean
     {
         return false; // default implementation always rejects consumption
     }
 
     //---- .game -----------------------------------------------------------
 
-    protected function sendChat_v1 (msg :String) :void
+    public_api function sendChat_v1 (msg :String) :void
     {
         validateConnected();
         validateChat(msg);
@@ -931,7 +878,7 @@ public class BaseGameBackend
         _gameObj.postMessage(WhirledGameObject.GAME_CHAT, [ msg ]);
     }
 
-    protected function getLevelPacks_v2 (filter :Function = null) :Array
+    public_api function getLevelPacks_v2 (filter :Function = null) :Array
     {
         var packs :Array = [];
         for each (var data :GameData in _gameObj.gameData) {
@@ -946,7 +893,7 @@ public class BaseGameBackend
         return packs;
     }
 
-    protected function getItemPacks_v1 (filter :Function = null) :Array
+    public_api function getItemPacks_v1 (filter :Function = null) :Array
     {
         var packs :Array = [];
         for each (var data :GameData in _gameObj.gameData) {
@@ -965,13 +912,13 @@ public class BaseGameBackend
         return packs;
     }
 
-    protected function loadLevelPackData_v1 (
+    public_api function loadLevelPackData_v1 (
         ident :String, onLoaded :Function, onFailure :Function) :void
     {
         loadPackData(ident, GameData.LEVEL_DATA, onLoaded, onFailure);
     }
 
-    protected function loadItemPackData_v1 (
+    public_api function loadItemPackData_v1 (
         ident :String, onLoaded :Function, onFailure :Function) :void
     {
         loadPackData(ident, GameData.ITEM_DATA, onLoaded, onFailure);
@@ -1027,7 +974,7 @@ public class BaseGameBackend
         return null;
     }
 
-    protected function getOccupants_v1 () :Array
+    public_api function getOccupants_v1 () :Array
     {
         validateConnected();
         var occs :Array = [];
@@ -1039,53 +986,53 @@ public class BaseGameBackend
         return occs;
     }
 
-    protected function getOccupantName_v1 (playerId :int) :String
+    public_api function getOccupantName_v1 (playerId :int) :String
     {
         validateConnected();
         var name :Name = _idsToName[playerId]; // contains only mapping for init'd players
         return (name == null) ? null : name.toString();
     }
 
-    protected function getControllerId_v1 () :int
+    public_api function getControllerId_v1 () :int
     {
         validateConnected();
         return _gameObj.controllerId;
     }
 
-    protected function getTurnHolder_v1 () :int
+    public_api function getTurnHolder_v1 () :int
     {
         validateConnected();
         var occInfo :OccupantInfo = _gameObj.getOccupantInfo(_gameObj.turnHolder);
         return isInited(occInfo) ? infoToId(occInfo) : 0;
     }
 
-    protected function getRound_v1 () :int
+    public_api function getRound_v1 () :int
     {
         validateConnected();
         return _gameObj.roundId;
     }
 
-    protected function isInPlay_v1 () :Boolean
+    public_api function isInPlay_v1 () :Boolean
     {
         validateConnected();
         return _gameStarted;
     }
 
-    protected function startNextTurn_v1 (nextPlayerId :int) :void
+    public_api function startNextTurn_v1 (nextPlayerId :int) :void
     {
         validateConnected();
         _gameObj.whirledGameService.endTurn(
             nextPlayerId, createLoggingConfirmListener("endTurn"));
     }
 
-    protected function endRound_v1 (nextRoundDelay :int) :void
+    public_api function endRound_v1 (nextRoundDelay :int) :void
     {
         validateConnected();
         _gameObj.whirledGameService.endRound(
             nextRoundDelay, createLoggingConfirmListener("endRound"));
     }
 
-    protected function endGame_v2 (... winnerIds) :void
+    public_api function endGame_v2 (... winnerIds) :void
     {
         validateConnected();
 
@@ -1096,10 +1043,11 @@ public class BaseGameBackend
         for each (var info :OccupantInfo in getPlayerInfos().filter(Util.adapt(isInited))) {
             loserIds.push(infoToId(info));
         }
-        endGameWithWinners_v1(winnerIds, loserIds, 0) // WhirledGameControl.CASCADING_PAYOUT
+        public_api::endGameWithWinners_v1(winnerIds, loserIds, 0);
+        // 0 == WhirledGameControl.CASCADING_PAYOUT
     }
 
-    protected function endGameWithWinners_v1 (
+    public_api function endGameWithWinners_v1 (
         winnerIds :Array, loserIds :Array, payoutType :int) :void
     {
         validateConnected();
@@ -1112,7 +1060,7 @@ public class BaseGameBackend
 
     // gameMode was added on Oct-23-2008, most games will continue to use the default mode, but new
     // games may pass a non-zero value to make use of per-mode score distributions
-    protected function endGameWithScores_v1 (
+    public_api function endGameWithScores_v1 (
         playerIds :Array, scores :Array /* of int */, payoutType :int, gameMode :int = 0) :void
     {
         validateConnected();
@@ -1123,7 +1071,7 @@ public class BaseGameBackend
             payoutType, gameMode, createLoggingConfirmListener("endGameWithScores"));
     }
 
-    protected function restartGameIn_v1 (seconds :int) :void
+    public_api function restartGameIn_v1 (seconds :int) :void
     {
         validateConnected();
         if (!isParty()) {
@@ -1137,27 +1085,27 @@ public class BaseGameBackend
             seconds, createLoggingConfirmListener("restartGameIn"));
     }
 
-    protected function getMyId_v1 () :int
+    public_api function getMyId_v1 () :int
     {
         throw new Error("Abstract method");
     }
 
     //---- .game.seating ---------------------------------------------------
 
-    protected function getPlayerPosition_v1 (playerId :int) :int
+    public_api function getPlayerPosition_v1 (playerId :int) :int
     {
         validateConnected();
         var name :Name = _idsToName[playerId]; // contains only inited occs
         return (name == null) ? -1 : _gameObj.getPlayerIndex(name);
     }
 
-    protected function getPlayers_v1 () :Array
+    public_api function getPlayers_v1 () :Array
     {
         validateConnected();
         return getPlayerIds();
     }
 
-    protected function getMyPosition_v1 () :int
+    public_api function getMyPosition_v1 () :int
     {
         // Note: this is overridden in the whirled backend
         return -1;
@@ -1165,7 +1113,7 @@ public class BaseGameBackend
 
     //---- .services -------------------------------------------------------
 
-    protected function setTicker_v1 (tickerName :String, msOfDelay :int) :void
+    public_api function setTicker_v1 (tickerName :String, msOfDelay :int) :void
     {
         validateConnected();
         validateName(tickerName);
@@ -1173,7 +1121,7 @@ public class BaseGameBackend
             tickerName, msOfDelay, createLoggingConfirmListener("setTicker"));
     }
 
-    protected function getDictionaryLetterSet_v2 (
+    public_api function getDictionaryLetterSet_v2 (
         locale :String, dictionary :String, count :int, callback :Function) :void
     {
         validateConnected();
@@ -1193,7 +1141,7 @@ public class BaseGameBackend
         _gameObj.whirledGameService.getDictionaryLetterSet(locale, dictionary, count, listener);
     }
 
-    protected function getDictionaryWords_v1 (
+    public_api function getDictionaryWords_v1 (
         locale :String, dictionary :String, count :int, callback :Function) :void
     {
         validateConnected();
@@ -1213,7 +1161,7 @@ public class BaseGameBackend
         _gameObj.whirledGameService.getDictionaryWords(locale, dictionary, count, listener);
     }
 
-    protected function checkDictionaryWord_v2 (
+    public_api function checkDictionaryWord_v2 (
         locale :String, dictionary :String, word :String, callback :Function) :void
     {
         validateConnected();
@@ -1235,7 +1183,7 @@ public class BaseGameBackend
 
     //---- .services.bags --------------------------------------------------
 
-    protected function mergeCollection_v1 (srcColl :String, intoColl :String) :void
+    public_api function mergeCollection_v1 (srcColl :String, intoColl :String) :void
     {
         validateConnected();
         validateName(srcColl);
@@ -1247,7 +1195,7 @@ public class BaseGameBackend
     /**
      * Helper method for setCollection and addToCollection.
      */
-    protected function populateCollection_v1 (
+    public_api function populateCollection_v1 (
         collName :String, values :Array, clearExisting :Boolean) :void
     {
         validateConnected();
@@ -1265,7 +1213,7 @@ public class BaseGameBackend
     /**
      * Helper method for pickFromCollection and dealFromCollection.
      */
-    protected function getFromCollection_v2 (
+    public_api function getFromCollection_v2 (
         collName :String, count :int, msgOrPropName :String, playerId :int,
         consume :Boolean, callback :Function) :void
     {
@@ -1297,40 +1245,46 @@ public class BaseGameBackend
 
     //---- backwards compatability -----------------------------------------
 
-    protected function getDictionaryLetterSet_v1 (
+    public_api function getDictionaryLetterSet_v1 (
         locale :String, count :int, callback :Function) :void
     {
-        getDictionaryLetterSet_v2(locale, null, count, callback);
+        public_api::getDictionaryLetterSet_v2(locale, null, count, callback);
     }
 
-    protected function checkDictionaryWord_v1 (
+    public_api function checkDictionaryWord_v1 (
         locale :String, word :String, callback :Function) :void
     {
-        checkDictionaryWord_v2(locale, null, word, callback);
+        public_api::checkDictionaryWord_v2(locale, null, word, callback);
     }
 
     /** A backwards compatible method. */
-    protected function getAvailableFlow_v1 () :int
+    public_api function getAvailableFlow_v1 () :int
     {
         return 0;
     }
 
     /** A backwards compatible method. */
-    protected function awardFlow_v1 (amount :int) :void
+    public_api function awardFlow_v1 (amount :int) :void
     {
         // NOOP!
     }
 
     /** A backwards compatible method. */
-    protected function awardFlow_v2 (perf :int) :int
+    public_api function awardFlow_v2 (perf :int) :int
     {
         return 0;
     }
 
     /** A backwards compatible method. */
-    protected function getLevelPacks_v1 (ignored :* = null) :Array
+    public_api function endTurn_v2 (nextPlayerId :int) :void
     {
-        return getLevelPacks_v2()
+        public_api::startNextTurn_v1(nextPlayerId);
+    }
+
+    /** A backwards compatible method. */
+    public_api function getLevelPacks_v1 (ignored :* = null) :Array
+    {
+        return public_api::getLevelPacks_v2()
     }
 
     /**
@@ -1341,12 +1295,12 @@ public class BaseGameBackend
      * immediate and did not pass a 4th value.  All callers should now specify that value
      * explicitly. (And of course, setProperty_v2 takes control of this situation.)
      */
-    protected function setProperty_v1 (
+    public_api function setProperty_v1 (
         propName :String, value :Object, index :int, immediate :Boolean = true) :void
     {
         var key :Object = (index < 0) ? null : index;
         var isArray :Boolean = (key != null);
-        setProperty_v2(propName, value, key, isArray, immediate);
+        public_api::setProperty_v2(propName, value, key, isArray, immediate);
     }
 
     // --------------------------
@@ -1457,7 +1411,7 @@ public class BaseGameBackend
     protected function transformId (id :int) :int
     {
         if (id == CURRENT_USER) {
-            id = getMyId_v1();
+            id = public_api::getMyId_v1();
             if (id == SERVER_AGENT_ID) {
                 throw new Error("Server agent must provide a player id here");
             }
