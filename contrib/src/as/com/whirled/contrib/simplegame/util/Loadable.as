@@ -24,6 +24,12 @@ import com.threerings.util.Log;
 
 public class Loadable
 {
+    public function Loadable (numRetries :int = 0)
+    {
+        // the number of times to retry a failed load attempt
+        _numRetries = numRetries;
+    }
+
     public function load (onLoaded :Function = null, onLoadErr :Function = null) :void
     {
         if (_loaded && onLoaded != null) {
@@ -39,6 +45,7 @@ public class Loadable
 
             if (!_loading) {
                 _loading = true;
+                _retriesRemaining = _numRetries;
                 doLoad();
             }
         }
@@ -81,10 +88,19 @@ public class Loadable
     {
         log.error("load error: " + err);
 
-        var callbacks :Array = _onLoadErrCallbacks;
-        unload();
-        for each (var callback :Function in callbacks) {
-            callback(err);
+        if (_retriesRemaining != 0) {
+            if (_retriesRemaining > 0) {
+                _retriesRemaining--;
+            }
+            log.info("Retrying load", "retriesRemaining", _retriesRemaining);
+            doLoad();
+
+        } else {
+            var callbacks :Array = _onLoadErrCallbacks;
+            unload();
+            for each (var callback :Function in callbacks) {
+                callback(err);
+            }
         }
     }
 
@@ -110,13 +126,15 @@ public class Loadable
      */
     protected function doUnload () :void
     {
-        throw new Error("unloadNow");
+        throw new Error("abstract");
     }
 
     protected var _onLoadedCallbacks :Array = [];
     protected var _onLoadErrCallbacks :Array = [];
     protected var _loading :Boolean;
     protected var _loaded :Boolean;
+    protected var _numRetries :int;
+    protected var _retriesRemaining :int;
 
     protected static const log :Log = Log.getLog(Loadable);
 }
