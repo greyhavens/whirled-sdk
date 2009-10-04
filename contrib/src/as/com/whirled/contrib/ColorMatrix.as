@@ -48,6 +48,11 @@ public class ColorMatrix
 
     public var matrix :Array;
 
+    public static function create (mat :Object = null) :ColorMatrix
+    {
+        return new ColorMatrix(mat);
+    }
+
     public function ColorMatrix (mat :Object = null)
     {
         if (mat is ColorMatrix) {
@@ -412,6 +417,8 @@ public class ColorMatrix
 
     public function concat (mat :Array) :ColorMatrix
     {
+        var temp:Array = [];
+        var i :int;
         for (var y :int = 0; y < 4; y++) {
             for (var x :int = 0; x < 5; x++) {
                 temp[int(i + x)] = Number(mat[i]) * Number(matrix[x]) +
