@@ -36,7 +36,7 @@ import com.threerings.util.Map;
 import com.threerings.util.Maps;
 import com.threerings.util.MethodQueue;
 
-import com.whirled.contrib.EventHandlerManager;
+import com.threerings.util.EventHandlerManager;
 import com.whirled.contrib.LevelPackManager;
 import com.whirled.contrib.LevelPacks;
 

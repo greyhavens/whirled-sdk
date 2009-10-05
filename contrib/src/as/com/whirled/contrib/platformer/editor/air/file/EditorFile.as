@@ -24,7 +24,7 @@ import flash.events.Event;
 import flash.filesystem.File;
 import flash.net.FileFilter;
 
-import com.whirled.contrib.EventHandlers;
+import com.threerings.util.EventHandlers;
 
 import com.whirled.contrib.platformer.editor.air.FeedbackDialog;
 

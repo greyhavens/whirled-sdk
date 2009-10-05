@@ -34,7 +34,7 @@ import mx.controls.TextInput;
 import mx.controls.Label;
 import mx.events.ListEvent;
 
-import com.whirled.contrib.EventHandlers;
+import com.threerings.util.EventHandlers;
 
 import com.whirled.contrib.platformer.piece.BoundData;
 import com.whirled.contrib.platformer.piece.BoundedPiece;

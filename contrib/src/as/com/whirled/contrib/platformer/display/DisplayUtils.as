@@ -24,7 +24,7 @@ import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.filters.ColorMatrixFilter;
 
-import com.whirled.contrib.ColorMatrix;
+import com.threerings.display.ColorMatrix;
 
 public class DisplayUtils
 {

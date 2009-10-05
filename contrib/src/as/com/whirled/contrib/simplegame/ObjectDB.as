@@ -22,9 +22,9 @@ package com.whirled.contrib.simplegame {
 
 import com.threerings.util.ArrayUtil;
 import com.threerings.util.Assert;
+import com.threerings.util.EventHandlerManager;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
-import com.whirled.contrib.EventHandlerManager;
 import com.whirled.contrib.simplegame.tasks.*;
 
 import flash.events.EventDispatcher;

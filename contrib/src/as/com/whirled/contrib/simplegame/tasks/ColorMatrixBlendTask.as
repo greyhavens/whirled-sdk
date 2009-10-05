@@ -20,8 +20,8 @@
 
 package com.whirled.contrib.simplegame.tasks {
 
+import com.threerings.display.ColorMatrix;
 import com.threerings.display.FilterUtil;
-import com.whirled.contrib.ColorMatrix;
 import com.whirled.contrib.simplegame.ObjectMessage;
 import com.whirled.contrib.simplegame.ObjectTask;
 import com.whirled.contrib.simplegame.SimObject;

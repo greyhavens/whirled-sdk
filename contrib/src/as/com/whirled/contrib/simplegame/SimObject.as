@@ -20,9 +20,9 @@
 
 package com.whirled.contrib.simplegame {
 
+import com.threerings.util.EventHandlerManager;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
-import com.whirled.contrib.EventHandlerManager;
 import com.whirled.contrib.simplegame.tasks.ParallelTask;
 import com.whirled.contrib.simplegame.tasks.TaskContainer;
 

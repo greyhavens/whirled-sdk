@@ -33,7 +33,7 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Transform;
 
-import com.whirled.contrib.ColorMatrix;
+import com.threerings.display.ColorMatrix;
 import com.whirled.contrib.sound.SoundEffect;
 
 import com.whirled.contrib.platformer.PlatformerContext;

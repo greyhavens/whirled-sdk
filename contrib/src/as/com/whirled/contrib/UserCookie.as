@@ -99,7 +99,7 @@ import com.whirled.game.GameControl;
  * </pre>
  *
  * <p>One more note: this class creates a timer and registers the TimerEvent.TIMER listener with
- * com.whirled.contrib.EventHandlers.  To make sure that this class stops checking the timer when
+ * com.threerings.util.EventHandlers.  To make sure that this class stops checking the timer when
  * your game is unloaded, call EventHandlers.freeAllHandlers() when your game receives the
  * Event.UNLOAD event.</p>
  */

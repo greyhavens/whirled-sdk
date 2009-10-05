@@ -32,7 +32,7 @@ import com.threerings.util.Maps;
 import com.whirled.game.PlayerSubControl;
 import com.whirled.game.OccupantChangedEvent;
 
-import com.whirled.contrib.EventHandlerManager;
+import com.threerings.util.EventHandlerManager;
 
 public class PersistenceManager extends EventDispatcher
 {

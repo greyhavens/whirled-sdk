@@ -30,7 +30,7 @@ import flash.events.Event;
 
 import flash.filters.ColorMatrixFilter;
 
-import com.whirled.contrib.ColorMatrix;
+import com.threerings.display.ColorMatrix;
 import com.whirled.contrib.platformer.PlatformerContext;
 import com.whirled.contrib.platformer.piece.Actor;
 import com.whirled.contrib.platformer.util.Metrics;

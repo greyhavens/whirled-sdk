@@ -20,13 +20,10 @@
 
 package com.whirled.contrib.simplegame.net {
 
-import com.threerings.util.Log;
-import com.whirled.contrib.EventHandlerManager;
+import com.threerings.util.EventHandlerManager;
 import com.whirled.game.GameControl;
-import com.whirled.game.NetSubControl;
 import com.whirled.net.MessageReceivedEvent;
 
-import flash.utils.ByteArray;
 import flash.utils.getTimer;
 
 /**
