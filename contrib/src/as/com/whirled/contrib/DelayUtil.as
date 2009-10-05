@@ -21,6 +21,7 @@
 package com.whirled.contrib {
 
 import com.threerings.util.EventHandlerManager;
+import com.threerings.util.EventHandlers;
 
 import flash.events.Event;
 import flash.events.IEventDispatcher;
