@@ -20,21 +20,23 @@
 
 package com.whirled.contrib {
 
+import com.threerings.util.EventHandlerManager;
+
 import flash.events.Event;
 import flash.events.IEventDispatcher;
 
 /**
  * A simple utility class for delaying some action by any number of seconds or frames.
  */
-public class DelayUtil 
+public class DelayUtil
 {
     public static const SECONDS :int = 1;
     public static const FRAMES :int = 2;
 
-    /** 
+    /**
      * init must be called before DelayUtil can function.  The dispatcher that is passed in must
      * be a display object on that will remain on the display list, as the DisplayUtil needs
-     * constant ENTER_FRAME events in order to function.  
+     * constant ENTER_FRAME events in order to function.
      *
      * If an EventHandlerManager is provided, it will be used to register the event.  Otherwise
      * EventHandlers is used statically.
@@ -49,7 +51,7 @@ public class DelayUtil
     /**
      * @param type either SECONDS or FRAMES
      * @param count the number of SECONDS or FRAMES to wait
-     * @param callback a function that takes no parameters that will be called after the 
+     * @param callback a function that takes no parameters that will be called after the
      *                 specified delay.
      */
     public static function delay (type :int, count :int, callback :Function) :void
@@ -78,7 +80,7 @@ import flash.utils.getTimer; // function import
 
 class Delayer
 {
-    public function Delayer (count :int, callback :Function) 
+    public function Delayer (count :int, callback :Function)
     {
         _count = count;
         _callback = callback;
