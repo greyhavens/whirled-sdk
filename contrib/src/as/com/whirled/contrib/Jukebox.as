@@ -22,25 +22,24 @@ package com.whirled.contrib {
 
 import flash.events.Event;
 import flash.events.IEventDispatcher;
-
 import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
-
 import flash.net.URLRequest;
-
 import flash.utils.getTimer;
 
+import com.threerings.util.EventHandlerManager;
+import com.threerings.util.EventHandlers;
+import com.threerings.util.Log;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
-import com.threerings.util.Log;
 
 /**
- * A Jukebox class for handling looping background music.  
- * 
- * This class assumes that each track is a level pack defined for a game, and that 
- * com.whirled.contrib.LevelPacks has been initalized with the level packs for this game so that 
- * it can call LevelPacks.getMediaURL(trackName) in start() to find out where to download the 
+ * A Jukebox class for handling looping background music.
+ *
+ * This class assumes that each track is a level pack defined for a game, and that
+ * com.whirled.contrib.LevelPacks has been initalized with the level packs for this game so that
+ * it can call LevelPacks.getMediaURL(trackName) in start() to find out where to download the
  * music from.
  */
 public class Jukebox
@@ -53,11 +52,11 @@ public class Jukebox
      * The frameDispatcher must be a display object that will remain on the display list, as this
      * class depends on constant ENTER_FRAME events to function properly.
      *
-     * If an EventHandlerManager is provided, all event listeners will be registered using it.  
+     * If an EventHandlerManager is provided, all event listeners will be registered using it.
      * Otherwise, EventHandlers is used statically.
      */
-    public static function init (frameDispatcher :IEventDispatcher, 
-        eventMgr :EventHandlerManager = null) :void 
+    public static function init (frameDispatcher :IEventDispatcher,
+        eventMgr :EventHandlerManager = null) :void
     {
         _frameDispatcher = frameDispatcher;
         _eventMgr = eventMgr != null ? eventMgr : EventHandlers.getGlobalManager();
@@ -65,14 +64,14 @@ public class Jukebox
 
     /**
      * Start a background audio track.
-     * 
+     *
      * @param trackName the name of the level pack that contains the MP3 for this track.
      * @param crossfade If true, this track will fade in, and any previous track will fade out.  If
      *                  false, this track will begin playing immediately.
      * @param callback  A zero-arg function that will be called each time a loop of the current
      *                  song finishes and a new song is about to get played.
      */
-    public static function start (trackName :String, crossfade :Boolean = true, 
+    public static function start (trackName :String, crossfade :Boolean = true,
         callback :Function = null) :void
     {
         _loopCallback = callback;
@@ -93,7 +92,7 @@ public class Jukebox
         startSong(song, crossfade);
     }
 
-    /** 
+    /**
      * Fade the current music in.  Used in crossfading or for fading in music after calling
      * fadeOut().
      */
@@ -117,11 +116,11 @@ public class Jukebox
             return function (... ignored) :void {
                 var time :int = getTimer();
                 if (time > startTime + FADE_TIME) {
-                    _currentChannel.soundTransform = 
+                    _currentChannel.soundTransform =
                         new SoundTransform((_volume = targetVolume) / 100);
                     _eventMgr.unregisterListener(_frameDispatcher, Event.ENTER_FRAME, fadeInner);
                 } else {
-                    _currentChannel.soundTransform = 
+                    _currentChannel.soundTransform =
                         new SoundTransform((
                             _volume = targetVolume * (time - startTime) / FADE_TIME) / 100);
                 }
@@ -130,7 +129,7 @@ public class Jukebox
         _eventMgr.registerListener(_frameDispatcher, Event.ENTER_FRAME, fadeInner);
     }
 
-    /** 
+    /**
      * Fade the current music out.
      */
     public static function fadeOut () :void
@@ -143,7 +142,7 @@ public class Jukebox
 
             _eventMgr.unregisterListener(_currentChannel, Event.SOUND_COMPLETE, soundComplete);
             var fadeOutter :Function;
-            fadeOutter = function (startTime :int, channel :SoundChannel, 
+            fadeOutter = function (startTime :int, channel :SoundChannel,
                     startVolume :Number) :Function {
                 return function (... ignored) :void {
                     var time :int = getTimer();
@@ -152,7 +151,7 @@ public class Jukebox
                         _eventMgr.unregisterListener(
                             _frameDispatcher, Event.ENTER_FRAME, fadeOutter);
                     } else {
-                        channel.soundTransform = 
+                        channel.soundTransform =
                             new SoundTransform(startVolume * (1 - (time - startTime) / FADE_TIME));
                     }
                 }
@@ -185,13 +184,13 @@ public class Jukebox
         }
     }
 
-    /** 
-     * Modify the current volume level by the given amount.  This function will make sure the 
+    /**
+     * Modify the current volume level by the given amount.  This function will make sure the
      * volume remains within the valid range of 0 to 100.
      */
     public static function modifyVolume (by :int) :int
     {
-        // We go by increments of 5 right now, because we're only allowing control by keyboard. 
+        // We go by increments of 5 right now, because we're only allowing control by keyboard.
         // If we have a slider in the future, finer grained control will be good.
         var volume :int = Math.min(MAX_VOLUME, Math.max(0, _volume + by * 5));
         setVolume(volume);
@@ -209,7 +208,7 @@ public class Jukebox
         }
     }
 
-    protected static function soundComplete (event :Event) :void 
+    protected static function soundComplete (event :Event) :void
     {
         if (_currentChannel != null) {
             _eventMgr.unregisterListener(_currentChannel, Event.SOUND_COMPLETE, soundComplete);

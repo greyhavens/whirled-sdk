@@ -21,12 +21,12 @@
 package com.whirled.contrib {
 
 import flash.errors.IllegalOperationError;
-
 import flash.events.TimerEvent;
-
 import flash.utils.ByteArray;
 import flash.utils.Timer;
 
+import com.threerings.util.EventHandlerManager;
+import com.threerings.util.EventHandlers;
 import com.threerings.util.Log;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
