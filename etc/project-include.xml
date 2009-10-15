@@ -337,6 +337,13 @@
     </exec>
   </target>
 
+  <!-- allow an app.type to be "swf" to just run the swf by itself for testing -->
+  <target name="test-swf">
+    <exec executable="${player.path}">
+      <arg value="${app.name}.${app.suffix}"/>
+    </exec>
+  </target>
+
     <!-- test the ant task we built by attempting to define it -->
     <target name="define-dependency-task">
         <taskdef name="dependencyanalysis"
