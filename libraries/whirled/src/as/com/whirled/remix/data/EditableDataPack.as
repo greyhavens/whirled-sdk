@@ -21,6 +21,7 @@ import com.threerings.util.ArrayUtil;
 import com.threerings.util.StringUtil;
 import com.threerings.util.Util;
 import com.threerings.util.ValueEvent;
+import com.threerings.util.XmlUtil;
 
 /**
  * Dispatched when a data field has changed.
@@ -339,7 +340,7 @@ public class EditableDataPack extends DataPack
         // let's write out the metadata first
         var entry :ZipEntry = new ZipEntry(METADATA_FILENAME);
         outZip.putNextEntry(entry);
-        outZip.write(stringToBytes(Util.XMLtoXMLString(_metadata)));
+        outZip.write(stringToBytes(XmlUtil.XMLtoXMLString(_metadata)));
         outZip.closeEntry();
 
         var seenFiles :Dictionary = new Dictionary();

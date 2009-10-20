@@ -17,6 +17,7 @@ import flash.geom.Rectangle;
 import flash.utils.ByteArray;
 
 import com.threerings.util.Util;
+import com.threerings.util.XmlUtil;
 
 import nochump.util.zip.ZipEntry;
 import nochump.util.zip.ZipError;
@@ -186,7 +187,7 @@ public class BaseDataPack extends EventDispatcher
      */
     public function getFileAsXML (name :String) :XML
     {
-        return Util.newXML(getFileAsString(name));
+        return XmlUtil.newXML(getFileAsString(name));
     }
 
     /**
@@ -401,7 +402,7 @@ public class BaseDataPack extends EventDispatcher
         // now try parsing the data
         try {
             // this also can throw an Error if the XML doesn't parse
-            _metadata = Util.newXML(asString);
+            _metadata = XmlUtil.newXML(asString);
 
         } catch (error :Error) {
             dispatchError("Could not parse datapack: " + error.message);
