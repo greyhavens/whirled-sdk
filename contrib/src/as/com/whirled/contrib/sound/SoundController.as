@@ -24,17 +24,18 @@ import flash.errors.IOError;
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.IOErrorEvent;
+import flash.events.TimerEvent;
 import flash.geom.Point;
 import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
 import flash.net.URLRequest;
+import flash.utils.Timer;
 import flash.utils.getTimer; // function import
 
 import com.threerings.util.Log;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
-import com.threerings.util.MethodQueue;
 
 import com.threerings.util.EventHandlerManager;
 import com.whirled.contrib.LevelPackManager;
@@ -66,8 +67,8 @@ public class SoundController extends EventDispatcher
         _backgroundVolume = initialBackgroundVolume;
         _effectsVolume = initialEffectsVolume;
         _levelPackMgr = levelPackMgr == null ? LevelPacks.getGlobalManager() : levelPackMgr;
-
-        MethodQueue.callLater(tick);
+        _timer = new Timer(1); // fire every frame;
+        _timer.addEventListener(TimerEvent.TIMER, tick);
     }
 
     public function get effectsVolume () :Number
@@ -216,6 +217,7 @@ public class SoundController extends EventDispatcher
                 value.channel.stop();
             }
         });
+        _timer.stop();
     }
 
     protected function bindChannelRemoval (key :String) :Function
@@ -266,12 +268,15 @@ public class SoundController extends EventDispatcher
                 ii--;
             }
         }
-        MethodQueue.callLater(tick);
+        if (_tickBindings.length == 0) {
+            _timer.stop();
+        }
     }
 
     protected function addBinding (binding :Function) :void
     {
         _tickBindings.push(binding);
+        _timer.start(); // only starts if not already started
     }
 
     protected function loopTrack () :void
@@ -303,6 +308,8 @@ public class SoundController extends EventDispatcher
     protected var _effectsVolume :Number;
     protected var _soundFactory :SoundFactory;
     protected var _levelPackMgr :LevelPackManager;
+
+    protected var _timer :Timer;
 
     protected static const DISTANCE_NORMALIZE :Number =
         Point.distance(new Point(0, 0), new Point(1, 1));
