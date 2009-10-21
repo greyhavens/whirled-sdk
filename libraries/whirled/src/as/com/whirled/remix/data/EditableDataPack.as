@@ -340,7 +340,7 @@ public class EditableDataPack extends DataPack
         // let's write out the metadata first
         var entry :ZipEntry = new ZipEntry(METADATA_FILENAME);
         outZip.putNextEntry(entry);
-        outZip.write(stringToBytes(XmlUtil.XMLtoXMLString(_metadata)));
+        outZip.write(stringToBytes(XmlUtil.toXMLString(_metadata)));
         outZip.closeEntry();
 
         var seenFiles :Dictionary = new Dictionary();
