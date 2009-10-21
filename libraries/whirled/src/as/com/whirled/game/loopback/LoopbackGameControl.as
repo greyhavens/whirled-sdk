@@ -6,11 +6,11 @@
 package com.whirled.game.loopback {
 
 import com.threerings.util.ArrayUtil;
+import com.threerings.util.DelayUtil;
+import com.threerings.util.Integer;
 import com.threerings.util.Log;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
-import com.threerings.util.Integer;
-import com.threerings.util.MethodQueue;
 import com.threerings.util.ObjectMarshaller;
 import com.threerings.util.Set;
 import com.threerings.util.Sets;
@@ -317,7 +317,7 @@ public class LoopbackGameControl extends GameControl
         }
         if (--_transactionCount == 0) {
             for each (var op :Function in _curTransaction) {
-                MethodQueue.callLater(op);
+                DelayUtil.delayFrame(op);
             }
 
             _curTransaction = null;
@@ -338,7 +338,7 @@ public class LoopbackGameControl extends GameControl
         if (_transactionCount > 0) {
             _curTransaction.push(messageOp);
         } else {
-            MethodQueue.callLater(messageOp);
+            DelayUtil.delayFrame(messageOp);
         }
     }
 
@@ -391,7 +391,7 @@ public class LoopbackGameControl extends GameControl
         if (_transactionCount > 0) {
             _curTransaction.push(propOp);
         } else {
-            MethodQueue.callLater(propOp);
+            DelayUtil.delayFrame(propOp);
         }
     }
 
@@ -428,7 +428,7 @@ public class LoopbackGameControl extends GameControl
         if (_transactionCount > 0) {
             _curTransaction.push(propOp);
         } else {
-            MethodQueue.callLater(propOp);
+            DelayUtil.delayFrame(propOp);
         }
     }
 
@@ -614,7 +614,7 @@ public class LoopbackGameControl extends GameControl
             }
         };
 
-        MethodQueue.callLater(turnOp);
+        DelayUtil.delayFrame(turnOp);
     }
 
     protected function turnChanged () :void
@@ -635,7 +635,7 @@ public class LoopbackGameControl extends GameControl
             }
         };
 
-        MethodQueue.callLater(endRoundOp);
+        DelayUtil.delayFrame(endRoundOp);
     }
 
     protected function changeRoundState (newState :Boolean) :Boolean
@@ -685,7 +685,7 @@ public class LoopbackGameControl extends GameControl
             changeGameState(false, ArrayUtil.contains(winnerIds, _playerId), payoutType);
         };
 
-        MethodQueue.callLater(endGameOp);
+        DelayUtil.delayFrame(endGameOp);
     }
 
     // gameMode was added on Oct-23-2008, most games will continue to use the default mode, but new
@@ -703,7 +703,7 @@ public class LoopbackGameControl extends GameControl
             changeGameState(false, loopbackPlayerScore > 0, payoutType, gameMode);
         };
 
-        MethodQueue.callLater(endGameOp);
+        DelayUtil.delayFrame(endGameOp);
     }
 
     protected function restartGameIn_v1 (seconds :int) :void
@@ -723,7 +723,7 @@ public class LoopbackGameControl extends GameControl
                 });
         };
 
-        MethodQueue.callLater(restartOp);
+        DelayUtil.delayFrame(restartOp);
     }
 
     /**
@@ -745,7 +745,7 @@ public class LoopbackGameControl extends GameControl
                 changeGameState(true);
             };
 
-            MethodQueue.callLater(startOp);
+            DelayUtil.delayFrame(startOp);
         }
     }
 
@@ -792,7 +792,7 @@ public class LoopbackGameControl extends GameControl
             }
         };
 
-        MethodQueue.callLater(chatOp);
+        DelayUtil.delayFrame(chatOp);
     }
 
     protected function getLevelPacks_v2 (filter :Function = null) :Array
@@ -944,7 +944,7 @@ public class LoopbackGameControl extends GameControl
             callback(letters);
         };
 
-        MethodQueue.callLater(dictOp);
+        DelayUtil.delayFrame(dictOp);
     }
 
     protected function getDictionaryWords_v1 (
@@ -960,7 +960,7 @@ public class LoopbackGameControl extends GameControl
             callback(words);
         };
 
-        MethodQueue.callLater(dictOp);
+        DelayUtil.delayFrame(dictOp);
     }
 
     protected function checkDictionaryWord_v2 (
@@ -970,7 +970,7 @@ public class LoopbackGameControl extends GameControl
             callback(word, ArrayUtil.contains(DICTIONARY_WORDS, word));
         };
 
-        MethodQueue.callLater(dictOp);
+        DelayUtil.delayFrame(dictOp);
     }
 
     //---- .services.bags --------------------------------------------------
@@ -995,7 +995,7 @@ public class LoopbackGameControl extends GameControl
             }
         };
 
-        MethodQueue.callLater(bagOp);
+        DelayUtil.delayFrame(bagOp);
     }
 
     /**
@@ -1021,7 +1021,7 @@ public class LoopbackGameControl extends GameControl
             }
         };
 
-        MethodQueue.callLater(bagOp);
+        DelayUtil.delayFrame(bagOp);
     }
 
     /**
@@ -1068,7 +1068,7 @@ public class LoopbackGameControl extends GameControl
             }
         };
 
-        MethodQueue.callLater(bagOp);
+        DelayUtil.delayFrame(bagOp);
     }
 
     protected function getBag (name :String, create :Boolean) :Array
