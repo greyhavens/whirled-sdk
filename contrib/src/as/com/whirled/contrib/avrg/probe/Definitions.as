@@ -522,6 +522,7 @@ public class Definitions
     {
         return [
             new FunctionSpec("dump", proxy("misc", "dump")),
+            new FunctionSpec("fakeTimeout", proxy("misc", "fakeTimeout")),
         ];
     }
 

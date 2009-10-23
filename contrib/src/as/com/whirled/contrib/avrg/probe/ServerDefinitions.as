@@ -143,6 +143,14 @@ public class ServerDefinitions
         }
     }
 
+    public function fakeTimeout () :void
+    {
+        var xx: int = 0;
+        while (true) {
+            xx++;
+        }
+    }
+
     protected function createGameFuncs () :Array
     {
         var funcs :Array = [
@@ -339,7 +347,8 @@ public class ServerDefinitions
     protected function createMiscFuncs () :Array
     {
         return [
-            new FunctionSpec("dump", dump, [])
+            new FunctionSpec("dump", dump, []),
+            new FunctionSpec("fakeTimeout", fakeTimeout, [])
         ];
     }
 
