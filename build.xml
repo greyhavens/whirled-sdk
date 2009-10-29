@@ -257,9 +257,6 @@
     <copy todir="${sdk.build}">
       <fileset dir="${projects.dir}/flash-utils">
         <include name="src/as/com/threerings/**"/>
-        <exclude name="**/MessageBundle.as"/>
-        <exclude name="**/MessageManager.as"/>
-        <exclude name="**/TimeUtil.as"/>
       </fileset>
       <fileset dir="${projects.dir}/narya">
         <include name="src/as/com/threerings/util/**"/>
