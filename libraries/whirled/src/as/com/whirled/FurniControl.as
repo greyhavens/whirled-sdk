@@ -65,6 +65,20 @@ public class FurniControl extends EntityControl
     }
 
     /**
+     * Shows the Whirled page identified by the supplied token.
+     *
+     * @param token the token that identifies the page to be shown. This is <em>not</em> the full
+     * URL, just the part after http://www.whirled.com/#. For example: passing "me" would show the
+     * Me page. Passing "shop-l_5_343" would show the shop page for the Kawaii Knight avatar.
+     *
+     * @return true if the page was shown, false if it could not be shown for some reason.
+     */
+    public function showPage (token :String) :Boolean
+    {
+        return callHostCode("showPage_v1", token);
+    }
+
+    /**
      * @private
      */
     override public function setUserProps (o :Object) :void
