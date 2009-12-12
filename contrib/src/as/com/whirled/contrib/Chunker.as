@@ -94,7 +94,6 @@ public class Chunker extends EventDispatcher
             // only keep it compressed if we'd actually save a chunk
             var cData :ByteArray = new ByteArray();
             cData.writeBytes(_outData);
-            var now :int = getTimer();
             cData.compress();
             if (countChunks(cData.length) < countChunks(_outData.length)) {
                 _outData = cData;
