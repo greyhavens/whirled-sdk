@@ -220,7 +220,7 @@ public class Chunker extends EventDispatcher
      */
     protected static function countChunks (dataLength :int) :int
     {
-        return int(dataLength / MAX_CHUNK_DATA) + ((0 == (dataLength % MAX_CHUNK_DATA)) ? 0 : 1);
+        return Math.ceil(dataLength / MAX_CHUNK_DATA);
     }
 
     /** The entity control we're using. */
