@@ -11,18 +11,19 @@ import flash.utils.ByteArray;
 import flash.utils.Timer;
 import flash.utils.getTimer; // function
 
-import com.threerings.util.ValueEvent;
+import com.threerings.util.NamedValueEvent;
 
 import com.whirled.ControlEvent;
 import com.whirled.EntityControl;
 
 /**
  * Dispatched when the chunks are reconstituted and ready to use.
+ * The 'name' property will contain the String version of the instance id that sent the data.
  * The 'value' property will contain the received data.
  *
  * @eventType flash.events.Event.COMPLETE
  */
-[Event(name="complete", type="com.threerings.util.ValueEvent")]
+[Event(name="complete", type="com.threerings.util.NamedValueEvent")]
 
 /**
  * Chunks data to other instances of the entity being used.
@@ -46,9 +47,9 @@ public class Chunker extends EventDispatcher
      * Construct a Chunker.
      *
      * @param ctrl your AvatarControl or ToyControl, etc.
-     * @param msgName the name of the message to use for data sent using this chunker.
+     * @param msgName the prefix name of the message to use for data sent using this chunker.
      * @param receivedCallback may be specified instead of listening for the complete event,
-     * this function will be invoked when the data is received.
+     * this function will be invoked when the data is received. Only the value is returned.
      * Signature: function (data :Object) :void;
      */
     public function Chunker (
@@ -56,12 +57,13 @@ public class Chunker extends EventDispatcher
     {
         _ctrl = ctrl;
         _msgName = msgName;
+        _thisId = String(ctrl.getInstanceId());
 
         _ctrl.addEventListener(ControlEvent.MESSAGE_RECEIVED, handleMessage);
         _ctrl.addEventListener(Event.UNLOAD, handleUnload);
 
         if (receivedCallback != null) {
-            addEventListener(Event.COMPLETE, function (event :ValueEvent) :void {
+            addEventListener(Event.COMPLETE, function (event :NamedValueEvent) :void {
                 receivedCallback(event.value);
             });
         }
@@ -150,7 +152,7 @@ public class Chunker extends EventDispatcher
         outBytes.writeBytes(_outData, _outData.position, toSend);
         _outData.position = newPosition;
 
-        _ctrl.sendMessage(_msgName, outBytes);
+        _ctrl.sendMessage(_msgName + _thisId, outBytes);
         _nextSend = getTimer() + MIN_SEND_WAIT;
 
         // if we're actually done, clear the outdata
@@ -165,34 +167,38 @@ public class Chunker extends EventDispatcher
     /**
      * Handle a received chunk.
      */
-    protected function chunkReceived (inBytes :ByteArray) :void
+    protected function chunkReceived (id :String, inBytes :ByteArray) :void
     {
         const tokens :int = inBytes.readByte();
         if ((tokens & START_TOKEN) != NO_TOKENS) {
-            _inData = new ByteArray();
+            _inChunks[id] = new ByteArray();
         }
-        if (_inData == null) {
+        var inData :ByteArray = _inChunks[id] as ByteArray;
+        if (inData == null) {
             return; // wait for the start...
         }
 
-        inBytes.readBytes(_inData, _inData.position);
-        _inData.position += inBytes.length - 1;
+        inBytes.readBytes(inData, inData.position);
+        inData.position += inBytes.length - 1;
 
+        // check to see if we're not yet done...
         if ((tokens & END_TOKEN) == NO_TOKENS) {
-            // We're not done, so check now to see if we want to send the next piece.
-            checkSendChunk();
+            // see if we're ready to send another chunk
+            if (id == _thisId) {
+                checkSendChunk();
+            }
             return;
         }
 
         // We're all done!
         if ((tokens & COMPRESSED_TOKEN) != NO_TOKENS) {
-            _inData.uncompress();
+            inData.uncompress();
         }
-        _inData.position = 0;
+        inData.position = 0;
         var isObject :Boolean = ((tokens & OBJECT_TOKEN) != NO_TOKENS);
-        var value :Object = isObject ? _inData.readObject() : _inData;
-        _inData = null;
-        dispatchEvent(new ValueEvent(Event.COMPLETE, value));
+        var value :Object = isObject ? inData.readObject() : inData;
+        delete _inChunks[id];
+        dispatchEvent(new NamedValueEvent(Event.COMPLETE, id, value));
     }
 
     /**
@@ -200,8 +206,9 @@ public class Chunker extends EventDispatcher
      */
     protected function handleMessage (event :ControlEvent) :void
     {
-        if (event.name == _msgName) {
-            chunkReceived(event.value as ByteArray);
+        // if the event name begins with our msg name...
+        if (event.name.lastIndexOf(_msgName, 0) == 0) {
+            chunkReceived(event.name.substr(_msgName.length), event.value as ByteArray);
         }
     }
 
@@ -229,6 +236,9 @@ public class Chunker extends EventDispatcher
     /** The message name we're using. */
     protected var _msgName :String;
 
+    /** The instance id of this instance of the chunker. */
+    protected var _thisId :String;
+
     /** The Timer used to throttle sends. Only used on the sender. */
     protected var _timer :Timer;
 
@@ -241,8 +251,8 @@ public class Chunker extends EventDispatcher
     /** Some tokens describing the format of the _outData. */
     protected var _outTokens :int;
 
-    /** The data we're currently receiving. */
-    protected var _inData :ByteArray;
+    /** Holds incomplete chunks being received. */
+    protected var _inChunks :Object = {};
 
     /** Token constants. */
     protected static const NO_TOKENS :int = 0;
