@@ -601,7 +601,7 @@ public class EntityControl extends AbstractControl
      * <p>Calling Microphone.getMicrophone() does not work inside whirled due to security
      * restrictions. For convenience, this method works even when you're not connected.</p>
      */
-    public function getMicrophone (index :int = 0) :Microphone
+    public function getMicrophone (index :int = -1) :Microphone
     {
         return isConnected() ? callHostCode("getMicrophone_v1", index) as Microphone
                              : Microphone.getMicrophone(index)
