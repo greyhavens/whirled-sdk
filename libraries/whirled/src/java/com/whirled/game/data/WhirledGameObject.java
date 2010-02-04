@@ -273,7 +273,7 @@ public class WhirledGameObject extends GameObject
     public void setUserCookies (DSet<UserCookie> value)
     {
         requestAttributeChange(USER_COOKIES, value, this.userCookies);
-        DSet<UserCookie> clone = (value == null) ? null : value.typedClone();
+        DSet<UserCookie> clone = (value == null) ? null : value.clone();
         this.userCookies = clone;
     }
 

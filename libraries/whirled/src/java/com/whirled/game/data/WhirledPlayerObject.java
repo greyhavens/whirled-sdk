@@ -140,7 +140,7 @@ public class WhirledPlayerObject extends BodyObject
     public void setGameContent (DSet<GameContentOwnership> value)
     {
         requestAttributeChange(GAME_CONTENT, value, this.gameContent);
-        DSet<GameContentOwnership> clone = (value == null) ? null : value.typedClone();
+        DSet<GameContentOwnership> clone = (value == null) ? null : value.clone();
         this.gameContent = clone;
     }
     // AUTO-GENERATED: METHODS END
