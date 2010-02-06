@@ -38,6 +38,13 @@ import com.whirled.net.impl.PropertySubControlImpl;
 [Event(name="taskCompleted", type="com.whirled.avrg.AVRGamePlayerEvent")]
 
 /**
+ * Dispatched when this player has purchased new game content.
+ *
+ * @eventType com.whirled.game.GameContentEvent.PLAYER_CONTENT_ADDED
+ */
+[Event(name="PlayerContentAdded", type="com.whirled.game.GameContentEvent")]
+
+/**
  * Dispatched when this player has consumed an item pack.
  *
  * @eventType com.whirled.game.GameContentEvent.PLAYER_CONTENT_CONSUMED
@@ -288,23 +295,23 @@ public class PlayerSubControlBase extends TargetedSubControl
     /** @private */
     internal function enteredRoom_v1 (newScene :int) :void
     {
-        dispatchEvent(
-            new AVRGamePlayerEvent(AVRGamePlayerEvent.ENTERED_ROOM, _targetId, null, newScene));
+        dispatchEvent(new AVRGamePlayerEvent(
+            AVRGamePlayerEvent.ENTERED_ROOM, _targetId, null, newScene));
     }
 
     /** @private */
     internal function notifyGameContentAdded_v1 (type :String, ident :String, playerId :int) :void
     {
-        dispatchEvent(
-            new GameContentEvent(GameContentEvent.PLAYER_CONTENT_ADDED, type, ident, playerId));
+        dispatchEvent(new GameContentEvent(
+            GameContentEvent.PLAYER_CONTENT_ADDED, type, ident, playerId));
     }
 
     /** @private */
     internal function notifyGameContentConsumed_v1 (
         type :String, ident :String, playerId :int) :void
     {
-        dispatchEvent(
-            new GameContentEvent(GameContentEvent.PLAYER_CONTENT_CONSUMED, type, ident, playerId));
+        dispatchEvent(new GameContentEvent(
+            GameContentEvent.PLAYER_CONTENT_CONSUMED, type, ident, playerId));
     }
 
     /** @private */
