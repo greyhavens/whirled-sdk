@@ -232,7 +232,8 @@ public abstract class PropertySpaceHelper
             // write the number of properties, followed by each one
             out.writeInt(props.size());
             for (Map.Entry<String, Object> entry : props.entrySet()) {
-                out.writeUTF(entry.getKey());
+                // note: the keys are in real UTF-8, not Modified UTF-8
+                out.writeUnmodifiedUTF(entry.getKey());
                 out.writeObject(entry.getValue());
             }
         } else {
@@ -253,7 +254,8 @@ public abstract class PropertySpaceHelper
         int count = ins.readInt();
         boolean onClient = !isOnServer(obj);
         while (count-- > 0) {
-            String key = ins.readUTF();
+            // note: the keys are in real UTF-8, not Modified UTF-8
+            String key = ins.readUnmodifiedUTF();
             Object o = ins.readObject();
             if (onClient) {
                 o = ObjectMarshaller.decode(o);
