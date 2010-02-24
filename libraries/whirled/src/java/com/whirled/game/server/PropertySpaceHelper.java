@@ -268,6 +268,10 @@ public abstract class PropertySpaceHelper
     protected static byte[] encodeForStore (Object obj)
         throws IOException
     {
+        if (obj == null) {
+            // null is encoded as null, we do not allow explicitly empty properties
+            return null;
+        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         // GameMap is a very common class, let's not waste ~20 bytes per property in the DB for it
@@ -281,6 +285,10 @@ public abstract class PropertySpaceHelper
     protected static Object decodeFromStore (byte[] data)
         throws IOException, ClassNotFoundException
     {
+        if (data == null) {
+            // null is encoded as null, we do not allow explicitly empty properties
+            return null;
+        }
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
         ois.addTranslation(GAME_MAP_MARKER_STRING, GameMap.class.getCanonicalName());
         return ois.readObject();
