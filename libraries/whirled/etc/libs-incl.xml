@@ -6,7 +6,7 @@
     <include name="asc.jar"/>
     <include name="commons-digester.jar"/>
     <include name="commons-logging.jar"/>
-    <include name="google-collect.jar"/>
+    <include name="guava.jar"/>
     <include name="guice.jar"/>
     <include name="mina-core.jar"/>
     <!-- these might be named lib-SNAPSHOT-0.0.jar or lib.jar -->
