@@ -14,6 +14,7 @@ import com.whirled.net.MessageReceivedEvent;
 import com.whirled.net.PropertyGetSubControl;
 import com.whirled.net.impl.PropertyGetSubControlImpl;
 
+import flash.display.DisplayObject;
 import flash.utils.Dictionary;
 
 /**
@@ -107,6 +108,24 @@ public class RoomSubControlClient extends RoomSubControlBase
     public function getMobSubControl (id :String) :MobSubControlClient
     {
         return _mobControls[id] as MobSubControlClient;
+    }
+
+    /**
+     * Assigns an object to decorate the given player.
+     */
+    public function setDecoration (playerId :int, decoration :DisplayObject) :void
+    {
+        if (decoration != null) {
+            callHostCode("setPlayerDecoration_v1", playerId, decoration);
+        }
+    }
+
+    /**
+     * Removes the previously assigned decoration on a given player.
+     */
+    public function removeDecoration (playerId :int) :void
+    {
+        callHostCode("setPlayerDecoration_v1", playerId, null);
     }
 
     /**
