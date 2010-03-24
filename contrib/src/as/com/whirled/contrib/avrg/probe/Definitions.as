@@ -20,6 +20,7 @@
 
 package com.whirled.contrib.avrg.probe {
 
+import flash.display.DisplayObject;
 import flash.events.EventDispatcher;
 import flash.geom.Point;
 import flash.utils.describeType; // function import
@@ -281,7 +282,14 @@ public class Definitions
                 new Parameter("entityId", String, Parameter.OPTIONAL|Parameter.NULLABLE)]),
             new FunctionSpec("canManageRoom", room.canManageRoom, [
                 new Parameter("memberId", int, Parameter.OPTIONAL)]),
-            new FunctionSpec("getMusicId3", room.getMusicId3)
+            new FunctionSpec("getMusicId3", room.getMusicId3),
+
+            new FunctionSpec("setDecoration", function (playerId :int) :void {
+                    room.setDecoration(playerId, _makeDecoration());
+                }, [ new Parameter("playerId", int) ]),
+            new FunctionSpec("removeDecoration", function (playerId :int) :void {
+                    room.removeDecoration(playerId);
+                }, [ new Parameter("playerId", int) ])
         ];
 
         pushPropsFuncs(funcs, room.props);
@@ -725,5 +733,7 @@ public class Definitions
     protected var _makeDecoration :Function;
     protected var _client :Object;
     protected var _server :Object;
+
+
 }
 }
