@@ -33,7 +33,7 @@
     <file name="lib/commons-lang.jar"/>
     <file name="lib/commons-logging.jar"/>
     <file name="lib/flexTasks.jar"/>
-    <file name="lib/google-collect.jar"/>
+    <file name="lib/guava.jar"/>
     <file name="lib/getdown.jar"/>
     <file name="lib/guice.jar"/>
     <file name="lib/javassist.jar"/>
