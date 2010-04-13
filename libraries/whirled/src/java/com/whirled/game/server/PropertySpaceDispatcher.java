@@ -5,6 +5,8 @@
 
 package com.whirled.game.server;
 
+import javax.annotation.Generated;
+
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.server.InvocationDispatcher;
@@ -14,6 +16,8 @@ import com.whirled.game.data.PropertySpaceMarshaller;
 /**
  * Dispatches requests to the {@link PropertySpaceProvider}.
  */
+@Generated(value={"com.threerings.presents.tools.GenServiceTask"},
+           comments="Derived from PropertySpaceService.java.")
 public class PropertySpaceDispatcher extends InvocationDispatcher<PropertySpaceMarshaller>
 {
     /**
@@ -25,13 +29,13 @@ public class PropertySpaceDispatcher extends InvocationDispatcher<PropertySpaceM
         this.provider = provider;
     }
 
-    @Override // documentation inherited
+    @Override
     public PropertySpaceMarshaller createMarshaller ()
     {
         return new PropertySpaceMarshaller();
     }
 
-    @Override // documentation inherited
+    @Override
     public void dispatchRequest (
         ClientObject source, int methodId, Object[] args)
         throws InvocationException

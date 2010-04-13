@@ -5,6 +5,8 @@
 
 package com.whirled.game.server;
 
+import javax.annotation.Generated;
+
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.server.InvocationDispatcher;
@@ -14,6 +16,8 @@ import com.whirled.game.data.WhirledGameMarshaller;
 /**
  * Dispatches requests to the {@link WhirledGameProvider}.
  */
+@Generated(value={"com.threerings.presents.tools.GenServiceTask"},
+           comments="Derived from WhirledGameService.java.")
 public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarshaller>
 {
     /**
@@ -25,13 +29,13 @@ public class WhirledGameDispatcher extends InvocationDispatcher<WhirledGameMarsh
         this.provider = provider;
     }
 
-    @Override // documentation inherited
+    @Override
     public WhirledGameMarshaller createMarshaller ()
     {
         return new WhirledGameMarshaller();
     }
 
-    @Override // documentation inherited
+    @Override
     public void dispatchRequest (
         ClientObject source, int methodId, Object[] args)
         throws InvocationException

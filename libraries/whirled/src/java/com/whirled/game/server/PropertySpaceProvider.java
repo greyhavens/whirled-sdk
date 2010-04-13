@@ -5,6 +5,8 @@
 
 package com.whirled.game.server;
 
+import javax.annotation.Generated;
+
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.server.InvocationException;
@@ -14,6 +16,8 @@ import com.whirled.game.client.PropertySpaceService;
 /**
  * Defines the server-side of the {@link PropertySpaceService}.
  */
+@Generated(value={"com.threerings.presents.tools.GenServiceTask"},
+           comments="Derived from PropertySpaceService.java.")
 public interface PropertySpaceProvider extends InvocationProvider
 {
     /**

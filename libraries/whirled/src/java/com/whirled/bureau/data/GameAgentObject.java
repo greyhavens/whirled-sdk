@@ -1,5 +1,6 @@
 package com.whirled.bureau.data;
 
+import javax.annotation.Generated;
 import com.threerings.bureau.data.AgentObject;
 import com.whirled.game.data.ThaneGameConfig;
 
@@ -10,9 +11,11 @@ public class GameAgentObject extends AgentObject
 {
     // AUTO-GENERATED: FIELDS START
     /** The field name of the <code>gameOid</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String GAME_OID = "gameOid";
 
     /** The field name of the <code>config</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String CONFIG = "config";
     // AUTO-GENERATED: FIELDS END
 
@@ -31,6 +34,7 @@ public class GameAgentObject extends AgentObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setGameOid (int value)
     {
         int ovalue = this.gameOid;
@@ -47,6 +51,7 @@ public class GameAgentObject extends AgentObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setConfig (ThaneGameConfig value)
     {
         ThaneGameConfig ovalue = this.config;

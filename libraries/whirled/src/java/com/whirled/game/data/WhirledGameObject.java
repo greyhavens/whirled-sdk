@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import javax.annotation.Generated;
 
 import com.threerings.util.Name;
 
@@ -81,36 +82,47 @@ public class WhirledGameObject extends GameObject
 
     // AUTO-GENERATED: FIELDS START
     /** The field name of the <code>roundId</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String ROUND_ID = "roundId";
 
     /** The field name of the <code>controllerId</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String CONTROLLER_ID = "controllerId";
 
     /** The field name of the <code>turnHolder</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String TURN_HOLDER = "turnHolder";
 
     /** The field name of the <code>userCookies</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String USER_COOKIES = "userCookies";
 
     /** The field name of the <code>gameData</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String GAME_DATA = "gameData";
 
     /** The field name of the <code>agentState</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String AGENT_STATE = "agentState";
 
     /** The field name of the <code>whirledGameService</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String WHIRLED_GAME_SERVICE = "whirledGameService";
 
     /** The field name of the <code>contentService</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String CONTENT_SERVICE = "contentService";
 
     /** The field name of the <code>prizeService</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String PRIZE_SERVICE = "prizeService";
 
     /** The field name of the <code>propertyService</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String PROPERTY_SERVICE = "propertyService";
 
     /** The field name of the <code>messageService</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String MESSAGE_SERVICE = "messageService";
     // AUTO-GENERATED: FIELDS END
 
@@ -190,6 +202,7 @@ public class WhirledGameObject extends GameObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setRoundId (int value)
     {
         int ovalue = this.roundId;
@@ -206,6 +219,7 @@ public class WhirledGameObject extends GameObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setControllerId (int value)
     {
         int ovalue = this.controllerId;
@@ -222,6 +236,7 @@ public class WhirledGameObject extends GameObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setTurnHolder (Name value)
     {
         Name ovalue = this.turnHolder;
@@ -235,6 +250,7 @@ public class WhirledGameObject extends GameObject
      * <code>userCookies</code> set. The set will not change until the event is
      * actually propagated through the system.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void addToUserCookies (UserCookie elem)
     {
         requestEntryAdd(USER_COOKIES, userCookies, elem);
@@ -245,6 +261,7 @@ public class WhirledGameObject extends GameObject
      * the <code>userCookies</code> set. The set will not change until the
      * event is actually propagated through the system.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void removeFromUserCookies (Comparable<?> key)
     {
         requestEntryRemove(USER_COOKIES, userCookies, key);
@@ -255,6 +272,7 @@ public class WhirledGameObject extends GameObject
      * <code>userCookies</code> set. The set will not change until the event is
      * actually propagated through the system.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void updateUserCookies (UserCookie elem)
     {
         requestEntryUpdate(USER_COOKIES, userCookies, elem);
@@ -270,6 +288,7 @@ public class WhirledGameObject extends GameObject
      * change. Proxied copies of this object (on clients) will apply the
      * value change when they received the attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setUserCookies (DSet<UserCookie> value)
     {
         requestAttributeChange(USER_COOKIES, value, this.userCookies);
@@ -285,6 +304,7 @@ public class WhirledGameObject extends GameObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setGameData (GameData[] value)
     {
         GameData[] ovalue = this.gameData;
@@ -302,6 +322,7 @@ public class WhirledGameObject extends GameObject
      * will apply the value change when they received the attribute
      * changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setGameDataAt (GameData value, int index)
     {
         GameData ovalue = this.gameData[index];
@@ -318,6 +339,7 @@ public class WhirledGameObject extends GameObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setAgentState (int value)
     {
         int ovalue = this.agentState;
@@ -334,6 +356,7 @@ public class WhirledGameObject extends GameObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setWhirledGameService (WhirledGameMarshaller value)
     {
         WhirledGameMarshaller ovalue = this.whirledGameService;
@@ -350,6 +373,7 @@ public class WhirledGameObject extends GameObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setContentService (ContentMarshaller value)
     {
         ContentMarshaller ovalue = this.contentService;
@@ -366,6 +390,7 @@ public class WhirledGameObject extends GameObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setPrizeService (PrizeMarshaller value)
     {
         PrizeMarshaller ovalue = this.prizeService;
@@ -382,6 +407,7 @@ public class WhirledGameObject extends GameObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setPropertyService (PropertySpaceMarshaller value)
     {
         PropertySpaceMarshaller ovalue = this.propertyService;
@@ -398,6 +424,7 @@ public class WhirledGameObject extends GameObject
      * clients) will apply the value change when they received the
      * attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setMessageService (WhirledGameMessageMarshaller value)
     {
         WhirledGameMessageMarshaller ovalue = this.messageService;

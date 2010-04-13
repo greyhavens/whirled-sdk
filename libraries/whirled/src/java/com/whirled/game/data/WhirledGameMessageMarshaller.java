@@ -5,6 +5,8 @@
 
 package com.whirled.game.data;
 
+import javax.annotation.Generated;
+
 import com.threerings.presents.client.Client;
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.InvocationMarshaller;
@@ -17,6 +19,8 @@ import com.whirled.game.client.WhirledGameMessageService;
  * interfaces that marshall the response arguments and deliver them back
  * to the requesting client.
  */
+@Generated(value={"com.threerings.presents.tools.GenServiceTask"},
+           comments="Derived from WhirledGameMessageService.java.")
 public class WhirledGameMessageMarshaller extends InvocationMarshaller
     implements WhirledGameMessageService
 {

@@ -5,6 +5,8 @@
 
 package com.whirled.game.server;
 
+import javax.annotation.Generated;
+
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.ClientObject;
 import com.threerings.presents.server.InvocationException;
@@ -14,6 +16,8 @@ import com.whirled.game.client.ContentService;
 /**
  * Defines the server-side of the {@link ContentService}.
  */
+@Generated(value={"com.threerings.presents.tools.GenServiceTask"},
+           comments="Derived from ContentService.java.")
 public interface ContentProvider extends InvocationProvider
 {
     /**

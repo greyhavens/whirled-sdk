@@ -10,7 +10,6 @@ import com.threerings.presents.client.InvocationService_InvocationListener;
 import com.threerings.presents.data.InvocationMarshaller;
 import com.threerings.presents.data.InvocationMarshaller_ListenerMarshaller;
 import com.threerings.util.langBoolean;
-import com.threerings.util.Integer;
 import com.whirled.game.client.PropertySpaceService;
 
 /**

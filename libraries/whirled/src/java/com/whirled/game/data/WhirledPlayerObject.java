@@ -3,6 +3,7 @@
 
 package com.whirled.game.data;
 
+import javax.annotation.Generated;
 import com.threerings.presents.dobj.DSet;
 
 import com.threerings.crowd.data.BodyObject;
@@ -16,6 +17,7 @@ public class WhirledPlayerObject extends BodyObject
 {
     // AUTO-GENERATED: FIELDS START
     /** The field name of the <code>gameContent</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String GAME_CONTENT = "gameContent";
     // AUTO-GENERATED: FIELDS END
 
@@ -102,6 +104,7 @@ public class WhirledPlayerObject extends BodyObject
      * <code>gameContent</code> set. The set will not change until the event is
      * actually propagated through the system.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void addToGameContent (GameContentOwnership elem)
     {
         requestEntryAdd(GAME_CONTENT, gameContent, elem);
@@ -112,6 +115,7 @@ public class WhirledPlayerObject extends BodyObject
      * the <code>gameContent</code> set. The set will not change until the
      * event is actually propagated through the system.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void removeFromGameContent (Comparable<?> key)
     {
         requestEntryRemove(GAME_CONTENT, gameContent, key);
@@ -122,6 +126,7 @@ public class WhirledPlayerObject extends BodyObject
      * <code>gameContent</code> set. The set will not change until the event is
      * actually propagated through the system.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void updateGameContent (GameContentOwnership elem)
     {
         requestEntryUpdate(GAME_CONTENT, gameContent, elem);
@@ -137,6 +142,7 @@ public class WhirledPlayerObject extends BodyObject
      * change. Proxied copies of this object (on clients) will apply the
      * value change when they received the attribute changed notification.
      */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public void setGameContent (DSet<GameContentOwnership> value)
     {
         requestAttributeChange(GAME_CONTENT, value, this.gameContent);
