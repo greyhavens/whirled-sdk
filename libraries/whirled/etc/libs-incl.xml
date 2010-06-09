@@ -19,7 +19,7 @@
     <include name="nenya-rsrc*.jar"/>
     <include name="vilya-parlor*.jar"/>
     <!-- ActionScript dependencies -->
-    <include name="ooolib*.swc"/>
+    <include name="aspirin.swc"/>
     <include name="naryalib*.swc"/>
     <include name="nenyalib*.swc"/>
     <include name="vilyalib*.swc"/>
