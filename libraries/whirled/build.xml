@@ -210,6 +210,7 @@
       <jvmarg value="-Xbootclasspath/p:${flexsdk.dir}/asdoc/lib/xalan.jar"/>
       <arg value="+flexlib=${flexsdk.dir}/frameworks"/>
       <arg line="-library-path ${flexsdk.dir}/frameworks/libs"/>
+      <arg line="-library-path ${deploy.dir}/lib/aspirin-0.0-SNAPSHOT.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/naryalib-0.0-SNAPSHOT.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/nenyalib-0.0-SNAPSHOT.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/vilyalib-0.0-SNAPSHOT.swc"/>
