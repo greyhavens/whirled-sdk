@@ -1,15 +1,17 @@
 <flex-config>
   <window-title>Whirled API Documentation</window-title>
   <main-title>Whirled API Documentation</main-title>
-  <footer>Copyright&#160;&#169;&#160;2007-2009 Three Rings Design, Inc.</footer>
+  <footer>Copyright&#160;&#169;&#160;2007-2010 Three Rings Design, Inc.</footer>
   <packages>
+
+    <!-- BEGIN: copied from aspirin's asdoc-config.xml -->
     <package>
       <string>com.threerings.display</string>
-      <string>Contains display utilities and random useful bits.</string>
+      <string>Display utilities and random useful bits.</string>
     </package>
     <package>
       <string>com.threerings.geom</string>
-      <string>Some geometic utility classes.</string>
+      <string>Geometic utility classes.</string>
     </package>
     <package>
       <string>com.threerings.media</string>
@@ -21,20 +23,22 @@
     </package>
     <package>
       <string>com.threerings.ui</string>
-      <string>Utilities for building simple user interfaces.</string>
+      <string>User-interface utilities and simple UI components.</string>
     </package>
     <package>
       <string>com.threerings.util</string>
-      <string>Useful collections and utility classes.</string>
+      <string>Collections and utility classes.</string>
     </package>
     <package>
       <string>com.threerings.util.maps</string>
-      <string>Contains implementations of the com.threerings.util.Map interface. You should create instances using the com.threerings.util.Maps factory.</string>
+      <string>Implementations of the com.threerings.util.Map interface. Use the com.threerings.util.Maps factory to create instances.</string>
     </package>
     <package>
       <string>com.threerings.util.sets</string>
-      <string>Contains implementations of the com.threerings.util.Set interface. You should create instances using the com.threerings.util.Sets factory.</string>
+      <string>Implementations of the com.threerings.util.Set interface. Use the com.threerings.util.Sets factory to create instances.</string>
     </package>
+    <!-- END: copied from aspirin's asdoc-config.xml -->
+
     <package>
       <string>com.whirled</string>
       <string>Used for developing Avatars, Toys and other Whirled entities.</string>
