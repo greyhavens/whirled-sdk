@@ -3,6 +3,7 @@
 
 package com.whirled.game.server;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,6 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 import com.samskivert.util.ArrayIntSet;
-import com.samskivert.util.CollectionUtil;
 import com.samskivert.util.Interval;
 import com.samskivert.util.IntIntMap;
 import com.samskivert.util.IntListUtil;
@@ -316,7 +316,7 @@ public abstract class WhirledGameManager extends GameManager
             _collections.put(collName, list = Lists.newArrayList());
         }
 
-        CollectionUtil.addAll(list, data);
+        Collections.addAll(list, data);
     }
 
     // from WhirledGameProvider
