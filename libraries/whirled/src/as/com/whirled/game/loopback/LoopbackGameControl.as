@@ -1275,9 +1275,10 @@ public class LoopbackGameControl extends GameControl
     protected function reportGameError (msg :String, err :Error = null) :void
     {
         // here, we just shoot this to the logs
-        log.warning(msg);
         if (err != null) {
-            log.logStackTrace(err);
+            log.warning(msg, err);
+        } else {
+            log.warning(msg);
         }
     }
 
