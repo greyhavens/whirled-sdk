@@ -12,13 +12,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
+import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import com.samskivert.util.CollectionUtil;
-import com.samskivert.util.CountHashMap;
 import com.samskivert.util.Invoker;
 import com.samskivert.util.RandomUtil;
 
@@ -182,7 +183,7 @@ public class DictionaryManager
         public Dictionary (String locale, String dictionary, InputStream words)
             throws IOException
         {
-            CountHashMap<Character> letters = new CountHashMap<Character>();
+            Multiset<Character> letters = HashMultiset.create();
 
             if (words != null) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(words));
@@ -193,8 +194,7 @@ public class DictionaryManager
                     _words.add(word);
                     // then count characters
                     for (int ii = word.length() - 1; ii >= 0; ii--) {
-                        char ch = word.charAt(ii);
-                        letters.incrementCount(ch, 1);
+                        letters.add(word.charAt(ii));
                     }
                 }
 
@@ -236,22 +236,26 @@ public class DictionaryManager
 
         /** Given a CountHashMap of letters, initializes the internal letter and count arrays, used
          * by RandomUtil. */
-        protected void initializeLetterCounts (CountHashMap<Character> letters)
+        protected void initializeLetterCounts (Multiset<Character> letters)
         {
-            Set<Character> keys = letters.keySet();
-            int keycount = keys.size();
-            int total = letters.getTotalCount();
-            if (total == 0) { return; } // Something went wrong, abort.
+            Set<Multiset.Entry<Character>> entrySet = letters.entrySet();
+            int keycount = entrySet.size();
 
             // Initialize storage
             _letters = new char[keycount];
             _counts = new float[keycount];
 
-            // Copy letters and normalize counts
-            for (Character key : keys) {
+            int total = 0;
+            for (Multiset.Entry<Character> entry : entrySet) {
                 keycount--;
-                _letters[keycount] = key;
-                _counts[keycount] = ((float) letters.getCount(key)) / total; // normalize
+                _letters[keycount] = entry.getElement();
+                total += (_counts[keycount] = entry.getCount());
+            }
+            if (total == 0) { return; } // Something went wrong, abort.
+
+            // normalize counts
+            for (int ii = 0, nn = _counts.length; ii < nn; ii++) {
+                _counts[ii] /= total;
             }
         }
 
