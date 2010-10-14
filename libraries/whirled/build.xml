@@ -51,7 +51,7 @@
     </copy>
     <!-- defines our various presents ant tasks -->
     <taskdef resource="com/threerings/presents/tools.properties"
-             classpath="${deploy.dir}/lib/narya-tools.jar"/>
+             classpath="${libs.dir}/narya-tools-full.jar"/>
   </target>
 
   <!-- generates fields for persistent record classes -->
