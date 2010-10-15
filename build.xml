@@ -49,7 +49,7 @@
     <file name="lib/swfutils-ooo.jar"/>
     <file name="lib/scala-library.jar"/>
     <file name="lib/dependency-analyzer-ooo.jar"/>
-    <file name="lib/velocity-1.5-dev.jar"/>
+    <file name="lib/velocity-dev.jar"/>
     <file name="lib/corelib.swc"/>
     <file name="lib/flexlib.swc"/>
     <file name="lib/tweener.swc"/>
