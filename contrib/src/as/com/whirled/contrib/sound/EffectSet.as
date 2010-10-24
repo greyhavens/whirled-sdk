@@ -80,7 +80,7 @@ public class EffectSet extends MapSet
         return super.add(effect);
     }
 
-    public function toString () :String
+    override public function toString () :String
     {
         return "EffectSet [" + _name + ", " + _playType + "]";
     }

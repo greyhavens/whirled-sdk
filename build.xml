@@ -53,6 +53,7 @@
     <file name="lib/corelib.swc"/>
     <file name="lib/flexlib.swc"/>
     <file name="lib/tweener.swc"/>
+    <file name="lib/as3isolib-fp9.swc"/>
   </filelist>
 
   <!-- declare our classpath -->
@@ -87,7 +88,7 @@
   <!-- build the java class files -->
   <target name="compile" depends="prepare-java">
     <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" optimize="off" deprecation="on"
-           target="1.5">
+           target="1.5" includeAntRuntime="false">
       <classpath refid="classpath"/>
       <compilerarg value="-Xlint:unchecked"/>
     </javac>

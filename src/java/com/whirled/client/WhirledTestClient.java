@@ -150,7 +150,7 @@ public class WhirledTestClient
         // and our directors
         _locdir = new LocationDirector(_ctx);
         _occdir = new OccupantDirector(_ctx);
-        _chatdir = new ChatDirector(_ctx, _msgmgr, "TODO");
+        _chatdir = new ChatDirector(_ctx, "TODO");
         _pardtr = new ParlorDirector(_ctx);
     }
 
