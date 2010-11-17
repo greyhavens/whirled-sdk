@@ -120,18 +120,20 @@
     </javac>
   </target>
 
-  <!-- checks whether our Flash library needs building -->
   <target name="checkaslib">
-    <condition property="no_build_aslib"><or>
+    <condition property="no_build_aslib">
       <not><available file="${flexsdk.dir}/lib/compc.jar"/></not>
+    </condition>
+    <condition property="no_rebuild_aslib"><or>
+      <isset property="no_build_aslib"/>
       <uptodate targetfile="${deploy.dir}/${lib.name}lib.swc">
         <srcfiles dir="src/as" includes="**/*.as"/>
       </uptodate>
     </or></condition>
   </target>
 
-  <!-- builds our Flash library -->
-  <target name="aslib" unless="no_build_aslib" depends="checkaslib">
+  <target name="aslib" unless="no_rebuild_aslib" depends="checkaslib"
+          description="Builds the ActionScript code">
     <copy file="etc/aslib-config.xml.in" tofile="${deploy.dir}/aslib-config.xml">
       <filterset>
         <filter token="flex_sdk_dir" value="${flexsdk.dir}"/>
