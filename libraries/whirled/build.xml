@@ -153,6 +153,7 @@
   <target name="checkwhirledthanelib">
     <condition property="no_build_whirledthanelib"><or>
       <not><available file="${flexsdk.dir}/lib/compc.jar"/></not>
+      <not><available file="${deploy.dir}/lib/thane${extdep.suffix}.swc"/></not>
       <uptodate targetfile="${deploy.dir}/whirledthanelib.swc">
         <srcfiles dir="${deploy.dir}/lib" includes="*.swc"/>
         <srcfiles dir="${deploy.dir}" includes="*.swc"/>

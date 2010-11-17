@@ -16,7 +16,7 @@
     <include name="samskivert.jar"/>
     <include name="vilya-parlor.jar"/>
     <!-- ActionScript dependencies -->
-    <include name="aspirin.swc"/>
+    <include name="aspirin*.swc"/>
     <include name="naryalib.swc"/>
     <include name="nenyalib.swc"/>
     <include name="vilyalib.swc"/>
