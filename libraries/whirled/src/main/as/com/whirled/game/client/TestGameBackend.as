@@ -76,9 +76,9 @@ public class TestGameBackend extends WhirledGameBackend
     }
 
     // Embed some media to be used as default headshots
-    [Embed(source="../../../../../../rsrc/images/headshots/natto.png")]
+    [Embed(source="../../../../../../../rsrc/images/headshots/natto.png")]
     protected static const HEADSHOT_1 :Class;
-    [Embed(source="../../../../../../rsrc/images/headshots/weardd.png")]
+    [Embed(source="../../../../../../../rsrc/images/headshots/weardd.png")]
     protected static const HEADSHOT_2 :Class;
 }
 }
