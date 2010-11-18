@@ -165,7 +165,7 @@
       <arg value="-load-config"/>
       <arg value="dist/thane-config.xml"/>
       <arg value="-compiler.external-library-path"/>
-      <arg value="${deploy.dir}/lib/thane${extdep.suffix}.swc"/>
+      <arg value="${deploy.dir}/lib/thane-0.0-SNAPSHOT.swc"/>
       <arg value="${deploy.dir}/lib/aspirin-1.6.swc"/>
       <arg value="${deploy.dir}/lib/naryalib-1.2-SNAPSHOT.swc"/>
       <arg value="${deploy.dir}/lib/nenyalib-1.0-SNAPSHOT.swc"/>
