@@ -44,20 +44,6 @@
       <pathelement location="${classes.dir}"/>
       <pathelement location="${tclasses.dir}"/>
     </path>
-    <!-- TEMP: needed for ActionScript library build -->
-    <property name="libs.dir" value="lib"/>
-    <copy todir="${deploy.dir}/lib" flatten="true">
-      <fileset dir="${libs.dir}">
-        <include name="aspirin*.swc"/>
-        <include name="naryalib.swc"/>
-        <include name="nenyalib.swc"/>
-        <include name="vilyalib.swc"/>
-        <!-- Thane dependencies -->
-        <include name="thane-0.0-SNAPSHOT.swc"/>
-        <include name="http-0.0-SNAPSHOT.swc"/>
-      </fileset>
-    </copy>
-    <!-- END TEMP -->
   </target>
 
   <target name="-preptools" depends="-prepare">
@@ -108,9 +94,22 @@
       </uptodate>
     </or></condition>
   </target>
+  <target name="-noteaslib" if="no_build_aslib"><echo>
+    NOTE: not building ActionScript library. Pass -Dflexsdk.dir=DIR to
+    activate ActionScript library build.
+  </echo></target>
 
-  <target name="aslib" unless="no_rebuild_aslib" depends="-checkaslib"
+  <target name="aslib" unless="no_rebuild_aslib" depends="-checkaslib,-noteaslib"
           description="Builds the ActionScript code">
+    <!-- obtain our ActionScript dependencies via Maven -->
+    <artifact:pom id="as-pom" file="as-pom.xml"/>
+    <artifact:dependencies filesetId="aslibs.fileset" pomRefId="as-pom" useScope="compile"/>
+    <copy todir="${deploy.dir}/lib">
+      <fileset dir="lib" includes="as3isolib-*.swc"/>
+      <fileset refid="aslibs.fileset"/>
+      <mapper type="flatten"/>
+    </copy>
+
     <copy file="etc/aslib-config.xml.in" tofile="${deploy.dir}/aslib-config.xml">
       <filterset>
         <filter token="flex_sdk_dir" value="${flexsdk.dir}"/>
@@ -132,7 +131,8 @@
   <target name="checkwhirledthanelib">
     <condition property="no_build_whirledthanelib"><or>
       <not><available file="${flexsdk.dir}/lib/compc.jar"/></not>
-      <not><available file="${deploy.dir}/lib/thane${extdep.suffix}.swc"/></not>
+      <!-- thane builds are only done inside OOO due to overreaching complexity -->
+      <not><isset property="ooo.maven.depends.repo"/></not>
       <uptodate targetfile="${deploy.dir}/whirledthanelib.swc">
         <srcfiles dir="${deploy.dir}/lib" includes="*.swc"/>
         <srcfiles dir="${deploy.dir}" includes="*.swc"/>
@@ -143,6 +143,19 @@
 
   <target name="whirledthanelib" unless="no_build_whirledthanelib"
           depends="checkwhirledthanelib,aslib">
+    <!-- obtain our Thane dependencies via Maven -->
+    <artifact:dependencies filesetId="thane.fileset">
+      <remoteRepository refid="ooo.maven.depends.repo"/>
+      <dependency groupId="com.threerings.thane" artifactId="thane"
+                  version="0.0-SNAPSHOT" type="swc"/>
+      <dependency groupId="com.threerings.thane" artifactId="http"
+                  version="0.0-SNAPSHOT" type="swc"/>
+    </artifact:dependencies>
+    <copy todir="${deploy.dir}/lib">
+      <fileset refid="thane.fileset"/>
+      <mapper type="flatten"/>
+    </copy>
+
     <copy file="etc/thane-config.xml.in" tofile="${deploy.dir}/thane-config.xml">
       <filterset>
         <filter token="flex_sdk_dir" value="${flexsdk.dir}"/>
@@ -153,10 +166,10 @@
       <arg value="dist/thane-config.xml"/>
       <arg value="-compiler.external-library-path"/>
       <arg value="${deploy.dir}/lib/thane${extdep.suffix}.swc"/>
-      <arg value="${deploy.dir}/lib/aspirin.swc"/>
-      <arg value="${deploy.dir}/lib/naryalib.swc"/>
-      <arg value="${deploy.dir}/lib/nenyalib.swc"/>
-      <arg value="${deploy.dir}/lib/vilyalib.swc"/>
+      <arg value="${deploy.dir}/lib/aspirin-1.6.swc"/>
+      <arg value="${deploy.dir}/lib/naryalib-1.2-SNAPSHOT.swc"/>
+      <arg value="${deploy.dir}/lib/nenyalib-1.0-SNAPSHOT.swc"/>
+      <arg value="${deploy.dir}/lib/vilyalib-1.0-SNAPSHOT.swc"/>
       <arg value="${deploy.dir}/whirledlib.swc"/>
       <arg value="-compiler.source-path=src/main/thane"/>
       <arg value="-include-classes"/>
