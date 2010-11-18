@@ -145,7 +145,7 @@
           depends="checkwhirledthanelib,aslib">
     <!-- obtain our Thane dependencies via Maven -->
     <artifact:dependencies filesetId="thane.fileset">
-      <remoteRepository url="${ooo.maven.depends.repo}"/>
+      <remoteRepository id="ooo.repo" url="${ooo.maven.depends.repo}"/>
       <dependency groupId="com.threerings.thane" artifactId="thane"
                   version="0.0-SNAPSHOT" type="swc"/>
       <dependency groupId="com.threerings.thane" artifactId="http"
@@ -303,7 +303,7 @@
   <target name="maven-deploy" depends="dist,tests" 
           description="Deploys our build artifacts to a Maven repository.">
     <artifact:deploy file="${deploy.dir}/${ant.project.name}-code.jar" uniqueVersion="false">
-      <remoteRepository id="ooo.repo" url="${maven.deploy.repo}"/>
+      <remoteRepository url="${maven.deploy.repo}"/>
       <pom refid="pom"/>
     </artifact:deploy>
     <artifact:pom id="as-pom" file="as-pom.xml"/>
