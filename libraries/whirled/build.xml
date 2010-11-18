@@ -145,7 +145,7 @@
           depends="checkwhirledthanelib,aslib">
     <!-- obtain our Thane dependencies via Maven -->
     <artifact:dependencies filesetId="thane.fileset">
-      <remoteRepository refid="ooo.maven.depends.repo"/>
+      <remoteRepository url="${ooo.maven.depends.repo}"/>
       <dependency groupId="com.threerings.thane" artifactId="thane"
                   version="0.0-SNAPSHOT" type="swc"/>
       <dependency groupId="com.threerings.thane" artifactId="http"
