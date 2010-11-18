@@ -134,7 +134,7 @@
       <uptodate targetfile="${deploy.dir}/whirledthanelib.swc">
         <srcfiles dir="${deploy.dir}/lib" includes="*.swc"/>
         <srcfiles dir="${deploy.dir}" includes="*.swc"/>
-        <srcfiles dir="src/thane" includes="**/*.as"/>
+        <srcfiles dir="src/main/thane" includes="**/*.as"/>
       </uptodate>
     </or></condition>
   </target>
@@ -156,7 +156,7 @@
       <arg value="${deploy.dir}/lib/nenyalib.swc"/>
       <arg value="${deploy.dir}/lib/vilyalib.swc"/>
       <arg value="${deploy.dir}/whirledlib.swc"/>
-      <arg value="-compiler.source-path=src/thane"/>
+      <arg value="-compiler.source-path=src/main/thane"/>
       <arg value="-include-classes"/>
       <arg value="com.whirled.thane.HttpUserCode"/>
       <arg value="com.whirled.thane.HttpUserCodeLoader"/>
