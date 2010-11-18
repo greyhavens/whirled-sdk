@@ -52,7 +52,9 @@
         <include name="naryalib.swc"/>
         <include name="nenyalib.swc"/>
         <include name="vilyalib.swc"/>
-        <include name="whirledlib.swc"/>
+        <!-- Thane dependencies -->
+        <include name="thane-0.0-SNAPSHOT.swc"/>
+        <include name="http-0.0-SNAPSHOT.swc"/>
       </fileset>
     </copy>
     <!-- END TEMP -->
@@ -213,7 +215,7 @@
     </unit>
   </target>
 
-  <target name="dist" depends="compile,aslib" description="Builds jar files.">
+  <target name="dist" depends="compile,aslib,whirledthanelib" description="Builds jar files.">
     <!-- stick all our code in one jar file -->
     <jar file="${deploy.dir}/${ant.project.name}-code.jar" basedir="${classes.dir}">
       <include name="com/**"/>
