@@ -4,7 +4,7 @@
   <groupId>com.threerings</groupId>
   <artifactId>whirled-code</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <name>whirled-code</name>
 
   <scm>
