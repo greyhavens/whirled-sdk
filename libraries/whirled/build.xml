@@ -167,9 +167,9 @@
       <arg value="-compiler.external-library-path"/>
       <arg value="${deploy.dir}/lib/thane-0.0-SNAPSHOT.swc"/>
       <arg value="${deploy.dir}/lib/aspirin-1.6.swc"/>
-      <arg value="${deploy.dir}/lib/naryalib-1.2-SNAPSHOT.swc"/>
-      <arg value="${deploy.dir}/lib/nenyalib-1.0-SNAPSHOT.swc"/>
-      <arg value="${deploy.dir}/lib/vilyalib-1.0-SNAPSHOT.swc"/>
+      <arg value="${com.threerings:naryalib:swc}"/>
+      <arg value="${com.threerings:nenyalib:swc}"/>
+      <arg value="${com.threerings:vilyalib:swc}"/>
       <arg value="${deploy.dir}/whirledlib.swc"/>
       <arg value="-compiler.source-path=src/main/thane"/>
       <arg value="-include-classes"/>
@@ -203,8 +203,8 @@
       <jvmarg value="-Xbootclasspath/p:${flexsdk.dir}/asdoc/lib/xalan.jar"/>
       <arg value="+flexlib=${flexsdk.dir}/frameworks"/>
       <arg line="-library-path ${flexsdk.dir}/frameworks/libs"/>
-      <arg line="-library-path ${deploy.dir}/lib/naryalib-0.0-SNAPSHOT.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/nenyalib-0.0-SNAPSHOT.swc"/>
+      <arg line="-library-path ${com.threerings:naryalib:swc}"/>
+      <arg line="-library-path ${com.threerings:nenyalib:swc}"/>
       <arg line="-templates-path ${flexsdk.dir}/asdoc/templates"/>
       <arg line="-doc-sources ${asrc.dir}"/>
       <arg line="-output ${deploy.dir}/asdocs"/>
