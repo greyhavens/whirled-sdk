@@ -8,19 +8,21 @@
   <property name="deploy.dir"     value="dist"/>
   <property name="classes.dir"    value="${deploy.dir}/classes"/>
   <property name="sdk.build"      value="${deploy.dir}/sdk/whirled"/>
+  <property environment="env"/>
 
   <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"   value="libraries"/>
-  <property name="projects" value="samskivert,depot,aspirin,thane,narya,nenya,vilya,whirled"/>
+  <property name="projects" value="aspirin,narya,whirled"/>
   <import file="build/etc/build-support.xml"/>
+  <import file="package/etc/package-support.xml"/>
 
-  <!-- include bits to do the necessary Flex SDK path jockeying -->
+  <!-- include bits to do the necessary flex sdk path jockeying -->
   <import file="etc/flex-include.xml"/>
   <property name="flexsdk.dir" value="${flex.path}"/>
   <property name="extdep.suffix" value=""/>
-  <echo message="External library suffix (whirled/build): ${extdep.suffix}"/>
+  <echo message="external library suffix (whirled/build): ${extdep.suffix}"/>
 
-  <!-- declares the libraries needed by the Whirled runtime (or for compiling whirled swfs) -->
+  <!-- declares the libraries needed by the whirled runtime (or for compiling whirled swfs) -->
   <filelist dir="." id="dist.libs">
     <file name="lib/ant.jar"/>
     <file name="lib/ant-launcher.jar"/>
@@ -32,13 +34,9 @@
     <file name="lib/commons-io.jar"/>
     <file name="lib/commons-lang.jar"/>
     <file name="lib/commons-logging.jar"/>
-    <file name="lib/flexTasks.jar"/>
-    <file name="lib/guava.jar"/>
+    <file name="lib/flextasks.jar"/>
     <file name="lib/getdown.jar"/>
-    <file name="lib/guice.jar"/>
     <file name="lib/javassist.jar"/>
-    <file name="lib/jetty.jar"/>
-    <file name="lib/jetty-util.jar"/>
     <file name="lib/junit-3.7.jar"/>
     <file name="lib/junit4.jar"/>
     <file name="lib/lwjgl.jar"/>
@@ -49,7 +47,6 @@
     <file name="lib/swfutils-ooo.jar"/>
     <file name="lib/scala-library.jar"/>
     <file name="lib/dependency-analyzer-ooo.jar"/>
-    <file name="lib/velocity-dev.jar"/>
     <file name="lib/corelib.swc"/>
     <file name="lib/flexlib.swc"/>
     <file name="lib/tweener.swc"/>
@@ -85,6 +82,36 @@
     </copy>
   </target>
 
+  <target name="mavendeps" depends="prepare" description="Fetches our dependencies via Maven.">
+    <artifact:dependencies filesetId="dependency.fileset">
+      <remoteRepository refid="ooo.maven.depends.repo"/>
+      <dependency groupId="com.samskivert" artifactId="depot" version="0.0-SNAPSHOT"/>
+      <dependency groupId="com.threerings" artifactId="whirled-code"
+                  version="0.0-SNAPSHOT" type="jar"/>
+      <dependency groupId="com.threerings" artifactId="whirledlib"
+                  version="0.0-SNAPSHOT" type="swc"/>
+      <dependency groupId="com.threerings" artifactId="whirledthanelib"
+                  version="0.0-SNAPSHOT" type="swc"/>
+      <dependency groupId="com.threerings.flashbang" artifactId="flashbang"
+                  version="0.0-SNAPSHOT" type="swc"/>
+      <dependency groupId="com.threerings.thane" artifactId="thane"
+                  version="0.0-SNAPSHOT" type="swc"/>
+    </artifact:dependencies>
+    <artifact:dependencies filesetId="dependency.remote.fileset">
+      <dependency groupId="org.apache.velocity" artifactId="velocity" version="1.6.4"/>
+      <dependency groupId="com.google.guava" artifactId="guava" version="r07"/>
+      <dependency groupId="com.google.inject" artifactId="guice" version="2.0"/>
+      <dependency groupId="com.google.inject.extensions" artifactId="guice-multibindings"
+                  version="2.0"/>
+      <dependency groupId="org.mortbay.jetty" artifactId="jetty" version="6.1.25"/>
+    </artifact:dependencies>
+    <copy todir="${deploy.dir}/lib">
+      <fileset refid="dependency.fileset"/>
+      <fileset refid="dependency.remote.fileset"/>
+      <mapper type="flatten"/>
+    </copy>
+  </target>
+
   <!-- build the java class files -->
   <target name="compile" depends="prepare-java">
     <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" optimize="off" deprecation="on"
@@ -107,8 +134,8 @@
       <arg value="-compiler.optimize"/>
       <arg value="-library-path+=${deploy.dir}/lib/aspirin.swc"/>
       <arg value="-library-path+=${deploy.dir}/lib/naryalib.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/nenyalib.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/vilyalib.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/nenyalib-0.0-SNAPSHOT.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/vilyalib-0.0-SNAPSHOT.swc"/>
       <arg value="-library-path+=${deploy.dir}/lib/whirledlib.swc"/>
       <arg value="-compiler.source-path=${asrc.dir}/"/>
       <arg value="-compiler.source-path=rsrc/{locale}/i18n"/>
@@ -130,15 +157,15 @@
       <arg value="-load-config"/>
       <arg value="etc/thane-config.xml"/>
       <arg value="-compiler.external-library-path"/>
-      <arg value="${deploy.dir}/lib/thane.swc"/>
+      <arg value="${deploy.dir}/lib/thane-0.0-SNAPSHOT.swc"/>
       <arg value="-compiler.library-path"/>
       <arg value="${deploy.dir}/lib/corelib.swc"/>
       <arg value="${deploy.dir}/lib/aspirin.swc"/>
       <arg value="${deploy.dir}/lib/naryalib.swc"/>
-      <arg value="${deploy.dir}/lib/nenyalib.swc"/>
-      <arg value="${deploy.dir}/lib/vilyalib.swc"/>
+      <arg value="${deploy.dir}/lib/nenyalib-0.0-SNAPSHOT.swc"/>
+      <arg value="${deploy.dir}/lib/vilyalib-0.0-SNAPSHOT.swc"/>
       <arg value="${deploy.dir}/lib/whirledlib.swc"/>
-      <arg value="${deploy.dir}/lib/whirledthanelib.swc"/>
+      <arg value="${deploy.dir}/lib/whirledthanelib-0.0-SNAPSHOT.swc"/>
       <arg value="-output"/>
       <arg value="${deploy.dir}/game-server-lib.swc"/>
       <arg value="-compiler.source-path=src/thane"/>
@@ -151,7 +178,7 @@
       <arg value="-load-config"/>
       <arg value="etc/thane-config.xml"/>
       <arg value="-compiler.external-library-path"/>
-      <arg value="${deploy.dir}/lib/thane.swc"/>
+      <arg value="${deploy.dir}/lib/thane-0.0-SNAPSHOT.swc"/>
       <arg value="${deploy.dir}/game-server-lib.swc"/>
       <arg value="-compiler.source-path=src/thane"/>
       <arg value="-output"/>
@@ -181,12 +208,12 @@
     <delete dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="${projects.dir}/aspirin/src/as" includes="com/threerings/**"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/*.as"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/*.as"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/game/loopback/*.as"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/net/*.as"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/avrg/*.as"/>
-      <fileset dir="${projects.dir}/whirled/src/as" includes="com/whirled/party/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/main/as" includes="com/whirled/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/main/as" includes="com/whirled/game/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/main/as" includes="com/whirled/game/loopback/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/main/as" includes="com/whirled/net/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/main/as" includes="com/whirled/avrg/*.as"/>
+      <fileset dir="${projects.dir}/whirled/src/main/as" includes="com/whirled/party/*.as"/>
     </copy>
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg value="-load-config"/>
@@ -194,7 +221,7 @@
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
       <arg line="-library-path ${deploy.dir}/lib/aspirin.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/nenyalib-0.0-SNAPSHOT.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
@@ -217,7 +244,7 @@
       <arg line="-library-path ${flex.path}/frameworks/libs/air"/>
       <arg line="-library-path ${deploy.dir}/lib/aspirin.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/nenyalib-0.0-SNAPSHOT.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/tweener.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
@@ -234,7 +261,10 @@
   <target name="asdoc" depends="asdoc-contrib,asdoc-whirled"/>
 
   <!-- builds the SDK -->
-  <target name="sdk" depends="distprojects,asclient,asserver,asdoc">
+  <target name="sdk" depends="distprojects,asclient,asserver,asdoc,just-sdk"/>
+
+  <!-- builds just the SDK; you probably want the "sdk" target -->
+  <target name="just-sdk">
     <mkdir dir="${sdk.build}"/>
     <copy todir="${sdk.build}">
       <fileset dir="data/sdk" includes="**"/>
@@ -260,21 +290,21 @@
         <include name="src/as/com/threerings/**"/>
       </fileset>
       <fileset dir="${projects.dir}/narya">
-        <include name="src/as/com/threerings/util/**"/>
+        <include name="src/main/as/com/threerings/util/**"/>
         <exclude name="**/Streamable*.as"/>
         <exclude name="**/Name.as"/>
         <exclude name="**/langBoolean.as"/>
         <exclude name="**/ObjectMarshaller.as"/>
       </fileset>
-      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/*.as"/>
-      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/avrg/*.as"/>
-      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/party/*.as"/>
-      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/avrg/server/*.as"/>
-      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/game/*.as"/>
-      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/game/loopback/*.as"/>
-      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/net/*.as"/>
-      <fileset dir="${projects.dir}/whirled" includes="src/as/com/whirled/net/impl/*.as"/>
-      <fileset dir="${projects.dir}/whirled" includes="src/as/nochump/**"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/main/as/com/whirled/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/main/as/com/whirled/avrg/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/main/as/com/whirled/party/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/main/as/com/whirled/avrg/server/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/main/as/com/whirled/game/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/main/as/com/whirled/game/loopback/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/main/as/com/whirled/net/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/main/as/com/whirled/net/impl/*.as"/>
+      <fileset dir="${projects.dir}/whirled" includes="src/main/as/nochump/**"/>
       <fileset dir="." includes="etc/**" excludes="etc/whirled-config.xml"/>
     </copy>
     <!-- copy contributed files -->
@@ -310,7 +340,7 @@
 
     <!-- put our thane binaries into a tar file -->
     <tar destfile="${sdk.build}/dist/thanes.tar">
-      <TarFileSet dir="libraries/thane/bin">
+      <TarFileSet dir="libraries/thane-bin">
         <include name="Windows-32/avmthane.exe"/>
         <include name="Mac OS X-32/avmthane"/>
         <include name="Linux-32/avmthane"/>
@@ -341,12 +371,12 @@
 
     <mkdir dir="${deploy.dir}/bin"/>
     <copy todir="${deploy.dir}/bin" overwrite="true">
-      <fileset dir="libraries/thane/bin" includes="**/avmthane*"/>
+      <fileset dir="libraries/thane-bin" includes="**/avmthane*"/>
     </copy>
   </target>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
-  <target name="distall" depends="prepare,distprojects,dist,asclient,asserver,sdk">
+  <target name="distall" depends="mavendeps,distprojects,dist,asclient,asserver,sdk">
   </target>
 
   <!-- cleans out the compilation results -->

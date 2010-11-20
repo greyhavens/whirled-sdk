@@ -64,8 +64,8 @@
       <arg value="-library-path+=${build.root}/dist/lib/tweener.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/aspirin.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/naryalib.swc"/>
-      <arg value="-library-path+=${build.root}/dist/lib/nenyalib.swc"/>
-      <arg value="-library-path+=${build.root}/dist/lib/vilyalib.swc"/>
+      <arg value="-library-path+=${build.root}/dist/lib/nenyalib-0.0-SNAPSHOT.swc"/>
+      <arg value="-library-path+=${build.root}/dist/lib/vilyalib-0.0-SNAPSHOT.swc"/>
       <arg value="-library-path+=${build.root}/dist/lib/whirledlib.swc"/>
       <arg value="-library-path+=${app.library-dir}"/>
       <arg value="${flex.debug-arg}"/>

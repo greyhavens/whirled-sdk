@@ -10,7 +10,7 @@
     <!-- make sure the build.properties file is properly set up -->
     <taskdef name="checkbuild" classname="com.whirled.tools.ConfigBuildPropsTask">
       <classpath>
-        <fileset dir="${build.root}/dist/lib" includes="samskivert.jar"/>
+        <fileset dir="${build.root}/dist/lib" includes="samskivert-0.0-SNAPSHOT.jar"/>
         <fileset dir="${build.root}/dist" includes="whirled-tools.jar"/>
       </classpath>
     </taskdef>
