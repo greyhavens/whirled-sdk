@@ -8,7 +8,6 @@
   <property name="deploy.dir"     value="dist"/>
   <property name="classes.dir"    value="${deploy.dir}/classes"/>
   <property name="sdk.build"      value="${deploy.dir}/sdk/whirled"/>
-  <property environment="env"/>
 
   <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"   value="libraries"/>
@@ -20,7 +19,7 @@
   <import file="etc/flex-include.xml"/>
   <property name="flexsdk.dir" value="${flex.path}"/>
   <property name="extdep.suffix" value=""/>
-  <echo message="external library suffix (whirled/build): ${extdep.suffix}"/>
+  <echo message="External library suffix (whirled/build): ${extdep.suffix}"/>
 
   <!-- declares the libraries needed by the whirled runtime (or for compiling whirled swfs) -->
   <filelist dir="." id="dist.libs">
@@ -34,7 +33,7 @@
     <file name="lib/commons-io.jar"/>
     <file name="lib/commons-lang.jar"/>
     <file name="lib/commons-logging.jar"/>
-    <file name="lib/flextasks.jar"/>
+    <file name="lib/flexTasks.jar"/>
     <file name="lib/getdown.jar"/>
     <file name="lib/javassist.jar"/>
     <file name="lib/junit-3.7.jar"/>
