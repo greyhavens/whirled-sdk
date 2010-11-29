@@ -154,7 +154,7 @@ public abstract class WhirledGameManager extends GameManager
     @Override
     protected AccessController getAccessController ()
     {
-        return CrowdObjectAccess.BUREAU_ACCESS_PLACE;
+        return _injector.getInstance(CrowdObjectAccess.BureauAccessController.class);
     }
 
     /**
