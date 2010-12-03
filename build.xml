@@ -20,57 +20,19 @@
   <property name="extdep.suffix" value=""/>
   <echo message="External library suffix (whirled/build): ${extdep.suffix}"/>
 
-  <!-- declares the libraries needed by the whirled runtime (or for compiling whirled swfs) -->
-  <filelist dir="." id="dist.libs">
-    <file name="lib/ant.jar"/>
-    <file name="lib/ant-launcher.jar"/>
-    <file name="lib/asc.jar"/>
-    <file name="lib/atunit.jar"/>
-    <file name="lib/commons-beanutils.jar"/>
-    <file name="lib/commons-collections.jar"/>
-    <file name="lib/commons-digester.jar"/>
-    <file name="lib/commons-io.jar"/>
-    <file name="lib/commons-lang.jar"/>
-    <file name="lib/commons-logging.jar"/>
-    <file name="lib/flexTasks.jar"/>
-    <file name="lib/getdown.jar"/>
-    <file name="lib/javassist.jar"/>
-    <file name="lib/junit-3.7.jar"/>
-    <file name="lib/junit4.jar"/>
-    <file name="lib/lwjgl.jar"/>
-    <file name="lib/mina-core.jar"/>
-    <file name="lib/servlet-api.jar"/>
-    <file name="lib/slf4j-api.jar"/>
-    <file name="lib/slf4j-jdk14.jar"/>
-    <file name="lib/swfutils-ooo.jar"/>
-    <file name="lib/scala-library.jar"/>
-    <file name="lib/dependency-analyzer-ooo.jar"/>
-    <file name="lib/corelib.swc"/>
-    <file name="lib/flexlib.swc"/>
-    <file name="lib/tweener.swc"/>
-    <file name="lib/as3isolib-fp9.swc"/>
-  </filelist>
-
   <!-- declare our classpath -->
   <path id="classpath">
     <pathelement location="${classes.dir}"/>
     <fileset dir="${deploy.dir}/lib" includes="*.jar"/>
   </path>
 
-  <!-- prepares the build directories -->
-  <target name="prepare">
+  <target name="-prepare">
     <mkdir dir="${deploy.dir}"/>
     <mkdir dir="${deploy.dir}/tmp"/>
     <mkdir dir="${deploy.dir}/lib"/>
-
-    <!-- Copy all the libs we depend on. -->
-    <copyfilelist dest="${deploy.dir}/lib">
-      <filelist refid="dist.libs"/>
-    </copyfilelist>
   </target>
 
-  <!-- prepares the java bits -->
-  <target name="prepare-java" depends="prepare">
+  <target name="-prepare-java" depends="-prepare">
     <mkdir dir="${classes.dir}"/>
     <mkdir dir="${classes.dir}/rsrc"/>
     <copy todir="${classes.dir}/rsrc">
@@ -80,35 +42,43 @@
     </copy>
   </target>
 
-  <target name="mavendeps" depends="prepare" description="Fetches our dependencies via Maven.">
-    <artifact:dependencies filesetId="dependency.fileset">
+  <target name="mavendeps" depends="-prepare" description="Fetches our dependencies via Maven.">
+    <artifact:dependencies filesetId="as.dependency.fileset">
+      <remoteRepository id="as3corelib-repo"
+        url="https://github.com/samskivert/as3corelib/raw/master/repository"/>
+      <dependency groupId="com.adobe" artifactId="as3corelib" version="0.93" type="swc"/>
+      <remoteRepository id="flexlib-repo" url="http://maven.ow2.org/maven2"/>
+      <dependency groupId="flexlib" artifactId="flexlib-bin" version="2.4" type="swc"/>
+      <remoteRepository id="extooo-repo" url="http://ooo-maven.googlecode.com/hg/repository"/>
+      <dependency groupId="caurina" artifactId="tweener" version="1.33.74" type="swc"/>
       <remoteRepository refid="ooo.maven.depends.repo"/>
-      <dependency groupId="com.samskivert" artifactId="depot" version="1.1"/>
-      <dependency groupId="com.threerings" artifactId="whirled-code" version="1.0" type="jar"/>
+      <dependency groupId="com.threerings" artifactId="aspirin" version="1.7-SNAPSHOT" type="swc"/>
       <dependency groupId="com.threerings" artifactId="whirledlib" version="1.0" type="swc"/>
       <dependency groupId="com.threerings" artifactId="whirledthanelib" version="1.0" type="swc"/>
-      <dependency groupId="com.threerings" artifactId="flashbang"
-                  version="1.0-SNAPSHOT" type="swc"/>
-      <dependency groupId="com.threerings.thane" artifactId="thane"
-                  version="0.0-SNAPSHOT" type="swc"/>
-    </artifact:dependencies>
-    <artifact:dependencies filesetId="dependency.remote.fileset">
-      <dependency groupId="org.apache.velocity" artifactId="velocity" version="1.6.4"/>
-      <dependency groupId="com.google.guava" artifactId="guava" version="r07"/>
-      <dependency groupId="com.google.inject" artifactId="guice" version="2.0"/>
-      <dependency groupId="com.google.inject.extensions" artifactId="guice-multibindings"
-                  version="2.0"/>
-      <dependency groupId="org.mortbay.jetty" artifactId="jetty" version="6.1.25"/>
+      <dependency groupId="com.threerings" artifactId="flashbang" version="1.0-SNAPSHOT"
+                  type="swc"/>
+      <dependency groupId="com.threerings.thane" artifactId="thane" version="0.0-SNAPSHOT"
+                  type="swc"/>
     </artifact:dependencies>
     <copy todir="${deploy.dir}/lib">
-      <fileset refid="dependency.fileset"/>
-      <fileset refid="dependency.remote.fileset"/>
+      <fileset refid="as.dependency.fileset"/>
+      <chainedmapper>
+        <mapper type="flatten"/>
+        <mapper type="regexp" from="(.+?)(-SNAPSHOT)?.swc" to="\1.swc"/>
+        <mapper type="regexp" from="(.*)-([^-])+.swc" to="\1.swc"/>
+      </chainedmapper>
+    </copy>
+
+    <artifact:pom id="pom" file="pom.xml"/>
+    <artifact:dependencies filesetId="maven.fileset" pomRefId="pom"/>
+    <copy todir="${deploy.dir}/lib">
+      <fileset refid="maven.fileset"/>
       <mapper type="flatten"/>
     </copy>
   </target>
 
   <!-- build the java class files -->
-  <target name="compile" depends="prepare-java">
+  <target name="compile" depends="-prepare-java">
     <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" optimize="off" deprecation="on"
            target="1.5" includeAntRuntime="false">
       <classpath refid="classpath"/>
@@ -117,7 +87,7 @@
   </target>
 
   <!-- builds our Flash game test client -->
-  <target name="asclient" depends="prepare">
+  <target name="asclient" depends="-prepare">
     <copy file="etc/whirled-config.xml.in" tofile="etc/whirled-config.xml" overwrite="true">
       <filterset>
         <filter token="flex_path" value="${flex.path}"/>
@@ -127,10 +97,10 @@
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
       <arg value="-compiler.optimize"/>
-      <arg value="-library-path+=${deploy.dir}/lib/aspirin-1.6.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/naryalib-1.2.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/nenyalib-1.0.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/vilyalib-1.0.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/aspirin.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/naryalib.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/nenyalib.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/vilyalib.swc"/>
       <arg value="-library-path+=${deploy.dir}/lib/whirledlib.swc"/>
       <arg value="-compiler.source-path=${asrc.dir}/"/>
       <arg value="-compiler.source-path=rsrc/{locale}/i18n"/>
@@ -142,7 +112,7 @@
     </exec>
   </target>
 
-  <target name="asserver" depends="prepare">
+  <target name="asserver" depends="-prepare">
     <copy file="etc/thane-config.xml.in" tofile="etc/thane-config.xml" overwrite="true">
       <filterset>
         <filter token="flex_path" value="${flex.path}"/>
@@ -152,15 +122,15 @@
       <arg value="-load-config"/>
       <arg value="etc/thane-config.xml"/>
       <arg value="-compiler.external-library-path"/>
-      <arg value="${deploy.dir}/lib/thane-0.0-SNAPSHOT.swc"/>
+      <arg value="${deploy.dir}/lib/thane.swc"/>
       <arg value="-compiler.library-path"/>
-      <arg value="${deploy.dir}/lib/corelib.swc"/>
-      <arg value="${deploy.dir}/lib/aspirin-1.6.swc"/>
-      <arg value="${deploy.dir}/lib/naryalib-1.2.swc"/>
-      <arg value="${deploy.dir}/lib/nenyalib-1.0.swc"/>
-      <arg value="${deploy.dir}/lib/vilyalib-1.0.swc"/>
+      <arg value="${deploy.dir}/lib/as3corelib.swc"/>
+      <arg value="${deploy.dir}/lib/aspirin.swc"/>
+      <arg value="${deploy.dir}/lib/naryalib.swc"/>
+      <arg value="${deploy.dir}/lib/nenyalib.swc"/>
+      <arg value="${deploy.dir}/lib/vilyalib.swc"/>
       <arg value="${deploy.dir}/lib/whirledlib.swc"/>
-      <arg value="${deploy.dir}/lib/whirledthanelib-1.0.swc"/>
+      <arg value="${deploy.dir}/lib/whirledthanelib.swc"/>
       <arg value="-output"/>
       <arg value="${deploy.dir}/game-server-lib.swc"/>
       <arg value="-compiler.source-path=src/thane"/>
@@ -173,7 +143,7 @@
       <arg value="-load-config"/>
       <arg value="etc/thane-config.xml"/>
       <arg value="-compiler.external-library-path"/>
-      <arg value="${deploy.dir}/lib/thane-0.0-SNAPSHOT.swc"/>
+      <arg value="${deploy.dir}/lib/thane.swc"/>
       <arg value="${deploy.dir}/game-server-lib.swc"/>
       <arg value="-compiler.source-path=src/thane"/>
       <arg value="-output"/>
@@ -198,7 +168,7 @@
   </target>
 
   <!-- generate docus for our whirled stuff -->
-  <target name="asdoc-whirled" depends="prepare">
+  <target name="asdoc-whirled" depends="-prepare">
     <mkdir dir="${sdk.build}/docs"/>
     <delete dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
@@ -214,9 +184,9 @@
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
-      <arg line="-library-path ${deploy.dir}/lib/aspirin-1.6.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/naryalib-1.2.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/nenyalib-1.0.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/aspirin.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
@@ -227,7 +197,7 @@
   </target>
 
   <!-- generate docs for the contrib stuff -->
-  <target name="asdoc-contrib" depends="prepare">
+  <target name="asdoc-contrib" depends="-prepare">
     <mkdir dir="${sdk.build}/contrib/docs"/>
     <delete dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
@@ -237,9 +207,9 @@
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
       <arg line="-library-path ${flex.path}/frameworks/libs/air"/>
-      <arg line="-library-path ${deploy.dir}/lib/aspirin-1.6.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/naryalib-1.2.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/nenyalib-1.0.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/aspirin.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/tweener.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
@@ -385,6 +355,6 @@
   </target>
 
   <!-- fully cleans out the application and all subprojects -->
-  <target name="distcleanall" depends="distcleanprojects,distclean"/>
+  <target name="distcleanall" depends="distclean"/>
 
 </project>
