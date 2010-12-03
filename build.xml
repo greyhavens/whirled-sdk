@@ -17,8 +17,6 @@
   <!-- include bits to do the necessary flex sdk path jockeying -->
   <import file="etc/flex-include.xml"/>
   <property name="flexsdk.dir" value="${flex.path}"/>
-  <property name="extdep.suffix" value=""/>
-  <echo message="External library suffix (whirled/build): ${extdep.suffix}"/>
 
   <!-- declare our classpath -->
   <path id="classpath">
@@ -153,14 +151,18 @@
 
     <echo message="Turning .swfs into .abcs..."/>
 
-    <java outputproperty="dump" classpathref="classpath"
-          classname="flash.swf.tools.SwfxPrinter" fork="true" failonerror="true">
+    <path id="swfx.classpath">
+      <pathelement location="lib/swfutils-ooo.jar"/>
+      <pathelement location="lib/asc.jar"/>
+    </path>
+    <java outputproperty="dump" classname="flash.swf.tools.SwfxPrinter"
+          classpathref="swfx.classpath" fork="true" failonerror="true">
       <arg value="-dump"/>
       <arg value="${deploy.dir}/game-server-lib.abc"/>
       <arg value="${deploy.dir}/game-server-lib.swc"/>
     </java>
-    <java outputproperty="dump" classpathref="classpath"
-          classname="flash.swf.tools.SwfxPrinter" fork="true" failonerror="true">
+    <java outputproperty="dump" classname="flash.swf.tools.SwfxPrinter"
+          classpathref="swfx.classpath" fork="true" failonerror="true">
       <arg value="-dump"/>
       <arg value="${deploy.dir}/game-server.abc"/>
       <arg value="${deploy.dir}/game-server.swf"/>
