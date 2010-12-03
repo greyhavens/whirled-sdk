@@ -55,8 +55,7 @@
       <dependency groupId="com.threerings" artifactId="whirledthanelib" version="1.0" type="swc"/>
       <dependency groupId="com.threerings" artifactId="flashbang" version="1.0-SNAPSHOT"
                   type="swc"/>
-      <dependency groupId="com.threerings.thane" artifactId="thane" version="0.0-SNAPSHOT"
-                  type="swc"/>
+      <dependency groupId="com.threerings" artifactId="thane" version="1.0" type="swc"/>
     </artifact:dependencies>
     <copy todir="${deploy.dir}/lib">
       <fileset refid="as.dependency.fileset"/>
