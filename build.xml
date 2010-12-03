@@ -11,7 +11,6 @@
 
   <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"   value="libraries"/>
-  <property name="projects" value="aspirin,narya,whirled"/>
   <import file="build/etc/build-support.xml"/>
   <import file="package/etc/package-support.xml"/>
 
@@ -84,15 +83,12 @@
   <target name="mavendeps" depends="prepare" description="Fetches our dependencies via Maven.">
     <artifact:dependencies filesetId="dependency.fileset">
       <remoteRepository refid="ooo.maven.depends.repo"/>
-      <dependency groupId="com.samskivert" artifactId="depot" version="0.0-SNAPSHOT"/>
-      <dependency groupId="com.threerings" artifactId="whirled-code"
-                  version="0.0-SNAPSHOT" type="jar"/>
-      <dependency groupId="com.threerings" artifactId="whirledlib"
-                  version="0.0-SNAPSHOT" type="swc"/>
-      <dependency groupId="com.threerings" artifactId="whirledthanelib"
-                  version="0.0-SNAPSHOT" type="swc"/>
-      <dependency groupId="com.threerings.flashbang" artifactId="flashbang"
-                  version="0.0-SNAPSHOT" type="swc"/>
+      <dependency groupId="com.samskivert" artifactId="depot" version="1.1"/>
+      <dependency groupId="com.threerings" artifactId="whirled-code" version="1.0" type="jar"/>
+      <dependency groupId="com.threerings" artifactId="whirledlib" version="1.0" type="swc"/>
+      <dependency groupId="com.threerings" artifactId="whirledthanelib" version="1.0" type="swc"/>
+      <dependency groupId="com.threerings" artifactId="flashbang"
+                  version="1.0-SNAPSHOT" type="swc"/>
       <dependency groupId="com.threerings.thane" artifactId="thane"
                   version="0.0-SNAPSHOT" type="swc"/>
     </artifact:dependencies>
@@ -131,10 +127,10 @@
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
       <arg value="-compiler.optimize"/>
-      <arg value="-library-path+=${deploy.dir}/lib/aspirin.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/naryalib.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/nenyalib-0.0-SNAPSHOT.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/vilyalib-0.0-SNAPSHOT.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/aspirin-1.6.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/naryalib-1.2.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/nenyalib-1.0.swc"/>
+      <arg value="-library-path+=${deploy.dir}/lib/vilyalib-1.0.swc"/>
       <arg value="-library-path+=${deploy.dir}/lib/whirledlib.swc"/>
       <arg value="-compiler.source-path=${asrc.dir}/"/>
       <arg value="-compiler.source-path=rsrc/{locale}/i18n"/>
@@ -159,12 +155,12 @@
       <arg value="${deploy.dir}/lib/thane-0.0-SNAPSHOT.swc"/>
       <arg value="-compiler.library-path"/>
       <arg value="${deploy.dir}/lib/corelib.swc"/>
-      <arg value="${deploy.dir}/lib/aspirin.swc"/>
-      <arg value="${deploy.dir}/lib/naryalib.swc"/>
-      <arg value="${deploy.dir}/lib/nenyalib-0.0-SNAPSHOT.swc"/>
-      <arg value="${deploy.dir}/lib/vilyalib-0.0-SNAPSHOT.swc"/>
+      <arg value="${deploy.dir}/lib/aspirin-1.6.swc"/>
+      <arg value="${deploy.dir}/lib/naryalib-1.2.swc"/>
+      <arg value="${deploy.dir}/lib/nenyalib-1.0.swc"/>
+      <arg value="${deploy.dir}/lib/vilyalib-1.0.swc"/>
       <arg value="${deploy.dir}/lib/whirledlib.swc"/>
-      <arg value="${deploy.dir}/lib/whirledthanelib-0.0-SNAPSHOT.swc"/>
+      <arg value="${deploy.dir}/lib/whirledthanelib-1.0.swc"/>
       <arg value="-output"/>
       <arg value="${deploy.dir}/game-server-lib.swc"/>
       <arg value="-compiler.source-path=src/thane"/>
@@ -218,9 +214,9 @@
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
-      <arg line="-library-path ${deploy.dir}/lib/aspirin.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/nenyalib-0.0-SNAPSHOT.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/aspirin-1.6.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/naryalib-1.2.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/nenyalib-1.0.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
@@ -241,9 +237,9 @@
     <exec executable="${flex.path}/bin/asdoc" failonerror="true">
       <arg line="-library-path ${flex.path}/frameworks/libs"/>
       <arg line="-library-path ${flex.path}/frameworks/libs/air"/>
-      <arg line="-library-path ${deploy.dir}/lib/aspirin.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
-      <arg line="-library-path ${deploy.dir}/lib/nenyalib-0.0-SNAPSHOT.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/aspirin-1.6.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/naryalib-1.2.swc"/>
+      <arg line="-library-path ${deploy.dir}/lib/nenyalib-1.0.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/tweener.swc"/>
       <arg line="-templates-path ${flex.path}/asdoc/templates"/>
@@ -260,7 +256,7 @@
   <target name="asdoc" depends="asdoc-contrib,asdoc-whirled"/>
 
   <!-- builds the SDK -->
-  <target name="sdk" depends="distprojects,asclient,asserver,asdoc,just-sdk"/>
+  <target name="sdk" depends="asclient,asserver,asdoc,just-sdk"/>
 
   <!-- builds just the SDK; you probably want the "sdk" target -->
   <target name="just-sdk">
@@ -375,7 +371,7 @@
   </target>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
-  <target name="distall" depends="mavendeps,distprojects,dist,asclient,asserver,sdk">
+  <target name="distall" depends="mavendeps,dist,asclient,asserver,sdk">
   </target>
 
   <!-- cleans out the compilation results -->
