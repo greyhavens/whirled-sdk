@@ -16,9 +16,9 @@ public class GameCookieRecord extends PersistentRecord
 {
     // AUTO-GENERATED: FIELDS START
     public static final Class<GameCookieRecord> _R = GameCookieRecord.class;
-    public static final ColumnExp GAME_ID = colexp(_R, "gameId");
-    public static final ColumnExp USER_ID = colexp(_R, "userId");
-    public static final ColumnExp COOKIE = colexp(_R, "cookie");
+    public static final ColumnExp<Integer> GAME_ID = colexp(_R, "gameId");
+    public static final ColumnExp<Integer> USER_ID = colexp(_R, "userId");
+    public static final ColumnExp<byte[]> COOKIE = colexp(_R, "cookie");
     // AUTO-GENERATED: FIELDS END
 
     public static final int SCHEMA_VERSION = 2;
@@ -56,10 +56,10 @@ public class GameCookieRecord extends PersistentRecord
      */
     public static Key<GameCookieRecord> getKey (int gameId, int userId)
     {
-        return new Key<GameCookieRecord>(
-                GameCookieRecord.class,
-                new ColumnExp[] { GAME_ID, USER_ID },
-                new Comparable[] { gameId, userId });
+        return newKey(_R, gameId, userId);
     }
+
+    /** Register the key fields in an order matching the getKey() factory. */
+    static { registerKeyFields(GAME_ID, USER_ID); }
     // AUTO-GENERATED: METHODS END
 }
