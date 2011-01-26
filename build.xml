@@ -8,15 +8,17 @@
   <property name="deploy.dir"     value="dist"/>
   <property name="classes.dir"    value="${deploy.dir}/classes"/>
   <property name="sdk.build"      value="${deploy.dir}/sdk/whirled"/>
-
-  <!-- define our subprojects and include the standard build system -->
   <property name="projects.dir"   value="libraries"/>
-  <import file="build/etc/build-support.xml"/>
-  <import file="package/etc/package-support.xml"/>
+
+  <!-- bring in our standard build support -->
+  <property name="ooo-build.vers" value="1.15"/>
+  <ant antfile="bootstrap.xml"/>
+  <import file="${user.home}/.m2/ant-support/${ooo-build.vers}/build-support.xml"/>
 
   <!-- include bits to do the necessary flex sdk path jockeying -->
+<!--
   <import file="etc/flex-include.xml"/>
-  <property name="flexsdk.dir" value="${flex.path}"/>
+-->
 
   <!-- declare our classpath -->
   <path id="classpath">
@@ -40,7 +42,15 @@
     </copy>
   </target>
 
-  <target name="mavendeps" depends="-prepare" description="Fetches our dependencies via Maven.">
+  <target name="-prepare-as" depends="-prepare">
+    <fail><condition><not><isset property="flexsdk.dir"/></not></condition>
+      You must pass -Dflexsdk.dir=/path/to/flexsdk when building. It must be an
+      absolute path.
+    </fail>
+  </target>
+
+  <target name="mavendeps" depends="-init-ooo-maven,-prepare"
+          description="Fetches our dependencies via Maven.">
     <artifact:dependencies filesetId="as.dependency.fileset">
       <remoteRepository id="as3corelib-repo"
         url="https://github.com/samskivert/as3corelib/raw/master/repository"/>
@@ -84,13 +94,13 @@
   </target>
 
   <!-- builds our Flash game test client -->
-  <target name="asclient" depends="-prepare">
+  <target name="asclient" depends="-prepare-as">
     <copy file="etc/whirled-config.xml.in" tofile="etc/whirled-config.xml" overwrite="true">
       <filterset>
-        <filter token="flex_path" value="${flex.path}"/>
+        <filter token="flex_path" value="${flexsdk.dir}"/>
       </filterset>
     </copy>
-    <exec executable="${flex.path}/bin/mxmlc" failonerror="true">
+    <exec executable="${flexsdk.dir}/bin/mxmlc" failonerror="true">
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
       <arg value="-compiler.optimize"/>
@@ -109,10 +119,10 @@
     </exec>
   </target>
 
-  <target name="asserver" depends="-prepare">
+  <target name="asserver" depends="-prepare-as">
     <copy file="etc/thane-config.xml.in" tofile="etc/thane-config.xml" overwrite="true">
       <filterset>
-        <filter token="flex_path" value="${flex.path}"/>
+        <filter token="flex_path" value="${flexsdk.dir}"/>
       </filterset>
     </copy>
     <java jar="${flexsdk.dir}/lib/compc.jar" fork="true" failonerror="true">
@@ -169,11 +179,14 @@
   </target>
 
   <!-- generate docus for our whirled stuff -->
-  <target name="asdoc-whirled" depends="-prepare">
+  <target name="asdoc-whirled" depends="-prepare-as">
     <mkdir dir="${sdk.build}/docs"/>
     <delete dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
+<!-- TODO: can we ship an aspirin-source Maven artifact?
       <fileset dir="${projects.dir}/aspirin/src/as" includes="com/threerings/**"/>
+     OR: how about we just link to the existing aspirin asdocs on the web?
+-->
       <fileset dir="${projects.dir}/whirled/src/main/as" includes="com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/main/as" includes="com/whirled/game/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/main/as" includes="com/whirled/game/loopback/*.as"/>
@@ -181,15 +194,15 @@
       <fileset dir="${projects.dir}/whirled/src/main/as" includes="com/whirled/avrg/*.as"/>
       <fileset dir="${projects.dir}/whirled/src/main/as" includes="com/whirled/party/*.as"/>
     </copy>
-    <exec executable="${flex.path}/bin/asdoc" failonerror="true">
+    <exec executable="${flexsdk.dir}/bin/asdoc" failonerror="true">
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
-      <arg line="-library-path ${flex.path}/frameworks/libs"/>
+      <arg line="-library-path ${flexsdk.dir}/frameworks/libs"/>
       <arg line="-library-path ${deploy.dir}/lib/aspirin.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
-      <arg line="-templates-path ${flex.path}/asdoc/templates"/>
+      <arg line="-templates-path ${flexsdk.dir}/asdoc/templates"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
       <arg line="-load-config+=etc/asdoc-config.xml"/>
       <arg line="-output ${sdk.build}/docs"/>
@@ -198,22 +211,22 @@
   </target>
 
   <!-- generate docs for the contrib stuff -->
-  <target name="asdoc-contrib" depends="-prepare">
+  <target name="asdoc-contrib" depends="-prepare-as">
     <mkdir dir="${sdk.build}/contrib/docs"/>
     <delete dir="${deploy.dir}/tmp/pubas"/>
     <copy todir="${deploy.dir}/tmp/pubas">
       <fileset dir="contrib/src/as" includes="com/whirled/**/*.as"
         excludes="com/whirled/contrib/platformer/editor/**/*.as"/>
     </copy>
-    <exec executable="${flex.path}/bin/asdoc" failonerror="true">
-      <arg line="-library-path ${flex.path}/frameworks/libs"/>
-      <arg line="-library-path ${flex.path}/frameworks/libs/air"/>
+    <exec executable="${flexsdk.dir}/bin/asdoc" failonerror="true">
+      <arg line="-library-path ${flexsdk.dir}/frameworks/libs"/>
+      <arg line="-library-path ${flexsdk.dir}/frameworks/libs/air"/>
       <arg line="-library-path ${deploy.dir}/lib/aspirin.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/naryalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/nenyalib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/whirledlib.swc"/>
       <arg line="-library-path ${deploy.dir}/lib/tweener.swc"/>
-      <arg line="-templates-path ${flex.path}/asdoc/templates"/>
+      <arg line="-templates-path ${flexsdk.dir}/asdoc/templates"/>
       <arg line="-doc-sources ${deploy.dir}/tmp/pubas"/>
       <arg line="-load-config+=etc/asdoc-contrib-config.xml"/>
       <arg line="-output ${sdk.build}/contrib/docs"/>
@@ -231,6 +244,11 @@
 
   <!-- builds just the SDK; you probably want the "sdk" target -->
   <target name="just-sdk">
+    <fail><condition><not><isset property="whirlproj.dir"/></not></condition>
+      If you wish to build the SDK, you must specify the path a checkout of the
+      http://code.google.com/p/whirled/ repository, so that certain example
+      projects can be copied into the SDK: -Dwhirlproj.dir=/path/to/whirled
+    </fail>
     <mkdir dir="${sdk.build}"/>
     <copy todir="${sdk.build}">
       <fileset dir="data/sdk" includes="**"/>
@@ -252,6 +270,7 @@
     </copy>
     <mkdir dir="${sdk.build}/lib"/>
     <copy todir="${sdk.build}">
+<!-- TODO: why do these source files need to be included in the SDK?
       <fileset dir="${projects.dir}/aspirin">
         <include name="src/as/com/threerings/**"/>
       </fileset>
@@ -262,6 +281,7 @@
         <exclude name="**/langBoolean.as"/>
         <exclude name="**/ObjectMarshaller.as"/>
       </fileset>
+-->
       <fileset dir="${projects.dir}/whirled" includes="src/main/as/com/whirled/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/main/as/com/whirled/avrg/*.as"/>
       <fileset dir="${projects.dir}/whirled" includes="src/main/as/com/whirled/party/*.as"/>
@@ -281,30 +301,31 @@
     <!-- copy some example games -->
     <mkdir dir="${sdk.build}/examples/games"/>
     <copy todir="${sdk.build}/examples/games">
-      <fileset dir="projects/games" includes="reversi/**"/>
-      <fileset dir="projects/games" includes="fat_reversi/**"/>
-      <fileset dir="projects/games" includes="clickfest/**"/>
-      <fileset dir="projects/games" includes="quickclick/**"/>
-      <fileset dir="projects/games" includes="tictactoe/**"/>
+      <fileset dir="${whirlproj.dir}/games" includes="reversi/**"/>
+      <fileset dir="${whirlproj.dir}/games" includes="fat_reversi/**"/>
+      <fileset dir="${whirlproj.dir}/games" includes="clickfest/**"/>
+      <fileset dir="${whirlproj.dir}/games" includes="quickclick/**"/>
+      <fileset dir="${whirlproj.dir}/games" includes="tictactoe/**"/>
     </copy>
     <!-- copy some example pets and the urpet -->
     <mkdir dir="${sdk.build}/examples/pets"/>
     <copy todir="${sdk.build}/examples/pets">
-      <fileset dir="projects/pets" includes="urpet/**"/>
-      <fileset dir="projects/pets" includes="hal/**"/>
-      <fileset dir="projects/pets" includes="FATexample/**"/>
+      <fileset dir="${whirlproj.dir}/pets" includes="urpet/**"/>
+      <fileset dir="${whirlproj.dir}/pets" includes="hal/**"/>
+      <fileset dir="${whirlproj.dir}/pets" includes="FATexample/**"/>
     </copy>
     <!-- copy some example avatars and the uravatar -->
     <mkdir dir="${sdk.build}/examples/avatars"/>
     <copy todir="${sdk.build}/examples/avatars">
-      <fileset dir="projects/avatars" includes="uravatar/**"/>
-      <fileset dir="projects/avatars" includes="imageflipper/**"/>
-      <fileset dir="projects/avatars" includes="imageflipper-remix/**"/>
-      <fileset dir="projects/avatars" includes="camvatar/**"/>
-      <fileset dir="projects/avatars" includes="FATexample/**"/>
+      <fileset dir="${whirlproj.dir}/avatars" includes="uravatar/**"/>
+      <fileset dir="${whirlproj.dir}/avatars" includes="imageflipper/**"/>
+      <fileset dir="${whirlproj.dir}/avatars" includes="imageflipper-remix/**"/>
+      <fileset dir="${whirlproj.dir}/avatars" includes="camvatar/**"/>
+      <fileset dir="${whirlproj.dir}/avatars" includes="FATexample/**"/>
     </copy>
 
     <!-- put our thane binaries into a tar file -->
+<!-- TODO: get these from a Maven artifact
     <tar destfile="${sdk.build}/dist/thanes.tar">
       <TarFileSet dir="libraries/thane-bin">
         <include name="Windows-32/avmthane.exe"/>
@@ -312,6 +333,7 @@
         <include name="Linux-32/avmthane"/>
       </TarFileSet>
     </tar>
+-->
     <zip destfile="${deploy.dir}/whirled_sdk.zip"
          basedir="${deploy.dir}/sdk" includes="whirled/**"/>
   </target>
@@ -335,14 +357,16 @@
     <copy file="lib/default-avatar.swf" todir="${deploy.dir}"/>
     <copy file="lib/testing-furni.swf" todir="${deploy.dir}"/>
 
+<!-- TEMP: we need to publish these as a Maven artifact
     <mkdir dir="${deploy.dir}/bin"/>
     <copy todir="${deploy.dir}/bin" overwrite="true">
       <fileset dir="libraries/thane-bin" includes="**/avmthane*"/>
     </copy>
+-->
   </target>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
-  <target name="distall" depends="mavendeps,dist,asclient,asserver,sdk">
+  <target name="distall" depends="mavendeps,dist,asclient,asserver">
   </target>
 
   <!-- cleans out the compilation results -->

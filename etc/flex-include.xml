@@ -20,13 +20,13 @@
     <copy tofile="${etc.dir}/whirled-config.xml" file="${etc.dir}/whirled-config.xml.in" 
           overwrite="true">
       <filterset>
-        <filter token="flex_path" value="${flex.path}"/>
+        <filter token="flex_path" value="${flexsdk.dir}"/>
       </filterset>
     </copy>
     <copy tofile="${etc.dir}/thane-config.xml" file="${etc.dir}/thane-config.xml.in" 
           overwrite="true">
       <filterset>
-        <filter token="flex_path" value="${flex.path}"/>
+        <filter token="flex_path" value="${flexsdk.dir}"/>
       </filterset>
     </copy>
   </target>
