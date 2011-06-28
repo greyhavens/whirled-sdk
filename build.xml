@@ -11,9 +11,9 @@
   <property name="projects.dir"   value="libraries"/>
 
   <!-- bring in our standard build support -->
-  <property name="ooo-build.vers" value="1.15"/>
-  <ant antfile="bootstrap.xml"/>
-  <import file="${user.home}/.m2/ant-support/${ooo-build.vers}/build-support.xml"/>
+  <property name="ooo-build.vers" value="2.5"/>
+  <ant antfile="etc/bootstrap.xml"/>
+  <import file="${user.home}/.m2/ooo-build/${ooo-build.vers}/ooo-build.xml"/>
 
   <!-- include bits to do the necessary flex sdk path jockeying -->
 <!--
@@ -26,13 +26,14 @@
     <fileset dir="${deploy.dir}/lib" includes="*.jar"/>
   </path>
 
-  <target name="-prepare">
+  <target name="-prepare" depends="-init-ooo">
     <mkdir dir="${deploy.dir}"/>
     <mkdir dir="${deploy.dir}/tmp"/>
     <mkdir dir="${deploy.dir}/lib"/>
   </target>
 
   <target name="-prepare-java" depends="-prepare">
+    <mavendep pom="pom.xml" path="compile.classpath"/>
     <mkdir dir="${classes.dir}"/>
     <mkdir dir="${classes.dir}/rsrc"/>
     <copy todir="${classes.dir}/rsrc">
@@ -43,13 +44,14 @@
   </target>
 
   <target name="-prepare-as" depends="-prepare">
-    <fail><condition><not><isset property="flexsdk.dir"/></not></condition>
-      You must pass -Dflexsdk.dir=/path/to/flexsdk when building. It must be an
-      absolute path.
-    </fail>
+    <mavendep pom="etc/as-pom.xml" pathProp="aslib.path"/>
+    <property name="flex.version" value="3.3.0.4852"/>
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.0"/>
+    <requireflex/>
   </target>
 
-  <target name="mavendeps" depends="-init-ooo-maven,-prepare"
+<!--
+  <target name="mavendeps" depends="-prepare"
           description="Fetches our dependencies via Maven.">
     <artifact:dependencies filesetId="as.dependency.fileset">
       <remoteRepository id="as3corelib-repo"
@@ -83,18 +85,17 @@
       <mapper type="flatten"/>
     </copy>
   </target>
+-->
 
-  <!-- build the java class files -->
-  <target name="compile" depends="-prepare-java">
+  <target name="compile" depends="-prepare-java" description="Compiles java source files.">
     <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" optimize="off" deprecation="on"
            target="1.5" includeAntRuntime="false">
-      <classpath refid="classpath"/>
+      <classpath refid="compile.classpath"/>
       <compilerarg value="-Xlint:unchecked"/>
     </javac>
   </target>
 
-  <!-- builds our Flash game test client -->
-  <target name="asclient" depends="-prepare-as">
+  <target name="asclient" depends="-prepare-as" description="Compiles Flash test client.">
     <copy file="etc/whirled-config.xml.in" tofile="etc/whirled-config.xml" overwrite="true">
       <filterset>
         <filter token="flex_path" value="${flexsdk.dir}"/>
@@ -104,11 +105,7 @@
       <arg value="-load-config"/>
       <arg value="etc/whirled-config.xml"/>
       <arg value="-compiler.optimize"/>
-      <arg value="-library-path+=${deploy.dir}/lib/aspirin.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/naryalib.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/nenyalib.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/vilyalib.swc"/>
-      <arg value="-library-path+=${deploy.dir}/lib/whirledlib.swc"/>
+      <arg value="-compiler.library-path+=${aslib.path}"/>
       <arg value="-compiler.source-path=${asrc.dir}/"/>
       <arg value="-compiler.source-path=rsrc/{locale}/i18n"/>
       <arg value="-incremental=true"/>
@@ -366,7 +363,7 @@
   </target>
 
   <!-- rebuilds all subprojects and the whole top-level distribution -->
-  <target name="distall" depends="mavendeps,dist,asclient,asserver">
+  <target name="distall" depends="dist,asclient,asserver">
   </target>
 
   <!-- cleans out the compilation results -->
