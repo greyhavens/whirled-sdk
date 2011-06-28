@@ -15,11 +15,6 @@
   <ant antfile="etc/bootstrap.xml"/>
   <import file="${user.home}/.m2/ooo-build/${ooo-build.vers}/ooo-build.xml"/>
 
-  <!-- include bits to do the necessary flex sdk path jockeying -->
-<!--
-  <import file="etc/flex-include.xml"/>
--->
-
   <!-- declare our classpath -->
   <path id="classpath">
     <pathelement location="${classes.dir}"/>
@@ -49,43 +44,6 @@
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.0"/>
     <requireflex/>
   </target>
-
-<!--
-  <target name="mavendeps" depends="-prepare"
-          description="Fetches our dependencies via Maven.">
-    <artifact:dependencies filesetId="as.dependency.fileset">
-      <remoteRepository id="as3corelib-repo"
-        url="https://github.com/samskivert/as3corelib/raw/master/repository"/>
-      <dependency groupId="com.adobe" artifactId="as3corelib" version="0.93" type="swc"/>
-      <remoteRepository id="flexlib-repo" url="http://maven.ow2.org/maven2"/>
-      <dependency groupId="flexlib" artifactId="flexlib-bin" version="2.4" type="swc"/>
-      <remoteRepository id="extooo-repo" url="http://ooo-maven.googlecode.com/hg/repository"/>
-      <dependency groupId="caurina" artifactId="tweener" version="1.33.74" type="swc"/>
-      <remoteRepository refid="ooo.maven.depends.repo"/>
-      <dependency groupId="com.threerings" artifactId="aspirin" version="1.7-SNAPSHOT" type="swc"/>
-      <dependency groupId="com.threerings" artifactId="whirledlib" version="1.0" type="swc"/>
-      <dependency groupId="com.threerings" artifactId="whirledthanelib" version="1.0" type="swc"/>
-      <dependency groupId="com.threerings" artifactId="flashbang" version="1.0-SNAPSHOT"
-                  type="swc"/>
-      <dependency groupId="com.threerings" artifactId="thane" version="1.0" type="swc"/>
-    </artifact:dependencies>
-    <copy todir="${deploy.dir}/lib">
-      <fileset refid="as.dependency.fileset"/>
-      <chainedmapper>
-        <mapper type="flatten"/>
-        <mapper type="regexp" from="(.+?)(-SNAPSHOT)?.swc" to="\1.swc"/>
-        <mapper type="regexp" from="(.*)-([^-])+.swc" to="\1.swc"/>
-      </chainedmapper>
-    </copy>
-
-    <artifact:pom id="pom" file="pom.xml"/>
-    <artifact:dependencies filesetId="maven.fileset" pomRefId="pom"/>
-    <copy todir="${deploy.dir}/lib">
-      <fileset refid="maven.fileset"/>
-      <mapper type="flatten"/>
-    </copy>
-  </target>
--->
 
   <target name="compile" depends="-prepare-java" description="Compiles java source files.">
     <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" optimize="off" deprecation="on"
